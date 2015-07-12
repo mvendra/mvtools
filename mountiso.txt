@@ -1,0 +1,2 @@
+Mkdir -p /mnt/iso
+Mount -o loop image.iso /mnt/iso

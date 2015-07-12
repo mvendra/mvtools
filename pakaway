@@ -1,0 +1,24 @@
+#!/bin/bash
+
+puaq(){ # puaq stands for Print Usage And Quit
+  echo "Usage: `basename pakaway` folder"
+  exit 1
+}
+
+# testing input params
+if [ -z $1 ]; then
+  puaq
+fi
+
+if [ ! -f $1 ]; then # ugly nested if, but I suspect more portable. life's short.
+  if [ ! -d $1 ]; then
+    echo "Does $1 even exist?"
+    exit 2
+  fi
+fi
+
+TARGET=`basename $1`
+
+tar -cf $TARGET.tar ./$1
+bzip2 $TARGET.tar
+

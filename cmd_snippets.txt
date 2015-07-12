@@ -1,0 +1,4 @@
+
+rpm -qif /path/to/query will tell which package installed those files
+grep EVENT log*.txt | sort | uniq | awk '{print $2}' | ssh reportserver "gzip > results.txt.gz"
+
