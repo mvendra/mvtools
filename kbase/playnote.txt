@@ -1,1 +1,0 @@
-play -qn synth 2 pluck C4
