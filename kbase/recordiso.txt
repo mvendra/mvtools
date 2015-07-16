@@ -1,1 +1,0 @@
-cdrecord -v -dao dev=/dev/sr0 thefilename.iso
