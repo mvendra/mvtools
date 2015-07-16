@@ -11,6 +11,6 @@ if [ -f ./$SHBOOTFILE ]; then
 fi
 
 touch ./$SHBOOTFILE
-echo "#!/bin/bash\n\npuaq(){ # puaq stands for Print Usage And Quit\n  echo \"Usage: \`basename $SHBOOTFILE\` param\"\n  exit 1\n}\n\nif [ -z \$1 ]; then\n  puaq\nfi\n\n#code goes here\n" > ./$SHBOOTFILE
+echo "#!/bin/bash\n\npuaq(){ # puaq stands for Print Usage And Quit\n  echo \"Usage: \`basename \$0\` param\"\n  exit 1\n}\n\nif [ -z \$1 ]; then\n  puaq\nfi\n\n#code goes here\n" > ./$SHBOOTFILE
 chmod +x ./$SHBOOTFILE
 
