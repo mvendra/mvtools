@@ -1,5 +1,7 @@
 xset m 0 0
 
+# mvtodo: detect and run for multiple mouses?
+
 # xinput --list (and find the mouse device)
 DEVICE_ID=("`xinput --list | grep -i mouse | parseid.py`")
 
