@@ -1,2 +1,10 @@
 xset m 0 0
-xinput set-prop 10 265 -1 # the first number is the device. the second, Device Accel Profile, and the third, the value. see xinput --list and xinput --list-props DEVICE_ID
+
+# xinput --list (and find the mouse device)
+DEVICE_ID=10
+
+# xinput --list-props DEVICE_ID (and find Device Accel Profile)
+DEVICE_ACCEL_PROFILE=265
+
+xinput set-prop $DEVICE_ID $DEVICE_ACCEL_PROFILE -1
+
