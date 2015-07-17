@@ -1,5 +1,5 @@
 #!/bin/bash
 
-grep -nR "mvtodo" $PWD
-grep -nR "mvdebug" $PWD
+mvtodo
+mvdebug
 
