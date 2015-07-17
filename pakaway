@@ -17,8 +17,16 @@ if [ ! -f $1 ]; then # ugly nested if, but I suspect more portable. life's short
   fi
 fi
 
+DO_HASH=false
+if [ "$2" == "--hash" ]; then
+  DO_HASH=true
+fi
+
 TARGET=`basename $1`
 
 tar -cf $TARGET.tar ./$1
 bzip2 $TARGET.tar
+if $DO_HASH; then
+  sha256sum $TARGET.tar.bz2 > $TARGET.tar.bz2.hash
+fi
 
