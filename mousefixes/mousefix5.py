@@ -55,13 +55,7 @@ def getdeviceaccelprofilefromid(mid):
 def applymousefix(mid, dap):
   call(["xinput", "set-prop", mid, dap, "-1"])
 
-if __name__ == "__main__":
-
-  # mvtodo: if something passed in arg, use it to apply the fix instead of trying to detect
-  # mvtodo: kill parseid.py
-  # mvtodo: kill mousefix5.sh
-  # mvtodo: interactive completion for half detections - and similar? (i remember plugging in a wireless mouse once, and it wasnt detected as mouse anywhere, more like a Logitech Hub/Consolidated Generic thingy of sorts)
-
+def detect_and_apply():
   mouse_detection = ["mouse", "touchpad"]
 
   call(["xset", "m", "0", "0"])
@@ -77,4 +71,12 @@ if __name__ == "__main__":
           applymousefix(mouse_id, dap)
         else:
           print("%s: WARNING: detected mouse, but could not detect Device Accel Profile!" % os.path.basename(__file__))
+
+if __name__ == "__main__":
+
+  # mvtodo: interactive completion for half detections - and similar? (i remember plugging in a wireless mouse once, and it wasnt detected as mouse anywhere, more like a Logitech Hub/Consolidated Generic thingy of sorts)
+  if (len(sys.argv) == 1):
+    detect_and_apply()
+  else:
+    print("Parameterisation/partial/complementary detection not implemented.") # mvtodo: implement full/partial parameterisation plus full/partial(complementary) detection
 
