@@ -1,6 +1,0 @@
-#!/bin/bash
-if [ -z $1 ]; then
-  echo "Usage rdb script.rb"
-  exit
-fi
-ruby -r debug $1
