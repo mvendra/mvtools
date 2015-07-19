@@ -7,6 +7,14 @@ import subprocess
 import re
 from subprocess import call
 
+"""
+mousefix tool
+this tries to automatically do the equivalent of the following:
+xinput --list
+xinput --list-props DEVICE_ID
+xinput set-prop DEVICE_ID "Device Accel Profile" -1
+"""
+
 def getidfromxinputstring(theline):
   """returns None if it cant find matches in the given line"""
 
@@ -75,6 +83,8 @@ def detect_and_apply():
 if __name__ == "__main__":
 
   # mvtodo: interactive completion for half detections - and similar? (i remember plugging in a wireless mouse once, and it wasnt detected as mouse anywhere, more like a Logitech Hub/Consolidated Generic thingy of sorts)
+  # mvtodo: add --verbose option that prints everything it detects
+
   if (len(sys.argv) == 1):
     detect_and_apply()
   else:

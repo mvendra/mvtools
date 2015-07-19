@@ -13,5 +13,5 @@ if [ ! -z $2 ]; then # has extension parameter as well
     EXT=$2
 fi
 
-egrep --color=always --include \*.$EXT -nR "*$SUBJ*" ./
+egrep --color=always -i --include \*.$EXT -nR "*$SUBJ*" ./
 
