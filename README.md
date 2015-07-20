@@ -8,8 +8,10 @@ Installation
 ============
 
 1) Checkout the repo somewhere in your system
+
 2) Define MVTOOLS in your ~/.bashrc to point to the repo you checked out
-3) Add: ```bash source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
+
+3) Add: ```source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
 
 mvpyutils
 =========
