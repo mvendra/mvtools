@@ -8,7 +8,7 @@ add2path(){
 
 if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
 
-  source $MVTOOLS/git_aliases.sh
+  source $MVTOOLS/git/git_aliases.sh
 
   add2path $MVTOOLS
   add2path $MVTOOLS/audio
