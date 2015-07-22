@@ -31,6 +31,7 @@ alias gihel="git help"
 alias gidif="git diff"
 alias gibla="git blame"
 alias giash="git stash"
+alias giver="git version"
 
 alias gimv="git mv"
 alias girm="git rm"
