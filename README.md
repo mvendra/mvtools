@@ -13,6 +13,19 @@ Installation
 
 3) Add: ```source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
 
+Dependencies
+============
+
+The dependencies are optional, depending on which scripts are intended for use.
+
+python
+sox
+git
+openssl
+silversearcher-ag
+unison
+java
+
 mvpyutils
 =========
 
