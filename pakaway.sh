@@ -1,7 +1,7 @@
 #!/bin/bash
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename pakaway` folder"
+  echo "Usage: `basename pakaway` [--hash] file_or_folder"
   exit 1
 }
 
@@ -10,23 +10,30 @@ if [ -z $1 ]; then
   puaq
 fi
 
-if [ ! -f $1 ]; then # ugly nested if, but I suspect more portable. life's short.
-  if [ ! -d $1 ]; then
-    echo "Does $1 even exist?"
-    exit 2
-  fi
-fi
-
 DO_HASH=false
-if [ "$2" == "--hash" ]; then
+TARGET=""
+
+if [ "$1" == "--hash" ]; then
   DO_HASH=true
+  TARGET=$2
+else
+  TARGET=$1
 fi
 
-TARGET=`basename $1`
+if [ -z $TARGET ]; then
+  puaq
+fi
 
-tar -cf $TARGET.tar ./$1
-bzip2 $TARGET.tar
+if [[ ! -f $TARGET && ! -d $TARGET ]]; then
+  echo "Does $TARGET even exist?"
+  exit 2
+fi
+
+FILENAME=`basename $TARGET`
+
+tar -cf $FILENAME.tar $TARGET
+bzip2 $FILENAME.tar
 if $DO_HASH; then
-  sha256sum $TARGET.tar.bz2 > $TARGET.tar.bz2.hash
+  sha256sum $FILENAME > $FILENAME.tar.bz2.hash
 fi
 
