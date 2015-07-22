@@ -11,7 +11,10 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   source $MVTOOLS/git_aliases.sh
 
   add2path $MVTOOLS
-  add2path $MVTOOLS/mousefixes
+  add2path $MVTOOLS/audio
+  add2path $MVTOOLS/git
+  add2path $MVTOOLS/inputfixes
+  add2path $MVTOOLS/startservices
 
   # for a nuclear-recursive solution, use this:
   #PATH=${PATH}:$(find ~/the_base_path -type d | tr '\n' ':' | sed 's/:$//')
