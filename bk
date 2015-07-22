@@ -1,0 +1,18 @@
+#!/bin/bash
+
+puaq(){ # puaq stands for Print Usage And Quit
+  echo "Usage: `basename $0` param"
+  exit 1
+}
+
+if [ -z $1 ]; then
+  puaq
+fi
+
+if [[ ! -f $1 && ! -d $1 ]]; then
+  echo "$1 does not exist (or is not currently supported). Aborting."
+  exit 2
+fi
+
+cp -R $1 $1_bk
+
