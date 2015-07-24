@@ -11,7 +11,7 @@ if __name__ == "__main__":
   if len(sys.argv) < 4:
     print("Usage: %s path search extensions " % os.path.basename(__file__))
     sys.exit(1)
-  ret = filteredfilelister.makefilelist(sys.argv[1], sys.argv[3:])
+  ret = filteredfilelister.makefilelist(sys.argv[1], sys.argv[3:], False)
   p_res = ""
   for k in ret:
     for r in ret[k]:
