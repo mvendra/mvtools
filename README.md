@@ -29,7 +29,7 @@ java
 mvpyutils
 =========
 
-Collection of handy asorted python and bash scripts.
+Collection of handy asorted python, bash, java scripts.
 
 autoselfext
 ===========
@@ -45,12 +45,12 @@ What autoselfext does is join them both inside a self extracting shell script. W
 script (output_filename.sh) will split up the instructions script and the package file, and then call the instructions
 file. In the instructions file, you can unpack your package and install it and etc.
 
-filteredwalk
+filteredfilelister
 ============
 
-Walks a path, filtering files by extension.
+Makes a file list, separated by specified extensions. Can traverse a path recursively.
 
-Usage: filteredwalk.py path [list_of_extensions]
+Usage: filteredfilelister.py [-R] path [list_of_extensions]
 
 extractbypattern
 ================
