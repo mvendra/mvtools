@@ -4,14 +4,14 @@
 
 import os
 import sys
-import filteredwalk 
+import filteredfilelister 
 from subprocess import check_output
 
 if __name__ == "__main__":
   if len(sys.argv) < 4:
     print("Usage: %s path search extensions " % os.path.basename(__file__))
     sys.exit(1)
-  ret = filteredwalk.makefilelist(sys.argv[1], sys.argv[3:])
+  ret = filteredfilelister.makefilelist(sys.argv[1], sys.argv[3:])
   p_res = ""
   for k in ret:
     for r in ret[k]:
