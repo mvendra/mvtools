@@ -26,6 +26,7 @@ silversearcher-ag
 unison
 java
 meld
+xclip
 
 mvpyutils
 =========
