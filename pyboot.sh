@@ -11,6 +11,6 @@ if [ -f ./$SHBOOTFILE ]; then
 fi
 
 touch ./$SHBOOTFILE
-echo "#!/usr/bin/env python\n\nif __name__ == \"__main__\":\n  print(\"elo\")\n" > ./$SHBOOTFILE
+echo "#!/usr/bin/env python\n\nif __name__ == \"__main__\":\n    print(\"elo\")\n" > ./$SHBOOTFILE
 chmod +x ./$SHBOOTFILE
 
