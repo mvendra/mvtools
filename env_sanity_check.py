@@ -19,7 +19,7 @@ def is_sane(var, val):
         paths_in_path = val.split(":")
         for p in paths_in_path:
             if not os.path.exists(p):
-                print("%s inside PATH does not exist")
+                print("%s inside PATH does not exist" % p)
                 return False
 
     elif val[0] == '/': # generic case
