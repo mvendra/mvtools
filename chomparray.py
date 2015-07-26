@@ -9,7 +9,7 @@ import sys
 
 bucket=[]
 for args in sys.argv[2:]:
-  bucket.append(args)
+    bucket.append(args)
 
 option=sys.argv[1]
 d=option[0]
@@ -17,13 +17,13 @@ m=int(option[1:])
 
 ret=None
 if d=="l": # left
-  ret=bucket[m:]
+    ret=bucket[m:]
 elif d=="r": # right
-  ret=bucket[:len(bucket)-m]
+    ret=bucket[:len(bucket)-m]
 
 toline=""
 for p in ret:
-  toline+=p+" "
+    toline+=p+" "
 toline=toline[:len(toline)-1] # removes trailing blank space
 print(toline)
 

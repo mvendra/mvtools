@@ -5,6 +5,6 @@ import os
 
 result=os.sep
 for args in sys.argv[1:]:
-  result+=args+os.sep
+    result+=args+os.sep
 print(result)
 
