@@ -1,4 +1,11 @@
 #!/bin/bash
+
+alias gidif_setgui="git config --global diff.external meldiff.py"
+alias gidif_setcmd="git config --global --unset diff.external"
+alias gidif="git diff"
+
+alias gicom="git commit" # mvtodo: add mvtags checking as a precondition
+
 alias gichepi="git cherry-pick"
 
 alias gista="git status"
@@ -22,13 +29,11 @@ alias gides="git describe"
 alias gisho="git show"
 alias giini="git init"
 alias gicon="git config"
-alias gicom="git commit"
 alias gitag="git tag"
 alias gireb="git rebase"
 alias girem="git remote"
 alias gigre="git grep -n"
 alias gihel="git help"
-alias gidif="git diff"
 alias gibla="git blame"
 alias giash="git stash"
 alias giver="git version"
