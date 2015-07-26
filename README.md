@@ -25,6 +25,7 @@ openssl
 silversearcher-ag
 unison
 java
+meld
 
 mvpyutils
 =========
