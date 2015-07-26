@@ -15,6 +15,7 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   add2path $MVTOOLS/git
   add2path $MVTOOLS/inputfixes
   add2path $MVTOOLS/startservices
+  add2path $MVTOOLS/codegen
 
   # for a nuclear-recursive solution, use this:
   #PATH=${PATH}:$(find ~/the_base_path -type d | tr '\n' ':' | sed 's/:$//')
