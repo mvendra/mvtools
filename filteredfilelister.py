@@ -3,7 +3,7 @@
 import sys
 import os
 
-def makefilelist(path, exts, subs):
+def makefiledictlist(path, exts, subs):
 
     """
     Makes a file list by walking the provided path
@@ -42,7 +42,7 @@ if __name__ == "__main__":
         path = sys.argv[1]
         exts = sys.argv[2:]
 
-    ret = makefilelist(path, exts, inc_sub)
+    ret = makefiledictlist(path, exts, inc_sub)
     for k in ret:
         for r in ret[k]:
             print(r)
