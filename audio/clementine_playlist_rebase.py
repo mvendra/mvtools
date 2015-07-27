@@ -22,6 +22,9 @@ if __name__ == "__main__":
         puaq()
 
     path_playlists = os.path.abspath(sys.argv[1])
+    if not os.path.exists(path_playlists):
+        print("%s does not exist." % path_playlists)
+        sys.exit(1)
     str_find = sys.argv[2]
     str_rep = sys.argv[3]
     
