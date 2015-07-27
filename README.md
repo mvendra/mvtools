@@ -27,6 +27,7 @@ unison
 java
 meld
 xclip
+rpm2cpio
 
 mvpyutils
 =========
