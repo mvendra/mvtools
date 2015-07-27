@@ -1,14 +1,26 @@
 #!/bin/bash
 
-if [[ $1 == "" ]] ; then
-  echo "Missing input file"
-  exit 0
+INFILE=$1
+OUTFILE=$2
+PASSPHRASE=$3
+
+puaq(){ # puaq stands for Print Usage And Quit
+  echo "Usage: `basename $0` infile outfile [passphrase]"
+  exit 1
+}
+
+if [ -z $INFILE ]; then
+  puaq
 fi
 
-if [[ $2 == "" ]] ; then
-  echo "Missing output file"
-  exit 0
+if [ -z $OUTFILE ]; then
+  puaq
 fi
 
-openssl des3 -d -salt -in $1 -out $2
+if [ -z $PASSPHRASE ]; then
+  echo "Input passphrase..."
+  read -s PASSPHRASE
+fi
+
+openssl des3 -d -salt -in $INFILE -out $OUTFILE -k $PASSPHRASE
 

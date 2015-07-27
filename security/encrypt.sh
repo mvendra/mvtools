@@ -5,7 +5,7 @@ OUTFILE=$2
 PASSPHRASE=$3
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename $0` infile outfile passphrase"
+  echo "Usage: `basename $0` infile outfile [passphrase]"
   exit 1
 }
 
@@ -18,7 +18,8 @@ if [ -z $OUTFILE ]; then
 fi
 
 if [ -z $PASSPHRASE ]; then
-  puaq
+  echo "Input passphrase..."
+  read -s PASSPHRASE
 fi
 
 openssl des3 -e -salt -in $INFILE -out $OUTFILE -k $PASSPHRASE
