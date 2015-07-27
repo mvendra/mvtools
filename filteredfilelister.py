@@ -8,22 +8,26 @@ def makefiledictlist(path, exts, subs):
     """
     Makes a file list by walking the provided path
     path = a path string
-    exts = a list of extensions to consider, without the dot
+    exts = a list of extensions to consider, without the dot # mvtodo: a list? or a space-separated string?
     subs = a boolean, whether it should include subfolders (recursively)
     returns a dictionary with extensions as keys, and each dict entry is a list of filenames with full path
     """
+
+    # mvtodo: this is a mess. fix this mess
+    list_func=None
+    if subs:
+        list_func = os.walk
+    else:
+        list_func = os.listdir
 
     ret_lists = {}
     for x in exts:
         ret_lists[x] = []
 
-    for dirpath, dirnames, filenames in os.walk(path):
-        if not subs and dirpath != ".":
-                break
-
+    for dirpath, dirnames, filenames in (path):
         for f in filenames:
             for x in exts:
-                if f.endswith(x):
+                if f.endswith(x): # mvtodo: and os.path.isfile() too !
                     ret_lists[x].append(os.path.join(os.path.abspath(dirpath), f))
 
     return ret_lists

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# this is AGF - AG (the silversearcher), but Filtered
+# this is Filtered AG (silversearcher)
 
 import os
 import sys
