@@ -13,6 +13,11 @@ if [ -z $INFILE ]; then
   puaq
 fi
 
+if [ ! -e $INFILE ]; then
+  echo "Input file $INFILE does not exit. Aborting."
+  exit 1
+fi
+
 if [ -z $OUTFILE ]; then
   puaq
 fi
