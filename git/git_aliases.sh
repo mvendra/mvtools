@@ -9,7 +9,14 @@ alias gidif="git diff"
 
 # SHOW
 alias gisho="git show"
-# mvtodo: gishogui using meld
+gishogui(){
+  # mvtodo: does not work on the first commit of a repository
+  HASH=$1
+  if [ -z $1 ]; then
+    HASH="HEAD"
+  fi
+  git difftool -y --no-prompt $HASH~1 $HASH
+}
 
 # COMMIT
 alias gicom="git commit" # mvtodo: add mvtags checking as a precondition
@@ -45,3 +52,4 @@ alias giver="git version"
 
 alias gimv="git mv"
 alias girm="git rm"
+
