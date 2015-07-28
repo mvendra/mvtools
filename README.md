@@ -8,7 +8,9 @@ Installation
 ============
 
 1) Clone the repo somewhere in your system
+
 2) Add: ```export MVTOOLS=/path/to/mvtools``` to your ~/.bashrc
+
 3) Add: ```source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
 
 Dependencies
