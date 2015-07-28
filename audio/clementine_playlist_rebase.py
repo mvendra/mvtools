@@ -3,7 +3,7 @@
 import sys
 import os
 from subprocess import call
-import filteredfilelister
+import fsquery
 
 def puaq(): # print usage and quit
     print("Usage: %s path_with_playlists string_to_find string_to_replace_with" % os.path.basename(__file__))
@@ -29,9 +29,8 @@ if __name__ == "__main__":
     str_find = sys.argv[2]
     str_rep = sys.argv[3]
     
-    playlists = filteredfilelister.makefiledictlist(path_playlists, "xspf", False)
-    # mvtodo: cant assumme there will be results in the returning dict. check if its not empty before trying to access "xspf"
-    for p in playlists["xspf"]:
+    playlists = fsquery.makecontentlist(path_playlists, False, True, False, False, False, "xspf")
+    for p in playlists:
         print("Processing %s..." % p)
-        proc(os.path.join(path_playlists, p), str_find, str_rep)
+        proc(p, str_find, str_rep)
  
