@@ -30,14 +30,6 @@ def makecontentlist_delegate(dirpath, dirnames, filenames, include_files, includ
 
 def makecontentlist(path, recursive, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions):
 
-    # mvtodo: update docstring
-    """
-    Makes a file list by walking the provided path
-    path = a path string
-    subs = a boolean, whether it should include subfolders (recursively)
-    returns a dictionary with extensions as keys, and each dict entry is a list of filenames with full path
-    """
-
     ret_list = []
 
     if recursive:
