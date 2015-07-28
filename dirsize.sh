@@ -13,5 +13,5 @@ if [ ! -d $1 ]; then
   echo "$1 does not exist or is not a directory"
 fi
 
-du -h ./$1 | tail -n 1
+du -h $1 | tail -n 1
 
