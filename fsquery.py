@@ -3,7 +3,7 @@
 import sys
 import os
 
-def makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions):
+def __makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions):
 
     ret_list_deleg = []
 
@@ -35,7 +35,7 @@ def makecontentlist(path, recursive, include_files, include_dirs, include_hidden
     if recursive:
 
         for dirpath, dirnames, filenames in os.walk(path):
-            ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
+            ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
 
     else:
 
@@ -50,7 +50,7 @@ def makecontentlist(path, recursive, include_files, include_dirs, include_hidden
             elif os.path.isfile(os.path.join(path, item)):
                 filenames.append(item)
 
-        ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
+        ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
 
     return ret_list
 
