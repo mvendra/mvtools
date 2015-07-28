@@ -10,6 +10,12 @@ import os
                     ret_lists[x].append(os.path.join(os.path.abspath(dirpath), f))
 """
 
+def makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, extensions):
+    print("dirpath: %s" % dirpath)
+    print("dirnames: %s" % dirnames)
+    print("filenames: %s" % filenames)
+    return []
+
 def makecontentlist(path, recursive, include_files, include_dirs, extensions):
 
     # mvtodo: update docstring
@@ -21,10 +27,27 @@ def makecontentlist(path, recursive, include_files, include_dirs, extensions):
     """
 
     ret_list = []
-    for dirpath, dirnames, filenames in os.walk(path):
-        print("dirpath: %s" % dirpath)
-        print("dirnames: %s" % dirnames)
-        print("filenames: %s" % filenames)
+
+    if recursive:
+
+        for dirpath, dirnames, filenames in os.walk(path):
+            ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, extensions)
+
+    else:
+
+        dirpath = path
+        dirnames = []
+        filenames = []
+
+        folder_contents = os.listdir(path)
+        for item in folder_contents:
+            if os.path.isdir(os.path.join(path, item)):
+                dirnames.append(item)
+            elif os.path.isfile(os.path.join(path, item)):
+                filenames.append(item)
+
+        ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, extensions)
+
     return ret_list
 
 if __name__ == "__main__":
