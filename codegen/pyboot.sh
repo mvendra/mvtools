@@ -5,7 +5,7 @@ if [ ! -z $1 ]; then
   SHBOOTFILE=$1
 fi
 
-if [ -f ./$SHBOOTFILE ]; then
+if [ -e ./$SHBOOTFILE ]; then
   echo "There's already a ./$SHBOOTFILE in the CWD (`pwd -P`), so this script is aborted."
   exit 1
 fi

@@ -5,7 +5,7 @@ if [ ! -z $1 ]; then
   CPPBOOTFILE=$1
 fi
 
-if [ -f ./$CPPBOOTFILE ]; then
+if [ -e ./$CPPBOOTFILE ]; then
   echo "There's already a ./$CPPBOOTFILE in the CWD (`pwd -P`), so this script is aborted."
   exit 1
 fi
