@@ -16,7 +16,7 @@ def is_sane(var, val):
     if val == "":
         return True
 
-    if var == "PATH": # special case
+    if var == "PATH" or var == "PYTHONPATH": # special cases
         paths_in_path = val.split(":")
         for p in paths_in_path:
             if not os.path.exists(p):
