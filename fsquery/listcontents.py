@@ -3,20 +3,32 @@
 import sys
 import os
 
-"""
+def makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions):
+
+    ret_list_deleg = []
+
+    if include_dirs:
+        for d in dirnames:
+            if d.startswith(".") and not include_hidden_dirs:
+                continue
+            ret_list_deleg.append(os.path.join(dirpath, d))
+
+    if include_files:
         for f in filenames:
-            for x in exts:
-                if f.endswith(x): # mvtodo: and os.path.isfile() too !
-                    ret_lists[x].append(os.path.join(os.path.abspath(dirpath), f))
-"""
+            if f.startswith(".") and not include_hidden_files:
+                continue
+            if len(extensions) == 0:
+                # no extensions specified. add everything indiscriminately
+                ret_list_deleg.append(os.path.join(dirpath, f))
+            else:
+                _, fext = os.path.splitext(f)
+                fext = fext[1:] # removes the '.'
+                if len(fext) > 0 and fext in extensions:
+                    ret_list_deleg.append(os.path.join(dirpath, f))
 
-def makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, extensions):
-    print("dirpath: %s" % dirpath)
-    print("dirnames: %s" % dirnames)
-    print("filenames: %s" % filenames)
-    return []
+    return ret_list_deleg
 
-def makecontentlist(path, recursive, include_files, include_dirs, extensions):
+def makecontentlist(path, recursive, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions):
 
     # mvtodo: update docstring
     """
@@ -31,7 +43,7 @@ def makecontentlist(path, recursive, include_files, include_dirs, extensions):
     if recursive:
 
         for dirpath, dirnames, filenames in os.walk(path):
-            ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, extensions)
+            ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
 
     else:
 
@@ -46,14 +58,14 @@ def makecontentlist(path, recursive, include_files, include_dirs, extensions):
             elif os.path.isfile(os.path.join(path, item)):
                 filenames.append(item)
 
-        ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, extensions)
+        ret_list += makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
 
     return ret_list
 
 if __name__ == "__main__":
     
-    if len(sys.argv) < 4:
-        print("Usage: %s [-R] path include_files include_dirs extensions" % os.path.basename(__file__))
+    if len(sys.argv) < 6:
+        print("Usage: %s [-R] path include_files include_dirs include_hidden_files include_hidden_dirs extensions" % os.path.basename(__file__))
         exit(1)
 
     # declarations, defaults
@@ -61,6 +73,8 @@ if __name__ == "__main__":
     rec = False
     inc_files = True
     inc_dirs = False
+    inc_hidden_files = False
+    inc_hidden_dirs = False
     exts = [] # empty means "any"
 
     # recursive - optional
@@ -90,10 +104,24 @@ if __name__ == "__main__":
         inc_dirs = False
     next_index += 1
 
+    # include hidden files - mandatory
+    if sys.argv[next_index] == "yes":
+        inc_hidden_files = True
+    elif sys.argv[next_index] == "no":
+        inc_hidden_files = False
+    next_index += 1
+
+    # include hidden dirs - mandatory
+    if sys.argv[next_index] == "yes":
+        inc_hidden_dirs = True
+    elif sys.argv[next_index] == "no":
+        inc_hidden_dirs = False
+    next_index += 1
+
     # extensions - optional
     exts = sys.argv[next_index:]
 
-    ret = makecontentlist(path, rec, inc_files, inc_dirs, exts)
+    ret = makecontentlist(path, rec, inc_files, inc_dirs, inc_hidden_files, inc_hidden_dirs, exts)
     for r in ret:
         print(r)
 
