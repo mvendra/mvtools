@@ -16,7 +16,7 @@ fi
 
 HASHFNAME=$1.sha256
 
-if [ -f $HASHFNAME ]; then
+if [ -e $HASHFNAME ]; then
   echo "$HASHFNAME exists. Refusing to overwrite."
   exit 3
 fi

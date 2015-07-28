@@ -24,7 +24,7 @@ fi
 TMPFNAME=(`randomfilename.sh`)
 TMPFNAME=${TMPFNAME}.tmpfile
 
-if [ -f $TMPFNAME ]; then
+if [ -e $TMPFNAME ]; then
   echo "ERROR: Temporary filename $TMPFNAME conflict! Aborting."
   exit 4
 fi
