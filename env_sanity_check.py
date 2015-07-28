@@ -4,8 +4,9 @@
 
 import os
 
-VARS_EXCEPTIONS = ["MANDATORY_PATH", "GPG_AGENT_INFO", "XDG_CONFIG_DIRS", "DEFAULTS_PATH", "XDG_DATA_DIRS"] # my mint 17 had these undefined in mid-2015 (mv)
 #VARS_EXCEPTIONS = []
+VARS_EXCEPTIONS = ["MANDATORY_PATH", "GPG_AGENT_INFO", "XDG_CONFIG_DIRS", "DEFAULTS_PATH", "XDG_DATA_DIRS"] # my mint 17 had these undefined in mid-2015 (mv)
+VARS_EXCEPTIONS += ["XDG_SESSION_PATH", "XDG_SEAT_PATH"] # and my xubuntu 14.04 had these undefined as well, also in mid-2015 (mv)
 
 def is_sane(var, val):
 
