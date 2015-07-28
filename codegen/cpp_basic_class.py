@@ -11,6 +11,8 @@ class cpp_basic_class:
         __self.indent = ""
 
     def writetofile(__self, thefile, contents):
+        if os.path.exists(thefile):
+            raise Exception("%s already exists, so we are aborting." % thefile)
         with open(thefile, "w") as f:
             f.write(contents)
 
@@ -75,5 +77,8 @@ if __name__ == "__main__":
         print("Please do not include the extension")
 
     g = cpp_basic_class(filename)
-    g.gen()
+    try:
+        g.gen()
+    except Exception as msg:
+        print(msg)
 
