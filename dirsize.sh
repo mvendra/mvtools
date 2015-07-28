@@ -5,13 +5,19 @@ puaq(){ # puaq stands for Print Usage And Quit
   exit 1
 }
 
-if [ -z $1 ]; then
+TARGET_DIR=$1
+
+if [ -z $TARGET_DIR ]; then
   puaq
 fi
 
-if [ ! -d $1 ]; then
-  echo "$1 does not exist or is not a directory"
+if [ ! -d $TARGET_DIR ]; then
+  echo "$TARGET_DIR does not exist or is not a directory"
 fi
 
-du -h $1 | tail -n 1
+# resolve symlinks
+cd $TARGET_DIR
+TARGET_DIR=`pwd -P`
+
+du -h $TARGET_DIR | tail -n 1
 
