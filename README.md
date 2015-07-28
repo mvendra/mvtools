@@ -7,10 +7,8 @@ A collection of tools.
 Installation
 ============
 
-1) Checkout the repo somewhere in your system
-
-2) Define MVTOOLS in your ~/.bashrc to point to the repo you checked out
-
+1) Clone the repo somewhere in your system
+2) Add: ```export MVTOOLS=/path/to/mvtools``` to your ~/.bashrc
 3) Add: ```source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
 
 Dependencies
@@ -19,20 +17,24 @@ Dependencies
 The dependencies are optional, depending on which scripts are intended for use.
 
 python
+
 sox
+
 git
+
 openssl
+
 silversearcher-ag
+
 unison
+
 java
+
 meld
+
 xclip
+
 rpm2cpio
-
-mvpyutils
-=========
-
-Collection of handy asorted python, bash, java scripts.
 
 autoselfext
 ===========
@@ -47,13 +49,6 @@ package of your choice (input_packagefile.tar.gz)
 What autoselfext does is join them both inside a self extracting shell script. When called, the resulting shell
 script (output_filename.sh) will split up the instructions script and the package file, and then call the instructions
 file. In the instructions file, you can unpack your package and install it and etc.
-
-filteredfilelister
-============
-
-Makes a file list, separated by specified extensions. Can traverse a path recursively.
-
-Usage: filteredfilelister.py [-R] path [list_of_extensions]
 
 extractbypattern
 ================
