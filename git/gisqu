@@ -1,2 +1,4 @@
+#!/bin/bash
+# mvtodo: this currently does not work when you try to squash 2 commits, and there are only two commits in the repo
 git reset --soft HEAD~$1
-git commit --edit -m"$(git log --format=%B --reverse HEAD..HEAD@{1})"
+git commit --edit -m"$(git log --format=%B HEAD..HEAD@{1})"
