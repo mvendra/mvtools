@@ -5,14 +5,21 @@ puaq(){ # puaq stands for Print Usage And Quit
   exit 1
 }
 
-if [ -z $1 ]; then
+TARGET=$1
+
+if [ -z $TARGET ]; then
   puaq
 fi
 
-if [[ ! -f $1 && ! -d $1 ]]; then
-  echo "$1 does not exist (or is not currently supported). Aborting."
+if [[ ! -f $TARGET && ! -d $TARGET ]]; then
+  echo "$TARGET does not exist (or is not currently supported). Aborting."
   exit 2
 fi
 
-cp -R $1 $1_bk
+LAST=${TARGET:${#TARGET} - 1}
+if [ $LAST == "/" ]; then
+  TARGET=${TARGET::-1}
+fi
+
+cp -R $TARGET ${TARGET}_bk
 
