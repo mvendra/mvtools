@@ -1,7 +1,7 @@
 #!/bin/bash
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename pakaway` [--hash] file_or_folder"
+  echo "Usage: `basename $0` [--hash] file_or_folder"
   exit 1
 }
 
