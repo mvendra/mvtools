@@ -20,7 +20,7 @@ def __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_fil
     ret_list_deleg = []
 
     # filter directories
-    if include_regular_dirs or include_regular_dirs: # premature optimisation? hmm...
+    if include_regular_dirs or include_hidden_dirs: # premature optimisation? hmm...
         for d in dirnames:
             if d.startswith("."): # is a hidden directory
                 if include_hidden_dirs:
