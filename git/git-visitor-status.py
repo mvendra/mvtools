@@ -28,7 +28,7 @@ if __name__ == "__main__":
         print("%s does not exist. Aborting." % basepath)
         sys.exit(1)
 
-    ret = fsquery.makecontentlist(basepath, True, False, True, False, True, [])
+    ret = fsquery.makecontentlist(basepath, True, False, False, False, True, []) # finds all .git
     ret = filter_git_only(ret)
     run_visitor_status(ret)
 
