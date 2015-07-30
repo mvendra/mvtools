@@ -3,39 +3,53 @@
 import sys
 import os
 
-def __makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions):
+def filename_qualifies_extension_list(filename, extensions):
+
+    if len(extensions) == 0: # no extensions specified. add everything indiscriminately
+        return True
+
+    _, fext = os.path.splitext(filename)
+    fext = fext[1:] # removes the '.'
+    if len(fext) > 0 and fext in extensions:
+        return True
+    else:
+        return False
+
+def __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions):
 
     ret_list_deleg = []
 
-    if include_dirs:
+    # filter directories
+    if include_regular_dirs or include_regular_dirs: # premature optimisation? hmm...
         for d in dirnames:
-            if d.startswith(".") and not include_hidden_dirs:
-                continue
-            ret_list_deleg.append(os.path.join(dirpath, d))
+            if d.startswith("."): # is a hidden directory
+                if include_hidden_dirs:
+                    ret_list_deleg.append(os.path.join(dirpath, d))
+            else: # is not a hidden directory
+                if include_regular_dirs: 
+                    ret_list_deleg.append(os.path.join(dirpath, d))
 
-    if include_files:
+    # filter files
+    if include_regular_files or include_hidden_files: # again, premature optimisation.
         for f in filenames:
-            if f.startswith(".") and not include_hidden_files:
-                continue
-            if len(extensions) == 0:
-                # no extensions specified. add everything indiscriminately
-                ret_list_deleg.append(os.path.join(dirpath, f))
-            else:
-                _, fext = os.path.splitext(f)
-                fext = fext[1:] # removes the '.'
-                if len(fext) > 0 and fext in extensions:
+            if f.startswith("."): # is a hidden file
+                if include_hidden_files and filename_qualifies_extension_list(f, extensions):
                     ret_list_deleg.append(os.path.join(dirpath, f))
+            else: # is a regular file
+                if include_regular_files and filename_qualifies_extension_list(f, extensions):
+                    ret_list_deleg.append(os.path.join(dirpath, f))
+
 
     return ret_list_deleg
 
-def makecontentlist(path, recursive, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions):
+def makecontentlist(path, recursive, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions):
 
     ret_list = []
 
     if recursive:
 
         for dirpath, dirnames, filenames in os.walk(path):
-            ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
+            ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions)
 
     else:
 
@@ -50,21 +64,21 @@ def makecontentlist(path, recursive, include_files, include_dirs, include_hidden
             elif os.path.isfile(os.path.join(path, item)):
                 filenames.append(item)
 
-        ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_files, include_dirs, include_hidden_files, include_hidden_dirs, extensions)
+        ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions)
 
     return ret_list
 
 if __name__ == "__main__":
     
     if len(sys.argv) < 6:
-        print("Usage: %s [-R] path include_files include_dirs include_hidden_files include_hidden_dirs extensions" % os.path.basename(__file__))
+        print("Usage: %s [-R] path include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions" % os.path.basename(__file__))
         exit(1)
 
     # declarations, defaults
     path = os.getcwd()
     rec = False
-    inc_files = True
-    inc_dirs = False
+    inc_reg_files = True
+    inc_reg_dirs = False
     inc_hidden_files = False
     inc_hidden_dirs = False
     exts = [] # empty means "any"
@@ -82,18 +96,18 @@ if __name__ == "__main__":
         sys.exit(1)
     next_index += 1
 
-    # include files - mandatory
+    # include regular files - mandatory
     if sys.argv[next_index] == "yes":
-        inc_files = True
+        inc_reg_files = True
     elif sys.argv[next_index] == "no":
-        inc_files = False
+        inc_reg_files = False
     next_index += 1
 
-    # include dirs - mandatory
+    # include regular dirs - mandatory
     if sys.argv[next_index] == "yes":
-        inc_dirs = True
+        inc_reg_dirs = True
     elif sys.argv[next_index] == "no":
-        inc_dirs = False
+        inc_reg_dirs = False
     next_index += 1
 
     # include hidden files - mandatory
@@ -113,7 +127,7 @@ if __name__ == "__main__":
     # extensions - optional
     exts = sys.argv[next_index:]
 
-    ret = makecontentlist(path, rec, inc_files, inc_dirs, inc_hidden_files, inc_hidden_dirs, exts)
+    ret = makecontentlist(path, rec, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts)
     for r in ret:
         print(r)
 
