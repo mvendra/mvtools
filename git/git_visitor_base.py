@@ -2,7 +2,7 @@
 
 import sys
 import os
-import git_visitor_base
+import fsquery
 from subprocess import check_output
 
 def puaq():
