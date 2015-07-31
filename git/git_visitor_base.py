@@ -17,14 +17,30 @@ def __filter_git_only(thelist):
     return ret
 
 def make_repo_list(path):
-    ret = fsquery.makecontentlist(path, True, False, True, False, True, [])
-    ret = __filter_git_only(ret)
-    return ret
+    ret_list = fsquery.makecontentlist(path, True, False, True, False, True, [])
+    ret_list = __filter_git_only(ret_list)
+    if len(ret_list) > 0:
+        return ret_list
+    else:
+        return None
 
 def get_remotes(repo):
     out = check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "remote"])
     ret_list = out.split()
-    return ret_list
+    if len(ret_list) > 0:
+        return ret_list
+    else:
+        return None
+
+def get_branches(repo):
+    out = check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "branch"])
+    ret_list = out.split()
+    if "*" in ret_list:
+        ret_list.remove("*")
+    if len(ret_list) > 0:
+        return ret_list
+    else:
+        return None
 
 if __name__ == "__main__":
 
@@ -37,5 +53,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     for r in make_repo_list(basepath):
-        print(r)
+        print("repo: %s" % r)
+        print("branches: %s" % get_branches(r))
+        print("remotes: %s" % get_remotes(r))
 
