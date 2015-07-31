@@ -6,7 +6,7 @@ import git_visitor_base
 from subprocess import check_output
 
 def puaq():
-    print("Usage: %s base_path." % os.path.basename(__file))
+    print("Usage: %s base_path." % os.path.basename(__file__))
     sys.exit(1)
 
 def run_visitor_status(list_repos):

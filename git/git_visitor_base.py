@@ -5,7 +5,7 @@ import os
 import fsquery
 
 def puaq():
-    print("Usage: %s base_path." % os.path.basename(__file))
+    print("Usage: %s base_path." % os.path.basename(__file__))
     sys.exit(1)
 
 def __filter_git_only(thelist):
