@@ -15,7 +15,7 @@ def run_visitor_status(list_repos):
         if len(out) == 0:
             pass # clean HEAD
         else:
-            print("%s is dirty." % base_repo_path)
+            print("%s is dirty." % os.path.dirname(r))
 
 if __name__ == "__main__":
 
