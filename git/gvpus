@@ -16,5 +16,5 @@ if [ ! -e $TARGET ]; then
   exit 1
 fi
 
-git-visitor-push.py $TARGET
+git_visitor_push.py $TARGET
 
