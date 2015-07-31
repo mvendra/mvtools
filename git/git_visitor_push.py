@@ -11,9 +11,7 @@ def puaq():
 
 def run_visitor_push(list_repos):
     for r in list_repos:
-        base_repo_path = os.path.dirname(r)
-        repo_git_dir = r
-        out = check_output(["git", "--git-dir=%s" % repo_git_dir, "--work-tree=%s" % base_repo_path, "push"])
+        out = check_output(["git", "--git-dir=%s" % r, "--work-tree=%s" % os.path.dirname(r), "push"])
 
 if __name__ == "__main__":
 

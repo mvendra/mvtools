@@ -20,6 +20,11 @@ def make_repo_list(path):
     ret = __filter_git_only(ret)
     return ret
 
+def get_remotes(repo):
+    out = check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "remote"])
+    ret_list = out.split()
+    return ret_list
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:

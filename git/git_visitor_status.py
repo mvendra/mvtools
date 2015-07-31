@@ -11,9 +11,7 @@ def puaq():
 
 def run_visitor_status(list_repos):
     for r in list_repos:
-        repo_git_dir = r
-        repo_base_path = os.path.dirname(r)
-        out = check_output(["git", "--git-dir=%s" % repo_git_dir, "--work-tree=%s" % repo_base_path, "status", "-s"])
+        out = check_output(["git", "--git-dir=%s" % r, "--work-tree=%s" % os.path.dirname(r), "status", "-s"])
         if len(out) == 0:
             pass # clean HEAD
         else:
