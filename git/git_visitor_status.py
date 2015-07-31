@@ -5,10 +5,6 @@ import os
 import git_visitor_base
 from subprocess import check_output
 
-def puaq():
-    print("Usage: %s base_path." % os.path.basename(__file__))
-    sys.exit(1)
-
 def run_visitor_status(list_repos):
     for r in list_repos:
         out = check_output(["git", "--git-dir=%s" % r, "--work-tree=%s" % os.path.dirname(r), "status", "-s"])
@@ -19,8 +15,21 @@ def run_visitor_status(list_repos):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 2:
-        puaq()
+    base_paths = []
+    # try to use envvar
+    try:
+        base_paths.append(os.environ["MVBASE"])
+    except KeyError:
+        pass # let it be
+
+    base_paths += sys.argv[1:]
+    print(base_paths)
+
+    # mvtodo: dont repeat same parents (remove duplicates when they have the same parents inside base_paths
+
+    if len(base_paths) == 0:
+        print("No paths determined, either by envvar or by cmdline argument. Aborting.")
+        sys.exit(1)
 
     basepath = sys.argv[1]
     if not os.path.exists(basepath):
