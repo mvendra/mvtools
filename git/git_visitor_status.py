@@ -2,21 +2,22 @@
 
 import sys
 import os
+import git_visitor_base
 from subprocess import check_output
 
 def puaq():
     print("Usage: %s base_path." % os.path.basename(__file))
     sys.exit(1)
 
-def filter_git_only(thelist):
-    ret = []
-    for d in thelist:
-        if os.path.basename(d) == ".git":
-            ret.append(d)
-    return ret
-
 def run_visitor_status(list_repos):
-    print(list_repos)
+    for r in list_repos:
+        base_repo_path = os.path.dirname(r)
+        repo_git_dir = r
+        out = check_output(["git", "--git-dir=%s" % repo_git_dir, "--work-tree=%s" % base_repo_path, "status", "-s"])
+        if len(out) == 0:
+            pass # clean HEAD
+        else:
+            print("%s is dirty." % base_repo_path)
 
 if __name__ == "__main__":
 
@@ -28,7 +29,6 @@ if __name__ == "__main__":
         print("%s does not exist. Aborting." % basepath)
         sys.exit(1)
 
-    ret = fsquery.makecontentlist(basepath, True, False, False, False, True, []) # finds all .git
-    ret = filter_git_only(ret)
-    run_visitor_status(ret)
+    repos = git_visitor_base.make_repo_list(basepath)
+    run_visitor_status(repos)
 
