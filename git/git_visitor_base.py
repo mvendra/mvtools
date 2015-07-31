@@ -3,6 +3,7 @@
 import sys
 import os
 import fsquery
+from subprocess import check_output
 
 def puaq():
     print("Usage: %s base_path." % os.path.basename(__file__))
