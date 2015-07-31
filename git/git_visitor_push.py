@@ -10,8 +10,10 @@ def puaq():
     sys.exit(1)
 
 def run_visitor_push(list_repos):
-    for r in list_repos:
-        out = check_output(["git", "--git-dir=%s" % r, "--work-tree=%s" % os.path.dirname(r), "push"])
+    for rp in list_repos:
+        remotes = git_visitor_base.get_remotes(rp)
+        for rm in remotes:
+            out = check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm])
 
 if __name__ == "__main__":
 
