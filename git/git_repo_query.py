@@ -4,7 +4,7 @@ import sys
 import os
 from subprocess import check_output
 
-def puaq():
+def puaq(): # print usage and quit
     print("Usage: %s repo_path (.git folder included)." % os.path.basename(__file__))
     sys.exit(1)
 
