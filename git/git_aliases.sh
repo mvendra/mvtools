@@ -47,7 +47,7 @@ alias girem="git remote"
 alias gigre="git grep -n"
 alias gihel="git help"
 alias gibla="git blame"
-alias giash="git stash"
+alias gistash="git stash"
 alias giver="git version"
 
 alias gimv="git mv"
