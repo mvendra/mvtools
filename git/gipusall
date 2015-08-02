@@ -11,5 +11,5 @@ else
   TARGET=$1
 fi
 
-gipus_all_remotes_current_branch.py ${TARGET}/.git
+gipus_all_remotes_current_branch.py $TARGET
 
