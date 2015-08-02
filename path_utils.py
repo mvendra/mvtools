@@ -2,6 +2,8 @@
 
 import sys
 import os
+import shutil
+from subprocess import call
 
 def arraytopath(ar):
 
@@ -23,7 +25,7 @@ def explodepath(apath):
     result=result[:len(result)-1] # removes trailing blank space
     return result
 
-def scratchfolder(_self, path):
+def scratchfolder(path):
 
     """ scratch_folder
     Makes sure the given path is/becomes an empty folder. If not preexistent, path is created.
