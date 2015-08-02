@@ -14,16 +14,5 @@ def run_visitor_status(list_repos):
             print("%s is dirty." % os.path.dirname(r))
 
 if __name__ == "__main__":
-
-    paths = git_visitor_base.make_paths_list(sys.argv)
-    if paths is None:
-        print("No paths to visit. Aborting.")
-        sys.exit(1)
-
-    for p in paths:
-        repos = git_visitor_base.make_repo_list(p)
-        if repos is None:
-            print("Warning: %s has no repositories." % p)
-            continue
-        run_visitor_status(repos)
+    git_visitor_base.do_visit(sys.argv, run_visitor_status)
 
