@@ -3,6 +3,7 @@
 import sys
 import os
 import fsquery
+import path_utils
 
 def puaq():
     print("Usage: %s base_path." % os.path.basename(__file__))
@@ -15,11 +16,35 @@ def __filter_git_only(thelist):
             ret.append(d)
     return ret
 
+def make_paths_list(argv):
+
+    """ make_paths_list
+    returns a list of paths, based on argv or envvars
+    """
+
+    paths = []
+    if len(argv) > 1:
+        # paths specified by cmdline arg. use it.
+        paths = argv[1:]
+    else:
+        # no paths specified. try to get paths from envvars
+        try:
+            paths.append(os.environ["MVBASE"])
+        except KeyError:
+            print("No paths specified by argv, and MVBASE is undefined.")
+            return None
+
+    paths = path_utils.filter_path_list_no_same_branch(paths) # sanitises paths list
+    return paths
+
 def make_repo_list(path):
 
     """ make_repo_list
     returns a list of git repositories found in the given base path
     """
+
+    if path is None:
+        return None
 
     ret_list = fsquery.makecontentlist(path, True, False, True, False, True, [])
     ret_list = __filter_git_only(ret_list)

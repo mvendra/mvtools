@@ -15,27 +15,15 @@ def run_visitor_status(list_repos):
 
 if __name__ == "__main__":
 
-    base_paths = []
-    # try to use envvar
-    try:
-        base_paths.append(os.environ["MVBASE"])
-    except KeyError:
-        pass # let it be
-
-    base_paths += sys.argv[1:]
-    print(base_paths)
-
-    # mvtodo: dont repeat same parents (remove duplicates when they have the same parents inside base_paths
-
-    if len(base_paths) == 0:
-        print("No paths determined, either by envvar or by cmdline argument. Aborting.")
+    paths = git_visitor_base.make_paths_list(sys.argv)
+    if paths is None:
+        print("No paths to visit. Aborting.")
         sys.exit(1)
 
-    basepath = sys.argv[1]
-    if not os.path.exists(basepath):
-        print("%s does not exist. Aborting." % basepath)
-        sys.exit(1)
-
-    repos = git_visitor_base.make_repo_list(basepath)
-    run_visitor_status(repos)
+    for p in paths:
+        repos = git_visitor_base.make_repo_list(p)
+        if repos is None:
+            print("Warning: %s has no repositories." % p)
+            continue
+        run_visitor_status(repos)
 
