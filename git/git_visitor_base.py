@@ -53,6 +53,20 @@ def make_repo_list(path):
     else:
         return None
 
+def do_visit(argv, func):
+
+    paths = make_paths_list(argv)
+    if paths is None:
+        print("No paths to visit.")
+        return
+
+    for p in paths:
+        repos = make_repo_list(p)
+        if repos is None:
+            print("Warning: %s has no repositories." % p)
+            continue
+        func(repos)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
