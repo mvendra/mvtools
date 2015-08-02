@@ -13,7 +13,7 @@ def visitor_push(repos):
         for rm in remotes:
             out = check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm])
             # mvtodo: I could parse out and print more informative stuff
-    print("\n\n")
+    print("   \n")
 
 if __name__ == "__main__":
     git_visitor_base.do_visit(sys.argv, visitor_push)
