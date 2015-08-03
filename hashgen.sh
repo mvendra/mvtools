@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 puaq(){ # puaq stands for Print Usage And Quit
   echo "Usage: `basename $0` archive-to-hash"
   exit 1
