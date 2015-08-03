@@ -16,5 +16,5 @@ if __name__ == "__main__":
         curpath = path_utils.backpedal_path(curpath)
         if curpath is None:
             break
-        print(os.path.join(curpath, ".git"))
+    print(os.path.join(curpath, ".git"))
 
