@@ -2,13 +2,10 @@
 
 import sys
 import os
-import git_visitor_base
-import git_repo_query
 import subprocess
 
-def derive_result(out_str):
-    print("mvdebug [%s]" % out_str)
-    return "mvtodo"
+import git_visitor_base
+import git_repo_query
 
 def visitor_push(repos):
 
@@ -20,15 +17,16 @@ def visitor_push(repos):
 
             try:
                 out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm])
+                out = "OK."
             except OSError as oser:
-                out = oser.strerror
+                out = "Failed."
             except subprocess.CalledProcessError as cper:
-                out = cper.strerror
+                out = "Failed."
             
-            res = derive_result(out)
             bn = "mvtodo"
-            report.append("%s (remote=%s, branch=%s): %s" % (rp, rm, bn, res))
+            report.append("%s (remote=%s, branch=%s): %s" % (rp, rm, bn, out))
 
+    print("RESULTS:\n")
     for p in report:
         print(p)
 
