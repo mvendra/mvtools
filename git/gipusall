@@ -11,6 +11,7 @@ else
 fi
 
 # mvtodo: test if .git isnt already specified in the end
+# mvtodo: if this is is a subfolder of a parent repo, also resolve to it
 TARGET=${TARGET}/.git
 
 gipus_all_remotes_current_branch.py $TARGET
