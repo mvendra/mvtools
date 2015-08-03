@@ -35,7 +35,7 @@ def visitor_push(repos):
     print("\nRESULTS:")
     for p in report:
         print(p)
-    print("%s\n" % ORIGINAL_COLOR) # reset to white
+    print("%s\n" % ORIGINAL_COLOR) # reset terminal color
 
 if __name__ == "__main__":
     git_visitor_base.do_visit(sys.argv, visitor_push)

@@ -9,6 +9,8 @@ import git_repo_query
 
 def visitor_pull(repos):
 
+    ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
+
     report = []
     for rp in repos:
         print("\n* Pulling from %s ..." % rp)
@@ -20,16 +22,20 @@ def visitor_pull(repos):
                 try:
                     out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "pull", "--ff-only", rm, bn])
                     out = "OK."
+                    color = "\033[32m" # green
                 except OSError as oser:
                     out = "Failed."
+                    color = "\033[31m" # red
                 except subprocess.CalledProcessError as cper:
                     out = "Failed."
+                    color = "\033[31m" # red
                 
-                report.append("%s (remote=%s, branch=%s): %s" % (rp, rm, bn, out))
+                report.append("%s%s (remote=%s, branch=%s): %s%s" % (color, rp, rm, bn, out, ORIGINAL_COLOR))
 
     print("\nRESULTS:")
     for p in report:
         print(p)
+    print("%s\n" % ORIGINAL_COLOR) # reset terminal color
 
 if __name__ == "__main__":
     git_visitor_base.do_visit(sys.argv, visitor_pull)
