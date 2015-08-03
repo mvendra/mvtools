@@ -29,7 +29,17 @@ if __name__ == "__main__":
 
     current_branch = branches[0]
 
+    report = []
     for r in remotes:
         print("Pulling from %s..." % r)
-        out = check_output(["git", "--git-dir=%s" % repo_path, "--work-tree=%s" % os.path.dirname(repo_path), "pull", "--ff-only", r, current_branch])
+        try:
+            out = check_output(["git", "--git-dir=%s" % repo_path, "--work-tree=%s" % os.path.dirname(repo_path), "pull", "--ff-only", r, current_branch])
+            out = "OK."
+        except:
+            out = "Failed."
+        report.append("%s: %s" % (r, out))
+
+    print("\nRESULTS:")
+    for p in report:
+        print(p)
 
