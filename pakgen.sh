@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 puaq(){ # puaq stands for Print Usage And Quit
   echo "Usage: `basename $0` [--hash] file_or_folder"
   exit 1
