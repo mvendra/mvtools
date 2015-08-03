@@ -31,5 +31,5 @@ if __name__ == "__main__":
 
     for r in remotes:
         print("Pulling from %s..." % r)
-        out = check_output(["git", "--git-dir=%s" % repo_path, "--work-tree=%s" % os.path.dirname(repo_path), "pull", r, current_branch])
+        out = check_output(["git", "--git-dir=%s" % repo_path, "--work-tree=%s" % os.path.dirname(repo_path), "pull", "--ff-only", r, current_branch])
 
