@@ -5,6 +5,8 @@ import sys
 import path_utils
 
 def is_repo_root(path):
+    if path is None:
+        return False
     if not os.path.exists(path):
         return False
     if path.endswith(".git") or path.endswith(".git" + os.sep):
@@ -20,6 +22,7 @@ if __name__ == "__main__":
     while not is_repo_root(os.path.join(curpath, ".git")):
         curpath = path_utils.backpedal_path(curpath)
         if curpath is None:
-            break
+            sys.exit(1)
+
     print(os.path.join(curpath, ".git"))
 
