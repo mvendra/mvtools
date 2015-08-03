@@ -5,6 +5,14 @@ import os
 import shutil
 from subprocess import call
 
+def backpedal_path(path):
+    if not os.path.exists(path):
+        return None
+    parent = os.path.abspath(os.path.join(path, os.pardir))
+    if parent == path:
+        return None
+    return parent
+
 def arraytopath(ar):
 
     result=os.sep
