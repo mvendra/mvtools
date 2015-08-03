@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # usage: cher what_to_grep | cher what_to_find cpp
 
 if [ -z $1 ]; then 
