@@ -10,9 +10,6 @@ else
   TARGET=$1
 fi
 
-# mvtodo: test if .git isnt already specified in the end
-# mvtodo: if this is is a subfolder of a parent repo, also resolve to it
-TARGET=${TARGET}/.git
-
+TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
 gifet_all.py $TARGET
 

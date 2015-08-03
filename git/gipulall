@@ -10,9 +10,6 @@ else
   TARGET=$1
 fi
 
-# mvtodo: check if below is necessary (if hasnt been specified by user already and whatnot)
-# mvtodo: if this is is a subfolder of a parent repo, also resolve to it
-TARGET=${TARGET}/.git
-
+TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
 gipul_all_remotes_current_branch.py $TARGET
 
