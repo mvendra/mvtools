@@ -14,17 +14,18 @@ def visitor_pull(repos):
         print("\n* Pulling from %s ..." % rp)
         remotes = git_repo_query.get_remotes(rp)
         for rm in remotes:
+            branches = git_repo_query.get_branches(rp)
+            for bn in branches:
 
-            try:
-                out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "pull", "--ff-only", rm])
-                out = "OK."
-            except OSError as oser:
-                out = "Failed."
-            except subprocess.CalledProcessError as cper:
-                out = "Failed."
-            
-            bn = "mvtodo"
-            report.append("%s (remote=%s, branch=%s): %s" % (rp, rm, bn, out))
+                try:
+                    out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "pull", "--ff-only", rm, bn])
+                    out = "OK."
+                except OSError as oser:
+                    out = "Failed."
+                except subprocess.CalledProcessError as cper:
+                    out = "Failed."
+                
+                report.append("%s (remote=%s, branch=%s): %s" % (rp, rm, bn, out))
 
     print("\nRESULTS:")
     for p in report:
