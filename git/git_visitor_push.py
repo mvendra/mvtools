@@ -26,7 +26,7 @@ def visitor_push(repos):
             bn = "mvtodo"
             report.append("%s (remote=%s, branch=%s): %s" % (rp, rm, bn, out))
 
-    print("RESULTS:\n")
+    print("\nRESULTS:")
     for p in report:
         print(p)
 
