@@ -18,8 +18,6 @@ def visitor_push(repos):
             for bn in branches:
 
                 try:
-                    mvdebugl = ["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm, bn]
-                    print("mvdebug %s" % mvdebugl)
                     out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm, bn])
                     out = "OK."
                 except OSError as oser:
