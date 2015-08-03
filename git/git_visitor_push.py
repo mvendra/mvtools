@@ -4,17 +4,33 @@ import sys
 import os
 import git_visitor_base
 import git_repo_query
-from subprocess import check_output
+import subprocess
+
+def derive_result(out_str):
+    print("mvdebug [%s]" % out_str)
+    return "mvtodo"
 
 def visitor_push(repos):
+
+    report = []
     for rp in repos:
         print("\n* Pushing to %s ..." % rp)
         remotes = git_repo_query.get_remotes(rp)
         for rm in remotes:
-            out = check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm])
-            # mvtodo: if any of these calls fail, the show is stopped. this is obviously wrong. dont stop when any repo fails because local and remote are out of sync
-            # mvtodo: I could parse out and print more informative stuff
-    # mvtodo: should also print a shorter report in the end (no failures vs. this and that failed, instead of wanting the user to read thru all the push messages)
+
+            try:
+                out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm])
+            except OSError as oser:
+                out = oser.strerror
+            except subprocess.CalledProcessError as cper:
+                out = cper.strerror
+            
+            res = derive_result(out)
+            bn = "mvtodo"
+            report.append("%s (remote=%s, branch=%s): %s" % (rp, rm, bn, res))
+
+    for p in report:
+        print(p)
 
 if __name__ == "__main__":
     git_visitor_base.do_visit(sys.argv, visitor_push)
