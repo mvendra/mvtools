@@ -27,6 +27,8 @@ if __name__ == "__main__":
         print("No remotes detected in %s. Aborting." % repo_path)
         sys.exit(1)
 
+    ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
+
     report = []
     for r in remotes:
         print("Pushing to %s..." % r)
@@ -34,11 +36,14 @@ if __name__ == "__main__":
             try:
                 out = check_output(["git", "--git-dir=%s" % repo_path, "--work-tree=%s" % os.path.dirname(repo_path), "push", r, b])
                 out = "OK."
+                color = "\033[32m" # green
             except:
                 out = "Failed."
-            report.append("%s, %s: %s" % (r, b, out))
+                color = "\033[31m" # red
+            report.append("%s%s, %s: %s%s" % (color, r, b, out, ORIGINAL_COLOR))
 
     print("\nRESULTS:")
     for p in report:
         print(p)
+    print("%s" % ORIGINAL_COLOR) # reset terminal color
 
