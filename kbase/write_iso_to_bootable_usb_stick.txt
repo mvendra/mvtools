@@ -1,0 +1,5 @@
+
+1. first make sure the usb stick is correctly formatted (fat12 / fat16 ? I am not sure as of this writting.)
+2. check the device file of the usb stick with sudo fdisk -l
+3. then do: dd if=kali-linux-1.0.9a-amd64.iso of=/dev/sdb bs=512k
+
