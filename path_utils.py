@@ -5,6 +5,14 @@ import os
 import shutil
 from subprocess import call
 
+def deletefile_ignoreerrors(filepath):
+    if not os.path.exists(filepath):
+        return
+    try:
+        os.unlink(filepath)
+    except:
+        pass
+
 def backpedal_path(path):
     if not os.path.exists(path):
         return None
