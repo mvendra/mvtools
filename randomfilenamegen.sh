@@ -9,7 +9,8 @@ if [ -e $RFN ]; then
   exit 1
 fi
 
-echo $RFN
+#echo $RFN
+inline_echo.py $RFN
 
 # second method
 #cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32
