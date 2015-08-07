@@ -11,13 +11,17 @@ def puaq():
     sys.exit(1)
 
 def getpasswordfromcontents(contents):
-    of_s = contents.find("password=[")
+
+    ID_PATTERN_S="pw=["
+    ID_PATTERN_E="]"
+
+    of_s = contents.find(ID_PATTERN_S)
 
     if of_s == -1:
         return None
 
-    of_s += 10
-    of_e = contents.find("]", of_s)
+    of_s += len(ID_PATTERN_S)
+    of_e = contents.find(ID_PATTERN_E, of_s)
 
     if of_e == -1:
         return None
@@ -36,16 +40,28 @@ if __name__ == "__main__":
 
     random_fn = subprocess.check_output(["randomfilenamegen.sh"])
     passphrase = getpass.getpass("Type in...\n")
+    contents=""
+
     try:
         subprocess.check_output(["decrypt.sh", passfile, random_fn, passphrase])
-        contents=""
         with open(random_fn) as f:
             contents=f.read()
-        password = getpasswordfromcontents(contents)
+    except:
+        print("Failed decrypting file.")
+        path_utils.deletefile_ignoreerrors(random_fn)
+        sys.exit(1)
+
+    password = getpasswordfromcontents(contents)
+    if password == None:
+        print("Unable to extract password from file - cant find the password text pattern.")
+        path_utils.deletefile_ignoreerrors(random_fn)
+        sys.exit(1)
+
+    try:
         subprocess.call(["inline_echo_xclip_wrapper.sh", password])
         path_utils.deletefile_ignoreerrors(random_fn)
     except:
-        print("Failed decrypting file.")
+        print("Unable to send password to clipboard.")
         path_utils.deletefile_ignoreerrors(random_fn)
         sys.exit(1)
 
