@@ -10,6 +10,7 @@ import shutil
 """ test_mass_decrypt
 Tests if all files inside a given path, that match the given extension, have been encrypted with the same given passphrase (recursively).
 A temporary path must also be provided - temporarily decrypted files will be stored there, and then this folder will be deleted.
+This is like a dry-run version of a would-be mass_decrypt operation/script. Intended for validating purposes.
 """
 
 def puaq(): # print usage and quit
