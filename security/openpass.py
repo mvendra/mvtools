@@ -52,13 +52,16 @@ if __name__ == "__main__":
         sys.exit(1)
 
     password = getpasswordfromcontents(contents)
+    content_to_copy = password
     if password == None:
-        print("Unable to extract password from file - cant find the password text pattern.")
-        path_utils.deletefile_ignoreerrors(random_fn)
-        sys.exit(1)
+        opt = raw_input("Unable to find predefined text pattern. Press enter and I will copy entire file. This is your chance to abort.")
+        content_to_copy = contents
+        #print("Unable to extract password from file - cant find the password text pattern.")
+        #path_utils.deletefile_ignoreerrors(random_fn)
+        #sys.exit(1)
 
     try:
-        subprocess.call(["inline_echo_xclip_wrapper.sh", password])
+        subprocess.call(["sendtoclipboard.py", content_to_copy])
         path_utils.deletefile_ignoreerrors(random_fn)
     except:
         print("Unable to send password to clipboard.")
