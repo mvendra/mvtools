@@ -14,25 +14,20 @@ This is like a dry-run version of a would-be mass_decrypt operation/script. Inte
 """
 
 def puaq(): # print usage and quit
-    print("Usage: %s path_to_operate temporary_path files_extension" % os.path.basename(__file__))
+    print("Usage: %s path_to_operate temporary_path files_extension passphrase" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         puaq()
 
     path_files = sys.argv[1]
     path_temp = sys.argv[2]
     extension = sys.argv[3]
-    print("Recall that you must manually provide the passphrase inside this script's source code\n")
-    passphrase = "bala"
+    passphrase = sys.argv[4]
 
     if not os.path.exists(path_files):
-        print("%s does not exist. Aborting." % path_files)
-        sys.exit(1)
-
-    if not os.path.exists(path_temp):
         print("%s does not exist. Aborting." % path_files)
         sys.exit(1)
 
