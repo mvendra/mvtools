@@ -13,7 +13,7 @@ def visitor_remote(repos):
         print("\n* Listing remotes of %s ..." % rp)
         remotes = git_repo_query.get_remotes(rp)
         for rm in remotes:
-            print(rm)
+            print("%s: %s" % (os.path.basename(os.path.dirname(rp)), rm))
 
 if __name__ == "__main__":
     git_visitor_base.do_visit(sys.argv, visitor_remote)
