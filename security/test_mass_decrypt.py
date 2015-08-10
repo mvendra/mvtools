@@ -6,6 +6,7 @@ import subprocess
 import fsquery
 import path_utils
 import shutil
+import getpass
 
 """ test_mass_decrypt
 Tests if all files inside a given path, that match the given extension, have been encrypted with the same given passphrase (recursively).
@@ -14,18 +15,24 @@ This is like a dry-run version of a would-be mass_decrypt operation/script. Inte
 """
 
 def puaq(): # print usage and quit
-    print("Usage: %s path_to_operate temporary_path files_extension passphrase" % os.path.basename(__file__))
+    print("Usage: %s path_to_operate temporary_path files_extension [passphrase]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 5:
+    if len(sys.argv) < 4:
         puaq()
 
     path_files = sys.argv[1]
     path_temp = sys.argv[2]
     extension = sys.argv[3]
-    passphrase = sys.argv[4]
+
+    if len(sys.argv) > 4:
+        # optional passphrase also specified
+        passphrase = sys.argv[4]
+    else:
+        # optional passphrase not specified. lets read it from console interactively
+        passphrase = getpass.getpass("Type in...\n")
 
     if not os.path.exists(path_files):
         print("%s does not exist. Aborting." % path_files)
