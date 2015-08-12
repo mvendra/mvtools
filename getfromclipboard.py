@@ -4,8 +4,10 @@ import sys
 import os
 import subprocess
 
-if __name__ == "__main__":
-
+def getfromclipboards():
     contents = subprocess.check_output(["xclip", "-sel", "clip", "-o"])
-    print(contents)
+    return contents
+
+if __name__ == "__main__":
+    print(getfromclipboards())
 

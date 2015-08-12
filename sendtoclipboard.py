@@ -7,6 +7,9 @@ def puaq():
     print("Usage: %s contents" % os.path.basename(__file__))
     sys.exit(1)
 
+def sendtoclipboard(contents):
+    os.system("inline_echo.py '%s' | xclip -sel clip" % contents)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
@@ -17,5 +20,5 @@ if __name__ == "__main__":
         contents += c + " "
     contents = contents.strip()
 
-    os.system("inline_echo.py '%s' | xclip -sel clip" % contents)
+    sendtoclipboard(contents)
 
