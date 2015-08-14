@@ -1,0 +1,15 @@
+#!/bin/bash
+
+puaq(){ # puaq stands for Print Usage And Quit
+  echo "Usage: `basename $0` libfile"
+  exit 1
+}
+
+if [ -z $1 ]; then
+  puaq
+fi
+
+TARGET=$1
+
+objdump -p $TARGET | grep SONAME
+
