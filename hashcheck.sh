@@ -21,7 +21,7 @@ if [ ! -f $HASHFNAME ]; then
   exit 3
 fi
 
-TMPFNAME=(`randomfilename.sh`)
+TMPFNAME=(`randomfilenamegen.sh`)
 TMPFNAME=${TMPFNAME}.tmpfile
 
 if [ -e $TMPFNAME ]; then
