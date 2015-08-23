@@ -1,0 +1,4 @@
+
+# to find out your optic drive device file, do dmesg | grep "cdrom" or "dvd" or similar
+dd if=/dev/cdrom of=image_name.iso
+
