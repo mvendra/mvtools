@@ -13,5 +13,4 @@ fi
 touch ./$SHBOOTFILE
 
 echo "<html>\n  <head>\n    <title>\n      Title\n    </title>\n  </head>\n  <body>\n    Test For Echo\n  </body>\n</html>" > ./$SHBOOTFILE
-chmod +x ./$SHBOOTFILE
 
