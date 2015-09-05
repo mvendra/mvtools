@@ -5,6 +5,13 @@ import os
 import shutil
 from subprocess import call
 
+class PathUtilsException(Exception):
+    def _get_message(self): 
+        return self._message
+    def _set_message(self, message): 
+        self._message = message
+    message = property(_get_message, _set_message)
+
 def deletefile_ignoreerrors(filepath):
     if not os.path.exists(filepath):
         return
@@ -54,6 +61,26 @@ def scratchfolder(path):
         else:
             shutil.rmtree(path)
     call(["mkdir", path])
+
+def guaranteefolder(path):
+
+    """ guaranteefolder
+    Makes sure the given is a folder.
+
+    If path already exists and is not a folder, throws exception
+    if it already exists and is a folder, does nothing.
+    If path does not exist, create it as a folder
+    """
+
+    if os.path.isdir(path):
+        return # OK ! thats what we wanted
+
+    if os.path.exists(path):
+        # exists and is not a folder. raise hell.
+        raise PathUtilsException("%s guaranteefolder: %s exists and is not a folder. This is an exception." % (os.path.basename(__file__), path))
+    else:
+        # just create the new folder
+        call(["mkdir", "-p", path])
 
 def filter_path_list_no_same_branch(pathlist):
 
