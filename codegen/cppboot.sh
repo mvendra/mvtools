@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CPPBOOTFILE=testforecho.cpp
+CPPBOOTFILE=main.cpp
 if [ ! -z $1 ]; then
   CPPBOOTFILE=$1
 fi

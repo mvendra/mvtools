@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CBOOTFILE=testforecho.c
+CBOOTFILE=main.c
 if [ ! -z $1 ]; then
   CBOOTFILE=$1
 fi
