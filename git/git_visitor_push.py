@@ -38,5 +38,6 @@ def visitor_push(repos):
     print("%s\n" % ORIGINAL_COLOR) # reset terminal color
 
 if __name__ == "__main__":
+    # mvtodo: get the remotes by param here, then pass to visitor_push. inside visitor_push, only use all remotes if this parameter is None
     git_visitor_base.do_visit(sys.argv, visitor_push)
 
