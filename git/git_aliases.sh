@@ -48,6 +48,7 @@ alias gihel="git help"
 alias gibla="git blame"
 alias gistash="git stash"
 alias giver="git version"
+alias gicle="git clean"
 alias gifsck="git fsck"
 
 alias gimv="git mv"
