@@ -5,6 +5,8 @@ puaq(){ # puaq stands for Print Usage And Quit
   exit 1
 }
 
+echo "WARNING: `basename $0` has been deprecated. Consider using dirsize.py instead"
+
 TARGET_DIR=${@}
 TARGET_DIR=`resolve_and_escape_path.py $TARGET_DIR`
 
