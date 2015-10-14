@@ -1,6 +1,6 @@
 #!/bin/sh
 
-HTMLBOOTFILE=testforecho.html
+HTMLBOOTFILE=index.html
 if [ ! -z $1 ]; then
   HTMLBOOTFILE=$1
 fi
