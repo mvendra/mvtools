@@ -53,14 +53,21 @@ def scratchfolder(path):
     """ scratch_folder
     Makes sure the given path is/becomes an empty folder. If not preexistent, path is created.
     If it pre-exists, being either a file or a valid tree, it is deleted and re-created and an empty folder.
+    Returns true/false depending on whether the operation succeeded or not.
     """
 
-    if os.path.exists(path):
-        if os.path.isfile(path):
-            os.unlink(path)
-        else:
-            shutil.rmtree(path)
-    call(["mkdir", path])
+    try:
+        if os.path.exists(path):
+            if os.path.isfile(path):
+                os.unlink(path)
+            else:
+                shutil.rmtree(path)
+        ret = call(["mkdir", path])
+        if ret != 0:
+            return False
+    except:
+        return False
+    return True
 
 def guaranteefolder(path):
 
