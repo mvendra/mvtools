@@ -50,8 +50,10 @@ if __name__ == "__main__":
 
     try:
         subprocess.call(["sendtoclipboard.py", content_to_copy])
+        print("Ok, you're up...")
         subprocess.call(["sleep", "5"])
         subprocess.call(["sendtoclipboard.py", "clear"])
+        print("Expired.")
     except:
         print("Unable to send password to clipboard.")
         sys.exit(1)
