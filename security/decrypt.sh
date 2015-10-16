@@ -19,7 +19,7 @@ if [ ! -e $INFILE ]; then
 fi
 
 if [ -z $OUTFILE ]; then
-  puaq
+  OUTFILE=(`poplastextension.py $INFILE`)
 fi
 
 if [ -z $PASSPHRASE ]; then
