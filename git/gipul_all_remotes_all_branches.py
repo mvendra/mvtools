@@ -3,6 +3,7 @@
 import sys
 import os
 import git_repo_query
+import git_pull
 from subprocess import check_output
 
 def puaq(): # print usage and quit
@@ -28,19 +29,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
-
-    report = []
-    for r in remotes:
-        print("Pulling from %s..." % r)
-        for b in branches:
-            try:
-                out = check_output(["git", "--git-dir=%s" % repo_path, "--work-tree=%s" % os.path.dirname(repo_path), "pull", "--ff-only", r, b])
-                out = "OK."
-                color = "\033[32m" # green
-            except:
-                out = "Failed."
-                color = "\033[31m" # red
-            report.append("%s%s, %s: %s%s" % (color, r, b, out, ORIGINAL_COLOR))
+    report = git_pull.do_pull(repo_path, remotes, branches)
 
     print("\nRESULTS:")
     for p in report:

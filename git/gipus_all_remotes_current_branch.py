@@ -3,6 +3,7 @@
 import sys
 import os
 import git_repo_query
+import git_push
 from subprocess import check_output
 
 def puaq(): # print usage and quit
@@ -29,17 +30,11 @@ if __name__ == "__main__":
 
     current_branch = branches[0]
 
-    report = []
-    for r in remotes:
-        print("Pushing to %s..." % r)
-        try:
-            out = check_output(["git", "--git-dir=%s" % repo_path, "--work-tree=%s" % os.path.dirname(repo_path), "push", r, current_branch])
-            out = "OK."
-        except:
-            out = "Failed."
-        report.append("%s: %s" % (r, out))
+    ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
+    report = git_push.do_push(repo_path, remotes, [current_branch])
 
     print("\nRESULTS:")
     for p in report:
         print(p)
+    print("%s" % ORIGINAL_COLOR) # reset terminal color
 
