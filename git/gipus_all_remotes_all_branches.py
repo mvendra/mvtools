@@ -3,7 +3,7 @@
 import sys
 import os
 import git_repo_query
-import git_pull
+import git_push
 from subprocess import check_output
 
 def puaq(): # print usage and quit
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
-    report = git_pull.do_pull(repo_path, remotes, branches)
+    report = git_push.do_push(repo_path, remotes, branches)
 
     print("\nRESULTS:")
     for p in report:
