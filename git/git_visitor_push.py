@@ -2,10 +2,10 @@
 
 import sys
 import os
-import subprocess
 
 import git_visitor_base
 import git_repo_query
+import git_push
 
 def visitor_push(repos):
 
@@ -14,22 +14,10 @@ def visitor_push(repos):
     report = []
     for rp in repos:
         remotes = git_repo_query.get_remotes(rp)
-        for rm in remotes:
-            branches = git_repo_query.get_branches(rp)
-            for bn in branches:
-
-                try:
-                    out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "push", rm, bn])
-                    out = "OK."
-                    color = "\033[32m" # green
-                except OSError as oser:
-                    out = "Failed."
-                    color = "\033[31m" # red
-                except subprocess.CalledProcessError as cper:
-                    out = "Failed."
-                    color = "\033[31m" # red
-                
-                report.append("%s%s (remote=%s, branch=%s): %s%s" % (color, rp, rm, bn, out, ORIGINAL_COLOR))
+        branches = git_repo_query.get_branches(rp)
+        report_piece = git_push.do_push(rp, remotes, branches)
+        for ri in report_piece:
+            report.append(ri)
 
     print("\nRESULTS:")
     for p in report:
