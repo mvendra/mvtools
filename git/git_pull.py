@@ -4,9 +4,6 @@ import sys
 import os
 import subprocess
 
-import git_visitor_base
-import git_repo_query
-
 def do_pull(repo, remotes, branches):
 
     ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
