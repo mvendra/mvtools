@@ -2,30 +2,20 @@
 
 import sys
 import os
-import subprocess
 
 import git_visitor_base
+import git_fetch
 
 def visitor_fetch(repos):
 
     ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
 
     report = []
+    remotes = [] # mvtodo: get remotes here and perhaps filter (offline)
     for rp in repos:
-        print("\n* Fetching %s ..." % rp)
-
-        try:
-            out = subprocess.check_output(["git", "--git-dir=%s" % rp, "--work-tree=%s" % os.path.dirname(rp), "fetch", "--all"])
-            out = "OK."
-            color = "\033[32m" # green
-        except OSError as oser:
-            out = "Failed."
-            color = "\033[31m" # red
-        except subprocess.CalledProcessError as cper:
-            out = "Failed."
-            color = "\033[31m" # red
-        
-        report.append("%s%s: %s%s" % (color, rp, out, ORIGINAL_COLOR))
+        report_piece = git_fetch.do_fetch(rp, remotes)
+        for ri in report_piece:
+            report.append(ri)
 
     print("\nRESULTS:")
     for p in report:
@@ -33,5 +23,5 @@ def visitor_fetch(repos):
     print("%s\n" % ORIGINAL_COLOR) # reset terminal color
 
 if __name__ == "__main__":
-    git_visitor_base.do_visit(sys.argv, visitor_fetch)
+    git_visitor_base.do_visit(None, visitor_fetch)
 
