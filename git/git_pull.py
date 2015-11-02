@@ -13,9 +13,7 @@ def do_pull(repo, remotes, branches):
     report = []
 
     print("\n* Pulling from %s ..." % repo)
-    remotes = git_repo_query.get_remotes(repo)
     for rm in remotes:
-        branches = git_repo_query.get_branches(repo)
         for bn in branches:
 
             try:
