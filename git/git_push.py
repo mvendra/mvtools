@@ -13,9 +13,7 @@ def do_push(repo, remotes, branches):
     report = []
 
     print("\n* Pushing to %s ..." % repo)
-    remotes = git_repo_query.get_remotes(repo)
     for rm in remotes:
-        branches = git_repo_query.get_branches(repo)
         for bn in branches:
 
             try:
