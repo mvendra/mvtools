@@ -2,7 +2,6 @@
 
 import sys
 import os
-import subprocess
 
 import git_visitor_base
 import git_repo_query
