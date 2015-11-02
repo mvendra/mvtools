@@ -14,7 +14,6 @@ def visitor_pull(repos):
 
     report = []
     for rp in repos:
-        print("\n* Pulling from %s ..." % rp)
         remotes = git_repo_query.get_remotes(rp)
         branches = git_repo_query.get_branches(rp)
         report_piece = git_pull.do_pull(rp, remotes, branches)
@@ -28,5 +27,5 @@ def visitor_pull(repos):
 
 if __name__ == "__main__":
     # mvtodo: get the remotes by param here, then pass to visitor_pull. inside visitor_pull, only use all remotes if this parameter is None
-    git_visitor_base.do_visit(sys.argv, visitor_pull)
+    git_visitor_base.do_visit(None, visitor_pull)
 

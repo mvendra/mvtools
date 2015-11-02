@@ -13,7 +13,6 @@ def visitor_push(repos):
 
     report = []
     for rp in repos:
-        print("\n* Pushing to %s ..." % rp)
         remotes = git_repo_query.get_remotes(rp)
         for rm in remotes:
             branches = git_repo_query.get_branches(rp)
@@ -39,5 +38,5 @@ def visitor_push(repos):
 
 if __name__ == "__main__":
     # mvtodo: get the remotes by param here, then pass to visitor_push. inside visitor_push, only use all remotes if this parameter is None
-    git_visitor_base.do_visit(sys.argv, visitor_push)
+    git_visitor_base.do_visit(None, visitor_push)
 
