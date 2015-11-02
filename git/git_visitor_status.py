@@ -14,5 +14,5 @@ def visitor_status(list_repos):
             print("%s is dirty." % os.path.dirname(r))
 
 if __name__ == "__main__":
-    git_visitor_base.do_visit(sys.argv, visitor_status)
+    git_visitor_base.do_visit(None, visitor_status)
 
