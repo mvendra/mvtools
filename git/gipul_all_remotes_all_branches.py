@@ -4,7 +4,6 @@ import sys
 import os
 import git_repo_query
 import git_pull
-from subprocess import check_output
 
 def puaq(): # print usage and quit
     print("Usage: %s repo_path (.git folder included)." % os.path.basename(__file__))
