@@ -23,6 +23,7 @@ alias gicom="git commit" # mvtodo: add mvtags checking as a precondition
 
 alias gista="git status"
 alias giadd="git add"
+alias giunadd="git reset HEAD"
 alias girem="git rm"
 alias gilog="git log"
 alias gipus="git push"
