@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import os
 import subprocess
 
@@ -14,7 +13,7 @@ def do_fetch(repo, remotes):
         remotes_line += r + " "
     remotes_line = remotes_line.strip() # removes the last space
 
-    print("\n* Fetching %s ..." % rp)
+    print("\n* Fetching %s ..." % repo)
     try:
         out = subprocess.check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "fetch", "--multiple", remotes_line])
         out = "OK."
