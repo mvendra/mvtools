@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-import os
-
 import git_visitor_base
 import git_repo_query
 import git_pull
