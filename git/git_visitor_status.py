@@ -4,8 +4,8 @@ import os
 import git_visitor_base
 from subprocess import check_output
 
-def visitor_status(list_repos):
-    for r in list_repos:
+def visitor_status(repos):
+    for r in repos:
         out = check_output(["git", "--git-dir=%s" % r, "--work-tree=%s" % os.path.dirname(r), "status", "-s"])
         if len(out) == 0:
             pass # clean HEAD
