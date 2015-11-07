@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import os
 
 import git_visitor_base
@@ -15,5 +14,5 @@ def visitor_remote(repos):
             print("%s: %s" % (os.path.basename(os.path.dirname(rp)), rm))
 
 if __name__ == "__main__":
-    git_visitor_base.do_visit(sys.argv, visitor_remote)
+    git_visitor_base.do_visit(None, visitor_remote)
 
