@@ -59,7 +59,7 @@ def apply_filters(repo, options):
     if remotes is None:
         raise gvbexcept("No remotes detected.")
 
-    remotes = git_visitor_base.filter_remotes(remotes, options)
+    remotes = filter_remotes(remotes, options)
     if remotes is None:
         raise gvbexcept("Failed filtering remotes.")
 
@@ -67,7 +67,7 @@ def apply_filters(repo, options):
     if branches is None:
         raise gvbexcept("No branches detected.")
 
-    branches = git_visitor_base.filter_branches(branches, options)
+    branches = filter_branches(branches, options)
     if branches is None:
         raise gvbexcept("Failed filtering branches.")
 
