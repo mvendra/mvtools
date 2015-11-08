@@ -13,11 +13,17 @@ def visitor_push(repos, options):
     report = []
     for rp in repos:
         remotes = git_repo_query.get_remotes(rp)
+        if remotes is None:
+            report.append("\033[31m%s: No remotes detected.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
+            continue
         remotes = git_visitor_base.filter_remotes(remotes, options)
         if remotes is None:
-            report.append("\033[31m%s: Failed filtering remotes\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
+            report.append("\033[31m%s: Failed filtering remotes.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
             continue
         branches = git_repo_query.get_branches(rp)
+        if branches is None:
+            report.append("\033[31m%s: No branches detected.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
+            continue
         report_piece = git_push.do_push(rp, remotes, branches)
         for ri in report_piece:
             report.append(ri)
