@@ -2,8 +2,6 @@
 
 import sys
 import os
-import git_repo_query
-import git_pull
 
 import git_visitor_pull
 

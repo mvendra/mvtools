@@ -3,7 +3,6 @@
 import sys
 import os
 import git_repo_query
-import git_push
 
 import git_visitor_push
 
