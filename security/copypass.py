@@ -3,7 +3,6 @@
 import sys
 import os
 import subprocess
-import path_utils
 import getpass
 
 def puaq():
