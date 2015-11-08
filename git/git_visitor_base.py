@@ -4,6 +4,15 @@ import os
 import fsquery
 import path_utils
 
+import git_repo_query
+
+class gvbexcept(RuntimeError):
+    def _get_message(self):
+        return self._message
+    def _set_message(self, message):
+        self._message = message
+    message = property(_get_message, _set_message)
+
 def filter_git_only(path_list):
 
     """ filter_git_only
@@ -38,6 +47,31 @@ def filter_remotes(remotes, options):
                 retlist += [it]
 
     return retlist
+
+def apply_filters(repo, options):
+
+    """ apply_filters
+    on success, returns filtered remotes and branches
+    on failure, raises gvbexcept with detail msg
+    """
+
+    remotes = git_repo_query.get_remotes(repo)
+    if remotes is None:
+        raise gvbexcept("No remotes detected.")
+
+    remotes = git_visitor_base.filter_remotes(remotes, options)
+    if remotes is None:
+        raise gvbexcept("Failed filtering remotes.")
+
+    branches = git_repo_query.get_branches(repo)
+    if branches is None:
+        raise gvbexcept("No branches detected.")
+
+    branches = git_visitor_base.filter_branches(branches, options)
+    if branches is None:
+        raise gvbexcept("Failed filtering branches.")
+
+    return remotes, branches
 
 def filter_branches(branches, options):
 
