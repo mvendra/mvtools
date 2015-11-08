@@ -4,7 +4,7 @@ import git_visitor_base
 import git_repo_query
 import git_fetch
 
-def visitor_fetch(repos):
+def visitor_fetch(repos, options):
 
     ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
 
@@ -21,5 +21,5 @@ def visitor_fetch(repos):
     print("%s\n" % ORIGINAL_COLOR) # reset terminal color
 
 if __name__ == "__main__":
-    git_visitor_base.do_visit(None, visitor_fetch)
+    git_visitor_base.do_visit(None, None, visitor_fetch)
 

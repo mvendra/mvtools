@@ -4,7 +4,7 @@ import os
 import git_visitor_base
 from subprocess import check_output
 
-def visitor_status(repos):
+def visitor_status(repos, options):
     for r in repos:
         out = check_output(["git", "--git-dir=%s" % r, "--work-tree=%s" % os.path.dirname(r), "status", "-s"])
         if len(out) == 0:
@@ -13,5 +13,5 @@ def visitor_status(repos):
             print("%s is dirty." % os.path.dirname(r))
 
 if __name__ == "__main__":
-    git_visitor_base.do_visit(None, visitor_status)
+    git_visitor_base.do_visit(None, None, visitor_status)
 
