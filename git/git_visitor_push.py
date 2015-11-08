@@ -29,7 +29,6 @@ def visitor_push(repos, options):
             continue
 
         branches = git_visitor_base.filter_branches(branches, options)
-        print(branches)
         if branches is None:
             report.append("\033[31m%s: Failed filtering branches.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
             continue
