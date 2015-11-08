@@ -7,6 +7,8 @@ import path_utils
 import git_repo_query
 
 class gvbexcept(RuntimeError):
+    def __init__(self, msg):
+        self._set_message(msg)
     def _get_message(self):
         return self._message
     def _set_message(self, message):
