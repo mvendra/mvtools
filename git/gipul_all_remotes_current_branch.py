@@ -5,6 +5,8 @@ import os
 import git_repo_query
 import git_pull
 
+import git_visitor_pull
+
 def puaq(): # print usage and quit
     print("Usage: %s repo_path (.git folder included)." % os.path.basename(__file__))
     sys.exit(1)
@@ -14,26 +16,16 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         puaq()
 
-    repo_path = sys.argv[1]
+    options = {}
+    repos = []
 
-    remotes = git_repo_query.get_remotes(repo_path)
-    branches = git_repo_query.get_branches(repo_path)
+    repos += [sys.argv[1]]
 
-    if branches is None:
+    current_branch = git_repo_query.get_current_branch(repos[0])
+    if current_branch is None:
         print("No branches detected in %s. Aborting." % repo_path)
         sys.exit(1)
+    options["xor-branch"] = current_branch
 
-    if remotes is None:
-        print("No remotes detected in %s. Aborting." % repo_path)
-        sys.exit(1)
-
-    current_branch = branches[0]
-
-    ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
-    report = git_pull.do_pull(repo_path, remotes, [current_branch])
-
-    print("\nRESULTS:")
-    for p in report:
-        print(p)
-    print("%s" % ORIGINAL_COLOR) # reset terminal color
+    git_visitor_pull.visitor_pull(repos, options)
 
