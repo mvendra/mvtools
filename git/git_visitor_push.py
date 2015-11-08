@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import git_visitor_base
-import git_repo_query
 import git_push
 
 import sys
