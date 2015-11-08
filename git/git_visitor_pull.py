@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import git_visitor_base
-import git_repo_query
 import git_pull
 
 import sys
@@ -13,24 +12,10 @@ def visitor_pull(repos, options):
     report = []
     for rp in repos:
 
-        remotes = git_repo_query.get_remotes(rp)
-        if remotes is None:
-            report.append("\033[31m%s: No remotes detected.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
-            continue
-
-        remotes = git_visitor_base.filter_remotes(remotes, options)
-        if remotes is None:
-            report.append("\033[31m%s: Failed filtering remotes.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
-            continue
-
-        branches = git_repo_query.get_branches(rp)
-        if branches is None:
-            report.append("\033[31m%s: No branches detected.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
-            continue
-
-        branches = git_visitor_base.filter_branches(branches, options)
-        if branches is None:
-            report.append("\033[31m%s: Failed filtering branches.\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
+        try:
+            remotes, branches = git_visitor_base.apply_filters(rp, options)
+        except git_visitor_base.gvbexcept as gvbex:
+            report.append("\033[31m%s: %s.\033[0m" % (gvbex.message, rp)) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
             continue
 
         report_piece = git_pull.do_pull(rp, remotes, branches)
