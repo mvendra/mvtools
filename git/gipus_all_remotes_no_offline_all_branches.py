@@ -5,7 +5,7 @@ import os
 import git_repo_query
 import git_push
 
-import git_visitor_pull
+import git_visitor_push
 
 def puaq(): # print usage and quit
     print("Usage: %s repo_path (.git folder included)." % os.path.basename(__file__))
@@ -22,5 +22,5 @@ if __name__ == "__main__":
     repos += [sys.argv[1]]
     options["no-remote"] = ["offline"]
 
-    git_visitor_pull.visitor_pull(repos, options)
+    git_visitor_push.visitor_push(repos, options)
 
