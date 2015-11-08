@@ -5,7 +5,7 @@ import os
 import shutil
 from subprocess import call
 
-class PathUtilsException(Exception):
+class PathUtilsException(RuntimeError):
     def _get_message(self): 
         return self._message
     def _set_message(self, message): 

@@ -12,7 +12,7 @@ class cpp_basic_class:
 
     def writetofile(__self, thefile, contents):
         if os.path.exists(thefile):
-            raise Exception("%s already exists, so we are aborting." % thefile)
+            raise RuntimeError("%s already exists, so we are aborting." % thefile)
         with open(thefile, "w") as f:
             f.write(contents)
 

@@ -4,7 +4,7 @@ import os
 import sys
 from subprocess import call
 
-class secexcept:
+class secexcept(RuntimeError):
     def __init__(_self, msg):
         _self.message = msg
 
