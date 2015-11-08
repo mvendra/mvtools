@@ -59,6 +59,8 @@ def filter_branches(branches, options):
             if not it in options["not-branch"]:
                 retlist += [it]
 
+    return retlist
+
 def make_path_list(paths_to_consider):
 
     """ make_path_list
