@@ -31,7 +31,8 @@ def get_remotes(repo):
 def get_branches(repo):
 
     """ get branches
-    returns a list with a repo's branches. the first item in the list is the checked out branch
+    on sucess, returns a list with a repo's branches. the first item in the list is the checked out branch
+    on failure, returns None
     """
 
     if not os.path.exists(repo):
@@ -64,6 +65,20 @@ def get_branches(repo):
         return ret_list
     else:
         return None
+
+def get_current_branch(repo):
+
+    """ get_current_branch
+    on success, returns the name of the checked out branch
+    on failure, returns None
+    """
+
+    current_branch = get_branches(repo)
+    if current_branch is None:
+        print("Failed querying the current branch of %s." % repo)
+        return None
+
+    return current_branch[0]
 
 if __name__ == "__main__":
 
