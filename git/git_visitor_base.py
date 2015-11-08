@@ -39,6 +39,26 @@ def filter_remotes(remotes, options):
 
     return retlist
 
+def filter_branches(branches, options):
+
+    """ filter_branches
+    on success, returns list of branches filtered by provided options
+    on failure, returns None
+    """
+
+    retlist = branches
+
+    if "xor-branch" in options:
+        if not options["xor-branch"] in branches:
+            return None # the xor'ed branch must be available to begin with
+        return [options["xor-branch"]] # early return: xor branch does not play along with any other option.
+
+    if "not-branch" in options:
+        retlist = [] # lets reset the return list, then only add the ones that are not blacklisted
+        for it in branches:
+            if not it in options["not-branch"]:
+                retlist += [it]
+
 def make_path_list(paths_to_consider):
 
     """ make_path_list
