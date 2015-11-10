@@ -5,8 +5,24 @@ import os
 from subprocess import check_output
 
 def puaq(): # print usage and quit
-    print("Usage: %s repo_path (.git folder included)." % os.path.basename(__file__))
+    print("Usage: %s repo_path." % os.path.basename(__file__))
     sys.exit(1)
+
+def is_git_work_tree(path):
+
+    """ is_git_repo
+    returns true if path exists and points to a git work tree ("/path/to/repo", instead of "/path/to/repo/.git")
+    returns false otherwise
+    returns None if path does not exist
+    """
+
+    if not os.path.exists(path):
+        return None
+
+    if os.path.exists(os.path.join(path, ".git")):
+        return True
+    else:
+        return False
 
 def get_remotes(repo):
 
@@ -14,14 +30,15 @@ def get_remotes(repo):
     returns a list with a repo's remotes.
     """
 
-    if not os.path.exists(repo):
+    t1 = is_git_work_tree(repo)
+    if t1 is None:
         print("%s does not exist." % repo)
         return None
-    if not (repo.endswith(".git") or repo.endswith(".git" + os.sep)):
-        print("%s does not point to a .git repository." % repo)
+    elif t1 is False:
+        print("%s is not a git work tree." % repo)
         return None
 
-    out = check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "remote"])
+    out = check_output(["git", "-C", repo, "remote"])
     ret_list = out.split()
     if len(ret_list) > 0:
         return ret_list
@@ -35,14 +52,15 @@ def get_branches(repo):
     on failure, returns None
     """
 
-    if not os.path.exists(repo):
+    t1 = is_git_work_tree(repo)
+    if t1 is None:
         print("%s does not exist." % repo)
         return None
-    if not (repo.endswith(".git") or repo.endswith(".git" + os.sep)):
-        print("%s does not point to a .git repository." % repo)
+    elif t1 is False:
+        print("%s is not a git work tree." % repo)
         return None
 
-    out = check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "branch"])
+    out = check_output(["git", "-C", repo, "branch"])
     branch_list = out.split("\n")
 
     # move the checked out branch to the front
@@ -73,6 +91,14 @@ def get_current_branch(repo):
     on failure, returns None
     """
 
+    t1 = is_git_work_tree(repo)
+    if t1 is None:
+        print("%s does not exist." % repo)
+        return None
+    elif t1 is False:
+        print("%s is not a git work tree." % repo)
+        return None
+
     current_branch = get_branches(repo)
     if current_branch is None:
         print("Failed querying the current branch of %s." % repo)
@@ -86,8 +112,12 @@ if __name__ == "__main__":
         puaq()
 
     repopath = sys.argv[1]
-    if not os.path.exists(repopath):
-        print("%s does not exist. Aborting." % repopath)
+    t1 = is_git_work_tree(repopath)
+    if t1 is None:
+        print("%s does not exist." % repopath)
+        sys.exit(1)
+    elif t1 is False:
+        print("%s is not a git work tree." % repopath)
         sys.exit(1)
 
     print("branches: %s" % get_branches(repopath))
