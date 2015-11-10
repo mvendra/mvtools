@@ -24,5 +24,5 @@ if __name__ == "__main__":
         if curpath is None:
             sys.exit(1)
 
-    print(os.path.join(curpath, ".git"))
+    print(curpath)
 
