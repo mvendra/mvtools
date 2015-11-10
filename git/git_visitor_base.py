@@ -28,6 +28,27 @@ def filter_git_only(path_list):
             ret.append(d)
     return ret
 
+def pluck_dotgit(path_list):
+
+    """ pluck_dotgit
+    on success, returns a list that is a copy of the given list, with the trailing ".git" removed off the items
+    returns None on failures
+    """
+
+    if path_list is None:
+        return None
+
+    ret_list = []
+    for it in path_list:
+        local_it = it
+        if it.endswith(os.sep): # plucks out the trailing "/" on unices
+            local_it = it[:len(it)-1]
+        if local_it.endswith(".git"):
+            local_it = path_utils.backpedal_path(local_it)
+        ret_list.append(local_it)
+
+    return ret_list
+
 def filter_remotes(remotes, options):
 
     """ filter_remotes
