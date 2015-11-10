@@ -10,7 +10,7 @@ def do_fetch(repo, remotes):
 
     print("\n* Fetching %s ..." % repo)
     try:
-        out = subprocess.check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "fetch", "--multiple"] + remotes)
+        out = subprocess.check_output(["git", "-C", repo, "fetch", "--multiple"] + remotes)
         out = "OK."
         color = "\033[32m" # green
     except OSError as oser:
