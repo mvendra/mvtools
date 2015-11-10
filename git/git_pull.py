@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import os
 import subprocess
 
 def do_pull(repo, remotes, branches):
@@ -13,7 +12,7 @@ def do_pull(repo, remotes, branches):
         for bn in branches:
 
             try:
-                out = subprocess.check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "pull", "--ff-only", rm, bn])
+                out = subprocess.check_output(["git", "-C", "%s" % repo, "pull", "--ff-only", rm, bn])
                 out = "OK."
                 color = "\033[32m" # green
             except OSError as oser:

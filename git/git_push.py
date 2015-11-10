@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import os
 import subprocess
 
 def do_push(repo, remotes, branches):
@@ -13,7 +12,7 @@ def do_push(repo, remotes, branches):
         for bn in branches:
 
             try:
-                out = subprocess.check_output(["git", "--git-dir=%s" % repo, "--work-tree=%s" % os.path.dirname(repo), "push", rm, bn])
+                out = subprocess.check_output(["git", "-C", repo, "push", rm, bn])
                 out = "OK."
                 color = "\033[32m" # green
             except OSError as oser:
