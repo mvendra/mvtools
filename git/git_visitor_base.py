@@ -160,6 +160,7 @@ def make_repo_list(path):
 
     ret_list = fsquery.makecontentlist(path, True, False, True, False, True, [])
     ret_list = filter_git_only(ret_list)
+    ret_list = pluck_dotgit(ret_list)
     if len(ret_list) > 0:
         return ret_list
     else:
