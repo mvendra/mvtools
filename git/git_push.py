@@ -7,7 +7,7 @@ def do_push(repo, remotes, branches):
     ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
     report = []
 
-    print("\n* Pushing to %s ..." % repo)
+    print("\n* Pushing on %s ..." % repo)
     for rm in remotes:
         for bn in branches:
 

@@ -7,7 +7,7 @@ def do_fetch(repo, remotes):
     ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
     report = []
 
-    print("\n* Fetching %s ..." % repo)
+    print("\n* Fetching on %s ..." % repo)
     try:
         out = subprocess.check_output(["git", "-C", repo, "fetch", "--multiple"] + remotes)
         out = "OK."
