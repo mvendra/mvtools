@@ -15,7 +15,7 @@ def visitor_pull(repos, options):
         try:
             remotes, branches = git_visitor_base.apply_filters(rp, options)
         except git_visitor_base.gvbexcept as gvbex:
-            report.append("\033[31m%s: %s.\033[0m" % (gvbex.message, rp)) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
+            report.append("\033[31m%s: %s.\033[0m" % (rp, gvbex.message)) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
             continue
 
         report_piece = git_pull.do_pull(rp, remotes, branches)
