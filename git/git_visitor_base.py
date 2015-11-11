@@ -80,19 +80,19 @@ def apply_filters(repo, options):
 
     remotes = git_repo_query.get_remotes(repo)
     if remotes is None:
-        raise gvbexcept("No remotes detected.")
+        raise gvbexcept("No remotes detected")
 
     remotes = filter_remotes(remotes, options)
     if remotes is None:
-        raise gvbexcept("Failed filtering remotes.")
+        raise gvbexcept("Failed filtering remotes")
 
     branches = git_repo_query.get_branches(repo)
     if branches is None:
-        raise gvbexcept("No branches detected.")
+        raise gvbexcept("No branches detected")
 
     branches = filter_branches(branches, options)
     if branches is None:
-        raise gvbexcept("Failed filtering branches.")
+        raise gvbexcept("Failed filtering branches")
 
     return remotes, branches
 
