@@ -8,4 +8,5 @@ to format external USB ext hd:
 * then blkid /dev/theusbdisk# to get the partition's uuid so it can be added to the fstab
 * like so: "UUID=6f6aafa8-7dce-46f2-89e5-0b8908d6d1e6        /home/mateus/Mountpoints/AcervoBK               ext3           rw,noauto,owner,users,nobootwait               0       0" <- an actual line from my fstab from early 2015, on a linux mint 17
 * then chown the mount point to the user to make sure they can mount it and rw it.
+* check your new mountpoint. it might have a lost+found folder inside. get rid of it.
 
