@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import terminal_colors
+
 import git_visitor_base
 import git_repo_query
 import git_fetch
@@ -8,14 +10,14 @@ import sys
 
 def visitor_fetch(repos, options):
 
-    ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
+    ORIGINAL_COLOR = terminal_colors.get_standard_color()
 
     report = []
     for rp in repos:
         remotes = git_repo_query.get_remotes(rp)
         remotes = git_visitor_base.filter_remotes(remotes, options)
         if remotes is None:
-            report.append("\033[31m%s: Failed filtering remotes\033[0m" % rp) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
+            report.append("%s%s: Failed filtering remotes.%s" % (terminal_colors.TTY_RED, rp, ORIGINAL_COLOR)) 
             continue
         report_piece = git_fetch.do_fetch(rp, remotes)
         for ri in report_piece:

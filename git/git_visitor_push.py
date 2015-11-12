@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import terminal_colors
+
 import git_visitor_base
 import git_push
 
@@ -7,7 +9,7 @@ import sys
 
 def visitor_push(repos, options):
 
-    ORIGINAL_COLOR = "\033[0m" # mvtodo: would be better to try to detect the terminal's current standard color
+    ORIGINAL_COLOR = terminal_colors.get_standard_color() 
 
     report = []
     for rp in repos:
@@ -15,7 +17,7 @@ def visitor_push(repos, options):
         try:
             remotes, branches = git_visitor_base.apply_filters(rp, options)
         except git_visitor_base.gvbexcept as gvbex:
-            report.append("\033[31m%s: %s.\033[0m" % (rp, gvbex.message)) # those colors are RED and WHITE, respectively. mvtodo: also change them here eventually
+            report.append("%s%s: %s.%s" % (terminal_colors.TTY_RED, rp, gvbex.message, ORIGINAL_COLOR)) 
             continue
 
         report_piece = git_push.do_push(rp, remotes, branches)
