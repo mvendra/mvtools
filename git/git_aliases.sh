@@ -18,6 +18,10 @@ gishogui(){
   git difftool -y --no-prompt $HASH~1 $HASH
 }
 
+gikill(){
+  git reset --hard HEAD~$1
+}
+
 # COMMIT
 alias gicom="git commit" # mvtodo: add mvtags checking as a precondition
 
