@@ -10,6 +10,7 @@ def do_push(repo, remotes, branches):
     report = []
 
     print("\n* Pushing on %s ..." % repo)
+    hasanyfailed = False
     for rm in remotes:
         for bn in branches:
 
@@ -18,13 +19,15 @@ def do_push(repo, remotes, branches):
                 out = "OK."
                 color = terminal_colors.TTY_GREEN
             except OSError as oser:
+                hasanyfailed = True
                 out = "Failed."
                 color = terminal_colors.TTY_RED
             except subprocess.CalledProcessError as cper:
+                hasanyfailed = True
                 out = "Failed."
                 color = terminal_colors.TTY_RED
             
             report.append("%s%s (remote=%s, branch=%s): %s%s" % (color, repo, rm, bn, out, ORIGINAL_COLOR))
 
-    return report
+    return hasanyfailed, report
 

@@ -5,6 +5,7 @@ import fsquery
 import path_utils
 
 import git_repo_query
+import terminal_colors
 
 class gvbexcept(RuntimeError):
     def __init__(self, msg):
@@ -197,6 +198,19 @@ def process_filters(query):
             options_ret["xor-remote"] = query[idx] # inserts option
 
     return options_ret
+
+def print_report(has_all_passed, report_list):
+
+    print("\nRESULTS:")
+    for p in report_list:
+        print(p)
+
+    if has_all_passed:
+        print("\n%sAll operations successful." % terminal_colors.TTY_GREEN)
+    else:
+        print("\n%sNot all operations succeeded." % terminal_colors.TTY_RED)
+
+    print("%s" % terminal_colors.get_standard_color()) # reset terminal color
 
 def do_visit(path_list, filters_query, func):
 

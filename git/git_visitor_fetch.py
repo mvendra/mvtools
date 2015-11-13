@@ -25,16 +25,7 @@ def visitor_fetch(repos, options):
         for ri in report_piece:
             report.append(ri)
 
-    print("\nRESULTS:")
-    for p in report:
-        print(p)
-
-    if all_passed:
-        print("\n%sAll operations successful." % terminal_colors.TTY_GREEN)
-    else:
-        print("\n%sNot all operations succeeded." % terminal_colors.TTY_RED)
-
-    print("%s" % ORIGINAL_COLOR) # reset terminal color
+    git_visitor_base.print_report(all_passed, report)
 
 if __name__ == "__main__":
 
