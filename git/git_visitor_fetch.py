@@ -13,20 +13,28 @@ def visitor_fetch(repos, options):
     ORIGINAL_COLOR = terminal_colors.get_standard_color()
 
     report = []
+    all_passed = True
     for rp in repos:
         remotes = git_repo_query.get_remotes(rp)
         remotes = git_visitor_base.filter_remotes(remotes, options)
         if remotes is None:
             report.append("%s%s: Failed filtering remotes.%s" % (terminal_colors.TTY_RED, rp, ORIGINAL_COLOR)) 
             continue
-        report_piece = git_fetch.do_fetch(rp, remotes)
+        op_piece, report_piece = git_fetch.do_fetch(rp, remotes)
+        all_passed = all_passed and (not op_piece)
         for ri in report_piece:
             report.append(ri)
 
     print("\nRESULTS:")
     for p in report:
         print(p)
-    print("%s\n" % ORIGINAL_COLOR) # reset terminal color
+
+    if all_passed:
+        print("\n%sAll operations successful." % terminal_colors.TTY_GREEN)
+    else:
+        print("\n%sNot all operations succeeded." % terminal_colors.TTY_RED)
+
+    print("%s" % ORIGINAL_COLOR) # reset terminal color
 
 if __name__ == "__main__":
 

@@ -10,18 +10,21 @@ def do_fetch(repo, remotes):
     report = []
 
     print("\n* Fetching on %s ..." % repo)
+    hasanyfailed = False
     try:
         out = subprocess.check_output(["git", "-C", repo, "fetch", "--multiple"] + remotes)
         out = "OK."
         color = terminal_colors.TTY_GREEN
     except OSError as oser:
+        hasanyfailed = True
         out = "Failed."
         color = terminal_colors.TTY_RED
     except subprocess.CalledProcessError as cper:
+        hasanyfailed = True
         out = "Failed."
         color = terminal_colors.TTY_RED
     
     report.append("%s%s: %s%s" % (color, repo, out, ORIGINAL_COLOR))
 
-    return report
+    return hasanyfailed, report
 
