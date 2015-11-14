@@ -27,7 +27,7 @@ def visitor_pull(repos, options):
         for ri in report_piece:
             report.append(ri)
 
-        git_visitor_base.print_report(all_passed, report)
+    git_visitor_base.print_report(all_passed, report)
 
 if __name__ == "__main__":
 
