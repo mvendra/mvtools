@@ -3,6 +3,45 @@
 import sys
 import os
 
+from subprocess import check_output
+
+def get_dir_size(path, human):
+
+    """ get_dir_size
+    returns the disk usage size of a given path
+    the 'human' parameter is a boolean flag.
+    when true, it will return the size in
+    human-readable form i.e. deriving the size unit (K, M, G, etc)
+    when false, it will return the size in bytes.
+    """
+
+    #os.system("du -h %s | tail -n 1" % path)
+    if human:
+        cmd = ["du", "-h", path]
+    else:
+        cmd = ["du", "-b", path]
+
+    out = check_output(cmd)
+
+    # removes the last empty line
+    nl = out.rfind("\n")
+    if nl == -1:
+        return None
+    out = out[:nl]
+
+    # removes the subdir detail list
+    nl = out.rfind("\n")
+    if nl != -1: #only if theres subfolders
+        out = out[nl+1:]
+
+    # removes the path
+    esp = out.find("\t")
+    if esp == -1:
+        return None
+    out = out[:esp]
+
+    return out
+
 def puaq():
     print("Usage: %s /path/to/folder" % os.path.basename(__file__))
     sys.exit(1)
@@ -29,5 +68,7 @@ if __name__ == "__main__":
         thepath = sys.argv[1]
 
     thepath_escaped_abs = escape_spaces(os.path.abspath(thepath))
-    os.system("du -h %s | tail -n 1" % thepath_escaped_abs)
+    thesize = get_dir_size(thepath, True)
+
+    print("%s: %s" % (thepath_escaped_abs, thesize))
 
