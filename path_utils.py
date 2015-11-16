@@ -74,7 +74,7 @@ def scratchfolder(path):
 def guaranteefolder(path):
 
     """ guaranteefolder
-    Makes sure the given is a folder.
+    Makes sure the given path is a folder.
 
     If path already exists and is not a folder, throws exception
     if it already exists and is a folder, does nothing.
@@ -119,5 +119,5 @@ def filter_path_list_no_same_branch(pathlist):
     return result
 
 if __name__ == "__main__":
-    print(filter_path_list_no_same_branch(["/home", "/home/user/nuke", "/bug", "/home/ooser", "/shome", "/home/bork/nuke/bark",]))
+    print("Hello from %s" % os.path.basename(__file__))
 
