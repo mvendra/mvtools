@@ -22,8 +22,24 @@ gikill(){
   git reset --hard HEAD~$1
 }
 
-# COMMIT
-alias gicom="git commit" # mvtodo: add mvtags checking as a precondition
+gicom(){
+  TARGET=`pwd -P`
+  TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
+  if [ $? -eq 1 ]; then
+    # not a git repo. bail out.
+    echo "This is not a git repository. Bailing out."
+    return 1
+  fi
+  RESULT=(`test_mvtags_in_git_cache.py $TARGET`)
+  if [ $? -eq 1 ]; then
+    # a pre-commit check failed: mvtags
+    echo "Pre-commit check failed - mvtags are present in the following files:"
+    echo $RESULT
+    # mvtodo: allow the commit to be interactively forced despite of this warning.
+    return 1
+  fi
+  git commit $@
+}
 
 alias gista="git status"
 alias giadd="git add"
