@@ -25,7 +25,7 @@ gikill(){
 alias gista="git status"
 alias giadd="git add"
 alias giunadd="git reset HEAD"
-#alias gicom="git_commit_with_prechecks.py"
+#alias gicom="git_commit_with_prechecks.py" # mvtodo
 alias gicom="git commit"
 alias gilog="git log"
 alias gipus="git push"
