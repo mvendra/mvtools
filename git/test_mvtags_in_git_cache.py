@@ -15,7 +15,7 @@ def check_mvtags_in_file(repo, thefile):
     """ check_mvtags_in_file
     returns true if thefile has mvtags in it
     returns false otherwise
-    returns None if thefile does not exist
+    returns None upon errors
     """
 
     if not os.path.exists(thefile):
@@ -25,14 +25,22 @@ def check_mvtags_in_file(repo, thefile):
     out = check_output(cmd)
     out = out.strip()
 
-    # mvtodo: need to clean up out and consider only the new additions
+    # remove first 6 lines
+    nl = -1
+    for x in xrange(6):
+        nl = out.find("\n", nl+1)
+        if nl == -1:
+            return None
+    out = out[nl+1:]
 
-    r = out.find("mvtodo")
-    if r != -1:
-        return True
-    r = out.find("mvdebug")
-    if r != -1:
-        return True
+    for l in out.split("\n"):
+        if l[0] != " ":
+            r = out.find("mvtodo")
+            if r != -1:
+                return True
+            r = out.find("mvdebug")
+            if r != -1:
+                return True
 
     return False
 
