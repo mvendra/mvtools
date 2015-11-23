@@ -126,10 +126,9 @@ def get_staged_files(repo):
     out = check_output(["git", "-C", repo, "status", "--porcelain"])
     out = out.strip() # removes the trailing newline
     for l in out.split("\n"):
-        if l[0] == "A":
-            lf = l[3:]
-            fp = os.path.join(repo, lf)
-            ret.append(fp)
+          lf = l[3:]
+          fp = os.path.join(repo, lf)
+          ret.append(fp)
 
     return ret
 
