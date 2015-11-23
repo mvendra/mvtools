@@ -6,40 +6,40 @@ import os
 from subprocess import check_output
 from subprocess import CalledProcessError
 
-def prechecks(repo):
-    return True
-    ret = check_output
+import test_mvtags_in_git_cache
 
-#  TARGET=`pwd -P`
-#  TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
-#  if [ $? -eq 1 ]; then
-#    # not a git repo. bail out.
-#    echo "This is not a git repository. Bailing out."
-#    return 1
-#  fi
-#  RESULT=(`test_mvtags_in_git_cache.py $TARGET`)
-#  if [ $? -eq 1 ]; then
-#    # a pre-commit check failed: mvtags
-#    echo "Pre-commit check failed - mvtags are present in the following files:"
-#    echo $RESULT
-#    # mvtodo: allow the commit to be interactively forced despite of this warning.
-#    return 1
-#  fi
-#  git commit $@
+def gicom(repo, params):
 
-def gicom(params):
-    cmd = "git commit"
+    cmd = ["git",  "-C", repo, "commit"]
     for p in params:
-        cmd += " %s" % p
-    cmd += "!"
-    # mvtodo: awesome... this ALSO does not carry the quotes.
-    print(cmd)
-    #cmd += params
-    #os.system(cmd)
+        cmd.append(p)
+
+    try:
+        out = check_output(cmd)
+        print(out.strip())
+    except CalledProcessError as cpe:
+        print(cpe.output.strip())
+        exit(cpe.returncode) 
 
 if __name__ == "__main__":
+
+    params = sys.argv[1:]
     repo = os.getcwd()
-    repo = check_output(["git_discover_repo_root.py", repo])
-    if prechecks(repo):
-        gicom(sys.argv[1:])
+
+    try:
+        repo = check_output(["git_discover_repo_root.py", repo])
+    except CalledProcessError as cpe:
+        print("Failed detecting repo from %s." % repo)
+        exit(1)
+
+    check = test_mvtags_in_git_cache.check_mvtags_in_repo(repo)
+    if len(check) == 0:
+        # no mvtags detected. we are clear to proceed and commit
+        gicom(repo, params)
+    else:
+        # violations detected. report and abort.
+        # mvtodo: offer interactive chance to allow commit to pass
+        for c in check:
+            print("%s has pre-commit violations." % c)
+        exit(1)
 

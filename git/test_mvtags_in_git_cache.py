@@ -56,6 +56,10 @@ def check_mvtags_in_repo(repo):
     ret = []
 
     files = git_repo_query.get_staged_files(repo)
+    if files is None:
+        print("Failed querying %s. Aborting." % repo)
+        exit(1)
+
     for f in files:
         if check_mvtags_in_file(repo, f):
             ret.append(f)
