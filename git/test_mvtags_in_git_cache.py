@@ -34,7 +34,7 @@ def check_mvtags_in_file(repo, thefile):
     out = out[nl+1:]
 
     for l in out.split("\n"):
-        if l[0] != " ":
+        if l[0] == "+":
             r = out.find("mvtodo")
             if r != -1:
                 return True
@@ -78,6 +78,6 @@ if __name__ == "__main__":
         exit(0)
     else:
         for r in report:
-            print("%s has mvtags" % r)
+            print("%s introduces mvtags" % r)
         exit(1)
 
