@@ -21,18 +21,11 @@ def remove_gitlog_decorations(commitmsg):
     res = commitmsg
 
     # cut out first four lines (commit, author, date, \n)
-    nl = res.find("\n")
-    if nl == -1:
-        return None
-    nl = res.find("\n", nl+1)
-    if nl == -1:
-        return None
-    nl = res.find("\n", nl+1)
-    if nl == -1:
-        return None
-    nl = res.find("\n", nl+1)
-    if nl == -1:
-        return None
+    nl = -1
+    for x in xrange(4):
+        nl = res.find("\n", nl+1)
+        if nl == -1:
+            return None
     res = res[nl+1:]
 
     # remove the remaining commits
