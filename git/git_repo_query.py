@@ -106,6 +106,33 @@ def get_current_branch(repo):
 
     return current_branch[0]
 
+def get_staged_files(repo):
+
+    """ get_staged_files
+    on success, returns a list of staged files on the given repo
+    on failure, returns None
+    """
+
+    t1 = is_git_work_tree(repo)
+    if t1 is None:
+        print("%s does not exist." % repo)
+        return None
+    elif t1 is False:
+        print("%s is not a git work tree." % repo)
+        return None
+
+    ret = []
+
+    out = check_output(["git", "-C", repo, "status", "--porcelain"])
+    out = out.strip() # removes the trailing newline
+    for l in out.split("\n"):
+        if l[0] == "A":
+            lf = l[3:]
+            fp = os.path.join(repo, lf)
+            ret.append(fp)
+
+    return ret
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
