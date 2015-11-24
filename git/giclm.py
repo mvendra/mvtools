@@ -7,11 +7,19 @@ without the decorations.
 """
 
 from subprocess import check_output
+from subprocess import CalledProcessError
 
 import sendtoclipboard
 
 def copy_last_commit_message():
-    out = check_output(["git", "log"])
+    try:
+        out = check_output(["git", "log"])
+    except CalledProcessError as cpe:
+        print("Call to git log returned error.")
+        exit(1)
+    except OSError as oe:
+        print("Call to git failed. Make sure it is installed.")
+        exit(1)
     msg = remove_gitlog_decorations(out)
     if msg is not None:
         sendtoclipboard.sendtoclipboard(msg)
