@@ -6,6 +6,7 @@ import os
 import sys
 import fsquery
 from subprocess import check_output
+from subprocess import CalledProcessError
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
@@ -13,7 +14,11 @@ if __name__ == "__main__":
         sys.exit(1)
     ret = fsquery.makecontentlist(sys.argv[1], True, True, False, False, False, sys.argv[3:])
     for r in ret:
-        out = check_output(["ag", sys.argv[2], r])
+        try:
+            out = check_output(["ag", sys.argv[2], r])
+        except CalledProcessError as cpe:
+            print("Failed calling ag. Make sure silversearcher-ag is installed.")
+            exit(1)
         if not len(out):
             continue
         print("\033[94m%s" % r)
