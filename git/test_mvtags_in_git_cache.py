@@ -3,6 +3,7 @@
 import sys
 import os
 from subprocess import check_output
+from subprocess import CalledProcessError
 
 import git_repo_query
 
@@ -22,7 +23,11 @@ def check_mvtags_in_file(repo, thefile):
         return None
 
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached", thefile]
-    out = check_output(cmd)
+    try:
+        out = check_output(cmd)
+    except CalledProcessError as cpe:
+        print("Unable to call git. Make sure it is installed.")
+        exit(1)
     out = out.strip().lower()
 
     # remove first 6 lines
