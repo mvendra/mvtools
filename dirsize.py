@@ -4,6 +4,7 @@ import sys
 import os
 
 from subprocess import check_output
+from subprocess import CalledProcessError
 
 def get_dir_size(path, human):
 
@@ -21,7 +22,11 @@ def get_dir_size(path, human):
     else:
         cmd = ["du", "-b", path]
 
-    out = check_output(cmd)
+    try:
+        out = check_output(cmd)
+    except CalledProcessError as cpe:
+        print("Failed detecting dirsize for %s." % path)
+        exit(1)
 
     # removes the last empty line
     nl = out.rfind("\n")
