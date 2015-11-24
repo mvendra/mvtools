@@ -23,7 +23,7 @@ def check_mvtags_in_file(repo, thefile):
 
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached", thefile]
     out = check_output(cmd)
-    out = out.strip()
+    out = out.strip().lower()
 
     # remove first 6 lines
     nl = -1
