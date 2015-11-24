@@ -3,12 +3,11 @@
 import sys
 import os
 from subprocess import check_output
-from subprocess import CalledProcessError
 
 def getfromclipboards():
     try:
         contents = check_output(["xclip", "-sel", "clip", "-o"])
-    except CalledProcessError as cpe:
+    except OSError as oe:
         print("Failed to call xclip. Make sure it is installed.")
         exit(1)
     return contents
