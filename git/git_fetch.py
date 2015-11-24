@@ -2,7 +2,8 @@
 
 import terminal_colors
 
-import subprocess
+from subprocess import check_output
+from subprocess import CalledProcessError
 
 def do_fetch(repo, remotes):
 
@@ -12,14 +13,14 @@ def do_fetch(repo, remotes):
     print("\n* Fetching on %s ..." % repo)
     hasanyfailed = False
     try:
-        out = subprocess.check_output(["git", "-C", repo, "fetch", "--multiple"] + remotes)
+        out = check_output(["git", "-C", repo, "fetch", "--multiple"] + remotes)
         out = "OK."
         color = terminal_colors.TTY_GREEN
     except OSError as oser:
         hasanyfailed = True
         out = "Failed."
         color = terminal_colors.TTY_RED
-    except subprocess.CalledProcessError as cper:
+    except CalledProcessError as cper:
         hasanyfailed = True
         out = "Failed."
         color = terminal_colors.TTY_RED
