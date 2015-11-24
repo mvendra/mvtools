@@ -2,9 +2,11 @@
 
 import sys
 import os
-import subprocess
 import path_utils
 import getpass
+
+from subprocess import check_output
+from subprocess import call
 
 def puaq():
     print("Usage: %s enc_password_file" % os.path.basename(__file__))
@@ -20,18 +22,18 @@ if __name__ == "__main__":
         print("%s does not exist. Aborting." % encpassfile)
         sys.exit(1)
 
-    random_fn = subprocess.check_output(["randomfilenamegen.sh"])
+    random_fn = check_output(["randomfilenamegen.sh"])
     passphrase = getpass.getpass("Type in...\n")
 
     try:
-        subprocess.check_output(["decrypt.sh", encpassfile, random_fn, passphrase])
+        check_output(["decrypt.sh", encpassfile, random_fn, passphrase])
     except:
         print("Failed decrypting file.")
         path_utils.deletefile_ignoreerrors(random_fn)
         sys.exit(1)
 
     try:
-        subprocess.call(["copypass.py", random_fn])
+        call(["copypass.py", random_fn])
         path_utils.deletefile_ignoreerrors(random_fn)
     except:
         print("Unable to send password to clipboard.")
