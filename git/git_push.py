@@ -2,7 +2,8 @@
 
 import terminal_colors
 
-import subprocess
+from subprocess import check_output
+from subprocess import CalledProcessError
 
 def do_push(repo, remotes, branches):
 
@@ -15,14 +16,14 @@ def do_push(repo, remotes, branches):
         for bn in branches:
 
             try:
-                out = subprocess.check_output(["git", "-C", repo, "push", rm, bn])
+                out = check_output(["git", "-C", repo, "push", rm, bn])
                 out = "OK."
                 color = terminal_colors.TTY_GREEN
             except OSError as oser:
                 hasanyfailed = True
                 out = "Failed."
                 color = terminal_colors.TTY_RED
-            except subprocess.CalledProcessError as cper:
+            except CalledProcessError as cper:
                 hasanyfailed = True
                 out = "Failed."
                 color = terminal_colors.TTY_RED
