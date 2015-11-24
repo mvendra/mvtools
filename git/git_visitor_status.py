@@ -3,10 +3,15 @@
 import os
 import git_visitor_base
 from subprocess import check_output
+from subprocess import CalledProcessError
 
 def visitor_status(repos, options):
     for r in repos:
-        out = check_output(["git", "-C", r, "status", "-s"])
+        try:
+            out = check_output(["git", "-C", r, "status", "-s"])
+        except:
+            print("Failed calling git. Make sure it is installed.")
+            exit(1)
         if len(out) == 0:
             pass # clean HEAD
         else:
