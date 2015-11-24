@@ -9,7 +9,10 @@ def visitor_status(repos, options):
     for r in repos:
         try:
             out = check_output(["git", "-C", r, "status", "-s"])
-        except:
+        except CalledProcessError as cpe:
+            print("Git status returned error.")
+            exit(1)
+        except OSError as oe:
             print("Failed calling git. Make sure it is installed.")
             exit(1)
         if len(out) == 0:
