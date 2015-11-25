@@ -38,7 +38,12 @@ def get_remotes(repo):
         print("%s is not a git work tree." % repo)
         return None
 
-    out = check_output(["git", "-C", repo, "remote"])
+    try:
+        out = check_output(["git", "-C", repo, "remote"])
+    except OSError as oe:
+        print("Unable to call git. Make sure it is installed.")
+        exit(1)
+
     ret_list = out.split()
     if len(ret_list) > 0:
         return ret_list
@@ -60,7 +65,12 @@ def get_branches(repo):
         print("%s is not a git work tree." % repo)
         return None
 
-    out = check_output(["git", "-C", repo, "branch"])
+    try:
+        out = check_output(["git", "-C", repo, "branch"])
+    except OSError as oe:
+        print("Unable to call git. Make sure it is installed.")
+        exit(1)
+
     branch_list = out.split("\n")
 
     # move the checked out branch to the front
@@ -123,7 +133,12 @@ def get_staged_files(repo):
 
     ret = []
 
-    out = check_output(["git", "-C", repo, "status", "--porcelain"])
+    try:
+        out = check_output(["git", "-C", repo, "status", "--porcelain"])
+    except OSError as oe:
+        print("Unable to call git. Make sure it is installed.")
+        exit(1)
+
     out = out.strip() # removes the trailing newline
     for l in out.split("\n"):
           lf = l[3:]
