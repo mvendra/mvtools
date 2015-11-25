@@ -45,6 +45,9 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   # for a nuclear-recursive solution, use this:
   #PATH=${PATH}:$(find ~/the_base_path -type d | tr '\n' ':' | sed 's/:$//')
 
+  # coreutils customisations
+  source $MVTOOLS/coreutils_custom.sh
+
   # it is preferrable to source other scripts last, because any of their contents may depend on previously added paths
   source $MVTOOLS/git/git_aliases.sh
 
