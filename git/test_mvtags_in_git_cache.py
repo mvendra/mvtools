@@ -29,9 +29,9 @@ def check_mvtags_in_file(repo, thefile):
         exit(1)
     out = out.strip().lower()
 
-    # remove first 6 lines
+    # remove first 5 lines
     nl = -1
-    for x in xrange(6):
+    for x in xrange(5):
         nl = out.find("\n", nl+1)
         if nl == -1:
             return None
@@ -39,10 +39,10 @@ def check_mvtags_in_file(repo, thefile):
 
     for l in out.split("\n"):
         if l[0] == "+":
-            r = out.find("mvtodo")
+            r = l.find("mvtodo")
             if r != -1:
                 return True
-            r = out.find("mvdebug")
+            r = l.find("mvdebug")
             if r != -1:
                 return True
 
