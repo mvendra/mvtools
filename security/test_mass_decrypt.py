@@ -28,6 +28,14 @@ if __name__ == "__main__":
     path_temp = sys.argv[2]
     extension = sys.argv[3]
 
+    if not os.path.exists(path_files):
+        print("%s does not exist. Aborting." % path_files)
+        sys.exit(1)
+
+    if not os.path.isdir(path_temp):
+        print("%s does not exist or is not a directory. You have to create a directory manually - and get rid of it too, after the test is complete. This is by design. Aborting." % path_temp)
+        sys.exit(2)
+ 
     if len(sys.argv) > 4:
         # optional passphrase also specified
         passphrase = sys.argv[4]
@@ -35,10 +43,7 @@ if __name__ == "__main__":
         # optional passphrase not specified. lets read it from console interactively
         passphrase = getpass.getpass("Type in...\n")
 
-    if not os.path.exists(path_files):
-        print("%s does not exist. Aborting." % path_files)
-        sys.exit(1)
-
+   
     path_temp = os.path.join(path_temp, os.path.basename(__file__) + "_temp_DELETE_ME_NOW")
     path_utils.scratchfolder(path_temp)
 
