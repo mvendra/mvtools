@@ -4,7 +4,7 @@ to format external USB ext hd:
 * run fdisk -l to check the device's /dev/theusbdisk file.
 * fdisk /dev/theusbdisk  --->   delete all partitions and create a new one
 * then mkfs.ext3 /dev/theusbdiskfile#    <--- ATTENTION! do this on the device plus partition number. for example /dev/sdb1 <--- notice the 1!
-* then e2label /dev/theusbdisk# THEPARTITIONNAME     ---->    AGAIN, use the evice plus partition number (/dev/sdb1 for example)
+* then e2label /dev/theusbdisk# THEPARTITIONNAME     ---->    AGAIN, use the device plus partition number (/dev/sdb1 for example)
 * then blkid /dev/theusbdisk# to get the partition's uuid so it can be added to the fstab (yes, add the device plus number)
 * like so: "UUID=6f6aafa8-7dce-46f2-89e5-0b8908d6d1e6        /home/mateus/Mountpoints/AcervoBK               ext3           rw,noauto,owner,users,nobootwait               0       0" <- an actual line from my fstab from early 2015, on a linux mint 17
 * then chown the mount point to the user to make sure they can mount it and rw it.
