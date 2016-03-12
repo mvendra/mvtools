@@ -22,6 +22,11 @@ if [ -z $OUTFILE ]; then
   OUTFILE=${INFILE}.enc
 fi
 
+if [ -e $OUTIFLE ]; then
+  echo "$OUTFILE already exists. Will not overwrite. Aborting."
+  exit 1
+fi
+
 if [ -z $PASSPHRASE ]; then
   echo "Input passphrase..."
   read -s PASSPHRASE
