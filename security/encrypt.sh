@@ -5,7 +5,7 @@ OUTFILE=$2
 PASSPHRASE=$3
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename $0` infile outfile [passphrase]"
+  echo "Usage: `basename $0` infile [outfile] [passphrase]"
   exit 1
 }
 
@@ -19,7 +19,7 @@ if [ ! -e $INFILE ]; then
 fi
 
 if [ -z $OUTFILE ]; then
-  puaq
+  OUTFILE=${INFILE}.enc
 fi
 
 if [ -z $PASSPHRASE ]; then
