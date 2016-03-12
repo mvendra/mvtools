@@ -123,6 +123,7 @@ def make_path_list(paths_to_consider):
 
     """ make_path_list
     assembles a list of valid paths, based on function parameter and envvar
+    returns None if no paths are put together
     """
 
     paths = []
@@ -135,6 +136,10 @@ def make_path_list(paths_to_consider):
     if path_env is not None:
         paths.append(path_env)
     paths = path_utils.filter_path_list_no_same_branch(paths) # sanitises paths list
+
+    if len(paths) == 0:
+        return None
+
     return paths
 
 def get_path_from_env():
