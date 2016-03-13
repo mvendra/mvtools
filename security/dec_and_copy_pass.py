@@ -8,6 +8,8 @@ import getpass
 from subprocess import check_output
 from subprocess import call
 
+import decrypt
+
 def puaq():
     print("Usage: %s enc_password_file" % os.path.basename(__file__))
     sys.exit(1)
@@ -25,9 +27,7 @@ if __name__ == "__main__":
     random_fn = check_output(["randomfilenamegen.sh"])
     passphrase = getpass.getpass("Type in...\n")
 
-    try:
-        check_output(["decrypt.sh", encpassfile, random_fn, passphrase])
-    except:
+    if not decrypt.symmetric_decrypt(encpassfile, random_fn, passphrase):
         print("Failed decrypting file.")
         path_utils.deletefile_ignoreerrors(random_fn)
         sys.exit(1)

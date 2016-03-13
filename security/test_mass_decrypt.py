@@ -9,6 +9,8 @@ import getpass
 
 from subprocess import check_output
 
+import decrypt
+
 """ test_mass_decrypt
 Tests if all files inside a given path, that match the given extension, have been encrypted with the same given passphrase (recursively).
 A temporary path must also be provided - temporarily decrypted files will be stored there, and then this folder will be deleted.
@@ -53,9 +55,7 @@ if __name__ == "__main__":
 
     report = []
     for f in filelist:
-        try:
-            check_output(["decrypt.sh", f, os.path.join(path_temp, os.path.basename(f) + ".tmp"), passphrase])
-        except:
+        if not decrypt.symmetric_decrypt(f, os.path.join(path_temp, os.path.basename(f) + ".tmp"), passphrase):
             report.append(f + " FAILED")
 
     print("\nWill print the report...:")
