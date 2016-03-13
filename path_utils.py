@@ -14,6 +14,16 @@ class PathUtilsException(RuntimeError):
         self._message = message
     message = property(_get_message, _set_message)
 
+def poplastextension(filename):
+    result = "you_found_a_bug"
+    idx = filename.rfind(".")
+    if idx == -1:
+        # no extensions found at all.
+        result = filename + "_sub"
+    else:
+        result = filename[:idx]
+    return result
+
 def deletefile_ignoreerrors(filepath):
     if not os.path.exists(filepath):
         return
