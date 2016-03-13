@@ -17,6 +17,7 @@ def symmetric_decrypt(infile, outfile, passphrase):
     """
     symmetric_decrypt
     parameters are all mandatory here
+    returns True on success, False on failures
     """
 
     if not os.path.isfile(infile):
@@ -31,7 +32,11 @@ def symmetric_decrypt(infile, outfile, passphrase):
         print("Invalid passphrase. Aborting.")
         sys.exit(1)
 
-    call(["openssl", "des3", "-d", "-salt", "-in", infile, "-out", outfile, "-k", passphrase])
+    out = call(["openssl", "des3", "-d", "-salt", "-in", infile, "-out", outfile, "-k", passphrase])
+    if out == 0:
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":
 
