@@ -13,7 +13,8 @@ import decrypt
 
 """ test_mass_decrypt
 Tests if all files inside a given path, that match the given extension, have been encrypted with the same given passphrase (recursively).
-A temporary path must also be provided - temporarily decrypted files will be stored there, and then this folder will be deleted.
+A temporary path must also be provided - temporarily decrypted files will be stored there. This temporary folder is cleared after the operation
+is complete, but it is not removed.
 This is like a dry-run version of a would-be mass_decrypt operation/script. Intended for validating purposes.
 """
 
