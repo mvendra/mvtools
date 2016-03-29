@@ -34,6 +34,6 @@ FILENAME=`basename $TARGET`
 tar -cf $FILENAME.tar $TARGET
 bzip2 $FILENAME.tar
 if $DO_HASH; then
-  sha256sum $FILENAME > $FILENAME.tar.bz2.hash
+  sha256sum $FILENAME.tar.bz2 > $FILENAME.tar.bz2.sha256
 fi
 
