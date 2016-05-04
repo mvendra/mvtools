@@ -9,6 +9,23 @@ def puaq():
     print("Usage: %s /mnt/path" % os.path.basename(__file__))
     sys.exit(1)
 
+def checkmounted(path):
+
+    """
+    checkmounted
+    checks if path is mounted
+    returns True if it is, False if it is not
+    """
+
+    # disallows partial matches
+    path = " " + path + " "
+
+    ret = os.popen("mount").read().strip()
+    if ret.find(path) > 0:
+        return True
+    else:
+        return False
+
 if __name__ == "__main__":
 
     """
@@ -25,12 +42,8 @@ if __name__ == "__main__":
     if path_to_find[len(path_to_find)-1] == os.sep: # allows the input path to come with a trailing separator
         path_to_find = path_to_find[:len(path_to_find)-1]
 
-    # disallows partial matches
-    path_to_find = " " + path_to_find + " "
-
-    ret = os.popen("mount").read().strip()
-    if ret.find(path_to_find) > 0:
-        sys.exit(0)
+    if checkmounted(path_to_find):
+        exit(0)
     else:
-        sys.exit(1)
+        exit(1)
 
