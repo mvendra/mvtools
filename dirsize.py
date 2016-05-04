@@ -45,7 +45,10 @@ def get_dir_size(path, human):
         return None
     out = out[:esp]
 
-    return out
+    if human:
+        return out
+    else:
+        return int(out)
 
 def puaq():
     print("Usage: %s /path/to/folder" % os.path.basename(__file__))
