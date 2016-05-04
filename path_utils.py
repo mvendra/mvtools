@@ -63,8 +63,8 @@ def explodepath(apath):
 def scratchfolder(path):
 
     """ scratch_folder
-    Makes sure the given path is/becomes an empty folder. If not preexistent, path is created.
-    If it pre-exists, being either a file or a valid tree, it is deleted and re-created and an empty folder.
+    Makes sure the given path is/becomes an empty folder. If not preexistent, path is created as an empty folder.
+    If it pre-exists, being either a file or a valid tree, it is deleted and re-created as an empty folder.
     Returns true/false depending on whether the operation succeeded or not.
     """
 
