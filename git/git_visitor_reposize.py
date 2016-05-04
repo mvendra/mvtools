@@ -22,7 +22,7 @@ def visitor_reposize(repos, options):
     total = 0
     for rp in repos_filtered:
         rs = dirsize.get_dir_size(rp, False)
-        total += int(rs)
+        total += rs
         print("%s: %s" % (rp, sizeof_fmt(int(rs), '')))
 
     print("Total size of all repos: %s" % sizeof_fmt(total, ''))
