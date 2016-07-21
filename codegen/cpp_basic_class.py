@@ -7,7 +7,7 @@ class cpp_basic_class:
 
     def __init__(__self, filename):
         __self.filename = filename
-        __self.INDENT_STEP = "  "
+        __self.INDENT_STEP = "    " # 4 spaces
         __self.indent = ""
 
     def writetofile(__self, thefile, contents):
@@ -28,15 +28,17 @@ class cpp_basic_class:
         header = "\n#ifndef %s\n#define %s\n\n" % (guardian, guardian)
         
         header += __self.more("class %s {\n\n" % classname)
+        header += __self.more("public:\n\n")
+
         __self.inc_indent()
 
-        header += __self.more("public:\n\n")
         header += __self.more("%s();\n" % classname)
         header += __self.more("~%s();\n\n" % classname)
 
+        __self.dec_indent()
+
         header += __self.more("private:\n\n")
 
-        __self.dec_indent()
         header += __self.more("};\n\n")
 
         header += __self.more("#endif // %s\n\n" % guardian)
