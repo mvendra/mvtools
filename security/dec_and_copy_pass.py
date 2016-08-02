@@ -2,6 +2,7 @@
 
 import sys
 import os
+import stat
 import path_utils
 import getpass
 
@@ -20,6 +21,15 @@ if __name__ == "__main__":
         puaq()
 
     encpassfile = sys.argv[1]
+
+    # tests permissions of encpassfile
+    p = os.stat(encpassfile)
+    if p.st_mode & stat.S_IRWXG:
+        print("WARNING: This file has group permissions!")
+
+    if p.st_mode & stat.S_IRWXO:
+        print("WARNING: This file has permissions for others!")
+
     if not os.path.exists(encpassfile):
         print("%s does not exist. Aborting." % encpassfile)
         sys.exit(1)
