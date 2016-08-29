@@ -103,7 +103,7 @@ if __name__ == "__main__":
         for i in sys.argv[2:]:
             if len(i) < 2:
                 print("Invalid option: %s" % i)
-                sys.exit(1) # invalid. these are optional parameters. we need the suffix to tell us what type it is
+                sys.exit(1) # invalid. these are optional parameters. we need the prefix to tell us what type it is
 
             if i[0] == "h":
                 header_prefix = i[2:]
