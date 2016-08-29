@@ -68,8 +68,18 @@ class cpp14_restricted_class:
         impl_fname = __self.filename + ".cpp"
         impl = "\n#include \"%s\"\n\n" % header_fname
 
+        # NAMESPACES BEGIN
+        for i in __self.namespaces:
+            impl += __self.more("namespace %s {\n" % i)
+        impl += __self.more("\n")
+
         impl += __self.more("%s::%s(){\n}\n\n" % (classname, classname))
         impl += __self.more("%s::~%s(){\n}\n\n" % (classname, classname))
+
+        # NAMESPACES END
+        for i in reversed(__self.namespaces):
+            impl += __self.more("} // ns: %s\n" % i)
+        impl += __self.more("\n")
 
         __self.writetofile(os.path.join(os.getcwd(), impl_fname), impl)
 
