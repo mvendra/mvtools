@@ -141,9 +141,9 @@ def get_staged_files(repo):
 
     out = out.strip() # removes the trailing newline
     for l in out.split("\n"):
-          lf = l[3:]
-          fp = os.path.join(repo, lf)
-          ret.append(fp)
+        lf = l[3:]
+        fp = os.path.join(repo, lf)
+        ret.append(fp)
 
     return ret
 
