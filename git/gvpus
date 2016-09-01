@@ -1,4 +1,4 @@
 #!/bin/bash
 
-git_visitor_push.py --not-remote offline
+git_visitor_push.py --not-remotename offline
 

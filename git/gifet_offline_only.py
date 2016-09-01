@@ -18,7 +18,7 @@ if __name__ == "__main__":
     repos = []
 
     repos += [sys.argv[1]]
-    options["xor-remote"] = "offline"
+    options["xor-remotename"] = "offline"
 
     git_visitor_fetch.visitor_fetch(repos, options)
 

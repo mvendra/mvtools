@@ -10,9 +10,11 @@ def do_pull(repo, remotes, branches):
     ORIGINAL_COLOR = terminal_colors.get_standard_color() 
     report = []
 
+    remotes_list = [i for i in remotes if "fetch" in remotes[i]]
+
     print("\n* Pulling on %s ..." % repo)
     hasanyfailed = False
-    for rm in remotes:
+    for rm in remotes_list:
         for bn in branches:
 
             try:

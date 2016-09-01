@@ -18,7 +18,7 @@ if __name__ == "__main__":
     repos = []
 
     repos += [sys.argv[1]]
-    options["not-remote"] = ["offline"]
+    options["not-remotename"] = ["offline"]
 
     git_visitor_push.visitor_push(repos, options)
 

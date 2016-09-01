@@ -27,7 +27,11 @@ def is_git_work_tree(path):
 def get_remotes(repo):
 
     """ get_remotes
-    returns a list with a repo's remotes.
+    returns a 3-level dictionary containing remotes information
+    example:
+    { 'offline': {'push': 'local/path1', 'fetch': 'local/path2'},
+      'private': {'push': 'git@remote/path.git', 'fetch': 'git@remote/path.git'} }
+    returns None on failures
     """
 
     t1 = is_git_work_tree(repo)
@@ -39,16 +43,34 @@ def get_remotes(repo):
         return None
 
     try:
-        out = check_output(["git", "-C", repo, "remote"])
+        out = check_output(["git", "-C", repo, "remote", "-v"])
     except OSError as oe:
         print("Unable to call git. Make sure it is installed.")
         exit(1)
 
-    ret_list = out.split()
-    if len(ret_list) > 0:
-        return ret_list
-    else:
+    filtered_list = out.split()
+    # has to return multiples of 3 (name_remote, remote_path, (fetch/push))
+    if len(filtered_list) == 0:
         return None
+    elif len(filtered_list) % 3 != 0:
+        return None
+    elif (len(filtered_list) / 3) % 2 != 0:
+        return None
+
+    ret_dict = {}
+
+    for i in range(0, len(filtered_list), 3):
+        remote_name = filtered_list[i]
+        remote_path = filtered_list[i+1]
+        remote_operation = filtered_list[i+2]
+        remote_operation = remote_operation[1:len(remote_operation)-1] # removes the encasing parenthesis
+
+        if remote_name in ret_dict:
+            ret_dict[remote_name][remote_operation] = remote_path
+        else:
+            ret_dict[remote_name] = {remote_operation: remote_path}
+
+    return ret_dict
 
 def get_branches(repo):
 

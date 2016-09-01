@@ -52,25 +52,90 @@ def pluck_dotgit(path_list):
 
 def filter_remotes(remotes, options):
 
+    if remotes is None or options is None:
+        return None
+
     """ filter_remotes
-    on success, returns list of remotes filtered by provided options
+    on success, returns a 3-level dict of filtered remotes,
+    according to passed |options|
     on failure, returns None
+
+    valid options are:
+    xor-remotename
+    not-remotename
+
+    xor-remoteop
+    not-remoteop
+
+    xor-remotepath
+    not-remotepath
+
+    possibly for the future:
+    include xor-partial-match and not-partial-match
+    (so it would be possible to more feasibly filter out certain paths)
     """
 
-    retlist = remotes
+    remote_names = []
+    remote_ops = []
+    remote_paths = []
 
-    if "xor-remote" in options:
-        if not options["xor-remote"] in remotes:
-            return None # the xor'ed remote must be available to begin with
-        return [options["xor-remote"]] # early return: xor remote does not play along with any other option.
+    for x in remotes:
+        remote_names.append(x)
+        for y in remotes[x]:
+            if not y in remote_ops:
+                remote_ops.append(y)
+            if not remotes[x][y] in remote_paths:
+                remote_paths.append(remotes[x][y])
 
-    if "not-remote" in options:
-        retlist = [] # lets reset the return list, then only add the ones that are not blacklisted
-        for it in remotes:
-            if not it in options["not-remote"]:
-                retlist += [it]
+    names_to_pick = []
+    ops_to_pick = []
+    paths_to_pick = []
 
-    return retlist
+    # FILTER REMOTE NAMES
+    names_to_pick = assemble_pick_list("xor-remotename", "not-remotename", options, remote_names)
+
+    # FILTER REMOTE OPERATIONS (fetch or push)
+    ops_to_pick = assemble_pick_list("xor-remoteop", "not-remoteop", options, remote_ops)
+
+    # FILTER REMOTE PATHS
+    paths_to_pick = assemble_pick_list("xor-remotepath", "not-remotepath", options, remote_paths)
+
+    ret_dict = {}
+    for x in remotes:
+        for y in remotes[x]:
+
+            if (x in names_to_pick) and (y in ops_to_pick) and (remotes[x][y] in paths_to_pick):
+                
+                if x in ret_dict:
+                    ret_dict[x][y] = remotes[x][y]
+                else:
+                    ret_dict[x] = {y: remotes[x][y]}
+
+    return ret_dict
+
+def assemble_pick_list(xor_opt, not_opt, options, candidate_list):
+
+    """ assemble_pick_list
+    applies xor and not operations, based on their presence (or lack thereof) inside |options|,
+    onto candidate_list and return another list accordingly
+    returns empty list on misparameterisation (passing a xor but not specifying it)
+    """
+
+    pick_list = []
+
+    if xor_opt in options:
+        if not options[xor_opt] in candidate_list:
+            return [] # the xor'ed name must be available to begin with
+        pick_list.append(options[xor_opt])
+    else: # its either a xor-opt or a not-opt. cant have both.
+        if not_opt in options:
+            for it in candidate_list:
+                if not it in options[not_opt]:
+                    pick_list += [it]
+        else:
+            pick_list = candidate_list
+
+    return pick_list
 
 def apply_filters(repo, options):
 
@@ -100,24 +165,14 @@ def apply_filters(repo, options):
 def filter_branches(branches, options):
 
     """ filter_branches
-    on success, returns list of branches filtered by provided options
+    on success, returns list of branches filtered by the provided |options|
     on failure, returns None
     """
 
-    retlist = branches
-
-    if "xor-branch" in options:
-        if not options["xor-branch"] in branches:
-            return None # the xor'ed branch must be available to begin with
-        return [options["xor-branch"]] # early return: xor branch does not play along with any other option.
-
-    if "not-branch" in options:
-        retlist = [] # lets reset the return list, then only add the ones that are not blacklisted
-        for it in branches:
-            if not it in options["not-branch"]:
-                retlist += [it]
-
-    return retlist
+    ret = assemble_pick_list("xor-branch", "not-branch", options, branches)
+    if len(ret) == 0:
+        return None
+    return ret
 
 def make_path_list(paths_to_consider):
 
@@ -188,19 +243,19 @@ def process_filters(query):
     for it in query:
         idx += 1
 
-        # NOT REMOTE
-        if it == "--not-remote":
+        # NOT REMOTENAME
+        if it == "--not-remotename":
             if idx == len(query): # error: this option requires a parameter, but none was given
                 return None
-            if not "not-remote" in options_ret: # adds this option if not preexistant
-                options_ret["not-remote"] = []
-            options_ret["not-remote"] += [query[idx]] # inserts options
+            if not "not-remotename" in options_ret: # adds this option if not preexistent
+                options_ret["not-remotename"] = []
+            options_ret["not-remotename"] += [query[idx]] # inserts options
 
-        # XOR REMOTE
-        if it == "--xor-remote":
+        # XOR REMOTENAME
+        if it == "--xor-remotename":
             if idx == len(query): # error: this option requires a parameter, but none was given
                 return None
-            options_ret["xor-remote"] = query[idx] # inserts option
+            options_ret["xor-remotename"] = query[idx] # inserts option
 
     return options_ret
 
