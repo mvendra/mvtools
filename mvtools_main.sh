@@ -29,7 +29,13 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   add2pythonpath $MVTOOLS/audio
 
   add2path $MVTOOLS/git
+  add2path $MVTOOLS/git/visitor
+  add2path $MVTOOLS/git/visitor/interfaces
+  add2path $MVTOOLS/git/visitor/backends
   add2pythonpath $MVTOOLS/git
+  add2pythonpath $MVTOOLS/git/visitor
+  add2pythonpath $MVTOOLS/git/visitor/interfaces
+  add2pythonpath $MVTOOLS/git/visitor/backends
 
   add2path $MVTOOLS/inputfixes
   add2pythonpath $MVTOOLS/inputfixes
