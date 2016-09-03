@@ -10,6 +10,9 @@ def visitor_remote(repos, options):
     for rp in repos:
         print("\n* Listing remotes of %s ..." % rp)
         remotes = git_repo_query.get_remotes(rp)
+        if remotes is None:
+            print("No remotes.")
+            continue
         for rmn in remotes:
             for rmop in remotes[rmn]:
                 l = os.path.basename(rp) # local folder name
