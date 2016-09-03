@@ -1,4 +1,4 @@
 #!/bin/bash
 
-git_visitor_remote.py $@
+git_visitor_remote_list.py $@
 
