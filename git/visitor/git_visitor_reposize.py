@@ -26,7 +26,10 @@ def visitor_reposize(repos, options):
         print("%s: %s" % (rp, sizeof_fmt(int(rs), '')))
 
     print("Total size of all repos: %s" % sizeof_fmt(total, ''))
+    return True
 
 if __name__ == "__main__":
-    git_visitor_base.do_visit(None, None, visitor_reposize)
+    r = git_visitor_base.do_visit(None, None, visitor_reposize)
+    if False in r:
+        sys.exit(1)
 

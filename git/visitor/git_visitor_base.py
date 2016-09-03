@@ -284,10 +284,13 @@ def do_visit(path_list, filters_query, func):
         print("Failed processing options")
         return
 
+    r = []
     for p in paths:
         repos = make_repo_list(p)
         if repos is None:
             print("Warning: %s has no repositories." % p)
             continue
-        func(repos, options)
+        r.append(func(repos, options))
+
+    return r
 

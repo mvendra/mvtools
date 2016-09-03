@@ -31,7 +31,10 @@ def visitor_remote_refactor(repos, options):
                     report.append(report_piece)
 
     git_visitor_base.print_report(all_passed, report)
+    return all_passed
 
 if __name__ == "__main__":
-    git_visitor_base.do_visit(None, None, visitor_remote_refactor)
+    r = git_visitor_base.do_visit(None, None, visitor_remote_refactor)
+    if False in r:
+        sys.exit(1)
 

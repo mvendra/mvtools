@@ -28,6 +28,7 @@ def visitor_push(repos, options):
             report.append(ri)
 
     git_visitor_base.print_report(all_passed, report)    
+    return all_passed
 
 if __name__ == "__main__":
 
@@ -35,5 +36,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         filters = sys.argv[1:]
 
-    git_visitor_base.do_visit(None, filters, visitor_push)
+    r = git_visitor_base.do_visit(None, filters, visitor_push)
+    if False in r:
+        sys.exit(1)
 

@@ -22,6 +22,10 @@ def visitor_remote_list(repos, options):
 
                 print("%s: %s %s (%s)" % (l, n, p, o))
 
+    return True
+
 if __name__ == "__main__":
-    git_visitor_base.do_visit(None, None, visitor_remote_list)
+    r = git_visitor_base.do_visit(None, None, visitor_remote_list)
+    if False in r:
+        sys.exit(1)
 
