@@ -79,6 +79,9 @@ def detect_and_apply():
                     applymousefix(mouse_id, dap)
                 else:
                     print("%s: WARNING: detected mouse, but could not detect Device Accel Profile!" % os.path.basename(__file__))
+                    return False
+
+    return True
 
 if __name__ == "__main__":
 
