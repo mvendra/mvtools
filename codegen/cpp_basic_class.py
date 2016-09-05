@@ -77,6 +77,7 @@ if __name__ == "__main__":
     filename = sys.argv[1]
     if '.' in filename:
         print("Please do not include the extension")
+        sys.exit(1)
 
     g = cpp_basic_class(filename)
     try:
