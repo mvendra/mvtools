@@ -5,12 +5,17 @@ import os
 
 class cpp14_restricted_class:
 
-    def __init__(__self, filename, header_prefix, namespaces):
+    def __init__(__self, filename, header_prefix, namespaces, impl_ext = "cpp", header_ext = "h"):
         __self.filename = filename
-        __self.INDENT_STEP = "    " # 4 spaces
-        __self.indent = ""
+
+        __self.impl_ext = impl_ext
+        __self.header_ext = header_ext
+
         __self.header_prefix = header_prefix
         __self.namespaces = namespaces
+
+        __self.INDENT_STEP = "    " # 4 spaces
+        __self.indent = ""
 
     def writetofile(__self, thefile, contents):
         if os.path.exists(thefile):
@@ -26,7 +31,7 @@ class cpp14_restricted_class:
         # HEADER FILE
         #############
 
-        header_fname = __self.filename + ".h"
+        header_fname = __self.filename + "." + __self.header_ext
         if len(__self.header_prefix) > 0:
             guardian = "__%s_%s_H__" % (__self.header_prefix.upper(), classname.upper())
         else:
@@ -76,7 +81,7 @@ class cpp14_restricted_class:
         # IMPL FILE
         ###########
 
-        impl_fname = __self.filename + ".cpp"
+        impl_fname = __self.filename + "." + __self.impl_ext
         impl = "\n#include \"%s\"\n" % header_fname
 
         # NAMESPACES BEGIN

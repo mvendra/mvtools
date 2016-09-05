@@ -5,8 +5,12 @@ import os
 
 class cpp_basic_class:
 
-    def __init__(__self, filename):
+    def __init__(__self, filename, impl_ext = "cpp", header_ext = "h"):
         __self.filename = filename
+
+        __self.impl_ext = impl_ext
+        __self.header_ext = header_ext
+
         __self.INDENT_STEP = "    " # 4 spaces
         __self.indent = ""
 
@@ -22,7 +26,7 @@ class cpp_basic_class:
 
         # HEADER FILE
 
-        header_fname = __self.filename + ".h"
+        header_fname = __self.filename + "." + __self.header_ext
         guardian = "__%s_H__" % classname.upper()
 
         header = "\n#ifndef %s\n#define %s\n\n" % (guardian, guardian)
@@ -47,7 +51,7 @@ class cpp_basic_class:
 
         # IMPL FILE
 
-        impl_fname = __self.filename + ".cpp"
+        impl_fname = __self.filename + "." + __self.impl_ext
         impl = "\n#include \"%s\"\n\n" % header_fname
 
         impl += __self.more("%s::%s(){\n}\n\n" % (classname, classname))
