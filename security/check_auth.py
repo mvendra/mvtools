@@ -39,12 +39,13 @@ def check_auth_envvar():
 
     files_probe = fsquery.makecontentlist(MVAUTH, True, True, True, True, True, "")
 
+    result = True
     for f in files_probe:
         if not check_permission(f):
             print_error("%s has bad permissions." % f)
-            return False
+            result = False
 
-    return True
+    return result
 
 def check_auth():
     r = check_auth_envvar()
