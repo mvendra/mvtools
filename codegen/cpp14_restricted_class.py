@@ -25,7 +25,10 @@ class cpp14_restricted_class:
         # HEADER FILE
 
         header_fname = __self.filename + ".h"
-        guardian = "__%s_%s_H__" % (__self.header_prefix.upper(), classname.upper())
+        if len(__self.header_prefix) > 0:
+            guardian = "__%s_%s_H__" % (__self.header_prefix.upper(), classname.upper())
+        else:
+            guardian = "__%s_H__" % classname.upper()
 
         header = "\n#ifndef %s\n#define %s\n\n" % (guardian, guardian)
 
