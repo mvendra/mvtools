@@ -22,7 +22,9 @@ class cpp14_restricted_class:
 
         classname = __self.filename.capitalize()
 
+        #############
         # HEADER FILE
+        #############
 
         header_fname = __self.filename + ".h"
         if len(__self.header_prefix) > 0:
@@ -30,9 +32,11 @@ class cpp14_restricted_class:
         else:
             guardian = "__%s_H__" % classname.upper()
 
-        header = "\n#ifndef %s\n#define %s\n\n" % (guardian, guardian)
+        header = "\n#ifndef %s\n#define %s\n" % (guardian, guardian)
 
         # NAMESPACES BEGIN
+        if len(__self.namespaces) > 0:
+            header += __self.more("\n")
         for i in __self.namespaces:
             header += __self.more("namespace %s {\n" % i)
         header += __self.more("\n")
@@ -55,9 +59,11 @@ class cpp14_restricted_class:
 
         header += __self.more("private:\n\n")
 
-        header += __self.more("};\n\n")
+        header += __self.more("};\n")
 
         # NAMESPACES END
+        if len(__self.namespaces) > 0:
+            header += __self.more("\n")
         for i in reversed(__self.namespaces):
             header += __self.more("} // ns: %s\n" % i)
         header += __self.more("\n")
@@ -66,20 +72,26 @@ class cpp14_restricted_class:
 
         __self.writetofile(os.path.join(os.getcwd(), header_fname), header)
 
+        ###########
         # IMPL FILE
+        ###########
 
         impl_fname = __self.filename + ".cpp"
-        impl = "\n#include \"%s\"\n\n" % header_fname
+        impl = "\n#include \"%s\"\n" % header_fname
 
         # NAMESPACES BEGIN
+        if len(__self.namespaces) > 0:
+            impl += __self.more("\n")
         for i in __self.namespaces:
             impl += __self.more("namespace %s {\n" % i)
         impl += __self.more("\n")
 
         impl += __self.more("%s::%s(){\n}\n\n" % (classname, classname))
-        impl += __self.more("%s::~%s(){\n}\n\n" % (classname, classname))
+        impl += __self.more("%s::~%s(){\n}\n" % (classname, classname))
 
         # NAMESPACES END
+        if len(__self.namespaces) > 0:
+            impl += __self.more("\n")
         for i in reversed(__self.namespaces):
             impl += __self.more("} // ns: %s\n" % i)
         impl += __self.more("\n")
