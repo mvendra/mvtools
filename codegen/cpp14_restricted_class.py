@@ -25,13 +25,13 @@ class cpp14_restricted_class:
 
     def gen(__self):
 
-        classname = __self.filename.capitalize()
+        classname = __self.filename
 
         #############
         # HEADER FILE
         #############
 
-        header_fname = __self.filename + "." + __self.header_ext
+        header_fname = __self.filename.lower() + "." + __self.header_ext
         if len(__self.header_prefix) > 0:
             guardian = "__%s_%s_H__" % (__self.header_prefix.upper(), classname.upper())
         else:
@@ -81,7 +81,7 @@ class cpp14_restricted_class:
         # IMPL FILE
         ###########
 
-        impl_fname = __self.filename + "." + __self.impl_ext
+        impl_fname = __self.filename.lower() + "." + __self.impl_ext
         impl = "\n#include \"%s\"\n" % header_fname
 
         # NAMESPACES BEGIN
