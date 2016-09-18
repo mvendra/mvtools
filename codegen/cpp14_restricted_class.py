@@ -53,7 +53,7 @@ class cpp14_restricted_class:
         __self.inc_indent()
 
         # RULE OF 5
-        header += __self.more("%s();\n" % classname)
+        header += __self.more("%s() = delete;\n" % classname)
         header += __self.more("~%s();\n\n" % classname)
         header += __self.more("%s(const %s&) = delete;\n" % (classname, classname))
         header += __self.more("%s(%s&&) = delete;\n" % (classname, classname))
@@ -91,7 +91,7 @@ class cpp14_restricted_class:
             impl += __self.more("namespace %s {\n" % i)
         impl += __self.more("\n")
 
-        impl += __self.more("%s::%s(){\n}\n\n" % (classname, classname))
+        #impl += __self.more("%s::%s(){\n}\n\n" % (classname, classname))
         impl += __self.more("%s::~%s(){\n}\n" % (classname, classname))
 
         # NAMESPACES END
