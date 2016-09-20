@@ -119,7 +119,13 @@ def filter_path_list_no_same_branch(pathlist):
         for y in pathlist_sorted:
             if x == y: 
                 continue
+            if os.path.dirname(x) == os.path.dirname(y):
+                continue
             if y.startswith(x):
+                # this was an immensely foolish solution.
+                # this prevents repos with the common same prefix
+                # to be considered (for example: repo and repo_bk)
+                # caught this in 09/2016 - mv.
                 blacklist.append(y)
 
     for w in pathlist_sorted:
