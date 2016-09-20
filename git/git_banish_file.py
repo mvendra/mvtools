@@ -19,6 +19,11 @@ def git_banish_file(fname, repo):
         print("You are supposed to point the repo to its base tree - where the .git folder is located at")
         exit(1)
 
+    answer = raw_input("Are you sure you want to proceed? This change is irreversible (type in \"yes\" to proceed): ")
+    if answer != "yes":
+        print("Aborted")
+        exit(1)
+
     os.system("git filter-branch --index-filter \ 'git rm --ignore-unmatch --cached %s' -- HEAD" % fname)
 
 def puaq():
