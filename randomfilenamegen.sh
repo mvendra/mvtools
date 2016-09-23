@@ -1,7 +1,15 @@
 #!/bin/bash
 
+SHA_APP=""
+
+if [[ "$unamestr" == 'Linux' ]]; then
+    SHA_APP="sha256sum"
+else
+    SHA_APP="shasum -a 256"
+fi
+
 # first method
-RFN=(`date +%s | sha256sum | base64 | head -c 48`)
+RFN=(`date +%s | $SHA_APP | base64 | head -c 48`)
 RFN=${RFN}.tmp
 
 if [ -e $RFN ]; then
