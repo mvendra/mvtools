@@ -3,9 +3,9 @@
 add2path(){
   if [ -z $PATH ]; then
     # first use. dont add the comma at the beginning
-    PATH=${1}
+    export PATH=${1}
   else
-    PATH=${PATH}:${1}
+    export PATH=${PATH}:${1}
   fi
 }
 
