@@ -9,4 +9,5 @@ fi
 alias la="ls -la"
 alias lash="ls -lash"
 alias mv="mv -i"
+alias cp="cp -i"
 
