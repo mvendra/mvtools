@@ -5,7 +5,10 @@ import os
 
 def filename_qualifies_extension_list(filename, extensions):
 
-    if len(extensions) == 0: # no extensions specified. add everything indiscriminately
+    # no extensions specified. add everything indiscriminately
+    if extensions == None:
+        return True
+    if len(extensions) == 0: 
         return True
 
     _, fext = os.path.splitext(filename)
