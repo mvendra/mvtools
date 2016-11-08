@@ -7,6 +7,10 @@ from subprocess import check_output
 
 import git_repo_query
 
+def runcmd(cmd):
+    if os.system(cmd) != 0:
+        raise BaseException("%s failed!" % cmd)
+
 def git_banish_file(fname, repo):
 
     # check if fname exists
@@ -24,7 +28,7 @@ def git_banish_file(fname, repo):
         print("Aborted")
         exit(1)
 
-    os.system("git filter-branch --index-filter \ 'git rm --ignore-unmatch --cached %s' -- HEAD" % fname)
+    runcmd("git filter-branch --index-filter \ 'git rm --ignore-unmatch --cached %s' -- HEAD" % fname)
 
 def puaq():
     print("Usage: %s file [repo, or I will assume the current working dir]" % os.path.basename(__file__))
