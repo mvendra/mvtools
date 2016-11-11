@@ -17,7 +17,7 @@ def filter_sub_files(sub_candidates):
 
     return ret
 
-def upd_subs(path):
+def pull_subs(path):
 
     subs = fsquery.makecontentlist(path, True, False, False, True, False, None)
     subs = filter_sub_files(subs)
@@ -52,5 +52,5 @@ if __name__ == "__main__":
     else:
         path = os.getcwd()
 
-    upd_subs(path)
+    pull_subs(path)
 
