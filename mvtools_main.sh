@@ -1,12 +1,18 @@
 #!/bin/bash
 
 add2path(){
-  if [ -z $PATH ]; then
-    # first use. dont add the comma at the beginning
-    export PATH=${1}
-  else
-    export PATH=${PATH}:${1}
+
+  unamestr=`uname`
+  if [[ ! $unamestr == "CYGWIN_NT-10.0" ]]; then
+      if [ -z $PATH ]; then
+        # first use. dont add the comma at the beginning
+        export PATH=${1}
+        return
+      fi
   fi
+
+  export PATH=${PATH}:${1}
+
 }
 
 add2pythonpath(){
