@@ -51,7 +51,7 @@ class codelite_vs_msvc14_checker():
 
         m_files = []
         for l in m_contents.split("\n"):
-            if ("ClCompile Include" in l) or ("ClInclude Include" in l) or ("None Include" in l):
+            if ("ClCompile Include" in l) or ("ClInclude Include" in l) or ("None Include" in l) or ("Xml Include" in l):
                 lt = l.strip()
                 lc = _self.between_quotes(lt)
                 lc = lc.replace("\\", "/")
