@@ -36,7 +36,8 @@ def convert_clementine_playlist_to_python_list(filename):
             print("Malformatted playlist contents detected. Check starting at offset %s, playlist %s." % (filename, ls))
 
         location = contents[ls+len("<location>"):le]
-        track_found = location[7:] # append but also remove the 'file://'
+        track_found = location # in L16, there was no 'file://'
+        #track_found = location[7:] # append but also remove the 'file://'
         track_found = track_found.replace("&amp;", "&") # clementine stuff.
         tracks.append(track_found)
 
