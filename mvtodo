@@ -1,4 +1,5 @@
 #!/bin/bash
 
-grep -nR "mvtodo" $PWD
+#grep -nR "mvtodo" $PWD
+ag -i "mvtodo"
 
