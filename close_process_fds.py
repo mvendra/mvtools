@@ -24,9 +24,13 @@ def close_all_fds(pid):
     for fd in fds:
         cmd += "-ex \"call close(%s)\" " % fd
 
+    # another way to do it is os.system("echo \"call close(0)\" | gdb -p 3445")
+    # because gdb will be reading from stdin
     os.system(cmd)
 
 if __name__ == "__main__":
+
+    # this script requires rootly powers
 
     if len(sys.argv) < 2:
         puaq()
