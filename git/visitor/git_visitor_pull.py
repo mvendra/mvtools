@@ -32,11 +32,20 @@ def visitor_pull(repos, options):
 
 if __name__ == "__main__":
 
+    repos = []
+
+    c=0
+    for n in sys.argv[1:]:
+        c+=1
+        if n == "--repo-base":
+            if len(sys.argv) > c:
+                repos.append(sys.argv[c+1])
+
     filters = None
     if len(sys.argv) > 1:
         filters = sys.argv[1:]
 
-    r = git_visitor_base.do_visit(None, filters, visitor_pull)
+    r = git_visitor_base.do_visit(repos, filters, visitor_pull)
     if False in r:
         sys.exit(1)
 

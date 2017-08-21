@@ -186,11 +186,11 @@ def make_path_list(paths_to_consider):
     if paths_to_consider is not None:
         for pc in paths_to_consider:
             paths.append(pc)
-
-    path_env = get_path_from_env()
-    if path_env is not None:
-        paths.append(path_env)
-    paths = path_utils.filter_path_list_no_same_branch(paths) # sanitises paths list
+    else:
+        path_env = get_path_from_env()
+        if path_env is not None:
+            paths.append(path_env)
+        paths = path_utils.filter_path_list_no_same_branch(paths) # sanitises paths list
 
     if len(paths) == 0:
         return None
