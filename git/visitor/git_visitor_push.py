@@ -41,6 +41,9 @@ if __name__ == "__main__":
             if len(sys.argv) > c:
                 repos.append(sys.argv[c+1])
 
+    if len(repos) == 0:
+        repos = None
+
     filters = None
     if len(sys.argv) > 1:
         filters = sys.argv[1:]
