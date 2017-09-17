@@ -19,6 +19,10 @@ gishogui(){
 }
 
 gikill(){
+  if [ ! -d "$HOME/nuke" ]; then
+    echo "No $HOME/nuke folder found. Aborting."
+    return
+  fi
   git show > ~/nuke/gikill_backup.patch
   git reset --hard HEAD~$1
 }
