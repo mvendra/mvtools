@@ -19,6 +19,7 @@ gishogui(){
 }
 
 gikill(){
+  git show > ~/nuke/gikill_backup.patch
   git reset --hard HEAD~$1
 }
 
