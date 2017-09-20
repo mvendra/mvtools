@@ -19,12 +19,44 @@ gishogui(){
 }
 
 gikill(){
-  if [ ! -d "$HOME/nuke" ]; then
-    echo "No $HOME/nuke folder found. Aborting."
+
+  # removes $1 commits from the repository
+  # saves a backup of each commit as a patch
+  # on this user's nuke folder ($HOME/nuke)
+  # will not run if there is no nuke folder
+  # HEAD is patch-0, deepest ($1) commit
+  # is patch-$1
+
+  NUKE="$HOME/nuke"
+  if [ ! -d $NUKE ]; then
+    echo "No $NUKE folder found. Aborting."
     return
   fi
-  git show > ~/nuke/gikill_backup.patch
-  git reset --hard HEAD~$1
+
+  NUM_COMMITS=`git log --oneline | wc -l`
+
+  RANGE=$1
+  if [ -z $1 ]; then
+    RANGE=1
+  fi
+
+  #if ((RANGE > NUM_COMMITS)); then
+  if [ "$RANGE" -gt "$NUM_COMMITS" ]; then
+    echo "Requested deletion of more commits than there are. Aborting."
+    return
+  fi
+
+  # backs up all commits to be deleted
+  MAX=$RANGE
+  (( MAX-- ))
+  for i in `seq 0 $MAX`; do
+    FN="$NUKE/gikill_backup_$i.patch"
+    git show HEAD~$i > $FN
+  done
+
+  # carries out the removal
+  git reset --hard HEAD~$RANGE
+
 }
 
 alias gista="git status"
