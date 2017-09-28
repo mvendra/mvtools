@@ -64,7 +64,7 @@ def applymousefix(mid, dap):
     call(["xinput", "set-prop", mid, dap, "-1"])
 
 def detect_and_apply():
-    mouse_detection = ["mouse", "touchpad"]
+    mouse_detection = ["mouse", "touchpad", "DeathAdder"]
 
     call(["xset", "m", "0", "0"])
 
