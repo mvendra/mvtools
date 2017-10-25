@@ -26,5 +26,6 @@ if __name__ == "__main__":
         sys.exit(1)
     options["xor-branch"] = current_branch
 
-    git_visitor_push.visitor_push(repos, options)
+    if not git_visitor_push.visitor_push(repos, options):
+        sys.exit(1)
 

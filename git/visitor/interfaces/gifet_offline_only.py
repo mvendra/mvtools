@@ -20,5 +20,6 @@ if __name__ == "__main__":
     repos += [sys.argv[1]]
     options["xor-remotename"] = "offline"
 
-    git_visitor_fetch.visitor_fetch(repos, options)
+    if not git_visitor_fetch.visitor_fetch(repos, options):
+        sys.exit(1)
 

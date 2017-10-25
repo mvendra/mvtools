@@ -20,5 +20,6 @@ if __name__ == "__main__":
     repos += [sys.argv[1]]
     options["not-remotename"] = ["offline"]
 
-    git_visitor_pull.visitor_pull(repos, options)
+    if not git_visitor_pull.visitor_pull(repos, options):
+        sys.exit(1)
 

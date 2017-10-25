@@ -19,5 +19,6 @@ if __name__ == "__main__":
 
     repos += [sys.argv[1]]
 
-    git_visitor_pull.visitor_pull(repos, options)
+    if not git_visitor_pull.visitor_pull(repos, options):
+        sys.exit(1)
 
