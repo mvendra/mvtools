@@ -92,7 +92,7 @@ def codelite_projfile_contents(project_name):
     r += "    </GlobalSettings>\n"
 
     r += "    <Configuration Name=\"Debug\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
-    r += "      <Compiler Options=\"-g;-O0;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++\" C_Options=\"-g;-O0;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
+    r += "      <Compiler Options=\"-g;-O0;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-g;-O0;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
     r += "        <IncludePath Value=\"../../src\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
@@ -173,7 +173,7 @@ def codelite_projfile_contents(project_name):
     r += "    </Configuration>\n"
 
     r += "    <Configuration Name=\"Release\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
-    r += "      <Compiler Options=\"-O2;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++\" C_Options=\"-O2;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
+    r += "      <Compiler Options=\"-O2;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-O2;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
     r += "        <IncludePath Value=\"../../src\"/>\n"
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
