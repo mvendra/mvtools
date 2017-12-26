@@ -7,14 +7,14 @@ def writecontents(filename, contents):
     with open(filename, "w") as f:
         f.write(contents)
 
-def prjboot_validate(project_name, target_dir):
+def prjboot_validate(target_dir, project_name):
 
-    if os.path.exists(os.path.join(td, pn)):
-        print("%s already exists. Specify another project name." % os.path.join(td, pn))
+    if os.path.exists(os.path.join(target_dir, project_name)):
+        print("%s already exists. Specify another project name." % os.path.join(target_dir, project_name))
         return False
 
-    if not os.path.exists(td):
-        print("%s does not exist. Specify another target directory." % td)
+    if not os.path.exists(target_dir):
+        print("%s does not exist. Specify another target directory." % target_dir)
         return False
 
     return True
@@ -216,46 +216,46 @@ def codelite_projfile_contents(project_name):
     r += "      </Completion>\n"
     r += "    </Configuration>\n"
 
-    r += "    <Configuration Name=\"Release (LLVM)\" CompilerType=\"clang( tags/RELEASE_500/final )\" DebuggerType=\"LLDB Debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">"
-    r += "      <Compiler Options=\"-O2;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-O2;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">"
-    r += "        <IncludePath Value=\"../../src\"/>"
-    r += "        <Preprocessor Value=\"NDEBUG\"/>"
-    r += "      </Compiler>"
-    r += "      <Linker Options=\"\" Required=\"yes\"/>"
-    r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>"
-    r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>"
-    r += "      <BuildSystem Name=\"Default\"/>"
-    r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">"
-    r += "        <![CDATA[]]>"
-    r += "      </Environment>"
-    r += "      <Debugger IsRemote=\"no\" RemoteHostName=\"\" RemoteHostPort=\"\" DebuggerPath=\"\" IsExtended=\"no\">"
-    r += "        <DebuggerSearchPaths/>"
-    r += "        <PostConnectCommands/>"
-    r += "        <StartupCommands/>"
-    r += "      </Debugger>"
-    r += "      <PreBuild/>"
-    r += "      <PostBuild/>"
-    r += "      <CustomBuild Enabled=\"no\">"
-    r += "        <RebuildCommand/>"
-    r += "        <CleanCommand/>"
-    r += "        <BuildCommand/>"
-    r += "        <PreprocessFileCommand/>"
-    r += "        <SingleFileCommand/>"
-    r += "        <MakefileGenerationCommand/>"
-    r += "        <ThirdPartyToolName>None</ThirdPartyToolName>"
-    r += "        <WorkingDirectory/>"
-    r += "      </CustomBuild>"
-    r += "      <AdditionalRules>"
-    r += "        <CustomPostBuild/>"
-    r += "        <CustomPreBuild/>"
-    r += "      </AdditionalRules>"
-    r += "      <Completion EnableCpp11=\"no\" EnableCpp14=\"no\">"
-    r += "        <ClangCmpFlagsC/>"
-    r += "        <ClangCmpFlags/>"
-    r += "        <ClangPP/>"
-    r += "        <SearchPaths/>"
-    r += "      </Completion>"
-    r += "    </Configuration>"
+    r += "    <Configuration Name=\"Release (LLVM)\" CompilerType=\"clang( tags/RELEASE_500/final )\" DebuggerType=\"LLDB Debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
+    r += "      <Compiler Options=\"-O2;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-O2;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
+    r += "        <IncludePath Value=\"../../src\"/>\n"
+    r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
+    r += "      </Compiler>\n"
+    r += "      <Linker Options=\"\" Required=\"yes\"/>\n"
+    r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
+    r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <BuildSystem Name=\"Default\"/>\n"
+    r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
+    r += "        <![CDATA[]]>\n"
+    r += "      </Environment>\n"
+    r += "      <Debugger IsRemote=\"no\" RemoteHostName=\"\" RemoteHostPort=\"\" DebuggerPath=\"\" IsExtended=\"no\">\n"
+    r += "        <DebuggerSearchPaths/>\n"
+    r += "        <PostConnectCommands/>\n"
+    r += "        <StartupCommands/>\n"
+    r += "      </Debugger>\n"
+    r += "      <PreBuild/>\n"
+    r += "      <PostBuild/>\n"
+    r += "      <CustomBuild Enabled=\"no\">\n"
+    r += "        <RebuildCommand/>\n"
+    r += "        <CleanCommand/>\n"
+    r += "        <BuildCommand/>\n"
+    r += "        <PreprocessFileCommand/>\n"
+    r += "        <SingleFileCommand/>\n"
+    r += "        <MakefileGenerationCommand/>\n"
+    r += "        <ThirdPartyToolName>None</ThirdPartyToolName>\n"
+    r += "        <WorkingDirectory/>\n"
+    r += "      </CustomBuild>\n"
+    r += "      <AdditionalRules>\n"
+    r += "        <CustomPostBuild/>\n"
+    r += "        <CustomPreBuild/>\n"
+    r += "      </AdditionalRules>\n"
+    r += "      <Completion EnableCpp11=\"no\" EnableCpp14=\"no\">\n"
+    r += "        <ClangCmpFlagsC/>\n"
+    r += "        <ClangCmpFlags/>\n"
+    r += "        <ClangPP/>\n"
+    r += "        <SearchPaths/>\n"
+    r += "      </Completion>\n"
+    r += "    </Configuration>\n"
 
     r += "  </Settings>\n"
     r += "</CodeLite_Project>\n"
@@ -443,9 +443,9 @@ def git_ign_contents(project_name):
     r += "/proj/msvc15/%s.vcxproj.user\n\n" % project_name
     return r
 
-def prjboot(project_name, target_dir):
+def prjboot(target_dir, project_name):
 
-    if not prjboot_validate(project_name, target_dir):
+    if not prjboot_validate(target_dir, project_name):
         sys.exit(1)
 
     prj_fullname_base = os.path.join(target_dir, project_name)
@@ -509,13 +509,13 @@ def prjboot(project_name, target_dir):
 
 if __name__ == "__main__":
 
-    pn = "newproject"
     td = os.getcwd()
+    pn = "newproject"
 
     if len(sys.argv) == 2:
-        pn = sys.argv[1]
+        td = sys.argv[1]
     if len(sys.argv) == 3:
-        pn = sys.argv[1]
-        td = sys.argv[2]
+        td = sys.argv[1]
+        pn = sys.argv[2]
 
-    prjboot(pn, td)
+    prjboot(td, pn)
