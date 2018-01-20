@@ -49,6 +49,9 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   add2path $MVTOOLS/codegen
   add2pythonpath $MVTOOLS/codegen
 
+  add2path $MVTOOLS/codelint
+  add2pythonpath $MVTOOLS/codelint
+
   add2path $MVTOOLS/security
   add2pythonpath $MVTOOLS/security
 
