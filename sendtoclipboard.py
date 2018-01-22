@@ -34,7 +34,7 @@ def sendtoclipboard(contents):
     elif plat == "macosx":
         clipboard_app = "pbcopy"
     else:
-        print("UNsupported platform")
+        print("Unsupported platform")
         return
 
     call("inline_echo.py '%s' | %s" % (contents, clipboard_app), shell=True)
