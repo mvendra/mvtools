@@ -27,6 +27,12 @@ gikill(){
   # HEAD is patch-0, deepest ($1) commit
   # is patch-$1
 
+  R=`git status -s`
+  if [[ ! -z $R ]]; then
+    echo "HEAD is not clear. Aborting."
+    return
+  fi
+
   NUKE="$HOME/nuke"
   if [ ! -d $NUKE ]; then
     echo "No $NUKE folder found. Aborting."
