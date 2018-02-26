@@ -34,6 +34,9 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   add2path $MVTOOLS/audio
   add2pythonpath $MVTOOLS/audio
 
+  add2path $MVTOOLS/video
+  add2pythonpath $MVTOOLS/video
+
   add2path $MVTOOLS/git
   add2path $MVTOOLS/git/visitor
   add2path $MVTOOLS/git/visitor/interfaces
