@@ -60,6 +60,12 @@ gikill(){
     git show HEAD~$i > $FN
   done
 
+  gisho --oneline | sed -n 4p | cut -b-1,2,3,4,5,6 | grep -Fxq "Binary"
+  if [ $? -eq 0 ]; then
+    echo "The last commit was binary. The backup patch will be ineffective. Press any key to proceed."
+    read
+  fi
+
   # carries out the removal
   git reset --hard HEAD~$RANGE
 
