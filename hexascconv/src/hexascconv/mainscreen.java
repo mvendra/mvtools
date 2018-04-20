@@ -32,6 +32,8 @@ public class mainscreen extends javax.swing.JFrame {
         for (int i=0; i<s.length(); i++){
             if (s.charAt(i) == '\n'){
                 r += '\n';
+            } else if (s.charAt(i) == ' '){
+                r += ' ';
             } else {
                 byte []b = new byte[1];
                 b[0] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
