@@ -1,0 +1,13 @@
+#!/bin/bash
+
+puaq(){ # puaq stands for Print Usage And Quit
+  echo "Usage: `basename $0` java-app.jar"
+  exit 1
+}
+
+if [ -z $1 ]; then
+  puaq
+fi
+
+java -jar ./$1 $@
+
