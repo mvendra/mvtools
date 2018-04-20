@@ -27,6 +27,22 @@ public class mainscreen extends javax.swing.JFrame {
         return data;
     }
 
+    private String hexStringToASCIIString(String s){
+        String r = "";
+        for (int i=0; i<s.length(); i++){
+            if (s.charAt(i) == '\n'){
+                r += '\n';
+            } else {
+                byte []b = new byte[1];
+                b[0] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
+                String c = new String(b);
+                r += c;
+                i += 1;
+            }
+        }
+        return r;
+    }
+
     private String getHexString(byte [] buf){
         String ret="";
         for (int i=0; i<buf.length; i++){
@@ -139,7 +155,8 @@ public class mainscreen extends javax.swing.JFrame {
 
         // TO ASCII BUTTON
         String hexCandidate = jTextArea1.getText();
-        hexCandidate = new String(hexStringToByteArray(hexCandidate));
+        //hexCandidate = new String(hexStringToByteArray(hexCandidate));
+        hexCandidate = hexStringToASCIIString(hexCandidate);
         jTextArea2.setText(hexCandidate);
 
 
