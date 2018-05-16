@@ -7,15 +7,11 @@ def puaq():
     print("Usage: %s file" % os.path.basename(__file__))
     sys.exit(1)
 
-if __name__ == "__main__":
+def to_urho_mdl(inputfile):
 
-    if len(sys.argv) < 2:
-        puaq()
-
-    inputfile = sys.argv[1]
     if not os.path.exists(inputfile):
         print("%s does not exist. Aborting." % inputfile)
-        sys.exit(1)
+        return False
 
     fr = inputfile.rfind(".")
     ifnameonly = ""
@@ -32,3 +28,13 @@ if __name__ == "__main__":
     fullcmd = "AssetImporter model %s %s" % (inputfile, outputfile)
 
     os.system(fullcmd)
+
+    return True
+
+if __name__ == "__main__":
+
+    if len(sys.argv) < 2:
+        puaq()
+
+    inputfile = sys.argv[1]
+    to_urho_mdl(inputfile)
