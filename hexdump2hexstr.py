@@ -3,10 +3,16 @@
 import sys
 import os
 
-def alphanumeric_ar(ar, p):
+def alphanumerichex_ar(ar, p):
     if p >= len(ar):
         return False
-    return ar[p].isalnum()
+    if not ar[p].isalnum():
+        return False
+    try:
+        u = int(ar[p], 16)
+        return True
+    except ValueError as vex:
+        return False
 
 def hexdump_to_hexstring(hexdump):
 
@@ -14,14 +20,14 @@ def hexdump_to_hexstring(hexdump):
 
     i = 0
     while i < len(hexdump)-1:
-        if alphanumeric_ar(hexdump, i):
+        if alphanumerichex_ar(hexdump, i):
             si = i
             c = 0
             j = i+1
             while j < len(hexdump)+1:
                 c += 1
                 i += 1
-                if not alphanumeric_ar(hexdump, j):
+                if not alphanumerichex_ar(hexdump, j):
                     if c == 2:
                         result += hexdump[si:si+2]
                     break
