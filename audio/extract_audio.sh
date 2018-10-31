@@ -10,5 +10,4 @@ if [ -z $2 ]; then
   exit 2
 fi
 
-avconv -i $1 $2
-
+ffmpeg -i $1 -vn -acodec mp3 $2
