@@ -65,5 +65,6 @@ if __name__ == "__main__":
     if (passphrase == ""):
         passphrase = getpass.getpass("Type in...\n")
 
-    symmetric_decrypt(infile, outfile, passphrase)
-
+    if not symmetric_decrypt(infile, outfile, passphrase):
+        print("Failed to decrypt - likely incorrect passphrase used")
+        os.unlink(outfile)
