@@ -1,0 +1,5 @@
+#!/bin/bash
+
+setxkbmap es
+swap_caps_esc.sh
+
