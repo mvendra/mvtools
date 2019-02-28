@@ -1,5 +1,5 @@
 #!/bin/bash
 
-setxkbmap -layout pl -variant qwertz
+#setxkbmap -layout pl -variant qwertz
+setxkbmap -layout pl
 swap_caps_esc.sh
-
