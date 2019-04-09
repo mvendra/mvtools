@@ -69,7 +69,7 @@ def applymousefix(mid, las):
     cmd = ["xinput", "set-prop", mid, las, "-1"]
     call(cmd)
 
-def detect_and_apply():
+def detect_and_apply(opts):
     mouse_detection = ["SteelSeries Sensei Raw Gaming Mouse"]
     sensei_candidates = []
 
@@ -97,7 +97,8 @@ def detect_and_apply():
     if dap is not None:
         applymousefix(mouse_id, dap)
     else:
-        print("%s: WARNING: detected mouse, but could not detect \"libinput Accel Speed\"!" % os.path.basename(__file__))
+        if not "--ignore-warnings" in opts:
+            print("%s: WARNING: detected mouse, but could not detect \"libinput Accel Speed\"!" % os.path.basename(__file__))
         return False
 
     return True
@@ -107,8 +108,8 @@ if __name__ == "__main__":
     # mvtodo: interactive completion for half detections - and similar? (i remember plugging in a wireless mouse once, and it wasnt detected as mouse anywhere, more like a Logitech Hub/Consolidated Generic thingy of sorts)
     # mvtodo: add --verbose option that prints everything it detects
 
-    if (len(sys.argv) == 1):
-        detect_and_apply()
-    else:
-        print("Parameterisation/partial/complementary detection not implemented.") # mvtodo: implement full/partial parameterisation plus full/partial(complementary) detection
+    opts = []
+    if len(sys.argv) > 1:
+        opts = sys.argv[1:]
 
+    detect_and_apply(opts)
