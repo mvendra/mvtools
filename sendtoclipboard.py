@@ -27,9 +27,13 @@ def sendtoclipboard(contents):
     clipboard_app = ""
     plat = getplat()
 
+    if plat == "cygwin":
+        call("inline_echo.py '%s' > /dev/clipboard" % (contents), shell=True)
+        return
+
     if plat == "linux":
         clipboard_app = "xclip -sel clip" # for linux
-    elif plat == "windows" or plat == "cygwin":
+    elif plat == "windows":
         clipboard_app = "clip"
     elif plat == "macosx":
         clipboard_app = "pbcopy"
