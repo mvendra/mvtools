@@ -17,10 +17,11 @@ def getplat():
         return "linux"
     elif ps == "windows":
         return "windows"
-    elif ps == "cygwin_nt-10.0":
+    elif "cygwin_nt-10" in ps:
         return "cygwin"
     elif ps == "darwin":
         return "macosx"
+    return ""
 
 def sendtoclipboard(contents):
 
@@ -39,9 +40,10 @@ def sendtoclipboard(contents):
         clipboard_app = "pbcopy"
     else:
         print("Unsupported platform")
-        return
+        return False
 
     call("inline_echo.py '%s' | %s" % (contents, clipboard_app), shell=True)
+    return True
 
 if __name__ == "__main__":
 

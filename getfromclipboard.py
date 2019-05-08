@@ -11,10 +11,11 @@ def getplat():
         return "linux"
     elif ps == "windows":
         return "windows"
-    elif ps == "cygwin_nt-10.0":
+    elif "cygwin_nt-10" in ps:
         return "cygwin"
     elif ps == "darwin":
         return "macosx"
+    return ""
 
 def _call_cmd(cmd):
     ret = ""
@@ -51,7 +52,7 @@ def getfromclipboard():
         contents = _get_for_cygwin()
     else:
         print("Unsupported platform")
-        return
+        return None
 
     return contents
 
