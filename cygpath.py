@@ -69,8 +69,9 @@ def convert_win_path_to_cygwin_path(target_path):
 
     final_path = find_drive_letter(target_path)
     if final_path is None:
-        return None
-    target_path = cut_drive_letter(target_path)
+        final_path = os.getcwd()
+    else:
+        target_path = cut_drive_letter(target_path)
     if target_path is None:
         return None
 
@@ -83,13 +84,23 @@ def convert_win_path_to_cygwin_path(target_path):
 
     return final_path
 
+def merge_spaces(input):
+    ret = ""
+    for i in input:
+        ret += i + " "
+    return ret[0:len(ret)-1]
+
+def escape_spaces(input):
+    return input.replace(" ", "\\ ")
+
 if __name__ == "__main__":
 
     target_path = ""
     if len(sys.argv) < 2:
         puaq()
-    target_path = sys.argv[1]
+    target_path = merge_spaces(sys.argv[1:])
 
     new_path = convert_win_path_to_cygwin_path(target_path)
+    new_path = escape_spaces(new_path)
     if new_path is not None:
         sendtoclipboard.sendtoclipboard(new_path)
