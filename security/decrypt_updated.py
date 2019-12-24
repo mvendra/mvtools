@@ -21,7 +21,7 @@ def symmetric_decrypt(infile, outfile, passphrase):
     """
 
     if not os.path.isfile(infile):
-        print("%s does not exist. Aborting.")
+        print("%s does not exist. Aborting." % infile)
         sys.exit(1)
 
     if outfile == "" or outfile == None:
