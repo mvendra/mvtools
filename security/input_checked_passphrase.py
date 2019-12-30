@@ -5,8 +5,6 @@ import os
 
 import getpass
 
-from subprocess import check_output
-from subprocess import CalledProcessError
 from subprocess import run, PIPE
 
 def check_hash(passphrase, pass_hash_file):
@@ -17,7 +15,7 @@ def check_hash(passphrase, pass_hash_file):
 
     pp_hash_calc = ""
 
-    p = run(['sha512sum'], stdout=PIPE, input=passphrase, encoding='ascii')
+    p = run(["sha512sum"], stdout=PIPE, input=passphrase, encoding="ascii")
     pp_hash_calc = p.stdout[0:128]
 
     if (pp_hash_calc == pp_hash):
