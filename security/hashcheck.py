@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
 
-from subprocess import check_output
 from subprocess import CalledProcessError
+from subprocess import run, PIPE
 
 def puaq():
     print("Usage: %s archive-to-check [hash-file]" % os.path.basename(__file__))
@@ -12,12 +12,8 @@ def puaq():
 
 def sha256sum_check(archive_file, hash_file):
 
-    archive_file_computed_hash = ""
-    try:
-        archive_file_computed_hash = check_output(["sha256sum", archive_file])
-    except CalledProcessError as cper:
-        print("Failed calling sha256sum application.")
-        sys.exit(1)
+    p = run(["sha256sum", archive_file], stdout=PIPE, encoding="ascii")
+    archive_file_computed_hash = p.stdout
 
     hash_file_contents = ""
     with open(hash_file, "r") as f:
