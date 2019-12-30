@@ -4,7 +4,7 @@ import sys
 import os
 import fsquery
 
-import hashcheck
+import hash_check
 
 """ test_mass_hash_check
 Tests if all files inside a given path, that match the given extension, have an accompanying valid hash file (filename + ".sha256")
@@ -29,7 +29,7 @@ def test_mass_hash_check(path_files, extension):
         hash_file = f + ".sha256"
         if not os.path.exists(hash_file):
             report.append(f + " has no corresponding hash file.")
-        elif not hashcheck.sha256sum_check(f, hash_file):
+        elif not hash_check.sha256sum_check(f, hash_file):
             report.append(f + " check FAILED.")
 
     return True, report
