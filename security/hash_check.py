@@ -3,7 +3,6 @@
 import sys
 import os
 
-from subprocess import CalledProcessError
 from subprocess import run, PIPE
 
 def puaq():
