@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -111,7 +111,7 @@ def filter_path_list_no_same_branch(pathlist):
     """
 
     pathlist_sorted = pathlist
-    pathlist_sorted.sort(lambda x,y: cmp(len(x), len(y))) # sorts list by string length
+    pathlist_sorted.sort(key = lambda x: len(x)) # sorts list by string length
     blacklist = []
     result = []
 
