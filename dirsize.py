@@ -1,10 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
 
-from subprocess import check_output
-from subprocess import CalledProcessError
+from subprocess import run, PIPE
 
 def get_dir_size(path, human):
 
@@ -22,11 +21,8 @@ def get_dir_size(path, human):
     else:
         cmd = ["du", "-b", path]
 
-    try:
-        out = check_output(cmd)
-    except CalledProcessError as cpe:
-        print("Failed detecting dirsize for %s." % path)
-        exit(1)
+    p = run(cmd, stdout=PIPE, encoding="ascii")
+    out = p.stdout
 
     # removes the last empty line
     nl = out.rfind("\n")
