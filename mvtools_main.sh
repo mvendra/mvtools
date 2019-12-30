@@ -61,6 +61,9 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   add2path $MVTOOLS/startservices
   add2path $MVTOOLS/urho
 
+  add2path $MVTOOLS/infra/backup
+  add2pythonpath $MVTOOLS/infra/backup
+
   # for a nuclear-recursive solution, use this:
   #PATH=${PATH}:$(find ~/the_base_path -type d | tr '\n' ':' | sed 's/:$//')
 
