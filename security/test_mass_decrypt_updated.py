@@ -39,8 +39,11 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
     ext_list_aux = []
     ext_list_aux.append(extension)
     filelist = fsquery.makecontentlist(path_files, True, True, False, True, False, ext_list_aux)
-
     report = []
+
+    if len(filelist) == 0:
+        print("WARNING: Nothing to test.")
+
     for f in filelist:
         if not decrypt_updated.symmetric_decrypt(f, os.path.join(path_temp_used, os.path.basename(f) + ".tmp"), passphrase):
             report.append(f + " FAILED")
