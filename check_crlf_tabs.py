@@ -1,11 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
 import fsquery
 
-def os_path_split_asunder(path, debug=False):
+from pathlib import PurePath
+
+"""
+# python2
 # from http://stackoverflow.com/questions/4579908/cross-platform-splitting-of-path-in-python
+def os_path_split_asunder(path, debug=False):
     parts = []
     while True:
         newpath, tail = os.path.split(path)
@@ -18,6 +22,28 @@ def os_path_split_asunder(path, debug=False):
         path = newpath
     parts.reverse()
     return parts
+"""
+
+# python3
+def os_path_split_asunder(path):
+    return list(PurePath(path).parts)
+
+def remove_root(files, roots):
+
+    ret = []
+
+    for f in files:
+    
+        parts = os_path_split_asunder(f)
+        add = True
+        for r in roots:
+            if r in parts:
+                add = False
+
+        if add:
+            ret.append(f)
+
+    return ret
 
 def remove_extensions(files, extensions):
 
@@ -42,23 +68,6 @@ def remove_extensions(files, extensions):
 
     return ret
 
-def remove_root(files, roots):
-
-    ret = []
-
-    for f in files:
-    
-        parts = os_path_split_asunder(f)
-        add = True
-        for r in roots:
-            if r in parts:
-                add = False
-
-        if add:
-            ret.append(f)
-
-    return ret
-
 def remove_files(files_in, files_exclude):
 
     ret = []
@@ -69,50 +78,40 @@ def remove_files(files_in, files_exclude):
 
     return ret
 
-def filter_crlf(candidates, rem_exts, rem_roots, rem_files):
-
-    ret = []
-
-    ret = remove_extensions(candidates, rem_exts)
-    ret = remove_root(ret, rem_roots)
-    ret = remove_files(ret, rem_files)
-
-    return ret
-
 def detect_crlf(file):
 
-    with open(file) as f:
+    with open(file, "rb") as f:
         contents = f.read()
-        s = contents.find("\r\n")
+        s = contents.find(b"\x0d\x0a")
         if s != -1:
             return True
         else:
             return False
-
-def filter_tabs(candidates, rem_exts, rem_roots, rem_files):
-
-    ret = []
-
-    ret = remove_extensions(candidates, rem_exts)
-    ret = remove_root(ret, rem_roots)
-    ret = remove_files(ret, rem_files)
-
-    return ret
 
 def detect_tabs(file):
 
-    with open(file) as f:
+    with open(file, "rb") as f:
         contents = f.read()
-        s = contents.find("\t")
+        s = contents.find(b"\x09")
         if s != -1:
             return True
         else:
             return False
+
+def filter_generic(candidates, rem_exts, rem_roots, rem_files):
+
+    ret = []
+
+    ret = remove_extensions(candidates, rem_exts)
+    ret = remove_root(ret, rem_roots)
+    ret = remove_files(ret, rem_files)
+
+    return ret
 
 def check_crlf(path, rem_exts, rem_roots, rem_files):
 
     files = fsquery.makecontentlist(path, True, True, False, False, False, None)
-    files = filter_crlf(files, rem_exts, rem_roots, rem_files)
+    files = filter_generic(files, rem_exts, rem_roots, rem_files)
 
     bad_files = []
 
@@ -128,7 +127,7 @@ def check_crlf(path, rem_exts, rem_roots, rem_files):
 def check_tabs(path, rem_exts, rem_roots, rem_files):
 
     files = fsquery.makecontentlist(path, True, True, False, False, False, None)
-    files = filter_tabs(files, rem_exts, rem_roots, rem_files)
+    files = filter_generic(files, rem_exts, rem_roots, rem_files)
 
     bad_files = []
 
@@ -157,4 +156,3 @@ if __name__ == "__main__":
 
     check_crlf(path, rem_exts, rem_roots, rem_files)
     check_tabs(path, rem_exts, rem_roots, rem_files)
-
