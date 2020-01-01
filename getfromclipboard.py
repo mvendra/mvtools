@@ -36,7 +36,7 @@ def _get_for_linux():
 def _get_for_cygwin():
     r, c = _call_cmd(["cat", "/dev/clipboard"])
     if r:
-        return c
+        return c.decode("ascii")
     else:
         print("Failed.")
         exit(1)
