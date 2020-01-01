@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -28,7 +28,7 @@ def _call_cmd(cmd):
 def _get_for_linux():
     r, c = _call_cmd(["xclip", "-sel", "clip", "-o"])
     if r:
-        return c
+        return c.decode("ascii")
     else:
         print("Failed to call xclip. Make sure it is installed.")
         exit(1)
