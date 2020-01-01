@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -28,7 +28,7 @@ class extractpattern:
         i=0
         while i < len(pattern):
             try:
-                if content[offset+i] != chr(pattern[i]):
+                if content[offset+i] != pattern[i]:
                     return False
             except IndexError:
                 return False
@@ -66,9 +66,8 @@ class extractpattern:
                 outnum+=1
                 newfile = _self.baseoutputfilename + str(outnum) + "." + _self.outext
                 newfile = os.path.join(".", newfile)
-                with open(newfile, "w+") as nf:
+                with open(newfile, "wb+") as nf:
                     nf.write(newcontent)
-
 
 def extbypattern(file_in, file_out):
 
