@@ -70,18 +70,26 @@ class extractpattern:
                     nf.write(newcontent)
 
 
-if __name__ == "__main__":
+def extbypattern(file_in, file_out):
 
     beginpattern = [0x89, 0x50, 0x4E, 0x47] # header of a png image
     endpattern = [0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82] # trailing of a png image
-    baseoutfn = None
 
-    if len(sys.argv) < 2:
-        print("Usage: %s inputfilename [baseoutputfilename]" % os.path.basename(__file__))
-        sys.exit(1)
-    elif len(sys.argv) > 2:
-        baseoutfn = sys.argv[2]
-
-    epinst = extractpattern(sys.argv[1], beginpattern, endpattern, baseoutfn)
+    epinst = extractpattern(file_in, beginpattern, endpattern, file_out)
     epinst.process()
 
+def puaq():
+    print("Usage: %s inputfilename [baseoutputfilename]" % os.path.basename(__file__))
+    sys.exit(1)
+
+if __name__ == "__main__":
+
+    fileout = None
+
+    if len(sys.argv) < 2:
+        puaq
+    elif len(sys.argv) > 2:
+        fileout = sys.argv[2]
+
+    filein = sys.argv[1]
+    extbypattern(filein , fileout)
