@@ -7,7 +7,7 @@ from subprocess import call
 import shutil
 import glob
 import path_utils
-import encrypt_updated
+import encrypt
 import terminal_colors
 
 SCRIPT_FOLDER = os.path.dirname(os.path.realpath(__file__))
@@ -90,7 +90,7 @@ class BackupEngine:
             call(tarcmd)
             call(["bzip2", CURPAK])
             CURPAK += ".bz2"
-            encrypt_updated.symmetric_encrypt(CURPAK, CURPAK + ".enc", _self.PASSPHRASE)
+            encrypt.symmetric_encrypt(CURPAK, CURPAK + ".enc", _self.PASSPHRASE)
             os.unlink(CURPAK) # delete plain package
             CURPAK += ".enc"
             with open(CURPAK + ".sha256", "w+") as f:

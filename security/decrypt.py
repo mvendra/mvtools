@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -21,7 +21,7 @@ def symmetric_decrypt(infile, outfile, passphrase):
     """
 
     if not os.path.isfile(infile):
-        print("%s does not exist. Aborting.")
+        print("%s does not exist. Aborting." % infile)
         sys.exit(1)
 
     if outfile == "" or outfile == None:
@@ -32,7 +32,7 @@ def symmetric_decrypt(infile, outfile, passphrase):
         print("Invalid passphrase. Aborting.")
         sys.exit(1)
 
-    out = call(["openssl", "des3", "-d", "-salt", "-in", infile, "-out", outfile, "-k", passphrase])
+    out = call(["openssl", "des3", "-d", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase])
     if out == 0:
         return True
     else:
