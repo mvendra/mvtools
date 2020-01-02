@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
 import path_utils
 
-from subprocess import call
+import inline_echo
 
 def is_repo_root(path):
     if path is None:
@@ -26,5 +26,4 @@ if __name__ == "__main__":
         if curpath is None:
             sys.exit(1)
 
-    call("inline_echo.py '%s'" % curpath, shell=True)
-
+    inline_echo.inline_echo(curpath)
