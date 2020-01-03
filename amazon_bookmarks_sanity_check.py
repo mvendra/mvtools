@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import urllib
@@ -16,6 +16,4 @@ if __name__ == "__main__":
     #print(cont)
 
     with open("/home/mateus/nuke/page.html", "w") as f:
-        f.write(cont.read())
-    
-
+        f.write(cont.read())    
