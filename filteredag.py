@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # this is Filtered AG (silversearcher)
 
@@ -15,6 +15,7 @@ if __name__ == "__main__":
     for r in ret:
         try:
             out = check_output(["ag", sys.argv[2], r])
+            out = out.decode("ascii")
         except OSError as oe:
             print("Failed calling ag. Make sure silversearcher-ag is installed.")
             exit(1)
