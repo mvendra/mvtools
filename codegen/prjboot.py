@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
 
 def writecontents(filename, contents):
-    with open(filename, "w") as f:
+    with open(filename, "wb") as f:
         f.write(contents)
 
 def prjboot_validate(target_dir, project_name):
@@ -20,15 +20,18 @@ def prjboot_validate(target_dir, project_name):
     return True
 
 def main_contents():
+    ba_r = bytearray()
     r = "#include <iostream>\n\n"
     r += "int main(int argc, char *argv[]){\n";
     r += "    (void)argc; (void)argv;\n"
     r += "    std::cout << \"echo\" << std::endl;\n"
     r += "    return 0;\n"
     r += "}\n"
-    return r
+    ba_r.extend(map(ord, r))
+    return ba_r
 
 def codelite_projfile_contents(project_name):
+    ba_r = bytearray()
     r = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     r += "<CodeLite_Project Name=\"%s\" InternalType=\"Console\">\n" % project_name
     r += "  <Plugins>\n"
@@ -259,11 +262,12 @@ def codelite_projfile_contents(project_name):
 
     r += "  </Settings>\n"
     r += "</CodeLite_Project>\n"
-    return r
+    ba_r.extend(map(ord, r))
+    return ba_r
 
 def msvc15slnfile_contents(project_name):
-    r = "\xEF\xBB\xBF\n"
-    r += "Microsoft Visual Studio Solution File, Format Version 12.00\n"
+    ba_r = bytearray(b"\xEF\xBB\xBF")
+    r = "\nMicrosoft Visual Studio Solution File, Format Version 12.00\n"
     r += "# Visual Studio 15\n"
     r += "VisualStudioVersion = 15.0.26228.9\n"
     r += "MinimumVisualStudioVersion = 10.0.40219.1\n"
@@ -284,10 +288,12 @@ def msvc15slnfile_contents(project_name):
     r += "\t\tHideSolutionNode = FALSE\n"
     r += "\tEndGlobalSection\n"
     r += "EndGlobal\n"
-    return r
+    ba_r.extend(map(ord, r))
+    return ba_r
 
 def msvc15projfile_contents(project_name):
-    r = "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    ba_r = bytearray(b"\xEF\xBB\xBF")
+    r = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
     r += "<Project DefaultTargets=\"Build\" ToolsVersion=\"15.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">\n"
     r += "  <ItemGroup Label=\"ProjectConfigurations\">\n"
     r += "    <ProjectConfiguration Include=\"Debug|x64\">\n"
@@ -369,9 +375,11 @@ def msvc15projfile_contents(project_name):
     r += "  <ImportGroup Label=\"ExtensionTargets\">\n"
     r += "  </ImportGroup>\n"
     r += "</Project>\n"
-    return r
+    ba_r.extend(map(ord, r))
+    return ba_r
 
 def mkfile_contents(project_name):
+    ba_r = bytearray()
     r = ".PHONY : all prepfolders clean compile link\n\n"
     r += "APPNAME=%s\n\n" % project_name
     r += "BASE=../..\n"
@@ -444,9 +452,11 @@ def mkfile_contents(project_name):
     r += "clean:\n"
     r += "\t$(foreach objs,$(ALL_OBJS),rm -rf $(objs);)\n"
     r += "\trm -rf $(FULL_APP_NAME)\n"
-    return r
+    ba_r.extend(map(ord, r))
+    return ba_r
 
 def git_ign_contents(project_name):
+    ba_r = bytearray()
     r = "*.swp\n"
     r += "*.o\n\n"
     r += "build\n"
@@ -456,7 +466,8 @@ def git_ign_contents(project_name):
     r += "/proj/msvc15/.vs\n"
     r += "/proj/msvc15/%s.VC.db\n" % project_name
     r += "/proj/msvc15/%s.vcxproj.user\n\n" % project_name
-    return r
+    ba_r.extend(map(ord, r))
+    return ba_r
 
 def prjboot(target_dir, project_name):
 
