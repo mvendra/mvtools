@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -30,6 +30,9 @@ def autobooted_refactor(original, new):
 
 def prefixer_insert(target_dir, prefix_to_reserve):
 
+    print("This script is broken and disabled")
+    sys.exit(1)
+
     PREFIX_SIZE = 3
     dirs = fsquery.makecontentlist(target_dir, False, False, True, False, False, None)
     dirs.sort()
@@ -53,19 +56,23 @@ def puaq():
 
 if __name__ == "__main__":
 
+    print("This script is broken and disabled")
+    sys.exit(1)
+
     """
     given:
-    /some/path/001_whatever
-    /some/path/002_whatever
-    /some/path/003_whatever
+    /somepath/001_whatever
+    /somepath/002_whatever
+    /somepath/003_whatever
+    where all "00*_whatever" are folders
 
     this tool:
-    prefixer_insert 002 /some/path
+    prefixer_insert 002 /somepath
 
     results in:
-    /some/path/001_whatever
-    /some/path/003_whatever
-    /some/path/004_whatever
+    /somepath/001_whatever
+    /somepath/003_whatever
+    /somepath/004_whatever
 
     explanation:
     002_whatever will be renamed to 003_whatever, so as to reserve the prefix 002
