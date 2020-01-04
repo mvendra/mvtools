@@ -1,9 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import terminal_colors
 
 from subprocess import check_output
-from subprocess import CalledProcessError
 
 def remote_change_url(repo, remote, operation, newpath):
 
@@ -20,17 +19,12 @@ def remote_change_url(repo, remote, operation, newpath):
         out = check_output(["git", "-C", "%s" % repo, "remote", "set-url", remote, newpath])
         out = "OK."
         color = terminal_colors.TTY_GREEN
-    except OSError as oser:
+    except:
         fail = True
         out = "Failed."
         color = terminal_colors.TTY_RED
-    except CalledProcessError as cper:
-        fail = True
-        out = "Failed."
-        color = terminal_colors.TTY_RED
-    
+
     #report = "%sChanging %s's %s remote (%s) to %s: %s%s" % (color, repo, operation, remote, newpath, out, ORIGINAL_COLOR)
     report = "%sChanging %s's remote (%s) to %s: %s%s" % (color, repo, remote, newpath, out, ORIGINAL_COLOR)
 
     return fail, report
-
