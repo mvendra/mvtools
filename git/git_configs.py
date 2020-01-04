@@ -1,11 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from subprocess import call
 
-if __name__ == "__main__":
-
-    name = raw_input("Input your name.\n")
-    email = raw_input("Input your email.\n")
+def set_git_configs(name, email):
 
     call(["git", "config", "--global", "user.name", name])
     call(["git", "config", "--global", "user.email", email])
@@ -14,3 +11,8 @@ if __name__ == "__main__":
     call(["git", "config", "--global", "diff.external", "meldiff.py"])
     call(["git", "config", "--global", "push.default", "simple"])
 
+if __name__ == "__main__":
+
+    name = input("Input your name.\n")
+    email = input("Input your email.\n")
+    set_git_configs(name, email)
