@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -26,12 +26,12 @@ def check_mvtags_in_file(repo, thefile):
         out = check_output(cmd)
     except OSError as oe:
         print("Unable to call git. Make sure it is installed.")
-        exit(1)
-    out = out.strip().lower()
+        return None
+    out = out.decode("ascii").strip().lower()
 
     # remove first 5 lines
     nl = -1
-    for x in xrange(5):
+    for x in range(5):
         nl = out.find("\n", nl+1)
         if nl == -1:
             return None
@@ -62,7 +62,7 @@ def check_mvtags_in_repo(repo):
     files = git_repo_query.get_staged_files(repo)
     if files is None:
         print("Failed querying %s. Aborting." % repo)
-        exit(1)
+        return None
 
     for f in files:
         if check_mvtags_in_file(repo, f):
