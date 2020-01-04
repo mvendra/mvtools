@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import terminal_colors
 
@@ -21,16 +21,11 @@ def do_pull(repo, remotes, branches):
                 out = check_output(["git", "-C", "%s" % repo, "pull", "--ff-only", rm, bn])
                 out = "OK."
                 color = terminal_colors.TTY_GREEN
-            except OSError as oser:
+            except:
                 hasanyfailed = True
                 out = "Failed."
                 color = terminal_colors.TTY_RED
-            except CalledProcessError as cper:
-                hasanyfailed = True
-                out = "Failed."
-                color = terminal_colors.TTY_RED
-            
+
             report.append("%s%s (remote=%s, branch=%s): %s%s" % (color, repo, rm, bn, out, ORIGINAL_COLOR))
 
     return hasanyfailed, report
-
