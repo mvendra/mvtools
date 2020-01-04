@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -46,9 +46,9 @@ def get_remotes(repo):
         out = check_output(["git", "-C", repo, "remote", "-v"])
     except OSError as oe:
         print("Unable to call git. Make sure it is installed.")
-        exit(1)
+        return None
 
-    filtered_list = out.split()
+    filtered_list = out.decode("ascii").split()
     # has to return multiples of 3 (name_remote, remote_path, (fetch/push))
     if len(filtered_list) == 0:
         return None
@@ -91,9 +91,9 @@ def get_branches(repo):
         out = check_output(["git", "-C", repo, "branch"])
     except OSError as oe:
         print("Unable to call git. Make sure it is installed.")
-        exit(1)
+        return None
 
-    branch_list = out.split("\n")
+    branch_list = out.decode("ascii").split("\n")
 
     # move the checked out branch to the front
     for i in branch_list:
@@ -159,14 +159,61 @@ def get_staged_files(repo):
         out = check_output(["git", "-C", repo, "status", "--porcelain"])
     except OSError as oe:
         print("Unable to call git. Make sure it is installed.")
-        exit(1)
+        return None
 
-    out = out.strip() # removes the trailing newline
+    out = out.decode("ascii").strip() # removes the trailing newline
+    if len(out) == 0:
+        return ""
     for l in out.split("\n"):
-        lf = l[3:]
-        fp = os.path.join(repo, lf)
-        ret.append(fp)
+        cl = l.strip()
+        if len(cl) == 0:
+            continue
+        if cl[0] == "A":
+            lf = cl[3:]
+            fp = os.path.join(repo, lf)
+            ret.append(fp)
 
+    if len(ret) == 0:
+        return ""
+    return ret
+
+def get_unstaged_files(repo):
+
+    """ get_unstaged_files
+    on success, returns a list of unstaged files on the given repo
+    on failure, returns None
+    """
+
+    t1 = is_git_work_tree(repo)
+    if t1 is None:
+        print("%s does not exist." % repo)
+        return None
+    elif t1 is False:
+        print("%s is not a git work tree." % repo)
+        return None
+
+    ret = []
+
+    try:
+        out = check_output(["git", "-C", repo, "status", "--porcelain"])
+    except OSError as oe:
+        print("Unable to call git. Make sure it is installed.")
+        return None
+
+    out = out.decode("ascii").strip() # removes the trailing newline
+    if len(out) == 0:
+        return ""
+    for l in out.split("\n"):
+        cl = l.strip()
+        if len(cl) == 0:
+            continue
+        if cl[0] == "?":
+            lf = cl[3:]
+            fp = os.path.join(repo, lf)
+            ret.append(fp)
+
+    if len(ret) == 0:
+        return ""
     return ret
 
 if __name__ == "__main__":
