@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """ GICLM
 GIt Copy Last commit Message
@@ -20,7 +20,7 @@ def copy_last_commit_message():
     except OSError as oe:
         print("Call to git failed. Make sure it is installed.")
         exit(1)
-    msg = remove_gitlog_decorations(out)
+    msg = remove_gitlog_decorations(out.decode("ascii"))
     if msg is not None:
         sendtoclipboard.sendtoclipboard(msg)
 
@@ -30,7 +30,7 @@ def remove_gitlog_decorations(commitmsg):
 
     # cut out first four lines (commit, author, date, \n)
     nl = -1
-    for x in xrange(4):
+    for x in range(4):
         nl = res.find("\n", nl+1)
         if nl == -1:
             return None
