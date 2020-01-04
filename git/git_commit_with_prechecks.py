@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
 
 from subprocess import check_output
 from subprocess import call
-from subprocess import CalledProcessError
 
 import test_mvtags_in_git_cache
+import git_discover_repo_root
 
 def gicom(repo, params):
 
@@ -24,19 +24,18 @@ def gicom(repo, params):
 
     try:
         out = check_output(cmd)
-        print(out.strip())
-    except CalledProcessError as cpe:
-        print(cpe.output.strip())
-        exit(cpe.returncode) 
+        print(out.decode("ascii").strip())
+    except:
+        print("Failed calling git app. Make sure it is installed.")
+        exit(1)
 
 if __name__ == "__main__":
 
     params = sys.argv[1:]
     repo = os.getcwd()
 
-    try:
-        repo = check_output(["git_discover_repo_root.py", repo])
-    except CalledProcessError as cpe:
+    repo = git_discover_repo_root.git_discover_repo_root(repo)
+    if repo is None:
         print("Failed detecting repo from %s." % repo)
         exit(1)
 
