@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -23,7 +23,7 @@ def git_banish_file(fname, repo):
         print("You are supposed to point the repo to its base tree - where the .git folder is located at")
         exit(1)
 
-    answer = raw_input("Are you sure you want to proceed? This change is irreversible (type in \"yes\" to proceed): ")
+    answer = input("Are you sure you want to proceed? This change is irreversible (type in \"yes\" to proceed): ")
     if answer != "yes":
         print("Aborted")
         exit(1)
