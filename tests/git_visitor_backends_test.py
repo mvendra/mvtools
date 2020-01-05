@@ -108,26 +108,40 @@ class GitVisitorBackendsTest(unittest.TestCase):
 
         # file must not pre-exist
         self.assertFalse(os.path.exists( newfile_r1 ))
-        r, v = git_pull.do_pull(repo, remotes, branches)
+
+        v, r = git_pull.do_pull(repo, remotes, branches)
+
         # must exist now because it was just pulled
         self.assertTrue(os.path.exists( newfile_r1 ))
         # operation must have succeded without any failures
-        self.assertFalse(r)
+        self.assertFalse(v)
 
-    """
-    def testPush():
-        repo = self.first_repo
+    def testPush(self):
+
+        # setup
+        newfile = self.makeFilename()
+        newfile_r1 = os.path.join(self.first_repo, newfile)
+        self.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
+
+        # test
+        repo = self.third_repo
         remotes = {}
         remotes["origin"] = { "push": self.second_repo, "fetch": self.second_repo }
         branches = ["master"]
 
-        #def do_push(repo, remotes, branches):
-        r, v = git_push.do_push(repo, remotes, branches)
-        print(r)
-        print("###########################")
-        for i in v:
-            print(i)
+        # file must not pre-exist
+        self.assertFalse(os.path.exists( newfile_r1 ))
 
+        v, r = git_push.do_push(repo, remotes, branches)
+
+        # operation must have succeded without any failures
+        self.assertFalse(v)
+        # pull the file into first we just pushed from third
+        self.git_pullFromRemote(self.first_repo, "origin", "master")
+        # must exist now because it was just pulled
+        self.assertTrue(os.path.exists( newfile_r1 ))
+
+    """
     def testFetch():
         repo = self.first_repo
         remotes = {}
