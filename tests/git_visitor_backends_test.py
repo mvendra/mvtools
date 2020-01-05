@@ -57,6 +57,10 @@ class GitVisitorBackendsTest(unittest.TestCase):
         if not generic_run.run_cmd("git -C %s pull %s %s" % (repo, remotename, branchname)):
             self.fail("Git command failed. Can't proceed.")
 
+    def git_mergeWithRemote(self, repo, remotename, branchname):
+        if not generic_run.run_cmd("git -C %s merge %s/%s" % (repo, remotename, branchname)):
+            self.fail("Git command failed. Can't proceed.")
+
     def setUp(self):
 
         self.internal_counter = 0
@@ -83,7 +87,8 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.git_cloneRepo(self.second_repo, self.third_repo, "origin")
 
         # create a file with rubbish on first, and push it to its remote (second)
-        self.git_createAndCommit(self.first_repo, self.makeFilename(), self.makeContent(), "commit_msg")
+        self.first_repo_first_file = self.makeFilename()
+        self.git_createAndCommit(self.first_repo, self.first_repo_first_file, self.makeContent(), "commit_msg")
         self.git_pushToRemote(self.first_repo, "origin", "master")
 
         # pull changes from first into third, through second
@@ -101,7 +106,6 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.git_pushToRemote(self.third_repo, "origin", "master")
 
         # test
-        repo = self.first_repo
         remotes = {}
         remotes["origin"] = { "push": self.second_repo, "fetch": self.second_repo }
         branches = ["master"]
@@ -109,7 +113,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # file must not pre-exist
         self.assertFalse(os.path.exists( newfile_r1 ))
 
-        v, r = git_pull.do_pull(repo, remotes, branches)
+        v, r = git_pull.do_pull(self.first_repo, remotes, branches)
 
         # must exist now because it was just pulled
         self.assertTrue(os.path.exists( newfile_r1 ))
@@ -124,7 +128,6 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
 
         # test
-        repo = self.third_repo
         remotes = {}
         remotes["origin"] = { "push": self.second_repo, "fetch": self.second_repo }
         branches = ["master"]
@@ -132,7 +135,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # file must not pre-exist
         self.assertFalse(os.path.exists( newfile_r1 ))
 
-        v, r = git_push.do_push(repo, remotes, branches)
+        v, r = git_push.do_push(self.third_repo, remotes, branches)
 
         # operation must have succeded without any failures
         self.assertFalse(v)
@@ -141,31 +144,57 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # must exist now because it was just pulled
         self.assertTrue(os.path.exists( newfile_r1 ))
 
-    """
-    def testFetch():
-        repo = self.first_repo
+    def testFetch(self):
+
+        # setup
+        newfile = self.makeFilename()
+        newfile_r1 = os.path.join(self.first_repo, newfile)
+        self.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
+        self.git_pushToRemote(self.third_repo, "origin", "master")
+
+        # test
         remotes = {}
         remotes["origin"] = { "push": self.second_repo, "fetch": self.second_repo }
+        branches = ["master"]
 
-        #def do_fetch(repo, remotes):
-        r, v = git_fetch.do_fetch(repo, remotes)
-        print(r)
-        print("###########################")
-        for i in v:
-            print(i)
+        # file must not pre-exist
+        self.assertFalse(os.path.exists( newfile_r1 ))
 
-    def testRemote():
-        repo = self.first_repo
+        v, r = git_fetch.do_fetch(self.first_repo, remotes)
+
+        # operation must have succeded without any failures
+        self.assertFalse(v)
+
+        # merges after the fetch
+        self.git_mergeWithRemote(self.first_repo, "origin", "master")
+
+        # must exist now because it was just pulled
+        self.assertTrue(os.path.exists( newfile_r1 ))
+
+    def testRemote(self):
+
+        # setup
         remote = "origin"
         operation = ""
-        newpath = os.path.join(self.test_dir, "fourth")
+        fourth_repo = os.path.join(self.test_dir, "fourth")
+        fifth_repo = os.path.join(self.test_dir, "fifth")
+        self.git_initRepo(self.test_dir, "fourth", True)
 
-        #def remote_change_url(repo, remote, operation, newpath):
-        r, v = git_remote.remote_change_url(repo, remote, operation, newpath)
-        print(r)
-        print("###########################")
-        print(v)
-    """
+        # fifth repo must not pre-exist
+        self.assertFalse(os.path.exists(fifth_repo))
+
+        v, r = git_remote.remote_change_url(self.first_repo, remote, operation, fourth_repo)
+
+        # operation must have succeded without any failures
+        self.assertFalse(v)
+
+        # push to new remote
+        self.git_pushToRemote(self.first_repo, "origin", "master")
+
+        # clone fourth into fifth to check for repo1's contents
+        self.git_cloneRepo(fourth_repo, fifth_repo, "origin")
+        # file from repo1 must exist inside fifth repo
+        self.assertTrue(os.path.exists( os.path.join(fifth_repo, self.first_repo_first_file) ))
 
 if __name__ == '__main__':
     unittest.main()
