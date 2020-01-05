@@ -13,6 +13,8 @@ Installation
 
 3) Add: ```source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
 
+4) Define the ```MVTOOLS_GIT_VISITOR_BASE``` environment variable inside your ~/.bashrc, to point to your collection of repositories
+
 Dependencies
 ============
 
@@ -56,9 +58,3 @@ extractbypattern
 ================
 
 Small app to extract file format patterns from another file. It is by default configured to extract packed (non compressed) png images from another file.
-
-all the rest
-============
-
-mvtodo: document the rest
-

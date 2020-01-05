@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import fsquery
@@ -205,7 +205,7 @@ def get_path_from_env():
 
     path = None
     try:
-        path = os.environ["MVBASE"]
+        path = os.environ["MVTOOLS_GIT_VISITOR_BASE"]
     except KeyError:
         pass
     return path
