@@ -88,8 +88,14 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # setup
         newfile = self.makeFilename()
         newfile_r1 = os.path.join(self.first_repo, newfile)
-        git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
-        git_test_fixture.git_pushToRemote(self.third_repo, "origin", "master")
+
+        v, r = git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
+        if not v:
+            self.fail(r)
+
+        v, r = git_test_fixture.git_pushToRemote(self.third_repo, "origin", "master")
+        if not v:
+            self.fail(r)
 
         # test
         remotes = {}
@@ -111,7 +117,10 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # setup
         newfile = self.makeFilename()
         newfile_r1 = os.path.join(self.first_repo, newfile)
-        git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
+
+        v, r = git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
+        if not v:
+            self.fail(r)
 
         # test
         remotes = {}
@@ -125,8 +134,12 @@ class GitVisitorBackendsTest(unittest.TestCase):
 
         # operation must have succeded without any failures
         self.assertFalse(v)
+
         # pull the file into first we just pushed from third
-        git_test_fixture.git_pullFromRemote(self.first_repo, "origin", "master")
+        v, r = git_test_fixture.git_pullFromRemote(self.first_repo, "origin", "master")
+        if not v:
+            self.fail(r)
+
         # must exist now because it was just pulled
         self.assertTrue(os.path.exists( newfile_r1 ))
 
@@ -135,8 +148,14 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # setup
         newfile = self.makeFilename()
         newfile_r1 = os.path.join(self.first_repo, newfile)
-        git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
-        git_test_fixture.git_pushToRemote(self.third_repo, "origin", "master")
+
+        v, r = git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
+        if not v:
+            self.fail(r)
+
+        v, r = git_test_fixture.git_pushToRemote(self.third_repo, "origin", "master")
+        if not v:
+            self.fail(r)
 
         # test
         remotes = {}
@@ -152,7 +171,9 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.assertFalse(v)
 
         # merges after the fetch
-        git_test_fixture.git_mergeWithRemote(self.first_repo, "origin", "master")
+        v, r = git_test_fixture.git_mergeWithRemote(self.first_repo, "origin", "master")
+        if not v:
+            self.fail(r)
 
         # must exist now because it was just pulled
         self.assertTrue(os.path.exists( newfile_r1 ))
@@ -164,7 +185,10 @@ class GitVisitorBackendsTest(unittest.TestCase):
         operation = ""
         fourth_repo = os.path.join(self.test_dir, "fourth")
         fifth_repo = os.path.join(self.test_dir, "fifth")
-        git_test_fixture.git_initRepo(self.test_dir, "fourth", True)
+
+        v, r = git_test_fixture.git_initRepo(self.test_dir, "fourth", True)
+        if not v:
+            self.fail(r)
 
         # fifth repo must not pre-exist
         self.assertFalse(os.path.exists(fifth_repo))
@@ -175,10 +199,15 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.assertFalse(v)
 
         # push to new remote
-        git_test_fixture.git_pushToRemote(self.first_repo, "origin", "master")
+        v, r = git_test_fixture.git_pushToRemote(self.first_repo, "origin", "master")
+        if not v:
+            self.fail(r)
 
         # clone fourth into fifth to check for repo1's contents
-        git_test_fixture.git_cloneRepo(fourth_repo, fifth_repo, "origin")
+        v, r = git_test_fixture.git_cloneRepo(fourth_repo, fifth_repo, "origin")
+        if not v:
+            self.fail(r)
+
         # file from repo1 must exist inside fifth repo
         self.assertTrue(os.path.exists( os.path.join(fifth_repo, self.first_repo_first_file) ))
 
