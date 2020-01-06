@@ -9,7 +9,13 @@ import path_utils
 class PathUtilsTest(unittest.TestCase):
 
     def setUp(self):
-        pass
+        v, r = self.delegate_setUp()
+        if not v:
+            self.tearDown()
+            self.fail(r)
+
+    def delegate_setUp(self):
+        return True, ""
 
     def tearDown(self):
         pass
