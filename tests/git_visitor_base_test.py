@@ -31,18 +31,13 @@ class GitVisitorBaseTest(unittest.TestCase):
 
         self.internal_counter = 0
 
-        # must have a $home/nuke folder, for creating test repos
-        self.nuke_dir = os.path.expanduser("~/nuke")
-        if not os.path.exists(self.nuke_dir):
-            return False, "[%s] doesn't exist. Can't proceed." % self.nuke_dir
+        v, r = git_test_fixture.gv_makeAndGetTestFolder("git_visitor_backends_test_base")
+        if not v:
+            return v, r
+        self.test_base_dir = r[0] # base test folder. shared amongst other test cases
+        self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
-        # must *not* have a $home/nuke/git_visitor_backends_test_base so it can be created - it will
-        # be deleted after each test
-        self.test_dir = os.path.join(self.nuke_dir, "git_visitor_base_test_base")
-        if os.path.exists(self.test_dir):
-            return False, "[%s] already exists. Can't proceed." % self.test_dir
-
-        os.mkdir(self.test_dir)
+        # test repos paths
         self.first_repo = os.path.join(self.test_dir, "first")
         self.second_repo = os.path.join(self.test_dir, "second")
         self.third_repo = os.path.join(self.test_dir, "third")
@@ -63,7 +58,7 @@ class GitVisitorBaseTest(unittest.TestCase):
         return True, ""
 
     def tearDown(self):
-        shutil.rmtree(self.test_dir)
+        shutil.rmtree(self.test_base_dir)
 
     def testFilterGitOnly(self):
 
