@@ -25,7 +25,7 @@ def is_file_py_ut(path):
 def detect_py_uts(path):
 
     ret = []
-    qr = fsquery.makecontentlist(path, False, True, False, False, False, "py")
+    qr = fsquery.makecontentlist(path, True, True, False, False, False, "py")
 
     for f in qr:
         if is_file_py_ut(f):
