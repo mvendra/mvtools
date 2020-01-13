@@ -12,6 +12,8 @@ import git_push
 import git_fetch
 import git_remote
 
+import mvtools_test_fixture
+
 class GitVisitorBackendsTest(unittest.TestCase):
 
     def makeFilename(self):
@@ -34,7 +36,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
 
         self.internal_counter = 0
 
-        v, r = git_test_fixture.gv_makeAndGetTestFolder("git_visitor_backends_test_base")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("git_visitor_backends_test_base")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases

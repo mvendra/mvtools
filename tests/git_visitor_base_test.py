@@ -9,6 +9,8 @@ import git_test_fixture
 
 import git_visitor_base
 
+import mvtools_test_fixture
+
 class GitVisitorBaseTest(unittest.TestCase):
 
     def makeFilename(self):
@@ -31,7 +33,7 @@ class GitVisitorBaseTest(unittest.TestCase):
 
         self.internal_counter = 0
 
-        v, r = git_test_fixture.gv_makeAndGetTestFolder("git_visitor_backends_test_base")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("git_visitor_backends_test_base")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
