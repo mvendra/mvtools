@@ -63,7 +63,7 @@ if __name__ == "__main__":
         print("%s does not exist." % path_playlists)
         sys.exit(1)
     
-    playlists = fsquery.makecontentlist(path_playlists, False, True, False, False, False, "xspf")
+    playlists = fsquery.makecontentlist(path_playlists, False, True, False, False, False, True, "xspf")
     for p in playlists:
         print("Processing %s..." % p)
         proc(p)

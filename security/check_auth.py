@@ -37,7 +37,7 @@ def check_auth_envvar():
         print_error("MVAUTH points to nonexistent path.")
         return False
 
-    files_probe = fsquery.makecontentlist(MVAUTH, True, True, True, True, True, "")
+    files_probe = fsquery.makecontentlist(MVAUTH, True, True, True, True, True, True, "")
 
     result = True
     for f in files_probe:

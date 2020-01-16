@@ -19,7 +19,7 @@ def filter_sub_files(sub_candidates):
 
 def push_subs(path):
 
-    subs = fsquery.makecontentlist(path, True, False, False, True, False, None)
+    subs = fsquery.makecontentlist(path, True, False, False, True, False, True, None)
     subs = filter_sub_files(subs)
 
     report = []

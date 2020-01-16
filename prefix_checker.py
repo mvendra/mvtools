@@ -6,7 +6,7 @@ import fsquery
 
 def prefix_checker(target_dir, prefix_size):
 
-    dirs = fsquery.makecontentlist(target_dir, False, True, True, False, False, None)
+    dirs = fsquery.makecontentlist(target_dir, False, True, True, False, False, True, None)
     dirs.sort()
     c=0
     r=0

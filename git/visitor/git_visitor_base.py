@@ -219,7 +219,7 @@ def make_repo_list(path):
     if path is None:
         return None
 
-    ret_list = fsquery.makecontentlist(path, True, False, True, False, True, [])
+    ret_list = fsquery.makecontentlist(path, True, False, True, False, True, True, [])
     ret_list = filter_git_only(ret_list)
     ret_list = pluck_dotgit(ret_list)
     if len(ret_list) > 0:

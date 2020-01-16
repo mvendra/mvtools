@@ -12,7 +12,7 @@ def puaq():
 def insert_pragma(path):
 
     exts = ["h"]
-    ret = fsquery.makecontentlist(path, True, True, False, False, False, exts)
+    ret = fsquery.makecontentlist(path, True, True, False, False, False, True, exts)
 
     pragma_str = "\n#ifdef __GNUC__\n#pragma GCC system_header\n#endif\n"
 

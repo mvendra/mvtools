@@ -8,7 +8,7 @@ import prefix_checker
 
 def prefix_checker_onelevel_caller(path, prefix_size):
     r = True
-    subcats = fsquery.makecontentlist(path, False, False, True, False, False, None)
+    subcats = fsquery.makecontentlist(path, False, False, True, False, False, True, None)
     for c in subcats:
         r &= prefix_checker.prefix_checker(c, prefix_size)
     return r

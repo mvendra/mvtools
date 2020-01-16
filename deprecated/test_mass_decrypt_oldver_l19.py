@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     ext_list_aux = []
     ext_list_aux.append(extension)
-    filelist = fsquery.makecontentlist(path_files, True, True, False, True, False, ext_list_aux)
+    filelist = fsquery.makecontentlist(path_files, True, True, False, True, False, True, ext_list_aux)
 
     report = []
     for f in filelist:
