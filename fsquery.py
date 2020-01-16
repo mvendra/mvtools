@@ -3,22 +3,22 @@
 import sys
 import os
 
-def filename_qualifies_extension_list(filename, extensions):
+def filename_qualifies_extension_list(filename, extensions_include, extensions):
 
     # no extensions specified. add everything indiscriminately
     if extensions == None:
-        return True
+        return extensions_include
     if len(extensions) == 0: 
-        return True
+        return extensions_include
 
     _, fext = os.path.splitext(filename)
     fext = fext[1:] # removes the '.'
     if len(fext) > 0 and fext in extensions:
-        return True
+        return extensions_include
     else:
-        return False
+        return not extensions_include
 
-def __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions):
+def __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions):
 
     ret_list_deleg = []
 
@@ -36,23 +36,32 @@ def __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_fil
     if include_regular_files or include_hidden_files: # again, premature optimisation.
         for f in filenames:
             if f.startswith("."): # is a hidden file
-                if include_hidden_files and filename_qualifies_extension_list(f, extensions):
+                if include_hidden_files and filename_qualifies_extension_list(f, extensions_include, extensions):
                     ret_list_deleg.append(os.path.join(dirpath, f))
             else: # is a regular file
-                if include_regular_files and filename_qualifies_extension_list(f, extensions):
+                if include_regular_files and filename_qualifies_extension_list(f, extensions_include, extensions):
                     ret_list_deleg.append(os.path.join(dirpath, f))
 
 
     return ret_list_deleg
 
-def makecontentlist(path, recursive, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions):
+def makecontentlist(path, recursive, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions):
+
+    # path: path to query
+    # recursive: search path and subfolders
+    # include_regular_files: include regular files - will be filtered by extension
+    # include_regular_dirs: no further filtering
+    # include_hidden_files: include files that start with "."
+    # include_hidden_dirs: include folders that start with "."
+    # extensions_include: whether to include the extensions listed in the next parameter, or exclude them
+    # extensions: a list of extensions, to include or exclude. None means catch-all. can be a single string or a list of strings
 
     ret_list = []
 
     if recursive:
 
         for dirpath, dirnames, filenames in os.walk(path):
-            ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions)
+            ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
 
     else:
 
@@ -67,14 +76,14 @@ def makecontentlist(path, recursive, include_regular_files, include_regular_dirs
             elif os.path.isfile(os.path.join(path, item)):
                 filenames.append(item)
 
-        ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions)
+        ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
 
     return ret_list
 
 if __name__ == "__main__":
     
     if len(sys.argv) < 6:
-        print("Usage: %s [-R] path include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions" % os.path.basename(__file__))
+        print("Usage: %s [-R] path include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include extensions" % os.path.basename(__file__))
         exit(1)
 
     # declarations, defaults
@@ -84,7 +93,8 @@ if __name__ == "__main__":
     inc_reg_dirs = False
     inc_hidden_files = False
     inc_hidden_dirs = False
-    exts = [] # empty means "any"
+    exts_incl = True # include OR exclude extensions passed in the next parameter
+    exts = [] # empty or None means "all"
 
     # recursive - optional
     next_index = 1
@@ -127,10 +137,17 @@ if __name__ == "__main__":
         inc_hidden_dirs = False
     next_index += 1
 
+    # include extensions - mandatory
+    if sys.argv[next_index] == "yes":
+        exts_incl = True
+    elif sys.argv[next_index] == "no":
+        exts_incl = False
+    next_index += 1
+
     # extensions - optional
     exts = sys.argv[next_index:]
 
-    ret = makecontentlist(path, rec, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts)
+    ret = makecontentlist(path, rec, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts_incl, exts)
     for r in ret:
         print(r)
 

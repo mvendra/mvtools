@@ -72,33 +72,45 @@ class FsqueryTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testFilename_qualifies_extension_list(self):
-
         exts = ["cpp", "py", "sql"]
-        self.assertTrue(fsquery.filename_qualifies_extension_list ("/tmp/file.cpp", exts) )
-        self.assertFalse(fsquery.filename_qualifies_extension_list ("/tmp/file.zip", exts) )
-        self.assertTrue(fsquery.filename_qualifies_extension_list ("/tmp/file", None) )
-        self.assertTrue(fsquery.filename_qualifies_extension_list ("/tmp/another", []) )
+        self.assertTrue(fsquery.filename_qualifies_extension_list ("/tmp/file.cpp", True, exts) )
+        self.assertFalse(fsquery.filename_qualifies_extension_list ("/tmp/file.zip", True, exts) )
+        self.assertTrue(fsquery.filename_qualifies_extension_list ("/tmp/file", True, None) )
+        self.assertTrue(fsquery.filename_qualifies_extension_list ("/tmp/another", True, []) )
 
     def testMakecontentlist_1(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, "txt")
+        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, "txt")
         self.assertEqual(len(ret), 3)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
         self.assertTrue( self.file3 in ret )
 
     def testMakecontentlist_2(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, "bin")
+        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, ["txt", "dat"])
+        self.assertEqual(len(ret), 4)
+        self.assertTrue( self.file1 in ret )
+        self.assertTrue( self.file2 in ret )
+        self.assertTrue( self.file3 in ret )
+        self.assertTrue( self.file4 in ret )
+
+    def testMakecontentlist_3(self):
+        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, False, ["txt", "dat"])
+        self.assertEqual(len(ret), 1)
+        self.assertTrue( self.file5 in ret )
+
+    def testMakecontentlist_4(self):
+        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, "bin")
         self.assertEqual(len(ret), 1)
         self.assertEqual( self.file5, ret[0] )
 
-    def testMakecontentlist_3(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, False, False, False, "bin")
+    def testMakecontentlist_5(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, True, False, False, False, True, "bin")
         self.assertEqual(len(ret), 2)
         self.assertTrue( self.file5 in ret )
         self.assertTrue( self.sub1_file2 in ret )
 
-    def testMakecontentlist_4(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, None)
+    def testMakecontentlist_6(self):
+        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, None)
         self.assertEqual(len(ret), 5)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -106,8 +118,8 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.file4 in ret )
         self.assertTrue( self.file5 in ret )
 
-    def testMakecontentlist_5(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, False, False, False, None)
+    def testMakecontentlist_7(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, True, False, False, False, True, None)
         self.assertEqual(len(ret), 8)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -118,8 +130,8 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub1_file2 in ret )
         self.assertTrue( self.sub2_file1 in ret )
 
-    def testMakecontentlist_6(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, False, True, False, None)
+    def testMakecontentlist_8(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, True, False, True, False, True, None)
         self.assertEqual(len(ret), 11)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -133,8 +145,8 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub2_file1 in ret )
         self.assertTrue( self.sub2_file2 in ret )
 
-    def testMakecontentlist_7(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, True, True, False, None)
+    def testMakecontentlist_9(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, True, True, True, False, True, None)
         self.assertEqual(len(ret), 13)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -149,8 +161,8 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub2_file1 in ret )
         self.assertTrue( self.sub2_file2 in ret )
 
-    def testMakecontentlist_8(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, True, True, True, None)
+    def testMakecontentlist_10(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, True, True, True, True, True, None)
         self.assertEqual(len(ret), 14)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -166,20 +178,20 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub2_file1 in ret )
         self.assertTrue( self.sub2_file2 in ret )
 
-    def testMakecontentlist_9(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, False, False, False, True, None)
+    def testMakecontentlist_11(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, False, False, False, True, True, None)
         self.assertEqual(len(ret), 1)
         self.assertTrue( self.sub2_sub1 in ret )
 
-    def testMakecontentlist_10(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, False, False, True, False, None)
+    def testMakecontentlist_12(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, False, False, True, False, True, None)
         self.assertEqual(len(ret), 3)
         self.assertTrue( self.sub2_file2 in ret )
         self.assertTrue( self.file6 in ret )
         self.assertTrue( self.file7 in ret )
 
-    def testMakecontentlist_11(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, False, True, False, False, None)
+    def testMakecontentlist_13(self):
+        ret = fsquery.makecontentlist(self.test_dir, True, False, True, False, False, True, None)
         self.assertEqual(len(ret), 2)
         self.assertTrue( self.sub1 in ret )
         self.assertTrue( self.sub2 in ret )
