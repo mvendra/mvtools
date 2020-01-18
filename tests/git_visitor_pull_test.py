@@ -72,7 +72,7 @@ class GitVisitorPullTest(unittest.TestCase):
 
     def testVisitorPull(self):
 
-        # create fourth  and fifth repos - clones of second
+        # create fourth and fifth repos - clones of second
         fourth_repo = os.path.join(self.test_dir, "fourth")
         v, r = git_test_fixture.git_cloneRepo(self.second_repo, fourth_repo, "origin")
         if not v:
