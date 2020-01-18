@@ -74,13 +74,13 @@ class GitVisitorPushTest(unittest.TestCase):
         file1 = self.makeFilename()
         v, r = git_test_fixture.git_createAndCommit(third_repo, file1, self.makeContent(), "commit_msg")
         if not v:
-            return v, r
+            self.fail(r)
 
         # commit new file onto fourth
         file2 = self.makeFilename()
         v, r = git_test_fixture.git_createAndCommit(fourth_repo, file2, self.makeContent(), "commit_msg")
         if not v:
-            return v, r
+            self.fail(r)
 
         # call visitor_push on third and fourth
         repos = [third_repo, fourth_repo]

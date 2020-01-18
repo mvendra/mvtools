@@ -94,13 +94,13 @@ class GitVisitorFetchTest(unittest.TestCase):
         file3 = self.makeFilename()
         v, r = git_test_fixture.git_createAndCommit(self.second_repo, file3, self.makeContent(), "commit_msg")
         if not v:
-            return v, r
+            self.fail(r)
 
         # commit something else onto first
         file4 = self.makeFilename()
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, file4, self.makeContent(), "commit_msg")
         if not v:
-            return v, r
+            self.fail(r)
 
         # call visitor_fetch on fourth and fifth
         repos = [fourth_repo, fifth_repo]

@@ -89,7 +89,7 @@ class GitVisitorPullTest(unittest.TestCase):
         fifth_file2 = os.path.join(fifth_repo, file2)
         v, r = git_test_fixture.git_createAndCommit(self.second_repo, file2, self.makeContent(), "commit_msg")
         if not v:
-            return v, r
+            self.fail(r)
 
         # call visitor_pull on first and fourth
         repos = [fourth_repo, fifth_repo]
