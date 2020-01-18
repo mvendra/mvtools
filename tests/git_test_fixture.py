@@ -16,6 +16,11 @@ def git_cloneRepo(repo_source, repo_target, remotename):
         return False, "Git command failed. Can't proceed."
     return True, ""
 
+def git_addSubmodule(repo_sub, repo_target):
+    if not generic_run.run_cmd("git -C %s submodule add %s" % (repo_target, repo_sub) ):
+        return False, "Git command failed. Can't proceed."
+    return True, ""
+
 def git_createAndCommit(repo, filename, content, commitmsg):
     if not generic_run.run_cmd("create_and_write_file.py %s %s" % (os.path.join(repo, filename), content) ):
         return False, "create_and_write_file command failed. Can't proceed."
