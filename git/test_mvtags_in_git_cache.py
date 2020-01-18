@@ -27,7 +27,7 @@ def check_mvtags_in_file(repo, thefile):
     except OSError as oe:
         print("Unable to call git. Make sure it is installed.")
         return None
-    out = out.decode("ascii").strip().lower()
+    out = out.decode("UTF-8").strip().lower()
 
     # remove first 5 lines
     nl = -1
