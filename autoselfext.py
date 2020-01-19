@@ -108,11 +108,14 @@ exit 0 #SENTINEL\n"""
 
         call(["chmod", "+x", _self.outputfn])
 
+def puaq():
+    print("Usage: %s input_instructionsfile.sh input_packagefile.tar.gz output_filename.sh" % os.path.basename(__file__))
+    sys.exit(1)
+
 if __name__ == "__main__":
 
     if len(sys.argv) != 4:
-        print("Usage: %s input_instructionsfile.sh input_packagefile.tar.gz output_filename.sh" % os.path.basename(__file__))
-        sys.exit(1)
+        puaq()
 
     infile_inst = sys.argv[1]
     infile_pack = sys.argv[2]
