@@ -28,10 +28,12 @@ def is_sane(var, val):
 
     return True
 
-if __name__ == "__main__":
+def check_env_sanity():
     for i in os.environ.keys():
         thevar = i
         theval = os.environ[i]
         if not is_sane(thevar, theval):
             print("WARNING: %s has a suspicious value" % thevar)
 
+if __name__ == "__main__":
+    check_env_sanity()
