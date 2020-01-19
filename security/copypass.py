@@ -5,6 +5,8 @@ import os
 import subprocess
 import getpass
 
+import sendtoclipboard
+
 def puaq():
     print("Usage: %s password_file" % os.path.basename(__file__))
     sys.exit(1)
@@ -48,10 +50,10 @@ if __name__ == "__main__":
         content_to_copy = contents
 
     try:
-        subprocess.call(["sendtoclipboard.py", content_to_copy])
+        sendtoclipboard.sendtoclipboard(content_to_copy)
         print("Ok, you're up...")
         subprocess.call(["sleep", "5"])
-        subprocess.call(["sendtoclipboard.py", "clear"])
+        sendtoclipboard.sendtoclipboard("clear")
         print("Expired.")
     except:
         print("Unable to send password to clipboard.")
