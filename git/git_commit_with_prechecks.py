@@ -5,6 +5,7 @@ import os
 
 from subprocess import check_output
 from subprocess import call
+from subprocess import CalledProcessError
 
 import test_mvtags_in_git_cache
 import git_discover_repo_root
@@ -25,9 +26,12 @@ def gicom(repo, params):
     try:
         out = check_output(cmd)
         print(out.decode("ascii").strip())
-    except:
-        print("Failed calling git app. Make sure it is installed.")
+    except CalledProcessError as cpe:
+        print("Command failed. Likely nothing is staged.")
         exit(1)
+    except FileNotFoundError as fnfe:
+        print("Failed calling git app. Make sure it is installed.")
+        exit(2)
 
 if __name__ == "__main__":
 
