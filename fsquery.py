@@ -80,14 +80,23 @@ def makecontentlist(path, recursive, include_regular_files, include_regular_dirs
 
     return ret_list
 
-if __name__ == "__main__":
-    
-    if len(sys.argv) < 6:
-        print("Usage: %s [-R] path include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include extensions" % os.path.basename(__file__))
-        exit(1)
+def puaq():
+    print("Usage: %s path [-R|-r] include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include [extensions]" % os.path.basename(__file__))
+    exit(1)
 
-    # declarations, defaults
-    path = os.getcwd()
+if __name__ == "__main__":
+
+    if len(sys.argv) < 8:
+        puaq()
+
+    # parameters
+    path = sys.argv[1]
+    if not os.path.exists(path):
+        print("%s does not exist." % path)
+        sys.exit(1)
+    param_index = 2
+
+    # defaults
     rec = False
     inc_reg_files = True
     inc_reg_dirs = False
@@ -97,57 +106,48 @@ if __name__ == "__main__":
     exts = [] # empty or None means "all"
 
     # recursive - optional
-    next_index = 1
-    if '-R' in sys.argv or '-r' in sys.argv:
+    if sys.argv[param_index].upper() == "-R":
         rec = True
-        next_index = 2
-
-    # path - mandatory
-    path = sys.argv[next_index]
-    if not os.path.exists(path):
-        print("%s does not exist." % path)
-        sys.exit(1)
-    next_index += 1
+        param_index += 1
 
     # include regular files - mandatory
-    if sys.argv[next_index] == "yes":
+    if sys.argv[param_index] == "yes":
         inc_reg_files = True
-    elif sys.argv[next_index] == "no":
+    elif sys.argv[param_index] == "no":
         inc_reg_files = False
-    next_index += 1
+    param_index += 1
 
     # include regular dirs - mandatory
-    if sys.argv[next_index] == "yes":
+    if sys.argv[param_index] == "yes":
         inc_reg_dirs = True
-    elif sys.argv[next_index] == "no":
+    elif sys.argv[param_index] == "no":
         inc_reg_dirs = False
-    next_index += 1
+    param_index += 1
 
     # include hidden files - mandatory
-    if sys.argv[next_index] == "yes":
+    if sys.argv[param_index] == "yes":
         inc_hidden_files = True
-    elif sys.argv[next_index] == "no":
+    elif sys.argv[param_index] == "no":
         inc_hidden_files = False
-    next_index += 1
+    param_index += 1
 
     # include hidden dirs - mandatory
-    if sys.argv[next_index] == "yes":
+    if sys.argv[param_index] == "yes":
         inc_hidden_dirs = True
-    elif sys.argv[next_index] == "no":
+    elif sys.argv[param_index] == "no":
         inc_hidden_dirs = False
-    next_index += 1
+    param_index += 1
 
     # include extensions - mandatory
-    if sys.argv[next_index] == "yes":
+    if sys.argv[param_index] == "yes":
         exts_incl = True
-    elif sys.argv[next_index] == "no":
+    elif sys.argv[param_index] == "no":
         exts_incl = False
-    next_index += 1
+    param_index += 1
 
     # extensions - optional
-    exts = sys.argv[next_index:]
+    exts = sys.argv[param_index:]
 
     ret = makecontentlist(path, rec, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts_incl, exts)
     for r in ret:
         print(r)
-
