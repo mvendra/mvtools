@@ -7,6 +7,8 @@ import sys
 import fsquery
 from subprocess import check_output
 
+import terminal_colors
+
 def filteredag(path, search, extensions):
 
     ret = fsquery.makecontentlist(path, True, False, True, False, False, True, extensions)
@@ -19,8 +21,8 @@ def filteredag(path, search, extensions):
             exit(1)
         if not len(out):
             continue
-        print("\033[94m%s" % r)
-        print("\033[0m%s" % out)
+        print("%s%s" % (terminal_colors.TTY_BLUE, r))
+        print("%s%s" % (terminal_colors.TTY_WHITE, out))
 
 def puaq():
     print("Usage: %s path search extensions " % os.path.basename(__file__))
