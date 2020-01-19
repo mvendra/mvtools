@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# this is Filtered AG (silversearcher)
-
 import os
 import sys
 import fsquery
@@ -9,7 +7,7 @@ from subprocess import check_output
 
 import terminal_colors
 
-def filteredag(path, search, extensions):
+def filteredsearch(path, search, extensions):
 
     ret = fsquery.makecontentlist(path, True, False, True, False, False, True, extensions)
     for r in ret:
@@ -37,4 +35,4 @@ if __name__ == "__main__":
     search = sys.argv[2]
     extensions = sys.argv[3:]
 
-    filteredag(path, search, extensions)
+    filteredsearch(path, search, extensions)
