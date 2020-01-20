@@ -46,7 +46,7 @@ if __name__ == "__main__":
     password = getpasswordfromcontents(contents)
     content_to_copy = password
     if password == None:
-        opt = raw_input("Unable to find predefined text pattern. Press enter and I will copy entire file. This is your chance to abort.")
+        opt = input("Unable to find predefined text pattern. Press enter and I will copy entire file. This is your chance to abort.")
         content_to_copy = contents
 
     try:
