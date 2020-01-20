@@ -3,7 +3,7 @@
 import sys
 import os
 
-from subprocess import run, PIPE
+import hash_algos
 
 def puaq():
     print("Usage: %s archive-to-check [hash-file]" % os.path.basename(__file__))
@@ -11,19 +11,17 @@ def puaq():
 
 def sha256sum_check(archive_file, hash_file):
 
-    p = run(["sha256sum", archive_file], stdout=PIPE, encoding="ascii")
-    archive_file_computed_hash = p.stdout
-
     hash_file_contents = ""
     with open(hash_file, "r") as f:
         hash_file_contents = f.read()
 
-    # lets cleanup the output of sha256sum
-    archive_file_computed_hash = archive_file_computed_hash[:64]
-    hash_file_contents = hash_file_contents[:64]
+    v, r = hash_algos.hash_sha_256_app_file(archive_file)
+    if not v:
+        print("Failed generating hash for file %s" % archive_file)
+        sys.exit(1)
 
     # and then compare
-    if archive_file_computed_hash == hash_file_contents:
+    if hash_file_contents == r:
         return True
     else:
         return False
@@ -54,4 +52,3 @@ if __name__ == "__main__":
     else:
         print("Check failed!")
         sys.exit(1)
-
