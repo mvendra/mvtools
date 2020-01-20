@@ -21,7 +21,7 @@ def sha256sum_check(archive_file, hash_file):
         sys.exit(1)
 
     # and then compare
-    if hash_file_contents == r:
+    if hash_file_contents[0:64] == r:
         return True
     else:
         return False
