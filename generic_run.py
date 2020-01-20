@@ -4,16 +4,19 @@ import sys
 import os
 import subprocess
 
-def run_cmd_l(cmd_list):
+def run_cmd_l(cmd_list, std_input=None):
     try:
-        process = subprocess.run(cmd_list, check=True, stdout=subprocess.PIPE)
+        if std_input is not None:
+            process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, encoding="ascii")
+        else:
+            process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, encoding="ascii")
         if process.returncode == 0:
-            return True
+            return True, process.stdout
     except:
         pass
-    return False
+    return False, None
 
-def run_cmd(cmd):
+def run_cmd(cmd, std_input=None):
     cmd_list = []
     cmd_list_pre = cmd.strip().split(" ")
     for x in cmd_list_pre:
@@ -21,4 +24,4 @@ def run_cmd(cmd):
         if len(xl) > 0:
             cmd_list.append(xl)
 
-    return run_cmd_l(cmd_list)
+    return run_cmd_l(cmd_list, std_input)
