@@ -20,8 +20,7 @@ def create_pass_hash(filename):
     # generate hash
     v, r = hash_algos.hash_sha_512_app_content(passphrase)
     if not v:
-        print("Failed generating hash")
-        sys.exit(1)
+        return False
 
     # write out to file
     with open(filename, "w") as f:
