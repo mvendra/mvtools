@@ -10,6 +10,9 @@ import path_utils
 import encrypt
 import terminal_colors
 
+import hash_algos
+import create_and_write_file
+
 SCRIPT_FOLDER = os.path.dirname(os.path.realpath(__file__))
 
 class BackupEngine:
@@ -93,8 +96,12 @@ class BackupEngine:
             encrypt.symmetric_encrypt(CURPAK, CURPAK + ".enc", _self.PASSPHRASE)
             os.unlink(CURPAK) # delete plain package
             CURPAK += ".enc"
-            with open(CURPAK + ".sha256", "w+") as f:
-                call(["sha256sum", CURPAK], stdout=f)
+            CURPAK_HASH_FILE = CURPAK + ".sha256"
+            v, r = hash_algos.hash_sha_256_app_file(CURPAK)
+            if not v:
+                print("Failed generating hash for [%s]." % CURPAK)
+                return False
+            create_and_write_file.create_file_contents(CURPAK_HASH_FILE, r)
 
         print("%sWriting to targets...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
