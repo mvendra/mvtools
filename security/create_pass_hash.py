@@ -5,7 +5,8 @@ import os
 import stat
 
 import getpass
-from subprocess import run, PIPE
+
+import hash_algos
 
 def create_pass_hash(filename):
 
@@ -17,12 +18,14 @@ def create_pass_hash(filename):
     passphrase = getpass.getpass("Type in...\n")
 
     # generate hash
-    p = run(["sha512sum"], stdout=PIPE, input=passphrase, encoding="ascii")
-    pp_hash_calc = p.stdout[0:128]
+    v, r = hash_algos.hash_sha_512_app_content(passphrase)
+    if not v:
+        print("Failed generating hash")
+        sys.exit(1)
 
     # write out to file
     with open(filename, "w") as f:
-        f.write(pp_hash_calc)
+        f.write(r)
 
     # set user-read-only permissions
     os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
