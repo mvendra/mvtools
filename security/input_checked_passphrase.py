@@ -5,7 +5,7 @@ import os
 
 import getpass
 
-from subprocess import run, PIPE
+import hash_algos
 
 def check_hash(passphrase, pass_hash_file):
 
@@ -13,12 +13,12 @@ def check_hash(passphrase, pass_hash_file):
     with open(pass_hash_file) as f:
         pp_hash = f.read()
 
-    pp_hash_calc = ""
+    v, r = hash_algos.hash_sha_512_app_content(passphrase)
+    if not v:
+        print("Failed generating hash.")
+        sys.exit(1)
 
-    p = run(["sha512sum"], stdout=PIPE, input=passphrase, encoding="ascii")
-    pp_hash_calc = p.stdout[0:128]
-
-    if (pp_hash_calc == pp_hash):
+    if (r == pp_hash):
         return True
     else:
         return False
