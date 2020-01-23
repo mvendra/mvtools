@@ -1,0 +1,1 @@
+/home/mateus/mvbase/Dev/mvtools/inspect_deb_pkg.sh

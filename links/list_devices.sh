@@ -1,0 +1,1 @@
+/home/mateus/mvbase/Dev/mvtools/list_devices.sh

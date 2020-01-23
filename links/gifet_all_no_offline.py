@@ -1,0 +1,1 @@
+/home/mateus/mvbase/Dev/mvtools/git/visitor/interfaces/gifet_all_no_offline.py

@@ -28,44 +28,8 @@ add2pythonpath(){
 
 if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
 
-  add2path $MVTOOLS
-  add2pythonpath $MVTOOLS
-
-  add2path $MVTOOLS/audio
-  add2pythonpath $MVTOOLS/audio
-
-  add2path $MVTOOLS/video
-  add2pythonpath $MVTOOLS/video
-
-  add2path $MVTOOLS/git
-  add2path $MVTOOLS/git/visitor
-  add2path $MVTOOLS/git/visitor/interfaces
-  add2path $MVTOOLS/git/visitor/backends
-  add2pythonpath $MVTOOLS/git
-  add2pythonpath $MVTOOLS/git/visitor
-  add2pythonpath $MVTOOLS/git/visitor/interfaces
-  add2pythonpath $MVTOOLS/git/visitor/backends
-
-  add2path $MVTOOLS/inputfixes
-  add2pythonpath $MVTOOLS/inputfixes
-
-  add2path $MVTOOLS/codegen
-  add2pythonpath $MVTOOLS/codegen
-
-  add2path $MVTOOLS/codelint
-  add2pythonpath $MVTOOLS/codelint
-
-  add2path $MVTOOLS/security
-  add2pythonpath $MVTOOLS/security
-
-  add2path $MVTOOLS/startservices
-  add2path $MVTOOLS/urho
-
-  add2path $MVTOOLS/infra/backup
-  add2pythonpath $MVTOOLS/infra/backup
-
-  # for a nuclear-recursive solution, use this:
-  #PATH=${PATH}:$(find ~/the_base_path -type d | tr '\n' ':' | sed 's/:$//')
+  add2path $MVTOOLS/links
+  add2pythonpath $MVTOOLS/links
 
   # coreutils customisations
   source $MVTOOLS/coreutils_custom.sh

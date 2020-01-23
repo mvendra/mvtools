@@ -1,0 +1,1 @@
+/home/mateus/mvbase/Dev/mvtools/deprecated/encrypt.sh

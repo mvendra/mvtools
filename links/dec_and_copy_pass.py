@@ -1,0 +1,1 @@
+/home/mateus/mvbase/Dev/mvtools/security/dec_and_copy_pass.py

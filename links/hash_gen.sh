@@ -1,0 +1,1 @@
+/home/mateus/mvbase/Dev/mvtools/security/hash_gen.sh
