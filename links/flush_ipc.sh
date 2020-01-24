@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/flush_ipc.sh

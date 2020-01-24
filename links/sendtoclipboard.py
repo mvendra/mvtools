@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/sendtoclipboard.py

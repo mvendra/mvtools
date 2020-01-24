@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/codelint/check_cpp_header_guards.py

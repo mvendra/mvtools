@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/exploderpm.sh

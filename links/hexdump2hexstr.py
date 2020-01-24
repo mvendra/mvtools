@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/hexdump2hexstr.py

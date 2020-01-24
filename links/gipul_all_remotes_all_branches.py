@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/git/visitor/interfaces/gipul_all_remotes_all_branches.py

@@ -32,3 +32,6 @@
 *.swp
 *.class
 
+# the links folder
+links/
+

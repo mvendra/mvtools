@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/inputfixes/swap_caps_esc.sh

@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/git/git_banish_file.py

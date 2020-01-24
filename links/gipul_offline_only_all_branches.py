@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/git/visitor/interfaces/gipul_offline_only_all_branches.py

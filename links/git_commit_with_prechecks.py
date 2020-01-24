@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/git/git_commit_with_prechecks.py

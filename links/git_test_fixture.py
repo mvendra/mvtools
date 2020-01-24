@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/tests/git_test_fixture.py

@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/git/change_bash_wdname_gitbranch.sh

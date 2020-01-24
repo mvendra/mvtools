@@ -26,6 +26,13 @@ def detect_duplicates(item_list):
 
     return False # no duplicates detected
 
+def scratch_folder(path):
+    try:
+        shutil.rmtree(path)
+    except:
+        pass
+    os.mkdir(path)
+
 def filter_mvtools_item(item):
 
     if item is None:
@@ -73,9 +80,9 @@ def genlinks():
         return False
 
     path_links = os.path.join(path, "links")
-    if not os.path.exists(path_links):
-        print("[%s] does not exist. Aborting." % path_links)
-        return False
+    #if not os.path.exists(path_links):
+        #print("[%s] does not exist. Aborting." % path_links)
+        #return False
 
     # run fsquery and collect contents inside mvtools
     items = fsquery.makecontentlist(path, True, True, False, False, False, True, None)
@@ -92,8 +99,7 @@ def genlinks():
         return False
 
     # wipe out old links folder and recreate it
-    shutil.rmtree(path_links)
-    os.mkdir(path_links)
+    scratch_folder(path_links)
 
     # and finally create the links
     os.chdir(path_links)

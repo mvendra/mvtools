@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/git/git_aliases.sh

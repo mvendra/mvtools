@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/set_time.sh

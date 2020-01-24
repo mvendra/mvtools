@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/tests/git_visitor_status_test.py

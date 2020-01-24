@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/tests/git_visitor_fetch_test.py

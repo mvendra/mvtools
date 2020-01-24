@@ -1,1 +1,0 @@
-/home/mateus/mvbase/Dev/mvtools/security/input_checked_passphrase.py
