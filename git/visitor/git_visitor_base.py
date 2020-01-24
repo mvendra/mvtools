@@ -277,12 +277,12 @@ def do_visit(path_list, filters_query, func):
     paths = make_path_list(path_list)
     if paths is None:
         print("No paths to visit.")
-        return
+        return None
 
     options = process_filters(filters_query)
     if options is None:
         print("Failed processing options")
-        return
+        return None
 
     r = []
     for p in paths:

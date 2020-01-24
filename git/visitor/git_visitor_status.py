@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 import git_visitor_base
 from subprocess import check_output
@@ -25,6 +26,7 @@ def visitor_status(repos, options):
 
 if __name__ == "__main__":
     r = git_visitor_base.do_visit(None, None, visitor_status)
-    if False in r:
+    if r is None:
         sys.exit(1)
-
+    elif False in r:
+        sys.exit(2)
