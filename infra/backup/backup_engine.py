@@ -6,10 +6,11 @@ import os
 from subprocess import call
 import shutil
 import glob
+
 import path_utils
+import fsquery
 import encrypt
 import terminal_colors
-
 import hash_algos
 import create_and_write_file
 
@@ -74,16 +75,20 @@ class BackupEngine:
             if not path_utils.scratchfolder(test_subj):
                 print("%sCannot scratch %s - are the external media available/attached?%s" % (terminal_colors.TTY_RED, it, terminal_colors.TTY_WHITE))
                 return False
+            else:
+                shutil.rmtree(test_subj) # redundant but necessary
 
         print("%sCreating backup...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
         path_utils.scratchfolder(_self.BKTEMP)
-        with open(os.path.join(_self.BKTEMP, "bk_date.txt"), "w+") as f:
+        BKTEMP_AND_BASEDIR = os.path.join(_self.BKTEMP, _self.BKTARGETS_BASEDIR)
+        os.mkdir(BKTEMP_AND_BASEDIR)
+        with open(os.path.join(BKTEMP_AND_BASEDIR, "bk_date.txt"), "w+") as f:
             f.write(_self.gettimestamp() + "\n")
 
         for it in _self.BKARTIFACTS:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_GREEN, it, datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S'), terminal_colors.TTY_WHITE))
-            BKTMP_PLUS_ARTBASE = os.path.join(_self.BKTEMP, os.path.basename(os.path.dirname(it)))
+            BKTMP_PLUS_ARTBASE = os.path.join(BKTEMP_AND_BASEDIR, os.path.basename(os.path.dirname(it)))
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
             CURPAK = os.path.join(BKTMP_PLUS_ARTBASE, os.path.basename(it) + ".tar")
             tarcmd = ["tar"]
@@ -106,12 +111,7 @@ class BackupEngine:
         print("%sWriting to targets...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
         for it in _self.BKTARGETS_ROOT:
-            shutil.copy(os.path.join(_self.BKTEMP, "bk_date.txt"), os.path.join(it, _self.BKTARGETS_BASEDIR))
-            for cur_art_base in os.listdir(_self.BKTEMP):
-                for fn in glob.glob(os.path.join(_self.BKTEMP, cur_art_base, '*.*')):
-                    final_target_folder = os.path.join(it, _self.BKTARGETS_BASEDIR, cur_art_base)
-                    path_utils.guaranteefolder(final_target_folder)
-                    shutil.copy(fn, final_target_folder)
+            shutil.copytree(BKTEMP_AND_BASEDIR, os.path.join(it, _self.BKTARGETS_BASEDIR))
             call(["umount", it])
 
         shutil.rmtree(_self.BKTEMP)

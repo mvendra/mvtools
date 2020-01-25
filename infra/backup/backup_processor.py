@@ -7,6 +7,7 @@ import input_checked_passphrase
 import check_mounted
 import terminal_colors
 import backup_engine
+import fsquery
 
 class ArtifactBase:
     def __init__(_self, thepath, listexceptions):
@@ -31,7 +32,7 @@ class ArtifactBase:
 def make_backup_artifacts_list(artifacts_base):
     retlist = []
     for cur_base in artifacts_base:
-        for cur_dir in os.listdir(cur_base.get_path()):
+        for cur_dir in fsquery.makecontentlist(cur_base.get_path(), False, True, True, True, True, True, None):
             if not cur_dir in cur_base.get_list_exceptions():
                 retlist.append(os.path.join(cur_base.get_path(), cur_dir))
     return retlist
