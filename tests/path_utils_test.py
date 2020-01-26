@@ -55,7 +55,7 @@ class PathUtilsTest(unittest.TestCase):
         result = path_utils.explodepath("/home/user")
         self.assertEqual(expected, result)
 
-    def testScratchFolder(self):
+    def testScratchFolder1(self):
 
         test_folder_base = os.path.expanduser("~/nuke")
         test_folder_full = os.path.join(test_folder_base, "scratch")
@@ -67,6 +67,24 @@ class PathUtilsTest(unittest.TestCase):
             self.fail("[%s] already exists." % test_folder_full)
 
         result = path_utils.scratchfolder(test_folder_full)
+        self.assertTrue(result)
+        self.assertTrue(os.path.exists(test_folder_full))
+        shutil.rmtree(test_folder_full)
+
+    def testScratchFolder2(self):
+
+        test_folder_base = os.path.expanduser("~/nuke")
+        test_folder_full = os.path.join(test_folder_base, "scratch")
+
+        if not os.path.exists(test_folder_base):
+            self.fail("[%s] does not exist." % test_folder_base)
+        # safety first
+        if os.path.exists(test_folder_full):
+            self.fail("[%s] already exists." % test_folder_full)
+
+        os.mkdir(test_folder_full) # variation: will scratch a pre-existing folder
+        result = path_utils.scratchfolder(test_folder_full)
+        self.assertTrue(result)
         self.assertTrue(os.path.exists(test_folder_full))
         shutil.rmtree(test_folder_full)
 

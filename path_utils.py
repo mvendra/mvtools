@@ -68,6 +68,8 @@ def scratchfolder(path):
     Returns true/false depending on whether the operation succeeded or not.
     """
 
+    """
+    # old version
     try:
         if os.path.exists(path):
             if os.path.isfile(path):
@@ -77,6 +79,19 @@ def scratchfolder(path):
         ret = call(["mkdir", path])
         if ret != 0:
             return False
+    except:
+        return False
+    return True
+    """
+
+    # newer, more compatible version
+    try:
+        if os.path.exists(path):
+            if os.path.isfile(path):
+                os.unlink(path)
+            else:
+                shutil.rmtree(path)
+        os.mkdir(path)
     except:
         return False
     return True
