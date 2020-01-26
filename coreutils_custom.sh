@@ -7,6 +7,7 @@ if [[ "$unamestr" == 'Linux' ]]; then
 fi
 
 alias la="ls -la"
+alias lal="ls -1Ap"
 alias lash="ls -lash"
 alias mv="mv -i"
 alias cp="cp -i"
