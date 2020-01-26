@@ -59,9 +59,15 @@ class BackupProcessorTest(unittest.TestCase):
         self.folder1 = os.path.join(self.test_source_folder, "folder1")
         self.folder2 = os.path.join(self.test_source_folder, "folder2")
         self.folder3 = os.path.join(self.test_source_folder, "folder3")
+        self.folder4 = os.path.join(self.test_source_folder, ".folder4")
         os.mkdir(self.folder1)
         os.mkdir(self.folder2)
         os.mkdir(self.folder3)
+        os.mkdir(self.folder4)
+
+        # file "zero" - at the root of the source dir
+        self.file0 = os.path.join(self.test_source_folder, ".file0.txt")
+        create_and_write_file.create_file_contents(self.file0, "xyz")
 
         # create subfolders
         self.folder1_subfolder1 = os.path.join(self.folder1, "subfolder1")
@@ -84,6 +90,10 @@ class BackupProcessorTest(unittest.TestCase):
         # create files, folder3
         self.folder3_file1 = os.path.join(self.folder3, "file1.txt")
         create_and_write_file.create_file_contents(self.folder3_file1, "abc")
+
+        # create files, folder4
+        self.folder4_file1 = os.path.join(self.folder4, "file1.txt")
+        create_and_write_file.create_file_contents(self.folder4_file1, "abc")
 
         # create config file
         cfg_file_contents = ""
@@ -160,6 +170,12 @@ class BackupProcessorTest(unittest.TestCase):
         tg1_folder3_e = os.path.join(tg1_final, "source_test", "folder3.tar.bz2.enc")
         tg1_folder3_z = os.path.join(tg1_final, "source_test", "folder3.tar.bz2")
         tg1_folder3_h = os.path.join(tg1_final, "source_test", "folder3.tar.bz2.enc.sha256")
+        tg1_folder4_e = os.path.join(tg1_final, "source_test", ".folder4.tar.bz2.enc")
+        tg1_folder4_z = os.path.join(tg1_final, "source_test", ".folder4.tar.bz2")
+        tg1_folder4_h = os.path.join(tg1_final, "source_test", ".folder4.tar.bz2.enc.sha256")
+        tg1_file0_e = os.path.join(tg1_final, "source_test", ".file0.txt.tar.bz2.enc")
+        tg1_file0_z = os.path.join(tg1_final, "source_test", ".file0.txt.tar.bz2")
+        tg1_file0_h = os.path.join(tg1_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
 
         tg2_folder1_e = os.path.join(tg2_final, "source_test", "folder1.tar.bz2.enc")
         tg2_folder1_z = os.path.join(tg2_final, "source_test", "folder1.tar.bz2")
@@ -170,6 +186,12 @@ class BackupProcessorTest(unittest.TestCase):
         tg2_folder3_e = os.path.join(tg2_final, "source_test", "folder3.tar.bz2.enc")
         tg2_folder3_z = os.path.join(tg2_final, "source_test", "folder3.tar.bz2")
         tg2_folder3_h = os.path.join(tg2_final, "source_test", "folder3.tar.bz2.enc.sha256")
+        tg2_folder4_e = os.path.join(tg2_final, "source_test", ".folder4.tar.bz2.enc")
+        tg2_folder4_z = os.path.join(tg2_final, "source_test", ".folder4.tar.bz2")
+        tg2_folder4_h = os.path.join(tg2_final, "source_test", ".folder4.tar.bz2.enc.sha256")
+        tg2_file0_e = os.path.join(tg2_final, "source_test", ".file0.txt.tar.bz2.enc")
+        tg2_file0_z = os.path.join(tg2_final, "source_test", ".file0.txt.tar.bz2")
+        tg2_file0_h = os.path.join(tg2_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
 
         # target1
         self.assertTrue( os.path.exists( tg1_folder1_e ) )
@@ -178,6 +200,10 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg1_folder2_h ) )
         self.assertTrue( os.path.exists( tg1_folder3_e ) )
         self.assertTrue( os.path.exists( tg1_folder3_h ) )
+        self.assertTrue( os.path.exists( tg1_folder4_e ) )
+        self.assertTrue( os.path.exists( tg1_folder4_h ) )
+        self.assertTrue( os.path.exists( tg1_file0_e ) )
+        self.assertTrue( os.path.exists( tg1_file0_h ) )
 
         # target2
         self.assertTrue( os.path.exists( tg2_folder1_e ) )
@@ -186,40 +212,56 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg2_folder2_h ) )
         self.assertTrue( os.path.exists( tg2_folder3_e ) )
         self.assertTrue( os.path.exists( tg2_folder3_h ) )
+        self.assertTrue( os.path.exists( tg2_folder4_e ) )
+        self.assertTrue( os.path.exists( tg2_folder4_h ) )
+        self.assertTrue( os.path.exists( tg2_file0_e ) )
+        self.assertTrue( os.path.exists( tg2_file0_h ) )
 
         # check hashes
         # target 1
         self.assertTrue(hash_check.sha256sum_check( tg1_folder1_e, tg1_folder1_h ))
         self.assertTrue(hash_check.sha256sum_check( tg1_folder2_e, tg1_folder2_h ))
         self.assertTrue(hash_check.sha256sum_check( tg1_folder3_e, tg1_folder3_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg1_folder4_e, tg1_folder4_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg1_file0_e, tg1_file0_h ))
 
         # target 2
         self.assertTrue(hash_check.sha256sum_check( tg2_folder1_e, tg2_folder1_h ))
         self.assertTrue(hash_check.sha256sum_check( tg2_folder2_e, tg2_folder2_h ))
         self.assertTrue(hash_check.sha256sum_check( tg2_folder3_e, tg2_folder3_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg2_folder4_e, tg2_folder4_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg2_file0_e, tg2_file0_h ))
 
         # decrypt files
         # target 1
         self.assertTrue(decrypt.symmetric_decrypt( tg1_folder1_e, tg1_folder1_z, self.passphrase ))
         self.assertTrue(decrypt.symmetric_decrypt( tg1_folder2_e, tg1_folder2_z, self.passphrase ))
         self.assertTrue(decrypt.symmetric_decrypt( tg1_folder3_e, tg1_folder3_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder4_e, tg1_folder4_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_file0_e, tg1_file0_z, self.passphrase ))
 
         # target 2
         self.assertTrue(decrypt.symmetric_decrypt( tg2_folder1_e, tg2_folder1_z, self.passphrase ))
         self.assertTrue(decrypt.symmetric_decrypt( tg2_folder2_e, tg2_folder2_z, self.passphrase ))
         self.assertTrue(decrypt.symmetric_decrypt( tg2_folder3_e, tg2_folder3_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder4_e, tg2_folder4_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_file0_e, tg2_file0_z, self.passphrase ))
 
         # extract files and check contents
         # target 1
         generic_run.run_cmd("tar -xf %s" % tg1_folder1_z )
         generic_run.run_cmd("tar -xf %s" % tg1_folder2_z )
         generic_run.run_cmd("tar -xf %s" % tg1_folder3_z )
+        generic_run.run_cmd("tar -xf %s" % tg1_folder4_z )
+        generic_run.run_cmd("tar -xf %s" % tg1_file0_z )
 
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_file1) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder1_file2) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder2_file3) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder2_file1) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder3_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder4_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.file0) ) )
 
         # reset extracted folder
         homedir = os.path.expanduser("~/")
@@ -231,12 +273,16 @@ class BackupProcessorTest(unittest.TestCase):
         generic_run.run_cmd("tar -xf %s" % tg2_folder1_z )
         generic_run.run_cmd("tar -xf %s" % tg2_folder2_z )
         generic_run.run_cmd("tar -xf %s" % tg2_folder3_z )
+        generic_run.run_cmd("tar -xf %s" % tg2_folder4_z )
+        generic_run.run_cmd("tar -xf %s" % tg2_file0_z )
 
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_file1) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder1_file2) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder2_file3) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder2_file1) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder3_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder4_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.file0) ) )
 
 if __name__ == '__main__':
     unittest.main()
