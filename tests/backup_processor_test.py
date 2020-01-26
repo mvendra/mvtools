@@ -4,11 +4,18 @@ import sys
 import os
 import shutil
 import unittest
+from unittest import mock
+from unittest.mock import patch
 
 import create_and_write_file
 import mvtools_test_fixture
 
 import backup_processor
+
+import hash_check
+import decrypt
+import generic_run
+import path_utils
 
 class BackupProcessorTest(unittest.TestCase):
 
@@ -26,14 +33,27 @@ class BackupProcessorTest(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
+        # will make the following path the working directory
+        self.extracted_folder = os.path.join(self.test_dir, "extracted")
+        os.mkdir(self.extracted_folder)
+        os.chdir(self.extracted_folder)
+
         # nonexistent folder - for testing only
         self.nonexistent = os.path.join(self.test_dir, "nonexistent")
+
+        # temp folder
+        self.bk_test_temp_folder = os.path.join(self.test_dir, "bktemp")
+
+        # base backup folder
+        self.bk_base_folder_test = "BackupTests"
 
         # create folders, source and target
         self.test_source_folder = os.path.join(self.test_dir, "source_test")
         os.mkdir(self.test_source_folder)
-        self.test_target_folder = os.path.join(self.test_dir, "target_test")
-        os.mkdir(self.test_target_folder)
+        self.test_target_1_folder = os.path.join(self.test_dir, "target_1_test")
+        os.mkdir(self.test_target_1_folder)
+        self.test_target_2_folder = os.path.join(self.test_dir, "target_2_test")
+        os.mkdir(self.test_target_2_folder)
 
         # create test folders
         self.folder1 = os.path.join(self.test_source_folder, "folder1")
@@ -69,12 +89,18 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents = ""
         #cfg_file_contents += "BKPREPARATION = ...\n"
         cfg_file_contents += "BKARTIFACTS_BASE = %s\n" % self.test_source_folder
-        cfg_file_contents += "BKTARGETS_ROOT = %s - nocheckmount\n" % self.test_target_folder
-        cfg_file_contents += "BKTEMP = %s\n" % self.test_dir
-        cfg_file_contents += "BKTARGETS_BASEDIR = BackupTests\n"
+        cfg_file_contents += "BKTARGETS_ROOT = %s - nocheckmount\n" % self.test_target_1_folder
+        cfg_file_contents += "BKTARGETS_ROOT = %s - nocheckmount\n" % self.test_target_2_folder
+        cfg_file_contents += "BKTEMP = %s\n" % self.bk_test_temp_folder
+        cfg_file_contents += "BKTARGETS_BASEDIR = %s\n" % self.bk_base_folder_test
 
         self.test_config_file = os.path.join(self.test_dir, "test_config_file.cfg")
         create_and_write_file.create_file_contents(self.test_config_file, cfg_file_contents)
+
+        # hash file
+        self.hash_file = os.path.join(self.test_dir, ".hash_file_test")
+        self.passphrase = "abcdef"
+        create_and_write_file.create_file_contents(self.hash_file, "e32ef19623e8ed9d267f657a81944b3d07adbb768518068e88435745564e8d4150a0a703be2a7d88b61e3d390c2bb97e2d4c311fdc69d6b1267f05f59aa920e7")
 
         return True, ""
 
@@ -105,9 +131,112 @@ class BackupProcessorTest(unittest.TestCase):
         v, r = backup_processor.read_config(self.test_config_file)
         self.assertTrue(v)
         self.assertEqual(r[0], "")
-        self.assertEqual(r[2], [self.test_target_folder])
-        self.assertEqual(r[3], "BackupTests")
-        self.assertEqual(r[4], self.test_dir)
+        self.assertEqual(r[2], [self.test_target_1_folder, self.test_target_2_folder])
+        self.assertEqual(r[3], self.bk_base_folder_test)
+        self.assertEqual(r[4], self.bk_test_temp_folder)
+
+    def testRunBackup(self):
+
+        # basic execution
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_config_file, self.hash_file)
+        self.assertTrue(r)
+
+        tg1_final = os.path.join(self.test_target_1_folder, self.bk_base_folder_test)
+        tg2_final = os.path.join(self.test_target_2_folder, self.bk_base_folder_test)
+
+        # check if dates were written in both targets
+        self.assertTrue( os.path.exists( os.path.join(tg1_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( os.path.join(tg2_final, "bk_date.txt") ) )
+
+        # check if all artifacts are present on both targets
+
+        tg1_folder1_e = os.path.join(tg1_final, "source_test", "folder1.tar.bz2.enc")
+        tg1_folder1_z = os.path.join(tg1_final, "source_test", "folder1.tar.bz2")
+        tg1_folder1_h = os.path.join(tg1_final, "source_test", "folder1.tar.bz2.enc.sha256")
+        tg1_folder2_e = os.path.join(tg1_final, "source_test", "folder2.tar.bz2.enc")
+        tg1_folder2_z = os.path.join(tg1_final, "source_test", "folder2.tar.bz2")
+        tg1_folder2_h = os.path.join(tg1_final, "source_test", "folder2.tar.bz2.enc.sha256")
+        tg1_folder3_e = os.path.join(tg1_final, "source_test", "folder3.tar.bz2.enc")
+        tg1_folder3_z = os.path.join(tg1_final, "source_test", "folder3.tar.bz2")
+        tg1_folder3_h = os.path.join(tg1_final, "source_test", "folder3.tar.bz2.enc.sha256")
+
+        tg2_folder1_e = os.path.join(tg2_final, "source_test", "folder1.tar.bz2.enc")
+        tg2_folder1_z = os.path.join(tg2_final, "source_test", "folder1.tar.bz2")
+        tg2_folder1_h = os.path.join(tg2_final, "source_test", "folder1.tar.bz2.enc.sha256")
+        tg2_folder2_e = os.path.join(tg2_final, "source_test", "folder2.tar.bz2.enc")
+        tg2_folder2_z = os.path.join(tg2_final, "source_test", "folder2.tar.bz2")
+        tg2_folder2_h = os.path.join(tg2_final, "source_test", "folder2.tar.bz2.enc.sha256")
+        tg2_folder3_e = os.path.join(tg2_final, "source_test", "folder3.tar.bz2.enc")
+        tg2_folder3_z = os.path.join(tg2_final, "source_test", "folder3.tar.bz2")
+        tg2_folder3_h = os.path.join(tg2_final, "source_test", "folder3.tar.bz2.enc.sha256")
+
+        # target1
+        self.assertTrue( os.path.exists( tg1_folder1_e ) )
+        self.assertTrue( os.path.exists( tg1_folder1_h ) )
+        self.assertTrue( os.path.exists( tg1_folder2_e ) )
+        self.assertTrue( os.path.exists( tg1_folder2_h ) )
+        self.assertTrue( os.path.exists( tg1_folder3_e ) )
+        self.assertTrue( os.path.exists( tg1_folder3_h ) )
+
+        # target2
+        self.assertTrue( os.path.exists( tg2_folder1_e ) )
+        self.assertTrue( os.path.exists( tg2_folder1_h ) )
+        self.assertTrue( os.path.exists( tg2_folder2_e ) )
+        self.assertTrue( os.path.exists( tg2_folder2_h ) )
+        self.assertTrue( os.path.exists( tg2_folder3_e ) )
+        self.assertTrue( os.path.exists( tg2_folder3_h ) )
+
+        # check hashes
+        # target 1
+        self.assertTrue(hash_check.sha256sum_check( tg1_folder1_e, tg1_folder1_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg1_folder2_e, tg1_folder2_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg1_folder3_e, tg1_folder3_h ))
+
+        # target 2
+        self.assertTrue(hash_check.sha256sum_check( tg2_folder1_e, tg2_folder1_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg2_folder2_e, tg2_folder2_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg2_folder3_e, tg2_folder3_h ))
+
+        # decrypt files
+        # target 1
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder1_e, tg1_folder1_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder2_e, tg1_folder2_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder3_e, tg1_folder3_z, self.passphrase ))
+
+        # target 2
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder1_e, tg2_folder1_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder2_e, tg2_folder2_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder3_e, tg2_folder3_z, self.passphrase ))
+
+        # extract files and check contents
+        # target 1
+        generic_run.run_cmd("tar -xf %s" % tg1_folder1_z )
+        generic_run.run_cmd("tar -xf %s" % tg1_folder2_z )
+        generic_run.run_cmd("tar -xf %s" % tg1_folder3_z )
+
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder1_file2) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder2_file3) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder2_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder3_file1) ) )
+
+        # reset extracted folder
+        homedir = os.path.expanduser("~/")
+        os.chdir(homedir)
+        path_utils.scratchfolder(self.extracted_folder)
+        os.chdir(self.extracted_folder)
+
+        # target 2
+        generic_run.run_cmd("tar -xf %s" % tg2_folder1_z )
+        generic_run.run_cmd("tar -xf %s" % tg2_folder2_z )
+        generic_run.run_cmd("tar -xf %s" % tg2_folder3_z )
+
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder1_file2) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder1_subfolder2_file3) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder2_file1) ) )
+        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, self.folder3_file1) ) )
 
 if __name__ == '__main__':
     unittest.main()
