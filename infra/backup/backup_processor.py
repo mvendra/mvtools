@@ -33,7 +33,12 @@ def make_backup_artifacts_list(artifacts_base):
     retlist = []
     for cur_base in artifacts_base:
         for cur_dir in fsquery.makecontentlist(cur_base.get_path(), False, True, True, True, True, True, None):
-            if not cur_dir in cur_base.get_list_exceptions():
+            add_cur = True
+            for cur_ex in cur_base.get_list_exceptions():
+                if cur_dir == os.path.join(cur_base.get_path(), cur_ex):
+                    add_cur = False
+                    break
+            if add_cur:
                 retlist.append(os.path.join(cur_base.get_path(), cur_dir))
     return retlist
 

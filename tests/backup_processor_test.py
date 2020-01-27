@@ -50,6 +50,8 @@ class BackupProcessorTest(unittest.TestCase):
         # create folders, source and target
         self.test_source_folder = os.path.join(self.test_dir, "source_test")
         os.mkdir(self.test_source_folder)
+        self.test_source_alt_folder = os.path.join(self.test_dir, "source_alt_test")
+        os.mkdir(self.test_source_alt_folder)
         self.test_target_1_folder = os.path.join(self.test_dir, "target_1_test")
         os.mkdir(self.test_target_1_folder)
         self.test_target_2_folder = os.path.join(self.test_dir, "target_2_test")
@@ -60,10 +62,14 @@ class BackupProcessorTest(unittest.TestCase):
         self.folder2 = os.path.join(self.test_source_folder, "folder2")
         self.folder3 = os.path.join(self.test_source_folder, "folder3")
         self.folder4 = os.path.join(self.test_source_folder, ".folder4")
+        self.alt_folder5 = os.path.join(self.test_source_alt_folder, "folder5")
+        self.alt_folder6 = os.path.join(self.test_source_alt_folder, "folder6")
         os.mkdir(self.folder1)
         os.mkdir(self.folder2)
         os.mkdir(self.folder3)
         os.mkdir(self.folder4)
+        os.mkdir(self.alt_folder5)
+        os.mkdir(self.alt_folder6)
 
         # file "zero" - at the root of the source dir
         self.file0 = os.path.join(self.test_source_folder, ".file0.txt")
@@ -95,10 +101,26 @@ class BackupProcessorTest(unittest.TestCase):
         self.folder4_file1 = os.path.join(self.folder4, "file1.txt")
         create_and_write_file.create_file_contents(self.folder4_file1, "abc")
 
+        # create files alt source folders
+        self.alt_folder5_file1 = os.path.join(self.alt_folder5, "file51.txt")
+        create_and_write_file.create_file_contents(self.alt_folder5_file1, "abc")
+        self.alt_folder6_file1 = os.path.join(self.alt_folder6, "file61.txt")
+        create_and_write_file.create_file_contents(self.alt_folder6_file1, "abc")
+        self.file01 = os.path.join(self.test_source_alt_folder, ".file01.txt")
+        create_and_write_file.create_file_contents(self.file01, "ooo")
+
         # create config file
         cfg_file_contents = ""
         #cfg_file_contents += "BKPREPARATION = ...\n"
+
+        # first source
         cfg_file_contents += "BKARTIFACTS_BASE = %s\n" % self.test_source_folder
+
+        # second source
+        cfg_file_contents += "BKARTIFACTS_BASE_EXCEPTION = .file01.txt\n"
+        cfg_file_contents += "BKARTIFACTS_BASE_EXCEPTION = folder5\n"
+        cfg_file_contents += "BKARTIFACTS_BASE = %s\n" % self.test_source_alt_folder
+
         cfg_file_contents += "BKTARGETS_ROOT = %s - nocheckmount\n" % self.test_target_1_folder
         cfg_file_contents += "BKTARGETS_ROOT = %s - nocheckmount\n" % self.test_target_2_folder
         cfg_file_contents += "BKTEMP = %s\n" % self.bk_test_temp_folder
@@ -177,6 +199,11 @@ class BackupProcessorTest(unittest.TestCase):
         tg1_file0_z = os.path.join(tg1_final, "source_test", ".file0.txt.tar.bz2")
         tg1_file0_h = os.path.join(tg1_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
 
+        # alt source
+        tg1_folder5 = os.path.join(tg1_final, "source_alt_test", "folder5.tar.bz2.enc")
+        tg1_folder6 = os.path.join(tg1_final, "source_alt_test", "folder6.tar.bz2.enc")
+        tg1_file01 = os.path.join(tg1_final, "source_alt_test", ".file01.txt.tar.bz2.enc")
+
         tg2_folder1_e = os.path.join(tg2_final, "source_test", "folder1.tar.bz2.enc")
         tg2_folder1_z = os.path.join(tg2_final, "source_test", "folder1.tar.bz2")
         tg2_folder1_h = os.path.join(tg2_final, "source_test", "folder1.tar.bz2.enc.sha256")
@@ -193,6 +220,11 @@ class BackupProcessorTest(unittest.TestCase):
         tg2_file0_z = os.path.join(tg2_final, "source_test", ".file0.txt.tar.bz2")
         tg2_file0_h = os.path.join(tg2_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
 
+        # alt source
+        tg2_folder5 = os.path.join(tg2_final, "source_alt_test", "folder5.tar.bz2.enc")
+        tg2_folder6 = os.path.join(tg2_final, "source_alt_test", "folder6.tar.bz2.enc")
+        tg2_file01 = os.path.join(tg2_final, "source_alt_test", ".file01.txt.tar.bz2.enc")
+
         # target1
         self.assertTrue( os.path.exists( tg1_folder1_e ) )
         self.assertTrue( os.path.exists( tg1_folder1_h ) )
@@ -204,6 +236,9 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg1_folder4_h ) )
         self.assertTrue( os.path.exists( tg1_file0_e ) )
         self.assertTrue( os.path.exists( tg1_file0_h ) )
+        self.assertFalse( os.path.exists( tg1_folder5 ) )
+        self.assertTrue( os.path.exists( tg1_folder6 ) )
+        self.assertFalse( os.path.exists( tg1_file01 ) )
 
         # target2
         self.assertTrue( os.path.exists( tg2_folder1_e ) )
@@ -216,6 +251,9 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg2_folder4_h ) )
         self.assertTrue( os.path.exists( tg2_file0_e ) )
         self.assertTrue( os.path.exists( tg2_file0_h ) )
+        self.assertFalse( os.path.exists( tg2_folder5 ) )
+        self.assertTrue( os.path.exists( tg2_folder6 ) )
+        self.assertFalse( os.path.exists( tg2_file01 ) )
 
         # check hashes
         # target 1
