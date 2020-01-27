@@ -69,20 +69,19 @@ def read_config(config_file):
             continue
 
         # cleanup variables
-        var_name, var_value_and_options = line_t.split("=")
-        var_name = var_name.strip()
-        var_value_and_options = var_value_and_options.strip()
+        var_name_and_options, var_value = line_t.split("=")
+        var_name_and_options = var_name_and_options.strip()
+        var_value = var_value.strip()
 
-        var_value = ""
+        var_name = ""
         var_options = ""
 
-        try:
-            var_value, var_options = var_value_and_options.split(" - ")
-        except ValueError:
-            var_value = var_value_and_options
-
-        var_value = var_value.strip()
-        var_options = var_options.strip()
+        p = var_name_and_options.find("{")
+        if p == -1:
+            var_name = var_name_and_options
+        else:
+            var_name = (var_name_and_options[0:p]).strip()
+            var_options = (var_name_and_options[p:]).strip()
 
         if var_name == "":
             print("%sEmpty var name: [%s]%s" % (terminal_colors.TTY_RED, line_t, terminal_colors.TTY_WHITE))

@@ -121,8 +121,8 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents += "BKARTIFACTS_BASE_EXCEPTION = folder5\n"
         cfg_file_contents += "BKARTIFACTS_BASE = %s\n" % self.test_source_alt_folder
 
-        cfg_file_contents += "BKTARGETS_ROOT = %s - nocheckmount\n" % self.test_target_1_folder
-        cfg_file_contents += "BKTARGETS_ROOT = %s - nocheckmount\n" % self.test_target_2_folder
+        cfg_file_contents += "BKTARGETS_ROOT {nocheckmount} = %s\n" % self.test_target_1_folder
+        cfg_file_contents += "BKTARGETS_ROOT {nocheckmount} = %s\n" % self.test_target_2_folder
         cfg_file_contents += "BKTEMP = %s\n" % self.bk_test_temp_folder
         cfg_file_contents += "BKTARGETS_BASEDIR = %s\n" % self.bk_base_folder_test
 
