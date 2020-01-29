@@ -46,7 +46,7 @@ def filter_mvtools_item(item):
     fn_ext = os.path.splitext(filename)[1]
 
     # exclude some folders
-    ex_folders = ["__pycache__", ".git", "links", "kbase", "nbproject", "deprecated"]
+    ex_folders = ["__pycache__", ".git", "links", "kbase", "nbproject", "deprecated", "tests"]
     for e in ex_folders:
         if e in path_pieces:
             return False
