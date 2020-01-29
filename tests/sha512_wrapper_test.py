@@ -10,7 +10,7 @@ import create_and_write_file
 
 import sha512_wrapper
 
-class HashAlgosTest(unittest.TestCase):
+class Sha512WrapperTest(unittest.TestCase):
 
     def makeFilename(self):
         self.internal_counter += 1
