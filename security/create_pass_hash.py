@@ -6,7 +6,7 @@ import stat
 
 import getpass
 
-import hash_algos
+import sha512_wrapper
 
 def create_pass_hash(filename):
 
@@ -18,7 +18,7 @@ def create_pass_hash(filename):
     passphrase = getpass.getpass("Type in...\n")
 
     # generate hash
-    v, r = hash_algos.hash_sha_512_app_content(passphrase)
+    v, r = sha512_wrapper.hash_sha_512_app_content(passphrase)
     if not v:
         return False
 

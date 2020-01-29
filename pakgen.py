@@ -5,7 +5,7 @@ import os
 
 import generic_run
 import create_and_write_file
-import hash_algos
+import sha256_wrapper
 
 def puaq():
     print("Usage: %s [--hash] file_or_folder" % os.path.basename(__file__))
@@ -40,7 +40,7 @@ def pakgen(files):
     generic_run.run_cmd("bzip2 %s" % FILENAME_TAR)
 
     if DO_HASH:
-        v, r = hash_algos.hash_sha_256_app_file(FILENAME_TAR_BZ2)
+        v, r = sha256_wrapper.hash_sha_256_app_file(FILENAME_TAR_BZ2)
         if v:
             create_and_write_file.create_file_contents(HASH_FILENAME, r)
         else:

@@ -3,7 +3,7 @@
 import sys
 import os
 
-import hash_algos
+import sha256_wrapper
 
 def puaq():
     print("Usage: %s archive-to-check [hash-file]" % os.path.basename(__file__))
@@ -15,7 +15,7 @@ def sha256sum_check(archive_file, hash_file):
     with open(hash_file, "r") as f:
         hash_file_contents = f.read()
 
-    v, r = hash_algos.hash_sha_256_app_file(archive_file)
+    v, r = sha256_wrapper.hash_sha_256_app_file(archive_file)
     if not v:
         print("Failed generating hash for file %s" % archive_file)
         sys.exit(1)

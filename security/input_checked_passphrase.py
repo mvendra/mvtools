@@ -5,7 +5,7 @@ import os
 
 import getpass
 
-import hash_algos
+import sha512_wrapper
 
 def check_hash(passphrase, pass_hash_file):
 
@@ -13,7 +13,7 @@ def check_hash(passphrase, pass_hash_file):
     with open(pass_hash_file) as f:
         pp_hash = f.read()
 
-    v, r = hash_algos.hash_sha_512_app_content(passphrase)
+    v, r = sha512_wrapper.hash_sha_512_app_content(passphrase)
     if not v:
         print("Failed generating hash.")
         sys.exit(1)

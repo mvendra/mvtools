@@ -8,7 +8,7 @@ import unittest
 import mvtools_test_fixture
 import create_and_write_file
 
-import hash_algos
+import sha256_wrapper
 
 class HashAlgosTest(unittest.TestCase):
 
@@ -27,7 +27,7 @@ class HashAlgosTest(unittest.TestCase):
 
         self.internal_counter = 0
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("hash_algos_test_base")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("sha256_wrapper_test_base")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -38,7 +38,6 @@ class HashAlgosTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.filename1, self.content1)
 
         self.content1_sha256 = "735e24cec929ca91d81076fb56bed40642a3b0c5f8fe3b1a4d98b425dadc8c99"
-        self.content1_sha512 = "b5011e56ea61610e6dc76c6cd63dd43252c215c0250dcfeb343c8853cabb1413aeb1c8bcb17ca49240ec977a82fb444b0f6a85a949d7e3edc2d11af13ced1c23"
 
         return True, ""
 
@@ -46,24 +45,14 @@ class HashAlgosTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testHash256AppContent(self):
-        v, r = hash_algos.hash_sha_256_app_content(self.content1)
+        v, r = sha256_wrapper.hash_sha_256_app_content(self.content1)
         self.assertTrue(v)
         self.assertEqual(r, self.content1_sha256)
-
-    def testHash512AppContent(self):
-        v, r = hash_algos.hash_sha_512_app_content(self.content1)
-        self.assertTrue(v)
-        self.assertEqual(r, self.content1_sha512)
 
     def testHash256AppFile(self):
-        v, r = hash_algos.hash_sha_256_app_file(self.filename1)
+        v, r = sha256_wrapper.hash_sha_256_app_file(self.filename1)
         self.assertTrue(v)
         self.assertEqual(r, self.content1_sha256)
-
-    def testHash512AppFile(self):
-        v, r = hash_algos.hash_sha_512_app_file(self.filename1)
-        self.assertTrue(v)
-        self.assertEqual(r, self.content1_sha512)
 
 if __name__ == '__main__':
     unittest.main()
