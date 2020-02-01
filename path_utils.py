@@ -149,6 +149,14 @@ def filter_path_list_no_same_branch(pathlist):
 
     return result
 
+def filter_remove_trailing_sep(target):
+    if target[len(target)-1] == os.sep:
+        if len(target) > 1:
+            return target[:len(target)-1]
+        else:
+            return ""
+    return target
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
 

@@ -112,5 +112,11 @@ class PathUtilsTest(unittest.TestCase):
         result = path_utils.filter_path_list_no_same_branch(["/home", "/home/user/nuke", "/bug", "/home/ooser", "/shome", "/home/bork/nuke/bark"])
         self.assertEqual( expected, result )
 
+    def testFilterRemoveTrailingSep(self):
+        path1 = "/path/folder"
+        path2 = "/path/folder/"
+        self.assertEqual( path_utils.filter_remove_trailing_sep(path1), path1 )
+        self.assertEqual( path_utils.filter_remove_trailing_sep(path2), path1 )
+
 if __name__ == '__main__':
     unittest.main()
