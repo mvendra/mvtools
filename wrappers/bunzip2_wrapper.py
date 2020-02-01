@@ -14,10 +14,8 @@ def decompress(file_to_decompress):
         return False, "%s does not exist." % file_to_decompress
 
     # actual command
-    cmd = "bunzip2 %s" % file_to_decompress
-    cmd = cmd.strip()
-
-    v, r = generic_run.run_cmd(cmd)
+    cmd = ["bunzip2", file_to_decompress]
+    v, r = generic_run.run_cmd_l(cmd)
     return v, None
 
 def puaq():

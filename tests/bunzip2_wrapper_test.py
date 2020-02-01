@@ -31,6 +31,7 @@ class Bunzip2WrapperTest(unittest.TestCase):
 
         # the target tar file
         self.tar_file = os.path.join(self.test_dir, "test.tar")
+        self.tar_file_with_space = os.path.join(self.test_dir, "te st.tar")
 
         # create test content
         self.file_nonexistant = os.path.join(self.test_dir, "no_file")
@@ -43,6 +44,10 @@ class Bunzip2WrapperTest(unittest.TestCase):
         if not v:
             return v, r
 
+        v, r = tar_wrapper.make_pack(self.tar_file_with_space, [self.file1])
+        if not v:
+            return v, r
+
         return True, ""
 
     def tearDown(self):
@@ -52,7 +57,7 @@ class Bunzip2WrapperTest(unittest.TestCase):
         v, r = bunzip2_wrapper.decompress(self.file_nonexistant)
         self.assertFalse(v)
 
-    def testCompress(self):
+    def testCompress1(self):
 
         v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file)
         self.assertTrue(v)
@@ -70,6 +75,27 @@ class Bunzip2WrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file)
+        self.assertTrue(v)
+        self.assertEqual(r, hash)
+
+    def testCompress2(self):
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space)
+        self.assertTrue(v)
+        hash = r
+
+        v, r = bzip2_wrapper.compress(self.tar_file_with_space)
+        self.assertTrue(v)
+
+        tar_bz_file_with_space = self.tar_file_with_space + ".bz2"
+        self.assertTrue(os.path.exists(tar_bz_file_with_space))
+
+        self.assertFalse( os.path.exists(self.tar_file_with_space) )
+
+        v, r = bunzip2_wrapper.decompress(tar_bz_file_with_space)
+        self.assertTrue(v)
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space)
         self.assertTrue(v)
         self.assertEqual(r, hash)
 
