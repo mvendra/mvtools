@@ -33,7 +33,6 @@ def make_pack(file_to_create, incl_list, excl_list=None):
 
     # main option
     tar_cmd = ["tar", "-cf", file_to_create] + incl_list
-
     v, r = generic_run.run_cmd_l(tar_cmd)
     return v, r
 

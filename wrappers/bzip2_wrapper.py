@@ -15,7 +15,6 @@ def compress(file_to_compress):
 
     # actual command
     cmd = ["bzip2", file_to_compress]
-
     v, r = generic_run.run_cmd_l(cmd)
     return v, None
 
