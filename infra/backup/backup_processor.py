@@ -119,6 +119,12 @@ def read_config(config_file):
         for i in range(len(options)):
             options[i] = options[i].strip()
 
+        # parse options, names x values
+        parsed_opts = []
+        for o in options:
+            opt_name, opt_val = opt_get(o)
+            parsed_opts.append( (opt_name, opt_val) )
+
         if var_name == "":
             print("%sEmpty var name: [%s]%s" % (terminal_colors.TTY_RED, line_t, terminal_colors.TTY_WHITE))
             return False, ()
@@ -148,10 +154,9 @@ def read_config(config_file):
             BKSOURCE_EXCEPTIONS = []
             descend = "descend" in options
 
-            for o in options:
-                opt_name, opt_val = opt_get(o)
-                if opt_name == "ex":
-                    BKSOURCE_EXCEPTIONS.append(opt_val)
+            for o in parsed_opts:
+                if o[0] == "ex":
+                    BKSOURCE_EXCEPTIONS.append(o[1])
 
             new_art_base = ArtifactBase(var_value, BKSOURCE_EXCEPTIONS, descend)
             r, v = new_art_base.validate_exceptions()
