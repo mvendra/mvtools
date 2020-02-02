@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
+import os
 import time
 import datetime
-import os
 from subprocess import call
 import shutil
-import glob
 
+import terminal_colors
 import path_utils
 import fsquery
+import pakgen
 import encrypt
-import terminal_colors
-import hash_algos
+import sha256_wrapper
 import create_and_write_file
 
 SCRIPT_FOLDER = os.path.dirname(os.path.realpath(__file__))
@@ -42,20 +42,6 @@ class BackupEngine:
             return False
 
         print("%sBeginning backup operations at %s.%s" % (terminal_colors.TTY_GREEN, _self.gettimestamp(), terminal_colors.TTY_WHITE))
-
-        _self.EXCLUDEFOLDERS = []
-        """
-        The feature below has been deprecated in early 2015. I'd much rather separate exceptions in different base folders altogether, for simplicity.
-        I'm leaving the code below just in case there's ever a need to revive it for whatever reason - on which case it should be reworked though.
-        Instead of using a list, use a dict instead, to associate a base subfolder with its exceptions. Otherwise, every, say unwanted_folder_inside_Dev inside other folders
-        would also always be ignored. This could cause side effects, so beware.
-                for it in _self.BKARTIFACTS_EXCEPTIONS:
-                    if not os.path.isdir(it):
-                        print('The path %s is marked as a backup exception, but does not exist. Aborting.' % it)
-                        sys.exit(1)
-                    else:
-                        _self.EXCLUDEFOLDERS.append("--exclude=%s" % it)
-        """
 
         for it in _self.BKTARGETS_ROOT:
             if not os.path.isdir(it):
@@ -90,23 +76,25 @@ class BackupEngine:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_GREEN, it, datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S'), terminal_colors.TTY_WHITE))
             BKTMP_PLUS_ARTBASE = os.path.join(BKTEMP_AND_BASEDIR, os.path.basename(os.path.dirname(it)))
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
-            CURPAK = os.path.join(BKTMP_PLUS_ARTBASE, os.path.basename(it) + ".tar")
-            tarcmd = ["tar"]
-            for ef in _self.EXCLUDEFOLDERS:
-                tarcmd.append(ef)
-            tarcmd += ["-cf", CURPAK, it]
-            call(tarcmd)
-            call(["bzip2", CURPAK])
-            CURPAK += ".bz2"
-            encrypt.symmetric_encrypt(CURPAK, CURPAK + ".enc", _self.PASSPHRASE)
-            os.unlink(CURPAK) # delete plain package
-            CURPAK += ".enc"
-            CURPAK_HASH_FILE = CURPAK + ".sha256"
-            v, r = hash_algos.hash_sha_256_app_file(CURPAK)
+
+            CURPAK = os.path.join(BKTMP_PLUS_ARTBASE, os.path.basename(it))
+            CURPAK_TAR_BZ2 = CURPAK + ".tar.bz2"
+            CURPAK_TAR_BZ2_ENC = CURPAK_TAR_BZ2 + ".enc"
+            CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"
+
+            v = pakgen.pakgen(CURPAK, False, [it]) # hash will be generated later (from the encrypted package)
             if not v:
-                print("Failed generating hash for [%s]." % CURPAK)
+                print("Failed generating %s." % CURPAK_TAR_BZ2)
                 return False
-            create_and_write_file.create_file_contents(CURPAK_HASH_FILE, r)
+            encrypt.symmetric_encrypt(CURPAK_TAR_BZ2, CURPAK_TAR_BZ2_ENC, _self.PASSPHRASE)
+            os.unlink(CURPAK_TAR_BZ2) # delete plain package
+
+            # create hash from the encrypted package
+            v, r = sha256_wrapper.hash_sha_256_app_file(CURPAK_TAR_BZ2_ENC)
+            if not v:
+                print("Failed generating hash for [%s]." % CURPAK_TAR_BZ2_ENC)
+                return False
+            create_and_write_file.create_file_contents(CURPAK_TAR_BZ2_ENC_HASH, r)
 
         print("%sWriting to targets...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
