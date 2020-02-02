@@ -10,9 +10,9 @@ import sha256_wrapper
 
 def pakgen(filename, dohash, files):
 
-    for i in range(len(files)):
-        if not os.path.exists(i):
-            print("%s does not exist." % i)
+    for f in files:
+        if not os.path.exists( f ):
+            print("%s does not exist." % f)
             return False
 
     FILENAME_TAR = "%s.tar" % filename
