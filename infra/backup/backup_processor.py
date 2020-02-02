@@ -6,22 +6,28 @@ import os
 import input_checked_passphrase
 import check_mounted
 import terminal_colors
-import backup_engine
 import fsquery
 
+import backup_engine
+
 class ArtifactBase:
-    def __init__(_self, thepath, listexceptions):
+    def __init__(_self, thepath, listexceptions, descend):
         """
         thepath must be a string, and *never* a list
         listexceptions is a list of strings containing exceptions
+        descend is a boolean determining whether thepath should be "visited" - and as
+        a result, every item inside thepath should become a separate artifact
         """
         _self.thepath = thepath
         _self.listexceptions = listexceptions
+        _self.descend = descend
 
     def get_path(_self):
         return _self.thepath
     def get_list_exceptions(_self):
         return _self.listexceptions
+    def get_descend(_self):
+        return _self.descend
     def validate_exceptions(_self):
         for ex_it in _self.listexceptions:
             fp = os.path.join(_self.thepath, ex_it)
@@ -32,25 +38,48 @@ class ArtifactBase:
 def make_backup_artifacts_list(artifacts_base):
     retlist = []
     for cur_base in artifacts_base:
-        for cur_dir in fsquery.makecontentlist(cur_base.get_path(), False, True, True, True, True, True, None):
-            add_cur = True
-            for cur_ex in cur_base.get_list_exceptions():
-                if cur_dir == os.path.join(cur_base.get_path(), cur_ex):
-                    add_cur = False
-                    break
-            if add_cur:
-                retlist.append(os.path.join(cur_base.get_path(), cur_dir))
+        if not cur_base.get_descend():
+            retlist.append(cur_base.get_path())
+        else:
+            for cur_dir in fsquery.makecontentlist(cur_base.get_path(), False, True, True, True, True, True, None):
+                add_cur = True
+                for cur_ex in cur_base.get_list_exceptions():
+                    if cur_dir == os.path.join(cur_base.get_path(), cur_ex):
+                        add_cur = False
+                        break
+                if add_cur:
+                    retlist.append(os.path.join(cur_base.get_path(), cur_dir))
     return retlist
+
+def pop_surrounding_char(thestr, cl, cr):
+    thestr = thestr.strip()
+    if len(thestr) > 0:
+        if thestr[0] == cl:
+            thestr = thestr[1:]
+    if len(thestr) > 0:
+        if thestr[len(thestr)-1] == cr:
+            thestr = thestr[:len(thestr)-1]
+    return thestr
+
+def opt_get(thestr):
+    if thestr is None:
+        return "",""
+    if thestr == "":
+        return "",""
+    thesplit = thestr.strip().split(":")
+    if len(thesplit) != 2:
+        return "",""
+    thesplit[0] = thesplit[0].strip()
+    thesplit[1] = pop_surrounding_char(thesplit[1].strip(), "\"", "\"")
+    return thesplit[0], thesplit[1]
 
 def read_config(config_file):
 
     BKPREPARATION = ""
-    BKARTIFACTS_BASE = []
-    BKARTIFACTS_BASE_EXCEPTION = []
+    BKSOURCE = []
     BKTARGETS_ROOT = []
     BKTEMP = ""
     BKTARGETS_BASEDIR = ""
-    BKCHECKMOUNTED = ""
 
     if not os.path.exists(config_file):
         print("%sConfig file [%s] does not exist.%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.TTY_WHITE))
@@ -83,6 +112,13 @@ def read_config(config_file):
             var_name = (var_name_and_options[0:p]).strip()
             var_options = (var_name_and_options[p:]).strip()
 
+        var_value = pop_surrounding_char(var_value, "\"", "\"")
+
+        # separate options
+        options = pop_surrounding_char(var_options, "{", "}").strip().split("/")
+        for i in range(len(options)):
+            options[i] = options[i].strip()
+
         if var_name == "":
             print("%sEmpty var name: [%s]%s" % (terminal_colors.TTY_RED, line_t, terminal_colors.TTY_WHITE))
             return False, ()
@@ -104,21 +140,25 @@ def read_config(config_file):
                 return False, ()
             BKPREPARATION = var_value
 
-        elif var_name == "BKARTIFACTS_BASE_EXCEPTION":
-            # cant be validated now - will be used as filters and be validated later
-            BKARTIFACTS_BASE_EXCEPTION.append(var_value)
-
-        elif var_name == "BKARTIFACTS_BASE":
+        elif var_name == "BKSOURCE":
             if not os.path.exists(var_value):
-                print("%sBKARTIFACTS_BASE does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
+                print("%sBKSOURCE does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
                 return False, ()
-            new_art_base = ArtifactBase(var_value, BKARTIFACTS_BASE_EXCEPTION)
+
+            BKSOURCE_EXCEPTIONS = []
+            descend = "descend" in options
+
+            for o in options:
+                opt_name, opt_val = opt_get(o)
+                if opt_name == "ex":
+                    BKSOURCE_EXCEPTIONS.append(opt_val)
+
+            new_art_base = ArtifactBase(var_value, BKSOURCE_EXCEPTIONS, descend)
             r, v = new_art_base.validate_exceptions()
             if not r:
-                print("%sBKARTIFACTS_BASE_EXCEPTION does not point to a valid path: [%s]. Parent BKARTIFACTS_BASE is: [%s]%s" % (terminal_colors.TTY_RED, v, var_value, terminal_colors.TTY_WHITE))
+                print("%sBKSOURCE_EXCEPTIONS does not point to a valid path: [%s]. BKSOURCE is: [%s]%s" % (terminal_colors.TTY_RED, v, var_value, terminal_colors.TTY_WHITE))
                 return False, ()
-            BKARTIFACTS_BASE.append(new_art_base)
-            BKARTIFACTS_BASE_EXCEPTION = []
+            BKSOURCE.append(new_art_base)
 
         elif var_name == "BKTARGETS_ROOT":
             if not os.path.exists(var_value):
@@ -141,7 +181,7 @@ def read_config(config_file):
             print("%sUnrecognized variable: [%s]%s" % (terminal_colors.TTY_RED, var_name, terminal_colors.TTY_WHITE))
             return False, ()
 
-    ret = True, (BKPREPARATION, BKARTIFACTS_BASE, BKTARGETS_ROOT, BKTARGETS_BASEDIR, BKTEMP)
+    ret = True, (BKPREPARATION, BKSOURCE, BKTARGETS_ROOT, BKTARGETS_BASEDIR, BKTEMP)
     return ret
 
 def run_backup(config_file, pass_hash_file):

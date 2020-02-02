@@ -8,7 +8,6 @@ import shutil
 
 import terminal_colors
 import path_utils
-import fsquery
 import pakgen
 import encrypt
 import sha256_wrapper
