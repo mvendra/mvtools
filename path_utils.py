@@ -157,6 +157,21 @@ def filter_remove_trailing_sep(target):
             return ""
     return target
 
+def filter_join_abs(path):
+
+    # because os.path.join does not allow for joining
+    # absolute paths ("/tmp/some/path", "/some/other/path"),
+    # this little crutch cleans up paths after the first
+    # position to alow for adding them all in absolute terms
+
+    if len(path) == 0:
+        return ""
+
+    if path[0] == os.path.sep:
+        return path[1:]
+
+    return path
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
 

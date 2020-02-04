@@ -118,5 +118,10 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual( path_utils.filter_remove_trailing_sep(path1), path1 )
         self.assertEqual( path_utils.filter_remove_trailing_sep(path2), path1 )
 
+    def testJoinpathAbsolute(self):
+        self.assertEqual(path_utils.filter_join_abs("/home/user"), "home/user")
+        self.assertEqual(path_utils.filter_join_abs("home/user"), "home/user")
+        self.assertEqual(path_utils.filter_join_abs(""), "")
+
 if __name__ == '__main__':
     unittest.main()
