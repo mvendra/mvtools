@@ -186,6 +186,19 @@ def read_config(config_file):
             print("%sUnrecognized variable: [%s]%s" % (terminal_colors.TTY_RED, var_name, terminal_colors.TTY_WHITE))
             return False, ()
 
+    if len(BKSOURCE) == 0:
+        print("%sBKSOURCE can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        return False, ()
+    if len(BKTARGETS_ROOT) == 0:
+        print("%sBKTARGETS_ROOT can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        return False, ()
+    if len(BKTEMP) == 0:
+        print("%sBKTEMP can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        return False, ()
+    if len(BKTARGETS_BASEDIR) == 0:
+        print("%sBKTARGETS_BASEDIR can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        return False, ()
+
     ret = True, (BKPREPARATION, BKSOURCE, BKTARGETS_ROOT, BKTARGETS_BASEDIR, BKTEMP)
     return ret
 
