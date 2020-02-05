@@ -9,6 +9,8 @@ import git_test_fixture
 
 import git_visitor_base
 
+import path_utils
+
 import mvtools_test_fixture
 
 class GitVisitorBaseTest(unittest.TestCase):
@@ -40,9 +42,9 @@ class GitVisitorBaseTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, "first")
-        self.second_repo = os.path.join(self.test_dir, "second")
-        self.third_repo = os.path.join(self.test_dir, "third")
+        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
+        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
+        self.third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "first", False)
@@ -89,9 +91,9 @@ class GitVisitorBaseTest(unittest.TestCase):
         r = git_visitor_base.make_repo_list(self.test_dir)
 
         self.assertEqual( len(r), 3 )
-        self.assertTrue( os.path.join(self.test_dir, "first") in r )
-        self.assertTrue( os.path.join(self.test_dir, "second") in r )
-        self.assertTrue( os.path.join(self.test_dir, "third") in r )
+        self.assertTrue( os.path.join(self.test_dir, path_utils.filter_join_abs("first") ) in r )
+        self.assertTrue( os.path.join(self.test_dir, path_utils.filter_join_abs("second") ) in r )
+        self.assertTrue( os.path.join(self.test_dir, path_utils.filter_join_abs("third") ) in r )
 
     def testMakePathList(self):
 
@@ -101,7 +103,7 @@ class GitVisitorBaseTest(unittest.TestCase):
 
     def testPluckDotGit(self):
 
-        paths = [os.path.join(self.test_dir, "first/.git"), os.path.join(self.test_dir, "second/.git"), self.test_dir]
+        paths = [os.path.join(self.test_dir, path_utils.filter_join_abs("first/.git") ), os.path.join(self.test_dir, path_utils.filter_join_abs("second/.git") ), path_utils.filter_join_abs(self.test_dir) ]
         r = git_visitor_base.pluck_dotgit(paths)
         self.assertEqual( len(r), 3 )
 

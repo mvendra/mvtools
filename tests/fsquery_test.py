@@ -9,22 +9,23 @@ import fsquery
 
 import mvtools_test_fixture
 import create_and_write_file
+import path_utils
 
 class FsqueryTest(unittest.TestCase):
 
     def _create_test_file(self, filename, sub=None):
         base_folder = self.test_dir
         if sub is not None:
-            base_folder = os.path.join(base_folder, sub)
-        fn_full = os.path.join(base_folder, filename)
+            base_folder = os.path.join(base_folder, path_utils.filter_join_abs(sub) )
+        fn_full = os.path.join(base_folder, path_utils.filter_join_abs(filename) )
         create_and_write_file.create_file_contents(fn_full, "...")
         return fn_full
 
     def _create_test_dir(self, dirname, sub=None):
         base_folder = self.test_dir
         if sub is not None:
-            base_folder = os.path.join(base_folder, sub)
-        dn_full = os.path.join(base_folder, dirname)
+            base_folder = os.path.join(base_folder, path_utils.filter_join_abs(sub) )
+        dn_full = os.path.join(base_folder, path_utils.filter_join_abs(dirname) )
         os.mkdir(dn_full)
         return dn_full
 
@@ -57,14 +58,14 @@ class FsqueryTest(unittest.TestCase):
 
         # subfolder 1
         self.sub1 = self._create_test_dir("sub1")
-        self.sub1_file1 = self._create_test_file("file1.txt", self.sub1)
-        self.sub1_file2 = self._create_test_file("file2.bin", self.sub1)
+        self.sub1_file1 = self._create_test_file("file1.txt", os.path.basename(self.sub1))
+        self.sub1_file2 = self._create_test_file("file2.bin", os.path.basename(self.sub1))
 
         # subfolder 2
         self.sub2 = self._create_test_dir("sub2")
-        self.sub2_file1 = self._create_test_file("file1.txt", self.sub2)
-        self.sub2_file2 = self._create_test_file(".file2.txt", self.sub2)
-        self.sub2_sub1 = self._create_test_dir(".sub1", self.sub2)
+        self.sub2_file1 = self._create_test_file("file1.txt", os.path.basename(self.sub2))
+        self.sub2_file2 = self._create_test_file(".file2.txt", os.path.basename(self.sub2))
+        self.sub2_sub1 = self._create_test_dir(".sub1", os.path.basename(self.sub2))
 
         return True, ""
 

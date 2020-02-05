@@ -7,6 +7,7 @@ import unittest
 
 import mvtools_test_fixture
 import create_and_write_file
+import path_utils
 
 import sha256_wrapper
 
@@ -29,12 +30,12 @@ class Sha256WrapperTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         self.content1 = "thenotsoquickyellowfoxwagsitstailthencirclesaroundthebluecat"
-        self.filename1 = os.path.join(self.test_dir, "file.txt")
+        self.filename1 = os.path.join(self.test_dir, path_utils.filter_join_abs("file.txt") )
         create_and_write_file.create_file_contents(self.filename1, self.content1)
         self.content1_sha256 = "735e24cec929ca91d81076fb56bed40642a3b0c5f8fe3b1a4d98b425dadc8c99"
 
         self.content2 = "thenotsoquickyellowfoxwagsitstailthencirclesaroundthebluehippo"
-        self.filename2 = os.path.join(self.test_dir, "fi le.txt")
+        self.filename2 = os.path.join(self.test_dir, path_utils.filter_join_abs("fi le.txt") )
         create_and_write_file.create_file_contents(self.filename2, self.content2)
         self.content2_sha256 = "efd45540a98bb33ea100efc08c7b285f0b79444ee087d95fbeda417d38b1db8f"
 

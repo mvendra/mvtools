@@ -28,7 +28,7 @@ class PathUtilsTest(unittest.TestCase):
     def testDeleteFile_IgnoreErrors(self):
 
         test_folder = os.path.expanduser("~/nuke")
-        full_test_file_path = os.path.join(test_folder, "test_file")
+        full_test_file_path = os.path.join(test_folder, path_utils.filter_join_abs("test_file") )
 
         if not os.path.exists(test_folder):
             self.fail("[%s] does not exist." % test_folder)
@@ -58,7 +58,7 @@ class PathUtilsTest(unittest.TestCase):
     def testScratchFolder1(self):
 
         test_folder_base = os.path.expanduser("~/nuke")
-        test_folder_full = os.path.join(test_folder_base, "scratch")
+        test_folder_full = os.path.join(test_folder_base, path_utils.filter_join_abs("scratch") )
 
         if not os.path.exists(test_folder_base):
             self.fail("[%s] does not exist." % test_folder_base)
@@ -74,7 +74,7 @@ class PathUtilsTest(unittest.TestCase):
     def testScratchFolder2(self):
 
         test_folder_base = os.path.expanduser("~/nuke")
-        test_folder_full = os.path.join(test_folder_base, "scratch")
+        test_folder_full = os.path.join(test_folder_base, path_utils.filter_join_abs("scratch") )
 
         if not os.path.exists(test_folder_base):
             self.fail("[%s] does not exist." % test_folder_base)
@@ -91,8 +91,8 @@ class PathUtilsTest(unittest.TestCase):
     def testGuaranteeFolder(self):
 
         test_folder_base = os.path.expanduser("~/nuke")
-        test_folder_first = os.path.join(test_folder_base, "first")
-        test_folder_second = os.path.join(test_folder_first, "second")
+        test_folder_first = os.path.join(test_folder_base, path_utils.filter_join_abs("first") )
+        test_folder_second = os.path.join(test_folder_first, path_utils.filter_join_abs("second") )
 
         if not os.path.exists(test_folder_base):
             self.fail("[%s] does not exist." % test_folder_base)

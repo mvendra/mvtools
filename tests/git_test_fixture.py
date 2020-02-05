@@ -2,6 +2,7 @@
 
 import os
 import generic_run
+import path_utils
 
 def git_initRepo(repo_base, repo_name, bare):
     bare_cmd = ""
@@ -22,7 +23,7 @@ def git_addSubmodule(repo_sub, repo_target):
     return True, ""
 
 def git_createAndCommit(repo, filename, content, commitmsg):
-    if not generic_run.run_cmd("create_and_write_file.py %s %s" % (os.path.join(repo, filename), content) ):
+    if not generic_run.run_cmd("create_and_write_file.py %s %s" % (os.path.join(repo, path_utils.filter_join_abs(filename) ), content) ):
         return False, "create_and_write_file command failed. Can't proceed."
 
     if not generic_run.run_cmd("git -C %s add ." % repo):

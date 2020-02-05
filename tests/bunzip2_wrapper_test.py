@@ -7,6 +7,7 @@ import unittest
 
 import mvtools_test_fixture
 import create_and_write_file
+import path_utils
 
 import tar_wrapper
 import bzip2_wrapper
@@ -30,14 +31,14 @@ class Bunzip2WrapperTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # the target tar file
-        self.tar_file = os.path.join(self.test_dir, "test.tar")
-        self.tar_file_with_space = os.path.join(self.test_dir, "te st.tar")
+        self.tar_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test.tar") )
+        self.tar_file_with_space = os.path.join(self.test_dir, path_utils.filter_join_abs("te st.tar") )
 
         # create test content
-        self.file_nonexistant = os.path.join(self.test_dir, "no_file")
+        self.file_nonexistant = os.path.join(self.test_dir, path_utils.filter_join_abs("no_file") )
 
         # base, files
-        self.file1 = os.path.join(self.test_dir, "file1.txt")
+        self.file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("file1.txt") )
         create_and_write_file.create_file_contents(self.file1, "abc")
 
         v, r = tar_wrapper.make_pack(self.tar_file, [self.file1])

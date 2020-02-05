@@ -7,6 +7,7 @@ import unittest
 
 import git_test_fixture
 import mvtools_test_fixture
+import path_utils
 
 import git_visitor_status
 
@@ -34,9 +35,9 @@ class GitVisitorStatusTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, "first")
-        self.second_repo = os.path.join(self.test_dir, "second")
-        self.third_repo = os.path.join(self.test_dir, "third")
+        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
+        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
+        self.third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "first", False)
