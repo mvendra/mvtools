@@ -39,6 +39,16 @@ class Sha256WrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.filename2, self.content2)
         self.content2_sha256 = "efd45540a98bb33ea100efc08c7b285f0b79444ee087d95fbeda417d38b1db8f"
 
+        self.content3 = "thenotsoquickorangefoxwagsitstailthensquaresaroundthebluewren"
+        self.filename3 = os.path.join(self.test_dir, path_utils.filter_join_abs("   file.txt") )
+        create_and_write_file.create_file_contents(self.filename3, self.content3)
+        self.content3_sha256 = "77515e3f548f9c5cf2fe5c8a999469cc186c63399ff49acd405e10166e191cf8"
+
+        self.content4 = "thenotsoquickvelvetfoxwagsitstailthensquaresaroundthebluegiraffe"
+        self.filename4 = os.path.join(self.test_dir, path_utils.filter_join_abs("file.txt   ") )
+        create_and_write_file.create_file_contents(self.filename4, self.content4)
+        self.content4_sha256 = "eca68670ac2f9b0b9368430542075e94df648139b741132076052cc062478e37"
+
         return True, ""
 
     def tearDown(self):
@@ -63,6 +73,21 @@ class Sha256WrapperTest(unittest.TestCase):
         v, r = sha256_wrapper.hash_sha_256_app_file(self.filename2)
         self.assertTrue(v)
         self.assertEqual(r, self.content2_sha256)
+
+    def testHash256AppFile3(self):
+        v, r = sha256_wrapper.hash_sha_256_app_file(self.filename3)
+        self.assertTrue(v)
+        self.assertEqual(r, self.content3_sha256)
+
+    def testHash256AppFile4(self):
+        v, r = sha256_wrapper.hash_sha_256_app_file(self.filename4)
+        self.assertTrue(v)
+        self.assertEqual(r, self.content4_sha256)
+
+    def testHash256AppFile5(self):
+        v, r = sha256_wrapper.hash_sha_256_app_file(self.filename1)
+        self.assertTrue(v)
+        self.assertNotEqual(r, "not-the-right-hash")
 
 if __name__ == '__main__':
     unittest.main()
