@@ -56,6 +56,12 @@ class TarWrapperTest(unittest.TestCase):
         self.file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("file1.txt") )
         create_and_write_file.create_file_contents(self.file1, "abc")
 
+        self.file_esp1 = os.path.join(self.test_dir, path_utils.filter_join_abs("   file_esp1.txt") )
+        create_and_write_file.create_file_contents(self.file_esp1, "abc")
+
+        self.file_esp2 = os.path.join(self.test_dir, path_utils.filter_join_abs("file_esp2.txt   ") )
+        create_and_write_file.create_file_contents(self.file_esp2, "abc")
+
         self.file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("file2.txt") )
         create_and_write_file.create_file_contents(self.file2, "abc")
 
@@ -212,7 +218,7 @@ class TarWrapperTest(unittest.TestCase):
 
         tar_file_spaced = os.path.join(self.test_dir, path_utils.filter_join_abs("te st.tar") )
 
-        v, r = tar_wrapper.make_pack(tar_file_spaced, [self.file1])
+        v, r = tar_wrapper.make_pack(tar_file_spaced, [self.file1, self.file_esp1, self.file_esp2])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(tar_file_spaced))
 
@@ -220,6 +226,45 @@ class TarWrapperTest(unittest.TestCase):
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(tar_file_spaced, self.extracted_folder)
+        self.assertTrue(v)
+
+        self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
+        self.ext_file_esp1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file_esp1) )
+        self.ext_file_esp2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file_esp2) )
+
+        self.assertTrue( os.path.exists( self.ext_file1 ) )
+        self.assertTrue( os.path.exists( self.ext_file_esp1 ) )
+        self.assertTrue( os.path.exists( self.ext_file_esp2 ) )
+
+    def testSpecialCases4(self):
+
+        tar_file_spaced_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("  test.tar") )
+
+        v, r = tar_wrapper.make_pack(tar_file_spaced_2, [self.file1])
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(tar_file_spaced_2))
+
+        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        os.mkdir(self.extracted_folder)
+
+        v, r = tar_wrapper.extract(tar_file_spaced_2, self.extracted_folder)
+        self.assertTrue(v)
+
+        self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
+        self.assertTrue( os.path.exists( self.ext_file1 ) )
+
+    def testSpecialCases5(self):
+
+        tar_file_spaced_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test.tar   ") )
+
+        v, r = tar_wrapper.make_pack(tar_file_spaced_3, [self.file1])
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(tar_file_spaced_3))
+
+        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        os.mkdir(self.extracted_folder)
+
+        v, r = tar_wrapper.extract(tar_file_spaced_3, self.extracted_folder)
         self.assertTrue(v)
 
         self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
