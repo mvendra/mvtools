@@ -39,6 +39,16 @@ class Sha512WrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.filename2, self.content2)
         self.content2_sha512 = "2df9e207e4dd719e28d39f01f646f03357329e444481e09f5ca7a4743813d3bd7590ff4861e457ddd041f739cfcffd7e82f872ad9dc6045d223a6599feffd80c"
 
+        self.content3 = "thenotsoquickorangefoxwagsitstailthensquaresaroundthebluewren"
+        self.filename3 = os.path.join(self.test_dir, path_utils.filter_join_abs("   file.txt") )
+        create_and_write_file.create_file_contents(self.filename3, self.content3)
+        self.content3_sha512 = "3c3afbee7a24dcdbe430508e6079d95b475884e873ad5c82c8e0bfb7d120633976ae4e218969df473810f03c45a887c63d9aa71371cd9acdef0a8bba41ec9475"
+
+        self.content4 = "thenotsoquickvelvetfoxwagsitstailthensquaresaroundthebluegiraffe"
+        self.filename4 = os.path.join(self.test_dir, path_utils.filter_join_abs("file.txt   ") )
+        create_and_write_file.create_file_contents(self.filename4, self.content4)
+        self.content4_sha512 = "173da3e3133de7761d6b06745980805c278ee577f1cfbe122e6fda5d1238eb768e2c5edc837dcfa82e93fd4e09391614d14edd161e56ca83ab939365436e3cc4"
+
         return True, ""
 
     def tearDown(self):
@@ -63,6 +73,21 @@ class Sha512WrapperTest(unittest.TestCase):
         v, r = sha512_wrapper.hash_sha_512_app_file(self.filename2)
         self.assertTrue(v)
         self.assertEqual(r, self.content2_sha512)
+
+    def testHash512AppFile3(self):
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.filename3)
+        self.assertTrue(v)
+        self.assertEqual(r, self.content3_sha512)
+
+    def testHash512AppFile4(self):
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.filename4)
+        self.assertTrue(v)
+        self.assertEqual(r, self.content4_sha512)
+
+    def testHash512AppFile5(self):
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.filename1)
+        self.assertTrue(v)
+        self.assertNotEqual(r, "not-the-right-hash")
 
 if __name__ == '__main__':
     unittest.main()
