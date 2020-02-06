@@ -30,7 +30,9 @@ class Bzip2WrapperTest(unittest.TestCase):
 
         # the target tar file
         self.tar_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test.tar") )
-        self.tar_file_with_space = os.path.join(self.test_dir, path_utils.filter_join_abs("te st.tar") )
+        self.tar_file_with_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("te st.tar") )
+        self.tar_file_with_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("   test.tar") )
+        self.tar_file_with_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test.tar   ") )
 
         # create test content
         self.file_nonexistant = os.path.join(self.test_dir, path_utils.filter_join_abs("no_file") )
@@ -43,7 +45,15 @@ class Bzip2WrapperTest(unittest.TestCase):
         if not v:
             return v, r
 
-        v, r = tar_wrapper.make_pack(self.tar_file_with_space, [self.file1])
+        v, r = tar_wrapper.make_pack(self.tar_file_with_space_1, [self.file1])
+        if not v:
+            return v, r
+
+        v, r = tar_wrapper.make_pack(self.tar_file_with_space_2, [self.file1])
+        if not v:
+            return v, r
+
+        v, r = tar_wrapper.make_pack(self.tar_file_with_space_3, [self.file1])
         if not v:
             return v, r
 
@@ -63,9 +73,21 @@ class Bzip2WrapperTest(unittest.TestCase):
         self.assertTrue(os.path.exists(tar_bz_file))
 
     def testCompress2(self):
-        v, r = bzip2_wrapper.compress(self.tar_file_with_space)
+        v, r = bzip2_wrapper.compress(self.tar_file_with_space_1)
         self.assertTrue(v)
-        tar_bz_file_with_space = self.tar_file_with_space + ".bz2"
+        tar_bz_file_with_space = self.tar_file_with_space_1 + ".bz2"
+        self.assertTrue(os.path.exists(tar_bz_file_with_space))
+
+    def testCompress3(self):
+        v, r = bzip2_wrapper.compress(self.tar_file_with_space_2)
+        self.assertTrue(v)
+        tar_bz_file_with_space = self.tar_file_with_space_2 + ".bz2"
+        self.assertTrue(os.path.exists(tar_bz_file_with_space))
+
+    def testCompress4(self):
+        v, r = bzip2_wrapper.compress(self.tar_file_with_space_3)
+        self.assertTrue(v)
+        tar_bz_file_with_space = self.tar_file_with_space_3 + ".bz2"
         self.assertTrue(os.path.exists(tar_bz_file_with_space))
 
 if __name__ == '__main__':
