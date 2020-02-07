@@ -32,15 +32,30 @@ class PakGenTest(unittest.TestCase):
         self.target_file = os.path.join(self.test_dir, path_utils.filter_join_abs("target") )
         self.target_file_tar_bz2 = self.target_file + ".tar.bz2"
         self.target_file_tar_bz2_hash = self.target_file_tar_bz2 + ".sha256"
-        self.target_with_space = os.path.join(self.test_dir, path_utils.filter_join_abs("te st") )
-        self.target_with_space_tar_bz2 = self.target_with_space + ".tar.bz2"
-        self.target_with_space_tar_bz2_hash = self.target_with_space_tar_bz2 + ".sha256"
+
+        self.target_with_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("te st") )
+        self.target_with_space_1_tar_bz2 = self.target_with_space_1 + ".tar.bz2"
+        self.target_with_space_1_tar_bz2_hash = self.target_with_space_1_tar_bz2 + ".sha256"
+
+        self.target_with_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("  test") )
+        self.target_with_space_2_tar_bz2 = self.target_with_space_2 + ".tar.bz2"
+        self.target_with_space_2_tar_bz2_hash = self.target_with_space_2_tar_bz2 + ".sha256"
+
+        self.target_with_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test   ") )
+        self.target_with_space_3_tar_bz2 = self.target_with_space_3 + ".tar.bz2"
+        self.target_with_space_3_tar_bz2_hash = self.target_with_space_3_tar_bz2 + ".sha256"
 
         self.file_nonexistant = os.path.join(self.test_dir, path_utils.filter_join_abs("no_file") )
 
         # create test content
-        self.file_with_space = os.path.join(self.test_dir, path_utils.filter_join_abs("fi le.txt") )
-        create_and_write_file.create_file_contents(self.file_with_space, "abc")
+        self.file_with_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("fi le.txt") )
+        create_and_write_file.create_file_contents(self.file_with_space_1, "abc")
+
+        self.file_with_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("  file.txt") )
+        create_and_write_file.create_file_contents(self.file_with_space_2, "abc")
+
+        self.file_with_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("file.txt  ") )
+        create_and_write_file.create_file_contents(self.file_with_space_3, "abc")
 
         self.file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("file1.txt") )
         create_and_write_file.create_file_contents(self.file1, "abc")
@@ -67,7 +82,7 @@ class PakGenTest(unittest.TestCase):
         self.assertFalse( os.path.exists ( self.target_file_tar_bz2_hash ) )
 
     def testPakGen2(self):
-        v = pakgen.pakgen(self.target_file, True, [self.file1, self.file_with_space, self.folder1])
+        v = pakgen.pakgen(self.target_file, True, [self.file1, self.file_with_space_1, self.folder1])
         self.assertTrue(v)
         self.assertTrue( os.path.exists(self.target_file_tar_bz2) )
         self.assertTrue( os.path.exists ( self.target_file_tar_bz2_hash ) )
@@ -78,7 +93,7 @@ class PakGenTest(unittest.TestCase):
         v, r = tar_wrapper.extract(self.target_file_tar_bz2, extracted_folder)
         self.assertTrue(v)
 
-        ext_file_with_space = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file_with_space) )
+        ext_file_with_space = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file_with_space_1) )
         ext_file1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file1) )
         ext_folder1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.folder1) )
         ext_folder1_file1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.folder1_file1) )
@@ -89,23 +104,58 @@ class PakGenTest(unittest.TestCase):
         self.assertTrue( os.path.exists( ext_folder1_file1 ) )
 
     def testPakGen3(self):
-        v = pakgen.pakgen(self.target_with_space, True, [self.file_with_space, self.folder1, self.file1])
+        v = pakgen.pakgen(self.target_with_space_1, True, [self.file_with_space_1, self.file_with_space_2, self.file_with_space_3, self.folder1, self.file1])
         self.assertTrue(v)
-        self.assertTrue( os.path.exists(self.target_with_space_tar_bz2) )
-        self.assertTrue( os.path.exists ( self.target_with_space_tar_bz2_hash ) )
+        self.assertTrue( os.path.exists(self.target_with_space_1_tar_bz2) )
+        self.assertTrue( os.path.exists ( self.target_with_space_1_tar_bz2_hash ) )
 
         extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
         os.mkdir(extracted_folder)
 
-        v, r = tar_wrapper.extract(self.target_with_space_tar_bz2, extracted_folder)
+        v, r = tar_wrapper.extract(self.target_with_space_1_tar_bz2, extracted_folder)
         self.assertTrue(v)
 
-        ext_file_with_space = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file_with_space) )
+        ext_file_with_space_1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file_with_space_1) )
+        ext_file_with_space_2 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file_with_space_2) )
+        ext_file_with_space_3 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file_with_space_3) )
+
         ext_file1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file1) )
         ext_folder1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.folder1) )
         ext_folder1_file1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.folder1_file1) )
 
-        self.assertTrue( os.path.exists( ext_file_with_space ) )
+        self.assertTrue( os.path.exists( ext_file_with_space_1 ) )
+        self.assertTrue( os.path.exists( ext_file_with_space_2 ) )
+        self.assertTrue( os.path.exists( ext_file_with_space_3 ) )
+        self.assertTrue( os.path.exists( ext_file1 ) )
+
+    def testPakGen4(self):
+        v = pakgen.pakgen(self.target_with_space_2, True, [self.file1])
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists(self.target_with_space_2_tar_bz2) )
+        self.assertTrue( os.path.exists ( self.target_with_space_2_tar_bz2_hash ) )
+
+        extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        os.mkdir(extracted_folder)
+
+        v, r = tar_wrapper.extract(self.target_with_space_2_tar_bz2, extracted_folder)
+        self.assertTrue(v)
+
+        ext_file1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file1) )
+        self.assertTrue( os.path.exists( ext_file1 ) )
+
+    def testPakGen5(self):
+        v = pakgen.pakgen(self.target_with_space_3, True, [self.file1])
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists(self.target_with_space_3_tar_bz2) )
+        self.assertTrue( os.path.exists ( self.target_with_space_3_tar_bz2_hash ) )
+
+        extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        os.mkdir(extracted_folder)
+
+        v, r = tar_wrapper.extract(self.target_with_space_3_tar_bz2, extracted_folder)
+        self.assertTrue(v)
+
+        ext_file1 = os.path.join( extracted_folder, path_utils.filter_join_abs(self.file1) )
         self.assertTrue( os.path.exists( ext_file1 ) )
 
 if __name__ == '__main__':
