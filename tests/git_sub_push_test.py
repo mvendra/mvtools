@@ -40,10 +40,10 @@ class GitSubPushTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
-        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
-        self.third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
-        self.fourth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fourth") )
+        self.first_repo = path_utils.concat_path(self.test_dir, "first")
+        self.second_repo = path_utils.concat_path(self.test_dir, "second")
+        self.third_repo = path_utils.concat_path(self.test_dir, "third")
+        self.fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "first", True)
@@ -93,7 +93,7 @@ class GitSubPushTest(unittest.TestCase):
     def testSubPush(self):
 
         # add first as submodule of third
-        sub3_first = os.path.join(self.third_repo, path_utils.filter_join_abs("first") )
+        sub3_first = path_utils.concat_path(self.third_repo, "first")
         v, r = git_test_fixture.git_addSubmodule(self.first_repo, self.third_repo)
         if not v:
             self.fail(r)
@@ -108,13 +108,13 @@ class GitSubPushTest(unittest.TestCase):
         git_sub_push.push_subs(self.third_repo)
 
         # clone fifth from first
-        fifth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fifth") )
+        fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
         v, r = git_test_fixture.git_cloneRepo(self.first_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
 
         # validate it
-        fifth_file3 = os.path.join( fifth_repo, path_utils.filter_join_abs(file3) )
+        fifth_file3 = path_utils.concat_path( fifth_repo, file3)
         self.assertTrue( os.path.exists(fifth_file3) )
 
 if __name__ == '__main__':

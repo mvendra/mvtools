@@ -35,17 +35,17 @@ class BackupProcessorTest(unittest.TestCase):
         self.test_dir = r[1]
 
         # folder where extracted stuff will be stored at
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted"))
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         path_utils.scratchfolder(self.extracted_folder)
 
         # nonexistent folder - for testing only
-        self.nonexistent = os.path.join(self.test_dir, path_utils.filter_join_abs("nonexistent"))
+        self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistent")
 
         # temp folder
-        self.bk_test_temp_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("bktemp"))
-        self.bk_test_temp_folder_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("   bktemp"))
-        self.bk_test_temp_folder_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("bk temp"))
-        self.bk_test_temp_folder_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("bktemp   "))
+        self.bk_test_temp_folder = path_utils.concat_path(self.test_dir, "bktemp")
+        self.bk_test_temp_folder_space_1 = path_utils.concat_path(self.test_dir, "   bktemp")
+        self.bk_test_temp_folder_space_2 = path_utils.concat_path(self.test_dir, "bk temp")
+        self.bk_test_temp_folder_space_3 = path_utils.concat_path(self.test_dir, "bktemp   ")
 
         # base backup folder
         self.bk_base_folder_test = "BackupTests"
@@ -54,32 +54,32 @@ class BackupProcessorTest(unittest.TestCase):
         self.bk_base_folder_test_space_3 = "BackupTests   "
 
         # create folders, source and target
-        self.test_source_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("source_test"))
+        self.test_source_folder = path_utils.concat_path(self.test_dir, "source_test")
         os.mkdir(self.test_source_folder)
-        self.test_source_alt_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("source_alt_test"))
+        self.test_source_alt_folder = path_utils.concat_path(self.test_dir, "source_alt_test")
         os.mkdir(self.test_source_alt_folder)
-        self.test_source_folder_another = os.path.join(self.test_dir, path_utils.filter_join_abs("source_test_another"))
+        self.test_source_folder_another = path_utils.concat_path(self.test_dir, "source_test_another")
         os.mkdir(self.test_source_folder_another)
 
-        self.test_target_1_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target_1_test"))
+        self.test_target_1_folder = path_utils.concat_path(self.test_dir, "target_1_test")
         os.mkdir(self.test_target_1_folder)
-        self.test_target_2_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target_2_test"))
+        self.test_target_2_folder = path_utils.concat_path(self.test_dir, "target_2_test")
         os.mkdir(self.test_target_2_folder)
-        self.test_target_space_1_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("   target_space_1_test"))
+        self.test_target_space_1_folder = path_utils.concat_path(self.test_dir, "   target_space_1_test")
         os.mkdir(self.test_target_space_1_folder)
-        self.test_target_space_2_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target  space  2_test"))
+        self.test_target_space_2_folder = path_utils.concat_path(self.test_dir, "target  space  2_test")
         os.mkdir(self.test_target_space_2_folder)
-        self.test_target_space_3_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target_space_3_test   "))
+        self.test_target_space_3_folder = path_utils.concat_path(self.test_dir, "target_space_3_test   ")
         os.mkdir(self.test_target_space_3_folder)
 
         # create test folders
-        self.folder1 = os.path.join(self.test_source_folder, path_utils.filter_join_abs("folder1"))
-        self.folder2 = os.path.join(self.test_source_folder, path_utils.filter_join_abs("folder2"))
-        self.folder3 = os.path.join(self.test_source_folder, path_utils.filter_join_abs("folder3"))
-        self.folder4 = os.path.join(self.test_source_folder, path_utils.filter_join_abs(".folder4"))
-        self.alt_folder5 = os.path.join(self.test_source_alt_folder, path_utils.filter_join_abs("folder5"))
-        self.alt_folder6 = os.path.join(self.test_source_alt_folder, path_utils.filter_join_abs("folder6"))
-        self.another_folder7 = os.path.join(self.test_source_folder_another, path_utils.filter_join_abs("folder7"))
+        self.folder1 = path_utils.concat_path(self.test_source_folder, "folder1")
+        self.folder2 = path_utils.concat_path(self.test_source_folder, "folder2")
+        self.folder3 = path_utils.concat_path(self.test_source_folder, "folder3")
+        self.folder4 = path_utils.concat_path(self.test_source_folder, ".folder4")
+        self.alt_folder5 = path_utils.concat_path(self.test_source_alt_folder, "folder5")
+        self.alt_folder6 = path_utils.concat_path(self.test_source_alt_folder, "folder6")
+        self.another_folder7 = path_utils.concat_path(self.test_source_folder_another, "folder7")
         os.mkdir(self.folder1)
         os.mkdir(self.folder2)
         os.mkdir(self.folder3)
@@ -89,71 +89,71 @@ class BackupProcessorTest(unittest.TestCase):
         os.mkdir(self.another_folder7)
 
         # file "zero" - at the root of the source dir
-        self.file0 = os.path.join(self.test_source_folder, path_utils.filter_join_abs(".file0.txt"))
+        self.file0 = path_utils.concat_path(self.test_source_folder, ".file0.txt")
         create_and_write_file.create_file_contents(self.file0, "xyz")
 
         # create subfolders
-        self.folder1_subfolder1 = os.path.join(self.folder1, path_utils.filter_join_abs("subfolder1"))
+        self.folder1_subfolder1 = path_utils.concat_path(self.folder1, "subfolder1")
         os.mkdir(self.folder1_subfolder1)
-        self.folder1_subfolder2 = os.path.join(self.folder1, path_utils.filter_join_abs("subfolder2"))
+        self.folder1_subfolder2 = path_utils.concat_path(self.folder1, "subfolder2")
         os.mkdir(self.folder1_subfolder2)
 
         # create files, folder1
-        self.folder1_file1 = os.path.join(self.folder1, path_utils.filter_join_abs("file1.txt"))
+        self.folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
         create_and_write_file.create_file_contents(self.folder1_file1, "abc")
-        self.folder1_subfolder1_file2 = os.path.join(self.folder1_subfolder1, path_utils.filter_join_abs("file2.txt"))
+        self.folder1_subfolder1_file2 = path_utils.concat_path(self.folder1_subfolder1, "file2.txt")
         create_and_write_file.create_file_contents(self.folder1_subfolder1_file2, "abc")
-        self.folder1_subfolder2_file3 = os.path.join(self.folder1_subfolder2, path_utils.filter_join_abs("file3.txt"))
+        self.folder1_subfolder2_file3 = path_utils.concat_path(self.folder1_subfolder2, "file3.txt")
         create_and_write_file.create_file_contents(self.folder1_subfolder2_file3, "abc")
 
         # create files, folder2
-        self.folder2_file1 = os.path.join(self.folder2, path_utils.filter_join_abs("file1.txt"))
+        self.folder2_file1 = path_utils.concat_path(self.folder2, "file1.txt")
         create_and_write_file.create_file_contents(self.folder2_file1, "abc")
 
         # create files, folder3
-        self.folder3_file1 = os.path.join(self.folder3, path_utils.filter_join_abs("file1.txt"))
+        self.folder3_file1 = path_utils.concat_path(self.folder3, "file1.txt")
         create_and_write_file.create_file_contents(self.folder3_file1, "abc")
 
         # create files, folder4
-        self.folder4_file1 = os.path.join(self.folder4, path_utils.filter_join_abs("file1.txt"))
+        self.folder4_file1 = path_utils.concat_path(self.folder4, "file1.txt")
         create_and_write_file.create_file_contents(self.folder4_file1, "abc")
 
         # create files alt source folders
-        self.alt_folder5_file1 = os.path.join(self.alt_folder5, path_utils.filter_join_abs("file51.txt"))
+        self.alt_folder5_file1 = path_utils.concat_path(self.alt_folder5, "file51.txt")
         create_and_write_file.create_file_contents(self.alt_folder5_file1, "abc")
-        self.alt_folder6_file1 = os.path.join(self.alt_folder6, path_utils.filter_join_abs("file61.txt"))
+        self.alt_folder6_file1 = path_utils.concat_path(self.alt_folder6, "file61.txt")
         create_and_write_file.create_file_contents(self.alt_folder6_file1, "abc")
-        self.file01 = os.path.join(self.test_source_alt_folder, path_utils.filter_join_abs(".file01.txt"))
+        self.file01 = path_utils.concat_path(self.test_source_alt_folder, ".file01.txt")
         create_and_write_file.create_file_contents(self.file01, "ooo")
 
         # create files another source folders
-        self.file_another = os.path.join(self.another_folder7, path_utils.filter_join_abs("file_another.txt"))
+        self.file_another = path_utils.concat_path(self.another_folder7, "file_another.txt")
         create_and_write_file.create_file_contents(self.file_another, "zzz")
 
         # sources with spaces
-        self.special_folder = os.path.join(self.test_source_folder, path_utils.filter_join_abs("special_folder"))
+        self.special_folder = path_utils.concat_path(self.test_source_folder, "special_folder")
         os.mkdir(self.special_folder)
 
-        self.space_file1 = os.path.join(self.special_folder, path_utils.filter_join_abs("   sp_file1.txt"))
-        self.space_file2 = os.path.join(self.special_folder, path_utils.filter_join_abs("sp_fi  le2.txt"))
-        self.space_file3 = os.path.join(self.special_folder, path_utils.filter_join_abs("sp_file3.txt  "))
+        self.space_file1 = path_utils.concat_path(self.special_folder, "   sp_file1.txt")
+        self.space_file2 = path_utils.concat_path(self.special_folder, "sp_fi  le2.txt")
+        self.space_file3 = path_utils.concat_path(self.special_folder, "sp_file3.txt  ")
         create_and_write_file.create_file_contents(self.space_file1, "eee1")
         create_and_write_file.create_file_contents(self.space_file2, "eee2")
         create_and_write_file.create_file_contents(self.space_file3, "eee3")
 
-        self.space_folder1 = os.path.join(self.special_folder, path_utils.filter_join_abs("   sp_folder1"))
-        self.space_folder2 = os.path.join(self.special_folder, path_utils.filter_join_abs("sp_fol   der2"))
-        self.space_folder3 = os.path.join(self.special_folder, path_utils.filter_join_abs("sp_folder3   "))
+        self.space_folder1 = path_utils.concat_path(self.special_folder, "   sp_folder1")
+        self.space_folder2 = path_utils.concat_path(self.special_folder, "sp_fol   der2")
+        self.space_folder3 = path_utils.concat_path(self.special_folder, "sp_folder3   ")
         os.mkdir(self.space_folder1)
         os.mkdir(self.space_folder2)
         os.mkdir(self.space_folder3)
 
         # prep script
-        self.prep_filename = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest.py"))
-        self.prep_filename_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("prep test.py"))
-        self.prep_filename_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("  preptest.py"))
-        self.prep_filename_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest.py  "))
-        self.prep_generated_test_filename = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest_generated.txt"))
+        self.prep_filename = path_utils.concat_path(self.test_dir, "preptest.py")
+        self.prep_filename_space_1 = path_utils.concat_path(self.test_dir, "prep test.py")
+        self.prep_filename_space_2 = path_utils.concat_path(self.test_dir, "  preptest.py")
+        self.prep_filename_space_3 = path_utils.concat_path(self.test_dir, "preptest.py  ")
+        self.prep_generated_test_filename = path_utils.concat_path(self.test_dir, "preptest_generated.txt")
         prep_file_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
         prep_file_contents += "import create_and_write_file" + os.linesep + os.linesep
         prep_file_contents += "if __name__ == \"__main__\":" + os.linesep
@@ -170,7 +170,7 @@ class BackupProcessorTest(unittest.TestCase):
         os.chmod(self.prep_filename_space_3, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
         # prep script that fails
-        self.prep_filename_fail = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest_fail.py"))
+        self.prep_filename_fail = path_utils.concat_path(self.test_dir, "preptest_fail.py")
         self.prep_file_contents_fail = "#!/usr/bin/env python3" + os.linesep + os.linesep
         self.prep_file_contents_fail += "import sys" + os.linesep + os.linesep
         self.prep_file_contents_fail += "if __name__ == \"__main__\":" + os.linesep
@@ -192,11 +192,11 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
 
-        self.test_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_config_file.cfg"))
+        self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.cfg")
         create_and_write_file.create_file_contents(self.test_config_file, cfg_file_contents)
 
         # hash file
-        self.hash_file = os.path.join(self.test_dir, path_utils.filter_join_abs(".hash_file_test"))
+        self.hash_file = path_utils.concat_path(self.test_dir, ".hash_file_test")
         self.passphrase = "abcdef"
         create_and_write_file.create_file_contents(self.hash_file, "e32ef19623e8ed9d267f657a81944b3d07adbb768518068e88435745564e8d4150a0a703be2a7d88b61e3d390c2bb97e2d4c311fdc69d6b1267f05f59aa920e7")
 
@@ -212,7 +212,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_source_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
         special_source_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         special_source_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_special_source_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_source_config_file.cfg"))
+        self.test_special_source_config_file = path_utils.concat_path(self.test_dir, "test_special_source_config_file.cfg")
         create_and_write_file.create_file_contents(self.test_special_source_config_file, special_source_cfg_file_contents1)
 
         # special targets, 1
@@ -223,7 +223,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_target_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_space_3_folder
         special_target_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         special_target_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_special_target_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_target_config_file.cfg"))
+        self.test_special_target_config_file = path_utils.concat_path(self.test_dir, "test_special_target_config_file.cfg")
         create_and_write_file.create_file_contents(self.test_special_target_config_file, special_target_cfg_file_contents1)
 
         # special bk base and temp folders, 1
@@ -232,7 +232,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_base_and_tmp_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         special_base_and_tmp_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_1
         special_base_and_tmp_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_1
-        self.test_special_base_and_temp_config_file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file1.cfg"))
+        self.test_special_base_and_temp_config_file1 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file1.cfg")
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file1, special_base_and_tmp_cfg_file_contents1)
 
         special_base_and_tmp_cfg_file_contents2 = ""
@@ -240,7 +240,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_base_and_tmp_cfg_file_contents2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         special_base_and_tmp_cfg_file_contents2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_2
         special_base_and_tmp_cfg_file_contents2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_2
-        self.test_special_base_and_temp_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file2.cfg"))
+        self.test_special_base_and_temp_config_file2 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file2.cfg")
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file2, special_base_and_tmp_cfg_file_contents2)
 
         special_base_and_tmp_cfg_file_contents3 = ""
@@ -248,7 +248,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_base_and_tmp_cfg_file_contents3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         special_base_and_tmp_cfg_file_contents3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_3
         special_base_and_tmp_cfg_file_contents3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_3
-        self.test_special_base_and_temp_config_file3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file3.cfg"))
+        self.test_special_base_and_temp_config_file3 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file3.cfg")
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file3, special_base_and_tmp_cfg_file_contents3)
 
         # malformed cfg file 1
@@ -257,7 +257,7 @@ class BackupProcessorTest(unittest.TestCase):
         malformed_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         malformed_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         malformed_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_malformed_config_file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file1.cfg"))
+        self.test_malformed_config_file1 = path_utils.concat_path(self.test_dir, "test_malformed_config_file1.cfg")
         create_and_write_file.create_file_contents(self.test_malformed_config_file1, malformed_cfg_file_contents1)
 
         # malformed cfg file 2
@@ -266,7 +266,7 @@ class BackupProcessorTest(unittest.TestCase):
         #malformed_cfg_file_contents2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\" + os.linesep)" % self.test_target_1_folder
         malformed_cfg_file_contents2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         malformed_cfg_file_contents2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_malformed_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file2.cfg"))
+        self.test_malformed_config_file2 = path_utils.concat_path(self.test_dir, "test_malformed_config_file2.cfg")
         create_and_write_file.create_file_contents(self.test_malformed_config_file2, malformed_cfg_file_contents2)
 
         # malformed cfg file 3
@@ -275,7 +275,7 @@ class BackupProcessorTest(unittest.TestCase):
         malformed_cfg_file_contents3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         malformed_cfg_file_contents3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         malformed_cfg_file_contents3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_malformed_config_file3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file3.cfg"))
+        self.test_malformed_config_file3 = path_utils.concat_path(self.test_dir, "test_malformed_config_file3.cfg")
         create_and_write_file.create_file_contents(self.test_malformed_config_file3, malformed_cfg_file_contents3)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 1
@@ -285,7 +285,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_space_1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_space_1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_space_1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_1.cfg"))
+        self.cfg_file_prep_space_1 = path_utils.concat_path(self.test_dir, "config_file_prep_space_1.cfg")
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_1, cfg_file_contents_prep_space_1)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 2
@@ -295,7 +295,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_space_2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_space_2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_space_2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_2.cfg"))
+        self.cfg_file_prep_space_2 = path_utils.concat_path(self.test_dir, "config_file_prep_space_2.cfg")
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_2, cfg_file_contents_prep_space_2)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 3
@@ -305,7 +305,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_space_3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_space_3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_space_3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_3.cfg"))
+        self.cfg_file_prep_space_3 = path_utils.concat_path(self.test_dir, "config_file_prep_space_3.cfg")
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_3, cfg_file_contents_prep_space_3)
 
         # config file, with BKPREPARATION pointing to a script that fails
@@ -315,7 +315,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_fails += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_fails += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_fails += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_fails = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_fails.cfg"))
+        self.cfg_file_prep_fails = path_utils.concat_path(self.test_dir, "config_file_prep_fails.cfg")
         create_and_write_file.create_file_contents(self.cfg_file_prep_fails, cfg_file_contents_prep_fails)
 
         return True, ""
@@ -383,29 +383,29 @@ class BackupProcessorTest(unittest.TestCase):
     def testPrepsWithSpaces1(self):
         v, r = backup_processor.read_config(self.cfg_file_prep_space_1)
         self.assertTrue(r)
-        self.assertFalse( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        self.assertFalse( os.path.exists( path_utils.concat_path( self.prep_generated_test_filename ) ) )
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.cfg_file_prep_space_1, self.hash_file)
         self.assertTrue(r)
-        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.prep_generated_test_filename ) ) )
 
     def testPrepsWithSpaces2(self):
         v, r = backup_processor.read_config(self.cfg_file_prep_space_2)
         self.assertTrue(r)
-        self.assertFalse( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        self.assertFalse( os.path.exists( path_utils.concat_path( self.prep_generated_test_filename ) ) )
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.cfg_file_prep_space_2, self.hash_file)
         self.assertTrue(r)
-        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.prep_generated_test_filename ) ) )
 
     def testPrepsWithSpaces3(self):
         v, r = backup_processor.read_config(self.cfg_file_prep_space_3)
         self.assertTrue(r)
-        self.assertFalse( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        self.assertFalse( os.path.exists( path_utils.concat_path( self.prep_generated_test_filename ) ) )
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.cfg_file_prep_space_3, self.hash_file)
         self.assertTrue(r)
-        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.prep_generated_test_filename ) ) )
 
     def testPrepFails(self):
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
@@ -419,51 +419,51 @@ class BackupProcessorTest(unittest.TestCase):
             r = backup_processor.run_backup(self.test_config_file, self.hash_file)
         self.assertTrue(r)
 
-        tg1_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test))
-        tg2_final = os.path.join(self.test_target_2_folder, path_utils.filter_join_abs(self.bk_base_folder_test))
+        tg1_final = path_utils.concat_path(self.test_target_1_folder, self.bk_base_folder_test)
+        tg2_final = path_utils.concat_path(self.test_target_2_folder, self.bk_base_folder_test)
 
         # check if preparation script was run (it creates a test file)
-        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.prep_generated_test_filename ) ) )
 
         # check if dates were written in both targets
-        self.assertTrue( os.path.exists( os.path.join(tg1_final, path_utils.filter_join_abs("bk_date.txt")) ) )
-        self.assertTrue( os.path.exists( os.path.join(tg2_final, path_utils.filter_join_abs("bk_date.txt")) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg1_final, "bk_date.txt")) ) 
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg2_final, "bk_date.txt")) ) 
 
         # check if all artifacts are present on both targets
 
         # target 1
-        tg1_folder1_e = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc"))
-        tg1_folder1_z = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2"))
-        tg1_folder1_h = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc.sha256"))
-        tg1_folder2_e = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder2.tar.bz2.enc"))
-        tg1_folder2_z = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder2.tar.bz2"))
-        tg1_folder2_h = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder2.tar.bz2.enc.sha256"))
-        tg1_folder3_e = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder3.tar.bz2.enc"))
-        tg1_folder3_z = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder3.tar.bz2"))
-        tg1_folder3_h = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder3.tar.bz2.enc.sha256"))
-        tg1_folder4_e = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".folder4.tar.bz2.enc"))
-        tg1_folder4_z = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".folder4.tar.bz2"))
-        tg1_folder4_h = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".folder4.tar.bz2.enc.sha256"))
-        tg1_file0_e = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".file0.txt.tar.bz2.enc"))
-        tg1_file0_z = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".file0.txt.tar.bz2"))
-        tg1_file0_h = os.path.join(tg1_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".file0.txt.tar.bz2.enc.sha256"))
+        tg1_folder1_e = path_utils.concat_path(tg1_final, "source_test", "folder1.tar.bz2.enc")
+        tg1_folder1_z = path_utils.concat_path(tg1_final, "source_test", "folder1.tar.bz2")
+        tg1_folder1_h = path_utils.concat_path(tg1_final, "source_test", "folder1.tar.bz2.enc.sha256")
+        tg1_folder2_e = path_utils.concat_path(tg1_final, "source_test", "folder2.tar.bz2.enc")
+        tg1_folder2_z = path_utils.concat_path(tg1_final, "source_test", "folder2.tar.bz2")
+        tg1_folder2_h = path_utils.concat_path(tg1_final, "source_test", "folder2.tar.bz2.enc.sha256")
+        tg1_folder3_e = path_utils.concat_path(tg1_final, "source_test", "folder3.tar.bz2.enc")
+        tg1_folder3_z = path_utils.concat_path(tg1_final, "source_test", "folder3.tar.bz2")
+        tg1_folder3_h = path_utils.concat_path(tg1_final, "source_test", "folder3.tar.bz2.enc.sha256")
+        tg1_folder4_e = path_utils.concat_path(tg1_final, "source_test", ".folder4.tar.bz2.enc")
+        tg1_folder4_z = path_utils.concat_path(tg1_final, "source_test", ".folder4.tar.bz2")
+        tg1_folder4_h = path_utils.concat_path(tg1_final, "source_test", ".folder4.tar.bz2.enc.sha256")
+        tg1_file0_e = path_utils.concat_path(tg1_final, "source_test", ".file0.txt.tar.bz2.enc")
+        tg1_file0_z = path_utils.concat_path(tg1_final, "source_test", ".file0.txt.tar.bz2")
+        tg1_file0_h = path_utils.concat_path(tg1_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
 
         # target 2
-        tg2_folder1_e = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc"))
-        tg2_folder1_z = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2"))
-        tg2_folder1_h = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc.sha256"))
-        tg2_folder2_e = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder2.tar.bz2.enc"))
-        tg2_folder2_z = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder2.tar.bz2"))
-        tg2_folder2_h = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder2.tar.bz2.enc.sha256"))
-        tg2_folder3_e = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder3.tar.bz2.enc"))
-        tg2_folder3_z = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder3.tar.bz2"))
-        tg2_folder3_h = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder3.tar.bz2.enc.sha256"))
-        tg2_folder4_e = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".folder4.tar.bz2.enc"))
-        tg2_folder4_z = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".folder4.tar.bz2"))
-        tg2_folder4_h = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".folder4.tar.bz2.enc.sha256"))
-        tg2_file0_e = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".file0.txt.tar.bz2.enc"))
-        tg2_file0_z = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".file0.txt.tar.bz2"))
-        tg2_file0_h = os.path.join(tg2_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs(".file0.txt.tar.bz2.enc.sha256"))
+        tg2_folder1_e = path_utils.concat_path(tg2_final, "source_test", "folder1.tar.bz2.enc")
+        tg2_folder1_z = path_utils.concat_path(tg2_final, "source_test", "folder1.tar.bz2")
+        tg2_folder1_h = path_utils.concat_path(tg2_final, "source_test", "folder1.tar.bz2.enc.sha256")
+        tg2_folder2_e = path_utils.concat_path(tg2_final, "source_test", "folder2.tar.bz2.enc")
+        tg2_folder2_z = path_utils.concat_path(tg2_final, "source_test", "folder2.tar.bz2")
+        tg2_folder2_h = path_utils.concat_path(tg2_final, "source_test", "folder2.tar.bz2.enc.sha256")
+        tg2_folder3_e = path_utils.concat_path(tg2_final, "source_test", "folder3.tar.bz2.enc")
+        tg2_folder3_z = path_utils.concat_path(tg2_final, "source_test", "folder3.tar.bz2")
+        tg2_folder3_h = path_utils.concat_path(tg2_final, "source_test", "folder3.tar.bz2.enc.sha256")
+        tg2_folder4_e = path_utils.concat_path(tg2_final, "source_test", ".folder4.tar.bz2.enc")
+        tg2_folder4_z = path_utils.concat_path(tg2_final, "source_test", ".folder4.tar.bz2")
+        tg2_folder4_h = path_utils.concat_path(tg2_final, "source_test", ".folder4.tar.bz2.enc.sha256")
+        tg2_file0_e = path_utils.concat_path(tg2_final, "source_test", ".file0.txt.tar.bz2.enc")
+        tg2_file0_z = path_utils.concat_path(tg2_final, "source_test", ".file0.txt.tar.bz2")
+        tg2_file0_h = path_utils.concat_path(tg2_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
 
         # target1
         self.assertTrue( os.path.exists( tg1_folder1_e ) )
@@ -532,13 +532,13 @@ class BackupProcessorTest(unittest.TestCase):
         v, r = tar_wrapper.extract(tg1_file0_z, self.extracted_folder)
         self.assertTrue(v)
 
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder1_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder1_subfolder1_file2) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder1_subfolder2_file3) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder2_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder3_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder4_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.file0) ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder1_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder1_subfolder1_file2) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder1_subfolder2_file3) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder2_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder3_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder4_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.file0) ) )
 
         # reset extracted folder
         path_utils.scratchfolder(self.extracted_folder)
@@ -555,13 +555,13 @@ class BackupProcessorTest(unittest.TestCase):
         v, r = tar_wrapper.extract(tg2_file0_z, self.extracted_folder)
         self.assertTrue(v)
 
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder1_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder1_subfolder1_file2) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder2_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder1_subfolder2_file3) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder3_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.folder4_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.file0) ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder1_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder1_subfolder1_file2) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder2_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder1_subfolder2_file3) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder3_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.folder4_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.file0) ) )
 
     def testRunBackup2(self):
 
@@ -570,40 +570,40 @@ class BackupProcessorTest(unittest.TestCase):
             r = backup_processor.run_backup(self.test_config_file, self.hash_file)
         self.assertTrue(r)
 
-        tg1_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
-        tg2_final = os.path.join(self.test_target_2_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
+        tg1_final = path_utils.concat_path(self.test_target_1_folder, self.bk_base_folder_test)
+        tg2_final = path_utils.concat_path(self.test_target_2_folder, self.bk_base_folder_test)
 
         # check if dates were written in both targets
-        self.assertTrue( os.path.exists( os.path.join(tg1_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
-        self.assertTrue( os.path.exists( os.path.join(tg2_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg1_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg2_final, "bk_date.txt") ) )
 
         # target 1
         # alt source
-        tg1_folder5 = os.path.join(tg1_final, path_utils.filter_join_abs("source_alt_test"), path_utils.filter_join_abs("folder5.tar.bz2.enc") )
-        tg1_folder6 = os.path.join(tg1_final, path_utils.filter_join_abs("source_alt_test"), path_utils.filter_join_abs("folder6.tar.bz2.enc") )
-        tg1_file01 = os.path.join(tg1_final, path_utils.filter_join_abs("source_alt_test"), path_utils.filter_join_abs(".file01.txt.tar.bz2.enc") )
+        tg1_folder5 = path_utils.concat_path(tg1_final, "source_alt_test", "folder5.tar.bz2.enc")
+        tg1_folder6 = path_utils.concat_path(tg1_final, "source_alt_test", "folder6.tar.bz2.enc")
+        tg1_file01 = path_utils.concat_path(tg1_final, "source_alt_test", ".file01.txt.tar.bz2.enc")
 
         # another source
-        tg1_folder_another_e = os.path.join(tg1_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another.tar.bz2.enc") )
-        tg1_folder_another_z = os.path.join(tg1_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another.tar.bz2") )
-        tg1_folder_another_h = os.path.join(tg1_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another.tar.bz2.enc.sha256") )
-        tg1_folder7_e = os.path.join(tg1_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another"), path_utils.filter_join_abs("folder7.tar.bz2.enc") )
-        tg1_folder7_z = os.path.join(tg1_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another"), path_utils.filter_join_abs("folder7.tar.bz2") )
-        tg1_folder7_h = os.path.join(tg1_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another"), path_utils.filter_join_abs("folder7.tar.bz2.enc.sha256") )
+        tg1_folder_another_e = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another.tar.bz2.enc")
+        tg1_folder_another_z = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another.tar.bz2")
+        tg1_folder_another_h = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another.tar.bz2.enc.sha256")
+        tg1_folder7_e = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc")
+        tg1_folder7_z = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2")
+        tg1_folder7_h = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc.sha256")
 
         # target 2
         # alt source
-        tg2_folder5 = os.path.join(tg2_final, path_utils.filter_join_abs("source_alt_test"), path_utils.filter_join_abs("folder5.tar.bz2.enc") )
-        tg2_folder6 = os.path.join(tg2_final, path_utils.filter_join_abs("source_alt_test"), path_utils.filter_join_abs("folder6.tar.bz2.enc") )
-        tg2_file01 = os.path.join(tg2_final, path_utils.filter_join_abs("source_alt_test"), path_utils.filter_join_abs(".file01.txt.tar.bz2.enc") )
+        tg2_folder5 = path_utils.concat_path(tg2_final, "source_alt_test", "folder5.tar.bz2.enc")
+        tg2_folder6 = path_utils.concat_path(tg2_final, "source_alt_test", "folder6.tar.bz2.enc")
+        tg2_file01 = path_utils.concat_path(tg2_final, "source_alt_test", ".file01.txt.tar.bz2.enc")
 
         # another source
-        tg2_folder_another_e = os.path.join(tg2_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another.tar.bz2.enc") )
-        tg2_folder_another_z = os.path.join(tg2_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another.tar.bz2") )
-        tg2_folder_another_h = os.path.join(tg2_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another.tar.bz2.enc.sha256") )
-        tg2_folder7_e = os.path.join(tg2_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another"), path_utils.filter_join_abs("folder7.tar.bz2.enc") )
-        tg2_folder7_z = os.path.join(tg2_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another"), path_utils.filter_join_abs("folder7.tar.bz2") )
-        tg2_folder7_h = os.path.join(tg2_final, path_utils.filter_join_abs("backup_processor_test"), path_utils.filter_join_abs("source_test_another"), path_utils.filter_join_abs("folder7.tar.bz2.enc.sha256") )
+        tg2_folder_another_e = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another.tar.bz2.enc")
+        tg2_folder_another_z = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another.tar.bz2")
+        tg2_folder_another_h = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another.tar.bz2.enc.sha256")
+        tg2_folder7_e = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc")
+        tg2_folder7_z = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2")
+        tg2_folder7_h = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc.sha256")
 
         # target 1
         self.assertFalse( os.path.exists( tg1_folder5 ) )
@@ -621,8 +621,8 @@ class BackupProcessorTest(unittest.TestCase):
         v, r = tar_wrapper.extract(tg1_folder_another_z, self.extracted_folder)
         self.assertTrue(v)
 
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.another_folder7) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.file_another) ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.another_folder7) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.file_another) ) )
 
         # reset extracted folder
         path_utils.scratchfolder(self.extracted_folder)
@@ -643,8 +643,8 @@ class BackupProcessorTest(unittest.TestCase):
         v, r = tar_wrapper.extract(tg2_folder_another_z, self.extracted_folder)
         self.assertTrue(v)
 
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.another_folder7) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.file_another) ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.another_folder7) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.file_another) ) )
 
     def testRunBackup3(self):
 
@@ -653,54 +653,54 @@ class BackupProcessorTest(unittest.TestCase):
             r = backup_processor.run_backup(self.test_special_source_config_file, self.hash_file)
         self.assertTrue(r)
 
-        tg1_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
-        tg2_final = os.path.join(self.test_target_2_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
+        tg1_final = path_utils.concat_path(self.test_target_1_folder, self.bk_base_folder_test)
+        tg2_final = path_utils.concat_path(self.test_target_2_folder, self.bk_base_folder_test)
 
         # check if dates were written in both targets
-        self.assertTrue( os.path.exists( os.path.join(tg1_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
-        self.assertTrue( os.path.exists( os.path.join(tg2_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg1_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg2_final, "bk_date.txt") ) )
 
         # target 1
-        tg1_space_file1_e = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_file1.txt.tar.bz2.enc"))
-        tg1_space_file1_z = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_file1.txt.tar.bz2"))
-        tg1_space_file1_h = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_file1.txt.tar.bz2.enc.sha256"))
-        tg1_space_file2_e = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fi  le2.txt.tar.bz2.enc"))
-        tg1_space_file2_z = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fi  le2.txt.tar.bz2"))
-        tg1_space_file2_h = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fi  le2.txt.tar.bz2.enc.sha256"))
-        tg1_space_file3_e = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_file3.txt  .tar.bz2.enc"))
-        tg1_space_file3_z = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_file3.txt  .tar.bz2"))
-        tg1_space_file3_h = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_file3.txt  .tar.bz2.enc.sha256"))
+        tg1_space_file1_e = path_utils.concat_path(tg1_final, "special_folder", "   sp_file1.txt.tar.bz2.enc")
+        tg1_space_file1_z = path_utils.concat_path(tg1_final, "special_folder", "   sp_file1.txt.tar.bz2")
+        tg1_space_file1_h = path_utils.concat_path(tg1_final, "special_folder", "   sp_file1.txt.tar.bz2.enc.sha256")
+        tg1_space_file2_e = path_utils.concat_path(tg1_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc")
+        tg1_space_file2_z = path_utils.concat_path(tg1_final, "special_folder", "sp_fi  le2.txt.tar.bz2")
+        tg1_space_file2_h = path_utils.concat_path(tg1_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc.sha256")
+        tg1_space_file3_e = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2.enc")
+        tg1_space_file3_z = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2")
+        tg1_space_file3_h = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha256")
 
-        tg1_space_folder1_e = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_folder1.tar.bz2.enc"))
-        tg1_space_folder1_z = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_folder1.tar.bz2"))
-        tg1_space_folder1_h = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_folder1.tar.bz2.enc.sha256"))
-        tg1_space_folder2_e = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fol   der2.tar.bz2.enc"))
-        tg1_space_folder2_z = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fol   der2.tar.bz2"))
-        tg1_space_folder2_h = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fol   der2.tar.bz2.enc.sha256"))
-        tg1_space_folder3_e = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_folder3   .tar.bz2.enc"))
-        tg1_space_folder3_z = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_folder3   .tar.bz2"))
-        tg1_space_folder3_h = os.path.join(tg1_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_folder3   .tar.bz2.enc.sha256"))
+        tg1_space_folder1_e = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2.enc")
+        tg1_space_folder1_z = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2")
+        tg1_space_folder1_h = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2.enc.sha256")
+        tg1_space_folder2_e = path_utils.concat_path(tg1_final, "special_folder", "sp_fol   der2.tar.bz2.enc")
+        tg1_space_folder2_z = path_utils.concat_path(tg1_final, "special_folder", "sp_fol   der2.tar.bz2")
+        tg1_space_folder2_h = path_utils.concat_path(tg1_final, "special_folder", "sp_fol   der2.tar.bz2.enc.sha256")
+        tg1_space_folder3_e = path_utils.concat_path(tg1_final, "special_folder", "sp_folder3   .tar.bz2.enc")
+        tg1_space_folder3_z = path_utils.concat_path(tg1_final, "special_folder", "sp_folder3   .tar.bz2")
+        tg1_space_folder3_h = path_utils.concat_path(tg1_final, "special_folder", "sp_folder3   .tar.bz2.enc.sha256")
 
         # target 2
-        tg2_space_file1_e = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_file1.txt.tar.bz2.enc"))
-        tg2_space_file1_z = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_file1.txt.tar.bz2"))
-        tg2_space_file1_h = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_file1.txt.tar.bz2.enc.sha256"))
-        tg2_space_file2_e = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fi  le2.txt.tar.bz2.enc"))
-        tg2_space_file2_z = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fi  le2.txt.tar.bz2"))
-        tg2_space_file2_h = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fi  le2.txt.tar.bz2.enc.sha256"))
-        tg2_space_file3_e = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_file3.txt  .tar.bz2.enc"))
-        tg2_space_file3_z = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_file3.txt  .tar.bz2"))
-        tg2_space_file3_h = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_file3.txt  .tar.bz2.enc.sha256"))
+        tg2_space_file1_e = path_utils.concat_path(tg2_final, "special_folder", "   sp_file1.txt.tar.bz2.enc")
+        tg2_space_file1_z = path_utils.concat_path(tg2_final, "special_folder", "   sp_file1.txt.tar.bz2")
+        tg2_space_file1_h = path_utils.concat_path(tg2_final, "special_folder", "   sp_file1.txt.tar.bz2.enc.sha256")
+        tg2_space_file2_e = path_utils.concat_path(tg2_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc")
+        tg2_space_file2_z = path_utils.concat_path(tg2_final, "special_folder", "sp_fi  le2.txt.tar.bz2")
+        tg2_space_file2_h = path_utils.concat_path(tg2_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc.sha256")
+        tg2_space_file3_e = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2.enc")
+        tg2_space_file3_z = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2")
+        tg2_space_file3_h = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha256")
 
-        tg2_space_folder1_e = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_folder1.tar.bz2.enc"))
-        tg2_space_folder1_z = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_folder1.tar.bz2"))
-        tg2_space_folder1_h = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("   sp_folder1.tar.bz2.enc.sha256"))
-        tg2_space_folder2_e = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fol   der2.tar.bz2.enc"))
-        tg2_space_folder2_z = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fol   der2.tar.bz2"))
-        tg2_space_folder2_h = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_fol   der2.tar.bz2.enc.sha256"))
-        tg2_space_folder3_e = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_folder3   .tar.bz2.enc"))
-        tg2_space_folder3_z = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_folder3   .tar.bz2"))
-        tg2_space_folder3_h = os.path.join(tg2_final, path_utils.filter_join_abs("special_folder"), path_utils.filter_join_abs("sp_folder3   .tar.bz2.enc.sha256"))
+        tg2_space_folder1_e = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2.enc")
+        tg2_space_folder1_z = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2")
+        tg2_space_folder1_h = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2.enc.sha256")
+        tg2_space_folder2_e = path_utils.concat_path(tg2_final, "special_folder", "sp_fol   der2.tar.bz2.enc")
+        tg2_space_folder2_z = path_utils.concat_path(tg2_final, "special_folder", "sp_fol   der2.tar.bz2")
+        tg2_space_folder2_h = path_utils.concat_path(tg2_final, "special_folder", "sp_fol   der2.tar.bz2.enc.sha256")
+        tg2_space_folder3_e = path_utils.concat_path(tg2_final, "special_folder", "sp_folder3   .tar.bz2.enc")
+        tg2_space_folder3_z = path_utils.concat_path(tg2_final, "special_folder", "sp_folder3   .tar.bz2")
+        tg2_space_folder3_h = path_utils.concat_path(tg2_final, "special_folder", "sp_folder3   .tar.bz2.enc.sha256")
 
         # check existence
         self.assertTrue( os.path.exists( tg1_space_file1_e ) )
@@ -749,12 +749,12 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(v)
 
         # check result
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_file2) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_file3) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder2) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder3) ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file2) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file3) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder2) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder3) ) )
 
         # reset extracted folder
         path_utils.scratchfolder(self.extracted_folder)
@@ -806,50 +806,50 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(v)
 
         # check result
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_file1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_file2) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_file3) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder1) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder2) ) ) )
-        self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder3) ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file2) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file3) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder1) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder2) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder3) ) )
 
     def testSpecialTargets1(self):
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.test_special_target_config_file, self.hash_file)
         self.assertTrue(r)
 
-        tge1_final = os.path.join(self.test_target_space_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
-        tge2_final = os.path.join(self.test_target_space_2_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
-        tge3_final = os.path.join(self.test_target_space_3_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
+        tge1_final = path_utils.concat_path(self.test_target_space_1_folder, self.bk_base_folder_test)
+        tge2_final = path_utils.concat_path(self.test_target_space_2_folder, self.bk_base_folder_test)
+        tge3_final = path_utils.concat_path(self.test_target_space_3_folder, self.bk_base_folder_test)
 
         # check if dates were written in all targets
-        self.assertTrue( os.path.exists( os.path.join(tge1_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
-        self.assertTrue( os.path.exists( os.path.join(tge2_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
-        self.assertTrue( os.path.exists( os.path.join(tge3_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tge1_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tge2_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tge3_final, "bk_date.txt") ) )
 
     def testSpecialBkBaseAndTemp1(self):
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.test_special_base_and_temp_config_file1, self.hash_file)
         self.assertTrue(r)
-        tg_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test_space_1) )
-        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
-        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc") ) ) )
+        tg_final = path_utils.concat_path(self.test_target_1_folder, self.bk_base_folder_test_space_1)
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "source_test", "folder1.tar.bz2.enc") ) )
 
     def testSpecialBkBaseAndTemp2(self):
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.test_special_base_and_temp_config_file2, self.hash_file)
         self.assertTrue(r)
-        tg_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test_space_2) )
-        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
-        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc") ) ) )
+        tg_final = path_utils.concat_path(self.test_target_1_folder, self.bk_base_folder_test_space_2)
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "source_test", "folder1.tar.bz2.enc") ) )
 
     def testSpecialBkBaseAndTemp3(self):
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.test_special_base_and_temp_config_file3, self.hash_file)
         self.assertTrue(r)
-        tg_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test_space_3) )
-        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
-        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc") ) ) )
+        tg_final = path_utils.concat_path(self.test_target_1_folder, self.bk_base_folder_test_space_3)
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "bk_date.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "source_test", "folder1.tar.bz2.enc") ) )
 
 if __name__ == '__main__':
     unittest.main()

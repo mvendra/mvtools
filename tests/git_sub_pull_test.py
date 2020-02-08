@@ -40,10 +40,10 @@ class GitSubPullTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
-        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
-        self.third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
-        self.fourth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fourth") )
+        self.first_repo = path_utils.concat_path(self.test_dir, "first")
+        self.second_repo = path_utils.concat_path(self.test_dir, "second")
+        self.third_repo = path_utils.concat_path(self.test_dir, "third")
+        self.fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "first", True)
@@ -93,7 +93,7 @@ class GitSubPullTest(unittest.TestCase):
     def testSubPull(self):
 
         # add first as submodule of fourth
-        sub4_first = os.path.join(self.fourth_repo, path_utils.filter_join_abs("first") )
+        sub4_first = path_utils.concat_path(self.fourth_repo, "first")
         v, r = git_test_fixture.git_addSubmodule(self.first_repo, self.fourth_repo)
         if not v:
             self.fail(r)
@@ -113,7 +113,7 @@ class GitSubPullTest(unittest.TestCase):
         git_sub_pull.pull_subs(self.fourth_repo)
 
         # validate it
-        sub4_first_file3 = os.path.join( sub4_first, path_utils.filter_join_abs(file3) )
+        sub4_first_file3 = path_utils.concat_path( sub4_first, file3)
         self.assertTrue( os.path.exists(sub4_first_file3) )
 
 if __name__ == '__main__':

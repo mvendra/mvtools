@@ -40,9 +40,9 @@ class GitVisitorPullTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
-        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
-        self.third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
+        self.first_repo = path_utils.concat_path(self.test_dir, "first")
+        self.second_repo = path_utils.concat_path(self.test_dir, "second")
+        self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "third", True)
@@ -56,7 +56,7 @@ class GitVisitorPullTest(unittest.TestCase):
 
         # commit something onto second
         self.file1 = self.makeFilename()
-        self.second_file1 = os.path.join(self.second_repo, path_utils.filter_join_abs(self.file1) )
+        self.second_file1 = path_utils.concat_path(self.second_repo, self.file1)
         v, r = git_test_fixture.git_createAndCommit(self.second_repo, self.file1, self.makeContent(), "commit_msg")
         if not v:
             return v, r
@@ -74,20 +74,20 @@ class GitVisitorPullTest(unittest.TestCase):
     def testVisitorPull(self):
 
         # create fourth and fifth repos - clones of second
-        fourth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fourth") )
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
         v, r = git_test_fixture.git_cloneRepo(self.second_repo, fourth_repo, "origin")
         if not v:
             self.fail(r)
 
-        fifth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fifth") )
+        fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
         v, r = git_test_fixture.git_cloneRepo(self.second_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
 
         # commit something else onto second
         file2 = self.makeFilename()
-        fourth_file2 = os.path.join(fourth_repo, path_utils.filter_join_abs(file2) )
-        fifth_file2 = os.path.join(fifth_repo, path_utils.filter_join_abs(file2) )
+        fourth_file2 = path_utils.concat_path(fourth_repo, file2)
+        fifth_file2 = path_utils.concat_path(fifth_repo, file2)
         v, r = git_test_fixture.git_createAndCommit(self.second_repo, file2, self.makeContent(), "commit_msg")
         if not v:
             self.fail(r)

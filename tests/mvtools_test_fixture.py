@@ -11,7 +11,7 @@ def makeAndGetTestFolder(additional_folder):
         return False, "[%s] doesn't exist. Can't proceed." % nuke_dir
 
     # general layer for git_visitor tests
-    test_dir_pre = os.path.join(nuke_dir, path_utils.filter_join_abs("mvtools_tests") )
+    test_dir_pre = path_utils.concat_path(nuke_dir, "mvtools_tests")
     if os.path.exists(test_dir_pre):
         return False, "[%s] already exists. Can't proceed." % test_dir_pre
     os.mkdir(test_dir_pre)
@@ -19,7 +19,7 @@ def makeAndGetTestFolder(additional_folder):
     # optionally add another layer (specific layer for each test case)
     final_dir = test_dir_pre
     if additional_folder is not None:
-        final_dir = os.path.join(test_dir_pre, path_utils.filter_join_abs(additional_folder) )
+        final_dir = path_utils.concat_path(test_dir_pre, additional_folder)
         os.mkdir(final_dir)
 
     return True, (test_dir_pre, final_dir)

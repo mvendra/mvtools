@@ -44,9 +44,9 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
-        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
-        self.third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
+        self.first_repo = path_utils.concat_path(self.test_dir, "first")
+        self.second_repo = path_utils.concat_path(self.test_dir, "second")
+        self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "second", True)
@@ -85,7 +85,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
 
         # setup
         newfile = self.makeFilename()
-        newfile_r1 = os.path.join(self.first_repo, path_utils.filter_join_abs(newfile) )
+        newfile_r1 = path_utils.concat_path(self.first_repo, newfile)
 
         v, r = git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
         if not v:
@@ -114,7 +114,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
 
         # setup
         newfile = self.makeFilename()
-        newfile_r1 = os.path.join(self.first_repo, path_utils.filter_join_abs(newfile) )
+        newfile_r1 = path_utils.concat_path(self.first_repo, newfile)
 
         v, r = git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
         if not v:
@@ -145,7 +145,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
 
         # setup
         newfile = self.makeFilename()
-        newfile_r1 = os.path.join(self.first_repo, path_utils.filter_join_abs(newfile) )
+        newfile_r1 = path_utils.concat_path(self.first_repo, newfile)
 
         v, r = git_test_fixture.git_createAndCommit(self.third_repo, newfile, self.makeContent(), "commit_msg")
         if not v:
@@ -181,8 +181,8 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # setup
         remote = "origin"
         operation = ""
-        fourth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fourth") )
-        fifth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fifth") )
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
+        fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
 
         v, r = git_test_fixture.git_initRepo(self.test_dir, "fourth", True)
         if not v:
@@ -207,7 +207,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
             self.fail(r)
 
         # file from repo1 must exist inside fifth repo
-        self.assertTrue(os.path.exists( os.path.join(fifth_repo, path_utils.filter_join_abs(self.first_repo_first_file) ) ))
+        self.assertTrue(os.path.exists( path_utils.concat_path(fifth_repo, self.first_repo_first_file) ) )
 
 if __name__ == '__main__':
     unittest.main()

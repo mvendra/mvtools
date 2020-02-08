@@ -40,8 +40,8 @@ class GitVisitorPushTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
-        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
+        self.first_repo = path_utils.concat_path(self.test_dir, "first")
+        self.second_repo = path_utils.concat_path(self.test_dir, "second")
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "first", True)
@@ -61,12 +61,12 @@ class GitVisitorPushTest(unittest.TestCase):
     def testVisitorPush(self):
 
         # clone first and second into third and fourth, respectively
-        third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
+        third_repo = path_utils.concat_path(self.test_dir, "third")
         v, r = git_test_fixture.git_cloneRepo(self.first_repo, third_repo, "origin")
         if not v:
             self.fail(r)
 
-        fourth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fourth") )
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
         v, r = git_test_fixture.git_cloneRepo(self.second_repo, fourth_repo, "origin")
         if not v:
             self.fail(r)
@@ -92,14 +92,14 @@ class GitVisitorPushTest(unittest.TestCase):
         self.assertTrue(r)
 
         # checkout fifth and sixth, from first and second, and check if newfiles were pushed (from 3rd and 4th)
-        fifth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fifth") )
-        fifth_file1 = os.path.join(fifth_repo, path_utils.filter_join_abs(file1) )
+        fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
+        fifth_file1 = path_utils.concat_path(fifth_repo, file1)
         v, r = git_test_fixture.git_cloneRepo(self.first_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
 
-        sixth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("sixth") )
-        sixth_file2 = os.path.join(sixth_repo, path_utils.filter_join_abs(file2) )
+        sixth_repo = path_utils.concat_path(self.test_dir, "sixth")
+        sixth_file2 = path_utils.concat_path(sixth_repo, file2)
         v, r = git_test_fixture.git_cloneRepo(self.second_repo, sixth_repo, "origin")
         if not v:
             self.fail(r)

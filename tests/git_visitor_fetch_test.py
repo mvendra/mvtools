@@ -40,9 +40,9 @@ class GitVisitorFetchTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test repos paths
-        self.first_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("first") )
-        self.second_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("second") )
-        self.third_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("third") )
+        self.first_repo = path_utils.concat_path(self.test_dir, "first")
+        self.second_repo = path_utils.concat_path(self.test_dir, "second")
+        self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "third", True)
@@ -56,7 +56,7 @@ class GitVisitorFetchTest(unittest.TestCase):
 
         # commit something onto second
         self.file1 = self.makeFilename()
-        self.second_file1 = os.path.join(self.second_repo, path_utils.filter_join_abs(self.file1) )
+        self.second_file1 = path_utils.concat_path(self.second_repo, self.file1)
         v, r = git_test_fixture.git_createAndCommit(self.second_repo, self.file1, self.makeContent(), "commit_msg")
         if not v:
             return v, r
@@ -68,7 +68,7 @@ class GitVisitorFetchTest(unittest.TestCase):
 
         # commit something onto first
         self.file2 = self.makeFilename()
-        self.first_file2 = os.path.join(self.first_repo, path_utils.filter_join_abs(self.file2) )
+        self.first_file2 = path_utils.concat_path(self.first_repo, self.file2)
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, self.file2, self.makeContent(), "commit_msg")
         if not v:
             return v, r
@@ -81,12 +81,12 @@ class GitVisitorFetchTest(unittest.TestCase):
     def testVisitorFetch(self):
 
         # create fourth  and fifth repos - clones of second and first, respectively
-        fourth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fourth") )
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
         v, r = git_test_fixture.git_cloneRepo(self.second_repo, fourth_repo, "origin")
         if not v:
             self.fail(r)
 
-        fifth_repo = os.path.join(self.test_dir, path_utils.filter_join_abs("fifth") )
+        fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
         v, r = git_test_fixture.git_cloneRepo(self.first_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
@@ -121,8 +121,8 @@ class GitVisitorFetchTest(unittest.TestCase):
         if not v:
             self.fail(r)
 
-        self.assertTrue(os.path.join(fourth_repo, path_utils.filter_join_abs(file3) ))
-        self.assertTrue(os.path.join(fifth_repo, path_utils.filter_join_abs(file4) ))
+        self.assertTrue(path_utils.concat_path(fourth_repo, file3) )
+        self.assertTrue(path_utils.concat_path(fifth_repo, file4) )
 
 if __name__ == '__main__':
     unittest.main()

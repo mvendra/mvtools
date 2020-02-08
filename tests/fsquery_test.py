@@ -16,16 +16,16 @@ class FsqueryTest(unittest.TestCase):
     def _create_test_file(self, filename, sub=None):
         base_folder = self.test_dir
         if sub is not None:
-            base_folder = os.path.join(base_folder, path_utils.filter_join_abs(sub) )
-        fn_full = os.path.join(base_folder, path_utils.filter_join_abs(filename) )
+            base_folder = path_utils.concat_path(base_folder, sub)
+        fn_full = path_utils.concat_path(base_folder, filename)
         create_and_write_file.create_file_contents(fn_full, "...")
         return fn_full
 
     def _create_test_dir(self, dirname, sub=None):
         base_folder = self.test_dir
         if sub is not None:
-            base_folder = os.path.join(base_folder, path_utils.filter_join_abs(sub) )
-        dn_full = os.path.join(base_folder, path_utils.filter_join_abs(dirname) )
+            base_folder = path_utils.concat_path(base_folder, sub)
+        dn_full = path_utils.concat_path(base_folder, dirname)
         os.mkdir(dn_full)
         return dn_full
 

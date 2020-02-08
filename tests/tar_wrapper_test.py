@@ -28,70 +28,70 @@ class TarWrapperTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # the target tar file
-        self.tar_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test.tar") )
+        self.tar_file = path_utils.concat_path(self.test_dir, "test.tar")
 
         # create test content
 
         # special cases
-        self.file_nonexistant = os.path.join(self.test_dir, path_utils.filter_join_abs("no_file") )
+        self.file_nonexistant = path_utils.concat_path(self.test_dir, "no_file")
 
-        self.file_with_space = os.path.join(self.test_dir, path_utils.filter_join_abs("fi le.txt") )
+        self.file_with_space = path_utils.concat_path(self.test_dir, "fi le.txt")
         create_and_write_file.create_file_contents(self.file_with_space, "abc")
-        self.file_with_sep = os.path.join(self.test_dir, path_utils.filter_join_abs("file_with_sep.txt") )
+        self.file_with_sep = path_utils.concat_path(self.test_dir, "file_with_sep.txt")
         create_and_write_file.create_file_contents(self.file_with_sep, "abc")
         self.file_with_sep += os.sep
 
-        self.folder_with_space = os.path.join(self.test_dir, path_utils.filter_join_abs("fol der") )
+        self.folder_with_space = path_utils.concat_path(self.test_dir, "fol der")
         os.mkdir(self.folder_with_space)
-        self.folder_with_space_filler = os.path.join(self.folder_with_space, path_utils.filter_join_abs("filler.txt") )
+        self.folder_with_space_filler = path_utils.concat_path(self.folder_with_space, "filler.txt")
         create_and_write_file.create_file_contents(self.folder_with_space_filler, "abc")
 
-        self.folder_with_sep = os.path.join(self.test_dir, path_utils.filter_join_abs("folder_with_sep") )
+        self.folder_with_sep = path_utils.concat_path(self.test_dir, "folder_with_sep")
         os.mkdir(self.folder_with_sep)
-        self.folder_with_sep_filler = os.path.join(self.folder_with_sep, path_utils.filter_join_abs("filler.txt") )
+        self.folder_with_sep_filler = path_utils.concat_path(self.folder_with_sep, "filler.txt")
         create_and_write_file.create_file_contents(self.folder_with_sep_filler, "abc")
         self.folder_with_sep += os.sep
 
         # base, files
-        self.file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("file1.txt") )
+        self.file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(self.file1, "abc")
 
-        self.file_esp1 = os.path.join(self.test_dir, path_utils.filter_join_abs("   file_esp1.txt") )
+        self.file_esp1 = path_utils.concat_path(self.test_dir, "   file_esp1.txt")
         create_and_write_file.create_file_contents(self.file_esp1, "abc")
 
-        self.file_esp2 = os.path.join(self.test_dir, path_utils.filter_join_abs("file_esp2.txt   ") )
+        self.file_esp2 = path_utils.concat_path(self.test_dir, "file_esp2.txt   ")
         create_and_write_file.create_file_contents(self.file_esp2, "abc")
 
-        self.file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("file2.txt") )
+        self.file2 = path_utils.concat_path(self.test_dir, "file2.txt")
         create_and_write_file.create_file_contents(self.file2, "abc")
 
         # base, folders
-        self.folder1 = os.path.join(self.test_dir, path_utils.filter_join_abs("folder1") )
+        self.folder1 = path_utils.concat_path(self.test_dir, "folder1")
         os.mkdir(self.folder1)
 
-        self.folder2 = os.path.join(self.test_dir, path_utils.filter_join_abs("folder2") )
+        self.folder2 = path_utils.concat_path(self.test_dir, "folder2")
         os.mkdir(self.folder2)
 
-        self.folder2_sub1 = os.path.join(self.folder2, path_utils.filter_join_abs("sub1") )
+        self.folder2_sub1 = path_utils.concat_path(self.folder2, "sub1")
         os.mkdir(self.folder2_sub1)
 
-        self.folder2_sub1_file1 = os.path.join(self.folder2_sub1, path_utils.filter_join_abs("file1.txt") )
+        self.folder2_sub1_file1 = path_utils.concat_path(self.folder2_sub1, "file1.txt")
         create_and_write_file.create_file_contents(self.folder2_sub1_file1, "abc")
 
         # files in folders
 
         # folder1
-        self.folder1_file1 = os.path.join(self.folder1, path_utils.filter_join_abs("file1.txt") )
+        self.folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
         create_and_write_file.create_file_contents(self.folder1_file1, "abc")
 
-        self.folder1_file2 = os.path.join(self.folder1, path_utils.filter_join_abs("file2.txt") )
+        self.folder1_file2 = path_utils.concat_path(self.folder1, "file2.txt")
         create_and_write_file.create_file_contents(self.folder1_file2, "abc")
 
         # folder2
-        self.folder2_file1 = os.path.join(self.folder2, path_utils.filter_join_abs("file1.txt") )
+        self.folder2_file1 = path_utils.concat_path(self.folder2, "file1.txt")
         create_and_write_file.create_file_contents(self.folder2_file1, "abc")
 
-        self.folder2_file2 = os.path.join(self.folder2, path_utils.filter_join_abs("file2.txt") )
+        self.folder2_file2 = path_utils.concat_path(self.folder2, "file2.txt")
         create_and_write_file.create_file_contents(self.folder2_file2, "abc")
 
         return True, ""
@@ -112,22 +112,22 @@ class TarWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.tar_file))
 
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(self.tar_file, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
-        self.ext_file2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file2) )
-        self.ext_folder1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder1) )
-        self.ext_folder2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2) )
-        self.ext_folder1_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder1_file1) )
-        self.ext_folder1_file2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder1_file2) )
-        self.ext_folder2_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_file1) )
-        self.ext_folder2_file2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_file2) )
-        self.ext_folder2_sub1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_sub1) )
-        self.ext_folder2_sub1_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_sub1_file1) )
+        self.ext_file1 = path_utils.concat_path(self.extracted_folder, self.file1)
+        self.ext_file2 = path_utils.concat_path(self.extracted_folder, self.file2)
+        self.ext_folder1 = path_utils.concat_path(self.extracted_folder, self.folder1)
+        self.ext_folder2 = path_utils.concat_path(self.extracted_folder, self.folder2)
+        self.ext_folder1_file1 = path_utils.concat_path(self.extracted_folder, self.folder1_file1)
+        self.ext_folder1_file2 = path_utils.concat_path(self.extracted_folder, self.folder1_file2)
+        self.ext_folder2_file1 = path_utils.concat_path(self.extracted_folder, self.folder2_file1)
+        self.ext_folder2_file2 = path_utils.concat_path(self.extracted_folder, self.folder2_file2)
+        self.ext_folder2_sub1 = path_utils.concat_path(self.extracted_folder, self.folder2_sub1)
+        self.ext_folder2_sub1_file1 = path_utils.concat_path(self.extracted_folder, self.folder2_sub1_file1)
 
         self.assertTrue(os.path.exists( self.ext_file1 ))
         self.assertTrue(os.path.exists( self.ext_file2 ))
@@ -146,22 +146,22 @@ class TarWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.tar_file))
 
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(self.tar_file, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
-        self.ext_file2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file2) )
-        self.ext_folder1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder1) )
-        self.ext_folder2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2) )
-        self.ext_folder1_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder1_file1) )
-        self.ext_folder1_file2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder1_file2) )
-        self.ext_folder2_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_file1) )
-        self.ext_folder2_file2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_file2) )
-        self.ext_folder2_sub1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_sub1) )
-        self.ext_folder2_sub1_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder2_sub1_file1) )
+        self.ext_file1 = path_utils.concat_path(self.extracted_folder, self.file1)
+        self.ext_file2 = path_utils.concat_path(self.extracted_folder, self.file2)
+        self.ext_folder1 = path_utils.concat_path(self.extracted_folder, self.folder1)
+        self.ext_folder2 = path_utils.concat_path(self.extracted_folder, self.folder2)
+        self.ext_folder1_file1 = path_utils.concat_path(self.extracted_folder, self.folder1_file1)
+        self.ext_folder1_file2 = path_utils.concat_path(self.extracted_folder, self.folder1_file2)
+        self.ext_folder2_file1 = path_utils.concat_path(self.extracted_folder, self.folder2_file1)
+        self.ext_folder2_file2 = path_utils.concat_path(self.extracted_folder, self.folder2_file2)
+        self.ext_folder2_sub1 = path_utils.concat_path(self.extracted_folder, self.folder2_sub1)
+        self.ext_folder2_sub1_file1 = path_utils.concat_path(self.extracted_folder, self.folder2_sub1_file1)
 
         self.assertTrue(os.path.exists( self.ext_file1 ))
         self.assertTrue(os.path.exists( self.ext_file2 ))
@@ -181,15 +181,15 @@ class TarWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.tar_file))
 
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(self.tar_file, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file_with_sep = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file_with_sep))
-        self.ext_folder_with_sep = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder_with_sep))
-        self.ext_folder_with_sep_filler = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder_with_sep_filler))
+        self.ext_file_with_sep = path_utils.concat_path(self.extracted_folder, self.file_with_sep)
+        self.ext_folder_with_sep = path_utils.concat_path(self.extracted_folder, self.folder_with_sep)
+        self.ext_folder_with_sep_filler = path_utils.concat_path(self.extracted_folder, self.folder_with_sep_filler)
 
         self.assertTrue(os.path.exists( self.ext_file_with_sep[:len(self.ext_file_with_sep)-1] ))
         self.assertTrue(os.path.exists( self.ext_folder_with_sep ))
@@ -200,15 +200,15 @@ class TarWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.tar_file))
 
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(self.tar_file, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file_with_space = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file_with_space) )
-        self.ext_folder_with_space = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder_with_space) )
-        self.ext_folder_with_space_filler = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.folder_with_space_filler) )
+        self.ext_file_with_space = path_utils.concat_path(self.extracted_folder, self.file_with_space)
+        self.ext_folder_with_space = path_utils.concat_path(self.extracted_folder, self.folder_with_space)
+        self.ext_folder_with_space_filler = path_utils.concat_path(self.extracted_folder, self.folder_with_space_filler)
 
         self.assertTrue( os.path.exists( self.ext_file_with_space ) )
         self.assertTrue( os.path.exists( self.ext_folder_with_space ) )
@@ -216,21 +216,21 @@ class TarWrapperTest(unittest.TestCase):
 
     def testSpecialCases3(self):
 
-        tar_file_spaced = os.path.join(self.test_dir, path_utils.filter_join_abs("te st.tar") )
+        tar_file_spaced = path_utils.concat_path(self.test_dir, "te st.tar")
 
         v, r = tar_wrapper.make_pack(tar_file_spaced, [self.file1, self.file_esp1, self.file_esp2])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(tar_file_spaced))
 
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(tar_file_spaced, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
-        self.ext_file_esp1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file_esp1) )
-        self.ext_file_esp2 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file_esp2) )
+        self.ext_file1 = path_utils.concat_path(self.extracted_folder, self.file1)
+        self.ext_file_esp1 = path_utils.concat_path(self.extracted_folder, self.file_esp1)
+        self.ext_file_esp2 = path_utils.concat_path(self.extracted_folder, self.file_esp2)
 
         self.assertTrue( os.path.exists( self.ext_file1 ) )
         self.assertTrue( os.path.exists( self.ext_file_esp1 ) )
@@ -238,36 +238,36 @@ class TarWrapperTest(unittest.TestCase):
 
     def testSpecialCases4(self):
 
-        tar_file_spaced_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("  test.tar") )
+        tar_file_spaced_2 = path_utils.concat_path(self.test_dir, "  test.tar")
 
         v, r = tar_wrapper.make_pack(tar_file_spaced_2, [self.file1])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(tar_file_spaced_2))
 
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(tar_file_spaced_2, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
+        self.ext_file1 = path_utils.concat_path(self.extracted_folder, self.file1)
         self.assertTrue( os.path.exists( self.ext_file1 ) )
 
     def testSpecialCases5(self):
 
-        tar_file_spaced_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test.tar   ") )
+        tar_file_spaced_3 = path_utils.concat_path(self.test_dir, "test.tar   ")
 
         v, r = tar_wrapper.make_pack(tar_file_spaced_3, [self.file1])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(tar_file_spaced_3))
 
-        self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted") )
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         os.mkdir(self.extracted_folder)
 
         v, r = tar_wrapper.extract(tar_file_spaced_3, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file1 = os.path.join(self.extracted_folder, path_utils.filter_join_abs(self.file1) )
+        self.ext_file1 = path_utils.concat_path(self.extracted_folder, self.file1)
         self.assertTrue( os.path.exists( self.ext_file1 ) )
 
 if __name__ == '__main__':
