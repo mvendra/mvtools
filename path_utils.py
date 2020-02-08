@@ -173,6 +173,12 @@ def filter_join_abs(path):
     return path
 
 def concat_path(*ps):
+
+    # vanilla os.path.join does not join absolute paths 
+    # for example: ("/tmp/folder", "/tmp/folder/sub") -> will not
+    # become "/tmp/folder/tmp/folder/sub". that would result in "/tmp/folder/sub" actually.
+    # so this function is a complement to os.path.join that actually adds absolute paths
+
     if len(ps) < 1:
         return ""
     result_path = ps[0]
@@ -184,4 +190,3 @@ def concat_path(*ps):
 
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
-
