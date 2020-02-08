@@ -2,6 +2,7 @@
 
 import sys
 import os
+import stat
 import shutil
 import unittest
 from unittest import mock
@@ -134,9 +135,21 @@ class BackupProcessorTest(unittest.TestCase):
         os.mkdir(self.space_folder2)
         os.mkdir(self.space_folder3)
 
+        # prep script
+        self.prep_filename = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest.py"))
+        self.prep_generated_test_filename = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest_generated.txt"))
+        prep_file_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        prep_file_contents += "import create_and_write_file" + os.linesep + os.linesep
+        prep_file_contents += "if __name__ == \"__main__\":" + os.linesep
+        prep_file_contents += "    contents = \"test\"" + os.linesep
+        prep_file_contents += ("    filename = \"%s\"" + os.linesep) % self.prep_generated_test_filename
+        prep_file_contents += "    create_and_write_file.create_file_contents(filename, contents)" + os.linesep
+        create_and_write_file.create_file_contents(self.prep_filename, prep_file_contents)
+        os.chmod(self.prep_filename, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
+
         # create config file
         cfg_file_contents = ""
-        #cfg_file_contents += "BKPREPARATION = ...\n"
+        cfg_file_contents += "BKPREPARATION = \"%s\"\n" % self.prep_filename
 
         # sources
         cfg_file_contents += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
@@ -238,7 +251,7 @@ class BackupProcessorTest(unittest.TestCase):
     def testReadConfig(self):
         v, r = backup_processor.read_config(self.test_config_file)
         self.assertTrue(v)
-        self.assertEqual(r[0], "")
+        self.assertEqual(r[0], self.prep_filename)
         self.assertEqual(r[2], [self.test_target_1_folder, self.test_target_2_folder])
         self.assertEqual(r[3], self.bk_base_folder_test)
         self.assertEqual(r[4], self.bk_test_temp_folder)
@@ -273,6 +286,9 @@ class BackupProcessorTest(unittest.TestCase):
 
         tg1_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test))
         tg2_final = os.path.join(self.test_target_2_folder, path_utils.filter_join_abs(self.bk_base_folder_test))
+
+        # check if preparation script was run (it creates a test file)
+        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
 
         # check if dates were written in both targets
         self.assertTrue( os.path.exists( os.path.join(tg1_final, path_utils.filter_join_abs("bk_date.txt")) ) )
