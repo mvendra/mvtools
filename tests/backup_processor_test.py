@@ -180,17 +180,17 @@ class BackupProcessorTest(unittest.TestCase):
 
         # create config file
         cfg_file_contents = ""
-        cfg_file_contents += "BKPREPARATION = \"%s\"\n" % self.prep_filename
+        cfg_file_contents += ("BKPREPARATION = \"%s\"" + os.linesep) % self.prep_filename
 
         # sources
-        cfg_file_contents += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
-        cfg_file_contents += "BKSOURCE {descend / ex: \"%s\" / ex: \"%s\"} = \"%s\"\n" % (".file01.txt", "folder5", self.test_source_alt_folder)
-        cfg_file_contents += "BKSOURCE = \"%s\"\n" % self.test_source_folder_another
+        cfg_file_contents += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
+        cfg_file_contents += ("BKSOURCE {descend / ex: \"%s\" / ex: \"%s\"} = \"%s\"" + os.linesep) % (".file01.txt", "folder5", self.test_source_alt_folder)
+        cfg_file_contents += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder_another
 
-        cfg_file_contents += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        cfg_file_contents += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_2_folder
-        cfg_file_contents += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        cfg_file_contents += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
+        cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
 
         self.test_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_config_file.cfg"))
         create_and_write_file.create_file_contents(self.test_config_file, cfg_file_contents)
@@ -202,119 +202,119 @@ class BackupProcessorTest(unittest.TestCase):
 
         # special source, 1
         special_source_cfg_file_contents1 = ""
-        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file1
-        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file2
-        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file3
-        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder1
-        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder2
-        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder3
-        special_source_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        special_source_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_2_folder
-        special_source_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        special_source_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_file1
+        special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_file2
+        special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_file3
+        special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_folder1
+        special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_folder2
+        special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_folder3
+        special_source_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        special_source_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
+        special_source_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        special_source_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.test_special_source_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_source_config_file.cfg"))
         create_and_write_file.create_file_contents(self.test_special_source_config_file, special_source_cfg_file_contents1)
 
         # special targets, 1
         special_target_cfg_file_contents1 = ""
-        special_target_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.folder1
-        special_target_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_space_1_folder
-        special_target_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_space_2_folder
-        special_target_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_space_3_folder
-        special_target_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        special_target_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        special_target_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.folder1
+        special_target_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_space_1_folder
+        special_target_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_space_2_folder
+        special_target_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_space_3_folder
+        special_target_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        special_target_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.test_special_target_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_target_config_file.cfg"))
         create_and_write_file.create_file_contents(self.test_special_target_config_file, special_target_cfg_file_contents1)
 
         # special bk base and temp folders, 1
         special_base_and_tmp_cfg_file_contents1 = ""
-        special_base_and_tmp_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.folder1
-        special_base_and_tmp_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        special_base_and_tmp_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder_space_1
-        special_base_and_tmp_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test_space_1
+        special_base_and_tmp_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.folder1
+        special_base_and_tmp_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        special_base_and_tmp_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_1
+        special_base_and_tmp_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_1
         self.test_special_base_and_temp_config_file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file1.cfg"))
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file1, special_base_and_tmp_cfg_file_contents1)
 
         special_base_and_tmp_cfg_file_contents2 = ""
-        special_base_and_tmp_cfg_file_contents2 += "BKSOURCE = \"%s\"\n" % self.folder1
-        special_base_and_tmp_cfg_file_contents2 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        special_base_and_tmp_cfg_file_contents2 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder_space_2
-        special_base_and_tmp_cfg_file_contents2 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test_space_2
+        special_base_and_tmp_cfg_file_contents2 += ("BKSOURCE = \"%s\"" + os.linesep) % self.folder1
+        special_base_and_tmp_cfg_file_contents2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        special_base_and_tmp_cfg_file_contents2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_2
+        special_base_and_tmp_cfg_file_contents2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_2
         self.test_special_base_and_temp_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file2.cfg"))
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file2, special_base_and_tmp_cfg_file_contents2)
 
         special_base_and_tmp_cfg_file_contents3 = ""
-        special_base_and_tmp_cfg_file_contents3 += "BKSOURCE = \"%s\"\n" % self.folder1
-        special_base_and_tmp_cfg_file_contents3 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        special_base_and_tmp_cfg_file_contents3 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder_space_3
-        special_base_and_tmp_cfg_file_contents3 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test_space_3
+        special_base_and_tmp_cfg_file_contents3 += ("BKSOURCE = \"%s\"" + os.linesep) % self.folder1
+        special_base_and_tmp_cfg_file_contents3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        special_base_and_tmp_cfg_file_contents3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_3
+        special_base_and_tmp_cfg_file_contents3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_3
         self.test_special_base_and_temp_config_file3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file3.cfg"))
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file3, special_base_and_tmp_cfg_file_contents3)
 
         # malformed cfg file 1
         malformed_cfg_file_contents1 = ""
-        malformed_cfg_file_contents1 = "BKSORUCE = \"%s\"\n" % self.space_file1
-        malformed_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        malformed_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        malformed_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        malformed_cfg_file_contents1 = ("BKSORUCE = \"%s\"" + os.linesep) % self.space_file1
+        malformed_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        malformed_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        malformed_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.test_malformed_config_file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file1.cfg"))
         create_and_write_file.create_file_contents(self.test_malformed_config_file1, malformed_cfg_file_contents1)
 
         # malformed cfg file 2
         malformed_cfg_file_contents2 = ""
-        malformed_cfg_file_contents2 = "BKSOURCE = \"%s\"\n" % self.space_file1
-        #malformed_cfg_file_contents2 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        malformed_cfg_file_contents2 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        malformed_cfg_file_contents2 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        malformed_cfg_file_contents2 = ("BKSOURCE = \"%s\"" + os.linesep) % self.space_file1
+        #malformed_cfg_file_contents2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\" + os.linesep)" % self.test_target_1_folder
+        malformed_cfg_file_contents2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        malformed_cfg_file_contents2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.test_malformed_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file2.cfg"))
         create_and_write_file.create_file_contents(self.test_malformed_config_file2, malformed_cfg_file_contents2)
 
         # malformed cfg file 3
         malformed_cfg_file_contents3 = ""
-        malformed_cfg_file_contents3 = "BKSOURCE = %s\"\n" % self.space_file1
-        malformed_cfg_file_contents3 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        malformed_cfg_file_contents3 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        malformed_cfg_file_contents3 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        malformed_cfg_file_contents3 = ("BKSOURCE = %s\"" + os.linesep) % self.space_file1
+        malformed_cfg_file_contents3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        malformed_cfg_file_contents3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        malformed_cfg_file_contents3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.test_malformed_config_file3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file3.cfg"))
         create_and_write_file.create_file_contents(self.test_malformed_config_file3, malformed_cfg_file_contents3)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 1
         cfg_file_contents_prep_space_1 = ""
-        cfg_file_contents_prep_space_1 += "BKPREPARATION = \"%s\"\n" % self.prep_filename_space_1
-        cfg_file_contents_prep_space_1 += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
-        cfg_file_contents_prep_space_1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        cfg_file_contents_prep_space_1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        cfg_file_contents_prep_space_1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        cfg_file_contents_prep_space_1 += ("BKPREPARATION = \"%s\"" + os.linesep) % self.prep_filename_space_1
+        cfg_file_contents_prep_space_1 += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
+        cfg_file_contents_prep_space_1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        cfg_file_contents_prep_space_1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        cfg_file_contents_prep_space_1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.cfg_file_prep_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_1.cfg"))
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_1, cfg_file_contents_prep_space_1)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 2
         cfg_file_contents_prep_space_2 = ""
-        cfg_file_contents_prep_space_2 += "BKPREPARATION = \"%s\"\n" % self.prep_filename_space_2
-        cfg_file_contents_prep_space_2 += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
-        cfg_file_contents_prep_space_2 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        cfg_file_contents_prep_space_2 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        cfg_file_contents_prep_space_2 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        cfg_file_contents_prep_space_2 += ("BKPREPARATION = \"%s\"" + os.linesep) % self.prep_filename_space_2
+        cfg_file_contents_prep_space_2 += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
+        cfg_file_contents_prep_space_2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        cfg_file_contents_prep_space_2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        cfg_file_contents_prep_space_2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.cfg_file_prep_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_2.cfg"))
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_2, cfg_file_contents_prep_space_2)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 3
         cfg_file_contents_prep_space_3 = ""
-        cfg_file_contents_prep_space_3 += "BKPREPARATION = \"%s\"\n" % self.prep_filename_space_3
-        cfg_file_contents_prep_space_3 += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
-        cfg_file_contents_prep_space_3 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        cfg_file_contents_prep_space_3 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        cfg_file_contents_prep_space_3 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        cfg_file_contents_prep_space_3 += ("BKPREPARATION = \"%s\"" + os.linesep) % self.prep_filename_space_3
+        cfg_file_contents_prep_space_3 += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
+        cfg_file_contents_prep_space_3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        cfg_file_contents_prep_space_3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        cfg_file_contents_prep_space_3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.cfg_file_prep_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_3.cfg"))
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_3, cfg_file_contents_prep_space_3)
 
         # config file, with BKPREPARATION pointing to a script that fails
         cfg_file_contents_prep_fails = ""
-        cfg_file_contents_prep_fails += "BKPREPARATION = \"%s\"\n" % self.prep_filename_fail
-        cfg_file_contents_prep_fails += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
-        cfg_file_contents_prep_fails += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        cfg_file_contents_prep_fails += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        cfg_file_contents_prep_fails += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        cfg_file_contents_prep_fails += ("BKPREPARATION = \"%s\"" + os.linesep) % self.prep_filename_fail
+        cfg_file_contents_prep_fails += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
+        cfg_file_contents_prep_fails += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        cfg_file_contents_prep_fails += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        cfg_file_contents_prep_fails += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.cfg_file_prep_fails = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_fails.cfg"))
         create_and_write_file.create_file_contents(self.cfg_file_prep_fails, cfg_file_contents_prep_fails)
 
