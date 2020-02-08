@@ -33,10 +33,9 @@ class BackupProcessorTest(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
-        # will make the following path the working directory
+        # folder where extracted stuff will be stored at
         self.extracted_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("extracted"))
-        os.mkdir(self.extracted_folder)
-        os.chdir(self.extracted_folder)
+        path_utils.scratchfolder(self.extracted_folder)
 
         # nonexistent folder - for testing only
         self.nonexistent = os.path.join(self.test_dir, path_utils.filter_join_abs("nonexistent"))
@@ -343,10 +342,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.file0) ) ) )
 
         # reset extracted folder
-        homedir = os.path.expanduser("~/")
-        os.chdir(homedir)
         path_utils.scratchfolder(self.extracted_folder)
-        os.chdir(self.extracted_folder)
 
         # target 2
         v, r = tar_wrapper.extract(tg2_folder1_z, self.extracted_folder)
@@ -430,10 +426,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.file_another) ) ) )
 
         # reset extracted folder
-        homedir = os.path.expanduser("~/")
-        os.chdir(homedir)
         path_utils.scratchfolder(self.extracted_folder)
-        os.chdir(self.extracted_folder)
 
         # target 2
         self.assertFalse( os.path.exists( tg2_folder5 ) )
@@ -565,10 +558,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder3) ) ) )
 
         # reset extracted folder
-        homedir = os.path.expanduser("~/")
-        os.chdir(homedir)
         path_utils.scratchfolder(self.extracted_folder)
-        os.chdir(self.extracted_folder)
 
         # check existence
         self.assertTrue( os.path.exists( tg2_space_file1_e ) )
