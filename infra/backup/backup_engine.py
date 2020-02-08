@@ -51,7 +51,7 @@ class BackupEngine:
             print("%sPreparing...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
             prep_r = call([_self.BKPREPARATION])
             if prep_r != 0:
-                print("%sFailed preparing backup. Aborting.%s" % (terminal_colors.TTY_RED, it, terminal_colors.TTY_WHITE))
+                print("%sFailed preparing backup. Aborting.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
                 return False
 
         print("%sDeleting old backup...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))

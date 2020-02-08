@@ -137,6 +137,9 @@ class BackupProcessorTest(unittest.TestCase):
 
         # prep script
         self.prep_filename = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest.py"))
+        self.prep_filename_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("prep test.py"))
+        self.prep_filename_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("  preptest.py"))
+        self.prep_filename_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest.py  "))
         self.prep_generated_test_filename = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest_generated.txt"))
         prep_file_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
         prep_file_contents += "import create_and_write_file" + os.linesep + os.linesep
@@ -145,7 +148,22 @@ class BackupProcessorTest(unittest.TestCase):
         prep_file_contents += ("    filename = \"%s\"" + os.linesep) % self.prep_generated_test_filename
         prep_file_contents += "    create_and_write_file.create_file_contents(filename, contents)" + os.linesep
         create_and_write_file.create_file_contents(self.prep_filename, prep_file_contents)
+        create_and_write_file.create_file_contents(self.prep_filename_space_1, prep_file_contents)
+        create_and_write_file.create_file_contents(self.prep_filename_space_2, prep_file_contents)
+        create_and_write_file.create_file_contents(self.prep_filename_space_3, prep_file_contents)
         os.chmod(self.prep_filename, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
+        os.chmod(self.prep_filename_space_1, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
+        os.chmod(self.prep_filename_space_2, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
+        os.chmod(self.prep_filename_space_3, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
+
+        # prep script that fails
+        self.prep_filename_fail = os.path.join(self.test_dir, path_utils.filter_join_abs("preptest_fail.py"))
+        self.prep_file_contents_fail = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        self.prep_file_contents_fail += "import sys" + os.linesep + os.linesep
+        self.prep_file_contents_fail += "if __name__ == \"__main__\":" + os.linesep
+        self.prep_file_contents_fail += "    sys.exit(1)" + os.linesep
+        create_and_write_file.create_file_contents(self.prep_filename_fail, self.prep_file_contents_fail)
+        os.chmod(self.prep_filename_fail, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
         # create config file
         cfg_file_contents = ""
@@ -203,7 +221,7 @@ class BackupProcessorTest(unittest.TestCase):
         #malformed_cfg_file_contents2 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
         malformed_cfg_file_contents2 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
         malformed_cfg_file_contents2 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
-        self.test_malformed_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file1.cfg"))
+        self.test_malformed_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file2.cfg"))
         create_and_write_file.create_file_contents(self.test_malformed_config_file2, malformed_cfg_file_contents2)
 
         # malformed cfg file 3
@@ -214,6 +232,46 @@ class BackupProcessorTest(unittest.TestCase):
         malformed_cfg_file_contents3 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
         self.test_malformed_config_file3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file3.cfg"))
         create_and_write_file.create_file_contents(self.test_malformed_config_file3, malformed_cfg_file_contents3)
+
+        # config file, with BKPREPARATION pointing to values (paths with spaces) 1
+        cfg_file_contents_prep_space_1 = ""
+        cfg_file_contents_prep_space_1 += "BKPREPARATION = \"%s\"\n" % self.prep_filename_space_1
+        cfg_file_contents_prep_space_1 += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
+        cfg_file_contents_prep_space_1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        cfg_file_contents_prep_space_1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        cfg_file_contents_prep_space_1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.cfg_file_prep_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_1.cfg"))
+        create_and_write_file.create_file_contents(self.cfg_file_prep_space_1, cfg_file_contents_prep_space_1)
+
+        # config file, with BKPREPARATION pointing to values (paths with spaces) 2
+        cfg_file_contents_prep_space_2 = ""
+        cfg_file_contents_prep_space_2 += "BKPREPARATION = \"%s\"\n" % self.prep_filename_space_2
+        cfg_file_contents_prep_space_2 += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
+        cfg_file_contents_prep_space_2 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        cfg_file_contents_prep_space_2 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        cfg_file_contents_prep_space_2 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.cfg_file_prep_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_2.cfg"))
+        create_and_write_file.create_file_contents(self.cfg_file_prep_space_2, cfg_file_contents_prep_space_2)
+
+        # config file, with BKPREPARATION pointing to values (paths with spaces) 3
+        cfg_file_contents_prep_space_3 = ""
+        cfg_file_contents_prep_space_3 += "BKPREPARATION = \"%s\"\n" % self.prep_filename_space_3
+        cfg_file_contents_prep_space_3 += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
+        cfg_file_contents_prep_space_3 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        cfg_file_contents_prep_space_3 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        cfg_file_contents_prep_space_3 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.cfg_file_prep_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_space_3.cfg"))
+        create_and_write_file.create_file_contents(self.cfg_file_prep_space_3, cfg_file_contents_prep_space_3)
+
+        # config file, with BKPREPARATION pointing to a script that fails
+        cfg_file_contents_prep_fails = ""
+        cfg_file_contents_prep_fails += "BKPREPARATION = \"%s\"\n" % self.prep_filename_fail
+        cfg_file_contents_prep_fails += "BKSOURCE {descend} = \"%s\"\n" % self.test_source_folder
+        cfg_file_contents_prep_fails += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        cfg_file_contents_prep_fails += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        cfg_file_contents_prep_fails += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.cfg_file_prep_fails = os.path.join(self.test_dir, path_utils.filter_join_abs("config_file_prep_fails.cfg"))
+        create_and_write_file.create_file_contents(self.cfg_file_prep_fails, cfg_file_contents_prep_fails)
 
         return True, ""
 
@@ -275,6 +333,38 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertFalse(r)
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.test_malformed_config_file3, self.hash_file)
+        self.assertFalse(r)
+
+    def testPrepsWithSpaces1(self):
+        v, r = backup_processor.read_config(self.cfg_file_prep_space_1)
+        self.assertTrue(r)
+        self.assertFalse( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.cfg_file_prep_space_1, self.hash_file)
+        self.assertTrue(r)
+        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+
+    def testPrepsWithSpaces2(self):
+        v, r = backup_processor.read_config(self.cfg_file_prep_space_2)
+        self.assertTrue(r)
+        self.assertFalse( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.cfg_file_prep_space_2, self.hash_file)
+        self.assertTrue(r)
+        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+
+    def testPrepsWithSpaces3(self):
+        v, r = backup_processor.read_config(self.cfg_file_prep_space_3)
+        self.assertTrue(r)
+        self.assertFalse( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.cfg_file_prep_space_3, self.hash_file)
+        self.assertTrue(r)
+        self.assertTrue( os.path.exists( os.path.join( self.prep_generated_test_filename ) ) )
+
+    def testPrepFails(self):
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.cfg_file_prep_fails, self.hash_file)
         self.assertFalse(r)
 
     def testRunBackup1(self):
