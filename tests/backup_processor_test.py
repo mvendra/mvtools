@@ -43,9 +43,15 @@ class BackupProcessorTest(unittest.TestCase):
 
         # temp folder
         self.bk_test_temp_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("bktemp"))
+        self.bk_test_temp_folder_space_1 = os.path.join(self.test_dir, path_utils.filter_join_abs("   bktemp"))
+        self.bk_test_temp_folder_space_2 = os.path.join(self.test_dir, path_utils.filter_join_abs("bk temp"))
+        self.bk_test_temp_folder_space_3 = os.path.join(self.test_dir, path_utils.filter_join_abs("bktemp   "))
 
         # base backup folder
         self.bk_base_folder_test = "BackupTests"
+        self.bk_base_folder_test_space_1 = "   BackupTests"
+        self.bk_base_folder_test_space_2 = "Backup   Tests"
+        self.bk_base_folder_test_space_3 = "BackupTests   "
 
         # create folders, source and target
         self.test_source_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("source_test"))
@@ -54,10 +60,17 @@ class BackupProcessorTest(unittest.TestCase):
         os.mkdir(self.test_source_alt_folder)
         self.test_source_folder_another = os.path.join(self.test_dir, path_utils.filter_join_abs("source_test_another"))
         os.mkdir(self.test_source_folder_another)
+
         self.test_target_1_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target_1_test"))
         os.mkdir(self.test_target_1_folder)
         self.test_target_2_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target_2_test"))
         os.mkdir(self.test_target_2_folder)
+        self.test_target_space_1_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("   target_space_1_test"))
+        os.mkdir(self.test_target_space_1_folder)
+        self.test_target_space_2_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target  space  2_test"))
+        os.mkdir(self.test_target_space_2_folder)
+        self.test_target_space_3_folder = os.path.join(self.test_dir, path_utils.filter_join_abs("target_space_3_test   "))
+        os.mkdir(self.test_target_space_3_folder)
 
         # create test folders
         self.folder1 = os.path.join(self.test_source_folder, path_utils.filter_join_abs("folder1"))
@@ -187,24 +200,56 @@ class BackupProcessorTest(unittest.TestCase):
         self.passphrase = "abcdef"
         create_and_write_file.create_file_contents(self.hash_file, "e32ef19623e8ed9d267f657a81944b3d07adbb768518068e88435745564e8d4150a0a703be2a7d88b61e3d390c2bb97e2d4c311fdc69d6b1267f05f59aa920e7")
 
-        # special source
-        special_cfg_file_contents1 = ""
-        special_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file1
-        special_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file2
-        special_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file3
+        # special source, 1
+        special_source_cfg_file_contents1 = ""
+        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file1
+        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file2
+        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_file3
+        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder1
+        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder2
+        special_source_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder3
+        special_source_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        special_source_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_2_folder
+        special_source_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        special_source_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.test_special_source_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_source_config_file.cfg"))
+        create_and_write_file.create_file_contents(self.test_special_source_config_file, special_source_cfg_file_contents1)
 
-        special_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder1
-        special_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder2
-        special_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.space_folder3
+        # special targets, 1
+        special_target_cfg_file_contents1 = ""
+        special_target_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.folder1
+        special_target_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_space_1_folder
+        special_target_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_space_2_folder
+        special_target_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_space_3_folder
+        special_target_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        special_target_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.test_special_target_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_target_config_file.cfg"))
+        create_and_write_file.create_file_contents(self.test_special_target_config_file, special_target_cfg_file_contents1)
 
-        special_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
-        special_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_2_folder
+        # special bk base and temp folders, 1
+        special_base_and_tmp_cfg_file_contents1 = ""
+        special_base_and_tmp_cfg_file_contents1 += "BKSOURCE = \"%s\"\n" % self.folder1
+        special_base_and_tmp_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        special_base_and_tmp_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder_space_1
+        special_base_and_tmp_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test_space_1
+        self.test_special_base_and_temp_config_file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file1.cfg"))
+        create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file1, special_base_and_tmp_cfg_file_contents1)
 
-        special_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
-        special_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        special_base_and_tmp_cfg_file_contents2 = ""
+        special_base_and_tmp_cfg_file_contents2 += "BKSOURCE = \"%s\"\n" % self.folder1
+        special_base_and_tmp_cfg_file_contents2 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        special_base_and_tmp_cfg_file_contents2 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder_space_2
+        special_base_and_tmp_cfg_file_contents2 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test_space_2
+        self.test_special_base_and_temp_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file2.cfg"))
+        create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file2, special_base_and_tmp_cfg_file_contents2)
 
-        self.test_special_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_config_file.cfg"))
-        create_and_write_file.create_file_contents(self.test_special_config_file, special_cfg_file_contents1)
+        special_base_and_tmp_cfg_file_contents3 = ""
+        special_base_and_tmp_cfg_file_contents3 += "BKSOURCE = \"%s\"\n" % self.folder1
+        special_base_and_tmp_cfg_file_contents3 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        special_base_and_tmp_cfg_file_contents3 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder_space_3
+        special_base_and_tmp_cfg_file_contents3 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test_space_3
+        self.test_special_base_and_temp_config_file3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_base_and_temp_config_file3.cfg"))
+        create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file3, special_base_and_tmp_cfg_file_contents3)
 
         # malformed cfg file 1
         malformed_cfg_file_contents1 = ""
@@ -605,7 +650,7 @@ class BackupProcessorTest(unittest.TestCase):
 
         # basic execution
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
-            r = backup_processor.run_backup(self.test_special_config_file, self.hash_file)
+            r = backup_processor.run_backup(self.test_special_source_config_file, self.hash_file)
         self.assertTrue(r)
 
         tg1_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
@@ -767,6 +812,44 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder1) ) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder2) ) ) )
         self.assertTrue( os.path.exists( os.path.join( self.extracted_folder, path_utils.filter_join_abs(self.space_folder3) ) ) )
+
+    def testSpecialTargets1(self):
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_special_target_config_file, self.hash_file)
+        self.assertTrue(r)
+
+        tge1_final = os.path.join(self.test_target_space_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
+        tge2_final = os.path.join(self.test_target_space_2_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
+        tge3_final = os.path.join(self.test_target_space_3_folder, path_utils.filter_join_abs(self.bk_base_folder_test) )
+
+        # check if dates were written in all targets
+        self.assertTrue( os.path.exists( os.path.join(tge1_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( os.path.join(tge2_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( os.path.join(tge3_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+
+    def testSpecialBkBaseAndTemp1(self):
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_special_base_and_temp_config_file1, self.hash_file)
+        self.assertTrue(r)
+        tg_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test_space_1) )
+        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc") ) ) )
+
+    def testSpecialBkBaseAndTemp2(self):
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_special_base_and_temp_config_file2, self.hash_file)
+        self.assertTrue(r)
+        tg_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test_space_2) )
+        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc") ) ) )
+
+    def testSpecialBkBaseAndTemp3(self):
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_special_base_and_temp_config_file3, self.hash_file)
+        self.assertTrue(r)
+        tg_final = os.path.join(self.test_target_1_folder, path_utils.filter_join_abs(self.bk_base_folder_test_space_3) )
+        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("bk_date.txt") ) ) )
+        self.assertTrue( os.path.exists( os.path.join(tg_final, path_utils.filter_join_abs("source_test"), path_utils.filter_join_abs("folder1.tar.bz2.enc") ) ) )
 
 if __name__ == '__main__':
     unittest.main()
