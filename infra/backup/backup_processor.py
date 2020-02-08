@@ -52,14 +52,22 @@ def make_backup_artifacts_list(artifacts_base):
     return retlist
 
 def pop_surrounding_char(thestr, cl, cr):
+    # returns tuple: the resulting string, plus a bool indicating
+    # whether both were found and removed or not
+    pops = 0
     thestr = thestr.strip()
     if len(thestr) > 0:
         if thestr[0] == cl:
             thestr = thestr[1:]
+            pops += 1
     if len(thestr) > 0:
         if thestr[len(thestr)-1] == cr:
             thestr = thestr[:len(thestr)-1]
-    return thestr
+            pops += 1
+    res = False
+    if pops == 2:
+        res = True
+    return res, thestr
 
 def opt_get(thestr):
     if thestr is None:
@@ -70,7 +78,7 @@ def opt_get(thestr):
     if len(thesplit) != 2:
         return "",""
     thesplit[0] = thesplit[0].strip()
-    thesplit[1] = pop_surrounding_char(thesplit[1].strip(), "\"", "\"")
+    thesplit[1] = (pop_surrounding_char(thesplit[1].strip(), "\"", "\""))[1]
     return thesplit[0], thesplit[1]
 
 def read_config(config_file):
@@ -112,10 +120,15 @@ def read_config(config_file):
             var_name = (var_name_and_options[0:p]).strip()
             var_options = (var_name_and_options[p:]).strip()
 
-        var_value = pop_surrounding_char(var_value, "\"", "\"")
+        var_value_pre = var_value
+        bp, var_value = pop_surrounding_char(var_value, "\"", "\"")
+        # require values to be specified with surrounding quotes
+        if bp is False:
+            print("%sValue must be specified with surrounding quotes: [%s]%s" % (terminal_colors.TTY_RED, var_value_pre, terminal_colors.TTY_WHITE))
+            return False, ()
 
         # separate options
-        options = pop_surrounding_char(var_options, "{", "}").strip().split("/")
+        options = (pop_surrounding_char(var_options, "{", "}"))[1].strip().split("/")
         for i in range(len(options)):
             options[i] = options[i].strip()
 

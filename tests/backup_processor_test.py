@@ -175,6 +175,33 @@ class BackupProcessorTest(unittest.TestCase):
         self.test_special_config_file = os.path.join(self.test_dir, path_utils.filter_join_abs("test_special_config_file.cfg"))
         create_and_write_file.create_file_contents(self.test_special_config_file, special_cfg_file_contents1)
 
+        # malformed cfg file 1
+        malformed_cfg_file_contents1 = ""
+        malformed_cfg_file_contents1 = "BKSORUCE = \"%s\"\n" % self.space_file1
+        malformed_cfg_file_contents1 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        malformed_cfg_file_contents1 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        malformed_cfg_file_contents1 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.test_malformed_config_file1 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file1.cfg"))
+        create_and_write_file.create_file_contents(self.test_malformed_config_file1, malformed_cfg_file_contents1)
+
+        # malformed cfg file 2
+        malformed_cfg_file_contents2 = ""
+        malformed_cfg_file_contents2 = "BKSOURCE = \"%s\"\n" % self.space_file1
+        #malformed_cfg_file_contents2 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        malformed_cfg_file_contents2 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        malformed_cfg_file_contents2 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.test_malformed_config_file2 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file1.cfg"))
+        create_and_write_file.create_file_contents(self.test_malformed_config_file2, malformed_cfg_file_contents2)
+
+        # malformed cfg file 3
+        malformed_cfg_file_contents3 = ""
+        malformed_cfg_file_contents3 = "BKSOURCE = %s\"\n" % self.space_file1
+        malformed_cfg_file_contents3 += "BKTARGETS_ROOT {nocheckmount} = \"%s\"\n" % self.test_target_1_folder
+        malformed_cfg_file_contents3 += "BKTEMP = \"%s\"\n" % self.bk_test_temp_folder
+        malformed_cfg_file_contents3 += "BKTARGETS_BASEDIR = \"%s\"\n" % self.bk_base_folder_test
+        self.test_malformed_config_file3 = os.path.join(self.test_dir, path_utils.filter_join_abs("test_malformed_config_file3.cfg"))
+        create_and_write_file.create_file_contents(self.test_malformed_config_file3, malformed_cfg_file_contents3)
+
         return True, ""
 
     def tearDown(self):
@@ -215,6 +242,27 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertEqual(r[2], [self.test_target_1_folder, self.test_target_2_folder])
         self.assertEqual(r[3], self.bk_base_folder_test)
         self.assertEqual(r[4], self.bk_test_temp_folder)
+
+    def testInvalidConfig1(self):
+        v, r = backup_processor.read_config(self.test_malformed_config_file1)
+        self.assertFalse(r)
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_malformed_config_file1, self.hash_file)
+        self.assertFalse(r)
+
+    def testInvalidConfig2(self):
+        v, r = backup_processor.read_config(self.test_malformed_config_file2)
+        self.assertFalse(r)
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_malformed_config_file2, self.hash_file)
+        self.assertFalse(r)
+
+    def testInvalidConfig3(self):
+        v, r = backup_processor.read_config(self.test_malformed_config_file3)
+        self.assertFalse(r)
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_malformed_config_file3, self.hash_file)
+        self.assertFalse(r)
 
     def testRunBackup1(self):
 
