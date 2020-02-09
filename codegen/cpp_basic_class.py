@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 class cpp_basic_class:
 
     def __init__(__self, filename, impl_ext = "cpp", header_ext = "h"):
@@ -47,7 +49,7 @@ class cpp_basic_class:
 
         header += __self.more("#endif // %s\n\n" % guardian)
 
-        __self.writetofile(os.path.join(os.getcwd(), header_fname), header)
+        __self.writetofile(path_utils.concat_path(os.getcwd(), header_fname), header)
 
         # IMPL FILE
 
@@ -57,7 +59,7 @@ class cpp_basic_class:
         impl += __self.more("%s::%s(){\n}\n\n" % (classname, classname))
         impl += __self.more("%s::~%s(){\n}\n\n" % (classname, classname))
 
-        __self.writetofile(os.path.join(os.getcwd(), impl_fname), impl)
+        __self.writetofile(path_utils.concat_path(os.getcwd(), impl_fname), impl)
 
     def more(__self, content):
         return __self.indent + content

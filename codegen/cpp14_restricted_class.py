@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 class cpp14_restricted_class:
 
     def __init__(__self, filename, header_prefix, namespaces, impl_ext = "cpp", header_ext = "h"):
@@ -75,7 +77,7 @@ class cpp14_restricted_class:
 
         header += __self.more("#endif // %s\n\n" % guardian)
 
-        __self.writetofile(os.path.join(os.getcwd(), header_fname), header)
+        __self.writetofile(path_utils.concat_path(os.getcwd(), header_fname), header)
 
         ###########
         # IMPL FILE
@@ -101,7 +103,7 @@ class cpp14_restricted_class:
             impl += __self.more("} // ns: %s\n" % i)
         impl += __self.more("\n")
 
-        __self.writetofile(os.path.join(os.getcwd(), impl_fname), impl)
+        __self.writetofile(path_utils.concat_path(os.getcwd(), impl_fname), impl)
 
     def more(__self, content):
         return __self.indent + content
