@@ -3,6 +3,7 @@
 import sys
 import os
 from subprocess import check_output
+import path_utils
 
 def puaq(): # print usage and quit
     print("Usage: %s repo_path." % os.path.basename(__file__))
@@ -19,7 +20,7 @@ def is_git_work_tree(path):
     if not os.path.exists(path):
         return None
 
-    if os.path.exists(os.path.join(path, ".git")):
+    if os.path.exists(path_utils.concat_path(path, ".git")):
         return True
     else:
         return False
@@ -170,7 +171,7 @@ def get_staged_files(repo):
             continue
         if cl[0] == "A":
             lf = cl[3:]
-            fp = os.path.join(repo, lf)
+            fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
 
     if len(ret) == 0:
@@ -209,7 +210,7 @@ def get_unstaged_files(repo):
             continue
         if cl[0] == "?":
             lf = cl[3:]
-            fp = os.path.join(repo, lf)
+            fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
 
     if len(ret) == 0:
