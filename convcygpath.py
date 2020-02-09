@@ -4,6 +4,7 @@ import sys
 import os
 
 import fsquery
+import path_utils
 import sendtoclipboard
 
 def puaq():
@@ -15,7 +16,7 @@ def find_drive_letter(target_path):
     if pos == -1:
         return None
     else:
-        dl_path = os.path.join("/cygdrive", target_path[0:pos].lower())
+        dl_path = path_utils.concat_path("/cygdrive", target_path[0:pos].lower())
         return dl_path
 
 def cut_drive_letter(target_path):
@@ -78,7 +79,7 @@ def convert_win_path_to_cygwin_path(target_path):
     while (True):
         result, next = find_next_path(final_path, target_path)
         target_path = target_path[len(next):]
-        final_path = os.path.join(final_path, next)
+        final_path = path_utils.concat_path(final_path, next)
         if not result:
             break
 
