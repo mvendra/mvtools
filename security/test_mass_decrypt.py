@@ -33,7 +33,7 @@ def print_report(report):
 
 def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
 
-    path_temp_used = os.path.join(path_temp_base, os.path.basename(__file__) + "_temp_DELETE_ME_NOW")
+    path_temp_used = path_utils.concat_path(path_temp_base, os.path.basename(__file__) + "_temp_DELETE_ME_NOW")
     path_utils.scratchfolder(path_temp_used)
 
     ext_list_aux = []
@@ -45,7 +45,7 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
         print("WARNING: Nothing to test.")
 
     for f in filelist:
-        if not decrypt.symmetric_decrypt(f, os.path.join(path_temp_used, os.path.basename(f) + ".tmp"), passphrase):
+        if not decrypt.symmetric_decrypt(f, path_utils.concat_path(path_temp_used, os.path.basename(f) + ".tmp"), passphrase):
             report.append(f + " FAILED")
 
     try:
