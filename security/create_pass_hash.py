@@ -7,6 +7,7 @@ import stat
 import getpass
 
 import sha512_wrapper
+import path_utils
 
 def create_pass_hash(filename):
 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
         filename_base = os.getcwd()
         hash_filename = sys.argv[1]
 
-    hash_fn_full = os.path.join(filename_base, hash_filename)
+    hash_fn_full = path_utils.concat_path(filename_base, hash_filename)
     if not create_pass_hash(hash_fn_full):
         print("Failed creating pass hash file")
         sys.exit(1)
