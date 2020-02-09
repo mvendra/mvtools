@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 class extractpattern:
 
     def __init__(_self, infile, beginpattern, endpattern, baseoutputfilename = None):
@@ -65,7 +67,7 @@ class extractpattern:
                 newcontent = content[b_off:e_off]
                 outnum+=1
                 newfile = _self.baseoutputfilename + str(outnum) + "." + _self.outext
-                newfile = os.path.join(".", newfile)
+                newfile = path_utils.concat_path(".", newfile)
                 with open(newfile, "wb+") as nf:
                     nf.write(newcontent)
 
@@ -86,7 +88,7 @@ if __name__ == "__main__":
     fileout = None
 
     if len(sys.argv) < 2:
-        puaq
+        puaq()
     elif len(sys.argv) > 2:
         fileout = sys.argv[2]
 

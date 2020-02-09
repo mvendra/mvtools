@@ -5,6 +5,7 @@ import os
 import shutil
 
 import fsquery
+import path_utils
 
 def has_mvtools_envvar():
     e = ""
@@ -79,7 +80,7 @@ def genlinks():
         print("This script should be run inside mvtools")
         return False
 
-    path_links = os.path.join(path, "links")
+    path_links = path_utils.concat_path(path, "links")
     #if not os.path.exists(path_links):
         #print("[%s] does not exist. Aborting." % path_links)
         #return False
