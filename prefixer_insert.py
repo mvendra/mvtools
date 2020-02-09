@@ -3,6 +3,7 @@
 import os
 import sys
 import fsquery
+import path_utils
 import prjrenamer
 
 def pad_with_zeroes_left(num_in_str, amount):
@@ -13,8 +14,8 @@ def pad_with_zeroes_left(num_in_str, amount):
     return num_in_str
 
 def is_std_cpp_autobooted_proj(path):
-    full = os.path.join(path, "proj")
-    full = os.path.join(full, "codelite")
+    full = path_utils.concat_path(path, "proj")
+    full = path_utils.concat_path(full, "codelite")
     if os.path.exists(full):
         return True
     return False
@@ -44,7 +45,7 @@ def prefixer_insert(target_dir, prefix_to_reserve):
             new_pref = int(pref) + 1
             new_pref_str = str(new_pref)
             new_subject = pad_with_zeroes_left(new_pref_str, PREFIX_SIZE) + subject[PREFIX_SIZE:]
-            new_full = os.path.join(base, new_subject)
+            new_full = path_utils.concat_path(base, new_subject)
             if is_std_cpp_autobooted_proj(d):
                 autobooted_refactor(d, new_full)
             else:
