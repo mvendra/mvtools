@@ -3,14 +3,16 @@
 import sys
 import os
 
+import path_utils
+
 def writecontents(filename, contents):
     with open(filename, "wb") as f:
         f.write(contents)
 
 def prjboot_validate(target_dir, project_name):
 
-    if os.path.exists(os.path.join(target_dir, project_name)):
-        print("%s already exists. Specify another project name." % os.path.join(target_dir, project_name))
+    if os.path.exists(path_utils.concat_path(target_dir, project_name)):
+        print("%s already exists. Specify another project name." % path_utils.concat_path(target_dir, project_name))
         return False
 
     if not os.path.exists(target_dir):
@@ -474,24 +476,24 @@ def prjboot(target_dir, project_name):
     if not prjboot_validate(target_dir, project_name):
         sys.exit(1)
 
-    prj_fullname_base = os.path.join(target_dir, project_name)
-    base_prj = os.path.join(prj_fullname_base, "proj")
+    prj_fullname_base = path_utils.concat_path(target_dir, project_name)
+    base_prj = path_utils.concat_path(prj_fullname_base, "proj")
 
-    base_build = os.path.join(prj_fullname_base, "build")
-    base_build_linux_x64_debug = os.path.join(base_build, "linux_x64_debug")
-    base_build_linux_x64_release = os.path.join(base_build, "linux_x64_release")
-    base_build_windows_x64_debug = os.path.join(base_build, "windows_x64_debug")
-    base_build_windows_x64_release = os.path.join(base_build, "windows_x64_release")
+    base_build = path_utils.concat_path(prj_fullname_base, "build")
+    base_build_linux_x64_debug = path_utils.concat_path(base_build, "linux_x64_debug")
+    base_build_linux_x64_release = path_utils.concat_path(base_build, "linux_x64_release")
+    base_build_windows_x64_debug = path_utils.concat_path(base_build, "windows_x64_debug")
+    base_build_windows_x64_release = path_utils.concat_path(base_build, "windows_x64_release")
 
-    base_run = os.path.join(prj_fullname_base, "run")
-    base_run_linux_x64_debug = os.path.join(base_run, "linux_x64_debug")
-    base_run_linux_x64_release = os.path.join(base_run, "linux_x64_release")
-    base_run_windows_x64_debug = os.path.join(base_run, "windows_x64_debug")
-    base_run_windows_x64_release = os.path.join(base_run, "windows_x64_release")
+    base_run = path_utils.concat_path(prj_fullname_base, "run")
+    base_run_linux_x64_debug = path_utils.concat_path(base_run, "linux_x64_debug")
+    base_run_linux_x64_release = path_utils.concat_path(base_run, "linux_x64_release")
+    base_run_windows_x64_debug = path_utils.concat_path(base_run, "windows_x64_debug")
+    base_run_windows_x64_release = path_utils.concat_path(base_run, "windows_x64_release")
 
-    base_src = os.path.join(prj_fullname_base, "src")
+    base_src = path_utils.concat_path(prj_fullname_base, "src")
 
-    base_git = os.path.join(prj_fullname_base, ".git")
+    base_git = path_utils.concat_path(prj_fullname_base, ".git")
 
     # basic structure
     os.mkdir(prj_fullname_base)
@@ -510,27 +512,27 @@ def prjboot(target_dir, project_name):
     os.mkdir(base_run_windows_x64_release)
 
     os.mkdir(base_src)
-    base_src_main_fn = os.path.join(base_src, "main.cpp")
+    base_src_main_fn = path_utils.concat_path(base_src, "main.cpp")
     writecontents(base_src_main_fn, main_contents())
 
-    base_prj_codelite = os.path.join(base_prj, "codelite")
+    base_prj_codelite = path_utils.concat_path(base_prj, "codelite")
     os.mkdir(base_prj_codelite)
-    base_prj_codelite_fn = os.path.join(base_prj_codelite, "%s.project" % project_name)
+    base_prj_codelite_fn = path_utils.concat_path(base_prj_codelite, "%s.project" % project_name)
     writecontents(base_prj_codelite_fn, codelite_projfile_contents(project_name))
 
-    base_prj_msvc15 = os.path.join(base_prj, "msvc15")
+    base_prj_msvc15 = path_utils.concat_path(base_prj, "msvc15")
     os.mkdir(base_prj_msvc15)
-    base_prj_msvc15_sln = os.path.join(base_prj_msvc15, "%s.sln" % project_name)
-    base_prj_msvc15_fn = os.path.join(base_prj_msvc15, "%s.vcxproj" % project_name)
+    base_prj_msvc15_sln = path_utils.concat_path(base_prj_msvc15, "%s.sln" % project_name)
+    base_prj_msvc15_fn = path_utils.concat_path(base_prj_msvc15, "%s.vcxproj" % project_name)
     writecontents(base_prj_msvc15_sln, msvc15slnfile_contents(project_name))
     writecontents(base_prj_msvc15_fn, msvc15projfile_contents(project_name))
 
-    base_prj_makefile = os.path.join(base_prj, "makefile")
+    base_prj_makefile = path_utils.concat_path(base_prj, "makefile")
     os.mkdir(base_prj_makefile)
-    base_prj_makefile_fn = os.path.join(base_prj_makefile, "Makefile")
+    base_prj_makefile_fn = path_utils.concat_path(base_prj_makefile, "Makefile")
     writecontents(base_prj_makefile_fn, mkfile_contents(project_name))
 
-    base_git_ign_fn = os.path.join(prj_fullname_base, ".gitignore")
+    base_git_ign_fn = path_utils.concat_path(prj_fullname_base, ".gitignore")
     writecontents(base_git_ign_fn, git_ign_contents(project_name))
 
 if __name__ == "__main__":
