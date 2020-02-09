@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def filename_qualifies_extension_list(filename, extensions_include, extensions):
 
     # no extensions specified. add everything indiscriminately
@@ -27,20 +29,20 @@ def __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_fil
         for d in dirnames:
             if d.startswith("."): # is a hidden directory
                 if include_hidden_dirs:
-                    ret_list_deleg.append(os.path.join(dirpath, d))
+                    ret_list_deleg.append(path_utils.concat_path(dirpath, d))
             else: # is not a hidden directory
                 if include_regular_dirs: 
-                    ret_list_deleg.append(os.path.join(dirpath, d))
+                    ret_list_deleg.append(path_utils.concat_path(dirpath, d))
 
     # filter files
     if include_regular_files or include_hidden_files: # again, premature optimisation.
         for f in filenames:
             if f.startswith("."): # is a hidden file
                 if include_hidden_files and filename_qualifies_extension_list(f, extensions_include, extensions):
-                    ret_list_deleg.append(os.path.join(dirpath, f))
+                    ret_list_deleg.append(path_utils.concat_path(dirpath, f))
             else: # is a regular file
                 if include_regular_files and filename_qualifies_extension_list(f, extensions_include, extensions):
-                    ret_list_deleg.append(os.path.join(dirpath, f))
+                    ret_list_deleg.append(path_utils.concat_path(dirpath, f))
 
 
     return ret_list_deleg
@@ -71,9 +73,9 @@ def makecontentlist(path, recursive, include_regular_files, include_regular_dirs
 
         folder_contents = os.listdir(path)
         for item in folder_contents:
-            if os.path.isdir(os.path.join(path, item)):
+            if os.path.isdir(path_utils.concat_path(path, item)):
                 dirnames.append(item)
-            elif os.path.isfile(os.path.join(path, item)):
+            elif os.path.isfile(path_utils.concat_path(path, item)):
                 filenames.append(item)
 
         ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
