@@ -56,7 +56,7 @@ class BackupEngine:
 
         print("%sDeleting old backup...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
         for it in _self.BKTARGETS_ROOT:
-            test_subj = os.path.join(it, _self.BKTARGETS_BASEDIR)
+            test_subj = path_utils.concat_path(it, _self.BKTARGETS_BASEDIR)
             if not path_utils.scratchfolder(test_subj):
                 print("%sCannot scratch %s - are the external media available/attached?%s" % (terminal_colors.TTY_RED, it, terminal_colors.TTY_WHITE))
                 return False
@@ -66,17 +66,17 @@ class BackupEngine:
         print("%sCreating backup...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
         path_utils.scratchfolder(_self.BKTEMP)
-        BKTEMP_AND_BASEDIR = os.path.join(_self.BKTEMP, _self.BKTARGETS_BASEDIR)
+        BKTEMP_AND_BASEDIR = path_utils.concat_path(_self.BKTEMP, _self.BKTARGETS_BASEDIR)
         os.mkdir(BKTEMP_AND_BASEDIR)
-        with open(os.path.join(BKTEMP_AND_BASEDIR, "bk_date.txt"), "w+") as f:
+        with open(path_utils.concat_path(BKTEMP_AND_BASEDIR, "bk_date.txt"), "w+") as f:
             f.write(_self.gettimestamp() + "\n")
 
         for it in _self.BKARTIFACTS:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_GREEN, it, datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S'), terminal_colors.TTY_WHITE))
-            BKTMP_PLUS_ARTBASE = os.path.join(BKTEMP_AND_BASEDIR, os.path.basename(os.path.dirname(it)))
+            BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, os.path.basename(os.path.dirname(it)))
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
 
-            CURPAK = os.path.join(BKTMP_PLUS_ARTBASE, os.path.basename(it))
+            CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, os.path.basename(it))
             CURPAK_TAR_BZ2 = CURPAK + ".tar.bz2"
             CURPAK_TAR_BZ2_ENC = CURPAK_TAR_BZ2 + ".enc"
             CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"
@@ -98,7 +98,7 @@ class BackupEngine:
         print("%sWriting to targets...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
         for it in _self.BKTARGETS_ROOT:
-            shutil.copytree(BKTEMP_AND_BASEDIR, os.path.join(it, _self.BKTARGETS_BASEDIR))
+            shutil.copytree(BKTEMP_AND_BASEDIR, path_utils.concat_path(it, _self.BKTARGETS_BASEDIR))
             call(["umount", it])
 
         shutil.rmtree(_self.BKTEMP)
