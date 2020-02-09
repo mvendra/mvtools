@@ -4,6 +4,7 @@ import sys
 import os
 
 import fsquery
+import path_utils
 
 def prjs_gitignore_lister(path):
     
@@ -15,20 +16,20 @@ def prjs_gitignore_lister(path):
         pb = p
         pn = os.path.basename(p)
 
-        ign_build = os.path.join(pb, "build")
-        ign_run = os.path.join(pb, "run")
+        ign_build = path_utils.concat_path(pb, "build")
+        ign_run = path_utils.concat_path(pb, "run")
 
         c_mk = "%s.mk" % pn
         c_txt = "%s.txt" % pn
-        ign_proj_codelite_mk = os.path.join(pb, "proj", "codelite", c_mk)
-        ign_proj_codelite_txt = os.path.join(pb, "proj", "codelite", c_txt)
+        ign_proj_codelite_mk = path_utils.concat_path(pb, "proj", "codelite", c_mk)
+        ign_proj_codelite_txt = path_utils.concat_path(pb, "proj", "codelite", c_txt)
 
         m_vs = ".vs"
         m_db = "%s.VC.db" % pn
         m_usr = "%s.vcxproj.user" % pn
-        ign_proj_msvc15_vc = os.path.join(pb, "proj", "msvc15", m_vs)
-        ign_proj_msvc15_vc_db = os.path.join(pb, "proj", "msvc15", m_db)
-        ign_proj_msvc15_user = os.path.join(pb, "proj", "msvc15", m_usr)
+        ign_proj_msvc15_vc = path_utils.concat_path(pb, "proj", "msvc15", m_vs)
+        ign_proj_msvc15_vc_db = path_utils.concat_path(pb, "proj", "msvc15", m_db)
+        ign_proj_msvc15_user = path_utils.concat_path(pb, "proj", "msvc15", m_usr)
 
         ls.append("# %s" % pn)
         ls.append(ign_build)
