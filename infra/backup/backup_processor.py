@@ -7,6 +7,7 @@ import input_checked_passphrase
 import check_mounted
 import terminal_colors
 import fsquery
+import path_utils
 
 import backup_engine
 
@@ -30,7 +31,7 @@ class ArtifactBase:
         return _self.descend
     def validate_exceptions(_self):
         for ex_it in _self.listexceptions:
-            fp = os.path.join(_self.thepath, ex_it)
+            fp = path_utils.concat_path(_self.thepath, ex_it)
             if not os.path.exists(fp):
                 return False, ex_it
         return True, ""
@@ -44,11 +45,11 @@ def make_backup_artifacts_list(artifacts_base):
             for cur_dir in fsquery.makecontentlist(cur_base.get_path(), False, True, True, True, True, True, None):
                 add_cur = True
                 for cur_ex in cur_base.get_list_exceptions():
-                    if cur_dir == os.path.join(cur_base.get_path(), cur_ex):
+                    if cur_dir == path_utils.concat_path(cur_base.get_path(), cur_ex):
                         add_cur = False
                         break
                 if add_cur:
-                    retlist.append(os.path.join(cur_base.get_path(), cur_dir))
+                    retlist.append(path_utils.concat_path(cur_base.get_path(), os.path.basename(cur_dir)))
     return retlist
 
 def pop_surrounding_char(thestr, cl, cr):

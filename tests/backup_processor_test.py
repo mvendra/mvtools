@@ -337,7 +337,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertFalse(r[0])
 
     def testMakeBackupArtifactsList1(self):
-        artbase = backup_processor.ArtifactBase(self.test_source_folder, [self.folder2], True)
+        artbase = backup_processor.ArtifactBase(self.test_source_folder, [ os.path.basename(self.folder2) ], True)
         res = backup_processor.make_backup_artifacts_list([artbase])
         self.assertTrue(self.folder1 in res)
         self.assertFalse(self.folder2 in res)
