@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def writecontents(filename, contents):
     with open(filename, "w") as f:
         f.write(contents)
@@ -29,7 +31,7 @@ def codelite_rename(base_prj_codelite_fn, new_project_name):
 
     opn = remove_ext(poplastmaybe(os.path.basename(base_prj_codelite_fn)))
     npn = remove_ext(poplastmaybe(os.path.basename(new_project_name)))
-    npn_full = os.path.join(os.path.dirname(base_prj_codelite_fn), "%s.project" % new_project_name)
+    npn_full = path_utils.concat_path(os.path.dirname(base_prj_codelite_fn), "%s.project" % new_project_name)
     os.rename(base_prj_codelite_fn, npn_full)
 
     contents = readcontents(npn_full)
@@ -43,7 +45,7 @@ def msvc15sln_rename(base_prj_msvc15_sln, new_project_name):
 
     opn = remove_ext(poplastmaybe(os.path.basename(base_prj_msvc15_sln)))
     npn = remove_ext(poplastmaybe(os.path.basename(new_project_name)))
-    npn_full = os.path.join(os.path.dirname(base_prj_msvc15_sln), "%s.sln" % new_project_name)
+    npn_full = path_utils.concat_path(os.path.dirname(base_prj_msvc15_sln), "%s.sln" % new_project_name)
     os.rename(base_prj_msvc15_sln, npn_full)
 
     contents = readcontents(npn_full)
@@ -57,7 +59,7 @@ def msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name):
 
     opn = remove_ext(poplastmaybe(os.path.basename(base_prj_msvc15_fn)))
     npn = remove_ext(poplastmaybe(os.path.basename(new_project_name)))
-    npn_full = os.path.join(os.path.dirname(base_prj_msvc15_fn), "%s.vcxproj" % new_project_name)
+    npn_full = path_utils.concat_path(os.path.dirname(base_prj_msvc15_fn), "%s.vcxproj" % new_project_name)
     os.rename(base_prj_msvc15_fn, npn_full)
 
     contents = readcontents(npn_full)
@@ -71,7 +73,7 @@ def makefile_rename(base_prj_makefile_fn, current_project_name, new_project_name
 
     opn = poplastmaybe(current_project_name)
     npn = remove_ext(poplastmaybe(os.path.basename(new_project_name)))
-    npn_full = os.path.join(os.path.dirname(base_prj_makefile_fn), "Makefile")
+    npn_full = path_utils.concat_path(os.path.dirname(base_prj_makefile_fn), "Makefile")
 
     contents = readcontents(npn_full)
     str_cur = "APPNAME=%s" % opn
@@ -90,29 +92,29 @@ def prjrename(target_dir, original_project_name, new_project_name):
     original_project_name = poplastmaybe(original_project_name)
     new_project_name = poplastmaybe(new_project_name)
 
-    full_original = os.path.join(target_dir, original_project_name)
-    full_new = os.path.join(target_dir, new_project_name)
+    full_original = path_utils.concat_path(target_dir, original_project_name)
+    full_new = path_utils.concat_path(target_dir, new_project_name)
 
     if not prjrename_validate(target_dir, original_project_name):
         sys.exit(1)
 
-    prj_fullname_base = os.path.join(target_dir, original_project_name)
-    base_prj = os.path.join(prj_fullname_base, "proj")
+    prj_fullname_base = path_utils.concat_path(target_dir, original_project_name)
+    base_prj = path_utils.concat_path(prj_fullname_base, "proj")
 
     # codelite
-    base_prj_codelite = os.path.join(base_prj, "codelite")
-    base_prj_codelite_fn = os.path.join(base_prj_codelite, "%s.project" % original_project_name)
+    base_prj_codelite = path_utils.concat_path(base_prj, "codelite")
+    base_prj_codelite_fn = path_utils.concat_path(base_prj_codelite, "%s.project" % original_project_name)
     codelite_rename(base_prj_codelite_fn, new_project_name)
 
     # msvc15
-    base_prj_msvc15 = os.path.join(base_prj, "msvc15")
-    base_prj_msvc15_sln = os.path.join(base_prj_msvc15, "%s.sln" % original_project_name)
+    base_prj_msvc15 = path_utils.concat_path(base_prj, "msvc15")
+    base_prj_msvc15_sln = path_utils.concat_path(base_prj_msvc15, "%s.sln" % original_project_name)
     msvc15sln_rename(base_prj_msvc15_sln, new_project_name)
-    base_prj_msvc15_fn = os.path.join(base_prj_msvc15, "%s.vcxproj" % original_project_name)
+    base_prj_msvc15_fn = path_utils.concat_path(base_prj_msvc15, "%s.vcxproj" % original_project_name)
     msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name)
 
-    base_prj_makefile = os.path.join(base_prj, "makefile")
-    base_prj_makefile_fn = os.path.join(base_prj_makefile, "Makefile")
+    base_prj_makefile = path_utils.concat_path(base_prj, "makefile")
+    base_prj_makefile_fn = path_utils.concat_path(base_prj_makefile, "Makefile")
     makefile_rename(base_prj_makefile_fn, original_project_name, new_project_name)
 
     os.rename(full_original, full_new)
