@@ -8,6 +8,7 @@ import check_mounted
 import terminal_colors
 import fsquery
 import path_utils
+import dsl_type20
 
 import backup_engine
 
@@ -52,44 +53,9 @@ def make_backup_artifacts_list(artifacts_base):
                     retlist.append(path_utils.concat_path(cur_base.get_path(), os.path.basename(cur_dir)))
     return retlist
 
-def pop_surrounding_char(thestr, cl, cr):
-    # returns tuple: the resulting string, plus a bool indicating
-    # whether both were found and removed or not
-    pops = 0
-    thestr = thestr.strip()
-    if len(thestr) > 0:
-        if thestr[0] == cl:
-            thestr = thestr[1:]
-            pops += 1
-    if len(thestr) > 0:
-        if thestr[len(thestr)-1] == cr:
-            thestr = thestr[:len(thestr)-1]
-            pops += 1
-    res = False
-    if pops == 2:
-        res = True
-    return res, thestr
-
-def opt_get(thestr):
-    if thestr is None:
-        return "",""
-    if thestr == "":
-        return "",""
-    thesplit = thestr.strip().split(":")
-    if len(thesplit) != 2:
-        return "",""
-    thesplit[0] = thesplit[0].strip()
-    thesplit[1] = (pop_surrounding_char(thesplit[1].strip(), "\"", "\""))[1]
-    return thesplit[0], thesplit[1]
-
 def read_config(config_file):
 
-    BKPREPARATION = ""
-    BKSOURCE = []
-    BKTARGETS_ROOT = []
-    BKTEMP = ""
-    BKTARGETS_BASEDIR = ""
-
+    # read the cfg file and setup the dsl parser
     if not os.path.exists(config_file):
         print("%sConfig file [%s] does not exist.%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.TTY_WHITE))
         return False, ()
@@ -98,54 +64,25 @@ def read_config(config_file):
     with open(config_file) as f:
         cfg_contents = f.read()
 
-    for line in cfg_contents.split("\n"):
-        line_t = line.strip()
-        if line_t == "":
-            continue
+    dsl = dsl_type20.DSLType20()
+    v, r = dsl.parse(cfg_contents)
+    if not v:
+        print("%sFailed parsing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.TTY_WHITE))
+        return False, ()
 
-        if line_t[0] == "#":
-            continue
+    # define toplevel vars
+    BKPREPARATION = ""
+    BKPREPARATION_PARAMS = []
+    BKSOURCE = []
+    BKTARGETS_ROOT = []
+    BKTEMP = ""
+    BKTARGETS_BASEDIR = ""
 
-        # cleanup variables
-        var_name_and_options, var_value = line_t.split("=")
-        var_name_and_options = var_name_and_options.strip()
-        var_value = var_value.strip()
+    vars = dsl.getallvars()
+    for v in vars:
 
-        var_name = ""
-        var_options = ""
-
-        p = var_name_and_options.find("{")
-        if p == -1:
-            var_name = var_name_and_options
-        else:
-            var_name = (var_name_and_options[0:p]).strip()
-            var_options = (var_name_and_options[p:]).strip()
-
-        var_value_pre = var_value
-        bp, var_value = pop_surrounding_char(var_value, "\"", "\"")
-        # require values to be specified with surrounding quotes
-        if bp is False:
-            print("%sValue must be specified with surrounding quotes: [%s]%s" % (terminal_colors.TTY_RED, var_value_pre, terminal_colors.TTY_WHITE))
-            return False, ()
-
-        # separate options
-        options = (pop_surrounding_char(var_options, "{", "}"))[1].strip().split("/")
-        for i in range(len(options)):
-            options[i] = options[i].strip()
-
-        # parse options, names x values
-        parsed_opts = []
-        for o in options:
-            opt_name, opt_val = opt_get(o)
-            parsed_opts.append( (opt_name, opt_val) )
-
-        if var_name == "":
-            print("%sEmpty var name: [%s]%s" % (terminal_colors.TTY_RED, line_t, terminal_colors.TTY_WHITE))
-            return False, ()
-
-        if var_value == "":
-            print("%sEmpty var value: [%s]%s" % (terminal_colors.TTY_RED, line_t, terminal_colors.TTY_WHITE))
-            return False, ()
+        var_name = v[0]
+        var_value = v[1]
 
         # resolve value name (env vars)
         var_value = os.path.expandvars(var_value)
@@ -153,12 +90,26 @@ def read_config(config_file):
             print("%sVariable expansion failed: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
             return False, ()
 
+        var_options_pre = v[2]
+        var_options = []
+
+        # resolve options values (env vars)
+        for o in var_options_pre:
+            val_resolved = os.path.expandvars(o[1])
+            if "$" in val_resolved:
+                print("%sVariable expansion failed: [%s]%s" % (terminal_colors.TTY_RED, o[1], terminal_colors.TTY_WHITE))
+                return False, ()
+            var_options.append( (o[0], val_resolved) )
+
         # assign values to policy variables
         if var_name == "BKPREPARATION":
             if not os.path.exists(var_value):
                 print("%sBKPREPARATION does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
                 return False, ()
             BKPREPARATION = var_value
+            for o in var_options:
+                if o[0] == "param":
+                    BKPREPARATION_PARAMS.append(o[1])
 
         elif var_name == "BKSOURCE":
             if not os.path.exists(var_value):
@@ -166,11 +117,12 @@ def read_config(config_file):
                 return False, ()
 
             BKSOURCE_EXCEPTIONS = []
-            descend = "descend" in options
-
-            for o in parsed_opts:
+            descend = False
+            for o in var_options:
                 if o[0] == "ex":
                     BKSOURCE_EXCEPTIONS.append(o[1])
+                elif o[0] == "descend":
+                    descend = True
 
             new_art_base = ArtifactBase(var_value, BKSOURCE_EXCEPTIONS, descend)
             r, v = new_art_base.validate_exceptions()
@@ -183,7 +135,7 @@ def read_config(config_file):
             if not os.path.exists(var_value):
                 print("%sBKTARGETS_ROOT does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
                 return False, ()
-            if not "nocheckmount" in var_options:
+            if not dsl_type20.hasopt(v, "nocheckmount"):
                 if not check_mounted.checkmounted(var_value):
                     print("%sFailed to validate mountpoint of %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
                     return False, ()
@@ -213,7 +165,7 @@ def read_config(config_file):
         print("%sBKTARGETS_BASEDIR can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
         return False, ()
 
-    ret = True, (BKPREPARATION, BKSOURCE, BKTARGETS_ROOT, BKTARGETS_BASEDIR, BKTEMP)
+    ret = True, ( (BKPREPARATION, BKPREPARATION_PARAMS), BKSOURCE, BKTARGETS_ROOT, BKTARGETS_BASEDIR, BKTEMP)
     return ret
 
 def run_backup(config_file, pass_hash_file):

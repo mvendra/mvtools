@@ -34,6 +34,10 @@ class BackupProcessorTest(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
+        self.reserved_test_env_var = "$MVTOOLS_BKPROC_TEST_RESERVED_1"
+        if self.reserved_test_env_var[1:] in os.environ:
+            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var[1:])
+
         # folder where extracted stuff will be stored at
         self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
         path_utils.scratchfolder(self.extracted_folder)
@@ -148,7 +152,7 @@ class BackupProcessorTest(unittest.TestCase):
         os.mkdir(self.space_folder2)
         os.mkdir(self.space_folder3)
 
-        # prep script
+        # prep script - does not expect parameters, variations in the filenames
         self.prep_filename = path_utils.concat_path(self.test_dir, "preptest.py")
         self.prep_filename_space_1 = path_utils.concat_path(self.test_dir, "prep test.py")
         self.prep_filename_space_2 = path_utils.concat_path(self.test_dir, "  preptest.py")
@@ -169,6 +173,21 @@ class BackupProcessorTest(unittest.TestCase):
         os.chmod(self.prep_filename_space_2, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
         os.chmod(self.prep_filename_space_3, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
+        # prep script - expects parameters
+        self.prep_param_filename = path_utils.concat_path(self.test_dir, "preptest_expects_params.py")
+        self.prep_generated_param_test_filename = path_utils.concat_path(self.test_dir, "preptest_generated_param.txt")
+        prep_param_file_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        prep_param_file_contents += "import sys" + os.linesep
+        prep_param_file_contents += "import create_and_write_file" + os.linesep + os.linesep
+        prep_param_file_contents += "if __name__ == \"__main__\":" + os.linesep
+        prep_param_file_contents += "    contents = \"test\"" + os.linesep
+        prep_param_file_contents += "    if len(sys.argv) < 2:" + os.linesep
+        prep_param_file_contents += "        sys.exit(1)" + os.linesep
+        prep_param_file_contents += ("    filename = sys.argv[1]" + os.linesep)
+        prep_param_file_contents += "    create_and_write_file.create_file_contents(filename, contents)" + os.linesep
+        create_and_write_file.create_file_contents(self.prep_param_filename, prep_param_file_contents)
+        os.chmod(self.prep_param_filename, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
+
         # prep script that fails
         self.prep_filename_fail = path_utils.concat_path(self.test_dir, "preptest_fail.py")
         self.prep_file_contents_fail = "#!/usr/bin/env python3" + os.linesep + os.linesep
@@ -178,20 +197,16 @@ class BackupProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.prep_filename_fail, self.prep_file_contents_fail)
         os.chmod(self.prep_filename_fail, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
-        # create config file
+        # create (vanilla) config file
         cfg_file_contents = ""
-        cfg_file_contents += ("BKPREPARATION = \"%s\"" + os.linesep) % self.prep_filename
-
-        # sources
+        cfg_file_contents += ("BKPREPARATION = \"%s\"" + os.linesep) % (self.prep_filename)
         cfg_file_contents += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
         cfg_file_contents += ("BKSOURCE {descend / ex: \"%s\" / ex: \"%s\"} = \"%s\"" + os.linesep) % (".file01.txt", "folder5", self.test_source_alt_folder)
         cfg_file_contents += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder_another
-
         cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
         cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-
         self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.cfg")
         create_and_write_file.create_file_contents(self.test_config_file, cfg_file_contents)
 
@@ -318,6 +333,16 @@ class BackupProcessorTest(unittest.TestCase):
         self.cfg_file_prep_fails = path_utils.concat_path(self.test_dir, "config_file_prep_fails.cfg")
         create_and_write_file.create_file_contents(self.cfg_file_prep_fails, cfg_file_contents_prep_fails)
 
+        # config file, BKPREPARATION that receives params, specified with an envvar
+        cfg_file_contents_prep_param = ""
+        cfg_file_contents_prep_param += ("BKPREPARATION {param: \"%s\"} = \"%s\"" + os.linesep) % (self.reserved_test_env_var, self.prep_param_filename)
+        cfg_file_contents_prep_param += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder
+        cfg_file_contents_prep_param += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        cfg_file_contents_prep_param += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        cfg_file_contents_prep_param += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
+        self.test_config_file_prep_param = path_utils.concat_path(self.test_dir, "test_config_file_prep_param.cfg")
+        create_and_write_file.create_file_contents(self.test_config_file_prep_param, cfg_file_contents_prep_param)
+
         return True, ""
 
     def tearDown(self):
@@ -354,10 +379,27 @@ class BackupProcessorTest(unittest.TestCase):
     def testReadConfig(self):
         v, r = backup_processor.read_config(self.test_config_file)
         self.assertTrue(v)
-        self.assertEqual(r[0], self.prep_filename)
+        self.assertEqual(r[0][0], self.prep_filename)
+        self.assertEqual(r[0][1], [])
         self.assertEqual(r[2], [self.test_target_1_folder, self.test_target_2_folder])
         self.assertEqual(r[3], self.bk_base_folder_test)
         self.assertEqual(r[4], self.bk_test_temp_folder)
+
+    def testReadConfigPrepParamEnvVar(self):
+        #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
+        _environ = os.environ.copy()
+        try:
+            os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
+            v, r = backup_processor.read_config(self.test_config_file_prep_param)
+            self.assertTrue(v)
+            self.assertEqual(r[0][0], self.prep_param_filename)
+            self.assertEqual(r[0][1], [self.prep_generated_param_test_filename])
+            self.assertEqual(r[2], [self.test_target_1_folder])
+            self.assertEqual(r[3], self.bk_base_folder_test)
+            self.assertEqual(r[4], self.bk_test_temp_folder)
+        finally:
+            os.environ.clear()
+            os.environ.update(_environ)
 
     def testInvalidConfig1(self):
         v, r = backup_processor.read_config(self.test_malformed_config_file1)

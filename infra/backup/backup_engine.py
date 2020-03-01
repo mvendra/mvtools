@@ -47,12 +47,16 @@ class BackupEngine:
                 print("%sThe path [%s] is marked as a writing target, but does not exist. Aborting.%s" % (terminal_colors.TTY_RED, it, terminal_colors.TTY_WHITE))
                 return False
 
-        if _self.BKPREPARATION != "":
-            print("%sPreparing...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
-            prep_r = call([_self.BKPREPARATION])
-            if prep_r != 0:
-                print("%sFailed preparing backup. Aborting.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
-                return False
+        if len(_self.BKPREPARATION) == 2:
+            if len(_self.BKPREPARATION[0]) > 0:
+                print("%sPreparing...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+                prep_cmd = [_self.BKPREPARATION[0]]
+                for prep_arg in _self.BKPREPARATION[1]:
+                    prep_cmd.append(prep_arg)
+                prep_r = call(prep_cmd)
+                if prep_r != 0:
+                    print("%sFailed preparing backup. Aborting.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+                    return False
 
         print("%sDeleting old backup...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
         for it in _self.BKTARGETS_ROOT:
