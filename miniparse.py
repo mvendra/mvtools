@@ -79,6 +79,8 @@ def opt_get(thestr, sep_ch):
         return "",""
     if thestr == "":
         return "",""
+    if thestr.find(sep_ch) == -1:
+        return thestr, ""
     thesplit = thestr.strip().split(sep_ch)
     if len(thesplit) != 2:
         return "",""

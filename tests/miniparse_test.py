@@ -43,7 +43,7 @@ class MiniparseTest(unittest.TestCase):
         self.assertEqual(p2, "")
 
         p1, p2 = miniparse.opt_get("param", ":")
-        self.assertEqual(p1, "")
+        self.assertEqual(p1, "param")
         self.assertEqual(p2, "")
 
         p1, p2 = miniparse.opt_get("param: value", ":")
