@@ -15,6 +15,19 @@ import miniparse
 # lines are string-trimmed (extra spaces are removed)
 # variable names and optins can be repeated
 
+def getopts(var, optname):
+    ret = []
+    for o in var[2]:
+        if o[0] == optname:
+            ret.append(o)
+    return ret
+
+def hasopt(var, optname):
+    for o in var[2]:
+        if o[0] == optname:
+            return True
+    return False
+
 class DSLType20:
     def __init__(self):
         self.clear()
@@ -79,22 +92,12 @@ class DSLType20:
 
         return True, None
 
+    def getallvars(self):
+        return self.data
+
     def getvars(self, varname):
         ret = []
         for v in self.data:
             if v[0] == varname:
                 ret.append(v)
         return ret
-
-    def getopts(self, var, optname):
-        ret = []
-        for o in var[2]:
-            if o[0] == optname:
-                ret.append(o)
-        return ret
-
-    def hasopt(self, var, optname):
-        for o in var[2]:
-            if o[0] == optname:
-                return True
-        return False

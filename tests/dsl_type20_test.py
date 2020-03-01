@@ -49,6 +49,10 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_2 += "var5 {r2 / r2} = \"repeated2\"" + os.linesep
         self.cfg_test_ok_2 = path_utils.concat_path(self.test_dir, "test_ok_2.cfg")
 
+        self.contents_cfg_test_ok_3 = "var1 = \"val1\"" + os.linesep
+        self.contents_cfg_test_ok_3 += "var2 = \"val2\"" + os.linesep
+        self.cfg_test_ok_3 = path_utils.concat_path(self.test_dir, "test_ok_3.cfg")
+
         self.contents_cfg_test_fail_1 = "var1 = val1" + os.linesep
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.cfg")
 
@@ -63,6 +67,7 @@ class DSLType20Test(unittest.TestCase):
 
         create_and_write_file.create_file_contents(self.cfg_test_ok_1, self.contents_cfg_test_ok_1)
         create_and_write_file.create_file_contents(self.cfg_test_ok_2, self.contents_cfg_test_ok_2)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_3, self.contents_cfg_test_ok_3)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
@@ -100,7 +105,7 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_Parse6(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4))
 
-    def testDslType20_GetVar1(self):
+    def testDslType20_GetVars1(self):
 
         dsl = dsl_type20.DSLType20()
         v, r = dsl.parse(self.contents_cfg_test_ok_1)
@@ -114,7 +119,13 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.getvars("var5"), [("var5", "val10", [("opt5", ""), ("opt6", "val8"), ("opt7", "val9")])])
         self.assertEqual(dsl.getvars("var6"), [])
 
-    def testDslType20_GetVar2(self):
+        self.assertTrue(dsl_type20.hasopt(dsl.getvars("var2")[0], "opt1"))
+        self.assertTrue(dsl_type20.hasopt(dsl.getvars("var3")[0], "opt2"))
+        self.assertFalse(dsl_type20.hasopt(dsl.getvars("var3")[0], "opt3"))
+
+        self.assertEqual(dsl_type20.getopts(dsl.getvars("var2")[0], "opt1"), [("opt1", "")])
+
+    def testDslType20_GetVars2(self):
 
         dsl = dsl_type20.DSLType20()
         v, r = dsl.parse(self.contents_cfg_test_ok_2)
@@ -127,6 +138,18 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.getvars("var4"), [("var4", "$SOME_ENV_VAR", [])])
         self.assertEqual(dsl.getvars("var5"), [("var5", "repeated1", [("r1", ""), ("r1", "")]), ("var5", "repeated2", [("r2", ""), ("r2", "")])])
         self.assertEqual(dsl.getvars("var6"), [])
+
+        self.assertEqual(dsl_type20.getopts(dsl.getvars("var5")[0], "r1"), [("r1", ""), ("r1", "")])
+        self.assertEqual(dsl_type20.getopts(dsl.getvars("var5")[1], "r1"), [])
+        self.assertEqual(dsl_type20.getopts(dsl.getvars("var5")[1], "r2"), [("r2", ""), ("r2", "")])
+
+    def testDslType20_GetVars3(self):
+
+        dsl = dsl_type20.DSLType20()
+        v, r = dsl.parse(self.contents_cfg_test_ok_3)
+        self.assertTrue(v)
+
+        self.assertEqual(dsl.getallvars(), [("var1", "val1", []), ("var2", "val2", [])])
 
 if __name__ == '__main__':
     unittest.main()
