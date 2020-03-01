@@ -56,6 +56,9 @@ class MiniparseTest(unittest.TestCase):
 
     def testGuardedSplit(self):
 
+        p = miniparse.guarded_split("var", "=", [("\"", "\"")])
+        self.assertEqual(p, ["var"])
+
         p = miniparse.guarded_split("", "=", [("\"", "\"")])
         self.assertEqual(p, [])
 
