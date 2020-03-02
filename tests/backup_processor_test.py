@@ -176,14 +176,15 @@ class BackupProcessorTest(unittest.TestCase):
         # prep script - expects parameters
         self.prep_param_filename = path_utils.concat_path(self.test_dir, "preptest_expects_params.py")
         self.prep_generated_param_test_filename = path_utils.concat_path(self.test_dir, "preptest_generated_param.txt")
+        self.prep_generated_param_test_content = "generated content"
         prep_param_file_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
         prep_param_file_contents += "import sys" + os.linesep
         prep_param_file_contents += "import create_and_write_file" + os.linesep + os.linesep
         prep_param_file_contents += "if __name__ == \"__main__\":" + os.linesep
-        prep_param_file_contents += "    contents = \"test\"" + os.linesep
-        prep_param_file_contents += "    if len(sys.argv) < 2:" + os.linesep
+        prep_param_file_contents += "    if len(sys.argv) < 3:" + os.linesep
         prep_param_file_contents += "        sys.exit(1)" + os.linesep
-        prep_param_file_contents += ("    filename = sys.argv[1]" + os.linesep)
+        prep_param_file_contents += "    filename = sys.argv[1]" + os.linesep
+        prep_param_file_contents += "    contents = sys.argv[2]" + os.linesep
         prep_param_file_contents += "    create_and_write_file.create_file_contents(filename, contents)" + os.linesep
         create_and_write_file.create_file_contents(self.prep_param_filename, prep_param_file_contents)
         os.chmod(self.prep_param_filename, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
@@ -335,7 +336,7 @@ class BackupProcessorTest(unittest.TestCase):
 
         # config file, BKPREPARATION that receives params, specified with an envvar
         cfg_file_contents_prep_param = ""
-        cfg_file_contents_prep_param += ("BKPREPARATION {param: \"%s\"} = \"%s\"" + os.linesep) % (self.reserved_test_env_var, self.prep_param_filename)
+        cfg_file_contents_prep_param += ("BKPREPARATION {param: \"%s\" / param: \"%s\"} = \"%s\"" + os.linesep) % (self.reserved_test_env_var, self.prep_generated_param_test_content, self.prep_param_filename)
         cfg_file_contents_prep_param += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder
         cfg_file_contents_prep_param += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_param += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
@@ -393,7 +394,7 @@ class BackupProcessorTest(unittest.TestCase):
             v, r = backup_processor.read_config(self.test_config_file_prep_param)
             self.assertTrue(v)
             self.assertEqual(r[0][0], self.prep_param_filename)
-            self.assertEqual(r[0][1], [self.prep_generated_param_test_filename])
+            self.assertEqual(r[0][1], [self.prep_generated_param_test_filename, self.prep_generated_param_test_content])
             self.assertEqual(r[2], [self.test_target_1_folder])
             self.assertEqual(r[3], self.bk_base_folder_test)
             self.assertEqual(r[4], self.bk_test_temp_folder)
@@ -453,6 +454,23 @@ class BackupProcessorTest(unittest.TestCase):
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
             r = backup_processor.run_backup(self.cfg_file_prep_fails, self.hash_file)
         self.assertFalse(r)
+
+    def testPrepParams(self):
+        #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
+        _environ = os.environ.copy()
+        try:
+            os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
+            with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+                r = backup_processor.run_backup(self.test_config_file_prep_param, self.hash_file)
+            self.assertTrue(r)
+            self.assertTrue( os.path.exists( self.prep_generated_param_test_filename ))
+            test_content = ""
+            with open(self.prep_generated_param_test_filename) as f:
+                test_content = f.read()
+            self.assertEqual(test_content, self.prep_generated_param_test_content)
+        finally:
+            os.environ.clear()
+            os.environ.update(_environ)
 
     def testRunBackup1(self):
 
