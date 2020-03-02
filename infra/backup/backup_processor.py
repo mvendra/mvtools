@@ -64,7 +64,7 @@ def read_config(config_file):
     with open(config_file) as f:
         cfg_contents = f.read()
 
-    dsl = dsl_type20.DSLType20()
+    dsl = dsl_type20.DSLType20(True)
     v, r = dsl.parse(cfg_contents)
     if not v:
         print("%sFailed parsing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.TTY_WHITE))
@@ -83,23 +83,7 @@ def read_config(config_file):
 
         var_name = v[0]
         var_value = v[1]
-
-        # resolve value name (env vars)
-        var_value = os.path.expandvars(var_value)
-        if "$" in var_value:
-            print("%sVariable expansion failed: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
-            return False, ()
-
-        var_options_pre = v[2]
-        var_options = []
-
-        # resolve options values (env vars)
-        for o in var_options_pre:
-            val_resolved = os.path.expandvars(o[1])
-            if "$" in val_resolved:
-                print("%sVariable expansion failed: [%s]%s" % (terminal_colors.TTY_RED, o[1], terminal_colors.TTY_WHITE))
-                return False, ()
-            var_options.append( (o[0], val_resolved) )
+        var_options = v[2]
 
         # assign values to policy variables
         if var_name == "BKPREPARATION":
