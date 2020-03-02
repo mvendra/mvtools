@@ -34,6 +34,13 @@ class DSLType20Test(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
+        self.reserved_test_env_var_1 = "$MVTOOLS_TEST_DSLTYPE20_ENVVAR_RESERVED_1"
+        if self.reserved_test_env_var_1[1:] in os.environ:
+            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var_1[1:])
+        self.reserved_test_env_var_2 = "$MVTOOLS_TEST_DSLTYPE20_ENVVAR_RESERVED_2"
+        if self.reserved_test_env_var_2[1:] in os.environ:
+            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var_2[1:])
+
         self.contents_cfg_test_ok_1 = "var1 = \"val1\"" + os.linesep
         self.contents_cfg_test_ok_1 += "var2 {opt1} = \"val2\"" + os.linesep
         self.contents_cfg_test_ok_1 += "var3 {opt2: \"val3\"} = \"val4\"" + os.linesep
@@ -53,6 +60,10 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_3 += "var2 = \"val2\"" + os.linesep
         self.cfg_test_ok_3 = path_utils.concat_path(self.test_dir, "test_ok_3.cfg")
 
+        self.contents_cfg_test_ok_4 = ("var1 = \"%s\"" + os.linesep) % self.reserved_test_env_var_1
+        self.contents_cfg_test_ok_4 += ("var2 {opt1: \"%s\"} = \"val1\"" + os.linesep) % self.reserved_test_env_var_2
+        self.cfg_test_ok_4 = path_utils.concat_path(self.test_dir, "test_ok_4.cfg")
+
         self.contents_cfg_test_fail_1 = "var1 = val1" + os.linesep
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.cfg")
 
@@ -68,6 +79,7 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_ok_1, self.contents_cfg_test_ok_1)
         create_and_write_file.create_file_contents(self.cfg_test_ok_2, self.contents_cfg_test_ok_2)
         create_and_write_file.create_file_contents(self.cfg_test_ok_3, self.contents_cfg_test_ok_3)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_4, self.contents_cfg_test_ok_4)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
@@ -78,36 +90,36 @@ class DSLType20Test(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def parse_test_aux(self, filename):
+    def parse_test_aux(self, filename, _expand_envvars):
         contents = getcontents(filename)
         if contents is None:
             self.fail("Unable to open and read file [%s]" % self.cfg_test_ok_1)
 
-        dsl = dsl_type20.DSLType20()
+        dsl = dsl_type20.DSLType20(_expand_envvars)
         v, r = dsl.parse(contents)
         return v
 
     def testDslType20_Parse1(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, False))
 
     def testDslType20_Parse2(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, False))
 
     def testDslType20_Parse3(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, False))
 
     def testDslType20_Parse4(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_2))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_2, False))
 
     def testDslType20_Parse5(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, False))
 
     def testDslType20_Parse6(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, False))
 
     def testDslType20_GetVars1(self):
 
-        dsl = dsl_type20.DSLType20()
+        dsl = dsl_type20.DSLType20(False)
         v, r = dsl.parse(self.contents_cfg_test_ok_1)
         self.assertTrue(v)
 
@@ -127,7 +139,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetVars2(self):
 
-        dsl = dsl_type20.DSLType20()
+        dsl = dsl_type20.DSLType20(False)
         v, r = dsl.parse(self.contents_cfg_test_ok_2)
         self.assertTrue(v)
 
@@ -145,11 +157,27 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetVars3(self):
 
-        dsl = dsl_type20.DSLType20()
+        dsl = dsl_type20.DSLType20(False)
         v, r = dsl.parse(self.contents_cfg_test_ok_3)
         self.assertTrue(v)
 
         self.assertEqual(dsl.getallvars(), [("var1", "val1", []), ("var2", "val2", [])])
+
+    def testDslType20_GetVars4(self):
+        #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
+        _environ = os.environ.copy()
+        try:
+            os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+            os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
+
+            dsl = dsl_type20.DSLType20(True)
+            v, r = dsl.parse(self.contents_cfg_test_ok_4)
+
+            self.assertTrue(v)
+            self.assertEqual(dsl.getallvars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")])])
+        finally:
+            os.environ.clear()
+            os.environ.update(_environ)
 
 if __name__ == '__main__':
     unittest.main()

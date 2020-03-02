@@ -29,7 +29,8 @@ def hasopt(var, optname):
     return False
 
 class DSLType20:
-    def __init__(self):
+    def __init__(self, _expand_envvars):
+        self.expand_envvars = _expand_envvars
         self.clear()
 
     def clear(self):
@@ -70,6 +71,11 @@ class DSLType20:
             if bp is False:
                 return False, "Value must be specified with surrounding quotes: [%s]" % var_value_pre
 
+            if self.expand_envvars:
+                var_value = os.path.expandvars(var_value)
+                if "$" in var_value:
+                    return False, "Variable expansion failed: [%s]" % var_value
+
             # separate options
             options_pre = (miniparse.pop_surrounding_char(var_options, "{", "}"))[1].strip()
             options = miniparse.guarded_split(options_pre, "/", [("\"","\"")])
@@ -80,6 +86,12 @@ class DSLType20:
             parsed_opts = []
             for o in options:
                 opt_name, opt_val = miniparse.opt_get(o, ":")
+
+                if self.expand_envvars:
+                    opt_val = os.path.expandvars(opt_val)
+                    if "$" in opt_val:
+                        return False, "Variable expansion failed: [%s]" % opt_val
+
                 parsed_opts.append( (opt_name, opt_val) )
 
             if var_name == "":
