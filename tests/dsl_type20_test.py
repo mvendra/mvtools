@@ -131,9 +131,12 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.getvars("var5"), [("var5", "val10", [("opt5", ""), ("opt6", "val8"), ("opt7", "val9")])])
         self.assertEqual(dsl.getvars("var6"), [])
 
-        self.assertTrue(dsl_type20.hasopt(dsl.getvars("var2")[0], "opt1"))
-        self.assertTrue(dsl_type20.hasopt(dsl.getvars("var3")[0], "opt2"))
-        self.assertFalse(dsl_type20.hasopt(dsl.getvars("var3")[0], "opt3"))
+        self.assertTrue(dsl_type20.hasopt_var(dsl.getvars("var2")[0], "opt1"))
+        self.assertTrue(dsl_type20.hasopt_var(dsl.getvars("var3")[0], "opt2"))
+        self.assertFalse(dsl_type20.hasopt_var(dsl.getvars("var3")[0], "opt3"))
+
+        self.assertTrue(dsl_type20.hasopt_opts(dsl.getvars("var2")[0][2], "opt1"))
+        self.assertTrue(dsl_type20.hasopt_opts(dsl.getvars("var3")[0][2], "opt2"))
 
         self.assertEqual(dsl_type20.getopts(dsl.getvars("var2")[0], "opt1"), [("opt1", "")])
 

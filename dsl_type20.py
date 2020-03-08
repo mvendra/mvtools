@@ -22,8 +22,14 @@ def getopts(var, optname):
             ret.append(o)
     return ret
 
-def hasopt(var, optname):
+def hasopt_var(var, optname):
     for o in var[2]:
+        if o[0] == optname:
+            return True
+    return False
+
+def hasopt_opts(opts, optname):
+    for o in opts:
         if o[0] == optname:
             return True
     return False
