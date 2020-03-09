@@ -64,7 +64,7 @@ def read_config(config_file):
     with open(config_file) as f:
         cfg_contents = f.read()
 
-    dsl = dsl_type20.DSLType20(True)
+    dsl = dsl_type20.DSLType20(True, True)
     v, r = dsl.parse(cfg_contents)
     if not v:
         print("%sFailed parsing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.TTY_WHITE))
@@ -119,7 +119,7 @@ def read_config(config_file):
             if not os.path.exists(var_value):
                 print("%sBKTARGETS_ROOT does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
                 return False, ()
-            if not dsl_type20.hasopt(v, "nocheckmount"):
+            if not dsl_type20.hasopt_var(v, "nocheckmount"):
                 if not check_mounted.checkmounted(var_value):
                     print("%sFailed to validate mountpoint of %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
                     return False, ()

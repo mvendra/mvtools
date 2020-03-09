@@ -41,6 +41,8 @@ class DSLType20Test(unittest.TestCase):
         if self.reserved_test_env_var_2[1:] in os.environ:
             return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var_2[1:])
 
+        self.reserved_path_with_user_1 = "~/nuke/folder"
+
         self.contents_cfg_test_ok_1 = "var1 = \"val1\"" + os.linesep
         self.contents_cfg_test_ok_1 += "var2 {opt1} = \"val2\"" + os.linesep
         self.contents_cfg_test_ok_1 += "var3 {opt2: \"val3\"} = \"val4\"" + os.linesep
@@ -62,6 +64,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.contents_cfg_test_ok_4 = ("var1 = \"%s\"" + os.linesep) % self.reserved_test_env_var_1
         self.contents_cfg_test_ok_4 += ("var2 {opt1: \"%s\"} = \"val1\"" + os.linesep) % self.reserved_test_env_var_2
+        self.contents_cfg_test_ok_4 += ("var3 = \"%s\"" + os.linesep) % self.reserved_path_with_user_1
         self.cfg_test_ok_4 = path_utils.concat_path(self.test_dir, "test_ok_4.cfg")
 
         self.contents_cfg_test_fail_1 = "var1 = val1" + os.linesep
@@ -90,36 +93,36 @@ class DSLType20Test(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def parse_test_aux(self, filename, _expand_envvars):
+    def parse_test_aux(self, filename, _expand_envvars, _expand_user):
         contents = getcontents(filename)
         if contents is None:
             self.fail("Unable to open and read file [%s]" % self.cfg_test_ok_1)
 
-        dsl = dsl_type20.DSLType20(_expand_envvars)
+        dsl = dsl_type20.DSLType20(_expand_envvars, _expand_user)
         v, r = dsl.parse(contents)
         return v
 
     def testDslType20_Parse1(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, False))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, False, False))
 
     def testDslType20_Parse2(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, False))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, False, False))
 
     def testDslType20_Parse3(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, False))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, False, False))
 
     def testDslType20_Parse4(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_2, False))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_2, False, False))
 
     def testDslType20_Parse5(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, False))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, False, False))
 
     def testDslType20_Parse6(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, False))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, False, False))
 
     def testDslType20_GetVars1(self):
 
-        dsl = dsl_type20.DSLType20(False)
+        dsl = dsl_type20.DSLType20(False, False)
         v, r = dsl.parse(self.contents_cfg_test_ok_1)
         self.assertTrue(v)
 
@@ -142,7 +145,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetVars2(self):
 
-        dsl = dsl_type20.DSLType20(False)
+        dsl = dsl_type20.DSLType20(False, False)
         v, r = dsl.parse(self.contents_cfg_test_ok_2)
         self.assertTrue(v)
 
@@ -160,7 +163,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetVars3(self):
 
-        dsl = dsl_type20.DSLType20(False)
+        dsl = dsl_type20.DSLType20(False, False)
         v, r = dsl.parse(self.contents_cfg_test_ok_3)
         self.assertTrue(v)
 
@@ -173,11 +176,11 @@ class DSLType20Test(unittest.TestCase):
             os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
             os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-            dsl = dsl_type20.DSLType20(True)
+            dsl = dsl_type20.DSLType20(True, True)
             v, r = dsl.parse(self.contents_cfg_test_ok_4)
 
             self.assertTrue(v)
-            self.assertEqual(dsl.getallvars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")])])
+            self.assertEqual(dsl.getallvars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")]), ("var3", path_utils.concat_path(os.path.expanduser("~/nuke/folder")), [])])
         finally:
             os.environ.clear()
             os.environ.update(_environ)

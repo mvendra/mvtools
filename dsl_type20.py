@@ -35,12 +35,29 @@ def hasopt_opts(opts, optname):
     return False
 
 class DSLType20:
-    def __init__(self, _expand_envvars):
+    def __init__(self, _expand_envvars, _expand_user):
         self.expand_envvars = _expand_envvars
+        self.expand_user = _expand_user
         self.clear()
 
     def clear(self):
         self.data = []
+
+    def _expand(self, str_input):
+
+        local_str_input = str_input
+
+        if self.expand_envvars:
+            local_str_input = os.path.expandvars(local_str_input)
+            if "$" in local_str_input:
+                return False, str_input
+
+        if self.expand_user:
+            local_str_input = os.path.expanduser(local_str_input)
+            if "~" in local_str_input:
+                return False, str_input
+
+        return True, local_str_input
 
     def parse(self, contents):
 
@@ -77,10 +94,10 @@ class DSLType20:
             if bp is False:
                 return False, "Value must be specified with surrounding quotes: [%s]" % var_value_pre
 
-            if self.expand_envvars:
-                var_value = os.path.expandvars(var_value)
-                if "$" in var_value:
-                    return False, "Variable expansion failed: [%s]" % var_value
+            v, r = self._expand(var_value)
+            if not v:
+                return False, "Variable expansion failed: [%s]" % var_value
+            var_value = r
 
             # separate options
             options_pre = (miniparse.pop_surrounding_char(var_options, "{", "}"))[1].strip()
@@ -92,12 +109,10 @@ class DSLType20:
             parsed_opts = []
             for o in options:
                 opt_name, opt_val = miniparse.opt_get(o, ":")
-
-                if self.expand_envvars:
-                    opt_val = os.path.expandvars(opt_val)
-                    if "$" in opt_val:
-                        return False, "Variable expansion failed: [%s]" % opt_val
-
+                v, r = self._expand(opt_val)
+                if not v:
+                    return False, "Variable expansion failed: [%s]" % opt_val
+                opt_val = r
                 parsed_opts.append( (opt_name, opt_val) )
 
             if var_name == "":
