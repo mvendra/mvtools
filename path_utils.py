@@ -188,5 +188,20 @@ def concat_path(*ps):
         result_path = os.path.join(result_path, filter_join_abs(p))
     return result_path
 
+def copy_to(origin, target):
+
+    # works just like the POSIX "cp" app but does not require the "-r" for copying folders
+
+    if not os.path.exists(origin):
+        return False
+
+    if os.path.isdir(origin):
+        target_fix = concat_path(target, os.path.basename(origin))
+        shutil.copytree(origin, target_fix)
+    else:
+        shutil.copy(origin, target)
+
+    return True
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
