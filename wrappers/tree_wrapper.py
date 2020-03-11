@@ -36,3 +36,4 @@ if __name__ == "__main__":
         print(r)
     else:
         print("Failed calling 'tree' on [%s]." % target_folder)
+        sys.exit(1)
