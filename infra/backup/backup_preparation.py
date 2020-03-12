@@ -2,6 +2,7 @@
 
 import sys
 import os
+import getpass
 
 import terminal_colors
 import fsquery
@@ -10,6 +11,7 @@ import dsl_type20
 import create_and_write_file
 
 import tree_wrapper
+import crontab_wrapper
 
 class BackupPreparationException(RuntimeError):
     def __init__(self, msg):
@@ -33,11 +35,25 @@ def derivefoldernamefortree(fullpath):
     bn = os.path.basename(fullpath).lower()
     return bn + "_tree_out.txt"
 
+def derivefilenameforcrontab():
+    username = getpass.getuser()
+    return "crontab_" + username + ".txt"
+
 class BackupPreparation:
 
     def __init__(self, _config_file):
         self.config_file = _config_file
         self.dsl = dsl_type20.DSLType20(True, True)
+
+        # default configs
+        self.storage_path = ""
+        self.storage_path_reset = False
+
+        self.warn_size_each = False
+        self.warn_size_each_abort = False
+
+        self.warn_size_final = False
+        self.warn_size_final_abort = False
 
     def run_preparation(self):
 
@@ -109,6 +125,8 @@ class BackupPreparation:
             self.proc_copy_path(var_value, var_options)
         elif var_name == "COPY_TREE_OUT":
             self.proc_copy_tree_out(var_value, var_options)
+        elif var_name == "COPY_SYSTEM":
+            self.proc_copy_system(var_value, var_options)
 
     def proc_copy_path(self, var_value, var_options):
         origin_path = var_value
@@ -134,6 +152,14 @@ class BackupPreparation:
 
         tree_out_file = path_utils.concat_path(self.storage_path, derivefoldernamefortree(var_value))
         create_and_write_file.create_file_contents(tree_out_file, r)
+
+    def proc_copy_system(self, var_value, var_options):
+
+        if var_value == "crontab":
+            crontab_output_filename = path_utils.concat_path(self.storage_path, derivefilenameforcrontab())
+            v, r = crontab_wrapper.get_crontab()
+            if v:
+                create_and_write_file.create_file_contents(crontab_output_filename, r)
 
 def backup_preparation(config_file):
 
