@@ -9,6 +9,7 @@ import fsquery
 import path_utils
 import dsl_type20
 import create_and_write_file
+import dirsize
 
 import tree_wrapper
 import crontab_wrapper
@@ -23,7 +24,34 @@ class BackupPreparationException(RuntimeError):
     message = property(_get_message, _set_message)
 
 def convert_to_bytes(size_string):
-    return 21 # mvtodo
+
+    try:
+        s_number = ""
+        s_unit = ""
+        multiplier = 1
+
+        if len(size_string) < 3:
+            return (True, int(size_string))
+
+        s_number = size_string[0:len(size_string)-2]
+        s_unit = size_string[len(size_string)-2:]
+        s_unit = s_unit.lower()
+
+        if s_unit == "kb":
+            multiplier = 1024
+        elif s_unit == "mb":
+            multiplier = 1024*1024
+        elif s_unit == "gb":
+            multiplier = 1024*1024*1024
+        elif s_unit == "tb":
+            multiplier = 1024*1024*1024*1024
+        else:
+            s_number = size_string
+
+        final_num = int(s_number) * multiplier
+        return (True, final_num)
+    except:
+        return (False, None)
 
 def derivefoldernamefortree(fullpath):
 
@@ -49,10 +77,12 @@ class BackupPreparation:
         self.storage_path = ""
         self.storage_path_reset = False
 
-        self.warn_size_each = False
+        self.warn_size_each_active = False
+        self.warn_size_each = 0
         self.warn_size_each_abort = False
 
-        self.warn_size_final = False
+        self.warn_size_final_active = False
+        self.warn_size_final = 0
         self.warn_size_final_abort = False
 
     def run_preparation(self):
@@ -103,14 +133,51 @@ class BackupPreparation:
                 self.storage_path_reset = True
 
         elif var_name == "SET_WARN_SIZE_EACH":
-            self.warn_size_each = convert_to_bytes(var_value)
+            self.warn_size_each_active = True
+            v, self.warn_size_each = convert_to_bytes(var_value)
+            if not v:
+                raise BackupPreparationException("Failed parsing, for SET_WARN_SIZE_EACH: %s" % var_value)
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 self.warn_size_each_abort = True
 
         elif var_name == "SET_WARN_SIZE_FINAL":
-            self.warn_size_final = convert_to_bytes(var_value)
+            self.warn_size_final_active = True
+            v, self.warn_size_final = convert_to_bytes(var_value)
+            if not v:
+                raise BackupPreparationException("Failed parsing, for SET_WARN_SIZE_FINAL: %s" % var_value)
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 self.warn_size_final_abort = True
+
+    def do_copy_file(self, source_file):
+
+        target_candidate = path_utils.concat_path(self.storage_path, os.path.basename(source_file))
+        if os.path.exists(target_candidate):
+            raise BackupPreparationException("[%s] already exists. Will not overwrite." % target_candidate)
+
+        source_file_size = dirsize.get_dir_size(source_file, False)
+
+        if self.warn_size_each_active:
+            if source_file_size > self.warn_size_each:
+                if self.warn_size_each_abort:
+                    raise BackupPreparationException("[%s] is above the size limit. Aborting." % source_file)
+                else:
+                    print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, source_file, terminal_colors.TTY_WHITE))
+
+        path_utils.copy_to(source_file, self.storage_path)
+
+    def do_copy_content(self, content, target_filename):
+
+        content_size = len(content)
+
+        if self.warn_size_each_active:
+            if content_size > self.warn_size_each:
+                if self.warn_size_each_abort:
+                    raise BackupPreparationException("[%s] is above the size limit. Aborting." % target_filename)
+                else:
+                    print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, target_filename, terminal_colors.TTY_WHITE))
+
+        full_target_filename = path_utils.concat_path(self.storage_path, target_filename)
+        create_and_write_file.create_file_contents(full_target_filename, content)
 
     def process_instructions(self):
 
@@ -120,6 +187,10 @@ class BackupPreparation:
             self.proc_single_inst(v[0], v[1], v[2])
 
     def proc_single_inst(self, var_name, var_value, var_options):
+
+        # reminder: when implementing new instructions, always consider using the internal, helper
+        # functions ("do_copy_file" and "do_copy_content") because they concentrate the warning system
+        # feature (checking for excessive filesizes) and also the storage path handling.
 
         if var_name == "COPY_PATH":
             self.proc_copy_path(var_value, var_options)
@@ -134,12 +205,9 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("[%s] does not exist. Aborting." % origin_path)
             else:
+                print("%s[%s] does not exist. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, origin_path, terminal_colors.TTY_WHITE))
                 return
-
-        target_candidate = path_utils.concat_path(self.storage_path, os.path.basename(origin_path))
-        if os.path.exists(target_candidate):
-            raise BackupPreparationException("[%s] already exists. Will not overwrite." % target_candidate)
-        path_utils.copy_to(origin_path, self.storage_path)
+        self.do_copy_file(origin_path)
 
     def proc_copy_tree_out(self, var_value, var_options):
         v, r = tree_wrapper.make_tree(var_value)
@@ -150,8 +218,7 @@ class BackupPreparation:
             else:
                 return
 
-        tree_out_file = path_utils.concat_path(self.storage_path, derivefoldernamefortree(var_value))
-        create_and_write_file.create_file_contents(tree_out_file, r)
+        self.do_copy_content(r, derivefoldernamefortree(var_value))
 
     def proc_copy_system(self, var_value, var_options):
 

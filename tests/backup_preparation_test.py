@@ -36,8 +36,21 @@ class BackupPreparationTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testSample(self):
-        self.assertEqual(backup_preparation.convert_to_bytes("1kb", 1024))
+    def testConvertToByteFail(self):
+        self.assertEqual(backup_preparation.convert_to_bytes("1b"), (False, None))
+        self.assertEqual(backup_preparation.convert_to_bytes("50bb"), (False, None))
+        self.assertEqual(backup_preparation.convert_to_bytes("abc"), (False, None))
+        self.assertEqual(backup_preparation.convert_to_bytes(""), (False, None))
+
+    def testConvertToByteSuccess(self):
+        self.assertEqual(backup_preparation.convert_to_bytes("50"), (True, 50))
+        self.assertEqual(backup_preparation.convert_to_bytes("1024"), (True, 1024))
+        self.assertEqual(backup_preparation.convert_to_bytes("1kb"), (True, 1024))
+        self.assertEqual(backup_preparation.convert_to_bytes("20kb"), (True, 20480))
+        self.assertEqual(backup_preparation.convert_to_bytes("1mb"), (True, 1048576))
+        self.assertEqual(backup_preparation.convert_to_bytes("2s0mb"), (True, 20971520))
+        self.assertEqual(backup_preparation.convert_to_bytes("1gb"), (True, 1073741824))
+        self.assertEqual(backup_preparation.convert_to_bytes("1tb"), (True, 1073741824*1024))
 
 if __name__ == '__main__':
     unittest.main()
