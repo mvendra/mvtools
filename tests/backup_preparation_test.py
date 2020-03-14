@@ -48,7 +48,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertEqual(backup_preparation.convert_to_bytes("1kb"), (True, 1024))
         self.assertEqual(backup_preparation.convert_to_bytes("20kb"), (True, 20480))
         self.assertEqual(backup_preparation.convert_to_bytes("1mb"), (True, 1048576))
-        self.assertEqual(backup_preparation.convert_to_bytes("2s0mb"), (True, 20971520))
+        self.assertEqual(backup_preparation.convert_to_bytes("20mb"), (True, 20971520))
         self.assertEqual(backup_preparation.convert_to_bytes("1gb"), (True, 1073741824))
         self.assertEqual(backup_preparation.convert_to_bytes("1tb"), (True, 1073741824*1024))
 
