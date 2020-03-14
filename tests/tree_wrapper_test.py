@@ -88,7 +88,7 @@ class TreeWrapperTest(unittest.TestCase):
         self.folder2_file2 = path_utils.concat_path(self.folder2, "file2.txt")
         create_and_write_file.create_file_contents(self.folder2_file2, "abc")
 
-        self.expected_contents = "./tree_wrapper_test_base/" + os.linesep + "├── file1.txt" + os.linesep + "├── file2.txt" + os.linesep + "├──    file_esp1.txt" + os.linesep + "├── file_esp2.txt   " + os.linesep + "├── fi le.txt" + os.linesep + "├── file_with_sep.txt" + os.linesep + "├── fol der" + os.linesep + "│   └── filler.txt" + os.linesep + "├── folder1" + os.linesep + "│   ├── file1.txt" + os.linesep + "│   └── file2.txt" + os.linesep + "├── folder2" + os.linesep + "│   ├── file1.txt" + os.linesep + "│   ├── file2.txt" + os.linesep + "│   └── sub1" + os.linesep + "│       └── file1.txt" + os.linesep + "└── folder_with_sep" + os.linesep + "    └── filler.txt" + os.linesep + os.linesep + "5 directories, 13 files" + os.linesep
+        self.expected_contents = self.test_dir + os.linesep + "├── file1.txt" + os.linesep + "├── file2.txt" + os.linesep + "├──    file_esp1.txt" + os.linesep + "├── file_esp2.txt   " + os.linesep + "├── fi le.txt" + os.linesep + "├── file_with_sep.txt" + os.linesep + "├── fol der" + os.linesep + "│   └── filler.txt" + os.linesep + "├── folder1" + os.linesep + "│   ├── file1.txt" + os.linesep + "│   └── file2.txt" + os.linesep + "├── folder2" + os.linesep + "│   ├── file1.txt" + os.linesep + "│   ├── file2.txt" + os.linesep + "│   └── sub1" + os.linesep + "│       └── file1.txt" + os.linesep + "└── folder_with_sep" + os.linesep + "    └── filler.txt" + os.linesep + os.linesep + "5 directories, 13 files" + os.linesep
 
         return True, ""
 
@@ -98,8 +98,7 @@ class TreeWrapperTest(unittest.TestCase):
     def testMakeTree(self):
         v, r = tree_wrapper.make_tree(self.test_dir)
         self.assertTrue(v)
-        print(r)
-        #self.assertEqual(r, self.expected_contents)
+        self.assertEqual(r, self.expected_contents)
 
 if __name__ == '__main__':
     unittest.main()
