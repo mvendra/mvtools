@@ -159,6 +159,9 @@ class BackupPreparation:
 
     def do_copy_file(self, source_file):
 
+        if not os.path.exists(source_file):
+            return # silently ignored. this function is not supposed to be called by client code
+
         target_candidate = path_utils.concat_path(self.storage_path, os.path.basename(source_file))
         if os.path.exists(target_candidate):
             raise BackupPreparationException("[%s] already exists. Will not overwrite." % target_candidate)
