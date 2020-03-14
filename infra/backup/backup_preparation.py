@@ -72,6 +72,7 @@ class BackupPreparation:
     def __init__(self, _config_file):
         self.config_file = _config_file
         self.dsl = dsl_type20.DSLType20(True, True)
+        self.instructions = [] # the instructions only, without the config/setup variables
 
         # default configs
         self.storage_path = ""
@@ -117,7 +118,11 @@ class BackupPreparation:
         # does the first pass to setup the configuration
         vars = self.dsl.getallvars()
         for v in vars:
-            v = self.proc_single_config(v[0], v[1], v[2])
+            p = self.proc_single_config(v[0], v[1], v[2])
+            if not p:
+                # not handled by configuration. likely an instruction. separate it from the config variables
+                # so false instructions can be detected
+                self.instructions.append(v)
 
         # now process the configuration variables
         if self.storage_path_reset:
@@ -148,16 +153,18 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 self.warn_size_final_abort = True
 
+        else:
+            return False # not handled
+        return True # handled
+
     def do_copy_file(self, source_file):
 
         target_candidate = path_utils.concat_path(self.storage_path, os.path.basename(source_file))
         if os.path.exists(target_candidate):
             raise BackupPreparationException("[%s] already exists. Will not overwrite." % target_candidate)
 
-        source_file_size = dirsize.get_dir_size(source_file, False)
-
         if self.warn_size_each_active:
-            if source_file_size > self.warn_size_each:
+            if dirsize.get_dir_size(source_file, False) > self.warn_size_each:
                 if self.warn_size_each_abort:
                     raise BackupPreparationException("[%s] is above the size limit. Aborting." % source_file)
                 else:
@@ -167,24 +174,31 @@ class BackupPreparation:
 
     def do_copy_content(self, content, target_filename):
 
-        content_size = len(content)
+        full_target_filename = path_utils.concat_path(self.storage_path, target_filename)
+        if os.path.exists(full_target_filename):
+            raise BackupPreparationException("[%s] already exists. Will not overwrite." % full_target_filename)
 
         if self.warn_size_each_active:
-            if content_size > self.warn_size_each:
+            if len(content) > self.warn_size_each:
                 if self.warn_size_each_abort:
                     raise BackupPreparationException("[%s] is above the size limit. Aborting." % target_filename)
                 else:
                     print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, target_filename, terminal_colors.TTY_WHITE))
 
-        full_target_filename = path_utils.concat_path(self.storage_path, target_filename)
         create_and_write_file.create_file_contents(full_target_filename, content)
 
     def process_instructions(self):
 
         # does the second pass to process every single instruction
-        vars = self.dsl.getallvars()
-        for v in vars:
+        for v in self.instructions:
             self.proc_single_inst(v[0], v[1], v[2])
+
+        if self.warn_size_final_active:
+            if dirsize.get_dir_size(self.storage_path, False) > self.warn_size_final:
+                if self.warn_size_final_abort:
+                    raise BackupPreparationException("The final folder [%s] is above the size limit. Aborting." % self.storage_path)
+                else:
+                    print("%sThe final folder [%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, self.storage_path, terminal_colors.TTY_WHITE))
 
     def proc_single_inst(self, var_name, var_value, var_options):
 
@@ -198,8 +212,11 @@ class BackupPreparation:
             self.proc_copy_tree_out(var_value, var_options)
         elif var_name == "COPY_SYSTEM":
             self.proc_copy_system(var_value, var_options)
+        else:
+            raise BackupPreparationException("Invalid instruction: [%s] [%s] [%s]. Aborting." % (var_name, var_value, var_options))
 
     def proc_copy_path(self, var_value, var_options):
+
         origin_path = var_value
         if not os.path.exists(origin_path):
             if dsl_type20.hasopt_opts(var_options, "abort"):
@@ -207,15 +224,17 @@ class BackupPreparation:
             else:
                 print("%s[%s] does not exist. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, origin_path, terminal_colors.TTY_WHITE))
                 return
+
         self.do_copy_file(origin_path)
 
     def proc_copy_tree_out(self, var_value, var_options):
-        v, r = tree_wrapper.make_tree(var_value)
 
+        v, r = tree_wrapper.make_tree(var_value)
         if not v:
             if dsl_type20.hasopt_opts(var_options, "abort"):
-                raise BackupPreparationException("Failed generating tree for [%s]: [%s]" % (var_value, r))
+                raise BackupPreparationException("Failed generating tree for [%s]: [%s]. Aborting." % (var_value, r))
             else:
+                print("%sFailed generating tree for [%s]: [%s]. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, var_value, r, terminal_colors.TTY_WHITE))
                 return
 
         self.do_copy_content(r, derivefoldernamefortree(var_value))
@@ -223,10 +242,18 @@ class BackupPreparation:
     def proc_copy_system(self, var_value, var_options):
 
         if var_value == "crontab":
-            crontab_output_filename = path_utils.concat_path(self.storage_path, derivefilenameforcrontab())
             v, r = crontab_wrapper.get_crontab()
-            if v:
-                create_and_write_file.create_file_contents(crontab_output_filename, r)
+            if not v:
+                if dsl_type20.hasopt_opts(var_options, "abort"):
+                    raise BackupPreparationException("Failed retrieving user's crontab. Aborting.")
+                else:
+                    print("%sFailed retrieving user's crontab. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE))
+                    return
+
+            self.do_copy_content(r, derivefilenameforcrontab())
+
+        else:
+            raise BackupPreparationException("Invalid COPY_SYSTEM value: [%s] [%s]. Aborting." % (var_value, var_options))
 
 def backup_preparation(config_file):
 
