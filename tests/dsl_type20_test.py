@@ -79,6 +79,9 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_fail_4 = "{fakeopt} var1 = \"val1\"" + os.linesep
         self.cfg_test_fail_4 = path_utils.concat_path(self.test_dir, "test_fail_4.cfg")
 
+        self.contents_cfg_test_fail_5 = "var1 {opt1: \"val1} = \"val2\"" + os.linesep
+        self.cfg_test_fail_5 = path_utils.concat_path(self.test_dir, "test_fail_5.cfg")
+
         create_and_write_file.create_file_contents(self.cfg_test_ok_1, self.contents_cfg_test_ok_1)
         create_and_write_file.create_file_contents(self.cfg_test_ok_2, self.contents_cfg_test_ok_2)
         create_and_write_file.create_file_contents(self.cfg_test_ok_3, self.contents_cfg_test_ok_3)
@@ -87,6 +90,7 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
         create_and_write_file.create_file_contents(self.cfg_test_fail_4, self.contents_cfg_test_fail_4)
+        create_and_write_file.create_file_contents(self.cfg_test_fail_5, self.contents_cfg_test_fail_5)
 
         return True, ""
 
@@ -119,6 +123,9 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_Parse6(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, False, False))
+
+    def testDslType20_Parse7(self):
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_5, False, False))
 
     def testDslType20_GetVars1(self):
 

@@ -109,6 +109,10 @@ class DSLType20:
             parsed_opts = []
             for o in options:
                 opt_name, opt_val = miniparse.opt_get(o, ":")
+                if opt_name is None and opt_val is not None:
+                    return False, "Malformed option name: [%s]" % o
+                if opt_name is not None and opt_val is None:
+                    return False, "Malformed option value: [%s]" % o
                 v, r = self._expand(opt_val)
                 if not v:
                     return False, "Variable expansion failed: [%s]" % opt_val

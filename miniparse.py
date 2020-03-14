@@ -76,17 +76,19 @@ def guarded_split(thestr, sep_ch, guard_chs):
 
 def opt_get(thestr, sep_ch):
     if thestr is None:
-        return "",""
+        return None, None
     if thestr == "":
-        return "",""
+        return None, None
     if thestr.find(sep_ch) == -1:
         return thestr, ""
     thesplit = thestr.strip().split(sep_ch)
     if len(thesplit) != 2:
-        return "",""
+        return None, None
     thesplit[0] = thesplit[0].strip()
-    thesplit[1] = (pop_surrounding_char(thesplit[1].strip(), "\"", "\""))[1]
-    return thesplit[0], thesplit[1]
+    psc = pop_surrounding_char(thesplit[1].strip(), "\"", "\"")
+    if not psc[0]:
+        return thesplit[0], None
+    return thesplit[0], psc[1]
 
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))

@@ -35,12 +35,12 @@ class MiniparseTest(unittest.TestCase):
 
     def testGetOpt(self):
         p1, p2 = miniparse.opt_get(None, ":")
-        self.assertEqual(p1, "")
-        self.assertEqual(p2, "")
+        self.assertEqual(p1, None)
+        self.assertEqual(p2, None)
 
         p1, p2 = miniparse.opt_get("", ":")
-        self.assertEqual(p1, "")
-        self.assertEqual(p2, "")
+        self.assertEqual(p1, None)
+        self.assertEqual(p2, None)
 
         p1, p2 = miniparse.opt_get("param", ":")
         self.assertEqual(p1, "param")
@@ -48,11 +48,11 @@ class MiniparseTest(unittest.TestCase):
 
         p1, p2 = miniparse.opt_get("param: value", ":")
         self.assertEqual(p1, "param")
-        self.assertEqual(p2, "value")
+        self.assertEqual(p2, None)
 
         p1, p2 = miniparse.opt_get("param: \"value", ":")
         self.assertEqual(p1, "param")
-        self.assertEqual(p2, "value")
+        self.assertEqual(p2, None)
 
         p1, p2 = miniparse.opt_get("   param: \"value \" ", ":")
         self.assertEqual(p1, "param")
