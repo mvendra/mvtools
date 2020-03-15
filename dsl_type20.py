@@ -59,16 +59,25 @@ class DSLType20:
 
         return True, local_str_input
 
+    def sanitize_line(self, line_in):
+
+        line_out = line_in.strip()
+
+        hash_pos = line_out.find("#")
+        if hash_pos != -1:
+            line_out = line_out[0:hash_pos]
+
+        return line_out.strip()
+
     def parse(self, contents):
 
         self.clear()
 
         lines = contents.split("\n")
         for line in lines:
-            line_t = line.strip()
+
+            line_t = self.sanitize_line(line)
             if line_t == "":
-                continue
-            if line_t[0] == "#":
                 continue
 
             in_split = miniparse.guarded_split(line_t, "=", [("{", "}"), ("\"","\"")])

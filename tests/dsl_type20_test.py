@@ -67,6 +67,9 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_4 += ("var3 = \"%s\"" + os.linesep) % self.reserved_path_with_user_1
         self.cfg_test_ok_4 = path_utils.concat_path(self.test_dir, "test_ok_4.cfg")
 
+        self.contents_cfg_test_ok_5 = "var1 = \"val1\" # comment" + os.linesep
+        self.cfg_test_ok_5 = path_utils.concat_path(self.test_dir, "test_ok_5.cfg")
+
         self.contents_cfg_test_fail_1 = "var1 = val1" + os.linesep
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.cfg")
 
@@ -86,6 +89,7 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_ok_2, self.contents_cfg_test_ok_2)
         create_and_write_file.create_file_contents(self.cfg_test_ok_3, self.contents_cfg_test_ok_3)
         create_and_write_file.create_file_contents(self.cfg_test_ok_4, self.contents_cfg_test_ok_4)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_5, self.contents_cfg_test_ok_5)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
@@ -105,6 +109,15 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(_expand_envvars, _expand_user)
         v, r = dsl.parse(contents)
         return v
+
+    def testDslType20_SanitizeLine(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertEqual(dsl.sanitize_line("abc"), "abc")
+        self.assertEqual(dsl.sanitize_line("#abc"), "")
+        self.assertEqual(dsl.sanitize_line("abc#def"), "abc")
+        self.assertEqual(dsl.sanitize_line("   abc   "), "abc")
+        self.assertEqual(dsl.sanitize_line(" #   abc   "), "")
+        self.assertEqual(dsl.sanitize_line("   abc   #"), "abc")
 
     def testDslType20_Parse1(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, False, False))
@@ -126,6 +139,9 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_Parse7(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_5, False, False))
+
+    def testDslType20_Parse8(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_5, False, False))
 
     def testDslType20_GetVars1(self):
 
