@@ -157,18 +157,30 @@ class BackupPreparation:
             return False # not handled
         return True # handled
 
-    def do_copy_file(self, source_file):
+    def do_copy_file(self, source_file, override_warn_size, override_warn_abort):
 
         if not os.path.exists(source_file):
             return # silently ignored. this function is not supposed to be called by client code
+
+        warn_size_each_active_local = self.warn_size_each_active
+        warn_size_each_local = self.warn_size_each
+        warn_size_each_abort_local = self.warn_size_each_abort
+
+        if override_warn_size is not None:
+            warn_size_each_local = override_warn_size
+            warn_size_each_active_local = True
+
+        if override_warn_abort is not None:
+            warn_size_each_abort_local = override_warn_abort
+            warn_size_each_active_local = True
 
         target_candidate = path_utils.concat_path(self.storage_path, os.path.basename(source_file))
         if os.path.exists(target_candidate):
             raise BackupPreparationException("[%s] already exists. Will not overwrite." % target_candidate)
 
-        if self.warn_size_each_active:
-            if dirsize.get_dir_size(source_file, False) > self.warn_size_each:
-                if self.warn_size_each_abort:
+        if warn_size_each_active_local:
+            if dirsize.get_dir_size(source_file, False) > warn_size_each_local:
+                if warn_size_each_abort_local:
                     raise BackupPreparationException("[%s] is above the size limit. Aborting." % source_file)
                 else:
                     print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, source_file, terminal_colors.TTY_WHITE))
@@ -228,7 +240,19 @@ class BackupPreparation:
                 print("%s[%s] does not exist. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, origin_path, terminal_colors.TTY_WHITE))
                 return
 
-        self.do_copy_file(origin_path)
+        override_warn_size = None
+        override_warn_abort = None
+
+        for o in var_options:
+            if o[0] == "warn_size":
+                cb = convert_to_bytes(o[1])
+                if not cb[0]:
+                    raise BackupPreparationException("Failed parsing: [%s]. Aborting." % o[1])
+                override_warn_size = cb[1]
+            elif o[0] == "warn_abort":
+                override_warn_abort = True
+
+        self.do_copy_file(origin_path, override_warn_size, override_warn_abort)
 
     def proc_copy_tree_out(self, var_value, var_options):
 

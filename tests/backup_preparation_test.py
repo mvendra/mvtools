@@ -252,7 +252,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
         final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
-        bkprep.do_copy_file(self.test_source_folder1)
+        bkprep.do_copy_file(self.test_source_folder1, None, None)
         self.assertTrue(os.path.exists(final_path))
 
     def testDoCopyFileFail1(self):
@@ -264,7 +264,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1)
+            bkprep.do_copy_file(self.test_source_folder1, None, None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -279,7 +279,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1)
+            bkprep.do_copy_file(self.test_source_folder1, None, None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -294,13 +294,13 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1)
+            bkprep.do_copy_file(self.test_source_folder1, None, None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
         self.assertFalse(ex_raised)
 
-    def testDoCopyFileWarnSize(self):
+    def testDoCopyFileWarnSize1(self):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         self.assertTrue(bkprep.proc_single_config("SET_WARN_SIZE_EACH", "1", []))
@@ -309,11 +309,36 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1)
+            bkprep.do_copy_file(self.test_source_folder1, None, None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
         self.assertFalse(ex_raised)
+
+    def testDoCopyFileWarnSize2(self):
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+        self.assertTrue(bkprep.proc_single_config("SET_WARN_SIZE_EACH", "1Gb", []))
+
+        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
+
+        ex_raised = False
+        try:
+            bkprep.do_copy_file(self.test_source_folder1, None, None)
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+
+        shutil.rmtree(final_path)
+
+        ex_raised = False
+        try:
+            bkprep.do_copy_file(self.test_source_folder1, 1, True)
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
 
     def testDoCopyContent1(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -488,6 +513,36 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertTrue(ex_raised)
+
+    def testProcessInstructionsOverrideWarns(self):
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.file3))
+
+        bkprep.instructions = []
+        bkprep.instructions.append( ("COPY_PATH", self.file3, []) )
+        ex_raised = False
+        try:
+            bkprep.process_instructions()
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+        self.assertTrue(os.path.exists(final_path))
+        os.unlink(final_path)
+        self.assertFalse(os.path.exists(final_path))
+
+        bkprep.instructions = []
+        bkprep.instructions.append( ("COPY_PATH", self.file3, [("warn_size", "1"), ("warn_abort", "")] ) )
+        ex_raised = False
+        try:
+            bkprep.process_instructions()
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+        self.assertFalse(os.path.exists(final_path))
 
     def testProcSingleInst(self):
         bkprep = backup_preparation.BackupPreparation("")
