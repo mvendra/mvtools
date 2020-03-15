@@ -232,7 +232,9 @@ class BackupPreparation:
 
     def proc_copy_path(self, var_value, var_options):
 
-        origin_path = var_value
+        # sanitizes origin_path: paths ending in path separator fail from here on. so lets just remove it.
+        origin_path = path_utils.filter_remove_trailing_sep(var_value)
+
         if not os.path.exists(origin_path):
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("[%s] does not exist. Aborting." % origin_path)

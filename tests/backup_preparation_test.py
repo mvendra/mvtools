@@ -46,6 +46,11 @@ class BackupPreparationTest(unittest.TestCase):
         self.file2 = path_utils.concat_path(self.test_source_folder2, "file2.txt")
         create_and_write_file.create_file_contents(self.file2, "abc")
 
+        self.test_source_folder3 = path_utils.concat_path(self.test_dir, "source_test3")
+        os.mkdir(self.test_source_folder3)
+        self.file5 = path_utils.concat_path(self.test_source_folder3, "file5.txt")
+        create_and_write_file.create_file_contents(self.file5, "def")
+
         self.file3 = path_utils.concat_path(self.test_dir, "   file3  .txt  ")
         create_and_write_file.create_file_contents(self.file3, "abc")
 
@@ -76,6 +81,12 @@ class BackupPreparationTest(unittest.TestCase):
         self.test_config_file3 = path_utils.concat_path(self.test_dir, "test_config_file3.cfg")
         create_and_write_file.create_file_contents(self.test_config_file3, cfg_file_contents3)
 
+        cfg_file_contents4 = ""
+        cfg_file_contents4 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
+        cfg_file_contents4 += ("COPY_PATH = \"%s%s\"" + os.linesep) % (self.test_source_folder3, os.sep)
+        self.test_config_file4 = path_utils.concat_path(self.test_dir, "test_config_file4.cfg")
+        create_and_write_file.create_file_contents(self.test_config_file4, cfg_file_contents4)
+
         cfg_file_contents_fail1 = ""
         cfg_file_contents_fail1 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.nonexistant)
         self.test_config_file_fail1 = path_utils.concat_path(self.test_dir, "test_config_file_fail1.cfg")
@@ -98,7 +109,7 @@ class BackupPreparationTest(unittest.TestCase):
         cfg_file_contents_fail4 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
         cfg_file_contents_fail4 += ("SET_WARN_SIZE_FINAL {abort} = \"%s\"" + os.linesep) % (self.warn_size_final2)
         cfg_file_contents_fail4 += ("COPY_PATH = \"%s\"" + os.linesep) % (self.file4)
-        self.test_config_file_fail4 = path_utils.concat_path(self.test_dir, "test_config_file4.cfg")
+        self.test_config_file_fail4 = path_utils.concat_path(self.test_dir, "test_config_file_fail4.cfg")
         create_and_write_file.create_file_contents(self.test_config_file_fail4, cfg_file_contents_fail4)
 
     def delegate_setUp(self):
@@ -174,6 +185,12 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertEqual(bkprep.warn_size_final_active, False)
         self.assertEqual(bkprep.warn_size_final, 0)
         self.assertEqual(bkprep.warn_size_final_abort, False)
+
+    def testReadConfig4(self):
+        bkprep = backup_preparation.BackupPreparation(self.test_config_file4)
+        bkprep.read_config(bkprep.config_file)
+        bkprep.setup_configuration()
+        self.assertEqual( (self.test_source_folder3 + os.sep), bkprep.instructions[0][1])
 
     def testReadConfigFail1(self):
         bkprep = backup_preparation.BackupPreparation(self.test_config_file_fail1)
@@ -618,6 +635,11 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder2))))
         self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.file3))))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder1))))
+
+    def testBackupPreparation3(self):
+        self.assertTrue(backup_preparation.backup_preparation(self.test_config_file4))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target)))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder3))))
 
     def testBackupPreparationFail1(self):
         self.assertFalse(backup_preparation.backup_preparation(self.test_config_file_fail1))
