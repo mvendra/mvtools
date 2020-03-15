@@ -150,7 +150,7 @@ def filter_path_list_no_same_branch(pathlist):
     return result
 
 def filter_remove_trailing_sep(target):
-    if target[len(target)-1] == os.sep:
+    if target[len(target)-1] == "/" or target[len(target)-1] == "\\":
         if len(target) > 1:
             return target[:len(target)-1]
         else:

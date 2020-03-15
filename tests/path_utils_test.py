@@ -115,8 +115,10 @@ class PathUtilsTest(unittest.TestCase):
     def testFilterRemoveTrailingSep(self):
         path1 = "/path/folder"
         path2 = "/path/folder/"
+        path3 = "/path/folder\\"
         self.assertEqual( path_utils.filter_remove_trailing_sep(path1), path1 )
         self.assertEqual( path_utils.filter_remove_trailing_sep(path2), path1 )
+        self.assertEqual( path_utils.filter_remove_trailing_sep(path3), path1 )
 
     def testJoinpathAbsolute(self):
         self.assertEqual(path_utils.filter_join_abs("/home/user"), "home/user")
