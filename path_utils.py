@@ -197,7 +197,7 @@ def copy_to(origin, target):
 
     if os.path.isdir(origin):
         target_fix = concat_path(target, os.path.basename(origin))
-        shutil.copytree(origin, target_fix)
+        shutil.copytree(origin, target_fix, symlinks=True)
     else:
         shutil.copy(origin, target)
 
