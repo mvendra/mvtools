@@ -10,6 +10,7 @@ def shred_target(path):
     the_cmd = []
     if os.path.isdir(path):
         # path points to a folder. shred and delete folder using secure-delete
+        # this is NOT supported on cygwin / windows
         the_cmd = ["srm", "-rfll", path + os.sep]
     else:
         # path points to a file. shred and delete folder using shred
