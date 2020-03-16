@@ -3,7 +3,7 @@
 import sys
 import os
 import stat
-import path_utils
+import shred_wrapper
 import getpass
 
 from subprocess import check_output
@@ -39,14 +39,14 @@ if __name__ == "__main__":
 
     if not decrypt.symmetric_decrypt(encpassfile, random_fn, passphrase):
         print("Failed decrypting file.")
-        path_utils.deletefile_ignoreerrors(random_fn)
+        shred_wrapper.shred_target(random_fn)
         sys.exit(1)
 
     try:
         call(["copypass.py", random_fn])
-        path_utils.deletefile_ignoreerrors(random_fn)
+        shred_wrapper.shred_target(random_fn)
     except:
         print("Unable to send password to clipboard.")
-        path_utils.deletefile_ignoreerrors(random_fn)
+        shred_wrapper.shred_target(random_fn)
         sys.exit(1)
 
