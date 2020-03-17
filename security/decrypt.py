@@ -36,6 +36,7 @@ def symmetric_decrypt(infile, outfile, passphrase):
     if out == 0:
         return True
     else:
+        print("Openssl command failed.")
         return False
 
 if __name__ == "__main__":
