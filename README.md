@@ -42,8 +42,6 @@ xclip
 
 rpm2cpio
 
-secure-delete
-
 autoselfext
 ===========
 

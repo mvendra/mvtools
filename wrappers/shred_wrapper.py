@@ -2,22 +2,22 @@
 
 import sys
 import os
+import shutil
 
+import fsquery
 import generic_run
 
 def shred_target(path):
 
-    the_cmd = []
     if os.path.isdir(path):
-        # path points to a folder. shred and delete folder using secure-delete
-        # this is NOT supported on cygwin / windows
-        the_cmd = ["srm", "-rfll", path + os.sep]
+        ret = fsquery.makecontentlist(path, True, True, False, True, False, True, [])
+        for i in ret:
+            v, r = generic_run.run_cmd_l_asc(["shred", "-z", "-u", i])
+            if not v:
+                return False, r
+        shutil.rmtree(path)
     else:
-        # path points to a file. shred and delete folder using shred
-        the_cmd = ["shred", "-z", "-u", path]
-
-    v, r = generic_run.run_cmd_l_asc(the_cmd)
-    return v, r
+        return generic_run.run_cmd_l_asc(["shred", "-z", "-u", path])
 
 def puaq():
     print("Usage: %s target_to_shred" % os.path.basename(__file__))
