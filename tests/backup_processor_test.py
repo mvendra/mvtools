@@ -566,18 +566,18 @@ class BackupProcessorTest(unittest.TestCase):
 
         # decrypt files
         # target 1
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder1_e, tg1_folder1_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder2_e, tg1_folder2_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder3_e, tg1_folder3_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder4_e, tg1_folder4_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_file0_e, tg1_file0_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder1_e, tg1_folder1_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder2_e, tg1_folder2_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder3_e, tg1_folder3_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder4_e, tg1_folder4_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_file0_e, tg1_file0_z, self.passphrase )[0])
 
         # target 2
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder1_e, tg2_folder1_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder2_e, tg2_folder2_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder3_e, tg2_folder3_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder4_e, tg2_folder4_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_file0_e, tg2_file0_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder1_e, tg2_folder1_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder2_e, tg2_folder2_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder3_e, tg2_folder3_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder4_e, tg2_folder4_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_file0_e, tg2_file0_z, self.passphrase )[0])
 
         # extract files and check contents
         # target 1
@@ -676,7 +676,7 @@ class BackupProcessorTest(unittest.TestCase):
 
         self.assertTrue(hash_check.sha256sum_check( tg1_folder_another_e, tg1_folder_another_h ))
 
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder_another_e, tg1_folder_another_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_folder_another_e, tg1_folder_another_z, self.passphrase )[0])
 
         v, r = tar_wrapper.extract(tg1_folder_another_z, self.extracted_folder)
         self.assertTrue(v)
@@ -698,7 +698,7 @@ class BackupProcessorTest(unittest.TestCase):
 
         self.assertTrue(hash_check.sha256sum_check( tg2_folder_another_e, tg2_folder_another_h ))
 
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder_another_e, tg2_folder_another_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_folder_another_e, tg2_folder_another_z, self.passphrase )[0])
 
         v, r = tar_wrapper.extract(tg2_folder_another_z, self.extracted_folder)
         self.assertTrue(v)
@@ -787,12 +787,12 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(hash_check.sha256sum_check( tg1_space_folder3_e, tg1_space_folder3_h ))
 
         # decrypt generated packages
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file1_e, tg1_space_file1_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file2_e, tg1_space_file2_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file3_e, tg1_space_file3_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder1_e, tg1_space_folder1_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder2_e, tg1_space_folder2_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder3_e, tg1_space_folder3_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file1_e, tg1_space_file1_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file2_e, tg1_space_file2_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file3_e, tg1_space_file3_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder1_e, tg1_space_folder1_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder2_e, tg1_space_folder2_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder3_e, tg1_space_folder3_z, self.passphrase )[0])
 
         # extract packages
         v, r = tar_wrapper.extract(tg1_space_file1_z, self.extracted_folder)
@@ -844,12 +844,12 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(hash_check.sha256sum_check( tg2_space_folder3_e, tg2_space_folder3_h ))
 
         # decrypt generated packages
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file1_e, tg2_space_file1_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file2_e, tg2_space_file2_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file3_e, tg2_space_file3_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder1_e, tg2_space_folder1_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder2_e, tg2_space_folder2_z, self.passphrase ))
-        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder3_e, tg2_space_folder3_z, self.passphrase ))
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file1_e, tg2_space_file1_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file2_e, tg2_space_file2_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file3_e, tg2_space_file3_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder1_e, tg2_space_folder1_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder2_e, tg2_space_folder2_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder3_e, tg2_space_folder3_z, self.passphrase )[0])
 
         # extract packages
         v, r = tar_wrapper.extract(tg2_space_file1_z, self.extracted_folder)
