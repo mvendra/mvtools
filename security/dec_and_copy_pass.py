@@ -37,8 +37,9 @@ if __name__ == "__main__":
     random_fn = check_output(["randomfilenamegen.sh"])
     passphrase = getpass.getpass("Type in...\n")
 
-    if not decrypt.symmetric_decrypt(encpassfile, random_fn, passphrase):
-        print("Failed decrypting file.")
+    v, r = decrypt.symmetric_decrypt(encpassfile, random_fn, passphrase)
+    if not v:
+        print("Failed decrypting file: [%s]." % r)
         shred_wrapper.shred_target(random_fn)
         sys.exit(1)
 

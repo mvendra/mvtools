@@ -45,7 +45,7 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
         print("WARNING: Nothing to test.")
 
     for f in filelist:
-        if not decrypt.symmetric_decrypt(f, path_utils.concat_path(path_temp_used, os.path.basename(f) + ".tmp"), passphrase):
+        if not decrypt.symmetric_decrypt(f, path_utils.concat_path(path_temp_used, os.path.basename(f) + ".tmp"), passphrase)[0]:
             report.append(f + " FAILED")
 
     try:
