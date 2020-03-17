@@ -11,6 +11,7 @@ import path_utils
 import pakgen
 import encrypt
 import sha256_wrapper
+import shred_wrapper
 import create_and_write_file
 
 SCRIPT_FOLDER = os.path.dirname(os.path.realpath(__file__))
@@ -85,15 +86,23 @@ class BackupEngine:
             CURPAK_TAR_BZ2_ENC = CURPAK_TAR_BZ2 + ".enc"
             CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"
 
+            # create the package
             v = pakgen.pakgen(CURPAK, False, [it]) # hash will be generated later (from the encrypted package)
             if not v:
-                print("Failed generating %s." % CURPAK_TAR_BZ2)
+                print("Failed generating [%s]." % CURPAK_TAR_BZ2)
                 return False
+
+            # encrypt plain package
             v, r = encrypt.symmetric_encrypt(CURPAK_TAR_BZ2, CURPAK_TAR_BZ2_ENC, _self.PASSPHRASE)
             if not v:
-                print(r)
+                print("Failed encrypting package: %s." % r)
                 return False
-            os.unlink(CURPAK_TAR_BZ2) # delete plain package
+
+            # shred plain package
+            v, r = shred_wrapper.shred_target(CURPAK_TAR_BZ2)
+            if not v:
+                print("Failed shredding plain package: %s." % r)
+                return False
 
             # create hash from the encrypted package
             v, r = sha256_wrapper.hash_sha_256_app_file(CURPAK_TAR_BZ2_ENC)
