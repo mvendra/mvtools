@@ -18,26 +18,22 @@ def symmetric_encrypt(infile, outfile, passphrase):
     """
 
     if not os.path.exists(infile):
-        print("%s does not exist. Aborting." % infile)
-        sys.exit(1)
+        return False, "%s does not exist." % infile
 
     if not os.path.isfile(infile):
-        print("%s is not a file. Aborting." % infile)
-        sys.exit(1)
+        return False, "%s is not a file." % infile
 
     if outfile == "" or outfile is None:
-        print("Invalid output filename. Aborting.")
-        sys.exit(1)
+        return False, "Invalid output filename."
 
     if os.path.exists(outfile):
-        print("%s already exists. Aborting." % outfile)
-        sys.exit(1)
+        return False, "%s already exists." % outfile
 
     if passphrase == "" or passphrase is None:
-        print("Invalid passphrase. Aborting.")
-        sys.exit(1)
+        return False, "Invalid passphrase."
 
     call(["openssl", "des3", "-e", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase])
+    return True, None
 
 if __name__ == "__main__":
 
@@ -62,4 +58,7 @@ if __name__ == "__main__":
     if passphrase is None:
         passphrase = getpass.getpass("Type in...\n")
 
-    symmetric_encrypt(infile, outfile, passphrase)
+    v, r = symmetric_encrypt(infile, outfile, passphrase)
+    if not v:
+        print(r)
+        sys.exit(1)

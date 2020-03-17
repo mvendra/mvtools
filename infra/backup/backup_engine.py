@@ -89,7 +89,10 @@ class BackupEngine:
             if not v:
                 print("Failed generating %s." % CURPAK_TAR_BZ2)
                 return False
-            encrypt.symmetric_encrypt(CURPAK_TAR_BZ2, CURPAK_TAR_BZ2_ENC, _self.PASSPHRASE)
+            v, r = encrypt.symmetric_encrypt(CURPAK_TAR_BZ2, CURPAK_TAR_BZ2_ENC, _self.PASSPHRASE)
+            if not v:
+                print(r)
+                return False
             os.unlink(CURPAK_TAR_BZ2) # delete plain package
 
             # create hash from the encrypted package
