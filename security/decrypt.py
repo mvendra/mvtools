@@ -20,30 +20,34 @@ def symmetric_decrypt(infile, outfile, passphrase):
     returns True on success, False on failures
     """
 
-    if not os.path.isfile(infile):
+    if not os.path.exists(infile):
         print("%s does not exist. Aborting." % infile)
         sys.exit(1)
 
-    if outfile == "" or outfile == None:
+    if outfile == "" or outfile is None:
         print("Invalid output filename. Aborting")
         sys.exit(1)
 
-    if passphrase == "" or passphrase == None:
+    if os.path.exists(outfile):
+        print("%s already exists. Aborting." % outfile)
+        sys.exit(1)
+
+    if passphrase == "" or passphrase is None:
         print("Invalid passphrase. Aborting.")
         sys.exit(1)
 
     out = call(["openssl", "des3", "-d", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase])
-    if out == 0:
-        return True
-    else:
+    if out != 0:
         print("Openssl command failed.")
         return False
+
+    return True
 
 if __name__ == "__main__":
 
     infile = ""
-    outfile = ""
-    passphrase = ""
+    outfile = None
+    passphrase = None
 
     if len(sys.argv) < 2:
         puaq()
@@ -53,17 +57,13 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         outfile = sys.argv[2] # optional
 
-    if len(sys.argv) > 3:
-        passphrase = sys.argv[3] # optional
- 
-    if (outfile == ""):
+    if outfile is None:
         outfile = path_utils.poplastextension(infile)
 
-    if os.path.isfile(outfile) or os.path.isdir(outfile):
-        print("%s already exists. Aborting." % outfile)
-        sys.exit(1)
+    if len(sys.argv) > 3:
+        passphrase = sys.argv[3] # optional
 
-    if (passphrase == ""):
+    if passphrase is None:
         passphrase = getpass.getpass("Type in...\n")
 
     if not symmetric_decrypt(infile, outfile, passphrase):

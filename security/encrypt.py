@@ -33,10 +33,10 @@ def symmetric_encrypt(infile, outfile, passphrase):
         return False, "Invalid passphrase."
 
     out = call(["openssl", "des3", "-e", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase])
-    if out == 0:
-        return True, None
-    else:
+    if out != 0:
         return False, "Openssl command failed."
+
+    return True, None
 
 if __name__ == "__main__":
 
