@@ -21,27 +21,22 @@ def symmetric_decrypt(infile, outfile, passphrase):
     """
 
     if not os.path.exists(infile):
-        print("%s does not exist. Aborting." % infile)
-        sys.exit(1)
+        return False, "%s does not exist. Aborting." % infile
 
     if outfile == "" or outfile is None:
-        print("Invalid output filename. Aborting")
-        sys.exit(1)
+        return False, "Invalid output filename. Aborting"
 
     if os.path.exists(outfile):
-        print("%s already exists. Aborting." % outfile)
-        sys.exit(1)
+        return False, "%s already exists. Aborting." % outfile
 
     if passphrase == "" or passphrase is None:
-        print("Invalid passphrase. Aborting.")
-        sys.exit(1)
+        return False, "Invalid passphrase. Aborting."
 
     out = call(["openssl", "des3", "-d", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase])
     if out != 0:
-        print("Openssl command failed.")
-        return False
+        return False, "Openssl command failed."
 
-    return True
+    return True, None
 
 if __name__ == "__main__":
 
@@ -66,6 +61,8 @@ if __name__ == "__main__":
     if passphrase is None:
         passphrase = getpass.getpass("Type in...\n")
 
-    if not symmetric_decrypt(infile, outfile, passphrase):
-        print("Failed to decrypt - likely incorrect passphrase used")
+    v, r = symmetric_decrypt(infile, outfile, passphrase)
+    if not v:
+        print("Failed to decrypt: [%s]" % r)
         os.unlink(outfile)
+        sys.exit(1)
