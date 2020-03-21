@@ -13,6 +13,7 @@ import dirsize
 
 import tree_wrapper
 import crontab_wrapper
+import convert_unit
 
 class BackupPreparationException(RuntimeError):
     def __init__(self, msg):
@@ -22,36 +23,6 @@ class BackupPreparationException(RuntimeError):
     def _set_message(self, message): 
         self._message = message
     message = property(_get_message, _set_message)
-
-def convert_to_bytes(size_string):
-
-    try:
-        s_number = ""
-        s_unit = ""
-        multiplier = 1
-
-        if len(size_string) < 3:
-            return (True, int(size_string))
-
-        s_number = size_string[0:len(size_string)-2]
-        s_unit = size_string[len(size_string)-2:]
-        s_unit = s_unit.lower()
-
-        if s_unit == "kb":
-            multiplier = 1024
-        elif s_unit == "mb":
-            multiplier = 1024*1024
-        elif s_unit == "gb":
-            multiplier = 1024*1024*1024
-        elif s_unit == "tb":
-            multiplier = 1024*1024*1024*1024
-        else:
-            s_number = size_string
-
-        final_num = int(s_number) * multiplier
-        return (True, final_num)
-    except:
-        return (False, None)
 
 def derivefoldernamefortree(fullpath):
 
@@ -139,7 +110,7 @@ class BackupPreparation:
 
         elif var_name == "SET_WARN_SIZE_EACH":
             self.warn_size_each_active = True
-            v, self.warn_size_each = convert_to_bytes(var_value)
+            v, self.warn_size_each = convert_unit.convert_to_bytes(var_value)
             if not v:
                 raise BackupPreparationException("Failed parsing, for SET_WARN_SIZE_EACH: %s" % var_value)
             if dsl_type20.hasopt_opts(var_options, "abort"):
@@ -147,7 +118,7 @@ class BackupPreparation:
 
         elif var_name == "SET_WARN_SIZE_FINAL":
             self.warn_size_final_active = True
-            v, self.warn_size_final = convert_to_bytes(var_value)
+            v, self.warn_size_final = convert_unit.convert_to_bytes(var_value)
             if not v:
                 raise BackupPreparationException("Failed parsing, for SET_WARN_SIZE_FINAL: %s" % var_value)
             if dsl_type20.hasopt_opts(var_options, "abort"):
@@ -247,7 +218,7 @@ class BackupPreparation:
 
         for o in var_options:
             if o[0] == "warn_size":
-                cb = convert_to_bytes(o[1])
+                cb = convert_unit.convert_to_bytes(o[1])
                 if not cb[0]:
                     raise BackupPreparationException("Failed parsing: [%s]. Aborting." % o[1])
                 override_warn_size = cb[1]
