@@ -121,8 +121,8 @@ class GitVisitorFetchTest(unittest.TestCase):
         if not v:
             self.fail(r)
 
-        self.assertTrue(path_utils.concat_path(fourth_repo, file3) )
-        self.assertTrue(path_utils.concat_path(fifth_repo, file4) )
+        self.assertTrue( os.path.exists(path_utils.concat_path(fourth_repo, file3)) )
+        self.assertTrue( os.path.exists(path_utils.concat_path(fifth_repo, file4)) )
 
 if __name__ == '__main__':
     unittest.main()
