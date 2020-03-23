@@ -35,17 +35,7 @@ def run_list(runnable_list, base_path=None):
 
     return (not has_any_failed, report)
 
-def puaq():
-    print("Usage: %s runnable_list" % os.path.basename(__file__))
-    sys.exit(1)
-
-if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-        puaq()
-
-    v, r = run_list(sys.argv[1:], os.getcwd())
-
+def print_report(v, r):
     if not v:
         for i in r:
             if not i[0]:
@@ -53,3 +43,31 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print("%s: All succeeded." % os.path.basename(__file__))
+
+def puaq():
+    print("Usage: %s runnable_list [--nocwd]" % os.path.basename(__file__))
+    sys.exit(1)
+
+if __name__ == "__main__":
+
+    if len(sys.argv) < 2:
+        puaq()
+
+    runnable_list = sys.argv[1:]
+    the_cwd = os.getcwd()
+
+    # get optional params
+    if len(runnable_list) > 0:
+        if runnable_list[0] == "--nocwd":
+            the_cwd = None
+            runnable_list = runnable_list[1:]
+
+    if len(runnable_list) == 0:
+        print("%s: Nothing to run." % os.path.basename(__file__))
+        sys.exit(0)
+
+    # runs the list
+    v, r = run_list(runnable_list, the_cwd)
+
+    # print the report
+    print_report(v, r)
