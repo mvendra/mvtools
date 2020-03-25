@@ -472,9 +472,23 @@ class BackupPreparationTest(unittest.TestCase):
     def testProcessInstructionsFail1(self):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
-        self.assertTrue(bkprep.proc_single_config("SET_WARN_SIZE_FINAL", "1", [("abort", "")]))
         bkprep.instructions = []
         bkprep.instructions.append( ("COPY_PATH", self.nonexistant, []) )
+
+        ex_raised = False
+        try:
+            bkprep.process_instructions()
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.nonexistant))))
+
+    def testProcessInstructionsFail2(self):
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+        bkprep.instructions = []
+        bkprep.instructions.append( ("COPY_PATH {abort}", self.nonexistant, []) )
 
         ex_raised = False
         try:
@@ -485,7 +499,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(ex_raised)
         self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.nonexistant))))
 
-    def testProcessInstructionsFail2(self):
+    def testProcessInstructionsFail3(self):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         bkprep.instructions = []
@@ -501,7 +515,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         self.assertTrue(ex_raised)
 
-    def testProcessInstructionsFail3(self):
+    def testProcessInstructionsFail4(self):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         bkprep.instructions = []
