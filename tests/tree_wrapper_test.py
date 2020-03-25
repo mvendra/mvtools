@@ -88,8 +88,6 @@ class TreeWrapperTest(unittest.TestCase):
         self.folder2_file2 = path_utils.concat_path(self.folder2, "file2.txt")
         create_and_write_file.create_file_contents(self.folder2_file2, "abc")
 
-        self.expected_contents = self.test_dir + os.linesep + "├── file1.txt" + os.linesep + "├── file2.txt" + os.linesep + "├──    file_esp1.txt" + os.linesep + "├── file_esp2.txt   " + os.linesep + "├── fi le.txt" + os.linesep + "├── file_with_sep.txt" + os.linesep + "├── fol der" + os.linesep + "│   └── filler.txt" + os.linesep + "├── folder1" + os.linesep + "│   ├── file1.txt" + os.linesep + "│   └── file2.txt" + os.linesep + "├── folder2" + os.linesep + "│   ├── file1.txt" + os.linesep + "│   ├── file2.txt" + os.linesep + "│   └── sub1" + os.linesep + "│       └── file1.txt" + os.linesep + "└── folder_with_sep" + os.linesep + "    └── filler.txt" + os.linesep + os.linesep + "5 directories, 13 files" + os.linesep
-
         return True, ""
 
     def tearDown(self):
@@ -98,7 +96,25 @@ class TreeWrapperTest(unittest.TestCase):
     def testMakeTree(self):
         v, r = tree_wrapper.make_tree(self.test_dir)
         self.assertTrue(v)
-        self.assertEqual(r, self.expected_contents)
+        self.assertTrue( os.path.basename(self.test_dir) in r)
+        self.assertTrue( os.path.basename(self.file_with_space) in r)
+        self.assertTrue( os.path.basename(self.file_with_sep) in r)
+        self.assertTrue( os.path.basename(self.folder_with_space) in r)
+        self.assertTrue( os.path.basename(self.folder_with_space_filler) in r)
+        self.assertTrue( os.path.basename(self.folder_with_sep) in r)
+        self.assertTrue( os.path.basename(self.folder_with_sep_filler) in r)
+        self.assertTrue( os.path.basename(self.file1) in r)
+        self.assertTrue( os.path.basename(self.file_esp1) in r)
+        self.assertTrue( os.path.basename(self.file_esp2) in r)
+        self.assertTrue( os.path.basename(self.file2) in r)
+        self.assertTrue( os.path.basename(self.folder1) in r)
+        self.assertTrue( os.path.basename(self.folder2) in r)
+        self.assertTrue( os.path.basename(self.folder2_sub1) in r)
+        self.assertTrue( os.path.basename(self.folder2_sub1_file1) in r)
+        self.assertTrue( os.path.basename(self.folder1_file1) in r)
+        self.assertTrue( os.path.basename(self.folder1_file2) in r)
+        self.assertTrue( os.path.basename(self.folder2_file1) in r)
+        self.assertTrue( os.path.basename(self.folder2_file2) in r)
 
 if __name__ == '__main__':
     unittest.main()
