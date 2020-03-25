@@ -29,9 +29,9 @@ def run_list(runnable_list, base_path=None):
         v, r = generic_run.run_cmd_l(fullpath)
         if not v:
             has_any_failed = True
-            report.append( (False, s, r) )
+            report.append( (False, s) )
         else:
-            report.append( (True, s, "") )
+            report.append( (True, s) )
 
     return (not has_any_failed, report)
 
@@ -39,7 +39,7 @@ def print_report(v, r):
     if not v:
         for i in r:
             if not i[0]:
-                print("[%s] failed: [%s]" % (i[1], i[2]))
+                print("[%s] failed." % i[1])
         sys.exit(1)
 
     print("%s: All succeeded." % os.path.basename(__file__))
