@@ -110,9 +110,14 @@ class LaunchListTest(unittest.TestCase):
         l = fsquery.makecontentlist(self.test_mixedbag, False, True, False, True, False, True, None)
         v, r = launch_list.run_list(l, None)
         self.assertFalse(v)
-        self.assertTrue(r[0][0])
-        self.assertFalse(r[1][0])
-        self.assertTrue(r[2][0])
+
+        for i in r:
+            if os.path.basename(i[1]) == os.path.basename(self.cmd7):
+                self.assertTrue(i[0])
+            elif os.path.basename(i[1]) == os.path.basename(self.cmd8):
+                self.assertFalse(i[0])
+            elif os.path.basename(i[1]) == os.path.basename(self.cmd9):
+                self.assertTrue(i[0])
 
     def testListDebased(self):
         l = [os.path.basename(self.cmd1), os.path.basename(self.cmd2), os.path.basename(self.cmd3)]
