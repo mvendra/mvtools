@@ -596,13 +596,13 @@ class BackupPreparationTest(unittest.TestCase):
         final_path = path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder2))
         bkprep.proc_copy_tree_out(self.test_source_folder2, [])
         self.assertTrue(os.path.exists(final_path))
-        cmp_str = self.test_source_folder2 + os.linesep + "└── file2.txt" + os.linesep + os.linesep + "0 directories, 1 file" + os.linesep
 
         str_read = ""
         with open(final_path) as f:
             str_read = f.read()
 
-        self.assertEqual(cmp_str, str_read)
+        self.assertTrue( os.path.basename(self.file2) in str_read)
+        self.assertFalse( os.path.basename(self.file3) in str_read)
 
         ex_raised = False
         try:
