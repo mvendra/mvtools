@@ -188,6 +188,14 @@ def concat_path(*ps):
         result_path = os.path.join(result_path, filter_join_abs(p))
     return result_path
 
+def basename_filtered(path):
+
+    # vanilla os.path.basename returns empty string when given a path
+    # that ends with a path separator. this one first filters out the
+    # trailing path separator
+
+    return os.path.basename( filter_remove_trailing_sep ( path ) )
+
 def copy_to(origin, target):
 
     # works just like the POSIX "cp" app but does not require the "-r" for copying folders
