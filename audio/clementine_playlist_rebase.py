@@ -4,9 +4,10 @@ import sys
 import os
 from subprocess import call
 import fsquery
+import path_utils
 
 def puaq(): # print usage and quit
-    print("Usage: %s path_with_playlists string_to_find string_to_replace_with" % os.path.basename(__file__))
+    print("Usage: %s path_with_playlists string_to_find string_to_replace_with" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def proc(plfile, str_find, str_rep):

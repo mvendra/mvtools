@@ -3,9 +3,10 @@
 import sys
 import os
 import fsquery
+import path_utils
 
 def puaq(): # print usage and quit
-    print("Usage: %s path_with_playlists" % os.path.basename(__file__))
+    print("Usage: %s path_with_playlists" % path_util.basename_filtered(__file__))
     sys.exit(1)
 
 def getcontents(thefile):
@@ -51,7 +52,7 @@ def proc(plfile):
     for t in tracks:
         i+=1
         if not os.path.exists(t):
-            print("(index %s): %s of playlist %s does not exist!" % (i, os.path.basename(t), os.path.basename(plfile)))
+            print("(index %s): %s of playlist %s does not exist!" % (i, path_util.basename_filtered(t), path_util.basename_filtered(plfile)))
     print("\n")
 
 if __name__ == "__main__":
