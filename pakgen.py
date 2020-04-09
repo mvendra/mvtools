@@ -7,6 +7,7 @@ import tar_wrapper
 import bzip2_wrapper
 import create_and_write_file
 import sha256_wrapper
+import path_utils
 
 def pakgen(filename, dohash, files):
 
@@ -79,7 +80,7 @@ if __name__ == "__main__":
     if len(files) < 1:
         puaq
     elif len(files) == 1 and filename is None:
-        filename = os.path.basename(files[0])
+        filename = os.path.basename( path_utils.filter_remove_trailing_sep(files[0]) )
     elif filename is None:
         filename = "newpack"
 
