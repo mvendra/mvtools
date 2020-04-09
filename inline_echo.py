@@ -2,12 +2,13 @@
 
 import sys
 import os
+import path_utils
 
 def inline_echo(msg):
     sys.stdout.write(msg)
 
 def puaq(): # Print Usage And Quit
-    print("Usage: %s string_content" % os.path.basename(__file__))
+    print("Usage: %s string_content" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

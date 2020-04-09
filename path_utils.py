@@ -111,7 +111,7 @@ def guaranteefolder(path):
 
     if os.path.exists(path):
         # exists and is not a folder. raise hell.
-        raise PathUtilsException("%s guaranteefolder: %s exists and is not a folder. This is an exception." % (os.path.basename(__file__), path))
+        raise PathUtilsException("%s guaranteefolder: %s exists and is not a folder. This is an exception." % (basename_filtered(__file__), path))
     else:
         # just create the new folder
         call(["mkdir", "-p", path])
@@ -204,7 +204,7 @@ def copy_to(origin, target):
         return False
 
     if os.path.isdir(origin):
-        target_fix = concat_path(target, os.path.basename(origin))
+        target_fix = concat_path(target, basename_filtered(origin))
         shutil.copytree(origin, target_fix, symlinks=True)
     else:
         shutil.copy(origin, target)
@@ -212,4 +212,4 @@ def copy_to(origin, target):
     return True
 
 if __name__ == "__main__":
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % basename_filtered(__file__))
