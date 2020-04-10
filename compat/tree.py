@@ -64,9 +64,9 @@ class gentree:
 def gen_tree(path):
 
     if not os.path.exists(path):
-        False, "%s does not exist" % path
+        return False, "%s does not exist" % path
     if not os.path.isdir(path):
-        False, "%s is not a directory" % path
+        return False, "%s is not a directory" % path
 
     contents = ""
 
