@@ -4,6 +4,7 @@ import os
 
 import git_visitor_base
 import git_repo_query
+import path_utils
 
 def visitor_remote_list(repos, options):
 
@@ -15,7 +16,7 @@ def visitor_remote_list(repos, options):
             continue
         for rmn in remotes:
             for rmop in remotes[rmn]:
-                l = os.path.basename(rp) # local folder name
+                l = path_utils.basename_filtered(rp) # local folder name
                 n = rmn # remote name
                 o = rmop # remote operation
                 p = remotes[rmn][rmop] # remote path

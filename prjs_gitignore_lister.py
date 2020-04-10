@@ -14,7 +14,7 @@ def prjs_gitignore_lister(path):
 
         #pb = p[len(path)+1:]
         pb = p
-        pn = os.path.basename(p)
+        pn = path_utils.basename_filtered(p)
 
         ign_build = path_utils.concat_path(pb, "build")
         ign_run = path_utils.concat_path(pb, "run")

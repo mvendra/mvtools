@@ -35,7 +35,7 @@ class gentree:
         self.clear()
 
         self.addtoresult( "* ")
-        self.addtoresult( os.path.basename(path_utils.filter_remove_trailing_sep(self.rootpath)) )
+        self.addtoresult( path_utils.basename_filtered(self.rootpath) )
         self.addtoresult(os.linesep)
 
         self.increase_ident()
@@ -52,14 +52,14 @@ class gentree:
 
             if os.path.isdir(c):
                 self.dirs_total += 1
-                self.addtoresult( "* %s%s" % (os.path.basename(path_utils.filter_remove_trailing_sep(c)), os.linesep) )
+                self.addtoresult( "* %s%s" % (path_utils.basename_filtered(c), os.linesep) )
 
                 self.increase_ident()
                 self.traverse_delegate(c)
                 self.decrease_ident()
             else:
                 self.files_total += 1
-                self.addtoresult("%s%s" % (os.path.basename(path_utils.filter_remove_trailing_sep(c)), os.linesep) )
+                self.addtoresult("%s%s" % (path_utils.basename_filtered(c), os.linesep) )
 
 def gen_tree(path):
 

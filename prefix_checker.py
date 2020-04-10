@@ -2,7 +2,9 @@
 
 import os
 import sys
+
 import fsquery
+import path_utils
 
 def prefix_checker(target_dir, prefix_size):
 
@@ -13,7 +15,7 @@ def prefix_checker(target_dir, prefix_size):
     for d in dirs:
         c += 1
         base = os.path.dirname(d)
-        subject = os.path.basename(d)
+        subject = path_utils.basename_filtered(d)
         pref = subject[0:prefix_size]
         if int(pref) != c:
             print("%s does not pass the prefix checker at %s" % (target_dir, d))

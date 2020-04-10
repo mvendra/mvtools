@@ -3,6 +3,7 @@
 import os
 import sys
 from subprocess import call
+import path_utils
 
 class secexcept(RuntimeError):
     def __init__(_self, msg):
@@ -87,8 +88,8 @@ rm -rf ./$OUT_INST
 exit 0 #SENTINEL\n"""
 
         # write names
-        template_edit = template_edit.replace("OUT_INST=nop", "OUT_INST=%s" % os.path.basename(_self.input_inst))
-        template_edit = template_edit.replace("OUT_PACK=nop", "OUT_PACK=%s" % os.path.basename(_self.input_pack))
+        template_edit = template_edit.replace("OUT_INST=nop", "OUT_INST=%s" % path_utils.basename_filtered(_self.input_inst))
+        template_edit = template_edit.replace("OUT_PACK=nop", "OUT_PACK=%s" % path_utils.basename_filtered(_self.input_pack))
 
         # write sizes
         template_edit = template_edit.replace("SIZE_INST=nop", "SIZE_INST=%s" % os.path.getsize(_self.input_inst))

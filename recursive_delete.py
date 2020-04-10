@@ -4,12 +4,13 @@ import sys
 import os
 
 import fsquery
+import path_utils
 
 def recursive_delete(path, filename):
 
     all_files = fsquery.makecontentlist(path, True, True, False, True, False, True, None)
     for f in all_files:
-        bn = os.path.basename(f)
+        bn = path_utils.basename_filtered(f)
         if bn == filename:
             os.unlink(f)
 

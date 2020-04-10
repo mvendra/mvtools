@@ -2,9 +2,10 @@
 
 import os
 import sys
-import fsquery
-
 from pathlib import PurePath
+
+import fsquery
+import path_utils
 
 """
 # python2
@@ -51,7 +52,7 @@ def remove_extensions(files, extensions):
 
     for f in files:
 
-        fname = os.path.basename(f)
+        fname = path_utils.basename_filtered(f)
 
         if fname.find(".") == -1: # no extension. we cant decide what to do
             ret.append(f)

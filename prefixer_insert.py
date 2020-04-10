@@ -2,6 +2,7 @@
 
 import os
 import sys
+
 import fsquery
 import path_utils
 import prjrenamer
@@ -25,8 +26,8 @@ def basic_refactor(original, new):
 
 def autobooted_refactor(original, new):
     td = os.path.dirname(original)
-    po = os.path.basename(original)
-    pn = os.path.basename(new)
+    po = path_utils.basename_filtered(original)
+    pn = path_utils.basename_filtered(new)
     prjrenamer.prjrename(td, po, pn)
 
 def prefixer_insert(target_dir, prefix_to_reserve):
@@ -39,7 +40,7 @@ def prefixer_insert(target_dir, prefix_to_reserve):
     dirs.sort()
     for d in dirs:
         base = os.path.dirname(d)
-        subject = os.path.basename(d)
+        subject = path_utils.basename_filtered(d)
         pref = subject[0:PREFIX_SIZE]
         if int(pref) >= int(prefix_to_reserve):
             new_pref = int(pref) + 1

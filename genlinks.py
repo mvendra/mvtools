@@ -19,7 +19,7 @@ def detect_duplicates(item_list):
 
     items_bn = []
     for i in item_list:
-        bn = os.path.basename(i)
+        bn = path_utils.basename_filtered(i)
         if bn in items_bn:
             print("Duplicate detected: [%s]" % i)
             return True # duplicate detected
@@ -43,7 +43,7 @@ def filter_mvtools_item(item):
         return False
 
     path_pieces = item.split(os.path.sep)
-    filename = os.path.basename(item)
+    filename = path_utils.basename_filtered(item)
     fn_ext = os.path.splitext(filename)[1]
 
     # exclude some folders
@@ -105,7 +105,7 @@ def genlinks():
     # and finally create the links
     os.chdir(path_links)
     for i in items_filtered:
-        item_name = os.path.basename(i)
+        item_name = path_utils.basename_filtered(i)
         if os.path.exists(item_name):
             continue
         os.symlink(i, item_name)

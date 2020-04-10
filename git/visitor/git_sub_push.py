@@ -7,12 +7,13 @@ import terminal_colors
 
 import git_push
 import git_repo_query
+import path_utils
 
 def filter_sub_files(sub_candidates):
 
     ret = []
     for i in sub_candidates:
-        if os.path.basename(i) == ".git":
+        if path_utils.basename_filtered(i) == ".git":
             ret.append(os.path.dirname(i))
 
     return ret

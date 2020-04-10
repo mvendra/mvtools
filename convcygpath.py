@@ -50,7 +50,7 @@ def linear_search(item, domain):
 def _ar_to_map(in_ar):
     map = {}
     for it in in_ar:
-        map[os.path.basename(it)] = True
+        map[path_utils.basename_filtered(it)] = True
     return map
 
 def find_next_path(root, path_string):
