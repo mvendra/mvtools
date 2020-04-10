@@ -87,10 +87,10 @@ class BackupEngine:
 
         for it in _self.BKARTIFACTS:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_GREEN, it[0], datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S'), terminal_colors.TTY_WHITE))
-            BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, os.path.basename(os.path.dirname(it[0])))
+            BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(os.path.dirname(it[0])))
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
 
-            CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, os.path.basename(it[0]))
+            CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, path_utils.basename_filtered(it[0]))
             CURPAK_TAR_BZ2 = CURPAK + ".tar.bz2"
             CURPAK_TAR_BZ2_ENC = CURPAK_TAR_BZ2 + ".enc"
             CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"

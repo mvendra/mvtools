@@ -65,7 +65,7 @@ def make_backup_artifacts_list(artifacts_base):
                         add_cur = False
                         break
                 if add_cur:
-                    retlist.append( ( path_utils.concat_path(cur_base.get_path(), os.path.basename(cur_dir)), cur_base.get_abort(), cur_base.get_warn_size(), cur_base.get_warn_abort() ) )
+                    retlist.append( ( path_utils.concat_path(cur_base.get_path(), path_utils.basename_filtered(cur_dir)), cur_base.get_abort(), cur_base.get_warn_size(), cur_base.get_warn_abort() ) )
     return retlist
 
 def read_config(config_file):

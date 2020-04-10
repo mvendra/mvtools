@@ -31,7 +31,7 @@ def derivefoldernamefortree(fullpath):
     example: in: "/mnt/data/music" out: "music_tree_out.txt"
     """
 
-    bn = os.path.basename(fullpath).lower()
+    bn = path_utils.basename_filtered(fullpath).lower()
     return bn + "_tree_out.txt"
 
 def derivefilenameforcrontab():
@@ -145,7 +145,7 @@ class BackupPreparation:
             warn_size_each_abort_local = override_warn_abort
             warn_size_each_active_local = True
 
-        target_candidate = path_utils.concat_path(self.storage_path, os.path.basename(source_file))
+        target_candidate = path_utils.concat_path(self.storage_path, path_utils.basename_filtered(source_file))
         if os.path.exists(target_candidate):
             raise BackupPreparationException("[%s] already exists. Will not overwrite." % target_candidate)
 
