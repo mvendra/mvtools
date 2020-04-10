@@ -3,10 +3,9 @@
 import sys
 import os
 import fsquery
-import path_utils
 
 def puaq(): # print usage and quit
-    print("Usage: %s path_with_playlists" % path_util.basename_filtered(__file__))
+    print("Usage: %s path_with_playlists" % os.path.basename(__file__))
     sys.exit(1)
 
 def getcontents(thefile):

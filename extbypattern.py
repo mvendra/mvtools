@@ -80,7 +80,7 @@ def extbypattern(file_in, file_out):
     epinst.process()
 
 def puaq():
-    print("Usage: %s inputfilename [baseoutputfilename]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s inputfilename [baseoutputfilename]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

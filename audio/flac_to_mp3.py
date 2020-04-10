@@ -4,10 +4,9 @@ import sys
 import os
 
 import generic_run
-import path_utils
 
 def puaq():
-    print("Usage: %s input_file.flac" % path_utils.basename_filtered(__file__))
+    print("Usage: %s input_file.flac" % os.path.basename(__file__))
     sys.exit(1)
 
 def convert_flac_to_mp3(input_file, output_file, bitrate):
