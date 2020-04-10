@@ -252,7 +252,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
+        final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))
         bkprep.do_copy_file(self.test_source_folder1, None, None)
         self.assertTrue(os.path.exists(final_path))
 
@@ -260,7 +260,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
+        final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))
         os.mkdir(final_path)
 
         ex_raised = False
@@ -276,7 +276,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         self.assertTrue(bkprep.proc_single_config("SET_WARN_SIZE_EACH", "1", [("abort", "")]))
 
-        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
+        final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))
 
         ex_raised = False
         try:
@@ -291,7 +291,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         self.assertTrue(bkprep.proc_single_config("SET_WARN_SIZE_EACH", "4099", [("abort", "")]))
 
-        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
+        final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))
 
         ex_raised = False
         try:
@@ -306,7 +306,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         self.assertTrue(bkprep.proc_single_config("SET_WARN_SIZE_EACH", "1", []))
 
-        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
+        final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))
 
         ex_raised = False
         try:
@@ -321,7 +321,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         self.assertTrue(bkprep.proc_single_config("SET_WARN_SIZE_EACH", "1Gb", []))
 
-        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))
+        final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))
 
         ex_raised = False
         try:
@@ -435,7 +435,7 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertFalse(ex_raised)
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.file3))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))))
 
     def testProcessInstructions2(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -451,7 +451,7 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertFalse(ex_raised)
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.file3))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))))
 
     def testProcessInstructions3(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -467,7 +467,7 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertTrue(ex_raised)
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.file3))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))))
 
     def testProcessInstructionsFail1(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -482,7 +482,7 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertFalse(ex_raised)
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.nonexistant))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
 
     def testProcessInstructionsFail2(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -497,7 +497,7 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertTrue(ex_raised)
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.nonexistant))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
 
     def testProcessInstructionsFail3(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -505,7 +505,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep.instructions = []
         bkprep.instructions.append( ("COPY_PATH", self.file3, []) )
 
-        create_and_write_file.create_file_contents(path_utils.concat_path(self.prep_target, os.path.basename(self.file3)), "testcontents")
+        create_and_write_file.create_file_contents(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3)), "testcontents")
 
         ex_raised = False
         try:
@@ -533,7 +533,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        final_path = path_utils.concat_path(self.prep_target, os.path.basename(self.file3))
+        final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))
 
         bkprep.instructions = []
         bkprep.instructions.append( ("COPY_PATH", self.file3, []) )
@@ -575,10 +575,10 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
         bkprep.proc_copy_path(self.test_source_folder1, [])
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))))
 
         bkprep.proc_copy_path(self.nonexistant, [])
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.nonexistant))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
 
         ex_raised = False
         try:
@@ -587,7 +587,7 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertTrue(ex_raised)
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.nonexistant))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
 
     def testProcCopyTreeOut(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -601,8 +601,8 @@ class BackupPreparationTest(unittest.TestCase):
         with open(final_path) as f:
             str_read = f.read()
 
-        self.assertTrue( os.path.basename(self.file2) in str_read)
-        self.assertFalse( os.path.basename(self.file3) in str_read)
+        self.assertTrue( path_utils.basename_filtered(self.file2) in str_read)
+        self.assertFalse( path_utils.basename_filtered(self.file3) in str_read)
 
         ex_raised = False
         try:
@@ -623,21 +623,21 @@ class BackupPreparationTest(unittest.TestCase):
     def testBackupPreparation1(self):
         self.assertTrue(backup_preparation.backup_preparation(self.test_config_file1))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target)))
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder1))))
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.file3))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder2))))
 
     def testBackupPreparation2(self):
         self.assertTrue(backup_preparation.backup_preparation(self.test_config_file2))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target)))
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder2))))
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.file3))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder2))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder1))))
 
     def testBackupPreparation3(self):
         self.assertTrue(backup_preparation.backup_preparation(self.test_config_file4))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target)))
-        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, os.path.basename(self.test_source_folder3))))
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder3))))
 
     def testBackupPreparationFail1(self):
         self.assertFalse(backup_preparation.backup_preparation(self.test_config_file_fail1))

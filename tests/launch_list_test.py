@@ -120,15 +120,15 @@ class LaunchListTest(unittest.TestCase):
         self.assertFalse(v)
 
         for i in r:
-            if os.path.basename(i[1]) == os.path.basename(self.cmd7):
+            if path_utils.basename_filtered(i[1]) == path_utils.basename_filtered(self.cmd7):
                 self.assertTrue(i[0])
-            elif os.path.basename(i[1]) == os.path.basename(self.cmd8):
+            elif path_utils.basename_filtered(i[1]) == path_utils.basename_filtered(self.cmd8):
                 self.assertFalse(i[0])
-            elif os.path.basename(i[1]) == os.path.basename(self.cmd9):
+            elif path_utils.basename_filtered(i[1]) == path_utils.basename_filtered(self.cmd9):
                 self.assertTrue(i[0])
 
     def testListDebased(self):
-        l = [os.path.basename(self.cmd1), os.path.basename(self.cmd2), os.path.basename(self.cmd3)]
+        l = [path_utils.basename_filtered(self.cmd1), path_utils.basename_filtered(self.cmd2), path_utils.basename_filtered(self.cmd3)]
         v, r = launch_list.run_list(l, self.test_allgood)
         self.assertTrue(v)
 
@@ -138,11 +138,11 @@ class LaunchListTest(unittest.TestCase):
         self.assertFalse(v)
 
         for i in r:
-            if os.path.basename(i[1]) == os.path.basename(self.cmd7):
+            if path_utils.basename_filtered(i[1]) == path_utils.basename_filtered(self.cmd7):
                 self.assertFalse(i[0])
-            elif os.path.basename(i[1]) == os.path.basename(self.cmd8):
+            elif path_utils.basename_filtered(i[1]) == path_utils.basename_filtered(self.cmd8):
                 self.assertTrue(i[0])
-            elif os.path.basename(i[1]) == os.path.basename(self.cmd9):
+            elif path_utils.basename_filtered(i[1]) == path_utils.basename_filtered(self.cmd9):
                 self.assertFalse(i[0])
 
 if __name__ == '__main__':

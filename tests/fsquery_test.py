@@ -58,14 +58,14 @@ class FsqueryTest(unittest.TestCase):
 
         # subfolder 1
         self.sub1 = self._create_test_dir("sub1")
-        self.sub1_file1 = self._create_test_file("file1.txt", os.path.basename(self.sub1))
-        self.sub1_file2 = self._create_test_file("file2.bin", os.path.basename(self.sub1))
+        self.sub1_file1 = self._create_test_file("file1.txt", path_utils.basename_filtered(self.sub1))
+        self.sub1_file2 = self._create_test_file("file2.bin", path_utils.basename_filtered(self.sub1))
 
         # subfolder 2
         self.sub2 = self._create_test_dir("sub2")
-        self.sub2_file1 = self._create_test_file("file1.txt", os.path.basename(self.sub2))
-        self.sub2_file2 = self._create_test_file(".file2.txt", os.path.basename(self.sub2))
-        self.sub2_sub1 = self._create_test_dir(".sub1", os.path.basename(self.sub2))
+        self.sub2_file1 = self._create_test_file("file1.txt", path_utils.basename_filtered(self.sub2))
+        self.sub2_file2 = self._create_test_file(".file2.txt", path_utils.basename_filtered(self.sub2))
+        self.sub2_sub1 = self._create_test_dir(".sub1", path_utils.basename_filtered(self.sub2))
 
         return True, ""
 

@@ -490,9 +490,9 @@ class BackupProcessorTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testArtifactBase1(self):
-        artbase = backup_processor.ArtifactBase(self.test_source_folder, [os.path.basename(self.folder2)], True, False, 7, True)
+        artbase = backup_processor.ArtifactBase(self.test_source_folder, [path_utils.basename_filtered(self.folder2)], True, False, 7, True)
         self.assertEqual(artbase.get_path(), self.test_source_folder)
-        self.assertEqual(artbase.get_list_exceptions(), [os.path.basename(self.folder2)])
+        self.assertEqual(artbase.get_list_exceptions(), [path_utils.basename_filtered(self.folder2)])
         self.assertEqual(artbase.validate_exceptions(), (True, ""))
         self.assertTrue(artbase.get_descend())
         self.assertFalse(artbase.get_abort())
@@ -500,9 +500,9 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(artbase.get_warn_abort())
 
     def testArtifactBase2(self):
-        artbase = backup_processor.ArtifactBase(self.test_source_folder, [os.path.basename(self.nonexistent)], False, True, 2, False)
+        artbase = backup_processor.ArtifactBase(self.test_source_folder, [path_utils.basename_filtered(self.nonexistent)], False, True, 2, False)
         self.assertEqual(artbase.get_path(), self.test_source_folder)
-        self.assertEqual(artbase.get_list_exceptions(), [os.path.basename(self.nonexistent)])
+        self.assertEqual(artbase.get_list_exceptions(), [path_utils.basename_filtered(self.nonexistent)])
         r = artbase.validate_exceptions()
         self.assertFalse(r[0])
         self.assertFalse(artbase.get_descend())
@@ -511,7 +511,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertFalse(artbase.get_warn_abort())
 
     def testMakeBackupArtifactsList1(self):
-        artbase = backup_processor.ArtifactBase(self.test_source_folder, [ os.path.basename(self.folder2) ], True, True, 0, False)
+        artbase = backup_processor.ArtifactBase(self.test_source_folder, [ path_utils.basename_filtered(self.folder2) ], True, True, 0, False)
         res = backup_processor.make_backup_artifacts_list([artbase])
 
         tup = get_tuple_list_index(res, self.folder1)
