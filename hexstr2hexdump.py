@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def hexstring_to_hexdump(hexstring):
 
     result = ""
@@ -58,7 +60,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         puaq()
 
-    input_filename = os.path.basename(sys.argv[1])
+    input_filename = path_utils.basename_filtered(sys.argv[1])
     output_filename = ""
     if len(sys.argv) > 2:
         output_filename = sys.argv[2]

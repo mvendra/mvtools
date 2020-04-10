@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def alphanumerichex_ar(ar, p):
     if p >= len(ar):
         return False
@@ -43,11 +45,9 @@ def puaq():
     sys.exit(1)
 
 def make_output_filename(filename):
-    r = filename.find(".")
-    if (r == -1):
-        return "%s_out" % filename
-    f, e = filename.split(".")
-    return "%s_out.%s" % (f, e)
+    if filename is None:
+        filename = "blank"
+    return "%s_out.txt" % filename
 
 def getcontents(filename):
     cnt = ""
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         puaq()
 
-    input_filename = os.path.basename(sys.argv[1])
+    input_filename = path_utils.basename_filtered(sys.argv[1])
     output_filename = ""
     if len(sys.argv) > 2:
         output_filename = sys.argv[2]
