@@ -7,9 +7,9 @@ import subprocess
 def run_cmd_l(cmd_list, std_input=None, use_encoding="ascii"):
     try:
         if std_input is not None:
-            process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, encoding=use_encoding)
+            process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
         else:
-            process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, encoding=use_encoding)
+            process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
         if process.returncode == 0:
             return True, process.stdout
     except:
