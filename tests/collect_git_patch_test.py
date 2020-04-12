@@ -210,6 +210,30 @@ class CollectGitPatchTest(unittest.TestCase):
 
         self.assertGreaterEqual(len(contents_read), 40)
 
+    def testPatchHeadIdBoth(self):
+
+        v, r = collect_git_patch.collect_git_patch_head_id(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+
+        v, r = collect_git_patch.collect_git_patch_head_id(self.second_repo, self.storage_path)
+        self.assertTrue(v)
+
+        patch_file_first = path_utils.concat_path(self.storage_path, "first", "head_id.txt")
+        self.assertTrue(os.path.exists(patch_file_first))
+
+        patch_file_second = path_utils.concat_path(self.storage_path, "second", "head_id.txt")
+        self.assertTrue(os.path.exists(patch_file_second))
+
+        contents_read = ""
+        with open(patch_file_first) as f:
+            contents_read = f.read()
+        self.assertGreaterEqual(len(contents_read), 40)
+
+        contents_read = ""
+        with open(patch_file_second) as f:
+            contents_read = f.read()
+        self.assertGreaterEqual(len(contents_read), 40)
+
     def testPatchHeadStagedFail(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
