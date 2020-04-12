@@ -350,6 +350,23 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertEqual(contents_read, "newfilecontents4")
 
+    def testPatchHeadUnversioned2(self):
+
+        newfolder1 = path_utils.concat_path(self.first_repo, "newfolder1")
+        os.mkdir(newfolder1)
+        newfolder2 = path_utils.concat_path(newfolder1, "newfolder2")
+        os.mkdir(newfolder2)
+
+        newfolder2newfile1 = path_utils.concat_path(newfolder2, "newfile_twolevels.txt")
+        if not create_and_write_file.create_file_contents(newfolder2newfile1, "newfile_twolevels-contents"):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+
+        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+
+        newfile_storage = path_utils.concat_path(self.storage_path, "head_unversioned", "newfolder1", "newfolder2", "newfile_twolevels.txt")
+        self.assertTrue(os.path.exists(newfile_storage))
+
     def testPatchHeadUnversionedSub(self):
 
         newfile = path_utils.concat_path(self.second_sub, "newfile.txt")
@@ -382,6 +399,17 @@ class CollectGitPatchTest(unittest.TestCase):
 
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
         self.assertFalse(v)
+
+    def testPatchStashFail2(self):
+
+        # no stash to collect
+        git_test_fixture.git_stash(self.first_repo)
+
+        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+
+        patches = fsquery.makecontentlist(self.storage_path, False, True, False, False, False, True, None)
+        self.assertEqual(len(patches), 0)
 
     def testPatchStash(self):
 
@@ -485,10 +513,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue("second-file1-content" in contents_read)
 
     def testCollectGitPatch(self):
-        pass # mvtodo {test combinations}
-
-    # mvtodo: also test the double tap
-    # mvtodo: comb for other stuff to test too
+        pass # mvtodo {test combinations and doubletap (detect overwrites)}
 
 if __name__ == '__main__':
     unittest.main()
