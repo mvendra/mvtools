@@ -73,6 +73,9 @@ class CollectGitPatchTest(unittest.TestCase):
         if not v:
             return v, r
 
+        self.second_sub = path_utils.concat_path(self.first_repo, path_utils.basename_filtered(self.second_repo))
+        self.second_sub_file1 = path_utils.concat_path(self.second_sub, "file1.txt")
+
         v, r = git_test_fixture.git_commit(self.first_repo, "first-adding-submodule")
         if not v:
             return v, r
@@ -151,6 +154,23 @@ class CollectGitPatchTest(unittest.TestCase):
 
         self.assertTrue("extra" in contents_read)
 
+    def testPatchHeadSub(self):
+
+        with open(self.second_sub_file1, "a") as f:
+            f.write("extra_sub")
+
+        v, r = collect_git_patch.collect_git_patch_head(self.second_sub, self.storage_path)
+        self.assertTrue(v)
+
+        patch_file = path_utils.concat_path(self.storage_path, "second_head.patch")
+        self.assertTrue(os.path.exists(patch_file))
+
+        contents_read = ""
+        with open(patch_file) as f:
+            contents_read = f.read()
+
+        self.assertTrue("extra_sub" in contents_read)
+
     def testPatchHeadIdFail(self):
 
         v, r = collect_git_patch.collect_git_patch_head_id(self.first_repo, self.storage_path)
@@ -168,6 +188,20 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         patch_file = path_utils.concat_path(self.storage_path, "first_head_id.txt")
+        self.assertTrue(os.path.exists(patch_file))
+
+        contents_read = ""
+        with open(patch_file) as f:
+            contents_read = f.read()
+
+        self.assertGreaterEqual(len(contents_read), 40)
+
+    def testPatchHeadIdSub(self):
+
+        v, r = collect_git_patch.collect_git_patch_head_id(self.second_sub, self.storage_path)
+        self.assertTrue(v)
+
+        patch_file = path_utils.concat_path(self.storage_path, "second_head_id.txt")
         self.assertTrue(os.path.exists(patch_file))
 
         contents_read = ""
@@ -214,6 +248,27 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
 
         self.assertTrue("newfilecontents" in contents_read)
+
+    def testPatchHeadStagedSub(self):
+
+        newfile = path_utils.concat_path(self.second_sub, "newfile_secondsub.txt")
+        if not create_and_write_file.create_file_contents(newfile, "newfilecontents_secondsub"):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+
+        if not git_test_fixture.git_stage(self.second_sub):
+            self.fail("")
+
+        v, r = collect_git_patch.collect_git_patch_head_staged(self.second_sub, self.storage_path)
+        self.assertTrue(v)
+
+        patch_file = path_utils.concat_path(self.storage_path, "second_head_staged.patch")
+        self.assertTrue(os.path.exists(patch_file))
+
+        contents_read = ""
+        with open(patch_file) as f:
+            contents_read = f.read()
+
+        self.assertTrue("newfilecontents_secondsub" in contents_read)
 
     def testPatchHeadUnversionedFail(self):
 
@@ -295,6 +350,23 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertEqual(contents_read, "newfilecontents4")
 
+    def testPatchHeadUnversionedSub(self):
+
+        newfile = path_utils.concat_path(self.second_sub, "newfile.txt")
+        if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+
+        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.second_sub, self.storage_path)
+        self.assertTrue(v)
+
+        newfile_storage = path_utils.concat_path(self.storage_path, "head_unversioned", "newfile.txt")
+        self.assertTrue(os.path.exists(newfile_storage))
+
+        contents_read = ""
+        with open(newfile_storage) as f:
+            contents_read = f.read()
+        self.assertEqual(contents_read, "newfilecontents")
+
     def testPatchStashFail(self):
 
         with open(self.first_file1, "a") as f:
@@ -342,6 +414,24 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertTrue("stashcontent1" in contents_read)
 
+    def testPatchStashSub(self):
+
+        with open(self.second_sub_file1, "a") as f:
+            f.write("stashcontent-sub")
+
+        git_test_fixture.git_stash(self.second_sub)
+
+        v, r = collect_git_patch.collect_git_patch_stash(self.second_sub, self.storage_path)
+        self.assertTrue(v)
+
+        stash1_storage = path_utils.concat_path(self.storage_path, "second_stash@{0}.patch")
+        self.assertTrue(os.path.exists(stash1_storage))
+
+        contents_read = ""
+        with open(stash1_storage) as f:
+            contents_read = f.read()
+        self.assertTrue("stashcontent-sub" in contents_read)
+
     def testPatchPreviousFail1(self):
 
         v, r = collect_git_patch.collect_git_patch_previous(self.first_repo, self.storage_path, 5)
@@ -380,10 +470,22 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertTrue("first-file3-content" in contents_read)
 
+    def testPatchPreviousSub(self):
+
+        v, r = collect_git_patch.collect_git_patch_previous(self.second_sub, self.storage_path, 1)
+        self.assertTrue(v)
+
+        patches = self.get_patches_in_order(self.storage_path, self.second_sub)
+        self.assertEqual(len(patches), 1)
+        self.assertTrue( os.path.exists(patches[0]) )
+
+        contents_read = ""
+        with open(patches[0]) as f:
+            contents_read = f.read()
+        self.assertTrue("second-file1-content" in contents_read)
+
     def testCollectGitPatch(self):
         pass # mvtodo {test combinations}
-
-    # mvtodo: test submodule too
 
     # mvtodo: also test the double tap
     # mvtodo: comb for other stuff to test too
