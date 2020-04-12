@@ -26,12 +26,34 @@ def git_createAndCommit(repo, filename, content, commitmsg):
     if not generic_run.run_cmd("create_and_write_file.py %s %s" % (path_utils.concat_path(repo, filename), content) ):
         return False, "create_and_write_file command failed. Can't proceed."
 
-    if not generic_run.run_cmd("git -C %s add ." % repo):
-        return False, "Git command failed. Can't proceed."
+    v, r = git_stage(repo)
+    if not v:
+        return v, r
 
+    return git_commit(repo, commitmsg)
+
+def git_stage(repo, file_list=None):
+
+    add_list = []
+    if file_list is None:
+        add_list.append(".")
+    else:
+        add_list = file_list
+
+    for f in add_list:
+        if not generic_run.run_cmd("git -C %s add %s" % (repo, f)):
+            return False, "Git command failed. Can't proceed."
+
+    return True, ""
+
+def git_commit(repo, commitmsg):
     if not generic_run.run_cmd("git -C %s commit -m %s" % (repo, commitmsg) ):
         return False, "Git command failed. Can't proceed."
+    return True, ""
 
+def git_stash(repo):
+    if not generic_run.run_cmd("git -C %s stash" % repo):
+        return False, "Git command failed. Can't proceed."
     return True, ""
 
 def git_addRemote(repo, remotename, remotepath):
