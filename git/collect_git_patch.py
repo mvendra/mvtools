@@ -6,17 +6,19 @@ import os
 import generic_run
 import path_utils
 
-def get_stash_name(str_line):
-    n = str_line.find(":")
+def generic_parse(str_line, separator):
+    if str_line is None:
+        return None
+    n = str_line.find(separator)
     if n == -1:
         return None
     return str_line[:n]
 
+def get_stash_name(str_line):
+    return generic_parse(str_line, ":")
+
 def get_prev_hash(str_line):
-    n = str_line.find(" ")
-    if n == -1:
-        return None
-    return str_line[:n]
+    return generic_parse(str_line, " ")
 
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, cmd):
 
@@ -33,15 +35,15 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
     return True, ""
 
 def collect_git_patch_head(repo, storage_path):
-    fn = path_utils.concat_path(storage_path, "%s_head.patch" % repo)
+    fn = path_utils.concat_path(storage_path, "%s_head.patch" % path_utils.basename_filtered(repo))
     return collect_git_patch_cmd_generic(repo, storage_path, fn, "head", ["git", "-C", repo, "diff", "--no-ext-diff"])
 
 def collect_git_patch_head_id(repo, storage_path):
-    fn = path_utils.concat_path(storage_path, "%s_head_id.txt" % repo)
+    fn = path_utils.concat_path(storage_path, "%s_head_id.txt" % path_utils.basename_filtered(repo))
     return collect_git_patch_cmd_generic(repo, storage_path, fn, "head-id", ["git", "-C", repo, "rev-parse", "HEAD"])
 
 def collect_git_patch_head_staged(repo, storage_path):
-    fn = path_utils.concat_path(storage_path, "%s_head_staged.patch" % repo)
+    fn = path_utils.concat_path(storage_path, "%s_head_staged.patch" % path_utils.basename_filtered(repo))
     return collect_git_patch_cmd_generic(repo, storage_path, fn, "head-staged", ["git", "-C", repo, "diff", "--cached", "--no-ext-diff"])
 
 def collect_git_patch_head_unversioned(repo, storage_path):
@@ -78,7 +80,7 @@ def collect_git_patch_stash(repo, storage_path):
             return False, "Failed calling git command"
 
         stash_current_contents = r
-        stash_current_file_name = path_utils.concat_path(storage_path, "%s_%s.patch" % (repo, si))
+        stash_current_file_name = path_utils.concat_path(storage_path, "%s_%s.patch" % (path_utils.basename_filtered(repo), si))
         if os.path.exists(stash_current_file_name):
             return False, "Can't collect patch for stash: %s already exists" % stash_current_file_name
         with open(stash_current_file_name, "w") as f:
@@ -106,7 +108,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
             return False, "Failed calling git command"
 
         previous_file_content = r
-        previous_file_name = path_utils.concat_path(storage_path, "%s_previous_%d_%s.patch" % (repo, (i+1), prev_list[i]))
+        previous_file_name = path_utils.concat_path(storage_path, "%s_previous_%d_%s.patch" % (path_utils.basename_filtered(repo), (i+1), prev_list[i]))
         if os.path.exists(previous_file_name):
             return False, "Can't collect patch for previous: %s already exists" % previous_file_name
         with open(previous_file_name, "w") as f:
