@@ -22,29 +22,34 @@ def get_prev_hash(str_line):
 
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, cmd):
 
-    if os.path.exists(output_filename):
-        return False, "Can't collect patch for %s: %s already exists" % (log_title, output_filename)
+    fullbasepath = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo))
+    output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
+
+    try:
+        path_utils.guaranteefolder(fullbasepath)
+    except path_utils.PathUtilsException as puex:
+        return False, "Can't collect patch for %s: Failed guaranteeing folder [%s]" % (log_title, fullbasepath)
+
+    if os.path.exists(output_filename_full):
+        return False, "Can't collect patch for %s: %s already exists" % (log_title, output_filename_full)
 
     v, r = generic_run.run_cmd_l(cmd)
     if not v:
         return False, "Failed calling git command"
 
-    with open(output_filename, "w") as f:
+    with open(output_filename_full, "w") as f:
         f.write(r)
 
     return True, ""
 
 def collect_git_patch_head(repo, storage_path):
-    fn = path_utils.concat_path(storage_path, "%s_head.patch" % path_utils.basename_filtered(repo))
-    return collect_git_patch_cmd_generic(repo, storage_path, fn, "head", ["git", "-C", repo, "diff", "--no-ext-diff"])
+    return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", ["git", "-C", repo, "diff", "--no-ext-diff"])
 
 def collect_git_patch_head_id(repo, storage_path):
-    fn = path_utils.concat_path(storage_path, "%s_head_id.txt" % path_utils.basename_filtered(repo))
-    return collect_git_patch_cmd_generic(repo, storage_path, fn, "head-id", ["git", "-C", repo, "rev-parse", "HEAD"])
+    return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", ["git", "-C", repo, "rev-parse", "HEAD"])
 
 def collect_git_patch_head_staged(repo, storage_path):
-    fn = path_utils.concat_path(storage_path, "%s_head_staged.patch" % path_utils.basename_filtered(repo))
-    return collect_git_patch_cmd_generic(repo, storage_path, fn, "head-staged", ["git", "-C", repo, "diff", "--cached", "--no-ext-diff"])
+    return collect_git_patch_cmd_generic(repo, storage_path, "head_staged.patch", "head-staged", ["git", "-C", repo, "diff", "--cached", "--no-ext-diff"])
 
 def collect_git_patch_head_unversioned(repo, storage_path):
     v, r = generic_run.run_cmd_l(["git", "-C", repo, "ls-files", "--exclude-standard", "--others"])
@@ -53,11 +58,11 @@ def collect_git_patch_head_unversioned(repo, storage_path):
 
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
-        target_file = path_utils.concat_path(storage_path, "head_unversioned", uf)
+        target_file = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "head_unversioned", uf)
         source_file = path_utils.concat_path(repo, uf)
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
-        except PathUtilsException as puex:
+        except path_utils.PathUtilsException as puex:
             return False, "Can't collect patch for head-unversioned: Failed guaranteeing folder [%s]" % os.path.dirname(target_file)
         if os.path.exists(target_file):
             return False, "Can't collect patch for head-unversioned: %s already exists" % target_file
@@ -80,7 +85,13 @@ def collect_git_patch_stash(repo, storage_path):
             return False, "Failed calling git command"
 
         stash_current_contents = r
-        stash_current_file_name = path_utils.concat_path(storage_path, "%s_%s.patch" % (path_utils.basename_filtered(repo), si))
+        stash_current_file_name = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "%s.patch" % si)
+
+        try:
+            path_utils.guaranteefolder( os.path.dirname(stash_current_file_name) )
+        except path_utils.PathUtilsException as puex:
+            return False, "Can't collect patch for stash: Failed guaranteeing folder [%s]" % os.path.dirname(stash_current_file_name)
+
         if os.path.exists(stash_current_file_name):
             return False, "Can't collect patch for stash: %s already exists" % stash_current_file_name
         with open(stash_current_file_name, "w") as f:
@@ -108,7 +119,13 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
             return False, "Failed calling git command"
 
         previous_file_content = r
-        previous_file_name = path_utils.concat_path(storage_path, "%s_previous_%d_%s.patch" % (path_utils.basename_filtered(repo), (i+1), prev_list[i]))
+        previous_file_name = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "previous_%d_%s.patch" % ((i+1), prev_list[i]))
+
+        try:
+            path_utils.guaranteefolder( os.path.dirname(previous_file_name) )
+        except path_utils.PathUtilsException as puex:
+            return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]" % os.path.dirname(previous_file_name)
+
         if os.path.exists(previous_file_name):
             return False, "Can't collect patch for previous: %s already exists" % previous_file_name
         with open(previous_file_name, "w") as f:
