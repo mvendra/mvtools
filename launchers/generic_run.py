@@ -4,12 +4,22 @@ import sys
 import os
 import subprocess
 
-def run_cmd_l(cmd_list, std_input=None, use_encoding="ascii"):
+def run_cmd_l(cmd_list, std_input=None, use_cwd=None, use_encoding="ascii"):
     try:
         if std_input is not None:
-            process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
+
+            if use_cwd is not None:
+                process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=use_cwd, encoding=use_encoding)
+            else:
+                process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
+
         else:
-            process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
+
+            if use_cwd is not None:
+                process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=use_cwd, encoding=use_encoding)
+            else:
+                process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
+
         if process.returncode == 0:
             return True, process.stdout
     except:
@@ -17,10 +27,10 @@ def run_cmd_l(cmd_list, std_input=None, use_encoding="ascii"):
     return False, None
 
 def run_cmd_l_asc(cmd_list, std_input=None):
-    return run_cmd_l(cmd_list, std_input, "ascii")
+    return run_cmd_l(cmd_list, std_input, None, "ascii")
 
 def run_cmd_l_utf8(cmd_list, std_input=None):
-    return run_cmd_l(cmd_list, std_input, "utf8")
+    return run_cmd_l(cmd_list, std_input, None, "utf8")
 
 def run_cmd(cmd, std_input=None, use_encoding="ascii"):
     cmd_list = []
@@ -30,7 +40,7 @@ def run_cmd(cmd, std_input=None, use_encoding="ascii"):
         if len(xl) > 0:
             cmd_list.append(xl)
 
-    return run_cmd_l(cmd_list, std_input, use_encoding)
+    return run_cmd_l(cmd_list, std_input, None, use_encoding)
 
 def run_cmd_asc(cmd, std_input=None):
     return run_cmd(cmd, std_input, "ascii")
