@@ -196,6 +196,14 @@ def basename_filtered(path):
 
     return os.path.basename( filter_remove_trailing_sep ( path ) )
 
+def dirname_filtered(path):
+
+    # vanilla os.path.dirname does not work well with a path that ends
+    # in a separator character. this function removes the trailing
+    # separator when present before doing dirname.
+
+    return os.path.dirname( filter_remove_trailing_sep ( path ) )
+
 def copy_to(origin, target):
 
     # works just like the POSIX "cp" app but does not require the "-r" for copying folders
