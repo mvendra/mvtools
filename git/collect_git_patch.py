@@ -144,43 +144,45 @@ def collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unver
     if not os.path.exists(storage_path):
         return False, "Storage path %s does not exist" % storage_path
 
+    report = []
+
     # head
     if head:
         v, r = collect_git_patch_head(repo, storage_path)
         if not v:
-            return v, r
+            report.append(r)
 
     # head-id
     if head_id:
         v, r = collect_git_patch_head_id(repo, storage_path)
         if not v:
-            return v, r
+            report.append(r)
 
     # head_staged
     if head_staged:
         v, r = collect_git_patch_head_staged(repo, storage_path)
         if not v:
-            return v, r
+            report.append(r)
 
     # head_unversioned
     if head_unversioned:
         v, r = collect_git_patch_head_unversioned(repo, storage_path)
         if not v:
-            return v, r
+            report.append(r)
 
     # stash
     if stash:
         v, r = collect_git_patch_stash(repo, storage_path)
         if not v:
-            return v, r
+            report.append(r)
 
     # previous
     if previous > 0:
         v, r = collect_git_patch_previous(repo, storage_path, previous)
         if not v:
-            return v, r
+            report.append(r)
 
-    return True, "Done"
+    return (len(report)==0), report
 
 def puaq():
     print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X]" % os.path.basename(__file__))
@@ -236,7 +238,9 @@ if __name__ == "__main__":
         storage_path = os.getcwd()
 
     v, r = collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unversioned, stash, previous)
-    print(r)
-
     if not v:
+        for i in r:
+            print("Failed: %s" % i)
         sys.exit(1)
+    else:
+        print("All succeeded")

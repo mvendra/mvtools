@@ -125,6 +125,18 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, False, False, False, False, False, 0)
         self.assertTrue(v)
 
+    def testGeneralBestEffort(self):
+
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, False, False, False, False, 0)
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head.patch") ) )
+        self.assertFalse( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head_id.txt") ) )
+
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, True, False, False, False, 0)
+        self.assertFalse(v)
+        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head.patch") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head_id.txt") ) )
+
     def testPatchHeadFail(self):
 
         with open(self.first_file1, "a") as f:
