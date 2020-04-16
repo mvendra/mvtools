@@ -96,7 +96,7 @@ def rev_entries_filter(log_entries_list):
 
 def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, cmd, filter_function=None):
 
-    fullbasepath = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo))
+    fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
 
     try:
@@ -127,7 +127,6 @@ def collect_svn_patch_head_id(repo, storage_path):
     return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", ["svn", "info"], revision_filter_function)
 
 def collect_svn_patch_head_unversioned(repo, storage_path):
-
     v, r = generic_run.run_cmd_l(["svn", "status"], use_cwd=repo)
     if not v:
         return False, "Failed calling svn command"
@@ -137,14 +136,15 @@ def collect_svn_patch_head_unversioned(repo, storage_path):
         file_filtered = status_filter_function(uf)
         if file_filtered is None:
             continue
-        target_file = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "head_unversioned", file_filtered)
+        target_base = path_utils.concat_path(storage_path, repo, "head_unversioned")
+        target_file = path_utils.concat_path(target_base, os.sep)
         source_file = path_utils.concat_path(repo, file_filtered)
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
         except path_utils.PathUtilsException as puex:
             return False, "Can't collect patch for head-unversioned: Failed guaranteeing folder [%s]" % os.path.dirname(target_file)
-        if os.path.exists(target_file):
-            return False, "Can't collect patch for head-unversioned: %s already exists" % target_file
+        if os.path.exists( path_utils.concat_path(target_base, file_filtered) ):
+            return False, "Can't collect patch for head-unversioned: %s already exists" % path_utils.concat_path(target_base, file_filtered)
         if not path_utils.copy_to( source_file, target_file ):
             return False, "Can't collect patch for head-unversioned: Cant copy %s to %s" % (source_file, target_file)
 
@@ -178,7 +178,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
             return False, "Failed calling svn command"
 
         previous_file_content = r
-        previous_file_name = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "previous_%d_%s.patch" % ((i+1), prev_list[i]))
+        previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
 
         try:
             path_utils.guaranteefolder( os.path.dirname(previous_file_name) )
@@ -195,7 +195,9 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
 def collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previous):
 
     repo = path_utils.filter_remove_trailing_sep(repo)
+    repo = os.path.abspath(repo)
     storage_path = path_utils.filter_remove_trailing_sep(storage_path)
+    storage_path = os.path.abspath(storage_path)
 
     if not os.path.exists(repo):
         return False, "Repository %s does not exist" % repo

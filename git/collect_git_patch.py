@@ -22,7 +22,7 @@ def get_prev_hash(str_line):
 
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, cmd):
 
-    fullbasepath = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo))
+    fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
 
     try:
@@ -58,7 +58,7 @@ def collect_git_patch_head_unversioned(repo, storage_path):
 
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
-        target_file = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "head_unversioned", uf)
+        target_file = path_utils.concat_path(storage_path, repo, "head_unversioned", uf)
         source_file = path_utils.concat_path(repo, uf)
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
@@ -85,7 +85,7 @@ def collect_git_patch_stash(repo, storage_path):
             return False, "Failed calling git command"
 
         stash_current_contents = r
-        stash_current_file_name = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "%s.patch" % si)
+        stash_current_file_name = path_utils.concat_path(storage_path, repo, "%s.patch" % si)
 
         try:
             path_utils.guaranteefolder( os.path.dirname(stash_current_file_name) )
@@ -119,7 +119,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
             return False, "Failed calling git command"
 
         previous_file_content = r
-        previous_file_name = path_utils.concat_path(storage_path, path_utils.basename_filtered(repo), "previous_%d_%s.patch" % ((i+1), prev_list[i]))
+        previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
 
         try:
             path_utils.guaranteefolder( os.path.dirname(previous_file_name) )
@@ -136,7 +136,9 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
 def collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unversioned, stash, previous):
 
     repo = path_utils.filter_remove_trailing_sep(repo)
+    repo = os.path.abspath(repo)
     storage_path = path_utils.filter_remove_trailing_sep(storage_path)
+    storage_path = os.path.abspath(storage_path)
 
     if not os.path.exists(repo):
         return False, "Repository %s does not exist" % repo

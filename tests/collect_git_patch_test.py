@@ -90,7 +90,7 @@ class CollectGitPatchTest(unittest.TestCase):
         ret = []
         patches_ranked = {}
 
-        patches = fsquery.makecontentlist(path_utils.concat_path(path, path_utils.basename_filtered(repo_path)), False, True, False, False, False, True, None)
+        patches = fsquery.makecontentlist(path_utils.concat_path(path, repo_path), False, True, False, False, False, True, None)
         for p in patches:
             min_s = 9
             pn = path_utils.basename_filtered(p)
@@ -129,13 +129,13 @@ class CollectGitPatchTest(unittest.TestCase):
 
         v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, False, False, False, False, 0)
         self.assertTrue(v)
-        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head.patch") ) )
-        self.assertFalse( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head_id.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, self.first_repo, "head.patch") ) )
+        self.assertFalse( os.path.exists( path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt") ) )
 
         v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, True, False, False, False, 0)
         self.assertFalse(v)
-        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head.patch") ) )
-        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, "first", "head_id.txt") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, self.first_repo, "head.patch") ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt") ) )
 
     def testPatchHeadFail(self):
 
@@ -144,7 +144,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
         self.assertTrue(v)
-        patch_file = path_utils.concat_path(self.storage_path, "first", "head.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         self.assertTrue(os.path.exists(patch_file))
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
         self.assertFalse(v)
@@ -157,7 +157,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "first", "head.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         self.assertTrue(os.path.exists(patch_file))
 
         contents_read = ""
@@ -174,7 +174,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head(self.second_sub, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "second", "head.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.second_sub, "head.patch")
         self.assertTrue(os.path.exists(patch_file))
 
         contents_read = ""
@@ -188,7 +188,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_id(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "first", "head_id.txt")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
         self.assertTrue(os.path.exists(patch_file))
 
         v, r = collect_git_patch.collect_git_patch_head_id(self.first_repo, self.storage_path)
@@ -199,7 +199,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_id(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "first", "head_id.txt")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
         self.assertTrue(os.path.exists(patch_file))
 
         contents_read = ""
@@ -213,7 +213,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_id(self.second_sub, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "second", "head_id.txt")
+        patch_file = path_utils.concat_path(self.storage_path, self.second_sub, "head_id.txt")
         self.assertTrue(os.path.exists(patch_file))
 
         contents_read = ""
@@ -230,10 +230,10 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_id(self.second_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file_first = path_utils.concat_path(self.storage_path, "first", "head_id.txt")
+        patch_file_first = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
         self.assertTrue(os.path.exists(patch_file_first))
 
-        patch_file_second = path_utils.concat_path(self.storage_path, "second", "head_id.txt")
+        patch_file_second = path_utils.concat_path(self.storage_path, self.second_repo, "head_id.txt")
         self.assertTrue(os.path.exists(patch_file_second))
 
         contents_read = ""
@@ -258,7 +258,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "first", "head_staged.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head_staged.patch")
         self.assertTrue(os.path.exists(patch_file))
 
         v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
@@ -276,7 +276,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "first", "head_staged.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head_staged.patch")
         self.assertTrue(os.path.exists(patch_file))
 
         contents_read = ""
@@ -297,7 +297,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_staged(self.second_sub, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, "second", "head_staged.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.second_sub, "head_staged.patch")
         self.assertTrue(os.path.exists(patch_file))
 
         contents_read = ""
@@ -315,7 +315,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, "first", "head_unversioned", "newfile.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfile.txt")
         self.assertTrue(os.path.exists(newfile_storage))
 
         v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
@@ -348,7 +348,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, "first", "head_unversioned", "newfile.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfile.txt")
         self.assertTrue(os.path.exists(newfile_storage))
 
         contents_read = ""
@@ -356,7 +356,7 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertEqual(contents_read, "newfilecontents")
 
-        newfolder_storage = path_utils.concat_path(self.storage_path, "first", "head_unversioned", "newfolder")
+        newfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder")
         self.assertTrue(os.path.exists(newfolder_storage))
 
         newfoldernewfile2_storage = path_utils.concat_path(newfolder_storage, "newfile2.txt")
@@ -375,7 +375,7 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertEqual(contents_read, "newfilecontents3")
 
-        anotherfolder_storage = path_utils.concat_path(self.storage_path, "first", "head_unversioned", "newfolder", "anotherfolder")
+        anotherfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder", "anotherfolder")
         self.assertTrue(os.path.exists(anotherfolder_storage))
 
         anotherfoldernewfile4_storage = path_utils.concat_path(anotherfolder_storage, "newfile4.txt")
@@ -400,7 +400,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, "first", "head_unversioned", "newfolder1", "newfolder2", "newfile_twolevels.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder1", "newfolder2", "newfile_twolevels.txt")
         self.assertTrue(os.path.exists(newfile_storage))
 
     def testPatchHeadUnversionedSub(self):
@@ -412,7 +412,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_head_unversioned(self.second_sub, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, "second", "head_unversioned", "newfile.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.second_sub, "head_unversioned", "newfile.txt")
         self.assertTrue(os.path.exists(newfile_storage))
 
         contents_read = ""
@@ -430,7 +430,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        stash1_storage = path_utils.concat_path(self.storage_path, "first", "stash@{0}.patch")
+        stash1_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{0}.patch")
         self.assertTrue(os.path.exists(stash1_storage))
 
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
@@ -462,7 +462,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        stash1_storage = path_utils.concat_path(self.storage_path, "first", "stash@{0}.patch")
+        stash1_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{0}.patch")
         self.assertTrue(os.path.exists(stash1_storage))
 
         contents_read = ""
@@ -470,7 +470,7 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertTrue("stashcontent2" in contents_read)
 
-        stash2_storage = path_utils.concat_path(self.storage_path, "first", "stash@{1}.patch")
+        stash2_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{1}.patch")
         self.assertTrue(os.path.exists(stash2_storage))
 
         contents_read = ""
@@ -488,7 +488,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_stash(self.second_sub, self.storage_path)
         self.assertTrue(v)
 
-        stash1_storage = path_utils.concat_path(self.storage_path, "second", "stash@{0}.patch")
+        stash1_storage = path_utils.concat_path(self.storage_path, self.second_sub, "stash@{0}.patch")
         self.assertTrue(os.path.exists(stash1_storage))
 
         contents_read = ""
