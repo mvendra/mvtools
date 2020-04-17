@@ -155,7 +155,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
     if not previous_number > 0:
         return False, "Can't collect patch for previous: nothing to format"
 
-    v, r = generic_run.run_cmd_l(["svn", "log", "--limit", str(previous)], use_cwd=repo)
+    v, r = generic_run.run_cmd_l(["svn", "log", "--limit", str(previous_number)], use_cwd=repo)
     if not v:
         return False, "Failed calling svn command"
     log_out = r
