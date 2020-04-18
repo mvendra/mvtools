@@ -7,7 +7,7 @@ import generic_run
 
 def hash_sha_256_app_content(content):
     # returns: tuple (Boolean, String or None)
-    v, r = generic_run.run_cmd("sha256sum", content)
+    v, r = generic_run.run_cmd_l(["sha256sum"], content)
     if not v:
         return False, None
     return True, r[0:64]
