@@ -12,12 +12,12 @@ def shred_target(path):
     if os.path.isdir(path):
         ret = fsquery.makecontentlist(path, True, True, False, True, False, True, [])
         for i in ret:
-            v, r = generic_run.run_cmd_l_asc(["shred", "-z", "-u", i])
+            v, r = generic_run.run_cmd_l(["shred", "-z", "-u", i])
             if not v:
                 return False, r
         shutil.rmtree(path)
     else:
-        return generic_run.run_cmd_l_asc(["shred", "-z", "-u", path])
+        return generic_run.run_cmd_l(["shred", "-z", "-u", path])
 
 def puaq():
     print("Usage: %s target_to_shred" % os.path.basename(__file__))
