@@ -30,6 +30,22 @@ def run_cmd(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="
         return False, str(ex), None
     return False, "run_cmd NOTREACHED", None
 
+def run_cmd_simple(cmd_list):
+
+    # return format: bool, string
+    # the first (bool) returns true is everything ran fine, false if anything at all went wrong
+    # the second (string) returns stdout if the command ran fine, or an error message if anything went wrong
+
+    b, m, r = run_cmd(cmd_list)
+
+    if not b:
+        return False, "Failed running command: %s" % m
+
+    if not r.success:
+        return False, "Failed running command: %s" % r.stderr
+
+    return True, r.stdout
+
 def run_cmd_l(cmd_list, std_input=None, use_cwd=None, use_encoding="utf8"):
     try:
         if std_input is not None:

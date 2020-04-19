@@ -97,6 +97,18 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_print_err_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # sixth script
+        self.test_script_print_err_ret_1_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_print_err_ret_1_content += "import sys" + os.linesep
+        self.test_script_print_err_ret_1_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_print_err_ret_1_content += "    sys.stderr.write(\"the test error\")" + os.linesep
+        self.test_script_print_err_ret_1_content += "    sys.exit(1)"
+
+        self.test_script_print_err_ret_1_filename = path_utils.concat_path(self.scripts_folder, "test_print_err_ret_1.py")
+        if not create_and_write_file.create_file_contents(self.test_script_print_err_ret_1_filename, self.test_script_print_err_ret_1_content):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+        os.chmod(self.test_script_print_err_ret_1_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+
+        # seventh script
         self.test_script_print_input_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_print_input_content += "if __name__ == '__main__':" + os.linesep
         self.test_script_print_input_content += "    p = input(\"asking for input\")" + os.linesep
@@ -107,7 +119,7 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
         os.chmod(self.test_script_print_input_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
-        # seventh script
+        # eight script
         self.test_script_print_cmdlineargs_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_print_cmdlineargs_content += "import sys" + os.linesep
         self.test_script_print_cmdlineargs_content += "if __name__ == '__main__':" + os.linesep
@@ -119,7 +131,7 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
         os.chmod(self.test_script_print_cmdlineargs_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
-        # eight script
+        # ninth script
         self.test_script_print_utf8_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_print_utf8_content += "import sys" + os.linesep
         self.test_script_print_utf8_content += "if __name__ == '__main__':" + os.linesep
@@ -131,7 +143,7 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
         os.chmod(self.test_script_print_utf8_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
-        # ninth script
+        # tenth script
         self.test_print_file_cwd_content = "#!/usr/bin/env python3" + os.linesep
         self.test_print_file_cwd_content += "if __name__ == '__main__':" + os.linesep
         self.test_print_file_cwd_content += ("    fn = \"./%s\"" + os.linesep) % self.file_test_filename
@@ -143,7 +155,7 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
         os.chmod(self.test_print_file_cwd_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
-        # tenth script
+        # eleventh script
         self.test_custom_env_content = "#!/usr/bin/env python3" + os.linesep
         self.test_custom_env_content += "import os" + os.linesep
         self.test_custom_env_content += "if __name__ == '__main__':" + os.linesep
@@ -343,6 +355,36 @@ class GenericRunTest(unittest.TestCase):
 
         self.assertEqual(cmd_ret.stdout, custom_env_content + os.linesep)
         self.assertEqual(cmd_ret.stderr, "")
+
+    def testRunCmdSimple(self):
+
+        v, r = generic_run.run_cmd_simple(["echo", "test-for-echo"])
+        self.assertTrue(v)
+        self.assertEqual(r, "test-for-echo" + os.linesep)
+
+    def testRunCmdSimpleFail1(self):
+
+        v, r = generic_run.run_cmd_simple(["ocho"])
+        self.assertFalse(v)
+        self.assertTrue("No such file or directory" in r)
+
+    def testRunCmdSimpleFail2(self):
+
+        v, r = generic_run.run_cmd_simple([self.test_script_print_err_ret_1_filename])
+        self.assertFalse(v)
+        self.assertTrue( "the test error" in r )
+
+    def testRunCmdSimpleFail3(self):
+
+        v, r = generic_run.run_cmd_simple([])
+        self.assertFalse(v)
+        self.assertTrue( "Nothing to run" in r )
+
+    def testRunCmdSimpleFail4(self):
+
+        v, r = generic_run.run_cmd_simple(512)
+        self.assertFalse(v)
+        self.assertTrue( "is not a list" in r )
 
 if __name__ == '__main__':
     unittest.main()
