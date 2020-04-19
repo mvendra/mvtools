@@ -33,7 +33,7 @@ def make_pack(file_to_create, incl_list, excl_list=None):
 
     # main option
     tar_cmd = ["tar", "-cf", file_to_create] + incl_list
-    v, r = generic_run.run_cmd_l(tar_cmd)
+    v, r = generic_run.run_cmd_simple(tar_cmd)
     return v, r
 
 def extract(file_to_extract, target_folder):
@@ -51,7 +51,7 @@ def extract(file_to_extract, target_folder):
 
     # actual command
     tar_cmd = ["tar", "-xf", file_to_extract, "-C", target_folder]
-    v, r = generic_run.run_cmd_l(tar_cmd)
+    v, r = generic_run.run_cmd_simple(tar_cmd)
     return v, r
 
 def puaq():

@@ -107,7 +107,7 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
     if os.path.exists(output_filename_full):
         return False, "Can't collect patch for %s: %s already exists" % (log_title, output_filename_full)
 
-    v, r = generic_run.run_cmd_l(cmd, use_cwd=repo)
+    v, r = generic_run.run_cmd_simple(cmd, use_cwd=repo)
     if not v:
         return False, "Failed calling svn command"
     if filter_function is not None:
@@ -127,7 +127,7 @@ def collect_svn_patch_head_id(repo, storage_path):
     return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", ["svn", "info"], revision_filter_function)
 
 def collect_svn_patch_head_unversioned(repo, storage_path):
-    v, r = generic_run.run_cmd_l(["svn", "status"], use_cwd=repo)
+    v, r = generic_run.run_cmd_simple(["svn", "status"], use_cwd=repo)
     if not v:
         return False, "Failed calling svn command"
 
@@ -155,7 +155,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
     if not previous_number > 0:
         return False, "Can't collect patch for previous: nothing to format"
 
-    v, r = generic_run.run_cmd_l(["svn", "log", "--limit", str(previous_number)], use_cwd=repo)
+    v, r = generic_run.run_cmd_simple(["svn", "log", "--limit", str(previous_number)], use_cwd=repo)
     if not v:
         return False, "Failed calling svn command"
     log_out = r
@@ -173,7 +173,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
         return False, "Can't collect patch for previous: requested %d commits, but there are only %d in total" % (previous_number, len(prev_list))
 
     for i in range(previous_number):
-        v, r = generic_run.run_cmd_l(["svn", "diff", "-c", prev_list[i]], use_cwd=repo)
+        v, r = generic_run.run_cmd_simple(["svn", "diff", "-c", prev_list[i]], use_cwd=repo)
         if not v:
             return False, "Failed calling svn command"
 

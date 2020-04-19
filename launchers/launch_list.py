@@ -32,7 +32,7 @@ def run_list(runnable_list, base_path=None, adapter=None):
         else:
             fullcmd = [fullpath]
 
-        v, r = generic_run.run_cmd_l(fullcmd)
+        v, r = generic_run.run_cmd_simple(fullcmd)
         if not v:
             has_any_failed = True
             report.append( (False, s) )

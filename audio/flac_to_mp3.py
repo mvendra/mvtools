@@ -11,9 +11,9 @@ def puaq():
 
 def convert_flac_to_mp3(input_file, output_file, bitrate):
     cmd = ["ffmpeg", "-i", input_file, "-ab", bitrate, "-map_metadata", "0", "-id3v2_version", "3", output_file]
-    v, r = generic_run.run_cmd_l(cmd)
+    v, r = generic_run.run_cmd_simple(cmd)
     if not v:
-        print("Failed to convert file from flac to mp3")
+        print("Failed to convert file from flac to mp3: %s" % r)
 
 if __name__ == "__main__":
 

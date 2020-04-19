@@ -11,12 +11,12 @@ def detect_repo_type(path):
     if not os.path.exists(path):
         return False, "Path %s doesn't exist." % path
 
-    v, r = generic_run.run_cmd_l(["git", "-C", path, "rev-parse", "--is-bare-repository"])
+    v, r = generic_run.run_cmd_simple(["git", "-C", path, "rev-parse", "--is-bare-repository"])
     if v:
         if "true" in r:
             return True, "git/bare"
 
-    v, r = generic_run.run_cmd_l(["git", "-C", path, "rev-parse", "--is-inside-work-tree"])
+    v, r = generic_run.run_cmd_simple(["git", "-C", path, "rev-parse", "--is-inside-work-tree"])
     if v:
         if "true" in r:
             the_git_obj = path_utils.concat_path(path, ".git")

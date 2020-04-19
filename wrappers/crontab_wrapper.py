@@ -7,7 +7,7 @@ import generic_run
 import path_utils
 
 def get_crontab():
-    v, r = generic_run.run_cmd_l(["crontab", "-l"])
+    v, r = generic_run.run_cmd_simple(["crontab", "-l"])
     return v, r
 
 if __name__ == "__main__":

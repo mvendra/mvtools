@@ -30,13 +30,13 @@ def run_cmd(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="
         return False, str(ex), None
     return False, "run_cmd NOTREACHED", None
 
-def run_cmd_simple(cmd_list):
+def run_cmd_simple(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="utf8"):
 
     # return format: bool, string
     # the first (bool) returns true is everything ran fine, false if anything at all went wrong
     # the second (string) returns stdout if the command ran fine, or an error message if anything went wrong
 
-    b, m, r = run_cmd(cmd_list)
+    b, m, r = run_cmd(cmd_list, use_input, use_cwd, use_env, use_encoding)
 
     if not b:
         return False, "Failed running command: %s" % m
@@ -45,25 +45,3 @@ def run_cmd_simple(cmd_list):
         return False, "Failed running command: %s" % r.stderr
 
     return True, r.stdout
-
-def run_cmd_l(cmd_list, std_input=None, use_cwd=None, use_encoding="utf8"):
-    try:
-        if std_input is not None:
-
-            if use_cwd is not None:
-                process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=use_cwd, encoding=use_encoding)
-            else:
-                process = subprocess.run(cmd_list, check=False, input=std_input, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
-
-        else:
-
-            if use_cwd is not None:
-                process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=use_cwd, encoding=use_encoding)
-            else:
-                process = subprocess.run(cmd_list, check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding=use_encoding)
-
-        if process.returncode == 0:
-            return True, process.stdout
-    except:
-        pass
-    return False, None

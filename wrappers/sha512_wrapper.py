@@ -7,14 +7,14 @@ import generic_run
 
 def hash_sha_512_app_content(content):
     # returns: tuple (Boolean, String or None)
-    v, r = generic_run.run_cmd_l(["sha512sum"], content)
+    v, r = generic_run.run_cmd_simple(["sha512sum"], content)
     if not v:
         return False, None
     return True, r[0:128]
 
 def hash_sha_512_app_file(filename):
     # returns: tuple (Boolean, String or None)
-    v, r = generic_run.run_cmd_l(["sha512sum", filename])
+    v, r = generic_run.run_cmd_simple(["sha512sum", filename])
     if not v:
         return False, None
     return True, r[0:128]
