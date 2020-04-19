@@ -35,8 +35,9 @@ def run_list(runnable_list, base_path=None, adapter=None):
         v, r = generic_run.run_cmd_simple(fullcmd)
         if not v:
             has_any_failed = True
-            report.append( (False, s) )
+            report.append( (False, "%s failed: %s" % (s, r) ) )
         else:
+            print(r, end="")
             report.append( (True, s) )
 
     return (not has_any_failed, report)

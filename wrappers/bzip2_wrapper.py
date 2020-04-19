@@ -16,7 +16,7 @@ def compress(file_to_compress):
     # actual command
     cmd = ["bzip2", file_to_compress]
     v, r = generic_run.run_cmd_simple(cmd)
-    return v, None
+    return v, r
 
 def puaq():
     print("Usage: %s file_to_compress" % os.path.basename(__file__))

@@ -9,14 +9,14 @@ def hash_sha_256_app_content(content):
     # returns: tuple (Boolean, String or None)
     v, r = generic_run.run_cmd_simple(["sha256sum"], content)
     if not v:
-        return False, None
+        return False, r
     return True, r[0:64]
 
 def hash_sha_256_app_file(filename):
     # returns: tuple (Boolean, String or None)
     v, r = generic_run.run_cmd_simple(["sha256sum", filename])
     if not v:
-        return False, None
+        return False, r
     return True, r[0:64]
 
 def puaq():

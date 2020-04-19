@@ -16,7 +16,7 @@ def decompress(file_to_decompress):
     # actual command
     cmd = ["bunzip2", file_to_decompress]
     v, r = generic_run.run_cmd_simple(cmd)
-    return v, None
+    return v, r
 
 def puaq():
     print("Usage: %s file_to_decompress.bz2" % os.path.basename(__file__))
