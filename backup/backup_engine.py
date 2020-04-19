@@ -96,10 +96,12 @@ class BackupEngine:
             CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"
 
             # create the package
-            v = pakgen.pakgen(CURPAK, False, [it[0]]) # hash will be generated later (from the encrypted package)
+            v, r = pakgen.pakgen(CURPAK, False, [it[0]]) # hash will be generated later (from the encrypted package)
             if not v:
                 print("%sFailed generating [%s].%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.TTY_WHITE))
                 return False
+            if len(r) > 0:
+                print("Output from pakgen: %s" % r)
 
             # encrypt plain package
             v, r = encrypt.symmetric_encrypt(CURPAK_TAR_BZ2, CURPAK_TAR_BZ2_ENC, _self.PASSPHRASE)

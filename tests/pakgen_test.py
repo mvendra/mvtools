@@ -72,17 +72,17 @@ class PakGenTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testPrecheck(self):
-        v = pakgen.pakgen(self.target_file, False, [self.file_nonexistant])
+        v, r = pakgen.pakgen(self.target_file, False, [self.file_nonexistant])
         self.assertFalse(v)
 
     def testPakGen1(self):
-        v = pakgen.pakgen(self.target_file, False, [self.file1])
+        v, r = pakgen.pakgen(self.target_file, False, [self.file1])
         self.assertTrue(v)
         self.assertTrue( os.path.exists(self.target_file_tar_bz2) )
         self.assertFalse( os.path.exists ( self.target_file_tar_bz2_hash ) )
 
     def testPakGen2(self):
-        v = pakgen.pakgen(self.target_file, True, [self.file1, self.file_with_space_1, self.folder1])
+        v, r = pakgen.pakgen(self.target_file, True, [self.file1, self.file_with_space_1, self.folder1])
         self.assertTrue(v)
         self.assertTrue( os.path.exists(self.target_file_tar_bz2) )
         self.assertTrue( os.path.exists ( self.target_file_tar_bz2_hash ) )
@@ -104,7 +104,7 @@ class PakGenTest(unittest.TestCase):
         self.assertTrue( os.path.exists( ext_folder1_file1 ) )
 
     def testPakGen3(self):
-        v = pakgen.pakgen(self.target_with_space_1, True, [self.file_with_space_1, self.file_with_space_2, self.file_with_space_3, self.folder1, self.file1])
+        v, r = pakgen.pakgen(self.target_with_space_1, True, [self.file_with_space_1, self.file_with_space_2, self.file_with_space_3, self.folder1, self.file1])
         self.assertTrue(v)
         self.assertTrue( os.path.exists(self.target_with_space_1_tar_bz2) )
         self.assertTrue( os.path.exists ( self.target_with_space_1_tar_bz2_hash ) )
@@ -129,7 +129,7 @@ class PakGenTest(unittest.TestCase):
         self.assertTrue( os.path.exists( ext_file1 ) )
 
     def testPakGen4(self):
-        v = pakgen.pakgen(self.target_with_space_2, True, [self.file1])
+        v, r = pakgen.pakgen(self.target_with_space_2, True, [self.file1])
         self.assertTrue(v)
         self.assertTrue( os.path.exists(self.target_with_space_2_tar_bz2) )
         self.assertTrue( os.path.exists ( self.target_with_space_2_tar_bz2_hash ) )
@@ -144,7 +144,7 @@ class PakGenTest(unittest.TestCase):
         self.assertTrue( os.path.exists( ext_file1 ) )
 
     def testPakGen5(self):
-        v = pakgen.pakgen(self.target_with_space_3, True, [self.file1])
+        v, r = pakgen.pakgen(self.target_with_space_3, True, [self.file1])
         self.assertTrue(v)
         self.assertTrue( os.path.exists(self.target_with_space_3_tar_bz2) )
         self.assertTrue( os.path.exists ( self.target_with_space_3_tar_bz2_hash ) )
@@ -157,6 +157,16 @@ class PakGenTest(unittest.TestCase):
 
         ext_file1 = path_utils.concat_path( extracted_folder, self.file1)
         self.assertTrue( os.path.exists( ext_file1 ) )
+
+    def testPakGen_AddStrToReport(self):
+
+        report = ""
+        report = pakgen.add_str_to_report(report, "add1")
+        self.assertEqual(report, "add1")
+        report = pakgen.add_str_to_report(report, "add2")
+        self.assertEqual(report, "add1 / add2")
+        report = pakgen.add_str_to_report(report, "")
+        self.assertEqual(report, "add1 / add2")
 
 if __name__ == '__main__':
     unittest.main()

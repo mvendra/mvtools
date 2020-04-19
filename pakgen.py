@@ -9,47 +9,57 @@ import create_and_write_file
 import sha256_wrapper
 import path_utils
 
+def add_str_to_report(target_string, additional_string):
+
+    if len(additional_string) == 0:
+        return target_string
+
+    if len(target_string) == 0:
+        return additional_string
+
+    target_string += " / %s" % additional_string
+    return target_string
+
 def pakgen(filename, dohash, files):
+
+    report = ""
 
     for f in files:
         if not os.path.exists( f ):
-            print("%s does not exist." % f)
-            return False
+            return False, "%s does not exist." % f
 
     FILENAME_TAR = "%s.tar" % filename
     FILENAME_TAR_BZ2 = "%s.bz2" % FILENAME_TAR
 
     if os.path.exists(FILENAME_TAR):
-        print("%s already exists." % FILENAME_TAR)
-        return False
+        return False, "%s already exists." % FILENAME_TAR
 
     if os.path.exists(FILENAME_TAR_BZ2):
-        print("%s already exists." % FILENAME_TAR_BZ2)
-        return False
+        return False, "%s already exists." % FILENAME_TAR_BZ2
 
     v, r = tar_wrapper.make_pack(FILENAME_TAR, files)
     if not v:
-        print(r)
-        return False
+        return False, "Pakgen failed: %s" % r
+    report = add_str_to_report(report, r)
 
     v, r = bzip2_wrapper.compress(FILENAME_TAR)
     if not v:
-        print(r)
-        return False
+        return False, "Pakgen failed: %s" % r
+    report = add_str_to_report(report, r)
 
     if dohash:
         HASH_FILENAME = "%s.sha256"  % FILENAME_TAR_BZ2
         if os.path.exists(HASH_FILENAME):
-            print("%s already exists." % HASH_FILENAME)
-            return False
+            return False, "%s already exists." % HASH_FILENAME
         v, r = sha256_wrapper.hash_sha_256_app_file(FILENAME_TAR_BZ2)
         if v:
-            create_and_write_file.create_file_contents(HASH_FILENAME, r)
+            report = add_str_to_report(report, r)
+            if not create_and_write_file.create_file_contents(HASH_FILENAME, r):
+                return False, "Failed saving hash file."
         else:
-            print("Failed generating hash for %s" % FILENAME_TAR_BZ2)
-            return False
+            return False, "Failed generating hash for %s" % FILENAME_TAR_BZ2
 
-    return True
+    return True, report
 
 def puaq():
     print("Usage: %s [--file pack_filename] [--hash] (files_and_folders)" % os.path.basename(__file__))
@@ -84,6 +94,7 @@ if __name__ == "__main__":
     elif filename is None:
         filename = "newpack"
 
-    if not pakgen(filename, dohash, files):
-        print("Generating pak failed.")
+    v, r = pakgen(filename, dohash, files)
+    print(r)
+    if not v:
         sys.exit(1)
