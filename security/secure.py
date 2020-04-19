@@ -5,7 +5,6 @@ import os
 import stat
 
 import getpass
-from subprocess import call
 
 import terminal_colors
 import encrypt
