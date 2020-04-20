@@ -44,4 +44,6 @@ def run_cmd_simple(cmd_list, use_input=None, use_cwd=None, use_env=None, use_enc
     if not r.success:
         return False, "Failed running command: %s" % r.stderr
 
+    if len(r.stderr) > 0:
+        print(r.stderr, end="")
     return True, r.stdout
