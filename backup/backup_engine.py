@@ -59,7 +59,7 @@ class BackupEngine:
 
         if len(_self.BKPREPARATION) == 2:
             if len(_self.BKPREPARATION[0]) > 0:
-                print("%sPreparing...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+                print("%sPreparing...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
                 prep_cmd = [_self.BKPREPARATION[0]]
                 for prep_arg in _self.BKPREPARATION[1]:
                     prep_cmd.append(prep_arg)
@@ -68,7 +68,7 @@ class BackupEngine:
                     print("%sFailed preparing backup. Aborting.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
                     return False
 
-        print("%sDeleting old backup...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("%sDeleting old backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
         for it in _self.BKTARGETS_ROOT:
             test_subj = path_utils.concat_path(it, _self.BKTARGETS_BASEDIR)
             if not path_utils.scratchfolder(test_subj):
@@ -77,7 +77,7 @@ class BackupEngine:
             else:
                 shutil.rmtree(test_subj) # redundant but necessary
 
-        print("%sCreating backup...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("%sCreating backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
 
         path_utils.scratchfolder(_self.BKTEMP)
         BKTEMP_AND_BASEDIR = path_utils.concat_path(_self.BKTEMP, _self.BKTARGETS_BASEDIR)
@@ -86,7 +86,7 @@ class BackupEngine:
             f.write(_self.gettimestamp() + "\n")
 
         for it in _self.BKARTIFACTS:
-            print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_GREEN, it[0], datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S'), terminal_colors.TTY_WHITE))
+            print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S'), terminal_colors.TTY_WHITE))
             BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(os.path.dirname(it[0])))
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
 
@@ -153,7 +153,7 @@ class BackupEngine:
                 else:
                     print("%sGenerated backup exceeds size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE))
 
-        print("%sWriting to targets...%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("%sWriting to targets...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
 
         for it in _self.BKTARGETS_ROOT:
             shutil.copytree(BKTEMP_AND_BASEDIR, path_utils.concat_path(it, _self.BKTARGETS_BASEDIR))
