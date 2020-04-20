@@ -200,10 +200,10 @@ def collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previ
     storage_path = os.path.abspath(storage_path)
 
     if not os.path.exists(repo):
-        return False, "Repository %s does not exist" % repo
+        return False, ["Repository %s does not exist" % repo]
 
     if not os.path.exists(storage_path):
-        return False, "Storage path %s does not exist" % storage_path
+        return False, ["Storage path %s does not exist" % storage_path]
 
     report = []
 
