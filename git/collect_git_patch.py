@@ -35,7 +35,7 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
 
     v, r = generic_run.run_cmd_simple(cmd)
     if not v:
-        return False, "Failed calling git command: %s" % r
+        return False, "Failed calling git command for %s: %s. Repository: %s." % (log_title, r, repo)
 
     with open(output_filename_full, "w") as f:
         f.write(r)
@@ -54,7 +54,7 @@ def collect_git_patch_head_staged(repo, storage_path):
 def collect_git_patch_head_unversioned(repo, storage_path):
     v, r = generic_run.run_cmd_simple(["git", "-C", repo, "ls-files", "--exclude-standard", "--others"])
     if not v:
-        return False, "Failed calling git command: %s" % r
+        return False, "Failed calling git command for head-unversioned: %s. Repository: %s." % (r, repo)
 
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
@@ -75,14 +75,14 @@ def collect_git_patch_stash(repo, storage_path):
 
     v, r = generic_run.run_cmd_simple(["git", "-C", repo, "stash", "list"])
     if not v:
-        return False, "Failed calling git command: %s" % r
+        return False, "Failed calling git command for stash: %s. Repository: %s." % (r, repo)
 
     stash_list = [get_stash_name(x) for x in r.split(os.linesep) if x != ""]
     for si in stash_list:
 
         v, r = generic_run.run_cmd_simple(["git", "-C", repo, "stash", "show", "-p", "--no-ext-diff", si])
         if not v:
-            return False, "Failed calling git command: %s" % r
+            return False, "Failed calling git command for stash: %s. Repository: %s. Stash name: %s." % (r, repo, si)
 
         stash_current_contents = r
         stash_current_file_name = path_utils.concat_path(storage_path, repo, "%s.patch" % si)
@@ -106,7 +106,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
 
     v, r = generic_run.run_cmd_simple(["git", "-C", repo, "log", "--oneline"])
     if not v:
-        return False, "Failed calling git command: %s" % r
+        return False, "Failed calling git command for previous: %s. Repository: %s." % (r, repo)
 
     prev_list = [get_prev_hash(x) for x in r.split(os.linesep) if x != ""]
 
@@ -116,7 +116,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
     for i in range(previous_number):
         v, r = generic_run.run_cmd_simple(["git", "-C", repo, "show", prev_list[i]])
         if not v:
-            return False, "Failed calling git command: %s" % r
+            return False, "Failed calling git command for previous: %s. Repository: %s. Commit id: %s." % (r, repo, prev_list[i])
 
         previous_file_content = r
         previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
