@@ -109,7 +109,7 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
 
     v, r = generic_run.run_cmd_simple(cmd, use_cwd=repo)
     if not v:
-        return False, "Failed calling svn command: %s" % r
+        return False, "Failed calling svn command for %s: %s. Repository: %s." % (log_title, r, repo)
     if filter_function is not None:
         final_output = filter_function(r)
     else:
@@ -129,7 +129,7 @@ def collect_svn_patch_head_id(repo, storage_path):
 def collect_svn_patch_head_unversioned(repo, storage_path):
     v, r = generic_run.run_cmd_simple(["svn", "status"], use_cwd=repo)
     if not v:
-        return False, "Failed calling svn command: %s" % r
+        return False, "Failed calling svn command for head-unversioned: %s. Repository: %s." % (r, repo)
 
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
@@ -157,7 +157,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
 
     v, r = generic_run.run_cmd_simple(["svn", "log", "--limit", str(previous_number)], use_cwd=repo)
     if not v:
-        return False, "Failed calling svn command: %s" % r
+        return False, "Failed calling svn command for previous: %s. Repository: %s." % (r, repo)
     log_out = r
 
     sep_line = detect_separator(log_out)
@@ -175,7 +175,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
     for i in range(previous_number):
         v, r = generic_run.run_cmd_simple(["svn", "diff", "-c", prev_list[i]], use_cwd=repo)
         if not v:
-            return False, "Failed calling svn command: %s" % r
+            return False, "Failed calling svn command for previous: %s. Repository: %s. Revision: %s." % (r, repo, prev_list[i])
 
         previous_file_content = r
         previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
