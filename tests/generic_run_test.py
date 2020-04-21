@@ -166,6 +166,17 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
         os.chmod(self.test_custom_env_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
+        # twelvth script
+        self.test_malformed_output_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_malformed_output_content += "import sys" + os.linesep
+        self.test_malformed_output_content += "if __name__ == '__main__':" + os.linesep
+        self.test_malformed_output_content += "    sys.stdout.buffer.write(b\"\\xff\")"
+
+        self.test_malformed_output_filename = path_utils.concat_path(self.scripts_folder, "test_malformed_print.py")
+        if not create_and_write_file.create_file_contents(self.test_malformed_output_filename, self.test_malformed_output_content):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+        os.chmod(self.test_malformed_output_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+
         return True, ""
 
     def tearDown(self):
@@ -385,6 +396,26 @@ class GenericRunTest(unittest.TestCase):
         v, r = generic_run.run_cmd_simple(512)
         self.assertFalse(v)
         self.assertTrue( "is not a list" in r )
+
+    def testPrintStdoutMalformedFail(self):
+
+        ret = generic_run.run_cmd([self.test_malformed_output_filename], use_errors=None)
+        self.assertEqual(len(ret), 3)
+        self.assertFalse(ret[0])
+        self.assertEqual(ret[1], "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte")
+
+    def testPrintStdoutMalformed(self):
+
+        ret = generic_run.run_cmd([self.test_malformed_output_filename])
+        self.assertEqual(len(ret), 3)
+        self.assertTrue(ret[0])
+        self.assertTrue(ret[1], "OK")
+
+        cmd_ret = ret[2]
+        self.assertTrue(cmd_ret.success)
+        self.assertEqual(cmd_ret.returncode, 0)
+        self.assertEqual(cmd_ret.stdout, "")
+        self.assertEqual(cmd_ret.stderr, "")
 
 if __name__ == '__main__':
     unittest.main()
