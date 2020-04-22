@@ -403,6 +403,30 @@ class CollectGitPatchTest(unittest.TestCase):
         newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder1", "newfolder2", "newfile_twolevels.txt")
         self.assertTrue(os.path.exists(newfile_storage))
 
+    def testPatchHeadUnversioned3(self):
+
+        newfolder1 = path_utils.concat_path(self.first_repo, "newfolder1")
+        os.mkdir(newfolder1)
+        newfolder2 = path_utils.concat_path(self.first_repo, "newfolder2")
+        os.mkdir(newfolder2)
+
+        newfolder1newfile = path_utils.concat_path(newfolder1, "newfile.txt")
+        if not create_and_write_file.create_file_contents(newfolder1newfile, "newfile-contents"):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+
+        newfolder2newfile = path_utils.concat_path(newfolder2, "newfile.txt")
+        if not create_and_write_file.create_file_contents(newfolder2newfile, "newfile-contents"):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+
+        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+
+        newfolder1newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder1", "newfile.txt")
+        self.assertTrue(os.path.exists(newfolder1newfile_storage))
+
+        newfolder2newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder2", "newfile.txt")
+        self.assertTrue(os.path.exists(newfolder2newfile_storage))
+
     def testPatchHeadUnversionedSub(self):
 
         newfile = path_utils.concat_path(self.second_sub, "newfile.txt")
