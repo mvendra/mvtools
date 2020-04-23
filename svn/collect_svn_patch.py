@@ -137,14 +137,19 @@ def collect_svn_patch_head_unversioned(repo, storage_path):
         if file_filtered is None:
             continue
         target_base = path_utils.concat_path(storage_path, repo, "head_unversioned")
-        target_file = path_utils.concat_path(target_base, os.sep)
+        target_file = path_utils.concat_path(target_base, file_filtered)
         source_file = path_utils.concat_path(repo, file_filtered)
+
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
         except path_utils.PathUtilsException as puex:
             return False, "Can't collect patch for head-unversioned: Failed guaranteeing folder [%s]" % os.path.dirname(target_file)
-        if os.path.exists( path_utils.concat_path(target_base, file_filtered) ):
-            return False, "Can't collect patch for head-unversioned: %s already exists" % path_utils.concat_path(target_base, file_filtered)
+        if os.path.exists( target_file ):
+            return False, "Can't collect patch for head-unversioned: %s already exists" % target_file
+
+        if os.path.isdir(source_file): # this is necessary to avoid duplicating the copied folder
+            target_file = os.path.dirname(target_file)
+
         if not path_utils.copy_to( source_file, target_file ):
             return False, "Can't collect patch for head-unversioned: Cant copy %s to %s" % (source_file, target_file)
 
