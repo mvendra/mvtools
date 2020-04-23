@@ -11,7 +11,7 @@ class run_cmd_result:
         self.stdout = _stdout
         self.stderr = _stderr
 
-def run_cmd(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore"):
+def run_cmd(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore", use_timeout=None):
 
     # return format: bool, string, run_cmd_result
     # the first (bool) is the return of this API call only
@@ -24,19 +24,19 @@ def run_cmd(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="
         return False, "Nothing to run", None
 
     try:
-        process = subprocess.run(cmd_list, input=use_input, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=use_cwd, check=False, encoding=use_encoding, errors=use_errors, env=use_env)
+        process = subprocess.run(cmd_list, input=use_input, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=use_cwd, check=False, encoding=use_encoding, errors=use_errors, env=use_env, timeout=use_timeout)
         return True, "OK", run_cmd_result( (process.returncode==0), process.returncode, process.stdout, process.stderr )
     except Exception as ex:
         return False, str(ex), None
     return False, "run_cmd NOTREACHED", None
 
-def run_cmd_simple(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore"):
+def run_cmd_simple(cmd_list, use_input=None, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore", use_timeout=None):
 
     # return format: bool, string
     # the first (bool) returns true is everything ran fine, false if anything at all went wrong
     # the second (string) returns stdout if the command ran fine, or an error message if anything went wrong
 
-    b, m, r = run_cmd(cmd_list, use_input, use_cwd, use_env, use_encoding, use_errors)
+    b, m, r = run_cmd(cmd_list, use_input, use_cwd, use_env, use_encoding, use_errors, use_timeout)
 
     if not b:
         return False, "Failed running command: %s" % m

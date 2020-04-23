@@ -177,6 +177,17 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
         os.chmod(self.test_malformed_output_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
+        # thirteenth script
+        self.test_sleepy_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_sleepy_content += "import time" + os.linesep
+        self.test_sleepy_content += "if __name__ == '__main__':" + os.linesep
+        self.test_sleepy_content += "    time.sleep(2)" + os.linesep
+
+        self.test_sleepy_filename = path_utils.concat_path(self.scripts_folder, "test_sleepy.py")
+        if not create_and_write_file.create_file_contents(self.test_sleepy_filename, self.test_sleepy_content):
+            self.fail("create_and_write_file command failed. Can't proceed.")
+        os.chmod(self.test_sleepy_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+
         return True, ""
 
     def tearDown(self):
@@ -407,6 +418,39 @@ class GenericRunTest(unittest.TestCase):
     def testPrintStdoutMalformed(self):
 
         ret = generic_run.run_cmd([self.test_malformed_output_filename])
+        self.assertEqual(len(ret), 3)
+        self.assertTrue(ret[0])
+        self.assertTrue(ret[1], "OK")
+
+        cmd_ret = ret[2]
+        self.assertTrue(cmd_ret.success)
+        self.assertEqual(cmd_ret.returncode, 0)
+        self.assertEqual(cmd_ret.stdout, "")
+        self.assertEqual(cmd_ret.stderr, "")
+
+    def testSleepyNoTimeout(self):
+
+        ret = generic_run.run_cmd([self.test_sleepy_filename])
+        self.assertEqual(len(ret), 3)
+        self.assertTrue(ret[0])
+        self.assertTrue(ret[1], "OK")
+
+        cmd_ret = ret[2]
+        self.assertTrue(cmd_ret.success)
+        self.assertEqual(cmd_ret.returncode, 0)
+        self.assertEqual(cmd_ret.stdout, "")
+        self.assertEqual(cmd_ret.stderr, "")
+
+    def testSleepyTimeoutFail(self):
+
+        ret = generic_run.run_cmd([self.test_sleepy_filename], use_timeout=1)
+        self.assertEqual(len(ret), 3)
+        self.assertFalse(ret[0])
+        self.assertTrue("timed out after 1 second" in ret[1])
+
+    def testSleepyTimeoutPass(self):
+
+        ret = generic_run.run_cmd([self.test_sleepy_filename], use_timeout=3)
         self.assertEqual(len(ret), 3)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
