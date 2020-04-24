@@ -363,7 +363,7 @@ class GenericRunTest(unittest.TestCase):
     def testPrintCustomEnv(self):
 
         custom_env_content = "test environment value"
-        custom_env = {}
+        custom_env = os.environ.copy()
         custom_env[self.reserved_test_env_var_1] = custom_env_content
 
         ret = generic_run.run_cmd([self.test_custom_env_filename], use_env=custom_env)
