@@ -3,98 +3,10 @@
 import sys
 import os
 
-import generic_run
 import path_utils
+import svn_wrapper
 
-def generic_parse(str_line, separator):
-    if str_line is None:
-        return None
-    n = str_line.find(separator)
-    if n == -1:
-        return None
-    return str_line[:n]
-
-def get_prev_hash(str_line):
-    return generic_parse(str_line, " ")
-
-def is_non_generic(char_input, list_select):
-    for c in list_select:
-        if c == char_input:
-            return False
-    return True
-
-def is_nonnumber(thechar):
-    return is_non_generic(thechar, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
-
-def is_nonspaceortabs(thechar):
-    return is_non_generic(thechar, [" ", "\t"])
-
-def revision_filter_function(the_output):
-
-    find_string = "Revision: "
-    n = the_output.find(find_string)
-    revision_left = the_output[n + len(find_string):]
-    revision = ""
-    for i in range(len(revision_left)):
-        if is_nonnumber(revision_left[i]):
-            revision = revision_left[0:i]
-            break
-    return revision
-
-def status_filter_function(the_line):
-
-    if the_line is None:
-        return None
-    if len(the_line) == 0:
-        return None
-    if the_line[0] != "?":
-        return None
-    the_line = the_line[1:]
-
-    for i in range(len(the_line)):
-        if is_nonspaceortabs(the_line[i]):
-            return the_line[i:]
-
-def detect_separator(the_string):
-
-    if the_string is None:
-        return None
-    if len(the_string) == 0:
-        return None
-
-    rep_char = the_string[0]
-    rep_line = ""
-    for i in range(len(the_string)):
-        if is_non_generic(the_string[i], [rep_char]):
-            rep_line = the_string[0:i]
-            return rep_line
-
-def rev_single_entry_filter(log_entry):
-
-    if log_entry is None:
-        return None
-    if len(log_entry) == 0:
-        return None
-
-    na = log_entry.find("r")
-    if na == -1:
-        return None
-    nb = log_entry.find(" ", na)
-    the_rev = log_entry[na:nb]
-    return the_rev
-
-def rev_entries_filter(log_entries_list):
-
-    rev_list = []
-
-    for le in log_entries_list:
-        rle = rev_single_entry_filter(le)
-        if rle is not None:
-            rev_list.append(rle)
-
-    return rev_list
-
-def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, cmd, filter_function=None):
+def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, function, filter_function=None):
 
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
@@ -102,14 +14,14 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
     try:
         path_utils.guaranteefolder(fullbasepath)
     except path_utils.PathUtilsException as puex:
-        return False, "Can't collect patch for %s: Failed guaranteeing folder [%s]" % (log_title, fullbasepath)
+        return False, "Can't collect patch for [%s]: Failed guaranteeing folder [%s]." % (log_title, fullbasepath)
 
     if os.path.exists(output_filename_full):
-        return False, "Can't collect patch for %s: %s already exists" % (log_title, output_filename_full)
+        return False, "Can't collect patch for [%s]: [%s] already exists." % (log_title, output_filename_full)
 
-    v, r = generic_run.run_cmd_simple(cmd, use_cwd=repo)
+    v, r = function(repo)
     if not v:
-        return False, "Failed calling svn command for %s: %s. Repository: %s." % (log_title, r, repo)
+        return False, "Failed calling svn command for [%s]: [%s]. Repository: [%s]." % (log_title, r, repo)
     if filter_function is not None:
         final_output = filter_function(r)
     else:
@@ -121,19 +33,20 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
     return True, ""
 
 def collect_svn_patch_head(repo, storage_path):
-    return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", ["svn", "diff", "--internal-diff"], None)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", svn_wrapper.diff, None)
 
 def collect_svn_patch_head_id(repo, storage_path):
-    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", ["svn", "info"], revision_filter_function)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", svn_wrapper.info, svn_wrapper.revision_filter_function)
 
 def collect_svn_patch_head_unversioned(repo, storage_path):
-    v, r = generic_run.run_cmd_simple(["svn", "status"], use_cwd=repo)
+
+    v, r = svn_wrapper.status(repo)
     if not v:
-        return False, "Failed calling svn command for head-unversioned: %s. Repository: %s." % (r, repo)
+        return False, "Failed calling head-unversioned: [%s]. Repository: [%s]." % (r, repo)
 
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
-        file_filtered = status_filter_function(uf)
+        file_filtered = svn_wrapper.status_filter_function_unversioned(uf)
         if file_filtered is None:
             continue
         target_base = path_utils.concat_path(storage_path, repo, "head_unversioned")
@@ -143,44 +56,44 @@ def collect_svn_patch_head_unversioned(repo, storage_path):
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
         except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for head-unversioned: Failed guaranteeing folder [%s]" % os.path.dirname(target_file)
+            return False, "Can't collect patch for head-unversioned: Failed guaranteeing folder: [%s]." % os.path.dirname(target_file)
         if os.path.exists( target_file ):
-            return False, "Can't collect patch for head-unversioned: %s already exists" % target_file
+            return False, "Can't collect patch for head-unversioned: [%s] already exists" % target_file
 
         if os.path.isdir(source_file): # this is necessary to avoid duplicating the copied folder
             target_file = os.path.dirname(target_file)
 
         if not path_utils.copy_to( source_file, target_file ):
-            return False, "Can't collect patch for head-unversioned: Cant copy %s to %s" % (source_file, target_file)
+            return False, "Can't collect patch for head-unversioned: Cant copy [%s] to [%s]." % (source_file, target_file)
 
     return True, ""
 
 def collect_svn_patch_previous(repo, storage_path, previous_number):
 
     if not previous_number > 0:
-        return False, "Can't collect patch for previous: nothing to format"
+        return False, "Can't collect patch for previous: nothing to format."
 
-    v, r = generic_run.run_cmd_simple(["svn", "log", "--limit", str(previous_number)], use_cwd=repo)
+    v, r = svn_wrapper.log(repo, str(previous_number))
     if not v:
-        return False, "Failed calling svn command for previous: %s. Repository: %s." % (r, repo)
+        return False, "Failed calling previous: [%s]. Repository: [%s]." % (r, repo)
     log_out = r
 
-    sep_line = detect_separator(log_out)
+    sep_line = svn_wrapper.detect_separator(log_out)
     log_entries_pre = log_out.split(sep_line)
     log_entries = []
     for le in log_entries_pre:
         if le != "":
             log_entries.append(le)
 
-    prev_list = rev_entries_filter(log_entries)
+    prev_list = svn_wrapper.rev_entries_filter(log_entries)
 
     if previous_number > len(prev_list):
-        return False, "Can't collect patch for previous: requested %d commits, but there are only %d in total" % (previous_number, len(prev_list))
+        return False, "Can't collect patch for previous: requested [%d] commits, but there are only [%d] in total." % (previous_number, len(prev_list))
 
     for i in range(previous_number):
-        v, r = generic_run.run_cmd_simple(["svn", "diff", "-c", prev_list[i]], use_cwd=repo)
+        v, r = svn_wrapper.diff(repo, prev_list[i])
         if not v:
-            return False, "Failed calling svn command for previous: %s. Repository: %s. Revision: %s." % (r, repo, prev_list[i])
+            return False, "Failed calling previous: [%s]. Repository: [%s]. Revision: [%s]." % (r, repo, prev_list[i])
 
         previous_file_content = r
         previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
@@ -188,10 +101,10 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
         try:
             path_utils.guaranteefolder( os.path.dirname(previous_file_name) )
         except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]" % os.path.dirname(previous_file_name)
+            return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]." % os.path.dirname(previous_file_name)
 
         if os.path.exists(previous_file_name):
-            return False, "Can't collect patch for previous: %s already exists" % previous_file_name
+            return False, "Can't collect patch for previous: [%s] already exists." % previous_file_name
         with open(previous_file_name, "w") as f:
             f.write(previous_file_content)
 
@@ -205,10 +118,10 @@ def collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previ
     storage_path = os.path.abspath(storage_path)
 
     if not os.path.exists(repo):
-        return False, ["Repository %s does not exist" % repo]
+        return False, ["Repository [%s] does not exist." % repo]
 
     if not os.path.exists(storage_path):
-        return False, ["Storage path %s does not exist" % storage_path]
+        return False, ["Storage path [%s] does not exist." % storage_path]
 
     report = []
 
@@ -288,7 +201,7 @@ if __name__ == "__main__":
     v, r = collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previous)
     if not v:
         for i in r:
-            print("Failed: %s" % i)
+            print("Failed: [%s]." % i)
         sys.exit(1)
     else:
-        print("All succeeded")
+        print("All succeeded.")
