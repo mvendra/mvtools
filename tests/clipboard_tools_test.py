@@ -9,12 +9,6 @@ import sendtoclipboard
 
 class ClipboardToolsTest(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def testSanityCheck(self):
 
         test_string = "parabola"
