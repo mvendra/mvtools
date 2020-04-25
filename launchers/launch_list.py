@@ -7,7 +7,7 @@ import path_utils
 import generic_run
 import sanitize_terminal_line
 
-def run_list(runnable_list, base_path=None, adapter=None):
+def run_list(runnable_list, verbose=False, base_path=None, adapter=None):
 
     # first, sanitizes the list, so as to be compatible with terminal inputs
     san_run_list = []
@@ -31,6 +31,9 @@ def run_list(runnable_list, base_path=None, adapter=None):
             fullcmd = [adapter, fullpath]
         else:
             fullcmd = [fullpath]
+
+        if verbose:
+            print("Now running: %s" % fullcmd)
 
         v, r = generic_run.run_cmd_simple(fullcmd)
         if not v:
@@ -61,6 +64,7 @@ if __name__ == "__main__":
         puaq()
 
     runnable_list = sys.argv[1:]
+    verbose = False
     the_cwd = os.getcwd()
     adapter = None
 
@@ -69,7 +73,10 @@ if __name__ == "__main__":
         if not len(runnable_list) > 0:
             break
 
-        if runnable_list[0] == "--nocwd":
+        if runnable_list[0] == "--verbose":
+            verbose = True
+            runnable_list = runnable_list[1:]
+        elif runnable_list[0] == "--nocwd":
             the_cwd = None
             runnable_list = runnable_list[1:]
         elif runnable_list[0] == "--adapter":
@@ -86,7 +93,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     # runs the list
-    v, r = run_list(runnable_list, the_cwd, adapter)
+    v, r = run_list(runnable_list, verbose, the_cwd, adapter)
 
     # print the report
     print_report(v, r)

@@ -104,19 +104,19 @@ class LaunchListTest(unittest.TestCase):
 
     def testListAllGood(self):
         l = fsquery.makecontentlist(self.test_allgood, False, True, False, True, False, True, None)
-        v, r = launch_list.run_list(l, None)
+        v, r = launch_list.run_list(l, True, None)
         self.assertTrue(v)
 
     def testListAllBad(self):
         l = fsquery.makecontentlist(self.test_allbad, False, True, False, True, False, True, None)
-        v, r = launch_list.run_list(l, None)
+        v, r = launch_list.run_list(l, True, None)
         self.assertFalse(v)
         for i in r:
             self.assertFalse(i[0])
 
     def testListMixedBag(self):
         l = fsquery.makecontentlist(self.test_mixedbag, False, True, False, True, False, True, None)
-        v, r = launch_list.run_list(l, None)
+        v, r = launch_list.run_list(l, True, None)
         self.assertFalse(v)
 
         for i in r:
@@ -129,12 +129,12 @@ class LaunchListTest(unittest.TestCase):
 
     def testListDebased(self):
         l = [path_utils.basename_filtered(self.cmd1), path_utils.basename_filtered(self.cmd2), path_utils.basename_filtered(self.cmd3)]
-        v, r = launch_list.run_list(l, self.test_allgood)
+        v, r = launch_list.run_list(l, True, self.test_allgood)
         self.assertTrue(v)
 
     def testListMixedBagAdapter(self):
         l = fsquery.makecontentlist(self.test_mixedbag, False, True, False, True, False, True, None)
-        v, r = launch_list.run_list(l, None, self.adapter)
+        v, r = launch_list.run_list(l, True, None, self.adapter)
         self.assertFalse(v)
 
         for i in r:
