@@ -7,20 +7,25 @@ from subprocess import call
 
 import generic_run
 
-def puaq():
-    print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo
-    sys.exit(1)
-
-def commit_editor(repo):
-
-    retcode = call("git -C %s commit" % repo, shell=True) # mvtodo: still not supported by generic_run
-    return (retcode==0), "git_wrapper.commit_editor"
-
 def git_wrapper_standard_command(cmd, cmd_name):
     v, r = generic_run.run_cmd_simple(cmd)
     if not v:
         return False, "Failed calling %s: %s" % (cmd_name, r)
     return v, r
+
+def config(key, value, global_cfg=True):
+
+    cmd = ["git", "config"]
+    if global_cfg:
+        cmd.append("--global")
+    cmd.append(key)
+    cmd.append(value)
+
+    return git_wrapper_standard_command(cmd, "git-config")
+
+def commit_editor(repo):
+    retcode = call("git -C %s commit" % repo, shell=True) # mvtodo: still not supported by generic_run
+    return (retcode==0), "git_wrapper.commit_editor"
 
 def commit_direct(repo, params):
 
@@ -65,6 +70,10 @@ def log(repo):
 def show(repo, commit_id):
     cmd = ["git", "-C", repo, "show", commit_id]
     return git_wrapper_standard_command(cmd, "show")
+
+def puaq():
+    print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo
+    sys.exit(1)
 
 if __name__ == "__main__":
 

@@ -1,15 +1,30 @@
 #!/usr/bin/env python3
 
-from subprocess import call
+import sys
+import git_wrapper
+
+def call_and_assemble_report(report, cfg_key, cfg_val):
+    v, r = git_wrapper.config(cfg_key, cfg_val, True)
+    if not v:
+        report.append(r)
+    return report
 
 def set_git_configs(name, email):
 
-    call(["git", "config", "--global", "user.name", name])
-    call(["git", "config", "--global", "user.email", email])
+    report = call_and_assemble_report([], "user.name", name)
+    report = call_and_assemble_report(report, "user.email", email)
 
-    call(["git", "config", "--global", "diff.tool", "meld"])
-    call(["git", "config", "--global", "diff.external", "meldiff.py"])
-    call(["git", "config", "--global", "push.default", "simple"])
+    report = call_and_assemble_report(report, "diff.tool", "meld")
+    report = call_and_assemble_report(report, "diff.external", "meldiff.py")
+    report = call_and_assemble_report(report, "push.default", "simple")
+
+    if len(report) > 0:
+        print("Failures:")
+        for ri in report:
+            print(ri)
+        sys.exit(1)
+    else:
+        print("All OK")
 
 if __name__ == "__main__":
 
