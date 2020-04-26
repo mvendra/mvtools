@@ -3,10 +3,7 @@
 import sys
 import os
 
-from subprocess import check_output
-from subprocess import call
-from subprocess import CalledProcessError
-
+import git_wrapper
 import test_mvtags_in_git_cache
 import git_discover_repo_root
 
@@ -16,22 +13,13 @@ def gicom(repo, params):
         # special case. we will call git differently
         # because here we want the $EDITOR to be able to more easily
         # integrate with the calling terminal
-        retcode = call("git -C %s commit" % repo, shell=True)
-        exit(retcode)
+        v, r = git_wrapper.commit_editor(repo)
+    else:
+        v, r = git_wrapper.commit_direct(repo, params)
 
-    cmd = ["git",  "-C", repo, "commit"]
-    for p in params:
-        cmd.append(p)
-
-    try:
-        out = check_output(cmd)
-        print(out.decode("ascii").strip())
-    except CalledProcessError as cpe:
-        print("Command failed. Likely nothing is staged.")
-        exit(1)
-    except FileNotFoundError as fnfe:
-        print("Failed calling git app. Make sure it is installed.")
-        exit(2)
+    if not v:
+        print("gicom failed: %s" % r)
+    exit(v)
 
 if __name__ == "__main__":
 
@@ -64,4 +52,3 @@ if __name__ == "__main__":
         for c in check:
             print("%s has pre-commit violations." % c)
         exit(1)
-
