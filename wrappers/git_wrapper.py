@@ -39,11 +39,13 @@ def commit(repo, msg):
     cmd = ["git", "-C", repo, "commit", "-m", msg]
     return git_wrapper_standard_command(cmd, "git-commit")
 
-def diff(repo, cached=False):
+def diff(repo, cached=False, specific_file=None):
 
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff"]
     if cached:
         cmd.append("--cached")
+    if specific_file is not None:
+        cmd.append(specific_file)
 
     return git_wrapper_standard_command(cmd, "git-diff")
 

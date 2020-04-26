@@ -2,8 +2,8 @@
 
 import sys
 import os
-from subprocess import check_output
 
+import git_wrapper
 import git_repo_query
 
 def puaq():
@@ -21,23 +21,21 @@ def check_mvtags_in_file(repo, thefile):
     if not os.path.exists(thefile):
         return None
 
-    cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached", thefile]
-    try:
-        out = check_output(cmd)
-    except OSError as oe:
-        print("Unable to call git. Make sure it is installed.")
+    v, r = git_wrapper.diff(repo, True, thefile)
+    if not v:
+        print("Check mvtags failed: %s" % r)
         return None
-    out = out.decode("UTF-8").strip().lower()
+    contents = r.strip().lower()
 
     # remove first 5 lines
     nl = -1
     for x in range(5):
-        nl = out.find("\n", nl+1)
+        nl = contents.find("\n", nl+1)
         if nl == -1:
             return None
-    out = out[nl+1:]
+    contents = contents[nl+1:]
 
-    for l in out.split("\n"):
+    for l in contents.split("\n"):
         if l[0] == "+":
             r = l.find("mvtodo")
             if r != -1:
