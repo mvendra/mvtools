@@ -3,9 +3,7 @@
 import sys
 import os
 
-from subprocess import check_output
 from subprocess import call
-from subprocess import CalledProcessError
 
 import generic_run
 
@@ -18,24 +16,55 @@ def commit_editor(repo):
     retcode = call("git -C %s commit" % repo, shell=True) # mvtodo: still not supported by generic_run
     return (retcode==0), "git_wrapper.commit_editor"
 
+def git_wrapper_standard_command(cmd, cmd_name):
+    v, r = generic_run.run_cmd_simple(cmd)
+    if not v:
+        return False, "Failed calling %s: %s" % (cmd_name, r)
+    return v, r
+
 def commit_direct(repo, params):
 
     cmd = ["git",  "-C", repo, "commit"]
     for p in params:
         cmd.append(p)
 
-    v, r = generic_run.run_cmd_simple(cmd)
-    if not v:
-        return False, "Failed calling git-commit (direct) command."
-    return v, r
+    return git_wrapper_standard_command(cmd, "git-commit (direct)")
 
 def commit(repo, msg):
-
     cmd = ["git", "-C", repo, "commit", "-m", msg]
-    v, r = generic_run.run_cmd_simple(cmd)
-    if not v:
-        return False, "Failed calling git-commit command."
-    return v, r
+    return git_wrapper_standard_command(cmd, "git-commit")
+
+def diff(repo, cached=False):
+
+    cmd = ["git", "-C", repo, "diff", "--no-ext-diff"]
+    if cached:
+        cmd.append("--cached")
+
+    return git_wrapper_standard_command(cmd, "git-diff")
+
+def rev_parse(repo):
+    cmd = ["git", "-C", repo, "rev-parse", "HEAD"]
+    return git_wrapper_standard_command(cmd, "rev-parse")
+
+def ls_files(repo):
+    cmd = ["git", "-C", repo, "ls-files", "--exclude-standard", "--others"]
+    return git_wrapper_standard_command(cmd, "ls-files")
+
+def stash_list(repo):
+    cmd = ["git", "-C", repo, "stash", "list"]
+    return git_wrapper_standard_command(cmd, "stash-list")
+
+def stash_show(repo, stash_name):
+    cmd = ["git", "-C", repo, "stash", "show", "-p", "--no-ext-diff", stash_name]
+    return git_wrapper_standard_command(cmd, "stash-show")
+
+def log(repo):
+    cmd = ["git", "-C", repo, "log", "--oneline"]
+    return git_wrapper_standard_command(cmd, "log")
+
+def show(repo, commit_id):
+    cmd = ["git", "-C", repo, "show", commit_id]
+    return git_wrapper_standard_command(cmd, "show")
 
 if __name__ == "__main__":
 
