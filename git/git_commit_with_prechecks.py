@@ -6,6 +6,7 @@ import os
 import git_wrapper
 import test_mvtags_in_git_cache
 import git_discover_repo_root
+import inline_echo
 
 def gicom(repo, params):
 
@@ -19,6 +20,7 @@ def gicom(repo, params):
 
     if not v:
         print("gicom failed: %s" % r)
+    inline_echo.inline_echo(r)
     exit(v)
 
 if __name__ == "__main__":
