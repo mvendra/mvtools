@@ -22,6 +22,10 @@ if __name__ == "__main__":
 
     encpassfile = sys.argv[1]
 
+    if not os.path.exists(encpassfile):
+        print("[%s] does not exist. Aborting." % encpassfile)
+        sys.exit(1)
+
     # tests permissions of encpassfile
     p = os.stat(encpassfile)
     if p.st_mode & stat.S_IRWXG:
