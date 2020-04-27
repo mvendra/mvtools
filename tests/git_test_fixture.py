@@ -69,6 +69,12 @@ def git_addRemote(repo, remotename, remotepath):
         return False, "Git command failed. Can't proceed: %s" % r
     return True, ""
 
+def git_createAndSwitchBranch(repo, branchname):
+    v, r = generic_run.run_cmd_simple(["git", "-C", repo, "checkout", "-B", branchname])
+    if not v:
+        return False, "Git command failed. Can't proceed: %s" % r
+    return True, ""
+
 def git_pushToRemote(repo, remotename, branchname):
     v, r = generic_run.run_cmd_simple(["git", "-C", repo, "push", remotename, branchname])
     if not v:

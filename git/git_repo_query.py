@@ -233,4 +233,3 @@ if __name__ == "__main__":
 
     print("branches: %s" % get_branches(repopath))
     print("remotes: %s" % get_remotes(repopath))
-
