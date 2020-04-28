@@ -73,6 +73,18 @@ def show(repo, commit_id):
     cmd = ["git", "-C", repo, "show", commit_id]
     return git_wrapper_standard_command(cmd, "show")
 
+def status(repo):
+    cmd = ["git", "-C", repo, "status", "--porcelain"]
+    return git_wrapper_standard_command(cmd, "status")
+
+def remote_list(repo):
+    cmd = ["git", "-C", repo, "remote", "-v"]
+    return git_wrapper_standard_command(cmd, "remote")
+
+def branch(repo):
+    cmd = ["git", "-C", repo, "branch"]
+    return git_wrapper_standard_command(cmd, "branch")
+
 def puaq():
     print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo
     sys.exit(1)

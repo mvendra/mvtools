@@ -2,7 +2,8 @@
 
 import sys
 import os
-from subprocess import check_output
+
+import git_wrapper
 import path_utils
 
 def puaq(): # print usage and quit
@@ -43,13 +44,12 @@ def get_remotes(repo):
         print("%s is not a git work tree." % repo)
         return None
 
-    try:
-        out = check_output(["git", "-C", repo, "remote", "-v"])
-    except OSError as oe:
-        print("Unable to call git. Make sure it is installed.")
+    v, r = git_wrapper.remote_list(repo)
+    if not v:
+        print("get_remotes failed: %s" % r)
         return None
+    filtered_list = r.split() # removes the trailing newline
 
-    filtered_list = out.decode("ascii").split()
     # has to return multiples of 3 (name_remote, remote_path, (fetch/push))
     if len(filtered_list) == 0:
         return None
@@ -88,13 +88,11 @@ def get_branches(repo):
         print("%s is not a git work tree." % repo)
         return None
 
-    try:
-        out = check_output(["git", "-C", repo, "branch"])
-    except OSError as oe:
-        print("Unable to call git. Make sure it is installed.")
+    v, r = git_wrapper.branch(repo)
+    if not v:
+        print("get_branches failed: %s" % r)
         return None
-
-    branch_list = out.decode("ascii").split("\n")
+    branch_list = r.split("\n")
 
     # move the checked out branch to the front
     for i in branch_list:
@@ -156,13 +154,12 @@ def get_staged_files(repo):
 
     ret = []
 
-    try:
-        out = check_output(["git", "-C", repo, "status", "--porcelain"])
-    except OSError as oe:
-        print("Unable to call git. Make sure it is installed.")
+    v, r = git_wrapper.status(repo)
+    if not v:
+        print("get_staged_files failed: %s" % r)
         return None
+    out = r.strip() # removes the trailing newline
 
-    out = out.decode("ascii").strip() # removes the trailing newline
     if len(out) == 0:
         return ""
     for l in out.split("\n"):
@@ -195,13 +192,12 @@ def get_unstaged_files(repo):
 
     ret = []
 
-    try:
-        out = check_output(["git", "-C", repo, "status", "--porcelain"])
-    except OSError as oe:
-        print("Unable to call git. Make sure it is installed.")
+    v, r = git_wrapper.status(repo)
+    if not v:
+        print("get_unstaged_files failed: %s" % r)
         return None
+    out = r.strip() # removes the trailing newline
 
-    out = out.decode("ascii").strip() # removes the trailing newline
     if len(out) == 0:
         return ""
     for l in out.split("\n"):

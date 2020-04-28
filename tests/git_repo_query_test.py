@@ -35,6 +35,8 @@ class GitRepoQueryTest(unittest.TestCase):
         self.fourth_notrepo = path_utils.concat_path(self.test_dir, "fourth")
         os.mkdir(self.fourth_notrepo)
 
+        self.fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
+
         # creates test repos
         v, r = git_test_fixture.git_initRepo(self.test_dir, "second", True)
         if not v:
@@ -45,6 +47,10 @@ class GitRepoQueryTest(unittest.TestCase):
             return v, r
 
         v, r = git_test_fixture.git_cloneRepo(self.second_repo, self.third_repo, "origin")
+        if not v:
+            return v, r
+
+        v, r = git_test_fixture.git_initRepo(self.test_dir, "fifth", False)
         if not v:
             return v, r
 
@@ -84,11 +90,19 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertEqual(self.second_repo, ret["origin"]["fetch"])
         self.assertEqual(self.third_repo, ret["latest-addition"]["fetch"])
 
-        ret = git_repo_query.get_remotes(self.fourth_notrepo)
-        self.assertEqual(ret, None)
+        v, r = git_test_fixture.git_addRemote(self.first_repo, "latest-addition", self.third_repo)
+        self.assertFalse(v) # disallow duplicates
+
+        v, r = git_test_fixture.git_addRemote(self.first_repo, "リモート", self.third_repo)
+        if not v:
+            self.fail(r)
+
+        ret = git_repo_query.get_remotes(self.first_repo)
+        self.assertEqual(self.third_repo, ret["リモート"]["fetch"])
 
     def testGetBranches(self):
 
+        self.assertEqual(git_repo_query.get_branches(self.fifth_repo), None)
         self.assertEqual(git_repo_query.get_branches(self.fourth_notrepo), None)
 
         ret = git_repo_query.get_branches(self.first_repo)
@@ -104,8 +118,15 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertTrue("master" in ret)
         self.assertTrue("new-branch" in ret)
 
+        v, r = git_test_fixture.git_createAndSwitchBranch(self.first_repo, "ブランチ")
+        if not v:
+            self.fail(r)
+
+        self.assertTrue("ブランチ" in git_repo_query.get_branches(self.first_repo))
+
     def testGetCurrentBranch(self):
 
+        self.assertEqual(git_repo_query.get_current_branch(self.fifth_repo), None)
         self.assertEqual(git_repo_query.get_current_branch(self.fourth_notrepo), None)
 
         self.assertEqual(git_repo_query.get_current_branch(self.first_repo), "master")
@@ -138,6 +159,10 @@ class GitRepoQueryTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(first_more4, "more4-contents"):
             self.fail("Failed creating file %s" % first_more4)
 
+        first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
+        if not create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"):
+            self.fail("Failed creating file %s" % first_more5)
+
         v, r = git_test_fixture.git_stage(self.first_repo, [first_more1])
         if not v:
             self.fail(r)
@@ -159,11 +184,13 @@ class GitRepoQueryTest(unittest.TestCase):
             self.fail(r)
 
         ret = git_repo_query.get_staged_files(self.first_repo)
-        self.assertEqual(len(ret), 4)
+
+        self.assertEqual(len(ret), 5)
         self.assertTrue(first_more1 in ret)
         self.assertTrue(first_more2 in ret)
         self.assertTrue(first_more3 in ret)
         self.assertTrue(first_more4 in ret)
+        #self.assertTrue(first_more5 in ret) # mvtodo: might require extra system config or ...
 
     def testGetUnstagedFiles(self):
 
@@ -179,18 +206,24 @@ class GitRepoQueryTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(first_more2, "more2-contents"):
             self.fail("Failed creating file %s" % first_more2)
 
+        first_more3 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
+        if not create_and_write_file.create_file_contents(first_more3, "more3-contents"):
+            self.fail("Failed creating file %s" % first_more3)
+
         ret = git_repo_query.get_unstaged_files(self.first_repo)
-        self.assertEqual(len(ret), 2)
+        self.assertEqual(len(ret), 3)
         self.assertTrue(first_more1 in ret)
         self.assertTrue(first_more2 in ret)
+        #self.assertTrue(first_more3 in ret) # mvtodo: might require extra system config or ...
 
         v, r = git_test_fixture.git_stage(self.first_repo, [first_more1])
         if not v:
             self.fail(r)
 
         ret = git_repo_query.get_unstaged_files(self.first_repo)
-        self.assertEqual(len(ret), 1)
-        self.assertEqual(ret[0], first_more2)
+        self.assertEqual(len(ret), 2)
+        self.assertTrue(first_more2 in ret)
+        #self.assertTrue(first_more3 in ret) # mvtodo: might require extra system config or ...
 
 if __name__ == '__main__':
     unittest.main()
