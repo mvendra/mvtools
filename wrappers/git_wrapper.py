@@ -83,7 +83,7 @@ def status_simple(repo):
 
 def remote_list(repo):
     cmd = ["git", "-C", repo, "remote", "-v"]
-    return git_wrapper_standard_command(cmd, "remote")
+    return git_wrapper_standard_command(cmd, "remote-list")
 
 def branch(repo):
     cmd = ["git", "-C", repo, "branch"]
@@ -92,6 +92,10 @@ def branch(repo):
 def pull(repo, remote, branch):
     cmd = ["git", "-C", "%s" % repo, "pull", "--ff-only", remote, branch]
     return git_wrapper_standard_command(cmd, "pull")
+
+def push(repo, remote, branch):
+    cmd = ["git", "-C", repo, "push", remote, branch]
+    return git_wrapper_standard_command(cmd, "push")
 
 def puaq():
     print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo
