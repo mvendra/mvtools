@@ -74,6 +74,8 @@ class GitRepoQueryTest(unittest.TestCase):
 
     def testGetRemotes(self):
 
+        self.assertEqual(git_repo_query.get_remotes(self.fourth_notrepo), None)
+
         v, r = git_test_fixture.git_addRemote(self.first_repo, "latest-addition", self.third_repo)
         if not v:
             self.fail(r)
@@ -86,6 +88,8 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertEqual(ret, None)
 
     def testGetBranches(self):
+
+        self.assertEqual(git_repo_query.get_branches(self.fourth_notrepo), None)
 
         ret = git_repo_query.get_branches(self.first_repo)
         self.assertEqual(len(ret), 1)
@@ -102,6 +106,8 @@ class GitRepoQueryTest(unittest.TestCase):
 
     def testGetCurrentBranch(self):
 
+        self.assertEqual(git_repo_query.get_current_branch(self.fourth_notrepo), None)
+
         self.assertEqual(git_repo_query.get_current_branch(self.first_repo), "master")
 
         v, r = git_test_fixture.git_createAndSwitchBranch(self.first_repo, "another-branch")
@@ -111,6 +117,8 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertEqual(git_repo_query.get_current_branch(self.first_repo), "another-branch")
 
     def testGetStagedFiles(self):
+
+        self.assertEqual(git_repo_query.get_staged_files(self.fourth_notrepo), None)
 
         self.assertEqual(git_repo_query.get_staged_files(self.first_repo), "")
 
@@ -158,6 +166,8 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertTrue(first_more4 in ret)
 
     def testGetUnstagedFiles(self):
+
+        self.assertEqual(git_repo_query.get_unstaged_files(self.fourth_notrepo), None)
 
         self.assertEqual(git_repo_query.get_unstaged_files(self.first_repo), "")
 
