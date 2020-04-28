@@ -89,6 +89,10 @@ def branch(repo):
     cmd = ["git", "-C", repo, "branch"]
     return git_wrapper_standard_command(cmd, "branch")
 
+def pull(repo, remote, branch):
+    cmd = ["git", "-C", "%s" % repo, "pull", "--ff-only", remote, branch]
+    return git_wrapper_standard_command(cmd, "pull")
+
 def puaq():
     print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo
     sys.exit(1)

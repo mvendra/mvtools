@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import terminal_colors
-
-from subprocess import check_output
+import git_wrapper
 
 def do_pull(repo, remotes, branches):
 
@@ -16,11 +15,11 @@ def do_pull(repo, remotes, branches):
     for rm in remotes_list:
         for bn in branches:
 
-            try:
-                out = check_output(["git", "-C", "%s" % repo, "pull", "--ff-only", rm, bn])
+            v, r = git_wrapper.pull(repo, rm, bn)
+            if v:
                 out = "OK."
                 color = terminal_colors.TTY_GREEN
-            except:
+            else:
                 hasanyfailed = True
                 out = "Failed."
                 color = terminal_colors.TTY_RED
