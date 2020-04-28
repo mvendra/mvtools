@@ -3,24 +3,18 @@
 import sys
 import os
 import git_visitor_base
-from subprocess import check_output
-from subprocess import CalledProcessError
+import git_wrapper
 
 def visitor_status(repos, options):
 
-    for r in repos:
-        try:
-            out = check_output(["git", "-C", r, "status", "-s"])
-        except CalledProcessError as cpe:
-            print("Git status returned error.")
+    for repo in repos:
+
+        v, r = git_wrapper.status_simple(repo)
+        if not v:
+            print("visitor-status failed: %s" % r)
             return False
-        except OSError as oe:
-            print("Failed calling git. Make sure it is installed.")
-            return False
-        if len(out) == 0:
-            pass # clean HEAD
-        else:
-            print("%s is dirty." % r)
+        if len(r) != 0:
+            print("%s is dirty." % repo)
 
     return True
 

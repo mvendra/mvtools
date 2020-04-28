@@ -77,6 +77,10 @@ def status(repo):
     cmd = ["git", "-C", repo, "status", "--porcelain"]
     return git_wrapper_standard_command(cmd, "status")
 
+def status_simple(repo):
+    cmd = ["git", "-C", repo, "status", "-s"]
+    return git_wrapper_standard_command(cmd, "status-simple")
+
 def remote_list(repo):
     cmd = ["git", "-C", repo, "remote", "-v"]
     return git_wrapper_standard_command(cmd, "remote")
