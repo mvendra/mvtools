@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import terminal_colors
-
-from subprocess import check_output
+import git_wrapper
 
 def do_fetch(repo, remotes):
 
@@ -13,11 +12,11 @@ def do_fetch(repo, remotes):
 
     print("\n* Fetching on %s ..." % repo)
     hasanyfailed = False
-    try:
-        out = check_output(["git", "-C", repo, "fetch", "--multiple"] + remotes_list)
+    v, r = git_wrapper.fetch(repo, remotes_list)
+    if v:
         out = "OK."
         color = terminal_colors.TTY_GREEN
-    except:
+    else:
         hasanyfailed = True
         out = "Failed."
         color = terminal_colors.TTY_RED
