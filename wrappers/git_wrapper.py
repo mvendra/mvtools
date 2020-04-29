@@ -21,33 +21,33 @@ def config(key, value, global_cfg=True):
     cmd.append(key)
     cmd.append(value)
 
-    return git_wrapper_standard_command(cmd, "git-config")
+    return git_wrapper_standard_command(cmd, "config")
 
 def commit_editor(repo):
     retcode = call("git -C %s commit" % repo, shell=True) # mvtodo: still not supported by generic_run
     return (retcode==0), "git_wrapper.commit_editor"
 
 def commit_direct(repo, params):
-
     cmd = ["git",  "-C", repo, "commit"]
     for p in params:
         cmd.append(p)
-
-    return git_wrapper_standard_command(cmd, "git-commit (direct)")
+    return git_wrapper_standard_command(cmd, "commit-direct")
 
 def commit(repo, msg):
     cmd = ["git", "-C", repo, "commit", "-m", msg]
-    return git_wrapper_standard_command(cmd, "git-commit")
+    return git_wrapper_standard_command(cmd, "commit")
 
-def diff(repo, cached=False, specific_file=None):
-
+def diff(repo, specific_file=None):
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff"]
-    if cached:
-        cmd.append("--cached")
     if specific_file is not None:
         cmd.append(specific_file)
+    return git_wrapper_standard_command(cmd, "diff")
 
-    return git_wrapper_standard_command(cmd, "git-diff")
+def diff_cached(repo, specific_file=None):
+    cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached"]
+    if specific_file is not None:
+        cmd.append(specific_file)
+    return git_wrapper_standard_command(cmd, "diff-cached")
 
 def rev_parse(repo):
     cmd = ["git", "-C", repo, "rev-parse", "HEAD"]

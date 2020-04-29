@@ -20,7 +20,7 @@ def get_stash_name(str_line):
 def get_prev_hash(str_line):
     return generic_parse(str_line, " ")
 
-def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, function, *args):
+def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, function):
 
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
@@ -33,16 +33,7 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
     if os.path.exists(output_filename_full):
         return False, "Can't collect patch for %s: %s already exists" % (log_title, output_filename_full)
 
-    # mvtodo: find a better way to do the following:
-    if len(args) == 0:
-        v, r = function(repo)
-    elif len(args) == 1:
-        v, r = function(repo, args[0])
-    elif len(args) == 2:
-        v, r = function(repo, args[0], args[1])
-    else:
-        return False, ""
-
+    v, r = function(repo)
     if not v:
         return False, "Failed calling git command for %s: %s. Repository: %s." % (log_title, r, repo)
 
@@ -55,7 +46,7 @@ def collect_git_patch_head(repo, storage_path):
     return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", git_wrapper.diff)
 
 def collect_git_patch_head_staged(repo, storage_path):
-    return collect_git_patch_cmd_generic(repo, storage_path, "head_staged.patch", "head-staged", git_wrapper.diff, True)
+    return collect_git_patch_cmd_generic(repo, storage_path, "head_staged.patch", "head-staged", git_wrapper.diff_cached)
 
 def collect_git_patch_head_id(repo, storage_path):
     return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", git_wrapper.rev_parse)
