@@ -3,15 +3,13 @@
 import sys
 import os
 
-from subprocess import check_output
-
 import git_repo_query
 
 def runcmd(cmd):
     if os.system(cmd) != 0:
         raise BaseException("%s failed!" % cmd)
 
-def git_banish_file(fname, repo):
+def git_banish_file(repo, fname):
 
     # check if fname exists
     if not os.path.exists(fname):
@@ -46,5 +44,4 @@ if __name__ == "__main__":
     else:
         repo = os.getcwd()
 
-    git_banish_file(filename, repo)
-
+    git_banish_file(repo, filename)
