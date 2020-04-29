@@ -101,9 +101,13 @@ def push(repo, remote, branch):
     cmd = ["git", "-C", repo, "push", remote, branch]
     return git_wrapper_standard_command(cmd, "push")
 
-def fetch(repo, remotes):
+def fetch_all(repo):
+    cmd = ["git", "-C", repo, "fetch", "--all"]
+    return git_wrapper_standard_command(cmd, "fetch-all")
+
+def fetch_multiple(repo, remotes):
     cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes
-    return git_wrapper_standard_command(cmd, "fetch")
+    return git_wrapper_standard_command(cmd, "fetch-multiple")
 
 def puaq():
     print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo

@@ -12,7 +12,7 @@ def do_fetch(repo, remotes):
 
     print("\n* Fetching on %s ..." % repo)
     hasanyfailed = False
-    v, r = git_wrapper.fetch(repo, remotes_list)
+    v, r = git_wrapper.fetch_multiple(repo, remotes_list)
     if v:
         out = "OK."
         color = terminal_colors.TTY_GREEN

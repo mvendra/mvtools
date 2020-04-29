@@ -2,7 +2,8 @@
 
 import sys
 import os
-from subprocess import check_output
+
+import git_wrapper
 
 def puaq(): # print usage and quit
     print("Usage: %s repo_path." % os.path.basename(__file__))
@@ -16,11 +17,10 @@ if __name__ == "__main__":
     repo_path = sys.argv[1]
     print("Fetching %s..." % repo_path)
 
-    try:
-        out = check_output(["git", "-C", repo_path, "fetch", "--all"])
+    v, r = git_wrapper.fetch_all(repo_path)
+    if v:
         out = "Done with success."
-    except:
-        out = "Failed."
+    else:
+        out = "Failed: %s" % r
 
     print("\n%s" % out)
-
