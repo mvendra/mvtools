@@ -6,21 +6,20 @@ Sends to the clipboard the last commit's message,
 without the decorations.
 """
 
-from subprocess import check_output
-from subprocess import CalledProcessError
+import os
+import sys
 
+import git_wrapper
 import sendtoclipboard
 
-def copy_last_commit_message():
-    try:
-        out = check_output(["git", "log"])
-    except CalledProcessError as cpe:
-        print("Call to git log returned error.")
-        exit(1)
-    except OSError as oe:
-        print("Call to git failed. Make sure it is installed.")
-        exit(1)
-    msg = remove_gitlog_decorations(out.decode("ascii"))
+def copy_last_commit_message(repo):
+
+    v, r = git_wrapper.log(repo)
+    if not v:
+        print("copy_last_commit_message failed: %s" % r)
+        sys.exit(1)
+
+    msg = remove_gitlog_decorations(r)
     if msg is not None:
         sendtoclipboard.sendtoclipboard(msg)
 
@@ -58,5 +57,8 @@ def remove_gitlog_decorations(commitmsg):
     return res
 
 if __name__ == "__main__":
-    copy_last_commit_message()
 
+    repo_target = os.getcwd()
+    if len(sys.argv) > 1:
+        repo_target = sys.argv[1]
+    copy_last_commit_message(repo_target)

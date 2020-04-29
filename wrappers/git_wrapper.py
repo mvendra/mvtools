@@ -65,8 +65,12 @@ def stash_show(repo, stash_name):
     cmd = ["git", "-C", repo, "stash", "show", "-p", "--no-ext-diff", stash_name]
     return git_wrapper_standard_command(cmd, "stash-show")
 
-def log(repo):
+def log_oneline(repo):
     cmd = ["git", "-C", repo, "log", "--oneline"]
+    return git_wrapper_standard_command(cmd, "log-oneline")
+
+def log(repo):
+    cmd = ["git", "-C", repo, "log"]
     return git_wrapper_standard_command(cmd, "log")
 
 def show(repo, commit_id):

@@ -113,7 +113,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
     if not previous_number > 0:
         return False, "Can't collect patch for previous: nothing to format"
 
-    v, r = git_wrapper.log(repo)
+    v, r = git_wrapper.log_oneline(repo)
     if not v:
         return False, "Failed calling git command for previous: %s. Repository: %s." % (r, repo)
 
