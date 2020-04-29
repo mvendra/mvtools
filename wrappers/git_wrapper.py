@@ -85,12 +85,16 @@ def remote_list(repo):
     cmd = ["git", "-C", repo, "remote", "-v"]
     return git_wrapper_standard_command(cmd, "remote-list")
 
+def remote_change_url(repo, remote, new_url):
+    cmd = ["git", "-C", repo, "remote", "set-url", remote, new_url]
+    return git_wrapper_standard_command(cmd, "remote-change-url")
+
 def branch(repo):
     cmd = ["git", "-C", repo, "branch"]
     return git_wrapper_standard_command(cmd, "branch")
 
 def pull(repo, remote, branch):
-    cmd = ["git", "-C", "%s" % repo, "pull", "--ff-only", remote, branch]
+    cmd = ["git", "-C", repo, "pull", "--ff-only", remote, branch]
     return git_wrapper_standard_command(cmd, "pull")
 
 def push(repo, remote, branch):

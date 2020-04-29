@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import terminal_colors
-
-from subprocess import check_output
+import git_wrapper
 
 def remote_change_url(repo, remote, operation, newpath):
 
@@ -12,19 +11,15 @@ def remote_change_url(repo, remote, operation, newpath):
 
     print("\n* Changing %s's %s remote (%s) ..." % (repo, operation, remote))
 
-    try:
-        # currently (september 2016), there is no support on git's side for specifying fetch operations.
-        # so, for now, the operation is ignored
-        #out = check_output(["git", "-C", "%s" % repo, "remote", "set-url", "--%s" % operation, remote, newpath])
-        out = check_output(["git", "-C", "%s" % repo, "remote", "set-url", remote, newpath])
+    v, r = git_wrapper.remote_change_url(repo, remote, newpath)
+    if v:
         out = "OK."
         color = terminal_colors.TTY_GREEN
-    except:
+    else:
         fail = True
         out = "Failed."
         color = terminal_colors.TTY_RED
 
-    #report = "%sChanging %s's %s remote (%s) to %s: %s%s" % (color, repo, operation, remote, newpath, out, ORIGINAL_COLOR)
     report = "%sChanging %s's remote (%s) to %s: %s%s" % (color, repo, remote, newpath, out, ORIGINAL_COLOR)
 
     return fail, report
