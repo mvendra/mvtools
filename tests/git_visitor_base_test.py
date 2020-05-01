@@ -6,11 +6,9 @@ import shutil
 import unittest
 
 import git_test_fixture
-
+import git_wrapper
 import git_visitor_base
-
 import path_utils
-
 import mvtools_test_fixture
 
 class GitVisitorBaseTest(unittest.TestCase):
@@ -47,15 +45,15 @@ class GitVisitorBaseTest(unittest.TestCase):
         self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "first", False)
+        v, r = git_wrapper.init(self.test_dir, "first", False)
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "second", False)
+        v, r = git_wrapper.init(self.test_dir, "second", False)
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "third", False)
+        v, r = git_wrapper.init(self.test_dir, "third", False)
         if not v:
             return v, r
 
@@ -175,11 +173,11 @@ class GitVisitorBaseTest(unittest.TestCase):
 
     def testApplyFilters(self):
 
-        v, r = git_test_fixture.git_addRemote(self.first_repo, "origin", self.second_repo)
+        v, r = git_wrapper.remote_add(self.first_repo, "origin", self.second_repo)
         if not v:
             self.fail(r)
 
-        v, r = git_test_fixture.git_addRemote(self.first_repo, "third_remote", self.third_repo)
+        v, r = git_wrapper.remote_add(self.first_repo, "third_remote", self.third_repo)
         if not v:
             self.fail(r)
 
