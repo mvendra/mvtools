@@ -30,11 +30,11 @@ def git_createAndCommit(repo, filename, content, commitmsg):
     if not v:
         return False, "create_and_write_file command failed. Can't proceed: %s" % r
 
-    v, r = git_stage(repo)
+    v, r = git_stage(repo) # mvtodo: use git_wrapper
     if not v:
         return v, r
 
-    return git_commit(repo, commitmsg)
+    return git_commit(repo, commitmsg) # mvtodo: use git_wrapper
 
 def git_stage(repo, file_list=None):
 
