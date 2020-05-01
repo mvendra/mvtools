@@ -6,6 +6,7 @@ import shutil
 import unittest
 
 import git_test_fixture
+import git_wrapper
 import mvtools_test_fixture
 import path_utils
 
@@ -46,20 +47,20 @@ class GitSubPushTest(unittest.TestCase):
         self.fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "first", True)
+        v, r = git_wrapper.init(self.test_dir, "first", True)
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "second", True)
+        v, r = git_wrapper.init(self.test_dir, "second", True)
         if not v:
             return v, r
 
         # clone third and fourth from first and second, respectively
-        v, r = git_test_fixture.git_cloneRepo(self.first_repo, self.third_repo, "origin")
+        v, r = git_wrapper.clone(self.first_repo, self.third_repo, "origin")
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, self.fourth_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, self.fourth_repo, "origin")
         if not v:
             return v, r
 
@@ -70,7 +71,7 @@ class GitSubPushTest(unittest.TestCase):
             return v, r
 
         # push third
-        v, r = git_test_fixture.git_pushToRemote(self.third_repo, "origin", "master")
+        v, r = git_wrapper.push(self.third_repo, "origin", "master")
         if not v:
             return v, r
 
@@ -81,7 +82,7 @@ class GitSubPushTest(unittest.TestCase):
             return v, r
 
         # push fourth
-        v, r = git_test_fixture.git_pushToRemote(self.fourth_repo, "origin", "master")
+        v, r = git_wrapper.push(self.fourth_repo, "origin", "master")
         if not v:
             return v, r
 
@@ -94,7 +95,7 @@ class GitSubPushTest(unittest.TestCase):
 
         # add first as submodule of third
         sub3_first = path_utils.concat_path(self.third_repo, "first")
-        v, r = git_test_fixture.git_addSubmodule(self.first_repo, self.third_repo)
+        v, r = git_wrapper.submodule_add(self.first_repo, self.third_repo)
         if not v:
             self.fail(r)
 
@@ -109,7 +110,7 @@ class GitSubPushTest(unittest.TestCase):
 
         # clone fifth from first
         fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
-        v, r = git_test_fixture.git_cloneRepo(self.first_repo, fifth_repo, "origin")
+        v, r = git_wrapper.clone(self.first_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
 
