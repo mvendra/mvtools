@@ -5,7 +5,7 @@ import os
 import shutil
 import unittest
 
-import git_test_fixture
+import git_wrapper
 import mvtools_test_fixture
 import path_utils
 
@@ -40,15 +40,15 @@ class GitVisitorStatusTest(unittest.TestCase):
         self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "first", False)
+        v, r = git_wrapper.init(self.test_dir, "first", False)
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "second", False)
+        v, r = git_wrapper.init(self.test_dir, "second", False)
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "third", False)
+        v, r = git_wrapper.init(self.test_dir, "third", False)
         if not v:
             return v, r
 
