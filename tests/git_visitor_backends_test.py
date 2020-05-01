@@ -6,6 +6,7 @@ import shutil
 import unittest
 
 import git_test_fixture
+import git_wrapper
 import path_utils
 
 import git_pull
@@ -49,15 +50,15 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "second", True)
+        v, r = git_wrapper.init(self.test_dir, "second", True)
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, self.first_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, self.first_repo, "origin")
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, self.third_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, self.third_repo, "origin")
         if not v:
             return v, r
 
@@ -67,12 +68,12 @@ class GitVisitorBackendsTest(unittest.TestCase):
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_pushToRemote(self.first_repo, "origin", "master")
+        v, r = git_wrapper.push(self.first_repo, "origin", "master")
         if not v:
             return v, r
 
         # pull changes from first into third, through second
-        v, r = git_test_fixture.git_pullFromRemote(self.third_repo, "origin", "master")
+        v, r = git_wrapper.pull(self.third_repo, "origin", "master")
         if not v:
             return v, r
 
@@ -91,7 +92,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
         if not v:
             self.fail(r)
 
-        v, r = git_test_fixture.git_pushToRemote(self.third_repo, "origin", "master")
+        v, r = git_wrapper.push(self.third_repo, "origin", "master")
         if not v:
             self.fail(r)
 
@@ -134,7 +135,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.assertFalse(v)
 
         # pull the file into first we just pushed from third
-        v, r = git_test_fixture.git_pullFromRemote(self.first_repo, "origin", "master")
+        v, r = git_wrapper.pull(self.first_repo, "origin", "master")
         if not v:
             self.fail(r)
 
@@ -151,7 +152,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
         if not v:
             self.fail(r)
 
-        v, r = git_test_fixture.git_pushToRemote(self.third_repo, "origin", "master")
+        v, r = git_wrapper.push(self.third_repo, "origin", "master")
         if not v:
             self.fail(r)
 
@@ -169,7 +170,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.assertFalse(v)
 
         # merges after the fetch
-        v, r = git_test_fixture.git_mergeWithRemote(self.first_repo, "origin", "master")
+        v, r = git_wrapper.merge(self.first_repo, "origin", "master")
         if not v:
             self.fail(r)
 
@@ -184,7 +185,7 @@ class GitVisitorBackendsTest(unittest.TestCase):
         fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
         fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
 
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "fourth", True)
+        v, r = git_wrapper.init(self.test_dir, "fourth", True)
         if not v:
             self.fail(r)
 
@@ -197,12 +198,12 @@ class GitVisitorBackendsTest(unittest.TestCase):
         self.assertFalse(v)
 
         # push to new remote
-        v, r = git_test_fixture.git_pushToRemote(self.first_repo, "origin", "master")
+        v, r = git_wrapper.push(self.first_repo, "origin", "master")
         if not v:
             self.fail(r)
 
         # clone fourth into fifth to check for repo1's contents
-        v, r = git_test_fixture.git_cloneRepo(fourth_repo, fifth_repo, "origin")
+        v, r = git_wrapper.clone(fourth_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
 
