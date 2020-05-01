@@ -37,6 +37,19 @@ def commit(repo, msg):
     cmd = ["git", "-C", repo, "commit", "-m", msg]
     return git_wrapper_standard_command(cmd, "commit")
 
+def init(repo_base, repo_name, bare):
+    cmd = ["git", "-C", repo_base, "init", repo_name]
+    if bare:
+        cmd.append("--bare")
+    return git_wrapper_standard_command(cmd, "init")
+
+def clone(repo_source, repo_target, remotename=None):
+    cmd = ["git", "clone", repo_source, repo_target]
+    if remotename is not None:
+        cmd.append("-o")
+        cmd.append(remotename)
+    return git_wrapper_standard_command(cmd, "clone")
+
 def diff(repo, specific_file=None):
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff"]
     if specific_file is not None:
@@ -112,6 +125,10 @@ def fetch_all(repo):
 def fetch_multiple(repo, remotes):
     cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes
     return git_wrapper_standard_command(cmd, "fetch-multiple")
+
+def submodule_add(repo_sub, repo_target):
+    cmd = ["git", "-C", repo_target, "submodule", "add", repo_sub]
+    return git_wrapper_standard_command(cmd, "submodule-add")
 
 def puaq():
     print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo
