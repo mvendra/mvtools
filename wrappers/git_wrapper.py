@@ -102,6 +102,10 @@ def remote_list(repo):
     cmd = ["git", "-C", repo, "remote", "-v"]
     return git_wrapper_standard_command(cmd, "remote-list")
 
+def remote_add(repo, remotename, remotepath):
+    cmd = ["git", "-C", repo, "remote", "add", remotename, remotepath]
+    return git_wrapper_standard_command(cmd, "remote-add")
+
 def remote_change_url(repo, remote, new_url):
     cmd = ["git", "-C", repo, "remote", "set-url", remote, new_url]
     return git_wrapper_standard_command(cmd, "remote-change-url")
