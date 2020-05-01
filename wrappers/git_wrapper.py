@@ -114,6 +114,10 @@ def branch(repo):
     cmd = ["git", "-C", repo, "branch"]
     return git_wrapper_standard_command(cmd, "branch")
 
+def merge(repo, remotename, branchname):
+    cmd = ["git", "-C", repo, "merge", "%s/%s" % (remotename, branchname)]
+    return git_wrapper_standard_command(cmd, "merge")
+
 def pull(repo, remote, branch):
     cmd = ["git", "-C", repo, "pull", "--ff-only", remote, branch]
     return git_wrapper_standard_command(cmd, "pull")
