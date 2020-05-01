@@ -6,6 +6,7 @@ import shutil
 import unittest
 
 import git_test_fixture
+import git_wrapper
 import mvtools_test_fixture
 import path_utils
 
@@ -44,12 +45,12 @@ class GitVisitorPushTest(unittest.TestCase):
         self.second_repo = path_utils.concat_path(self.test_dir, "second")
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "first", True)
+        v, r = git_wrapper.init(self.test_dir, "first", True)
         if not v:
             return v, r
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "second", True)
+        v, r = git_wrapper.init(self.test_dir, "second", True)
         if not v:
             return v, r
 
@@ -62,12 +63,12 @@ class GitVisitorPushTest(unittest.TestCase):
 
         # clone first and second into third and fourth, respectively
         third_repo = path_utils.concat_path(self.test_dir, "third")
-        v, r = git_test_fixture.git_cloneRepo(self.first_repo, third_repo, "origin")
+        v, r = git_wrapper.clone(self.first_repo, third_repo, "origin")
         if not v:
             self.fail(r)
 
         fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, fourth_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, fourth_repo, "origin")
         if not v:
             self.fail(r)
 
@@ -94,13 +95,13 @@ class GitVisitorPushTest(unittest.TestCase):
         # checkout fifth and sixth, from first and second, and check if newfiles were pushed (from 3rd and 4th)
         fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
         fifth_file1 = path_utils.concat_path(fifth_repo, file1)
-        v, r = git_test_fixture.git_cloneRepo(self.first_repo, fifth_repo, "origin")
+        v, r = git_wrapper.clone(self.first_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
 
         sixth_repo = path_utils.concat_path(self.test_dir, "sixth")
         sixth_file2 = path_utils.concat_path(sixth_repo, file2)
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, sixth_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, sixth_repo, "origin")
         if not v:
             self.fail(r)
 
