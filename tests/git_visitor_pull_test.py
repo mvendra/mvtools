@@ -6,6 +6,7 @@ import shutil
 import unittest
 
 import git_test_fixture
+import git_wrapper
 import mvtools_test_fixture
 import path_utils
 
@@ -45,12 +46,12 @@ class GitVisitorPullTest(unittest.TestCase):
         self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "third", True)
+        v, r = git_wrapper.init(self.test_dir, "third", True)
         if not v:
             return v, r
 
         # clone third into second
-        v, r = git_test_fixture.git_cloneRepo(self.third_repo, self.second_repo, "origin")
+        v, r = git_wrapper.clone(self.third_repo, self.second_repo, "origin")
         if not v:
             return v, r
 
@@ -62,7 +63,7 @@ class GitVisitorPullTest(unittest.TestCase):
             return v, r
 
         # clone second into first
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, self.first_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, self.first_repo, "origin")
         if not v:
             return v, r
 
@@ -75,12 +76,12 @@ class GitVisitorPullTest(unittest.TestCase):
 
         # create fourth and fifth repos - clones of second
         fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, fourth_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, fourth_repo, "origin")
         if not v:
             self.fail(r)
 
         fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, fifth_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, fifth_repo, "origin")
         if not v:
             self.fail(r)
 
