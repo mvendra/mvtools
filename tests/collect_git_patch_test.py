@@ -11,6 +11,7 @@ import create_and_write_file
 
 import mvtools_test_fixture
 import git_test_fixture
+import git_wrapper
 
 import collect_git_patch
 
@@ -38,7 +39,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         # first repo
         self.first_repo = path_utils.concat_path(self.test_dir, "first")
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "first", False)
+        v, r = git_wrapper.init(self.test_dir, "first", False)
         if not v:
             return v, r
 
@@ -59,7 +60,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         # second repo
         self.second_repo = path_utils.concat_path(self.test_dir, "second")
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "second", False)
+        v, r = git_wrapper.init(self.test_dir, "second", False)
         if not v:
             return v, r
 
@@ -69,14 +70,14 @@ class CollectGitPatchTest(unittest.TestCase):
             return v, r
 
         # set second as first's submodule
-        v, r = git_test_fixture.git_addSubmodule(self.second_repo, self.first_repo)
+        v, r = git_wrapper.submodule_add(self.second_repo, self.first_repo)
         if not v:
             return v, r
 
         self.second_sub = path_utils.concat_path(self.first_repo, path_utils.basename_filtered(self.second_repo))
         self.second_sub_file1 = path_utils.concat_path(self.second_sub, "file1.txt")
 
-        v, r = git_test_fixture.git_commit(self.first_repo, "first-adding-submodule")
+        v, r = git_wrapper.commit(self.first_repo, "first-adding-submodule")
         if not v:
             return v, r
 
@@ -252,7 +253,7 @@ class CollectGitPatchTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        if not git_test_fixture.git_stage(self.first_repo):
+        if not git_wrapper.stage(self.first_repo):
             self.fail("")
 
         v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
@@ -270,7 +271,7 @@ class CollectGitPatchTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        if not git_test_fixture.git_stage(self.first_repo):
+        if not git_wrapper.stage(self.first_repo):
             self.fail("")
 
         v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
@@ -291,7 +292,7 @@ class CollectGitPatchTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents_secondsub"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        if not git_test_fixture.git_stage(self.second_sub):
+        if not git_wrapper.stage(self.second_sub):
             self.fail("")
 
         v, r = collect_git_patch.collect_git_patch_head_staged(self.second_sub, self.storage_path)
@@ -449,7 +450,7 @@ class CollectGitPatchTest(unittest.TestCase):
         with open(self.first_file1, "a") as f:
             f.write("stashcontent1")
 
-        git_test_fixture.git_stash(self.first_repo)
+        git_wrapper.stash(self.first_repo)
 
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
         self.assertTrue(v)
@@ -463,7 +464,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testPatchStashFail2(self):
 
         # no stash to collect
-        git_test_fixture.git_stash(self.first_repo)
+        git_wrapper.stash(self.first_repo)
 
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
         self.assertTrue(v)
@@ -476,12 +477,12 @@ class CollectGitPatchTest(unittest.TestCase):
         with open(self.first_file1, "a") as f:
             f.write("stashcontent1")
 
-        git_test_fixture.git_stash(self.first_repo)
+        git_wrapper.stash(self.first_repo)
 
         with open(self.first_file2, "a") as f:
             f.write("stashcontent2")
 
-        git_test_fixture.git_stash(self.first_repo)
+        git_wrapper.stash(self.first_repo)
 
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
         self.assertTrue(v)
@@ -507,7 +508,7 @@ class CollectGitPatchTest(unittest.TestCase):
         with open(self.second_sub_file1, "a") as f:
             f.write("stashcontent-sub")
 
-        git_test_fixture.git_stash(self.second_sub)
+        git_wrapper.stash(self.second_sub)
 
         v, r = collect_git_patch.collect_git_patch_stash(self.second_sub, self.storage_path)
         self.assertTrue(v)
