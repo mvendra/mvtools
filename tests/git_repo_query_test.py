@@ -6,6 +6,7 @@ import shutil
 import unittest
 
 import git_test_fixture
+import git_wrapper
 import path_utils
 import git_repo_query
 import mvtools_test_fixture
@@ -38,19 +39,19 @@ class GitRepoQueryTest(unittest.TestCase):
         self.fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
 
         # creates test repos
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "second", True)
+        v, r = git_wrapper.init(self.test_dir, "second", True)
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, self.first_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, self.first_repo, "origin")
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_cloneRepo(self.second_repo, self.third_repo, "origin")
+        v, r = git_wrapper.clone(self.second_repo, self.third_repo, "origin")
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_initRepo(self.test_dir, "fifth", False)
+        v, r = git_wrapper.init(self.test_dir, "fifth", False)
         if not v:
             return v, r
 
@@ -60,12 +61,12 @@ class GitRepoQueryTest(unittest.TestCase):
         if not v:
             return v, r
 
-        v, r = git_test_fixture.git_pushToRemote(self.first_repo, "origin", "master")
+        v, r = git_wrapper.push(self.first_repo, "origin", "master")
         if not v:
             return v, r
 
         # pull changes from first into third, through second
-        v, r = git_test_fixture.git_pullFromRemote(self.third_repo, "origin", "master")
+        v, r = git_wrapper.pull(self.third_repo, "origin", "master")
         if not v:
             return v, r
 
@@ -82,7 +83,7 @@ class GitRepoQueryTest(unittest.TestCase):
 
         self.assertEqual(git_repo_query.get_remotes(self.fourth_notrepo), None)
 
-        v, r = git_test_fixture.git_addRemote(self.first_repo, "latest-addition", self.third_repo)
+        v, r = git_wrapper.remote_add(self.first_repo, "latest-addition", self.third_repo)
         if not v:
             self.fail(r)
 
@@ -90,10 +91,10 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertEqual(self.second_repo, ret["origin"]["fetch"])
         self.assertEqual(self.third_repo, ret["latest-addition"]["fetch"])
 
-        v, r = git_test_fixture.git_addRemote(self.first_repo, "latest-addition", self.third_repo)
+        v, r = git_wrapper.remote_add(self.first_repo, "latest-addition", self.third_repo)
         self.assertFalse(v) # disallow duplicates
 
-        v, r = git_test_fixture.git_addRemote(self.first_repo, "リモート", self.third_repo)
+        v, r = git_wrapper.remote_add(self.first_repo, "リモート", self.third_repo)
         if not v:
             self.fail(r)
 
@@ -109,7 +110,7 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertEqual(len(ret), 1)
         self.assertEqual(ret[0], "master")
 
-        v, r = git_test_fixture.git_createAndSwitchBranch(self.first_repo, "new-branch")
+        v, r = git_wrapper.branch_create_and_switch(self.first_repo, "new-branch")
         if not v:
             self.fail(r)
 
@@ -118,7 +119,7 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertTrue("master" in ret)
         self.assertTrue("new-branch" in ret)
 
-        v, r = git_test_fixture.git_createAndSwitchBranch(self.first_repo, "ブランチ")
+        v, r = git_wrapper.branch_create_and_switch(self.first_repo, "ブランチ")
         if not v:
             self.fail(r)
 
@@ -131,7 +132,7 @@ class GitRepoQueryTest(unittest.TestCase):
 
         self.assertEqual(git_repo_query.get_current_branch(self.first_repo), "master")
 
-        v, r = git_test_fixture.git_createAndSwitchBranch(self.first_repo, "another-branch")
+        v, r = git_wrapper.branch_create_and_switch(self.first_repo, "another-branch")
         if not v:
             self.fail(r)
 
@@ -163,13 +164,13 @@ class GitRepoQueryTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"):
             self.fail("Failed creating file %s" % first_more5)
 
-        v, r = git_test_fixture.git_stage(self.first_repo, [first_more1])
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
         if not v:
             self.fail(r)
 
         self.assertEqual(git_repo_query.get_staged_files(self.first_repo), [first_more1])
 
-        v, r = git_test_fixture.git_stage(self.first_repo, [first_more2, first_more3])
+        v, r = git_wrapper.stage(self.first_repo, [first_more2, first_more3])
         if not v:
             self.fail(r)
 
@@ -179,7 +180,7 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertTrue(first_more2 in ret)
         self.assertTrue(first_more3 in ret)
 
-        v, r = git_test_fixture.git_stage(self.first_repo, None)
+        v, r = git_wrapper.stage(self.first_repo, None)
         if not v:
             self.fail(r)
 
@@ -216,7 +217,7 @@ class GitRepoQueryTest(unittest.TestCase):
         self.assertTrue(first_more2 in ret)
         #self.assertTrue(first_more3 in ret) # mvtodo: might require extra system config or ...
 
-        v, r = git_test_fixture.git_stage(self.first_repo, [first_more1])
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
         if not v:
             self.fail(r)
 
