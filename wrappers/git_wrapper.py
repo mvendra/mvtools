@@ -50,6 +50,22 @@ def clone(repo_source, repo_target, remotename=None):
         cmd.append(remotename)
     return git_wrapper_standard_command(cmd, "clone")
 
+def stage(repo, file_list=None):
+
+    add_list = []
+    if file_list is None:
+        add_list.append(".")
+    else:
+        add_list = file_list
+
+    for f in add_list:
+        cmd = ["git", "-C", repo, "add", f]
+        v, r = git_wrapper_standard_command(cmd, "stage")
+        if not v:
+            return v, r
+
+    return True, "git_wrapper.stage: Al OK."
+
 def diff(repo, specific_file=None):
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff"]
     if specific_file is not None:
@@ -133,6 +149,10 @@ def fetch_all(repo):
 def fetch_multiple(repo, remotes):
     cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes
     return git_wrapper_standard_command(cmd, "fetch-multiple")
+
+def stash(repo):
+    cmd = ["git", "-C", repo, "stash"]
+    return git_wrapper_standard_command(cmd, "stash")
 
 def submodule_add(repo_sub, repo_target):
     cmd = ["git", "-C", repo_target, "submodule", "add", repo_sub]
