@@ -130,6 +130,10 @@ def branch(repo):
     cmd = ["git", "-C", repo, "branch"]
     return git_wrapper_standard_command(cmd, "branch")
 
+def branch_create_and_switch(repo, branchname):
+    cmd = ["git", "-C", repo, "checkout", "-B", branchname]
+    return git_wrapper_standard_command(cmd, "branch-create-and-switch")
+
 def merge(repo, remotename, branchname):
     cmd = ["git", "-C", repo, "merge", "%s/%s" % (remotename, branchname)]
     return git_wrapper_standard_command(cmd, "merge")
