@@ -7,7 +7,7 @@ from subprocess import call
 
 import generic_run
 
-def git_wrapper_standard_command(cmd, cmd_name):
+def git_wrapper_standard_command(cmd, cmd_name="git_wrapper_standard_command"):
     v, r = generic_run.run_cmd_simple(cmd)
     if not v:
         return False, "Failed calling %s: %s" % (cmd_name, r)
@@ -28,6 +28,10 @@ def commit_editor(repo):
     return (retcode==0), "git_wrapper.commit_editor"
 
 def commit_direct(repo, params):
+    if not isinstance(params, list):
+        return False, "git_wrapper.commit_direct: params must be a list"
+    if len(params) == 0:
+        return False, "git_wrapper.commit_direct: nothing to do"
     cmd = ["git",  "-C", repo, "commit"]
     for p in params:
         cmd.append(p)
@@ -56,6 +60,8 @@ def stage(repo, file_list=None):
     if file_list is None:
         add_list.append(".")
     else:
+        if not isinstance(file_list, list):
+            return False, "git_wrapper.stage: file_list must be a list"
         add_list = file_list
 
     for f in add_list:
@@ -66,16 +72,22 @@ def stage(repo, file_list=None):
 
     return True, "git_wrapper.stage: Al OK."
 
-def diff(repo, specific_file=None):
+def diff(repo, file_list=None):
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff"]
-    if specific_file is not None:
-        cmd.append(specific_file)
+    if file_list is not None:
+        if not isinstance(file_list, list):
+            return False, "git_wrapper.diff: file_list must be a list"
+        for f in file_list:
+            cmd.append(f)
     return git_wrapper_standard_command(cmd, "diff")
 
-def diff_cached(repo, specific_file=None):
+def diff_cached(repo, file_list=None):
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached"]
-    if specific_file is not None:
-        cmd.append(specific_file)
+    if file_list is not None:
+        if not isinstance(file_list, list):
+            return False, "git_wrapper.diff_cached: file_list must be a list"
+        for f in file_list:
+            cmd.append(f)
     return git_wrapper_standard_command(cmd, "diff-cached")
 
 def rev_parse(repo):
