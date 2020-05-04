@@ -471,5 +471,87 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "")
 
+    def testStashList(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "stash-list test commit msg")
+        self.assertTrue(v)
+
+        with open(test_file, "a") as f:
+            f.write("latest content")
+
+        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
+        if not v:
+            self.fail(r)
+
+        v, r = git_wrapper.stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 1 )
+        self.assertTrue( "stash@{0}: WIP on master:" in r)
+        self.assertTrue( "stash-list test commit msg" in r)
+
+        with open(test_file, "a") as f:
+            f.write("yet more stuff")
+
+        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
+        if not v:
+            self.fail(r)
+
+        v, r = git_wrapper.stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 2 )
+        self.assertTrue( "stash@{0}: WIP on master:" in r)
+        self.assertTrue( "stash@{1}: WIP on master:" in r)
+        self.assertTrue( "stash-list test commit msg" in r)
+
+    def testStashShow(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "stash-list test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_show(self.first_repo, "stash@{0}")
+        self.assertFalse(v)
+
+        with open(test_file, "a") as f:
+            f.write("latest content, stash show 1")
+
+        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
+        if not v:
+            self.fail(r)
+
+        v, r = git_wrapper.stash_show(self.first_repo, "stash@{0}")
+        self.assertTrue(v)
+        self.assertTrue("+test-contentslatest content, stash show 1" in r)
+
+        with open(test_file, "a") as f:
+            f.write("latest content, stash show 2")
+
+        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
+        if not v:
+            self.fail(r)
+
+        v, r = git_wrapper.stash_show(self.first_repo, "stash@{0}")
+        self.assertTrue(v)
+        self.assertTrue("+test-contentslatest content, stash show 2" in r)
+        self.assertFalse("+test-contentslatest content, stash show 1" in r)
+
+        v, r = git_wrapper.stash_show(self.first_repo, "stash@{1}")
+        self.assertTrue(v)
+        self.assertFalse("+test-contentslatest content, stash show 2" in r)
+        self.assertTrue("+test-contentslatest content, stash show 1" in r)
+
 if __name__ == '__main__':
     unittest.main()
