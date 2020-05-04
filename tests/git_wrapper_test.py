@@ -619,5 +619,28 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue("log-oneline test commit msg 1" in r)
         self.assertTrue("log-oneline test commit msg 2" in r)
 
+    def testShow(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-show, test contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test-show, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.log_oneline(self.first_repo)
+        self.assertTrue(v)
+        p = r.find(" ")
+        if p == -1:
+            self.fail("Failed retrieving commit id, testShow")
+        commit_id = r[:p]
+
+        v, r = git_wrapper.show(self.first_repo, commit_id)
+        self.assertTrue(v)
+        self.assertTrue("test-show, test contents" in r)
+
 if __name__ == '__main__':
     unittest.main()
