@@ -553,5 +553,71 @@ class GitWrapperTest(unittest.TestCase):
         self.assertFalse("+test-contentslatest content, stash show 2" in r)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 
+    def testLogOneline(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "log-oneline test commit msg 1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.log_oneline(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 1 )
+        self.assertTrue("log-oneline test commit msg 1" in r)
+
+        with open(test_file, "a") as f:
+            f.write("latest content, log-oneline")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "log-oneline test commit msg 2")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.log_oneline(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 2 )
+        self.assertTrue("log-oneline test commit msg 1" in r)
+        self.assertTrue("log-oneline test commit msg 2" in r)
+
+    def testLog(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "log-oneline test commit msg 1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.log(self.first_repo)
+
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 5 )
+        self.assertTrue("log-oneline test commit msg 1" in r)
+
+        with open(test_file, "a") as f:
+            f.write("latest content, log-oneline")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "log-oneline test commit msg 2")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.log(self.first_repo)
+
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 11 )
+        self.assertTrue("log-oneline test commit msg 1" in r)
+        self.assertTrue("log-oneline test commit msg 2" in r)
+
 if __name__ == '__main__':
     unittest.main()
