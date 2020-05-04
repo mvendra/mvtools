@@ -10,6 +10,13 @@ import mvtools_test_fixture
 import path_utils
 import git_wrapper
 
+def is_hex_string(the_string):
+    try:
+        f = int(the_string, 16)
+        return True
+    except:
+        return False
+
 class GitWrapperTest(unittest.TestCase):
 
     def setUp(self):
@@ -399,6 +406,70 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.diff_cached(self.first_repo, 123)
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.diff_cached: file_list must be a list")
+
+    def testRevParse(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo, [test_file])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.rev_parse(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue( (len(r) >= (40 + len(os.linesep))) and is_hex_string(r))
+
+    def testLsFiles1(self):
+
+        test_file1 = path_utils.concat_path(self.first_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test commit msg")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.first_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        test_file3 = path_utils.concat_path(self.first_repo, "test_file3.txt")
+        if not create_and_write_file.create_file_contents(test_file3, "test-contents3"):
+            self.fail("Failed creating test file %s" % test_file3)
+
+        v, r = git_wrapper.ls_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse( path_utils.basename_filtered(test_file1) in r)
+        self.assertTrue( path_utils.basename_filtered(test_file2) in r)
+        self.assertTrue( path_utils.basename_filtered(test_file3) in r)
+
+        v, r = git_wrapper.stage(self.first_repo, [test_file3])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.ls_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse( path_utils.basename_filtered(test_file1) in r)
+        self.assertTrue( path_utils.basename_filtered(test_file2) in r)
+        self.assertFalse( path_utils.basename_filtered(test_file3) in r)
+
+    def testLsFiles2(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.ls_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "")
 
 if __name__ == '__main__':
     unittest.main()
