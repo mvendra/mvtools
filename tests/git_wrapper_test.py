@@ -642,5 +642,67 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("test-show, test contents" in r)
 
+    def testStatus(self):
+
+        test_file1 = path_utils.concat_path(self.first_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-show, test contents"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test-show, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual("", r)
+
+        test_file2 = path_utils.concat_path(self.first_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        v, r = git_wrapper.status(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("?? test_file2.txt" in r)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("A  test_file2.txt" in r)
+
+    def testStatusSimple(self):
+
+        test_file1 = path_utils.concat_path(self.first_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-show, test contents"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test-show, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual("", r)
+
+        test_file2 = path_utils.concat_path(self.first_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        v, r = git_wrapper.status_simple(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("?? test_file2.txt" in r)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("A  test_file2.txt" in r)
+
 if __name__ == '__main__':
     unittest.main()
