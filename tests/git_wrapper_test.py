@@ -35,7 +35,12 @@ class GitWrapperTest(unittest.TestCase):
 
         # first repo
         self.first_repo = path_utils.concat_path(self.test_dir, "first")
-        v, r = git_wrapper.init(self.test_dir, "first", False)
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        if not v:
+            return v, r
+
+        self.second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.clone(self.first_repo, self.second_repo)
         if not v:
             return v, r
 
@@ -46,156 +51,157 @@ class GitWrapperTest(unittest.TestCase):
 
     def testInitStandard(self):
 
-        second_repo = path_utils.concat_path(self.test_dir, "second")
-        v, r = git_wrapper.init(self.test_dir, "second", False)
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.init(self.test_dir, "third", False)
         self.assertTrue(v)
-        self.assertTrue( os.path.exists(second_repo) )
+        self.assertTrue( os.path.exists(third_repo) )
 
     def testInitBare(self):
 
-        second_repo = path_utils.concat_path(self.test_dir, "second")
-        v, r = git_wrapper.init(self.test_dir, "second", True)
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.init(self.test_dir, "third", True)
         self.assertTrue(v)
-        self.assertTrue( os.path.exists(second_repo) )
+        self.assertTrue( os.path.exists(third_repo) )
 
     def testStage1(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.stage(self.first_repo)
+        v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.status(self.first_repo)
+        v, r = git_wrapper.status(self.second_repo)
         self.assertTrue("A  test_file.txt" in r)
 
     def testStage2(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.stage(self.first_repo, [path_utils.basename_filtered(test_file)])
+        v, r = git_wrapper.stage(self.second_repo, [path_utils.basename_filtered(test_file)])
         self.assertTrue(v)
 
-        v, r = git_wrapper.status(self.first_repo)
+        v, r = git_wrapper.status(self.second_repo)
         self.assertTrue("A  test_file.txt" in r)
 
     def testStage3(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.stage(self.first_repo, [test_file])
+        v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
 
-        v, r = git_wrapper.status(self.first_repo)
+        v, r = git_wrapper.status(self.second_repo)
         self.assertTrue("A  test_file.txt" in r)
 
     def testStageFail(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.stage(self.first_repo, test_file)
+        v, r = git_wrapper.stage(self.second_repo, test_file)
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.stage: file_list must be a list")
 
     def testCommitDirectFail1(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.commit_direct(self.first_repo, 123)
+        v, r = git_wrapper.commit_direct(self.second_repo, 123)
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.commit_direct: params must be a list")
 
     def testCommitDirectFail2(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.commit_direct(self.first_repo, [])
+        v, r = git_wrapper.commit_direct(self.second_repo, [])
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.commit_direct: nothing to do")
 
     def testCommitDirect(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "add", "."])
+        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
         if not v:
             self.fail(r)
 
-        v, r = git_wrapper.commit_direct(self.first_repo, ["-m", "test commit msg1"])
+        v, r = git_wrapper.commit_direct(self.second_repo, ["-m", "test commit msg1"])
         self.assertTrue(v)
 
         with open(test_file, "a") as f:
             f.write("extrastuff")
 
-        v, r = git_wrapper.commit_direct(self.first_repo, ["-a", "-m", "test commit msg2"])
+        v, r = git_wrapper.commit_direct(self.second_repo, ["-a", "-m", "test commit msg2"])
         self.assertTrue(v)
 
-        v, r = git_wrapper.status(self.first_repo)
+        v, r = git_wrapper.status(self.second_repo)
         self.assertFalse("A  test_file.txt" in r)
 
     def testCommit(self):
 
-        test_file1 = path_utils.concat_path(self.first_repo, "test_file1.txt")
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
         if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
             self.fail("Failed creating test file %s" % test_file1)
 
-        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "add", "."])
+        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
         if not v:
             self.fail(r)
 
-        v, r = git_wrapper.commit(self.first_repo, "test commit msg1")
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
         self.assertTrue(v)
 
-        test_file2 = path_utils.concat_path(self.first_repo, "test_file2.txt")
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
         if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
             self.fail("Failed creating test file %s" % test_file2)
 
-        v, r = git_wrapper.status(self.first_repo)
+        v, r = git_wrapper.status(self.second_repo)
         self.assertTrue("?? test_file2.txt" in r)
 
-        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "add", "."])
+        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
         if not v:
             self.fail(r)
 
-        v, r = git_wrapper.commit(self.first_repo, "test commit msg2")
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
         self.assertTrue(v)
 
-        v, r = git_wrapper.status(self.first_repo)
+        v, r = git_wrapper.status(self.second_repo)
         self.assertFalse("?? test_file2.txt" in r)
 
     def testClone1(self):
 
-        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
 
-        v, r = git_wrapper.stage(self.first_repo, [test_file])
+        v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
 
-        v, r = git_wrapper.commit(self.first_repo, "test commit msg")
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        second_repo = path_utils.concat_path(self.test_dir, "second")
-        v, r = git_wrapper.clone(self.first_repo, second_repo)
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone(self.second_repo, third_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.remote_list(second_repo)
+        v, r = git_wrapper.remote_list(third_repo)
         self.assertTrue(v)
         self.assertTrue("origin" in r)
 
+    """
     def testClone2(self):
 
         test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
@@ -517,7 +523,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.commit(self.first_repo, "stash-list test commit msg")
+        v, r = git_wrapper.commit(self.first_repo, "stash test commit msg")
         self.assertTrue(v)
 
         v, r = git_wrapper.stash_show(self.first_repo, "stash@{0}")
@@ -590,30 +596,30 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.commit(self.first_repo, "log-oneline test commit msg 1")
+        v, r = git_wrapper.commit(self.first_repo, "log test commit msg 1")
         self.assertTrue(v)
 
         v, r = git_wrapper.log(self.first_repo)
 
         self.assertTrue(v)
         self.assertEqual( len(r.strip().split(os.linesep)), 5 )
-        self.assertTrue("log-oneline test commit msg 1" in r)
+        self.assertTrue("log test commit msg 1" in r)
 
         with open(test_file, "a") as f:
-            f.write("latest content, log-oneline")
+            f.write("latest content, log")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.commit(self.first_repo, "log-oneline test commit msg 2")
+        v, r = git_wrapper.commit(self.first_repo, "log test commit msg 2")
         self.assertTrue(v)
 
         v, r = git_wrapper.log(self.first_repo)
 
         self.assertTrue(v)
         self.assertEqual( len(r.strip().split(os.linesep)), 11 )
-        self.assertTrue("log-oneline test commit msg 1" in r)
-        self.assertTrue("log-oneline test commit msg 2" in r)
+        self.assertTrue("log test commit msg 1" in r)
+        self.assertTrue("log test commit msg 2" in r)
 
     def testShow(self):
 
@@ -672,13 +678,13 @@ class GitWrapperTest(unittest.TestCase):
     def testStatusSimple(self):
 
         test_file1 = path_utils.concat_path(self.first_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-status, test contents"):
+        if not create_and_write_file.create_file_contents(test_file1, "test-status-simple, test contents"):
             self.fail("Failed creating test file %s" % test_file1)
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.commit(self.first_repo, "test-status, test commit msg")
+        v, r = git_wrapper.commit(self.first_repo, "test-status-simple, test commit msg")
         self.assertTrue(v)
 
         v, r = git_wrapper.status_simple(self.first_repo)
@@ -764,13 +770,13 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual("", r.strip())
 
         test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-branch, test contents"):
+        if not create_and_write_file.create_file_contents(test_file, "test-branch-create-and-switch, test contents"):
             self.fail("Failed creating test file %s" % test_file)
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.commit(self.first_repo, "test-branch, test commit msg")
+        v, r = git_wrapper.commit(self.first_repo, "test-branch-create-and-switch, test commit msg")
         self.assertTrue(v)
 
         v, r = git_wrapper.branch_create_and_switch(self.first_repo, "offline")
