@@ -471,7 +471,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "")
 
-    def testStashList(self):
+    def testStash_and_StashList(self):
 
         test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
@@ -486,9 +486,8 @@ class GitWrapperTest(unittest.TestCase):
         with open(test_file, "a") as f:
             f.write("latest content")
 
-        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
-        if not v:
-            self.fail(r)
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
 
         v, r = git_wrapper.stash_list(self.first_repo)
         self.assertTrue(v)
@@ -499,9 +498,8 @@ class GitWrapperTest(unittest.TestCase):
         with open(test_file, "a") as f:
             f.write("yet more stuff")
 
-        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
-        if not v:
-            self.fail(r)
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
 
         v, r = git_wrapper.stash_list(self.first_repo)
         self.assertTrue(v)
@@ -510,7 +508,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue( "stash@{1}: WIP on master:" in r)
         self.assertTrue( "stash-list test commit msg" in r)
 
-    def testStashShow(self):
+    def testStash_and_StashShow(self):
 
         test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
@@ -528,9 +526,8 @@ class GitWrapperTest(unittest.TestCase):
         with open(test_file, "a") as f:
             f.write("latest content, stash show 1")
 
-        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
-        if not v:
-            self.fail(r)
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
 
         v, r = git_wrapper.stash_show(self.first_repo, "stash@{0}")
         self.assertTrue(v)
@@ -539,9 +536,8 @@ class GitWrapperTest(unittest.TestCase):
         with open(test_file, "a") as f:
             f.write("latest content, stash show 2")
 
-        v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.first_repo, "stash"])
-        if not v:
-            self.fail(r)
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
 
         v, r = git_wrapper.stash_show(self.first_repo, "stash@{0}")
         self.assertTrue(v)
@@ -740,6 +736,9 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue( ("new-remote\t%s (fetch)" % third_repo) in r )
         self.assertTrue( ("new-remote\t%s (push)" % third_repo) in r )
+
+    def testBranch(self):
+        pass # mvtodo
 
 if __name__ == '__main__':
     unittest.main()

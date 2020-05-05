@@ -98,6 +98,10 @@ def ls_files(repo):
     cmd = ["git", "-C", repo, "ls-files", "--exclude-standard", "--others"]
     return git_wrapper_standard_command(cmd, "ls-files")
 
+def stash(repo):
+    cmd = ["git", "-C", repo, "stash"]
+    return git_wrapper_standard_command(cmd, "stash")
+
 def stash_list(repo):
     cmd = ["git", "-C", repo, "stash", "list"]
     return git_wrapper_standard_command(cmd, "stash-list")
@@ -165,10 +169,6 @@ def fetch_all(repo):
 def fetch_multiple(repo, remotes):
     cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes
     return git_wrapper_standard_command(cmd, "fetch-multiple")
-
-def stash(repo):
-    cmd = ["git", "-C", repo, "stash"]
-    return git_wrapper_standard_command(cmd, "stash")
 
 def submodule_add(repo_sub, repo_target):
     cmd = ["git", "-C", repo_target, "submodule", "add", repo_sub]
