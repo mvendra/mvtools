@@ -188,11 +188,11 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.first_repo, "test commit msg")
         self.assertTrue(v)
 
-        self.second_repo = path_utils.concat_path(self.test_dir, "second")
-        v, r = git_wrapper.clone(self.first_repo, self.second_repo)
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.clone(self.first_repo, second_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.remote_list(self.second_repo)
+        v, r = git_wrapper.remote_list(second_repo)
         self.assertTrue(v)
         self.assertTrue("origin" in r)
 
@@ -208,11 +208,11 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.first_repo, "test commit msg")
         self.assertTrue(v)
 
-        self.second_repo = path_utils.concat_path(self.test_dir, "second")
-        v, r = git_wrapper.clone(self.first_repo, self.second_repo, "not-origin")
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.clone(self.first_repo, second_repo, "not-origin")
         self.assertTrue(v)
 
-        v, r = git_wrapper.remote_list(self.second_repo)
+        v, r = git_wrapper.remote_list(second_repo)
         self.assertTrue(v)
         self.assertTrue("not-origin" in r)
 
@@ -703,6 +703,43 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.status_simple(self.first_repo)
         self.assertTrue(v)
         self.assertTrue("A  test_file2.txt" in r)
+
+    def testRemoteList_and_RemoteAdd_and_ChangeUrl(self):
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-show, test contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test-show, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.remote_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "")
+
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.remote_add(self.first_repo, "new-remote", second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.remote_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue( ("new-remote\t%s (fetch)" % second_repo) in r )
+        self.assertTrue( ("new-remote\t%s (push)" % second_repo) in r )
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.remote_change_url(self.first_repo, "nonexistant-remote", third_repo)
+        self.assertFalse(v)
+
+        v, r = git_wrapper.remote_change_url(self.first_repo, "new-remote", third_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.remote_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue( ("new-remote\t%s (fetch)" % third_repo) in r )
+        self.assertTrue( ("new-remote\t%s (push)" % third_repo) in r )
 
 if __name__ == '__main__':
     unittest.main()
