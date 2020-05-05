@@ -738,7 +738,47 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue( ("new-remote\t%s (push)" % third_repo) in r )
 
     def testBranch(self):
-        pass # mvtodo
+
+        v, r = git_wrapper.branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual("", r.strip())
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-show, test contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test-show, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("* master" in r)
+
+    def testBranchCreateAndSwitch(self):
+
+        v, r = git_wrapper.branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual("", r.strip())
+
+        test_file = path_utils.concat_path(self.first_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-show, test contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "test-show, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.branch_create_and_switch(self.first_repo, "offline")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("* offline" in r)
 
 if __name__ == '__main__':
     unittest.main()
