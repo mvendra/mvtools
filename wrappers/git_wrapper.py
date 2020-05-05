@@ -150,12 +150,12 @@ def branch_create_and_switch(repo, branchname):
     cmd = ["git", "-C", repo, "checkout", "-B", branchname]
     return git_wrapper_standard_command(cmd, "branch-create-and-switch")
 
-def merge(repo, remotename, branchname):
-    cmd = ["git", "-C", repo, "merge", "%s/%s" % (remotename, branchname)]
-    return git_wrapper_standard_command(cmd, "merge")
-
 def pull(repo, remote, branch):
     cmd = ["git", "-C", repo, "pull", "--ff-only", remote, branch]
+    return git_wrapper_standard_command(cmd, "pull")
+
+def pull_default(repo):
+    cmd = ["git", "-C", repo, "pull", "--ff-only"]
     return git_wrapper_standard_command(cmd, "pull")
 
 def push(repo, remote, branch):
@@ -169,6 +169,10 @@ def fetch_all(repo):
 def fetch_multiple(repo, remotes):
     cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes
     return git_wrapper_standard_command(cmd, "fetch-multiple")
+
+def merge(repo, remotename, branchname):
+    cmd = ["git", "-C", repo, "merge", "%s/%s" % (remotename, branchname)]
+    return git_wrapper_standard_command(cmd, "merge")
 
 def submodule_add(repo_sub, repo_target):
     cmd = ["git", "-C", repo_target, "submodule", "add", repo_sub]
