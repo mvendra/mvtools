@@ -156,11 +156,15 @@ def pull(repo, remote, branch):
 
 def pull_default(repo):
     cmd = ["git", "-C", repo, "pull", "--ff-only"]
-    return git_wrapper_standard_command(cmd, "pull")
+    return git_wrapper_standard_command(cmd, "pull-default")
 
 def push(repo, remote, branch):
     cmd = ["git", "-C", repo, "push", remote, branch]
     return git_wrapper_standard_command(cmd, "push")
+
+def push_default(repo):
+    cmd = ["git", "-C", repo, "push"]
+    return git_wrapper_standard_command(cmd, "push-default")
 
 def fetch_all(repo):
     cmd = ["git", "-C", repo, "fetch", "--all"]
