@@ -874,5 +874,179 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue( os.path.exists(test_file1_thirdrepo) )
 
+    def testFetchAll_and_Merge(self):
+
+        test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-fetch-all, test contents 1"):
+            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-fetch-all, test commit msg 1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(self.second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        # clone third as a sibling to second
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone(self.first_repo, third_repo)
+        self.assertTrue(v)
+
+        # clone fourth as a child of second and third
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
+        v, r = git_wrapper.clone(third_repo, fourth_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.remote_add(fourth_repo, "second-remote", self.second_repo)
+        self.assertTrue(v)
+
+        # add some extra content into second
+        test_file2_secondrepo = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2_secondrepo, "test-fetch-all, test contents 2"):
+            self.fail("Failed creating test file %s" % test_file2_secondrepo)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-fetch-all, test commit msg 2")
+        self.assertTrue(v)
+
+        # add some extra content into third
+        test_file3_thirdrepo = path_utils.concat_path(third_repo, "test_file3.txt")
+        if not create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-fetch-all, test contents 3"):
+            self.fail("Failed creating test file %s" % test_file3_thirdrepo)
+
+        v, r = git_wrapper.stage(third_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(third_repo, "test-fetch-all, test commit msg 3")
+        self.assertTrue(v)
+
+        # fetch second's and third's changes into fourth
+        v, r = git_wrapper.fetch_all(fourth_repo)
+        self.assertTrue(v)
+
+        test_file2_fourthrepo = path_utils.concat_path(fourth_repo, "test_file2.txt")
+        test_file3_fourthrepo = path_utils.concat_path(fourth_repo, "test_file3.txt")
+
+        # merge second onto fourth
+        v, r = git_wrapper.merge(fourth_repo, "second-remote", "master")
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( test_file2_fourthrepo ) )
+        self.assertFalse( os.path.exists( test_file3_fourthrepo ) )
+
+        # merge third onto fourth
+        v, r = git_wrapper.merge(fourth_repo, "origin", "master")
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( test_file2_fourthrepo ) )
+        self.assertTrue( os.path.exists( test_file3_fourthrepo ) )
+
+    def testFetchMultiple_and_Merge(self):
+
+        test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-fetch-all, test contents 1"):
+            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-fetch-all, test commit msg 1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(self.second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        # clone third as a sibling to second
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone(self.first_repo, third_repo)
+        self.assertTrue(v)
+
+        # clone fourth as a sibling to second and third
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
+        v, r = git_wrapper.clone(self.first_repo, fourth_repo)
+        self.assertTrue(v)
+
+        # clone fifth as a child of second and third and fourth
+        fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
+        v, r = git_wrapper.clone(fourth_repo, fifth_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.remote_add(fifth_repo, "second-remote", self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.remote_add(fifth_repo, "third-remote", third_repo)
+        self.assertTrue(v)
+
+        # add some extra content into second
+        test_file2_secondrepo = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2_secondrepo, "test-fetch-all, test contents 2"):
+            self.fail("Failed creating test file %s" % test_file2_secondrepo)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-fetch-all, test commit msg 2")
+        self.assertTrue(v)
+
+        # add some extra content into third
+        test_file3_thirdrepo = path_utils.concat_path(third_repo, "test_file3.txt")
+        if not create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-fetch-all, test contents 3"):
+            self.fail("Failed creating test file %s" % test_file3_thirdrepo)
+
+        v, r = git_wrapper.stage(third_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(third_repo, "test-fetch-all, test commit msg 3")
+        self.assertTrue(v)
+
+        # add some extra content into fourth
+        test_file4_fourthrepo = path_utils.concat_path(fourth_repo, "test_file4.txt")
+        if not create_and_write_file.create_file_contents(test_file4_fourthrepo, "test-fetch-all, test contents 4"):
+            self.fail("Failed creating test file %s" % test_file4_fourthrepo)
+
+        v, r = git_wrapper.stage(fourth_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(fourth_repo, "test-fetch-all, test commit msg 4")
+        self.assertTrue(v)
+
+        # fetch second's and third's and fourth's changes into fifth
+        v, r = git_wrapper.fetch_multiple(fifth_repo, ["second-remote", "third-remote"])
+        self.assertTrue(v)
+
+        test_file2_fifthrepo = path_utils.concat_path(fifth_repo, "test_file2.txt")
+        test_file3_fifthrepo = path_utils.concat_path(fifth_repo, "test_file3.txt")
+        test_file4_fifthrepo = path_utils.concat_path(fifth_repo, "test_file4.txt")
+
+        # merge second onto fourth
+        v, r = git_wrapper.merge(fifth_repo, "second-remote", "master")
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( test_file2_fifthrepo ) )
+        self.assertFalse( os.path.exists( test_file3_fifthrepo ) )
+        self.assertFalse( os.path.exists( test_file4_fifthrepo ) )
+
+        v, r = git_wrapper.merge(fifth_repo, "third-remote", "master")
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( test_file2_fifthrepo ) )
+        self.assertTrue( os.path.exists( test_file3_fifthrepo ) )
+        self.assertFalse( os.path.exists( test_file4_fifthrepo ) )
+
+        v, r = git_wrapper.merge(fifth_repo, "origin", "master")
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( test_file2_fifthrepo ) )
+        self.assertTrue( os.path.exists( test_file3_fifthrepo ) )
+        self.assertFalse( os.path.exists( test_file4_fifthrepo ) )
+
+        v, r = git_wrapper.fetch_multiple(fifth_repo, ["origin"])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.merge(fifth_repo, "origin", "master")
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( test_file2_fifthrepo ) )
+        self.assertTrue( os.path.exists( test_file3_fifthrepo ) )
+        self.assertTrue( os.path.exists( test_file4_fifthrepo ) )
+
 if __name__ == '__main__':
     unittest.main()
