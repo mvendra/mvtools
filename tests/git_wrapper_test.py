@@ -832,5 +832,47 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(file3_third_repo))
 
+    def testPush(self):
+
+        test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-push, test contents 1"):
+            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-push, test commit msg 1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(self.second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        test_file1_thirdrepo = path_utils.concat_path(third_repo, "test_file1.txt")
+        v, r = git_wrapper.clone(self.first_repo, third_repo)
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists(test_file1_thirdrepo) )
+
+    def testPushDefault(self):
+
+        test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-push-default, test contents 1"):
+            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-push-default, test commit msg 1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push_default(self.second_repo)
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        test_file1_thirdrepo = path_utils.concat_path(third_repo, "test_file1.txt")
+        v, r = git_wrapper.clone(self.first_repo, third_repo)
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists(test_file1_thirdrepo) )
+
 if __name__ == '__main__':
     unittest.main()
