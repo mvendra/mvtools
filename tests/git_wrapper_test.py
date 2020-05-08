@@ -943,6 +943,12 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue( os.path.exists( test_file2_fourthrepo ) )
         self.assertTrue( os.path.exists( test_file3_fourthrepo ) )
 
+    def testFetchMultipleFail(self):
+
+        v, r = git_wrapper.fetch_multiple(self.second_repo, "a-string")
+        self.assertFalse(v)
+        self.assertEqual(r, "git_wrapper.fetch_multiple: remotes must be a list")
+
     def testFetchMultiple_and_Merge(self):
 
         test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
@@ -1047,6 +1053,59 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue( os.path.exists( test_file2_fifthrepo ) )
         self.assertTrue( os.path.exists( test_file3_fifthrepo ) )
         self.assertTrue( os.path.exists( test_file4_fifthrepo ) )
+
+    def testSubmoduleAdd(self):
+
+        test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-submodule-add, test contents 1"):
+            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-submodule-add, test commit msg 1")
+        self.assertTrue(v)
+
+        # init third repo as an independent
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.init(self.test_dir, "third", False)
+        self.assertTrue(v)
+
+        test_file2_thirdrepo = path_utils.concat_path(third_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2_thirdrepo, "test-submodule-add, test contents 2"):
+            self.fail("Failed creating test file %s" % test_file2_thirdrepo)
+
+        v, r = git_wrapper.stage(third_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(third_repo, "test-submodule-add, test commit msg 2")
+        self.assertTrue(v)
+
+        # add third as a submodule of second
+        v, r = git_wrapper.submodule_add(third_repo, self.second_repo)
+        self.assertTrue(v)
+
+        third_inside_second = path_utils.concat_path(self.second_repo,  path_utils.basename_filtered(third_repo) )
+        self.assertTrue( os.path.exists(third_inside_second) )
+        test_file2_thirdrepo_inside_second = path_utils.concat_path(third_inside_second, path_utils.basename_filtered(test_file2_thirdrepo))
+        self.assertTrue( os.path.exists(test_file2_thirdrepo_inside_second) )
+
+        # add some stuff to third, the standalone copy
+        test_file3_thirdrepo = path_utils.concat_path(third_repo, "test_file3.txt")
+        if not create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-submodule-add, test contents 3"):
+            self.fail("Failed creating test file %s" % test_file3_thirdrepo)
+
+        v, r = git_wrapper.stage(third_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(third_repo, "test-submodule-add, test commit msg 3")
+        self.assertTrue(v)
+
+        # then pull on third, the submodule copy
+        v, r = git_wrapper.pull_default(third_inside_second)
+        self.assertTrue(v)
+        test_file3_thirdrepo_inside_second = path_utils.concat_path(third_inside_second, path_utils.basename_filtered(test_file3_thirdrepo))
+        self.assertTrue( os.path.exists(test_file3_thirdrepo_inside_second) )
 
 if __name__ == '__main__':
     unittest.main()

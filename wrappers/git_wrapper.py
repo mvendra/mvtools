@@ -171,6 +171,9 @@ def fetch_all(repo):
     return git_wrapper_standard_command(cmd, "fetch-all")
 
 def fetch_multiple(repo, remotes):
+    if remotes is not None:
+        if not isinstance(remotes, list):
+            return False, "git_wrapper.fetch_multiple: remotes must be a list"
     cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes
     return git_wrapper_standard_command(cmd, "fetch-multiple")
 
