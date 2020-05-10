@@ -17,6 +17,7 @@ def do_fetch(repo, remotes):
         out = "OK."
         color = terminal_colors.TTY_GREEN
     else:
+        print(r)
         hasanyfailed = True
         out = "Failed."
         color = terminal_colors.TTY_RED

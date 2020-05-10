@@ -16,6 +16,7 @@ def remote_change_url(repo, remote, operation, newpath):
         out = "OK."
         color = terminal_colors.TTY_GREEN
     else:
+        print(r)
         fail = True
         out = "Failed."
         color = terminal_colors.TTY_RED
