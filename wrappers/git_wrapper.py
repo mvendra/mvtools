@@ -186,15 +186,7 @@ def submodule_add(repo_sub, repo_target):
     return git_wrapper_standard_command(cmd, "submodule-add")
 
 def puaq():
-    print("Usage: %s repo [--commit]" % os.path.basename(__file__)) # mvtodo
-    sys.exit(1)
+    print("Hello from %s" % os.path.basename(__file__))
 
 if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-        puaq()
-
-    repo = sys.argv[1]
-    options = sys.argv[2:]
-
-    print(options) # mvtodo: implement
+    puaq()
