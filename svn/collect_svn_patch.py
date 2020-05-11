@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import svn_wrapper
+import svn_wrapper_filter
 
 def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, function, filter_function=None):
 
@@ -36,7 +37,7 @@ def collect_svn_patch_head(repo, storage_path):
     return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", svn_wrapper.diff, None)
 
 def collect_svn_patch_head_id(repo, storage_path):
-    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", svn_wrapper.info, svn_wrapper.revision_filter_function)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", svn_wrapper.info, svn_wrapper_filter.revision_filter_function)
 
 def collect_svn_patch_head_unversioned(repo, storage_path):
 
@@ -46,7 +47,7 @@ def collect_svn_patch_head_unversioned(repo, storage_path):
 
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
-        file_filtered = svn_wrapper.status_filter_function_unversioned(uf)
+        file_filtered = svn_wrapper_filter.status_filter_function_unversioned(uf)
         if file_filtered is None:
             continue
         target_base = path_utils.concat_path(storage_path, repo, "head_unversioned")
@@ -78,14 +79,14 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
         return False, "Failed calling previous: [%s]. Repository: [%s]." % (r, repo)
     log_out = r
 
-    sep_line = svn_wrapper.detect_separator(log_out)
+    sep_line = svn_wrapper_filter.detect_separator(log_out)
     log_entries_pre = log_out.split(sep_line)
     log_entries = []
     for le in log_entries_pre:
         if le != "":
             log_entries.append(le)
 
-    prev_list = svn_wrapper.rev_entries_filter(log_entries)
+    prev_list = svn_wrapper_filter.rev_entries_filter(log_entries)
 
     if previous_number > len(prev_list):
         return False, "Can't collect patch for previous: requested [%d] commits, but there are only [%d] in total." % (previous_number, len(prev_list))
