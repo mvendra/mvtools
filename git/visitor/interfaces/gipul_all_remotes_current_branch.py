@@ -2,7 +2,7 @@
 
 import sys
 import os
-import git_repo_query
+import git_lib
 
 import git_visitor_pull
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     repos += [sys.argv[1]]
 
-    current_branch = git_repo_query.get_current_branch(repos[0])
+    current_branch = git_lib.get_current_branch(repos[0])
     if current_branch is None:
         print("No branches detected in %s. Aborting." % repo_path)
         sys.exit(1)

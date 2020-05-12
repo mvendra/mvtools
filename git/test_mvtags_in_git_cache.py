@@ -4,7 +4,7 @@ import sys
 import os
 
 import git_wrapper
-import git_repo_query
+import git_lib
 
 def puaq():
     print("Usage: %s repo_path" % os.path.basename(__file__))
@@ -57,7 +57,7 @@ def check_mvtags_in_repo(repo):
 
     ret = []
 
-    files = git_repo_query.get_staged_files(repo)
+    files = git_lib.get_staged_files(repo)
     if files is None:
         print("Failed querying %s. Aborting." % repo)
         return None

@@ -3,7 +3,7 @@
 import os
 
 import git_visitor_base
-import git_repo_query
+import git_lib
 import git_remote
 
 def change_path(local_path, remote_name, remote_operation, remote_path):
@@ -18,7 +18,7 @@ def visitor_remote_refactor(repos, options):
     all_passed = True
 
     for rp in repos:
-        remotes = git_repo_query.get_remotes(rp)
+        remotes = git_lib.get_remotes(rp)
         if remotes is None:
             continue
         for rmn in remotes:

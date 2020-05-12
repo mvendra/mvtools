@@ -4,7 +4,7 @@ import os
 import fsquery
 import path_utils
 
-import git_repo_query
+import git_lib
 import terminal_colors
 
 class gvbexcept(RuntimeError):
@@ -144,7 +144,7 @@ def apply_filters(repo, options):
     on failure, raises gvbexcept with detail msg
     """
 
-    remotes = git_repo_query.get_remotes(repo)
+    remotes = git_lib.get_remotes(repo)
     if remotes is None:
         raise gvbexcept("No remotes detected")
 
@@ -152,7 +152,7 @@ def apply_filters(repo, options):
     if remotes is None:
         raise gvbexcept("Failed filtering remotes")
 
-    branches = git_repo_query.get_branches(repo)
+    branches = git_lib.get_branches(repo)
     if branches is None:
         raise gvbexcept("No branches detected")
 

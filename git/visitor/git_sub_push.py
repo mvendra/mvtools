@@ -6,7 +6,7 @@ import fsquery
 import terminal_colors
 
 import git_push
-import git_repo_query
+import git_lib
 import path_utils
 
 def filter_sub_files(sub_candidates):
@@ -28,8 +28,8 @@ def push_subs(path):
 
     for s in subs:
 
-        rs = git_repo_query.get_remotes(s)
-        bs = git_repo_query.get_branches(s)
+        rs = git_lib.get_remotes(s)
+        bs = git_lib.get_branches(s)
 
         af, r = git_push.do_push(s, rs, bs)
         anyfailed |= af

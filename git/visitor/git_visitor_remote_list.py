@@ -3,14 +3,14 @@
 import os
 
 import git_visitor_base
-import git_repo_query
+import git_lib
 import path_utils
 
 def visitor_remote_list(repos, options):
 
     for rp in repos:
         print("\n* Listing remotes of %s ..." % rp)
-        remotes = git_repo_query.get_remotes(rp)
+        remotes = git_lib.get_remotes(rp)
         if remotes is None:
             print("No remotes.")
             continue
