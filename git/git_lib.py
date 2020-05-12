@@ -6,9 +6,19 @@ import os
 import git_wrapper
 import path_utils
 
-def puaq(): # print usage and quit
-    print("Usage: %s repo_path." % os.path.basename(__file__))
-    sys.exit(1)
+def generic_parse(str_line, separator):
+    if str_line is None:
+        return None
+    n = str_line.find(separator)
+    if n == -1:
+        return None
+    return str_line[:n]
+
+def get_stash_name(str_line):
+    return generic_parse(str_line, ":")
+
+def get_prev_hash(str_line):
+    return generic_parse(str_line, " ")
 
 def is_git_work_tree(path):
 
@@ -212,6 +222,34 @@ def get_unstaged_files(repo):
     if len(ret) == 0:
         return ""
     return ret
+
+def get_stash_list(repo):
+
+    v, r = git_wrapper.stash_list(repo)
+    if not v:
+        return False, r
+    stash_list = [get_stash_name(x) for x in r.split(os.linesep) if x != ""]
+    return True, stash_list
+
+def get_previous_hash_list(repo, num_previous):
+
+    v, r = git_wrapper.log_oneline(repo)
+    if not v:
+        return False, r
+    prev_list = [get_prev_hash(x) for x in r.split(os.linesep) if x != ""]
+    return True, prev_list
+
+def get_list_unversioned_files(repo):
+
+    v, r = git_wrapper.ls_files(repo)
+    if not v:
+        return False, r
+    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
+    return True, unversioned_files
+
+def puaq(): # print usage and quit
+    print("Usage: %s repo_path." % os.path.basename(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
 

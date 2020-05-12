@@ -3,22 +3,9 @@
 import sys
 import os
 
+import git_lib
 import git_wrapper
 import path_utils
-
-def generic_parse(str_line, separator):
-    if str_line is None:
-        return None
-    n = str_line.find(separator)
-    if n == -1:
-        return None
-    return str_line[:n]
-
-def get_stash_name(str_line):
-    return generic_parse(str_line, ":")
-
-def get_prev_hash(str_line):
-    return generic_parse(str_line, " ")
 
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, function):
 
@@ -52,11 +39,12 @@ def collect_git_patch_head_id(repo, storage_path):
     return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", git_wrapper.rev_parse)
 
 def collect_git_patch_head_unversioned(repo, storage_path):
-    v, r = git_wrapper.ls_files(repo)
+
+    v, r = git_lib.get_list_unversioned_files(repo)
     if not v:
         return False, "Failed calling git command for head-unversioned: %s. Repository: %s." % (r, repo)
+    unversioned_files = r
 
-    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
         target_file = path_utils.concat_path(storage_path, repo, "head_unversioned", uf)
         source_file = path_utils.concat_path(repo, uf)
@@ -73,11 +61,11 @@ def collect_git_patch_head_unversioned(repo, storage_path):
 
 def collect_git_patch_stash(repo, storage_path):
 
-    v, r = git_wrapper.stash_list(repo)
+    v, r = git_lib.get_stash_list(repo)
     if not v:
         return False, "Failed calling git command for stash: %s. Repository: %s." % (r, repo)
+    stash_list = r
 
-    stash_list = [get_stash_name(x) for x in r.split(os.linesep) if x != ""]
     for si in stash_list:
 
         v, r = git_wrapper.stash_show(repo, si)
@@ -104,11 +92,10 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
     if not previous_number > 0:
         return False, "Can't collect patch for previous: nothing to format"
 
-    v, r = git_wrapper.log_oneline(repo)
+    v, r = git_lib.get_previous_hash_list(repo, previous_number)
     if not v:
         return False, "Failed calling git command for previous: %s. Repository: %s." % (r, repo)
-
-    prev_list = [get_prev_hash(x) for x in r.split(os.linesep) if x != ""]
+    prev_list = r
 
     if previous_number > len(prev_list):
         return False, "Can't collect patch for previous: requested %d commits, but there are only %d in total" % (previous_number, len(prev_list))

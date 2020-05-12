@@ -106,15 +106,6 @@ class CollectGitPatchTest(unittest.TestCase):
 
         return ret
 
-    def testHelperFunctions(self):
-        self.assertEqual(collect_git_patch.get_stash_name("stash@{0}: WIP on master: a44cc87 upd"), "stash@{0}")
-        self.assertEqual(collect_git_patch.get_stash_name(""), None)
-        self.assertEqual(collect_git_patch.get_stash_name(None), None)
-
-        self.assertEqual(collect_git_patch.get_prev_hash("a44cc87 (HEAD -> master) upd"), "a44cc87")
-        self.assertEqual(collect_git_patch.get_prev_hash(""), None)
-        self.assertEqual(collect_git_patch.get_prev_hash(None), None)
-
     def testGeneral(self):
 
         v, r = collect_git_patch.collect_git_patch(self.nonexistent, self.storage_path, False, False, False, False, False, 0)

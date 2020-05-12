@@ -75,6 +75,15 @@ class GitLibTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
+    def testHelperFunctions(self):
+        self.assertEqual(git_lib.get_stash_name("stash@{0}: WIP on master: a44cc87 upd"), "stash@{0}")
+        self.assertEqual(git_lib.get_stash_name(""), None)
+        self.assertEqual(git_lib.get_stash_name(None), None)
+
+        self.assertEqual(git_lib.get_prev_hash("a44cc87 (HEAD -> master) upd"), "a44cc87")
+        self.assertEqual(git_lib.get_prev_hash(""), None)
+        self.assertEqual(git_lib.get_prev_hash(None), None)
+
     def testIsGitWorkTree(self):
         self.assertTrue(git_lib.is_git_work_tree(self.first_repo))
         self.assertFalse(git_lib.is_git_work_tree(self.fourth_notrepo))
