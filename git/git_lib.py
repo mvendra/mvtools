@@ -20,6 +20,56 @@ def get_stash_name(str_line):
 def get_prev_hash(str_line):
     return generic_parse(str_line, " ")
 
+def remove_gitlog_decorations(commitmsg):
+
+    res = commitmsg
+
+    # cut out first four lines (commit, author, date, \n)
+    nl = -1
+    for x in range(4):
+        nl = res.find("\n", nl+1)
+        if nl == -1:
+            return None
+    res = res[nl+1:]
+
+    # remove the remaining commits
+    remaining = res.find("\ncommit")
+    if remaining != -1: # this could be the only commit. so we will only try to cut if there's more
+        res = res[:remaining] 
+
+    # remove the trailing last newline
+    nl = res.rfind("\n")
+    if nl == -1:
+        return None
+    res = res[:nl]
+
+    # remove the indentation before each line
+    res_lines = res.split("\n")
+    res = ""
+    for line in res_lines:
+        line = line[4:]
+        res += line + "\n"
+    res = res[:len(res)-1] # the above code will always add a newline at the end of each line. this renders the last line "incorrect". lets fix it.
+
+    return res
+
+def is_repo_root(path):
+    if path is None:
+        return False
+    if not os.path.exists(path):
+        return False
+    if path_utils.basename_filtered(path).endswith(".git"):
+        return True
+    return False
+
+def git_discover_repo_root(repo_path):
+    curpath = repo_path
+    while not is_repo_root(path_utils.concat_path(curpath, ".git")):
+        curpath = path_utils.backpedal_path(curpath)
+        if curpath is None:
+            return None
+    return curpath
+
 def is_git_work_tree(path):
 
     """ is_git_repo

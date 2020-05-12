@@ -33,6 +33,8 @@ class GitLibTest(unittest.TestCase):
         self.second_repo = path_utils.concat_path(self.test_dir, "second")
         self.third_repo = path_utils.concat_path(self.test_dir, "third")
 
+        self.nonexistent_repo = path_utils.concat_path(self.test_dir, "nonexistent")
+
         self.fourth_notrepo = path_utils.concat_path(self.test_dir, "fourth")
         os.mkdir(self.fourth_notrepo)
 
@@ -234,6 +236,51 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(ret), 2)
         self.assertTrue(first_more2 in ret)
         #self.assertTrue(first_more3 in ret) # mvtodo: might require extra system config or ...
+
+    def testRemoveGitlogDecorations(self):
+
+        self.first_file = path_utils.concat_path(self.first_repo, "file.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(self.first_file), "file1-content", "commit_msg_file")
+        if not v:
+            self.fail(r)
+
+        v, r = git_wrapper.log(self.first_repo, 1)
+        self.assertTrue(v)
+
+        self.assertEqual( len(r.strip().split(os.linesep)), 5 )
+        self.assertTrue("commit_msg_file" in r)
+        commit_msg_oneliner = git_lib.remove_gitlog_decorations(r)
+        self.assertEqual( len(commit_msg_oneliner.strip().split(os.linesep)), 1 )
+        self.assertEqual("commit_msg_file", commit_msg_oneliner)
+
+    def testIsRepoRoot(self):
+        self.assertTrue(git_lib.is_repo_root(path_utils.concat_path(self.first_repo, ".git")))
+        self.assertFalse(git_lib.is_repo_root(path_utils.concat_path(self.first_repo, ".anythingelse")))
+        self.assertFalse(git_lib.is_repo_root(None))
+        self.assertFalse(git_lib.is_repo_root(self.nonexistent_repo))
+
+    def testGitDiscoverRepoRoot(self):
+
+        folder1 = path_utils.concat_path(self.first_repo, "folder1")
+        os.mkdir(folder1)
+
+        self.first_folder1_file2 = path_utils.concat_path(folder1, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(folder1, path_utils.basename_filtered(self.first_folder1_file2), "file2-content", "commit_msg_file-2")
+        if not v:
+            self.fail(r)
+
+        folder2 = path_utils.concat_path(folder1, "folder2")
+        os.mkdir(folder2)
+
+        folder3 = path_utils.concat_path(self.first_repo, "one", "two", "three")
+        path_utils.guaranteefolder(folder3)
+
+        self.assertEqual(git_lib.git_discover_repo_root(self.first_repo), self.first_repo)
+        self.assertEqual(git_lib.git_discover_repo_root(self.nonexistent_repo), None)
+        self.assertEqual(git_lib.git_discover_repo_root(self.nonexistent_repo), None)
+        self.assertEqual(git_lib.git_discover_repo_root(folder1), self.first_repo)
+        self.assertEqual(git_lib.git_discover_repo_root(folder2), self.first_repo)
+        self.assertEqual(git_lib.git_discover_repo_root(folder3), self.first_repo)
 
 if __name__ == '__main__':
     unittest.main()

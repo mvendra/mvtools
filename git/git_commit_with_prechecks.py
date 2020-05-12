@@ -4,8 +4,8 @@ import sys
 import os
 
 import git_wrapper
+import git_lib
 import test_mvtags_in_git_cache
-import git_discover_repo_root
 import inline_echo
 
 def gicom(repo, params):
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     params = sys.argv[1:]
     repo = os.getcwd()
 
-    repo = git_discover_repo_root.git_discover_repo_root(repo)
+    repo = git_lib.git_discover_repo_root(repo)
     if repo is None:
         print("Failed detecting repo from %s." % repo)
         exit(1)
