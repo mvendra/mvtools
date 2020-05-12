@@ -586,6 +586,12 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue("log-oneline test commit msg 1" in r)
         self.assertTrue("log-oneline test commit msg 2" in r)
 
+        v, r = git_wrapper.log_oneline(self.second_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 1 )
+        self.assertFalse("log-oneline test commit msg 1" in r)
+        self.assertTrue("log-oneline test commit msg 2" in r)
+
     def testLog(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
@@ -614,10 +620,15 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         v, r = git_wrapper.log(self.second_repo)
-
         self.assertTrue(v)
         self.assertEqual( len(r.strip().split(os.linesep)), 11 )
         self.assertTrue("log test commit msg 1" in r)
+        self.assertTrue("log test commit msg 2" in r)
+
+        v, r = git_wrapper.log(self.second_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 5 )
+        self.assertFalse("log test commit msg 1" in r)
         self.assertTrue("log test commit msg 2" in r)
 
     def testShow(self):
