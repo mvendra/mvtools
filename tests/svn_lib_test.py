@@ -7,9 +7,9 @@ import unittest
 
 import mvtools_test_fixture
 
-import svn_wrapper_filter
+import svn_lib
 
-class SvnWrapperFilterTest(unittest.TestCase):
+class SvnLibTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -19,7 +19,7 @@ class SvnWrapperFilterTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("svn_wrapper_filter_test_base")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("svn_lib_test_base")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -32,15 +32,15 @@ class SvnWrapperFilterTest(unittest.TestCase):
 
     def testIsNonNumber(self):
 
-        self.assertTrue(svn_wrapper_filter.is_nonnumber("a"))
-        self.assertTrue(svn_wrapper_filter.is_nonnumber("!"))
-        self.assertFalse(svn_wrapper_filter.is_nonnumber("1"))
+        self.assertTrue(svn_lib.is_nonnumber("a"))
+        self.assertTrue(svn_lib.is_nonnumber("!"))
+        self.assertFalse(svn_lib.is_nonnumber("1"))
 
     def testIsNonSpaceOrTabs(self):
 
-        self.assertTrue(svn_wrapper_filter.is_nonspaceortabs("a"))
-        self.assertFalse(svn_wrapper_filter.is_nonspaceortabs(" "))
-        self.assertFalse(svn_wrapper_filter.is_nonspaceortabs("\t"))
+        self.assertTrue(svn_lib.is_nonspaceortabs("a"))
+        self.assertFalse(svn_lib.is_nonspaceortabs(" "))
+        self.assertFalse(svn_lib.is_nonspaceortabs("\t"))
 
 if __name__ == '__main__':
     unittest.main()
