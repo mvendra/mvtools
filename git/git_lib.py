@@ -311,5 +311,33 @@ def is_repo_working_tree(repo):
         return False, "git_lib.is_repo_working_tree failed: %s" % r
     return True, "true" in r
 
+def is_repo_standard(repo):
+
+    v, r = is_repo_working_tree(repo)
+    if not v:
+        return False, "git_lib.is_repo_standard failed: %s" % r
+
+    the_git_obj = path_utils.concat_path(repo, ".git")
+    if not os.path.exists( the_git_obj ):
+        return False, "git_lib.is_repo_standard failed: %s does not exist" % the_git_obj
+
+    if os.path.isdir(the_git_obj):
+        return True, True
+    return True, False
+
+def is_repo_submodule(repo):
+
+    v, r = is_repo_working_tree(repo)
+    if not v:
+        return False, "git_lib.is_repo_submodule failed: %s" % r
+
+    the_git_obj = path_utils.concat_path(path, ".git")
+    if not os.path.exists( the_git_obj ):
+        return False, "git_lib.is_repo_submodule failed: %s does not exist" % the_git_obj
+
+    if not os.path.isdir(the_git_obj):
+        return True, True
+    return True, False
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))

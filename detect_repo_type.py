@@ -15,14 +15,13 @@ def detect_repo_type(path):
     if v and r:
         return True, "git/bare"
 
-    v, r = git_lib.is_repo_working_tree(path)
+    v, r = git_lib.is_repo_standard(path)
     if v and r:
-        the_git_obj = path_utils.concat_path(path, ".git")
-        if os.path.exists( the_git_obj ):
-            if os.path.isdir(the_git_obj):
-                return True, "git/std"
-            else:
-                return True, "git/sub"
+        return True, "git/std"
+
+    v, r = git_lib.is_repo_submodule(path)
+    if v and r:
+        return True, "git/sub"
 
     # should ideally use "svnlook info the_path" but that wouldn't work with some repositories
     the_svn_obj = path_utils.concat_path(path, ".svn")
