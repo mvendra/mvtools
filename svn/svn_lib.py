@@ -3,6 +3,8 @@
 import sys
 import os
 
+import svn_wrapper
+
 def is_non_generic(char_input, list_select):
     for c in list_select:
         if c == char_input:
@@ -86,3 +88,36 @@ def detect_separator(the_string):
         if is_non_generic(the_string[i], [rep_char]):
             rep_line = the_string[0:i]
             return rep_line
+
+def get_list_unversioned(repo):
+
+    v, r = svn_wrapper.status(repo)
+    if not v:
+        return False, r
+    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
+    return True, unversioned_files
+
+def get_previous_list(repo, previous_number):
+
+    v, r = svn_wrapper.log(repo, str(previous_number))
+    if not v:
+        return False, r
+    log_out = r
+
+    sep_line = detect_separator(log_out)
+    log_entries_pre = log_out.split(sep_line)
+    log_entries = []
+    for le in log_entries_pre:
+        if le != "":
+            log_entries.append(le)
+
+    prev_list = rev_entries_filter(log_entries)
+    return True, prev_list
+
+def get_head_revision(repo):
+
+    v, r = svn_wrapper.info(repo)
+    if not v:
+        return False, r
+    head_rev = revision_filter_function(r)
+    return True, head_rev

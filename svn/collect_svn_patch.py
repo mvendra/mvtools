@@ -7,7 +7,7 @@ import path_utils
 import svn_wrapper
 import svn_lib
 
-def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, function, filter_function=None):
+def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, contents):
 
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
@@ -20,32 +20,30 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
     if os.path.exists(output_filename_full):
         return False, "Can't collect patch for [%s]: [%s] already exists." % (log_title, output_filename_full)
 
-    v, r = function(repo)
-    if not v:
-        return False, "Failed calling svn command for [%s]: [%s]. Repository: [%s]." % (log_title, r, repo)
-    if filter_function is not None:
-        final_output = filter_function(r)
-    else:
-        final_output = r
-
     with open(output_filename_full, "w") as f:
-        f.write(final_output)
+        f.write(contents)
 
     return True, ""
 
 def collect_svn_patch_head(repo, storage_path):
-    return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", svn_wrapper.diff, None)
+    v, r = svn_wrapper.diff(repo)
+    if not v:
+        return False, "Failed calling svn command for head: [%s]. Repository: [%s]." % (r, repo)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
 
 def collect_svn_patch_head_id(repo, storage_path):
-    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", svn_wrapper.info, svn_lib.revision_filter_function)
+    v, r = svn_lib.get_head_revision(repo)
+    if not v:
+        return False, "Failed calling svn command for head-id: [%s]. Repository: [%s]." % (r, repo)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)
 
 def collect_svn_patch_head_unversioned(repo, storage_path):
 
-    v, r = svn_wrapper.status(repo)
+    v, r = svn_lib.get_list_unversioned(repo)
     if not v:
         return False, "Failed calling head-unversioned: [%s]. Repository: [%s]." % (r, repo)
+    unversioned_files = r
 
-    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     for uf in unversioned_files:
         file_filtered = svn_lib.status_filter_function_unversioned(uf)
         if file_filtered is None:
@@ -74,19 +72,10 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
     if not previous_number > 0:
         return False, "Can't collect patch for previous: nothing to format."
 
-    v, r = svn_wrapper.log(repo, str(previous_number))
+    v, r = svn_lib.get_previous_list(repo, previous_number)
     if not v:
         return False, "Failed calling previous: [%s]. Repository: [%s]." % (r, repo)
-    log_out = r
-
-    sep_line = svn_lib.detect_separator(log_out)
-    log_entries_pre = log_out.split(sep_line)
-    log_entries = []
-    for le in log_entries_pre:
-        if le != "":
-            log_entries.append(le)
-
-    prev_list = svn_lib.rev_entries_filter(log_entries)
+    prev_list = r
 
     if previous_number > len(prev_list):
         return False, "Can't collect patch for previous: requested [%d] commits, but there are only [%d] in total." % (previous_number, len(prev_list))
