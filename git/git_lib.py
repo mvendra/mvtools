@@ -297,23 +297,5 @@ def get_list_unversioned_files(repo):
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     return True, unversioned_files
 
-def puaq(): # print usage and quit
-    print("Usage: %s repo_path." % os.path.basename(__file__))
-    sys.exit(1)
-
 if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-        puaq()
-
-    repopath = sys.argv[1]
-    t1 = is_git_work_tree(repopath)
-    if t1 is None:
-        print("%s does not exist." % repopath)
-        sys.exit(1)
-    elif t1 is False:
-        print("%s is not a git work tree." % repopath)
-        sys.exit(1)
-
-    print("branches: %s" % get_branches(repopath))
-    print("remotes: %s" % get_remotes(repopath))
+    print("Hello from %s" % os.path.basename(__file__))
