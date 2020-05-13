@@ -297,5 +297,19 @@ def get_list_unversioned_files(repo):
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     return True, unversioned_files
 
+def is_repo_bare(repo):
+
+    v, r = git_wrapper.rev_parse_is_bare_repo(repo)
+    if not v:
+        return False, "git_lib.is_repo_bare failed: %s" % r
+    return True, "true" in r
+
+def is_repo_working_tree(repo):
+
+    v, r = git_wrapper.rev_parse_is_inside_work_tree(repo)
+    if not v:
+        return False, "git_lib.is_repo_working_tree failed: %s" % r
+    return True, "true" in r
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
