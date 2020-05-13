@@ -38,7 +38,7 @@ def collect_git_patch_head_staged(repo, storage_path):
     return collect_git_patch_cmd_generic(repo, storage_path, "head_staged.patch", "head-staged", r)
 
 def collect_git_patch_head_id(repo, storage_path):
-    v, r = git_wrapper.rev_parse(repo)
+    v, r = git_wrapper.rev_parse_head(repo)
     if not v:
         return False, "Failed calling git command for head-id: %s. Repository: %s." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)

@@ -90,8 +90,16 @@ def diff_cached(repo, file_list=None):
             cmd.append(f)
     return git_wrapper_standard_command(cmd, "diff-cached")
 
-def rev_parse(repo):
+def rev_parse_head(repo):
     cmd = ["git", "-C", repo, "rev-parse", "HEAD"]
+    return git_wrapper_standard_command(cmd, "rev-parse")
+
+def rev_parse_is_bare_repo(repo):
+    cmd = ["git", "-C", repo, "rev-parse", "--is-bare-repository"]
+    return git_wrapper_standard_command(cmd, "rev-parse")
+
+def rev_parse_is_inside_work_tree(repo):
+    cmd = ["git", "-C", repo, "rev-parse", "--is-inside-work-tree"]
     return git_wrapper_standard_command(cmd, "rev-parse")
 
 def ls_files(repo):

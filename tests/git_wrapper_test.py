@@ -412,7 +412,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.diff_cached: file_list must be a list")
 
-    def testRevParse(self):
+    def testRevParseHead(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
@@ -424,9 +424,28 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        v, r = git_wrapper.rev_parse(self.second_repo)
+        v, r = git_wrapper.rev_parse_head(self.second_repo)
         self.assertTrue(v)
         self.assertTrue( (len(r) >= (40 + len(os.linesep))) and is_hex_string(r))
+
+    def testRevParseIsBareRepo(self):
+
+        v, r = git_wrapper.rev_parse_is_bare_repo(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("true" in r)
+        v, r = git_wrapper.rev_parse_is_bare_repo(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("false" in r)
+
+    def testRevParseIsInsideWorkTree(self):
+
+        v, r = git_wrapper.rev_parse_is_inside_work_tree(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("false" in r)
+
+        v, r = git_wrapper.rev_parse_is_inside_work_tree(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("true" in r)
 
     def testLsFiles1(self):
 
@@ -743,7 +762,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue( ("new-remote\t%s (push)" % third_repo) in r )
 
         fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
-        v, r = git_wrapper.remote_change_url(self.second_repo, "nonexistant-remote", fourth_repo)
+        v, r = git_wrapper.remote_change_url(self.second_repo, "nonexistent-remote", fourth_repo)
         self.assertFalse(v)
 
         v, r = git_wrapper.remote_change_url(self.second_repo, "new-remote", fourth_repo)
