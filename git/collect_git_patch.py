@@ -7,7 +7,7 @@ import git_lib
 import git_wrapper
 import path_utils
 
-def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, function):
+def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, content):
 
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
@@ -20,23 +20,28 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
     if os.path.exists(output_filename_full):
         return False, "Can't collect patch for %s: %s already exists" % (log_title, output_filename_full)
 
-    v, r = function(repo)
-    if not v:
-        return False, "Failed calling git command for %s: %s. Repository: %s." % (log_title, r, repo)
-
     with open(output_filename_full, "w") as f:
-        f.write(r)
+        f.write(content)
 
     return True, ""
 
 def collect_git_patch_head(repo, storage_path):
-    return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", git_wrapper.diff)
+    v, r = git_wrapper.diff(repo)
+    if not v:
+        return False, "Failed calling git command for head: %s. Repository: %s." % (r, repo)
+    return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
 
 def collect_git_patch_head_staged(repo, storage_path):
-    return collect_git_patch_cmd_generic(repo, storage_path, "head_staged.patch", "head-staged", git_wrapper.diff_cached)
+    v, r = git_wrapper.diff_cached(repo)
+    if not v:
+        return False, "Failed calling git command for head-staged: %s. Repository: %s." % (r, repo)
+    return collect_git_patch_cmd_generic(repo, storage_path, "head_staged.patch", "head-staged", r)
 
 def collect_git_patch_head_id(repo, storage_path):
-    return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", git_wrapper.rev_parse)
+    v, r = git_wrapper.rev_parse(repo)
+    if not v:
+        return False, "Failed calling git command for head-id: %s. Repository: %s." % (r, repo)
+    return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)
 
 def collect_git_patch_head_unversioned(repo, storage_path):
 
