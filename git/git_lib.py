@@ -70,22 +70,6 @@ def discover_repo_root(repo_path):
             return None
     return curpath
 
-def is_git_work_tree(path):
-
-    """ is_git_repo
-    returns true if path exists and points to a git work tree ("/path/to/repo", instead of "/path/to/repo/.git")
-    returns false otherwise
-    returns None if path does not exist
-    """
-
-    if not os.path.exists(path):
-        return None
-
-    if os.path.exists(path_utils.concat_path(path, ".git")):
-        return True
-    else:
-        return False
-
 def get_remotes(repo):
 
     """ get_remotes
@@ -96,7 +80,7 @@ def get_remotes(repo):
     returns None on failures
     """
 
-    t1 = is_git_work_tree(repo)
+    t1 = is_repo_working_tree(repo)
     if t1 is None:
         print("%s does not exist." % repo)
         return None
@@ -140,7 +124,7 @@ def get_branches(repo):
     on failure, returns None
     """
 
-    t1 = is_git_work_tree(repo)
+    t1 = is_repo_working_tree(repo)
     if t1 is None:
         print("%s does not exist." % repo)
         return None
@@ -182,7 +166,7 @@ def get_current_branch(repo):
     on failure, returns None
     """
 
-    t1 = is_git_work_tree(repo)
+    t1 = is_repo_working_tree(repo)
     if t1 is None:
         print("%s does not exist." % repo)
         return None
@@ -204,7 +188,7 @@ def get_staged_files(repo):
     on failure, returns None
     """
 
-    t1 = is_git_work_tree(repo)
+    t1 = is_repo_working_tree(repo)
     if t1 is None:
         print("%s does not exist." % repo)
         return None
@@ -242,7 +226,7 @@ def get_unstaged_files(repo):
     on failure, returns None
     """
 
-    t1 = is_git_work_tree(repo)
+    t1 = is_repo_working_tree(repo)
     if t1 is None:
         print("%s does not exist." % repo)
         return None
@@ -297,13 +281,6 @@ def get_list_unversioned_files(repo):
     unversioned_files = [x for x in r.split(os.linesep) if x != ""]
     return True, unversioned_files
 
-def is_repo_bare(repo):
-
-    v, r = git_wrapper.rev_parse_is_bare_repo(repo)
-    if not v:
-        return False, "git_lib.is_repo_bare failed: %s" % r
-    return True, "true" in r
-
 def is_repo_working_tree(repo):
 
     v, r = git_wrapper.rev_parse_is_inside_work_tree(repo)
@@ -312,6 +289,13 @@ def is_repo_working_tree(repo):
             return True, False
         else:
             return False, "git_lib.is_repo_working_tree failed: %s" % r
+    return True, "true" in r
+
+def is_repo_bare(repo):
+
+    v, r = git_wrapper.rev_parse_is_bare_repo(repo)
+    if not v:
+        return False, "git_lib.is_repo_bare failed: %s" % r
     return True, "true" in r
 
 def is_repo_standard(repo):

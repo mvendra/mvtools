@@ -86,10 +86,6 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(git_lib.get_prev_hash(""), None)
         self.assertEqual(git_lib.get_prev_hash(None), None)
 
-    def testIsGitWorkTree(self):
-        self.assertTrue(git_lib.is_git_work_tree(self.first_repo))
-        self.assertFalse(git_lib.is_git_work_tree(self.fourth_notrepo))
-
     def testGetRemotes(self):
 
         self.assertEqual(git_lib.get_remotes(self.fourth_notrepo), None)
@@ -282,6 +278,37 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(git_lib.discover_repo_root(folder2), self.first_repo)
         self.assertEqual(git_lib.discover_repo_root(folder3), self.first_repo)
 
+    def testIsRepoWorkingTree(self):
+
+        v, r = git_lib.is_repo_working_tree(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        first_git_folder = path_utils.concat_path(self.first_repo, ".git")
+        self.assertTrue(os.path.exists(first_git_folder))
+        v, r = git_lib.is_repo_working_tree(first_git_folder)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        folder = path_utils.concat_path(self.first_repo, "one", "two", "three")
+        path_utils.guaranteefolder(folder)
+
+        v, r = git_lib.is_repo_working_tree(folder)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        # bare repos are not working trees
+        v, r = git_lib.is_repo_working_tree(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = git_lib.is_repo_working_tree(self.nonexistent_repo)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_repo_working_tree(self.fourth_notrepo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
     def testIsRepoBare(self):
 
         v, r = git_lib.is_repo_bare(self.second_repo)
@@ -294,26 +321,6 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.is_repo_bare(self.nonexistent_repo)
         self.assertFalse(v)
-
-    def testIsRepoWorkingTree(self):
-
-        v, r = git_lib.is_repo_working_tree(self.first_repo)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
-        folder = path_utils.concat_path(self.first_repo, "one", "two", "three")
-        path_utils.guaranteefolder(folder)
-
-        v, r = git_lib.is_repo_working_tree(folder)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
-        v, r = git_lib.is_repo_working_tree(self.nonexistent_repo)
-        self.assertFalse(v)
-
-        v, r = git_lib.is_repo_working_tree(self.fourth_notrepo)
-        self.assertTrue(v)
-        self.assertFalse(r)
 
     def testIsRepoStandard(self):
 

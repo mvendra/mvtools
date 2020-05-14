@@ -17,7 +17,7 @@ def git_banish_file(repo, fname):
         exit(1)
 
     # check if repo is indeed a repo
-    if not git_lib.is_git_work_tree(repo):
+    if not git_lib.is_repo_working_tree(repo):
         print("You are supposed to point the repo to its base tree - where the .git folder is located at")
         exit(1)
 
