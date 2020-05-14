@@ -13,7 +13,7 @@ if __name__ == "__main__":
         # override with cmdline arg
         startpath = sys.argv[1]
 
-    r = git_lib.git_discover_repo_root(startpath)
+    r = git_lib.discover_repo_root(startpath)
     if r is None:
         print("Failed getting root directory for [%s]." % startpath)
         sys.exit(1)
