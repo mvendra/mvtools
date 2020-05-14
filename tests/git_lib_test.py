@@ -187,13 +187,17 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(first_more2 in ret)
         self.assertTrue(first_more3 in ret)
 
+        with open(self.first_file1, "a") as f:
+            f.write("additional contents")
+
         v, r = git_wrapper.stage(self.first_repo, None)
         if not v:
             self.fail(r)
 
         ret = git_lib.get_staged_files(self.first_repo)
 
-        self.assertEqual(len(ret), 5)
+        self.assertEqual(len(ret), 6)
+        self.assertTrue(self.first_file1 in ret)
         self.assertTrue(first_more1 in ret)
         self.assertTrue(first_more2 in ret)
         self.assertTrue(first_more3 in ret)

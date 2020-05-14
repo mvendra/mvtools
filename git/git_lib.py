@@ -20,6 +20,9 @@ def get_stash_name(str_line):
 def get_prev_hash(str_line):
     return generic_parse(str_line, " ")
 
+def is_char_status_staged(the_char):
+    return the_char in ["A", "M", "R", "C", "U"]
+
 def remove_gitlog_decorations(commitmsg):
 
     res = commitmsg
@@ -210,7 +213,7 @@ def get_staged_files(repo):
         cl = l.strip()
         if len(cl) == 0:
             continue
-        if cl[0] == "A":
+        if is_char_status_staged(cl[0]):
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
