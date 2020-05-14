@@ -282,5 +282,90 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(git_lib.discover_repo_root(folder2), self.first_repo)
         self.assertEqual(git_lib.discover_repo_root(folder3), self.first_repo)
 
+    def testIsRepoBare(self):
+
+        v, r = git_lib.is_repo_bare(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.is_repo_bare(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = git_lib.is_repo_bare(self.nonexistent_repo)
+        self.assertFalse(v)
+
+    def testIsRepoWorkingTree(self):
+
+        v, r = git_lib.is_repo_working_tree(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        folder = path_utils.concat_path(self.first_repo, "one", "two", "three")
+        path_utils.guaranteefolder(folder)
+
+        v, r = git_lib.is_repo_working_tree(folder)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.is_repo_working_tree(self.nonexistent_repo)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_repo_working_tree(self.fourth_notrepo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsRepoStandard(self):
+
+        v, r = git_lib.is_repo_standard(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.is_repo_standard(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = git_lib.is_repo_standard(self.nonexistent_repo)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_repo_standard(self.fourth_notrepo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        sub_repo = path_utils.concat_path(self.first_repo, "third")
+        v, r = git_wrapper.submodule_add(self.third_repo, self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub_repo))
+
+        v, r = git_lib.is_repo_standard(sub_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsRepoSubmodule(self):
+
+        v, r = git_lib.is_repo_submodule(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = git_lib.is_repo_submodule(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = git_lib.is_repo_submodule(self.nonexistent_repo)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_repo_submodule(self.fourth_notrepo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        sub_repo = path_utils.concat_path(self.first_repo, "third")
+        v, r = git_wrapper.submodule_add(self.third_repo, self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub_repo))
+
+        v, r = git_lib.is_repo_submodule(sub_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
 if __name__ == '__main__':
     unittest.main()
