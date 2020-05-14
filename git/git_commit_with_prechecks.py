@@ -28,7 +28,7 @@ if __name__ == "__main__":
     params = sys.argv[1:]
     repo = os.getcwd()
 
-    repo = git_lib.git_discover_repo_root(repo)
+    repo = git_lib.discover_repo_root(repo)
     if repo is None:
         print("Failed detecting repo from %s." % repo)
         exit(1)

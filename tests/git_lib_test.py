@@ -259,7 +259,7 @@ class GitLibTest(unittest.TestCase):
         self.assertFalse(git_lib.is_repo_root(None))
         self.assertFalse(git_lib.is_repo_root(self.nonexistent_repo))
 
-    def testGitDiscoverRepoRoot(self):
+    def testDiscoverRepoRoot(self):
 
         folder1 = path_utils.concat_path(self.first_repo, "folder1")
         os.mkdir(folder1)
@@ -275,12 +275,12 @@ class GitLibTest(unittest.TestCase):
         folder3 = path_utils.concat_path(self.first_repo, "one", "two", "three")
         path_utils.guaranteefolder(folder3)
 
-        self.assertEqual(git_lib.git_discover_repo_root(self.first_repo), self.first_repo)
-        self.assertEqual(git_lib.git_discover_repo_root(self.nonexistent_repo), None)
-        self.assertEqual(git_lib.git_discover_repo_root(self.nonexistent_repo), None)
-        self.assertEqual(git_lib.git_discover_repo_root(folder1), self.first_repo)
-        self.assertEqual(git_lib.git_discover_repo_root(folder2), self.first_repo)
-        self.assertEqual(git_lib.git_discover_repo_root(folder3), self.first_repo)
+        self.assertEqual(git_lib.discover_repo_root(self.first_repo), self.first_repo)
+        self.assertEqual(git_lib.discover_repo_root(self.nonexistent_repo), None)
+        self.assertEqual(git_lib.discover_repo_root(self.nonexistent_repo), None)
+        self.assertEqual(git_lib.discover_repo_root(folder1), self.first_repo)
+        self.assertEqual(git_lib.discover_repo_root(folder2), self.first_repo)
+        self.assertEqual(git_lib.discover_repo_root(folder3), self.first_repo)
 
 if __name__ == '__main__':
     unittest.main()
