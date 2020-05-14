@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import git_lib
+import svn_lib
 
 def detect_repo_type(path):
 
@@ -23,9 +24,8 @@ def detect_repo_type(path):
     if v and r:
         return True, "git/sub"
 
-    # should ideally use "svnlook info the_path" but that wouldn't work with some repositories
-    the_svn_obj = path_utils.concat_path(path, ".svn")
-    if os.path.exists(the_svn_obj) and os.path.isdir(the_svn_obj):
+    v, r = svn_lib.is_svn_repo(path)
+    if v and r:
         return True, "svn"
 
     return False, "Nothing detected"

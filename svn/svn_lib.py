@@ -4,6 +4,7 @@ import sys
 import os
 
 import svn_wrapper
+import path_utils
 
 def is_non_generic(char_input, list_select):
     for c in list_select:
@@ -121,3 +122,14 @@ def get_head_revision(repo):
         return False, r
     head_rev = revision_filter_function(r)
     return True, head_rev
+
+def is_svn_repo(repo):
+
+    if not os.path.exists(repo):
+        return False, "svn_lib.is_svn_repo failed: %s does not exist." % repo
+
+    # should ideally use "svnlook info the_path" but that wouldn't work with some repositories
+    the_svn_obj = path_utils.concat_path(repo, ".svn")
+    if os.path.exists(the_svn_obj) and os.path.isdir(the_svn_obj):
+        return True, "svn"
+    return True, False
