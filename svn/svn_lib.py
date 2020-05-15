@@ -95,7 +95,8 @@ def get_list_unversioned(repo):
     v, r = svn_wrapper.status(repo)
     if not v:
         return False, r
-    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
+    unversioned_files = [status_filter_function_unversioned(x) for x in r.split(os.linesep) if x != ""]
+    unversioned_files = [x for x in unversioned_files if x is not None] # mvtodo: there has to be a better way to do this
     return True, unversioned_files
 
 def get_previous_list(repo, previous_number):

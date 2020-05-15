@@ -45,12 +45,9 @@ def collect_svn_patch_head_unversioned(repo, storage_path):
     unversioned_files = r
 
     for uf in unversioned_files:
-        file_filtered = svn_lib.status_filter_function_unversioned(uf)
-        if file_filtered is None:
-            continue
         target_base = path_utils.concat_path(storage_path, repo, "head_unversioned")
-        target_file = path_utils.concat_path(target_base, file_filtered)
-        source_file = path_utils.concat_path(repo, file_filtered)
+        target_file = path_utils.concat_path(target_base, uf)
+        source_file = path_utils.concat_path(repo, uf)
 
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
