@@ -6,6 +6,12 @@ import os
 import path_utils
 import detect_repo_type
 
+def filter_all_positive(path, params):
+    return True
+
+def filter_all_negative(path, params):
+    return False
+
 def filter_is_last_not_equal_to(path, params):
     if path_utils.basename_filtered(path) != params:
         return True
@@ -20,7 +26,27 @@ def filter_is_repo(path, params):
     v, r = detect_repo_type.detect_repo_type(path)
     return v
 
-def filter_path_list(path_list, filter_functions):
+def and_adapter(predicate, func, path, params):
+    r = func(path, params)
+    if predicate is None:
+        return r
+    r &= predicate
+    return r
+
+def or_adapter(predicate, func, path, params):
+    r = func(path, params)
+    if predicate is None:
+        return r
+    r |= predicate
+    return r
+
+def filter_path_list_and(path_list, filter_functions):
+    return filter_path_list(path_list, filter_functions, and_adapter)
+
+def filter_path_list_or(path_list, filter_functions):
+    return filter_path_list(path_list, filter_functions, or_adapter)
+
+def filter_path_list(path_list, filter_functions, predicate_adapter):
 
     if not isinstance(path_list, list):
         return None
@@ -38,12 +64,11 @@ def filter_path_list(path_list, filter_functions):
 
     for p in path_list:
 
-        all_filters_ok = True
+        all_filters_ok = None
         for f in filter_functions:
 
             func, params = f
-            if not func(p, params):
-                all_filters_ok = False
+            all_filters_ok = predicate_adapter(all_filters_ok, func, p, params)
 
         if all_filters_ok:
             return_list.append(p)
