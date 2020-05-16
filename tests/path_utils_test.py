@@ -145,5 +145,12 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.dirname_filtered("/home/user/"), "/home")
         self.assertEqual(path_utils.dirname_filtered("/"), "")
 
+    def testSplitPath(self):
+        self.assertEqual(path_utils.splitpath(os.sep), [])
+        self.assertEqual(path_utils.splitpath("/"), [])
+        self.assertEqual(path_utils.splitpath("/tmp"), ["tmp"])
+        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep) ), ["first", "second"])
+        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep) ), ["first", "second"])
+
 if __name__ == '__main__':
     unittest.main()

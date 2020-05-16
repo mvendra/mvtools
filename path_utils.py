@@ -60,6 +60,15 @@ def explodepath(apath):
     result=result[:len(result)-1] # removes trailing blank space
     return result
 
+def splitpath(apath):
+    from pathlib import PurePath
+    path_parts = list(PurePath(apath).parts)
+    return_path_list = []
+    for pp in path_parts:
+        if pp != os.sep or pp != "/":
+            return_path_list.append(pp)
+    return return_path_list
+
 def scratchfolder(path):
 
     """ scratch_folder
