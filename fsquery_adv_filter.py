@@ -6,10 +6,62 @@ import os
 import path_utils
 import detect_repo_type
 
-def filter_all_positive(path, params):
-    return True
+def filter_has_middle_pieces(path, params):
+    path_pieces = path_utils.splitpath(path)
+    middle_pieces = params
 
-def filter_all_negative(path, params):
+    if (len(path_pieces) < 1) or (len(middle_pieces) < 1):
+        return False
+
+    pp = 0
+    mp = 0
+
+    while True:
+
+        if middle_pieces[mp] == "*":
+
+            if mp+1 == len(middle_pieces): # last asterisk. match.
+                return True
+
+            if middle_pieces[mp+1] == "*": # frivolous/repeated asterisk. ignore and forward.
+                mp +=1
+                continue
+
+            found_next = False
+            for i in range(pp, len(path_pieces)): # find next match.
+                if path_pieces[i] == middle_pieces[mp+1]:
+                    found_next = True
+                    pp = i
+                    break
+
+            if not found_next:
+                return False
+
+            mp +=1
+            if mp == len(middle_pieces):
+                return True
+            elif pp == len(path_pieces): # last piece but there were still middle pieces to match. no match.
+                return False
+            else:
+                continue
+
+        else: # not asterisk
+
+            if middle_pieces[mp] == path_pieces[pp]:
+
+                mp += 1
+                pp += 1
+
+                if mp == len(middle_pieces): # last non asterisk. match.
+                    return True
+                elif pp == len(path_pieces): # last piece but there were still middle pieces to match. no match.
+                    return False
+                else:
+                    continue # still good. continue.
+
+            else:
+                return False # no match
+
     return False
 
 def filter_is_last_not_equal_to(path, params):
@@ -25,6 +77,15 @@ def filter_is_last_equal_to(path, params):
 def filter_is_repo(path, params):
     v, r = detect_repo_type.detect_repo_type(path)
     return v
+
+def filter_path_exists(path, params):
+    return os.path.exists(path)
+
+def filter_all_positive(path, params):
+    return True
+
+def filter_all_negative(path, params):
+    return False
 
 def and_adapter(predicate, func, path, params):
     r = func(path, params)

@@ -161,5 +161,117 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         paths_returned = fsquery_adv_filter.filter_path_list_or(paths, filters)
         self.assertEqual(paths_returned, ["/user/home/file1.txt", "/user/home/file3.txt"])
 
+    def testFilterPathExists_And(self):
+
+        local_folder = path_utils.concat_path(self.test_dir, "local_folder")
+        paths = ["/user/home/folder1", "/user/home/folder2", "/user/home/folder3", local_folder]
+        filters = [(fsquery_adv_filter.filter_path_exists, "not-used")]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+        os.mkdir(local_folder)
+        self.assertTrue(os.path.exists(local_folder))
+
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [local_folder])
+
+    def testFilterPathExists_Or(self):
+
+        local_folder = path_utils.concat_path(self.test_dir, "local_folder")
+        paths = ["/user/home/folder1", "/user/home/folder2", "/user/home/folder3", local_folder]
+        filters = [(fsquery_adv_filter.filter_path_exists, "not-used")]
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+        os.mkdir(local_folder)
+        self.assertTrue(os.path.exists(local_folder))
+
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, filters)
+        self.assertEqual(paths_returned, [local_folder])
+
+    def testFilterHasMiddlePieces1_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["user"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, paths)
+
+    def testFilterHasMiddlePieces2_And(self):
+
+        paths = ["/local/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["local"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/local/home/sub/folder1"])
+
+    def testFilterHasMiddlePieces3_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/soob/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["soob"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+    def testFilterHasMiddlePieces4_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, paths)
+
+    def testFilterHasMiddlePieces5_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["*", "*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, paths)
+
+    def testFilterHasMiddlePieces6_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/soob/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["*", "soob"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home/soob/folder2"])
+
+    def testFilterHasMiddlePieces7_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/soob/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["*", "nothere"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+    def testFilterHasMiddlePieces8_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["*", "sub"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, paths)
+
+    def testFilterHasMiddlePieces9_And(self):
+
+        paths = ["/user/home/sub/extra/folder1", "/user/home/sub/extra/folder2", "/user/home/sub/exter/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["*", "home", "*", "extra"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home/sub/extra/folder1", "/user/home/sub/extra/folder2"])
+
+    def testFilterHasMiddlePieces10_And(self):
+
+        paths = ["/system/home/sub/extra/folder0", "/user/home/sub/extra/folder1", "/user/home/sub/extra/folder2", "/user/home/sub/exter/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["user", "*", "extra", "*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home/sub/extra/folder1", "/user/home/sub/extra/folder2"])
+
+    def testFilterHasMiddlePieces11_And(self):
+
+        paths = ["/system/home1", "/system/home2", "/user/home"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["system", "*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/system/home1", "/system/home2"])
+
+    def testFilterHasMiddlePieces12_And(self):
+
+        paths = ["/system/home1", "/system/home2", "/user/home"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["system"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/system/home1", "/system/home2"])
+
 if __name__ == '__main__':
     unittest.main()
