@@ -56,9 +56,17 @@ def filter_has_middle_pieces(path, params):
                 pp += 1
 
                 if mp == len(middle_pieces): # last non asterisk. match.
+                    if pp != len(path_pieces): # matched all middle pieces, but the last middle piece is not an asterisk and the are more path pieces. no match.
+                        return False
                     return True
-                elif pp == len(path_pieces): # last piece but there were still middle pieces to match. no match.
-                    return False
+                elif pp == len(path_pieces): # last piece ...
+                    # are there any other pieces to match other than asterisks?
+                    other_than_asterisk = False
+                    for c in middle_pieces[mp:]:
+                        if c != "*":
+                            other_than_asterisk = True
+                            break
+                    return (not other_than_asterisk) # if last was asterisk, give it a match. otherwise no.
                 else:
                     continue # still good. continue.
 
