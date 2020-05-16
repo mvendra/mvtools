@@ -311,10 +311,10 @@ class FsqueryAdvFilterTest(unittest.TestCase):
 
     def testFilterHasMiddlePieces14_And(self):
 
-        paths = ["/system/home1", "/system/home2", "/user/home"]
+        paths = ["/system/home1", "/system/home2", "/user/home", "/system"]
         filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["system", "*"])]
         paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
-        self.assertEqual(paths_returned, ["/system/home1", "/system/home2"])
+        self.assertEqual(paths_returned, ["/system/home1", "/system/home2", "/system"])
 
     def testFilterHasMiddlePieces15_And(self):
 
@@ -419,7 +419,7 @@ class FsqueryAdvFilterTest(unittest.TestCase):
 
     def testFilterHasNotMiddlePieces14_And(self):
 
-        paths = ["/system/home1", "/system/home2", "/user/home"]
+        paths = ["/system/home1", "/system/home2", "/user/home", "/system"]
         filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["system", "*"])]
         paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
         self.assertEqual(paths_returned, ["/user/home"])
