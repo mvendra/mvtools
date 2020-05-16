@@ -6,6 +6,9 @@ import os
 import path_utils
 import detect_repo_type
 
+def filter_has_not_middle_pieces(path, params):
+    return not filter_has_middle_pieces(path, params)
+
 def filter_has_middle_pieces(path, params):
     path_pieces = path_utils.splitpath(path)
     middle_pieces = params
@@ -65,18 +68,22 @@ def filter_has_middle_pieces(path, params):
     return False
 
 def filter_is_last_not_equal_to(path, params):
-    if path_utils.basename_filtered(path) != params:
-        return True
-    return False
+    return not filter_is_last_equal_to(path, params)
 
 def filter_is_last_equal_to(path, params):
     if path_utils.basename_filtered(path) == params:
         return True
     return False
 
+def filter_is_not_repo(path, params):
+    return not filter_is_repo(path, params)
+
 def filter_is_repo(path, params):
     v, r = detect_repo_type.detect_repo_type(path)
     return v
+
+def filter_path_not_exists(path, params):
+    return not filter_path_exists(path, params)
 
 def filter_path_exists(path, params):
     return os.path.exists(path)

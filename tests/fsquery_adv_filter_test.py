@@ -119,6 +119,25 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         paths_returned = fsquery_adv_filter.filter_path_list_or(paths, [(fsquery_adv_filter.filter_all_positive, "not-used"), (fsquery_adv_filter.filter_is_repo, "not-used")])
         self.assertEqual(paths_returned, paths)
 
+    def testFilterNotRepos_And(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        if not v:
+            self.fail(r)
+
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.init(self.test_dir, "second", False)
+        if not v:
+            self.fail(r)
+
+        third_notrepo = path_utils.concat_path(self.test_dir, "third")
+        os.mkdir(third_notrepo)
+
+        paths = [first_repo, second_repo, third_notrepo]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_is_not_repo, "not-used")])
+        self.assertEqual(paths_returned, [third_notrepo])
+
     def testFilterLastEqual_And(self):
 
         paths = ["/user/home/file1.txt", "/user/home/file2.txt", "/user/home/file3.txt"]
@@ -188,6 +207,20 @@ class FsqueryAdvFilterTest(unittest.TestCase):
 
         paths_returned = fsquery_adv_filter.filter_path_list_or(paths, filters)
         self.assertEqual(paths_returned, [local_folder])
+
+    def testFilterPathNotExists_And(self):
+
+        local_folder = path_utils.concat_path(self.test_dir, "local_folder")
+        paths = ["/user/home/folder1", "/user/home/folder2", "/user/home/folder3", local_folder]
+        filters = [(fsquery_adv_filter.filter_path_not_exists, "not-used")]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, paths)
+
+        os.mkdir(local_folder)
+        self.assertTrue(os.path.exists(local_folder))
+
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home/folder1", "/user/home/folder2", "/user/home/folder3"])
 
     def testFilterHasMiddlePieces1_And(self):
 
@@ -272,6 +305,104 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["system"])]
         paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
         self.assertEqual(paths_returned, ["/system/home1", "/system/home2"])
+
+    def testFilterHasMiddlePieces13_And(self):
+
+        paths = ["/system/home/sub/extra/spaced part/folder0", "/system/home/sub/extra/spaced part/folder1", "/user/home/sub/extra/spaced part/folder2", "/user/home/sub/exter/spaced part/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_middle_pieces, ["*", "spaced part", "folder1"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/system/home/sub/extra/spaced part/folder1"])
+
+    def testFilterHasNotMiddlePieces1_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["user"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+    def testFilterHasNotMiddlePieces2_And(self):
+
+        paths = ["/local/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["local"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home/sub/folder2", "/user/home/sub/folder3"])
+
+    def testFilterHasNotMiddlePieces3_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/soob/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["soob"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, paths)
+
+    def testFilterHasNotMiddlePieces4_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+    def testFilterHasNotMiddlePieces5_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["*", "*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+    def testFilterHasNotMiddlePieces6_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/soob/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["*", "soob"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home/sub/folder1", "/user/home/sub/folder3"])
+
+    def testFilterHasNotMiddlePieces7_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/soob/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["*", "nothere"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, paths)
+
+    def testFilterHasNotMiddlePieces8_And(self):
+
+        paths = ["/user/home/sub/folder1", "/user/home/sub/folder2", "/user/home/sub/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["*", "sub"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, [])
+
+    def testFilterHasNotMiddlePieces9_And(self):
+
+        paths = ["/user/home/sub/extra/folder1", "/user/home/sub/extra/folder2", "/user/home/sub/exter/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["*", "home", "*", "extra"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home/sub/exter/folder3"])
+
+    def testFilterHasNotMiddlePieces10_And(self):
+
+        paths = ["/system/home/sub/extra/folder0", "/user/home/sub/extra/folder1", "/user/home/sub/extra/folder2", "/user/home/sub/exter/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["user", "*", "extra", "*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/system/home/sub/extra/folder0", "/user/home/sub/exter/folder3"])
+
+    def testFilterHasNotMiddlePieces11_And(self):
+
+        paths = ["/system/home1", "/system/home2", "/user/home"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["system", "*"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home"])
+
+    def testFilterHasNotMiddlePieces12_And(self):
+
+        paths = ["/system/home1", "/system/home2", "/user/home"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["system"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/user/home"])
+
+    def testFilterHasNotMiddlePieces13_And(self):
+
+        paths = ["/system/home/sub/extra/spaced part/folder0", "/system/home/sub/extra/spaced part/folder1", "/user/home/sub/extra/spaced part/folder2", "/user/home/sub/exter/spaced part/folder3"]
+        filters = [(fsquery_adv_filter.filter_has_not_middle_pieces, ["*", "spaced part", "folder1"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["/system/home/sub/extra/spaced part/folder0", "/user/home/sub/extra/spaced part/folder2", "/user/home/sub/exter/spaced part/folder3"])
 
 if __name__ == '__main__':
     unittest.main()
