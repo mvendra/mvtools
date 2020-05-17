@@ -12,7 +12,7 @@ import collect_svn_patch
 
 def collect_patches(path, storage_path, default_filter, include_list, exclude_list, head, head_id, head_staged, head_unversioned, stash, previous, repotype):
 
-    if repotype != "svn" and repotype != "git" and repotype != "both":
+    if repotype != "svn" and repotype != "git" and repotype != "all":
         return False, ["Invalid repository type: %s" % repotype]
 
     if not os.path.exists(storage_path):
@@ -45,13 +45,13 @@ def collect_patches(path, storage_path, default_filter, include_list, exclude_li
         if "git" in repotype_detected and "bare" in repotype_detected: # cant collect patches for git bare repos
             continue
 
-        if "git" in repotype_detected and (repotype == "git" or repotype == "both"):
+        if "git" in repotype_detected and (repotype == "git" or repotype == "all"):
             print("Collecting git patches: [%s]" % it)
             v, r = collect_git_patch.collect_git_patch(it, storage_path, head, head_id, head_staged, head_unversioned, stash, previous)
             if not v:
                 report.append("Failed collecting git patches: %s" % r)
 
-        elif "svn" in repotype_detected and (repotype == "svn" or repotype == "both"):
+        elif "svn" in repotype_detected and (repotype == "svn" or repotype == "all"):
             print("Collecting svn patches: [%s]" % it)
             v, r = collect_svn_patch.collect_svn_patch(it, storage_path, head, head_id, head_unversioned, previous)
             if not v:
@@ -84,7 +84,7 @@ be cautious about when using, to avoid mismatches and misuse.
 """
 
 def puaq():
-    print("Usage: %s path [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X] [--repo-type git|svn|both]" % os.path.basename(__file__))
+    print("Usage: %s path [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     stash = False
     previous = 0
     previous_parse_next = False
-    repotype = "both"
+    repotype = "all"
     repotype_parse_next = False
 
     for p in params:
