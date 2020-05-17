@@ -262,7 +262,7 @@ class BackupPreparation:
 
         # do the pre-parsing
         source_path = ""
-        storage_path = ""
+        storage_base = ""
         repo_type = ""
         default_filter = ""
         includes = []
@@ -281,8 +281,8 @@ class BackupPreparation:
             opt_name, opt_val = o
 
             # storage path
-            if opt_name == "storage-path":
-                storage_path = opt_val
+            if opt_name == "storage-base":
+                storage_base = opt_val
 
             # repo type
             if opt_name == "svn":
@@ -325,7 +325,10 @@ class BackupPreparation:
                 except:
                     raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"previous\"): [%s]. Aborting." % (var_options))
 
-        v, r = collect_patches.collect_patches(source_path, storage_path, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
+        final_storage_path_patch_collector = path_utils.concat_path(self.storage_path, storage_base)
+        path_utils.guaranteefolder(final_storage_path_patch_collector)
+
+        v, r = collect_patches.collect_patches(source_path, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
         if not v:
             raise BackupPreparationException("RUN_COLLECT_PATCHES: Running collect_patches failed: [%s]. Aborting." % r)
 
