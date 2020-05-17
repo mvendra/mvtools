@@ -14,6 +14,7 @@ import dirsize
 import tree_wrapper
 import crontab_wrapper
 import convert_unit
+import collect_patches
 
 class BackupPreparationException(RuntimeError):
     def __init__(self, msg):
@@ -198,6 +199,8 @@ class BackupPreparation:
             self.proc_copy_tree_out(var_value, var_options)
         elif var_name == "COPY_SYSTEM":
             self.proc_copy_system(var_value, var_options)
+        elif var_name == "RUN_COLLECT_PATCHES":
+            self.proc_run_collect_patches(var_value, var_options)
         else:
             raise BackupPreparationException("Invalid instruction: [%s] [%s] [%s]. Aborting." % (var_name, var_value, var_options))
 
@@ -254,6 +257,77 @@ class BackupPreparation:
 
         else:
             raise BackupPreparationException("Invalid COPY_SYSTEM value: [%s] [%s]. Aborting." % (var_value, var_options))
+
+    def proc_run_collect_patches(self, var_value, var_options):
+
+        # do the pre-parsing
+        source_path = ""
+        storage_path = ""
+        repo_type = ""
+        default_filter = ""
+        includes = []
+        excludes = []
+        head = False
+        head_id = False
+        head_staged = False
+        head_unversioned = False
+        stash = False
+        previous = 0
+
+        # source path
+        source_path = var_value
+
+        for o in var_options:
+            opt_name, opt_val = o
+
+            # storage path
+            if opt_name == "storage-path":
+                storage_path = opt_val
+
+            # repo type
+            if opt_name == "svn":
+                repo_type = "svn"
+            if opt_name == "git":
+                repo_type = "git"
+            if opt_name == "all":
+                repo_type = "all"
+
+            # default filter
+            if opt_name == "default-include":
+                default_filter = "include"
+            if opt_name == "default-exclude":
+                default_filter = "exclude"
+
+            # includes / excludes
+            if opt_name == "include":
+                if opt_val is None or opt_val == "":
+                    raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"include\"): [%s]. Aborting." % (var_options))
+                includes.append(opt_val)
+            if opt_name == "exclude":
+                if opt_val is None or opt_val == "":
+                    raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"exclude\"): [%s]. Aborting." % (var_options))
+                excludes.append(opt_val)
+
+            # collection options
+            if opt_name == "head":
+                head = True
+            if opt_name == "head-id":
+                head_id = True
+            if opt_name == "head-staged":
+                head_staged = True
+            if opt_name == "head-unversioned":
+                head_unversioned = True
+            if opt_name == "stash":
+                stash = True
+            if opt_name == "previous":
+                try:
+                    previous = int(opt_val)
+                except:
+                    raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"previous\"): [%s]. Aborting." % (var_options))
+
+        v, r = collect_patches.collect_patches(source_path, storage_path, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
+        if not v:
+            raise BackupPreparationException("RUN_COLLECT_PATCHES: Running collect_patches failed: [%s]. Aborting." % r)
 
 def backup_preparation(config_file):
 
