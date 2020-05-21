@@ -17,6 +17,8 @@ Installation
 
 5) Define the ```MVTOOLS_GIT_VISITOR_BASE``` environment variable inside your ~/.bashrc, to point to your collection of repositories
 
+6) Optionally go into mvtools/tests and run ```run_all_mvtools_tests.py``` for a general sanity check
+
 Dependencies
 ============
 
