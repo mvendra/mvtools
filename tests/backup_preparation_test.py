@@ -645,7 +645,7 @@ class BackupPreparationTest(unittest.TestCase):
         if not v:
             self.fail(r)
         second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(first_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
         if not v:
             self.fail(r)
         with open(second_repo_file1, "a") as f:
@@ -701,6 +701,145 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(os.path.exists(collected_second_repo_head_id_patch))
         self.assertTrue(os.path.exists(collected_second_repo_previous_1))
         self.assertTrue( "r2-file1-content1" in collected_second_repo_previous_1_contents )
+
+    def testProcRunCollectPatches_ExcludeAll(self):
+
+        # test repo bases
+        repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
+        os.mkdir(repo_src_folder)
+
+        # first repo
+        first_repo = path_utils.concat_path(repo_src_folder, "first")
+        v, r = git_wrapper.init(repo_src_folder, "first", False)
+        if not v:
+            self.fail(r)
+        first_repo_file1 = path_utils.concat_path(first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        if not v:
+            self.fail(r)
+        with open(first_repo_file1, "a") as f:
+            f.write("additional contents, r1-f1")
+
+        # second repo
+        second_repo = path_utils.concat_path(repo_src_folder, "second")
+        v, r = git_wrapper.init(repo_src_folder, "second", False)
+        if not v:
+            self.fail(r)
+        second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        if not v:
+            self.fail(r)
+        with open(second_repo_file1, "a") as f:
+            f.write("additional contents, r2-f1")
+
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        bkprep.proc_run_collect_patches(repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", first_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
+
+        self.assertFalse(os.path.exists(collected_first_repo))
+        self.assertFalse(os.path.exists(collected_second_repo))
+
+    def testProcRunCollectPatches_DefaultExclude_IncludeSecondOnly(self):
+
+        # test repo bases
+        repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
+        os.mkdir(repo_src_folder)
+
+        # first repo
+        first_repo = path_utils.concat_path(repo_src_folder, "first")
+        v, r = git_wrapper.init(repo_src_folder, "first", False)
+        if not v:
+            self.fail(r)
+        first_repo_file1 = path_utils.concat_path(first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        # second repo
+        second_repo = path_utils.concat_path(repo_src_folder, "second")
+        v, r = git_wrapper.init(repo_src_folder, "second", False)
+        if not v:
+            self.fail(r)
+        second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        # third repo
+        third_repo = path_utils.concat_path(repo_src_folder, "third")
+        v, r = git_wrapper.init(repo_src_folder, "third", False)
+        if not v:
+            self.fail(r)
+        third_repo_file1 = path_utils.concat_path(third_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(third_repo, path_utils.basename_filtered(third_repo_file1), "r3-file1-content1", "r3-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        bkprep.proc_run_collect_patches(repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", first_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
+        collected_third_repo = path_utils.concat_path(self.prep_target, "collected_patches", third_repo)
+
+        self.assertFalse(os.path.exists(collected_first_repo))
+        self.assertTrue(os.path.exists(collected_second_repo))
+        self.assertFalse(os.path.exists(collected_third_repo))
+
+    def testProcRunCollectPatches_DefaultInclude_ExcludeThirdOnly(self):
+
+        # test repo bases
+        repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
+        os.mkdir(repo_src_folder)
+
+        # first repo
+        first_repo = path_utils.concat_path(repo_src_folder, "first")
+        v, r = git_wrapper.init(repo_src_folder, "first", False)
+        if not v:
+            self.fail(r)
+        first_repo_file1 = path_utils.concat_path(first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        # second repo
+        second_repo = path_utils.concat_path(repo_src_folder, "second")
+        v, r = git_wrapper.init(repo_src_folder, "second", False)
+        if not v:
+            self.fail(r)
+        second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        # third repo
+        third_repo = path_utils.concat_path(repo_src_folder, "third")
+        v, r = git_wrapper.init(repo_src_folder, "third", False)
+        if not v:
+            self.fail(r)
+        third_repo_file1 = path_utils.concat_path(third_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(third_repo, path_utils.basename_filtered(third_repo_file1), "r3-file1-content1", "r3-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        bkprep.proc_run_collect_patches(repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", first_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
+        collected_third_repo = path_utils.concat_path(self.prep_target, "collected_patches", third_repo)
+
+        self.assertTrue(os.path.exists(collected_first_repo))
+        self.assertTrue(os.path.exists(collected_second_repo))
+        self.assertFalse(os.path.exists(collected_third_repo))
 
     def testBackupPreparation1(self):
         self.assertTrue(backup_preparation.backup_preparation(self.test_config_file1))
