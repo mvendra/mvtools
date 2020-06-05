@@ -15,6 +15,7 @@ import backup_preparation
 import git_test_fixture
 import git_wrapper
 import path_utils
+import git_lib
 
 class BackupPreparationTest(unittest.TestCase):
 
@@ -662,7 +663,13 @@ class BackupPreparationTest(unittest.TestCase):
             collected_first_repo_head_patch_contents = f.read()
         collected_first_repo_head_staged_patch = path_utils.concat_path(collected_first_repo, "head_staged.patch")
         collected_first_repo_head_id_patch = path_utils.concat_path(collected_first_repo, "head_id.txt")
-        # mvtodo: not yet testing previous
+        v, r = git_lib.get_previous_hash_list(first_repo, 1)
+        if not v:
+            self.fail(r)
+        collected_first_repo_previous_1 = path_utils.concat_path(collected_first_repo, "previous_1_%s.patch" % r[0])
+        collected_first_repo_previous_1_contents = ""
+        with open(collected_first_repo_previous_1) as f:
+            collected_first_repo_previous_1_contents = f.read()
 
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
         collected_second_repo_head_patch = path_utils.concat_path(collected_second_repo, "head.patch")
@@ -671,19 +678,29 @@ class BackupPreparationTest(unittest.TestCase):
             collected_second_repo_head_patch_contents = f.read()
         collected_second_repo_head_staged_patch = path_utils.concat_path(collected_second_repo, "head_staged.patch")
         collected_second_repo_head_id_patch = path_utils.concat_path(collected_second_repo, "head_id.txt")
-        # mvtodo: not yet testing previous
+        v, r = git_lib.get_previous_hash_list(second_repo, 1)
+        if not v:
+            self.fail(r)
+        collected_second_repo_previous_1 = path_utils.concat_path(collected_second_repo, "previous_1_%s.patch" % r[0])
+        collected_second_repo_previous_1_contents = ""
+        with open(collected_second_repo_previous_1) as f:
+            collected_second_repo_previous_1_contents = f.read()
 
         self.assertTrue(os.path.exists(collected_first_repo))
         self.assertTrue(os.path.exists(collected_first_repo_head_patch))
         self.assertTrue( "additional contents, r1-f1" in collected_first_repo_head_patch_contents )
         self.assertTrue(os.path.exists(collected_first_repo_head_staged_patch))
         self.assertTrue(os.path.exists(collected_first_repo_head_id_patch))
+        self.assertTrue(os.path.exists(collected_first_repo_previous_1))
+        self.assertTrue( "r1-file1-content1" in collected_first_repo_previous_1_contents )
 
         self.assertTrue(os.path.exists(collected_second_repo))
         self.assertTrue(os.path.exists(collected_second_repo_head_patch))
         self.assertTrue( "additional contents, r2-f1" in collected_second_repo_head_patch_contents )
         self.assertTrue(os.path.exists(collected_second_repo_head_staged_patch))
         self.assertTrue(os.path.exists(collected_second_repo_head_id_patch))
+        self.assertTrue(os.path.exists(collected_second_repo_previous_1))
+        self.assertTrue( "r2-file1-content1" in collected_second_repo_previous_1_contents )
 
     def testBackupPreparation1(self):
         self.assertTrue(backup_preparation.backup_preparation(self.test_config_file1))
