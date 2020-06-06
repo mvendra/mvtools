@@ -654,7 +654,7 @@ class BackupProcessorTest(unittest.TestCase):
             os.environ.clear()
             os.environ.update(_environ)
 
-    def testNonexistentBktemp(self):
+    def testAbortNonexistentBktemp(self):
         v, r = backup_processor.read_config(self.test_config_bktemp_nonexistent_file)
         self.assertTrue(r)
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
