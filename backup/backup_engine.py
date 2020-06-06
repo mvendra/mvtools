@@ -79,9 +79,14 @@ class BackupEngine:
 
         print("%sCreating backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
 
-        path_utils.scratchfolder(_self.BKTEMP)
+        if not path_utils.scratchfolder(_self.BKTEMP):
+            print("%sUnable to create temporary path [%s]. Aborting.%s" % (terminal_colors.TTY_RED, _self.BKTEMP, terminal_colors.TTY_WHITE))
+            return False
         BKTEMP_AND_BASEDIR = path_utils.concat_path(_self.BKTEMP, _self.BKTARGETS_BASEDIR)
         os.mkdir(BKTEMP_AND_BASEDIR)
+        if not os.path.exists(BKTEMP_AND_BASEDIR):
+            print("%sUnable to create temporary+base path [%s]. Aborting.%s" % (terminal_colors.TTY_RED, BKTEMP_AND_BASEDIR, terminal_colors.TTY_WHITE))
+            return False
         with open(path_utils.concat_path(BKTEMP_AND_BASEDIR, "bk_date.txt"), "w+") as f:
             f.write(_self.gettimestamp() + "\n")
 

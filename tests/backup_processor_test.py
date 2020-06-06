@@ -57,6 +57,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.bk_test_temp_folder_space_1 = path_utils.concat_path(self.test_dir, "   bktemp")
         self.bk_test_temp_folder_space_2 = path_utils.concat_path(self.test_dir, "bk temp")
         self.bk_test_temp_folder_space_3 = path_utils.concat_path(self.test_dir, "bktemp   ")
+        self.bk_test_temp_folder_nonexistent = path_utils.concat_path(self.test_dir, "nonexistent", "secondlevel")
 
         # base backup folder
         self.bk_base_folder_test = "BackupTests"
@@ -232,6 +233,14 @@ class BackupProcessorTest(unittest.TestCase):
         self.hash_file = path_utils.concat_path(self.test_dir, ".hash_file_test")
         self.passphrase = "abcdef"
         create_and_write_file.create_file_contents(self.hash_file, "e32ef19623e8ed9d267f657a81944b3d07adbb768518068e88435745564e8d4150a0a703be2a7d88b61e3d390c2bb97e2d4c311fdc69d6b1267f05f59aa920e7")
+
+        cfg_file_bktemp_nonexistent_contents = ""
+        cfg_file_bktemp_nonexistent_contents += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder
+        cfg_file_bktemp_nonexistent_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        cfg_file_bktemp_nonexistent_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_nonexistent
+        cfg_file_bktemp_nonexistent_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
+        self.test_config_bktemp_nonexistent_file = path_utils.concat_path(self.test_dir, "test_config_bktemp_nonexistent_file.cfg")
+        create_and_write_file.create_file_contents(self.test_config_bktemp_nonexistent_file, cfg_file_bktemp_nonexistent_contents)
 
         # special source, 1
         special_source_cfg_file_contents1 = ""
@@ -644,6 +653,13 @@ class BackupProcessorTest(unittest.TestCase):
         finally:
             os.environ.clear()
             os.environ.update(_environ)
+
+    def testNonexistentBktemp(self):
+        v, r = backup_processor.read_config(self.test_config_bktemp_nonexistent_file)
+        self.assertTrue(r)
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_config_bktemp_nonexistent_file, self.hash_file)
+        self.assertFalse(r)
 
     def testSkipNonexistentSource(self):
         with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):

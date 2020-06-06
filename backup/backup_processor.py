@@ -227,4 +227,7 @@ if __name__ == "__main__":
     config_file = sys.argv[1]
     pass_hash_file = sys.argv[2]
 
-    run_backup(config_file, pass_hash_file)
+    v = run_backup(config_file, pass_hash_file)
+    if not v:
+        print("%sBackup failed. Config file: [%s]%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.TTY_WHITE))
+        sys.exit(1)
