@@ -52,7 +52,7 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
     except:
         print("\nWARNING: Failed deleting %s! You should do it now manually." % path_temp_used)
 
-    return True, report
+    return (len(report) == 0), report
 
 if __name__ == "__main__":
 

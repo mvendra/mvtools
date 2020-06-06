@@ -35,7 +35,7 @@ def test_mass_hash_check(path_files, extension):
         elif not hash_check.sha256sum_check(f, hash_file):
             report.append(f + " check FAILED.")
 
-    return True, report
+    return (len(report) == 0), report
 
 def print_report(report):
     for l in report:

@@ -14,6 +14,13 @@ import backup_processor
 
 def backups_mass_check(config_file, pass_hash_file):
 
+    # gets and checks the passphrase
+    r_pp, passphrase = input_checked_passphrase.get_checked_passphrase(pass_hash_file)
+    if not r_pp:
+        print("Passphrase does not check")
+        return False
+
+    # reads config file
     r, v = backup_processor.read_config(config_file)
     if not r:
         print("Failed reading config file: [%s]" % config_file)
@@ -22,20 +29,6 @@ def backups_mass_check(config_file, pass_hash_file):
     path_folders = v[2]
     temp_path = v[4]
     extension = "enc"
-
-    # test mass hash check
-    for pf in path_folders:
-        print("Mass hash checking [%s]..." % pf)
-        r, v = test_mass_hash_check.test_mass_hash_check(pf, extension)
-        if not r:
-            return False
-        test_mass_hash_check.print_report(v)
-
-    # gets and checks the passphrase
-    r_pp, passphrase = input_checked_passphrase.get_checked_passphrase(pass_hash_file)
-    if not r_pp:
-        print("Passphrase does not check")
-        return False
 
     # avoid conflict with tmp folder used by actual backup creation
     if os.path.exists(temp_path):
@@ -46,6 +39,14 @@ def backups_mass_check(config_file, pass_hash_file):
     if not path_utils.scratchfolder(temp_path):
         print("Can't scratch the folder [%s]." % temp_path)
         return False
+
+    # test mass hash check
+    for pf in path_folders:
+        print("Mass hash checking [%s]..." % pf)
+        r, v = test_mass_hash_check.test_mass_hash_check(pf, extension)
+        if not r:
+            return False
+        test_mass_hash_check.print_report(v)
 
     # test mass decrypt
     for pf in path_folders:
