@@ -2,20 +2,23 @@
 
 import sys
 import os
+import platform
 
 from subprocess import call
 
-def puaq():
-    print("Usage: %s /mnt/path" % os.path.basename(__file__))
-    sys.exit(1)
+def getplat():
+    ps = platform.system().lower()
+    if ps == "linux":
+        return "linux"
+    elif ps == "windows":
+        return "windows"
+    elif "cygwin_nt-10" in ps:
+        return "cygwin"
+    elif ps == "darwin":
+        return "macosx"
+    return ""
 
-def checkmounted(path):
-
-    """
-    checkmounted
-    checks if path is mounted
-    returns True if it is, False if it is not
-    """
+def checkmounted_linux(path):
 
     # disallows partial matches
     path = " " + path + " "
@@ -25,6 +28,26 @@ def checkmounted(path):
         return True
     else:
         return False
+
+def checkmounted_cygwin(path):
+    return os.path.ismount(path)
+
+def checkmounted(path):
+
+    """
+    checkmounted
+    checks if path is mounted
+    returns True if it is, False if it is not
+    """
+
+    if getplat() == "linux":
+        return checkmounted_linux(path)
+    if getplat() == "cygwin":
+        return checkmounted_cygwin(path)
+
+def puaq():
+    print("Usage: %s /mnt/path" % os.path.basename(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
 
@@ -43,7 +66,8 @@ if __name__ == "__main__":
         path_to_find = path_to_find[:len(path_to_find)-1]
 
     if checkmounted(path_to_find):
-        exit(0)
+        print("[%s] is mounted." % path_to_find)
+        sys.exit(0)
     else:
-        exit(1)
-
+        print("[%s] is not mounted." % path_to_find)
+        sys.exit(1)
