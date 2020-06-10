@@ -22,7 +22,7 @@ def getpasswordfromcontents(contents):
         return None
 
     of_s += len(ID_PATTERN_S)
-    of_e = contents.find(ID_PATTERN_E, of_s)
+    of_e = contents.rfind(ID_PATTERN_E, of_s)
 
     if of_e == -1:
         return None
