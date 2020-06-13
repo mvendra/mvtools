@@ -29,6 +29,15 @@ class BackupPreparationTest(unittest.TestCase):
         self.prep_target = path_utils.concat_path(self.test_dir, "preptarget")
         path_utils.scratchfolder(self.prep_target)
 
+        # test repo bases
+        self.repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
+        os.mkdir(self.repo_src_folder)
+
+        # test repos paths
+        self.first_repo = path_utils.concat_path(self.repo_src_folder, "first")
+        self.second_repo = path_utils.concat_path(self.repo_src_folder, "second")
+        self.third_repo = path_utils.concat_path(self.repo_src_folder, "third")
+
         self.nonexistant = path_utils.concat_path(self.test_dir, "nonexistant")
 
         self.warn_size_each1 = "102400"
@@ -87,6 +96,30 @@ class BackupPreparationTest(unittest.TestCase):
         cfg_file_contents4 += ("COPY_PATH = \"%s%s\"" + os.linesep) % (self.test_source_folder3, os.sep)
         self.test_config_file4 = path_utils.concat_path(self.test_dir, "test_config_file4.cfg")
         create_and_write_file.create_file_contents(self.test_config_file4, cfg_file_contents4)
+
+        file_cnav1_contents = ""
+        file_cnav1_contents += "#!/usr/bin/env python3" + os.linesep
+        file_cnav1_contents += "import sys" + os.linesep
+        file_cnav1_contents += "import os" + os.linesep
+        file_cnav1_contents += "def visit_path(path):" + os.linesep
+        file_cnav1_contents += "    ret = []" + os.linesep
+        file_cnav1_contents += ("    ret.append(\"%s\")" + os.linesep) % self.first_repo
+        file_cnav1_contents += ("    ret.append(\"%s\")" + os.linesep) % self.third_repo
+        file_cnav1_contents += "    return ret" + os.linesep
+        self.test_cnav1_file = path_utils.concat_path(self.test_dir, "test_cnav1_file.py")
+        create_and_write_file.create_file_contents(self.test_cnav1_file, file_cnav1_contents)
+        cfg_file_contents5 = ""
+        cfg_file_contents5 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
+        cfg_file_contents5 += ("RUN_COLLECT_PATCHES {custom-path-navigator: \"%s\" / storage-base: \"collected_patches\" / default-exclude / include: \"*/second\" / head-id} = \"%s\"" + os.linesep) % (self.test_cnav1_file, self.repo_src_folder)
+        self.test_config_file5 = path_utils.concat_path(self.test_dir, "test_config_file5.cfg")
+        create_and_write_file.create_file_contents(self.test_config_file5, cfg_file_contents5)
+
+        file_cnav2_contents = ""
+        file_cnav2_contents += "#!/usr/bin/env python3" + os.linesep
+        file_cnav2_contents += "def invalid_interface(path):" + os.linesep
+        file_cnav2_contents += "    return []" + os.linesep
+        self.test_cnav2_file = path_utils.concat_path(self.test_dir, "test_cnav2_file.py")
+        create_and_write_file.create_file_contents(self.test_cnav2_file, file_cnav2_contents)
 
         cfg_file_contents_fail1 = ""
         cfg_file_contents_fail1 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.nonexistant)
@@ -176,6 +209,21 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep.read_config(bkprep.config_file)
         bkprep.setup_configuration()
         self.assertEqual( (self.test_source_folder3 + os.sep), bkprep.instructions[0][1])
+
+    def testReadConfig5(self):
+        bkprep = backup_preparation.BackupPreparation(self.test_config_file5)
+        bkprep.read_config(bkprep.config_file)
+        bkprep.setup_configuration()
+        self.assertEqual( "RUN_COLLECT_PATCHES", bkprep.instructions[0][0])
+        self.assertEqual( self.repo_src_folder, bkprep.instructions[0][1])
+        self.assertEqual( "custom-path-navigator", bkprep.instructions[0][2][0][0])
+        self.assertEqual( self.test_cnav1_file, bkprep.instructions[0][2][0][1])
+        self.assertEqual( "storage-base", bkprep.instructions[0][2][1][0])
+        self.assertEqual( "collected_patches", bkprep.instructions[0][2][1][1])
+        self.assertEqual( "default-exclude", bkprep.instructions[0][2][2][0])
+        self.assertEqual( "include", bkprep.instructions[0][2][3][0])
+        self.assertEqual( "*/second", bkprep.instructions[0][2][3][1])
+        self.assertEqual( "head-id", bkprep.instructions[0][2][4][0])
 
     def testReadConfigFail1(self):
         bkprep = backup_preparation.BackupPreparation(self.test_config_file_fail1)
@@ -623,29 +671,23 @@ class BackupPreparationTest(unittest.TestCase):
 
     def testProcRunCollectPatches1(self):
 
-        # test repo bases
-        repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
-        os.mkdir(repo_src_folder)
-
         # first repo
-        first_repo = path_utils.concat_path(repo_src_folder, "first")
-        v, r = git_wrapper.init(repo_src_folder, "first", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
         if not v:
             self.fail(r)
-        first_repo_file1 = path_utils.concat_path(first_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
         if not v:
             self.fail(r)
         with open(first_repo_file1, "a") as f:
             f.write("additional contents, r1-f1")
 
         # second repo
-        second_repo = path_utils.concat_path(repo_src_folder, "second")
-        v, r = git_wrapper.init(repo_src_folder, "second", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "second", False)
         if not v:
             self.fail(r)
-        second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        second_repo_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
         if not v:
             self.fail(r)
         with open(second_repo_file1, "a") as f:
@@ -654,16 +696,16 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
 
-        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", first_repo)
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_first_repo_head_patch = path_utils.concat_path(collected_first_repo, "head.patch")
         collected_first_repo_head_patch_contents = ""
         with open(collected_first_repo_head_patch) as f:
             collected_first_repo_head_patch_contents = f.read()
         collected_first_repo_head_staged_patch = path_utils.concat_path(collected_first_repo, "head_staged.patch")
         collected_first_repo_head_id_patch = path_utils.concat_path(collected_first_repo, "head_id.txt")
-        v, r = git_lib.get_previous_hash_list(first_repo, 1)
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
         if not v:
             self.fail(r)
         collected_first_repo_previous_1 = path_utils.concat_path(collected_first_repo, "previous_1_%s.patch" % r[0])
@@ -671,14 +713,14 @@ class BackupPreparationTest(unittest.TestCase):
         with open(collected_first_repo_previous_1) as f:
             collected_first_repo_previous_1_contents = f.read()
 
-        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
         collected_second_repo_head_patch = path_utils.concat_path(collected_second_repo, "head.patch")
         collected_second_repo_head_patch_contents = ""
         with open(collected_second_repo_head_patch) as f:
             collected_second_repo_head_patch_contents = f.read()
         collected_second_repo_head_staged_patch = path_utils.concat_path(collected_second_repo, "head_staged.patch")
         collected_second_repo_head_id_patch = path_utils.concat_path(collected_second_repo, "head_id.txt")
-        v, r = git_lib.get_previous_hash_list(second_repo, 1)
+        v, r = git_lib.get_previous_hash_list(self.second_repo, 1)
         if not v:
             self.fail(r)
         collected_second_repo_previous_1 = path_utils.concat_path(collected_second_repo, "previous_1_%s.patch" % r[0])
@@ -704,29 +746,23 @@ class BackupPreparationTest(unittest.TestCase):
 
     def testProcRunCollectPatches_ExcludeAll(self):
 
-        # test repo bases
-        repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
-        os.mkdir(repo_src_folder)
-
         # first repo
-        first_repo = path_utils.concat_path(repo_src_folder, "first")
-        v, r = git_wrapper.init(repo_src_folder, "first", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
         if not v:
             self.fail(r)
-        first_repo_file1 = path_utils.concat_path(first_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
         if not v:
             self.fail(r)
         with open(first_repo_file1, "a") as f:
             f.write("additional contents, r1-f1")
 
         # second repo
-        second_repo = path_utils.concat_path(repo_src_folder, "second")
-        v, r = git_wrapper.init(repo_src_folder, "second", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "second", False)
         if not v:
             self.fail(r)
-        second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        second_repo_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
         if not v:
             self.fail(r)
         with open(second_repo_file1, "a") as f:
@@ -735,107 +771,157 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
 
-        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", first_repo)
-        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
 
         self.assertFalse(os.path.exists(collected_first_repo))
         self.assertFalse(os.path.exists(collected_second_repo))
 
     def testProcRunCollectPatches_DefaultExclude_IncludeSecondOnly(self):
 
-        # test repo bases
-        repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
-        os.mkdir(repo_src_folder)
-
         # first repo
-        first_repo = path_utils.concat_path(repo_src_folder, "first")
-        v, r = git_wrapper.init(repo_src_folder, "first", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
         if not v:
             self.fail(r)
-        first_repo_file1 = path_utils.concat_path(first_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
         if not v:
             self.fail(r)
 
         # second repo
-        second_repo = path_utils.concat_path(repo_src_folder, "second")
-        v, r = git_wrapper.init(repo_src_folder, "second", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "second", False)
         if not v:
             self.fail(r)
-        second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        second_repo_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
         if not v:
             self.fail(r)
 
         # third repo
-        third_repo = path_utils.concat_path(repo_src_folder, "third")
-        v, r = git_wrapper.init(repo_src_folder, "third", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "third", False)
         if not v:
             self.fail(r)
-        third_repo_file1 = path_utils.concat_path(third_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(third_repo, path_utils.basename_filtered(third_repo_file1), "r3-file1-content1", "r3-commit_msg_file1")
+        third_repo_file1 = path_utils.concat_path(self.third_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.third_repo, path_utils.basename_filtered(third_repo_file1), "r3-file1-content1", "r3-commit_msg_file1")
         if not v:
             self.fail(r)
 
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
 
-        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", first_repo)
-        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
-        collected_third_repo = path_utils.concat_path(self.prep_target, "collected_patches", third_repo)
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
+        collected_third_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.third_repo)
 
         self.assertFalse(os.path.exists(collected_first_repo))
         self.assertTrue(os.path.exists(collected_second_repo))
         self.assertFalse(os.path.exists(collected_third_repo))
 
-    def testProcRunCollectPatches_DefaultInclude_ExcludeThirdOnly(self):
-
-        # test repo bases
-        repo_src_folder = path_utils.concat_path(self.test_dir, "repo_src_test")
-        os.mkdir(repo_src_folder)
+    def testProcRunCollectPatches_CustomPathNav_DefaultInclude_ExcludeSecondByCnav_ExcludeThirdByFilter(self):
 
         # first repo
-        first_repo = path_utils.concat_path(repo_src_folder, "first")
-        v, r = git_wrapper.init(repo_src_folder, "first", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
         if not v:
             self.fail(r)
-        first_repo_file1 = path_utils.concat_path(first_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
         if not v:
             self.fail(r)
 
         # second repo
-        second_repo = path_utils.concat_path(repo_src_folder, "second")
-        v, r = git_wrapper.init(repo_src_folder, "second", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "second", False)
         if not v:
             self.fail(r)
-        second_repo_file1 = path_utils.concat_path(second_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        second_repo_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
         if not v:
             self.fail(r)
 
         # third repo
-        third_repo = path_utils.concat_path(repo_src_folder, "third")
-        v, r = git_wrapper.init(repo_src_folder, "third", False)
+        v, r = git_wrapper.init(self.repo_src_folder, "third", False)
         if not v:
             self.fail(r)
-        third_repo_file1 = path_utils.concat_path(third_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(third_repo, path_utils.basename_filtered(third_repo_file1), "r3-file1-content1", "r3-commit_msg_file1")
+        third_repo_file1 = path_utils.concat_path(self.third_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.third_repo, path_utils.basename_filtered(third_repo_file1), "r3-file1-content1", "r3-commit_msg_file1")
         if not v:
             self.fail(r)
 
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("custom-path-navigator", self.test_cnav1_file), ("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("head-id", "")])
 
-        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", first_repo)
-        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", second_repo)
-        collected_third_repo = path_utils.concat_path(self.prep_target, "collected_patches", third_repo)
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
+        collected_third_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.third_repo)
+
+        self.assertTrue(os.path.exists(collected_first_repo))
+        self.assertFalse(os.path.exists(collected_second_repo))
+        self.assertFalse(os.path.exists(collected_third_repo))
+
+    def testProcRunCollectPatches_CustomPathNavFail(self):
+
+        # first repo
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
+        if not v:
+            self.fail(r)
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        ex_raised = False
+        try:
+            bkprep.proc_run_collect_patches(self.repo_src_folder, [("custom-path-navigator", self.test_cnav2_file), ("storage-base", "collected_patches"), ("head-id", "")])
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testProcRunCollectPatches_DefaultInclude_ExcludeThirdOnly(self):
+
+        # first repo
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
+        if not v:
+            self.fail(r)
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        # second repo
+        v, r = git_wrapper.init(self.repo_src_folder, "second", False)
+        if not v:
+            self.fail(r)
+        second_repo_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.second_repo, path_utils.basename_filtered(second_repo_file1), "r2-file1-content1", "r2-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        # third repo
+        v, r = git_wrapper.init(self.repo_src_folder, "third", False)
+        if not v:
+            self.fail(r)
+        third_repo_file1 = path_utils.concat_path(self.third_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.third_repo, path_utils.basename_filtered(third_repo_file1), "r3-file1-content1", "r3-commit_msg_file1")
+        if not v:
+            self.fail(r)
+
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
+        collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
+        collected_third_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.third_repo)
 
         self.assertTrue(os.path.exists(collected_first_repo))
         self.assertTrue(os.path.exists(collected_second_repo))

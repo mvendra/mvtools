@@ -261,6 +261,8 @@ class BackupPreparation:
     def proc_run_collect_patches(self, var_value, var_options):
 
         # do the pre-parsing
+        custom_path_navigator_script = None
+        custom_path_navigator_func = None
         source_path = ""
         storage_base = ""
         repo_type = ""
@@ -279,6 +281,12 @@ class BackupPreparation:
 
         for o in var_options:
             opt_name, opt_val = o
+
+            # custom path navigator
+            if opt_name == "custom-path-navigator":
+                if opt_val is None or opt_val == "":
+                    raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"custom-path-navigator\"): [%s]. Aborting." % (var_options))
+                custom_path_navigator_script = opt_val
 
             # storage path
             if opt_name == "storage-base":
@@ -325,10 +333,18 @@ class BackupPreparation:
                 except:
                     raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"previous\"): [%s]. Aborting." % (var_options))
 
+        # resolve custom path navigator function
+        if custom_path_navigator_script is not None:
+            custom_path_navigator_func = collect_patches.resolve_py_into_custom_pathnav_func(custom_path_navigator_script)
+            if custom_path_navigator_func is None: # resolution failed, but was requested. must abort.
+                raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options - the custom navigation script [%s] failed to be loaded. Aborting." % (custom_path_navigator_script))
+
+        # guarantee the storage folder
         final_storage_path_patch_collector = path_utils.concat_path(self.storage_path, storage_base)
         path_utils.guaranteefolder(final_storage_path_patch_collector)
 
-        v, r = collect_patches.collect_patches(source_path, None, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
+        # run the actual patch collector
+        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_func, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
         if not v:
             raise BackupPreparationException("RUN_COLLECT_PATCHES: Running collect_patches failed: [%s]. Aborting." % r)
 
