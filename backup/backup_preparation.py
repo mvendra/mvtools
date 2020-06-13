@@ -328,7 +328,7 @@ class BackupPreparation:
         final_storage_path_patch_collector = path_utils.concat_path(self.storage_path, storage_base)
         path_utils.guaranteefolder(final_storage_path_patch_collector)
 
-        v, r = collect_patches.collect_patches(source_path, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
+        v, r = collect_patches.collect_patches(source_path, None, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
         if not v:
             raise BackupPreparationException("RUN_COLLECT_PATCHES: Running collect_patches failed: [%s]. Aborting." % r)
 

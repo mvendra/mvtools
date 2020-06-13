@@ -10,7 +10,25 @@ import detect_repo_type
 import collect_git_patch
 import collect_svn_patch
 
-def collect_patches(path, storage_path, default_filter, include_list, exclude_list, head, head_id, head_staged, head_unversioned, stash, previous, repotype):
+import importlib.util
+
+def resolve_py_into_custom_pathnav_func(path_to_py_script):
+
+    if path_to_py_script is None or not os.path.exists(path_to_py_script):
+        return None
+
+    spec = importlib.util.spec_from_file_location("", path_to_py_script)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    test_bind = None
+    try:
+        test_bind = mod.visit_path
+    except:
+        return None
+    return test_bind
+
+def collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, head_staged, head_unversioned, stash, previous, repotype):
 
     if repotype != "svn" and repotype != "git" and repotype != "all":
         return False, ["Invalid repository type: %s" % repotype]
@@ -18,7 +36,13 @@ def collect_patches(path, storage_path, default_filter, include_list, exclude_li
     if not os.path.exists(storage_path):
         return False, ["Storage path [%s] does not exist."  % storage_path]
 
-    items = fsquery.makecontentlist(path, True, False, True, False, True, True, None)
+    items = []
+    if custom_path_navigator is None:
+        # automatic path traversal
+        items = fsquery.makecontentlist(path, True, False, True, False, True, True, None)
+    else:
+        items = custom_path_navigator(path)
+
     items = fsquery_adv_filter.filter_path_list_and(items, [ (fsquery_adv_filter.filter_is_repo, "not-used") ] ) # do the pre-filtering (for repos only)
 
     # setup filtering
@@ -84,7 +108,7 @@ be cautious about when using, to avoid mismatches and misuse.
 """
 
 def puaq():
-    print("Usage: %s path [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % os.path.basename(__file__))
+    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -97,6 +121,8 @@ if __name__ == "__main__":
     params = sys.argv[2:]
 
     # parse options
+    custom_path_navigator_parse_next = False
+    custom_path_navigator = None
     storage_path_parse_next = False
     default_filter = "include"
     include_list = []
@@ -114,6 +140,11 @@ if __name__ == "__main__":
     repotype_parse_next = False
 
     for p in params:
+
+        if custom_path_navigator_parse_next:
+            custom_path_navigator = p
+            custom_path_navigator_parse_next = False
+            continue
 
         if storage_path_parse_next:
             storage_path = p
@@ -140,7 +171,9 @@ if __name__ == "__main__":
             exclude_parse_next = False
             continue
 
-        if p == "--default-filter-include":
+        if p == "--custom-path-navigator":
+            custom_path_navigator_parse_next = True
+        elif p == "--default-filter-include":
             default_filter = "include"
         elif p == "--default-filter-exclude":
             default_filter = "exclude"
@@ -168,7 +201,12 @@ if __name__ == "__main__":
     if storage_path is None:
         storage_path = os.getcwd()
 
-    v, r = collect_patches(path, storage_path, default_filter, include_list, exclude_list, head, head_id, head_staged, head_unversioned, stash, previous, repotype)
+    if custom_path_navigator is not None and not os.path.exists(custom_path_navigator):
+        # custom path navigator has been specified, but does not exists. fail.
+        print("Custom path navigator [%s] does not exist. Aborting." % custom_path_navigator)
+        sys.exit(1)
+
+    v, r = collect_patches(path, resolve_py_into_custom_pathnav_func(custom_path_navigator), storage_path, default_filter, include_list, exclude_list, head, head_id, head_staged, head_unversioned, stash, previous, repotype)
 
     if not v:
         for i in r:
