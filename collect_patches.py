@@ -14,6 +14,9 @@ import importlib.util
 
 def resolve_py_into_custom_pathnav_func(path_to_py_script):
 
+    # see "MVTOOLS/collect_patches_cnav_sample.py" for an example
+    # on how to implement a custom path navigator script.
+
     if path_to_py_script is None or not os.path.exists(path_to_py_script):
         return None
 
