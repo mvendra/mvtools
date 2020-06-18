@@ -13,11 +13,13 @@ Installation
 
 3) Add: ```source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
 
-4) Go (cd) inside the recently checked out mvtools folder, and run the ```genlinks.py``` script
+4) Optionally define the ```MVTOOLS_LINKS_PATH``` somewhere in your system - make sure it stays out of your ```PATH``` / ```PYTHONPATH```
 
-5) Define the ```MVTOOLS_GIT_VISITOR_BASE``` environment variable inside your ~/.bashrc, to point to your collection of repositories
+5) Go (cd) inside the recently checked out mvtools folder, and run the ```genlinks.py``` script
 
-6) Optionally go into mvtools/tests and run ```run_all_mvtools_tests.py``` for a general sanity check
+6) Define the ```MVTOOLS_GIT_VISITOR_BASE``` environment variable inside your ~/.bashrc, to point to your collection of repositories
+
+7) Optionally go into mvtools/tests and run ```run_all_mvtools_tests.py``` for a general sanity check
 
 Dependencies
 ============
