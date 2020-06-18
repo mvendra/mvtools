@@ -6,6 +6,13 @@ import os
 import path_utils
 import detect_repo_type
 
+def filter_extension_is(path, params):
+    filename_ext = path_utils.getextension(path)
+    return filename_ext in params
+
+def filter_extension_is_not(path, params):
+    return not filter_extension_is(path, params)
+
 def filter_has_not_middle_pieces(path, params):
     return not filter_has_middle_pieces(path, params)
 

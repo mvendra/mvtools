@@ -438,5 +438,33 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
         self.assertEqual(paths_returned, ["one/two/three", "another/extra/more"])
 
+    def testFilterExtensionIs_Or(self):
+
+        paths = ["one/two/three.txt", "one/folder/three.png", "another/extra/more", "folder/whatever.nfo"]
+        filters = [(fsquery_adv_filter.filter_extension_is, ["txt"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, filters)
+        self.assertEqual(paths_returned, ["one/two/three.txt"])
+
+    def testFilterExtensionIs_And(self):
+
+        paths = ["one/two/three.txt", "one/folder/three.png", "another/extra/more", "folder/whatever.nfo"]
+        filters = [(fsquery_adv_filter.filter_extension_is, ["txt"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["one/two/three.txt"])
+
+    def testFilterExtensionIsNot_Or(self):
+
+        paths = ["one/two/three.txt", "one/folder/three.png", "another/extra/more", "folder/whatever.nfo"]
+        filters = [(fsquery_adv_filter.filter_extension_is_not, ["txt"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, filters)
+        self.assertEqual(paths_returned, ["one/folder/three.png", "another/extra/more", "folder/whatever.nfo"])
+
+    def testFilterExtensionIsNot_And(self):
+
+        paths = ["one/two/three.txt", "one/folder/three.png", "another/extra/more", "folder/whatever.nfo"]
+        filters = [(fsquery_adv_filter.filter_extension_is_not, ["png"])]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
+        self.assertEqual(paths_returned, ["one/two/three.txt", "another/extra/more", "folder/whatever.nfo"])
+
 if __name__ == '__main__':
     unittest.main()
