@@ -24,6 +24,12 @@ def poplastextension(filename):
         result = filename[:idx]
     return result
 
+def getextension(filename):
+    if filename is None:
+        return None
+    _, fext = os.path.splitext(filename)
+    return fext[1:]
+
 def deletefile_ignoreerrors(filepath):
     if not os.path.exists(filepath):
         return

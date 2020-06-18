@@ -152,5 +152,17 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep) ), ["first", "second"])
         self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep) ), ["first", "second"])
 
+    def testGetExtension(self):
+        self.assertEqual(path_utils.getextension(None), None)
+        self.assertEqual(path_utils.getextension("file.txt"), "txt")
+        self.assertEqual(path_utils.getextension("file.png"), "png")
+        self.assertEqual(path_utils.getextension(""), "")
+        self.assertEqual(path_utils.getextension("..."), "")
+        self.assertEqual(path_utils.getextension("package.tar.gz"), "gz")
+        self.assertEqual(path_utils.getextension("name"), "")
+        self.assertEqual(path_utils.getextension("/usr/local/file"), "")
+        self.assertEqual(path_utils.getextension("/usr/local/file.dat"), "dat")
+        self.assertEqual(path_utils.getextension("/usr/local/file.dat.bin"), "bin")
+
 if __name__ == '__main__':
     unittest.main()
