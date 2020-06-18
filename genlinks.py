@@ -7,13 +7,45 @@ import shutil
 import fsquery
 import path_utils
 
-def has_mvtools_envvar():
+def has_and_get_envvar(the_envvar):
     e = ""
     try:
-        e = os.environ["MVTOOLS"]
+        e = os.environ[the_envvar]
     except:
         return False, None
     return True, e
+
+def has_mvtools_envvar():
+    return has_and_get_envvar("MVTOOLS")
+
+def has_mvtools_links_path_envvar():
+    return has_and_get_envvar("MVTOOLS_LINKS_PATH")
+
+def get_mvtools_links_path():
+
+    # detect if path is mvtools
+    path = os.getcwd()
+    v, r = has_mvtools_envvar()
+
+    if not v:
+        print("MVTOOLS envvar is not defined.")
+        return None, None
+
+    mvtools_path = r
+    mvtools_links_path = None
+
+    if path != mvtools_path:
+        print("This script should be run inside mvtools")
+        return None, None
+
+    # MVTOOLS_LINKS_PATH is optional
+    v, r = has_mvtools_links_path_envvar()
+    if not v:
+        mvtools_links_path = path_utils.concat_path(path, "links")
+    else:
+        mvtools_links_path = r
+
+    return mvtools_path, mvtools_links_path
 
 def detect_duplicates(item_list):
 
@@ -26,13 +58,6 @@ def detect_duplicates(item_list):
         items_bn.append(bn)
 
     return False # no duplicates detected
-
-def scratch_folder(path):
-    try:
-        shutil.rmtree(path)
-    except:
-        pass
-    os.mkdir(path)
 
 def filter_mvtools_item(item):
 
@@ -68,25 +93,14 @@ def filter_mvtools_item(item):
 
 def genlinks():
 
-    # detect if path is mvtools
-    path = os.getcwd()
-    v, r = has_mvtools_envvar()
-
-    if not v:
-        print("MVTOOLS envvar is not defined. Aborting.")
+    # resolve necessary paths
+    path_mvtools, path_mvtools_links = get_mvtools_links_path()
+    if path_mvtools is None or path_mvtools_links is None:
+        print("Resolving paths failed. Aborting.")
         return False
-
-    if path != r:
-        print("This script should be run inside mvtools")
-        return False
-
-    path_links = path_utils.concat_path(path, "links")
-    #if not os.path.exists(path_links):
-        #print("[%s] does not exist. Aborting." % path_links)
-        #return False
 
     # run fsquery and collect contents inside mvtools
-    items = fsquery.makecontentlist(path, True, True, False, False, False, True, None)
+    items = fsquery.makecontentlist(path_mvtools, True, True, False, False, False, True, None)
 
     # filter out what should not be included
     items_filtered = []
@@ -100,10 +114,10 @@ def genlinks():
         return False
 
     # wipe out old links folder and recreate it
-    scratch_folder(path_links)
+    path_utils.scratchfolder(path_mvtools_links)
 
     # and finally create the links
-    os.chdir(path_links)
+    os.chdir(path_mvtools_links)
     for i in items_filtered:
         item_name = path_utils.basename_filtered(i)
         if os.path.exists(item_name):

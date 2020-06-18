@@ -24,12 +24,16 @@ add2pythonpath(){
   fi
 }
 
+if [ -z $MVTOOLS_LINKS_PATH ]; then
+  MVTOOLS_LINKS_PATH=$MVTOOLS/links
+fi
+
 # this requires the MVTOOLS envvar to be defined somewhere else (.bashrc, likely).
 
 if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
 
-  add2path $MVTOOLS/links
-  add2pythonpath $MVTOOLS/links
+  add2path $MVTOOLS_LINKS_PATH
+  add2pythonpath $MVTOOLS_LINKS_PATH
 
   # coreutils customisations
   source $MVTOOLS/coreutils_custom.sh
