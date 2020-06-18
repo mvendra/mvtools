@@ -5,6 +5,7 @@ import os
 import shutil
 
 import fsquery
+import fsquery_adv_filter
 import path_utils
 
 def has_and_get_envvar(the_envvar):
@@ -59,37 +60,33 @@ def detect_duplicates(item_list):
 
     return False # no duplicates detected
 
-def filter_mvtools_item(item):
+def apply_links_filters(items):
 
-    if item is None:
-        return False
+    items_filtered = []
 
-    if len(item) == 0:
-        return False
+    # prefiltering
+    for i in items:
+        if i is not None:
+            if not len(i) == 0:
+                items_filtered.append(i)
+    items = items_filtered
+    items_filtered = []
 
-    path_pieces = item.split(os.path.sep)
-    filename = path_utils.basename_filtered(item)
-    fn_ext = os.path.splitext(filename)[1]
+    # setup filters
+    exclude_list = ["*/__pycache__/*", "*/.git/*", "*/hexascconv/src/hexascconv/*", "*/hexascconv/build/classes/*", "*/nbproject/*", "*/links/*", "*/kbase/*", "*/deprecated/*", "*/tests/*", "*/compat/*"]
+    exclude_list += ["*/LICENSE", "*/README.md", "*/hexascconv/dist/README.TXT", "*/built-jar.properties", "*/hexascconv/manifest.mf", "*/hexascconv/build.xml"]
+    exclude_list_ext = ["pyc", "cfg", "png"]
 
-    # exclude some folders
-    ex_folders = ["__pycache__", ".git", "links", "kbase", "nbproject", "deprecated", "tests", "compat"]
-    for e in ex_folders:
-        if e in path_pieces:
-            return False
+    filters = []
+    filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
+    for ei in exclude_list:
+        filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei)) )
+    filters.append( (fsquery_adv_filter.filter_extension_is_not, exclude_list_ext) )
 
-    # exclude some extra files
-    ex_files = ["LICENSE", "README.md", "README.TXT", "built-jar.properties", "manifest.mf", "build.xml"]
-    for e in ex_files:
-        if e == filename:
-            return False
+    # filter out exceptions
+    items_filtered = fsquery_adv_filter.filter_path_list_and(items, filters)
 
-    # exclude some extensions
-    ex_exceptions = [".pyc"]
-    for e in ex_exceptions:
-        if e == fn_ext:
-            return False
-
-    return True
+    return items_filtered
 
 def genlinks():
 
@@ -102,11 +99,8 @@ def genlinks():
     # run fsquery and collect contents inside mvtools
     items = fsquery.makecontentlist(path_mvtools, True, True, False, False, False, True, None)
 
-    # filter out what should not be included
-    items_filtered = []
-    for i in items:
-        if filter_mvtools_item(i):
-            items_filtered.append(i)
+    # filter out exceptions
+    items_filtered = apply_links_filters(items)
 
     # check for duplicates
     if detect_duplicates(items_filtered):
