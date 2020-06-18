@@ -93,12 +93,18 @@ class BackupEngine:
         for it in _self.BKARTIFACTS:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S'), terminal_colors.TTY_WHITE))
             BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(os.path.dirname(it[0])))
+            if path_utils.basename_filtered(BKTMP_PLUS_ARTBASE) == path_utils.basename_filtered(BKTEMP_AND_BASEDIR):
+                BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTMP_PLUS_ARTBASE, "(root)")
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
 
             CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, path_utils.basename_filtered(it[0]))
             CURPAK_TAR_BZ2 = CURPAK + ".tar.bz2"
             CURPAK_TAR_BZ2_ENC = CURPAK_TAR_BZ2 + ".enc"
             CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"
+
+            if os.path.exists(CURPAK) or os.path.exists(CURPAK_TAR_BZ2) or os.path.exists(CURPAK_TAR_BZ2_ENC) or os.path.exists(CURPAK_TAR_BZ2_ENC_HASH):
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.TTY_WHITE))
+                return False
 
             # create the package
             v, r = pakgen.pakgen(CURPAK, False, [it[0]]) # hash will be generated later (from the encrypted package)
