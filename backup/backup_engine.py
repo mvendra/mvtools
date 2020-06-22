@@ -3,11 +3,11 @@
 import os
 import time
 import datetime
-from subprocess import call
 import shutil
 
 import terminal_colors
 import path_utils
+import generic_run
 import pakgen
 import encrypt
 import dirsize
@@ -63,9 +63,9 @@ class BackupEngine:
                 prep_cmd = [_self.BKPREPARATION[0]]
                 for prep_arg in _self.BKPREPARATION[1]:
                     prep_cmd.append(prep_arg)
-                prep_r = call(prep_cmd)
-                if prep_r != 0:
-                    print("%sFailed preparing backup. Aborting.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+                prepv, prepr = generic_run.run_cmd_simple(prep_cmd)
+                if not prepv:
+                    print("%sFailed preparing backup: [%s]. Aborting.%s" % (terminal_colors.TTY_RED, prepr, terminal_colors.TTY_WHITE))
                     return False
 
         print("%sDeleting old backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
@@ -168,7 +168,7 @@ class BackupEngine:
 
         for it in _self.BKTARGETS_ROOT:
             shutil.copytree(BKTEMP_AND_BASEDIR, path_utils.concat_path(it, _self.BKTARGETS_BASEDIR))
-            call(["umount", it])
+            generic_run.run_cmd_simple(["umount", it])
 
         shutil.rmtree(_self.BKTEMP)
         print("%sDone at %s%s" % (terminal_colors.TTY_GREEN, _self.gettimestamp(), terminal_colors.TTY_WHITE))
