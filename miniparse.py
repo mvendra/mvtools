@@ -221,6 +221,12 @@ def scan_and_slice(thestr, theregex):
         sliced_str = thestr[0:span_ret[0]] + thestr[span_ret[1]:]
         return True, (found_str, sliced_str)
 
+def scan_and_slice_beginning(thestr, theregex):
+    return scan_and_slice(thestr, "\\A" + theregex)
+
+def scan_and_slice_end(thestr, theregex):
+    return scan_and_slice(thestr, theregex + "\\Z")
+
 def next_not_escaped_slice(thestr, sentinel_char, escape_char):
 
     if thestr is None:

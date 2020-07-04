@@ -114,7 +114,7 @@ class DSLType20:
         local_str_input = str_input.strip()
 
         # start by parsing the variable's value
-        v, r = miniparse.scan_and_slice(local_str_input, self.QUOTE + "\\Z")
+        v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
         if not v:
             return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
         if r[1][len(r[1])-1] == self.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
@@ -141,14 +141,14 @@ class DSLType20:
         var_value = r
 
         # remove first quote of value
-        v, r = miniparse.scan_and_slice(local_str_input, self.QUOTE + "\\Z")
+        v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
         if not v:
             return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
         local_str_input = (r[1]).strip()
 
         # leave in the equal sign so further parsing can detect syntax problems
 
-        v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.VAR_ID + self.ANYSPACE + self.LCBRACKET)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.LCBRACKET)
         if v:
 
             # variable has options
@@ -181,7 +181,7 @@ class DSLType20:
 
             # variable has no options
 
-            v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.VAR_ID + self.ANYSPACE + self.EQ_SIGN)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.EQ_SIGN)
             if not v:
                 return False, "Malformed variable: [%s]: Can't parse variable name." % str_input
             var_name = (r[0]).strip()
@@ -231,7 +231,7 @@ class DSLType20:
             if not r3: # there are no more options
                 break
 
-        v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.ANYSPACE + self.EQ_SIGN)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.ANYSPACE + self.EQ_SIGN)
         if not v:
             return False, "Failed parsing: [%s]. Unpexteced sequence found before equal sign." % str_input, None
 
@@ -249,7 +249,7 @@ class DSLType20:
             return False, "Invalid option input: [%s]" % str_input, None, None
 
         # start by parsing the option's name
-        v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.VAR_ID + self.ANYSPACE + self.COLON)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.COLON)
         if v:
 
             # option has value
@@ -264,7 +264,7 @@ class DSLType20:
             opt_name = r.strip()
 
             # find next quote (option's value - first)
-            v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.QUOTE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.QUOTE)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             local_str_input = r[1]
@@ -277,7 +277,7 @@ class DSLType20:
             local_str_input = (r[1]).strip()
 
             # find next quote (option's value - second)
-            v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.QUOTE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.QUOTE)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             local_str_input = (r[1]).strip()
@@ -295,7 +295,7 @@ class DSLType20:
             opt_val = r
 
             # need to advance past this option to look ahead for the next
-            v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.FSLASH)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.FSLASH)
             more_options = v
 
             if more_options:
@@ -304,7 +304,7 @@ class DSLType20:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, self.RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
@@ -314,13 +314,13 @@ class DSLType20:
             # option has no value
 
             rem_last_chr = self.FSLASH
-            v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.VAR_ID + self.ANYSPACE + self.FSLASH)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.FSLASH)
             more_options = v
             if not more_options:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice(local_str_input, "\\A" + self.VAR_ID + self.ANYSPACE + self.RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()

@@ -358,30 +358,41 @@ class MiniparseTest(unittest.TestCase):
         self.assertEqual(v, True)
         self.assertEqual(r, "")
 
-    def testScanAndSlice1(self):
-        v, r = miniparse.scan_and_slice(None, "\\Ax")
+    def testScanAndSliceBeginning1(self):
+        v, r = miniparse.scan_and_slice_beginning(None, "x")
         self.assertEqual(v, None)
         self.assertEqual(r, None)
 
-    def testScanAndSlice2(self):
-        v, r = miniparse.scan_and_slice([], "\\Ax")
+    def testScanAndSliceBeginning2(self):
+        v, r = miniparse.scan_and_slice_beginning([], "x")
         self.assertEqual(v, None)
         self.assertEqual(r, None)
 
-    def testScanAndSlice3(self):
-        v, r = miniparse.scan_and_slice("aaa: bbb", "\\Accc")
+    def testScanAndSliceBeginning3(self):
+        v, r = miniparse.scan_and_slice_beginning("aaa: bbb", "ccc")
         self.assertFalse(v)
         self.assertEqual(r, "aaa: bbb") 
 
-    def testScanAndSlice4(self):
-        v, r = miniparse.scan_and_slice("aaa: bbb", "\\Aaaa:")
+    def testScanAndSliceBeginning4(self):
+        v, r = miniparse.scan_and_slice_beginning("aaa: bbb", "aaa:")
         self.assertTrue(v)
         self.assertEqual(r, ("aaa:", " bbb"))
 
-    def testScanAndSlice5(self):
+    def testScanAndSlice1(self):
         v, r = miniparse.scan_and_slice("aaa: -yy- bbb", "(-yy-)")
         self.assertTrue(v)
         self.assertEqual(r, ("-yy-", "aaa:  bbb"))
+
+    def testScanAndSliceEnd1(self):
+        v, r = miniparse.scan_and_slice_end("aaabbb", "bbb")
+        self.assertTrue(v)
+        self.assertEqual(r[0], "bbb")
+        self.assertEqual(r[1], "aaa")
+
+    def testScanAndSliceEnd2(self):
+        v, r = miniparse.scan_and_slice_end("aaabbbaaaccc", "aaa")
+        self.assertFalse(v)
+        self.assertEqual(r, "aaabbbaaaccc")
 
     def testNextNotEscapedSlice1(self):
         v, r = miniparse.next_not_escaped_slice(None, "b", "c")
