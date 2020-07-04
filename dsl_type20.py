@@ -37,18 +37,25 @@ def hasopt_opts(opts, optname):
             return True
     return False
 
+def printable_context(context):
+    if context is None:
+        return "(global context)"
+    return context
+
 class DSLType20:
     def __init__(self, _expand_envvars, _expand_user):
         self.expand_envvars = _expand_envvars
         self.expand_user = _expand_user
+        self.data = {}
+        self.global_context_id = "global context" # unparseable string - so as to not impose too many restrictions on client code
         self.clear()
 
-        self.VAR_ID = "[_\\-a-zA-Z0-9]+"
+        self.IDENTIFIER = "[_\\-a-zA-Z0-9]+"
         self.ANYSPACE = "[ ]*"
         self.COLON = ":"
         self.AT_SIGN = "@"
-        self.LCBRACKET = "["
-        self.RCBRACKET = "]"
+        self.LBRACKET = "["
+        self.RBRACKET = "]"
         self.LCBRACKET = "{"
         self.RCBRACKET = "}"
         self.EQ_SIGN = "="
@@ -59,7 +66,8 @@ class DSLType20:
         self.max_number_options = 1024
 
     def clear(self):
-        self.data = []
+        self.data = {}
+        self.data[self.global_context_id] = []
 
     def _expand(self, str_input):
 
@@ -87,9 +95,19 @@ class DSLType20:
 
         return line_out.strip()
 
+    def add_context(self, context):
+        if context in self.data:
+            return False
+        self.data[context] = []
+        return True
+
     def parse(self, contents):
 
         self.clear()
+
+        context = None # global context
+        expecting_context_name = False
+        expecting_context_closure = False
 
         lines = contents.split("\n")
         for line in lines:
@@ -98,13 +116,63 @@ class DSLType20:
             if line_t == "":
                 continue
 
-            v, r = self.parse_variable(line_t)
+            if line_t == self.LBRACKET:
+                if expecting_context_name or context is not None:
+                    return False, "Failed parsing contents: nested contexts are not alllowed."
+                expecting_context_name = True
+                expecting_context_closure = True
+                continue
+
+            if line_t == self.RBRACKET:
+                if expecting_context_name:
+                    return False, "Last context name not specified."
+                context = None
+                expecting_context_closure = False
+                continue
+
+            if expecting_context_name:
+                expecting_context_name = False
+
+                v, r = self._parse_context_name(line_t)
+                if not v:
+                    return v, r
+                context = r
+                self.add_context(context)
+                continue
+
+            v, r = self._parse_variable(line_t, context)
             if not v:
                 return v, r
 
+        if expecting_context_closure:
+            return False, "Last context: [%s] was not closed." % printable_context(context)
+
         return True, None
 
-    def parse_variable(self, str_input):
+    def _parse_context_name(self, str_input):
+
+        local_str_input = str_input.strip()
+        parsed_context_name = None
+        remainder = None
+
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.AT_SIGN + self.ANYSPACE + self.IDENTIFIER)
+        if not v:
+            return False, "Malformed context name: [%s]." % str_input
+        parsed_context_name = (r[0]).strip()
+        remainder = (r[1]).strip()
+
+        if not remainder == "":
+            return False, "Malformed context name: [%s]." % str_input
+
+        # remove the at ("@") sign
+        v, r = miniparse.remove_next_of(parsed_context_name, self.AT_SIGN)
+        if not v:
+            return False, "Malformed context name: [%s]." % parsed_context_name
+        parsed_context_name = r.strip()
+
+        return True, parsed_context_name
+
+    def _parse_variable(self, str_input, context=None):
 
         var_name = None
         var_value = None
@@ -112,6 +180,12 @@ class DSLType20:
         parsed_opts = []
 
         local_str_input = str_input.strip()
+
+        local_context = self.global_context_id
+        if context is not None:
+            local_context = context
+        if not local_context in self.data:
+            return False, "Can't parse variable: [%s]: Context doesn't exist: [%s]." % (str_input, context)
 
         # start by parsing the variable's value
         v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
@@ -148,7 +222,7 @@ class DSLType20:
 
         # leave in the equal sign so further parsing can detect syntax problems
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.LCBRACKET)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.LCBRACKET)
         if v:
 
             # variable has options
@@ -162,7 +236,7 @@ class DSLType20:
             var_name = r.strip()
 
             # parse the options
-            v, r1, r2 = self.parse_variable_options(local_str_input)
+            v, r1, r2 = self._parse_variable_options(local_str_input)
             if not v:
                 return False, "Failed parsing options: [%s]: [%s]" % (var_options, r1)
             parsed_opts = r1
@@ -181,7 +255,7 @@ class DSLType20:
 
             # variable has no options
 
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.EQ_SIGN)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.EQ_SIGN)
             if not v:
                 return False, "Malformed variable: [%s]: Can't parse variable name." % str_input
             var_name = (r[0]).strip()
@@ -204,11 +278,11 @@ class DSLType20:
             return False, "Empty var value: [%s]" % str_input
 
         # add new variable to internal data
-        self.data.append( (var_name, var_value, parsed_opts) )
+        self.data[local_context].append( (var_name, var_value, parsed_opts) )
 
         return True, None
 
-    def parse_variable_options(self, str_input):
+    def _parse_variable_options(self, str_input):
 
         local_str_input = str_input.strip()
 
@@ -223,7 +297,7 @@ class DSLType20:
             if counter >= self.max_number_options:
                 return False, "Failed parsing: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_options), None
 
-            v, r1, r2, r3 = self.parse_next_option(local_str_input)
+            v, r1, r2, r3 = self._parse_next_option(local_str_input)
             if not v:
                 return False, "Failed parsing variable options: [%s]" % r1, None
             parsed_opts.append(r1)
@@ -237,7 +311,7 @@ class DSLType20:
 
         return True, parsed_opts, local_str_input
 
-    def parse_next_option(self, str_input):
+    def _parse_next_option(self, str_input):
 
         opt_name = None
         opt_val = None
@@ -249,7 +323,7 @@ class DSLType20:
             return False, "Invalid option input: [%s]" % str_input, None, None
 
         # start by parsing the option's name
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.COLON)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.COLON)
         if v:
 
             # option has value
@@ -314,13 +388,13 @@ class DSLType20:
             # option has no value
 
             rem_last_chr = self.FSLASH
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.FSLASH)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.FSLASH)
             more_options = v
             if not more_options:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, self.VAR_ID + self.ANYSPACE + self.RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
@@ -344,12 +418,52 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def getallvars(self):
-        return self.data
+    def getallvars(self, context=None):
 
-    def getvars(self, varname):
+        local_context = self.global_context_id
+        if context is not None:
+            local_context = context
+        if not local_context in self.data:
+            return None
+
+        return self.data[local_context]
+
+    def getvars(self, varname, context=None):
+
+        local_context = self.global_context_id
+        if context is not None:
+            local_context = context
+        if not local_context in self.data:
+            return None
+
         ret = []
-        for v in self.data:
+        for v in self.data[local_context]:
             if v[0] == varname:
                 ret.append(v)
         return ret
+
+def puaq():
+    print("Usage: %s file_to_parse.cfg" % os.path.basename(__file__))
+    sys.exit(1)
+
+if __name__ == '__main__':
+
+    if len(sys.argv) < 2:
+        puaq()
+    file_to_parse = sys.argv[1]
+
+    dsl = DSLType20(False, False)
+
+    if not os.path.exists(file_to_parse):
+        print("File [%s] does not exist." % file_to_parse)
+        sys.exit(1)
+
+    file_contents = None
+    with open(file_to_parse) as f:
+        file_contents = f.read()
+
+    v, r = dsl.parse(file_contents)
+    if not v:
+        print(r)
+        sys.exit(1)
+    print("File [%s] is parseable." % file_to_parse)
