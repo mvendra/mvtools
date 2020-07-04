@@ -220,7 +220,11 @@ class DSLType20:
             return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
         local_str_input = (r[1]).strip()
 
-        # leave in the equal sign so further parsing can detect syntax problems
+        # remove equal sign just before the variable's value
+        v, r = miniparse.scan_and_slice_end(local_str_input, self.EQ_SIGN)
+        if not v:
+            return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
+        local_str_input = (r[1]).strip()
 
         v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.LCBRACKET)
         if v:
@@ -242,12 +246,6 @@ class DSLType20:
             parsed_opts = r1
             local_str_input = r2
 
-            # remove the eq sign from the tail
-            v, r = miniparse.remove_last_of(local_str_input, self.EQ_SIGN)
-            if not v:
-                return False, "Malformed variable: [%s]: Failed removing equal sign from tail." % str_input
-            local_str_input = r.strip()
-
             if len(local_str_input) != 0:
                 return False, "Malformed variable: [%s]: Remaining unparseable contents: [%s]." % (str_input, local_str_input)
 
@@ -255,17 +253,11 @@ class DSLType20:
 
             # variable has no options
 
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.EQ_SIGN)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE)
             if not v:
                 return False, "Malformed variable: [%s]: Can't parse variable name." % str_input
             var_name = (r[0]).strip()
             local_str_input = (r[1]).strip()
-
-            # remove the eq sign from name
-            v, r = miniparse.remove_last_of(var_name, self.EQ_SIGN)
-            if not v:
-                return False, "Malformed variable: [%s]: Failed removing equal sign from name." % str_input
-            var_name = r.strip()
 
             if len(local_str_input) != 0:
                 return False, "Malformed variable: [%s]: Remaining unparseable contents: [%s]." % (str_input, local_str_input)
@@ -304,10 +296,6 @@ class DSLType20:
             local_str_input = r2
             if not r3: # there are no more options
                 break
-
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.ANYSPACE + self.EQ_SIGN)
-        if not v:
-            return False, "Failed parsing: [%s]. Unpexteced sequence found before equal sign." % str_input, None
 
         return True, parsed_opts, local_str_input
 
