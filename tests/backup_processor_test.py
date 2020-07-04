@@ -25,6 +25,17 @@ def get_tuple_list_index(the_tuple_list, the_key):
             return i
     return None
 
+def escape(thestr):
+
+    result = ""
+
+    for i in thestr:
+        if i == "\"" or i == "\\":
+            result += "\\"
+        result += i
+
+    return result
+
 class BackupProcessorTest(unittest.TestCase):
 
     def setUp(self):
@@ -157,9 +168,11 @@ class BackupProcessorTest(unittest.TestCase):
         self.space_file1 = path_utils.concat_path(self.special_folder, "   sp_file1.txt")
         self.space_file2 = path_utils.concat_path(self.special_folder, "sp_fi  le2.txt")
         self.space_file3 = path_utils.concat_path(self.special_folder, "sp_file3.txt  ")
+        self.quote_file1 = path_utils.concat_path(self.special_folder, "file\"1.txt")
         create_and_write_file.create_file_contents(self.space_file1, "eee1")
         create_and_write_file.create_file_contents(self.space_file2, "eee2")
         create_and_write_file.create_file_contents(self.space_file3, "eee3")
+        create_and_write_file.create_file_contents(self.quote_file1, "eee4")
 
         self.space_folder1 = path_utils.concat_path(self.special_folder, "   sp_folder1")
         self.space_folder2 = path_utils.concat_path(self.special_folder, "sp_fol   der2")
@@ -247,6 +260,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_file1
         special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_file2
         special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_file3
+        special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % escape(self.quote_file1)
         special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_folder1
         special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_folder2
         special_source_cfg_file_contents1 += ("BKSOURCE = \"%s\"" + os.linesep) % self.space_folder3
@@ -1012,6 +1026,9 @@ class BackupProcessorTest(unittest.TestCase):
         tg1_space_file3_e = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2.enc")
         tg1_space_file3_z = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2")
         tg1_space_file3_h = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha256")
+        tg1_quote_file1_e = path_utils.concat_path(tg1_final, "special_folder", "file\"1.txt.tar.bz2.enc")
+        tg1_quote_file1_z = path_utils.concat_path(tg1_final, "special_folder", "file\"1.txt.tar.bz2")
+        tg1_quote_file1_h = path_utils.concat_path(tg1_final, "special_folder", "file\"1.txt.tar.bz2.enc.sha256")
 
         tg1_space_folder1_e = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2.enc")
         tg1_space_folder1_z = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2")
@@ -1033,6 +1050,9 @@ class BackupProcessorTest(unittest.TestCase):
         tg2_space_file3_e = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2.enc")
         tg2_space_file3_z = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2")
         tg2_space_file3_h = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha256")
+        tg2_quote_file1_e = path_utils.concat_path(tg2_final, "special_folder", "file\"1.txt.tar.bz2.enc")
+        tg2_quote_file1_z = path_utils.concat_path(tg2_final, "special_folder", "file\"1.txt.tar.bz2")
+        tg2_quote_file1_h = path_utils.concat_path(tg2_final, "special_folder", "file\"1.txt.tar.bz2.enc.sha256")
 
         tg2_space_folder1_e = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2.enc")
         tg2_space_folder1_z = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2")
@@ -1051,6 +1071,8 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg1_space_file2_h ) )
         self.assertTrue( os.path.exists( tg1_space_file3_e ) )
         self.assertTrue( os.path.exists( tg1_space_file3_h ) )
+        self.assertTrue( os.path.exists( tg1_quote_file1_e ) )
+        self.assertTrue( os.path.exists( tg1_quote_file1_h ) )
 
         self.assertTrue( os.path.exists( tg1_space_folder1_e ) )
         self.assertTrue( os.path.exists( tg1_space_folder1_h ) )
@@ -1063,6 +1085,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(hash_check.sha256sum_check( tg1_space_file1_e, tg1_space_file1_h ))
         self.assertTrue(hash_check.sha256sum_check( tg1_space_file2_e, tg1_space_file2_h ))
         self.assertTrue(hash_check.sha256sum_check( tg1_space_file3_e, tg1_space_file3_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg1_quote_file1_e, tg1_quote_file1_h ))
 
         self.assertTrue(hash_check.sha256sum_check( tg1_space_folder1_e, tg1_space_folder1_h ))
         self.assertTrue(hash_check.sha256sum_check( tg1_space_folder2_e, tg1_space_folder2_h ))
@@ -1072,6 +1095,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file1_e, tg1_space_file1_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file2_e, tg1_space_file2_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file3_e, tg1_space_file3_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg1_quote_file1_e, tg1_quote_file1_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder1_e, tg1_space_folder1_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder2_e, tg1_space_folder2_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg1_space_folder3_e, tg1_space_folder3_z, self.passphrase )[0])
@@ -1082,6 +1106,8 @@ class BackupProcessorTest(unittest.TestCase):
         v, r = tar_wrapper.extract(tg1_space_file2_z, self.extracted_folder)
         self.assertTrue(v)
         v, r = tar_wrapper.extract(tg1_space_file3_z, self.extracted_folder)
+        self.assertTrue(v)
+        v, r = tar_wrapper.extract(tg1_quote_file1_z, self.extracted_folder)
         self.assertTrue(v)
         v, r = tar_wrapper.extract(tg1_space_folder1_z, self.extracted_folder)
         self.assertTrue(v)
@@ -1094,6 +1120,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file1) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file2) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file3) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.quote_file1) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder1) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder2) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder3) ) )
@@ -1108,6 +1135,8 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg2_space_file2_h ) )
         self.assertTrue( os.path.exists( tg2_space_file3_e ) )
         self.assertTrue( os.path.exists( tg2_space_file3_h ) )
+        self.assertTrue( os.path.exists( tg2_quote_file1_e ) )
+        self.assertTrue( os.path.exists( tg2_quote_file1_h ) )
 
         self.assertTrue( os.path.exists( tg2_space_folder1_e ) )
         self.assertTrue( os.path.exists( tg2_space_folder1_h ) )
@@ -1120,6 +1149,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(hash_check.sha256sum_check( tg2_space_file1_e, tg2_space_file1_h ))
         self.assertTrue(hash_check.sha256sum_check( tg2_space_file2_e, tg2_space_file2_h ))
         self.assertTrue(hash_check.sha256sum_check( tg2_space_file3_e, tg2_space_file3_h ))
+        self.assertTrue(hash_check.sha256sum_check( tg2_quote_file1_e, tg2_quote_file1_h ))
 
         self.assertTrue(hash_check.sha256sum_check( tg2_space_folder1_e, tg2_space_folder1_h ))
         self.assertTrue(hash_check.sha256sum_check( tg2_space_folder2_e, tg2_space_folder2_h ))
@@ -1129,6 +1159,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file1_e, tg2_space_file1_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file2_e, tg2_space_file2_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file3_e, tg2_space_file3_z, self.passphrase )[0])
+        self.assertTrue(decrypt.symmetric_decrypt( tg2_quote_file1_e, tg2_quote_file1_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder1_e, tg2_space_folder1_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder2_e, tg2_space_folder2_z, self.passphrase )[0])
         self.assertTrue(decrypt.symmetric_decrypt( tg2_space_folder3_e, tg2_space_folder3_z, self.passphrase )[0])
@@ -1139,6 +1170,8 @@ class BackupProcessorTest(unittest.TestCase):
         v, r = tar_wrapper.extract(tg2_space_file2_z, self.extracted_folder)
         self.assertTrue(v)
         v, r = tar_wrapper.extract(tg2_space_file3_z, self.extracted_folder)
+        self.assertTrue(v)
+        v, r = tar_wrapper.extract(tg2_quote_file1_z, self.extracted_folder)
         self.assertTrue(v)
         v, r = tar_wrapper.extract(tg2_space_folder1_z, self.extracted_folder)
         self.assertTrue(v)
@@ -1151,6 +1184,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file1) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file2) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_file3) ) )
+        self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.quote_file1) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder1) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder2) ) )
         self.assertTrue( os.path.exists( path_utils.concat_path( self.extracted_folder, self.space_folder3) ) )
