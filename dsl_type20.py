@@ -14,9 +14,17 @@ import miniparse
 # variable3 {option2 / option3: "value3"} = "value4"
 # variable4 {option4: "value \"3\""} = "value \"5\"" # again, escaping quotes is necessary wherever you have a value
 #
-# lines starting with "#" are skipped (treated as comment).
+# lines starting with "#" are skipped (treated as comment)
+# the comment character may come anywhere in the line
 # lines are string-trimmed (extra spaces are removed)
-# variable names and optins can be repeated
+# variable names and options can be repeated
+# variables can be grouped in "contexts", syntax is as follows:
+#
+# [
+# @context-name
+# var1 = "val1"
+# ]
+#
 
 def getopts(var, optname):
     ret = []
