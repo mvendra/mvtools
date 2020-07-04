@@ -779,5 +779,10 @@ class MiniparseTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "saaa")
 
+    def testDescape12(self):
+        v, r = miniparse.descape("bb", "b")
+        self.assertTrue(v)
+        self.assertEqual(r, "b")
+
 if __name__ == '__main__':
     unittest.main()
