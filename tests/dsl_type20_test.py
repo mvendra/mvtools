@@ -149,22 +149,22 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse(self.contents_cfg_test_ok_1)
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getvars("var0"), [])
-        self.assertEqual(dsl.getvars("var1"), [("var1", "val1", [])])
-        self.assertEqual(dsl.getvars("var2"), [("var2", "val2", [("opt1", None)])])
-        self.assertEqual(dsl.getvars("var3"), [("var3", "val4", [("opt2", "val3")])])
-        self.assertEqual(dsl.getvars("var4"), [("var4", "val7", [("opt3", "val5"), ("opt4", "val6")])])
-        self.assertEqual(dsl.getvars("var5"), [("var5", "val10", [("opt5", None), ("opt6", "val8"), ("opt7", "val9")])])
-        self.assertEqual(dsl.getvars("var6"), [])
+        self.assertEqual(dsl.get_vars("var0"), [])
+        self.assertEqual(dsl.get_vars("var1"), [("var1", "val1", [])])
+        self.assertEqual(dsl.get_vars("var2"), [("var2", "val2", [("opt1", None)])])
+        self.assertEqual(dsl.get_vars("var3"), [("var3", "val4", [("opt2", "val3")])])
+        self.assertEqual(dsl.get_vars("var4"), [("var4", "val7", [("opt3", "val5"), ("opt4", "val6")])])
+        self.assertEqual(dsl.get_vars("var5"), [("var5", "val10", [("opt5", None), ("opt6", "val8"), ("opt7", "val9")])])
+        self.assertEqual(dsl.get_vars("var6"), [])
 
-        self.assertTrue(dsl_type20.hasopt_var(dsl.getvars("var2")[0], "opt1"))
-        self.assertTrue(dsl_type20.hasopt_var(dsl.getvars("var3")[0], "opt2"))
-        self.assertFalse(dsl_type20.hasopt_var(dsl.getvars("var3")[0], "opt3"))
+        self.assertTrue(dsl_type20.hasopt_var(dsl.get_vars("var2")[0], "opt1"))
+        self.assertTrue(dsl_type20.hasopt_var(dsl.get_vars("var3")[0], "opt2"))
+        self.assertFalse(dsl_type20.hasopt_var(dsl.get_vars("var3")[0], "opt3"))
 
-        self.assertTrue(dsl_type20.hasopt_opts(dsl.getvars("var2")[0][2], "opt1"))
-        self.assertTrue(dsl_type20.hasopt_opts(dsl.getvars("var3")[0][2], "opt2"))
+        self.assertTrue(dsl_type20.hasopt_opts(dsl.get_vars("var2")[0][2], "opt1"))
+        self.assertTrue(dsl_type20.hasopt_opts(dsl.get_vars("var3")[0][2], "opt2"))
 
-        self.assertEqual(dsl_type20.getopts(dsl.getvars("var2")[0], "opt1"), [("opt1", None)])
+        self.assertEqual(dsl_type20.getopts(dsl.get_vars("var2")[0], "opt1"), [("opt1", None)])
 
     def testDslType20_GetVars2(self):
 
@@ -172,17 +172,17 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse(self.contents_cfg_test_ok_2)
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getvars("var0"), [])
-        self.assertEqual(dsl.getvars("var1"), [("var1", "val1", [])])
-        self.assertEqual(dsl.getvars("var2"), [("var2", "a/path/valid1", [])])
-        self.assertEqual(dsl.getvars("var3"), [("var3", "a/path/valid3", [("opt1", None), ("opt2", "a/path/valid2")])])
-        self.assertEqual(dsl.getvars("var4"), [("var4", "$SOME_ENV_VAR", [])])
-        self.assertEqual(dsl.getvars("var5"), [("var5", "repeated1", [("r1", ""), ("r1", None)]), ("var5", "repeated2", [("r2", None), ("r2", None)])])
-        self.assertEqual(dsl.getvars("var6"), [])
+        self.assertEqual(dsl.get_vars("var0"), [])
+        self.assertEqual(dsl.get_vars("var1"), [("var1", "val1", [])])
+        self.assertEqual(dsl.get_vars("var2"), [("var2", "a/path/valid1", [])])
+        self.assertEqual(dsl.get_vars("var3"), [("var3", "a/path/valid3", [("opt1", None), ("opt2", "a/path/valid2")])])
+        self.assertEqual(dsl.get_vars("var4"), [("var4", "$SOME_ENV_VAR", [])])
+        self.assertEqual(dsl.get_vars("var5"), [("var5", "repeated1", [("r1", ""), ("r1", None)]), ("var5", "repeated2", [("r2", None), ("r2", None)])])
+        self.assertEqual(dsl.get_vars("var6"), [])
 
-        self.assertEqual(dsl_type20.getopts(dsl.getvars("var5")[0], "r1"), [("r1", ""), ("r1", None)])
-        self.assertEqual(dsl_type20.getopts(dsl.getvars("var5")[1], "r1"), [])
-        self.assertEqual(dsl_type20.getopts(dsl.getvars("var5")[1], "r2"), [("r2", None), ("r2", None)])
+        self.assertEqual(dsl_type20.getopts(dsl.get_vars("var5")[0], "r1"), [("r1", ""), ("r1", None)])
+        self.assertEqual(dsl_type20.getopts(dsl.get_vars("var5")[1], "r1"), [])
+        self.assertEqual(dsl_type20.getopts(dsl.get_vars("var5")[1], "r2"), [("r2", None), ("r2", None)])
 
     def testDslType20_GetVars3(self):
 
@@ -190,7 +190,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse(self.contents_cfg_test_ok_3)
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", []), ("var2", "val2", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", []), ("var2", "val2", [])])
 
     def testDslType20_GetVars4(self):
         #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
@@ -203,7 +203,7 @@ class DSLType20Test(unittest.TestCase):
             v, r = dsl.parse(self.contents_cfg_test_ok_4)
 
             self.assertTrue(v)
-            self.assertEqual(dsl.getallvars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")]), ("var3", path_utils.concat_path(os.path.expanduser("~/nuke/folder")), [])])
+            self.assertEqual(dsl.get_all_vars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")]), ("var3", path_utils.concat_path(os.path.expanduser("~/nuke/folder")), [])])
         finally:
             os.environ.clear()
             os.environ.update(_environ)
@@ -214,7 +214,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [])])
 
     def testDslType20_TestVanilla2(self):
 
@@ -222,7 +222,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt1", None)])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt1", None)])])
 
     def testDslType20_TestNonEscapedQuoteVarVal(self):
 
@@ -242,7 +242,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1   {  _opt-1   :    \"val \\\\  =  \\\"1/2\\\"\" / opt2  :  \"val = \\\"2/4\\\"\" }     =  \"val = \\\"1\\\"\"  ")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val = \"1\"", [("_opt-1", "val \\  =  \"1/2\""), ("opt2", "val = \"2/4\"")])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val = \"1\"", [("_opt-1", "val \\  =  \"1/2\""), ("opt2", "val = \"2/4\"")])])
 
     def testDslType20_TestBlankAndNoneOption(self):
 
@@ -250,7 +250,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"\" / opt2} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt1", ""), ("opt2", None)])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt1", ""), ("opt2", None)])])
 
     def testDslType20_TestSpacedOptionValueless1(self):
 
@@ -258,7 +258,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("    var1   {  the_option     }     =    \"val1\"  ")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("the_option", None)])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("the_option", None)])])
 
     def testDslType20_TestSpacedOptionValueless2(self):
 
@@ -266,7 +266,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("    var1   {  the_option1   /   the_option2    }     =    \"val1\"  ")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("the_option1", None), ("the_option2", None)])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("the_option1", None), ("the_option2", None)])])
 
     def testDslType20_TestOptionsAlternated1(self):
 
@@ -274,7 +274,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1 / opt2: \"val2\" / opt3 / opt4: \"val3\"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt1", None), ("opt2", "val2"), ("opt3", None), ("opt4", "val3")])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt1", None), ("opt2", "val2"), ("opt3", None), ("opt4", "val3")])])
 
     def testDslType20_TestOptionsAlternated2(self):
 
@@ -282,7 +282,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt2: \"val2\" / opt1 / opt4: \"val3\" / opt3} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt2", "val2"), ("opt1", None), ("opt4", "val3"), ("opt3", None)])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt2", "val2"), ("opt1", None), ("opt4", "val3"), ("opt3", None)])])
 
     def testDslType20_TestMalformedOptName(self):
 
@@ -308,7 +308,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"   val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "   val1", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "   val1", [])])
 
     def testDslType20_TestVarValueParsing2(self):
 
@@ -316,7 +316,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"val1   \"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1   ", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1   ", [])])
 
     def testDslType20_TestVarValueParsing3(self):
 
@@ -324,7 +324,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"val1   val2\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1   val2", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1   val2", [])])
 
     def testDslType20_TestOptValueParsing1(self):
 
@@ -332,7 +332,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"   val2\"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt1", "   val2")])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt1", "   val2")])])
 
     def testDslType20_TestOptValueParsing2(self):
 
@@ -340,7 +340,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"val2   \"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt1", "val2   ")])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt1", "val2   ")])])
 
     def testDslType20_TestOptValueParsing3(self):
 
@@ -348,7 +348,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"val2   val3\"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt1", "val2   val3")])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt1", "val2   val3")])])
 
     def testDslType20_TestUnspacing(self):
 
@@ -356,7 +356,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1{opt1/opt2/opt3:\"val\\\"2\"}=\"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [("opt1", None), ("opt2", None), ("opt3", "val\"2")])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [("opt1", None), ("opt2", None), ("opt3", "val\"2")])])
 
     def testDslType20_TestLeftoversFail1(self):
 
@@ -436,24 +436,24 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(False, False)
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\n]")
         self.assertTrue(v)
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [])])
 
     def testDslType20_TestNewContextVanilla2(self):
 
         dsl = dsl_type20.DSLType20(False, False)
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\nvar2 = \"val2\"\n]")
         self.assertTrue(v)
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", [])])
-        self.assertEqual(dsl.getallvars("ctx1"), [("var2", "val2", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [])])
+        self.assertEqual(dsl.get_all_vars("ctx1"), [("var2", "val2", [])])
 
     def testDslType20_TestNewContextVanilla3(self):
 
         dsl = dsl_type20.DSLType20(False, False)
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\nvar2 {opt1 / opt2} = \"val2\"\n]\nvar3 = \"val3\"\n[\n@ctx2\nvar4 = \"val4\"\n]")
         self.assertTrue(v)
-        self.assertEqual(dsl.getallvars(), [("var1", "val1", []), ("var3", "val3", [])])
-        self.assertEqual(dsl.getallvars("ctx1"), [("var2", "val2", [("opt1", None), ("opt2", None)])])
-        self.assertEqual(dsl.getallvars("ctx2"), [("var4", "val4", [])])
+        self.assertEqual(dsl.get_all_vars(), [("var1", "val1", []), ("var3", "val3", [])])
+        self.assertEqual(dsl.get_all_vars("ctx1"), [("var2", "val2", [("opt1", None), ("opt2", None)])])
+        self.assertEqual(dsl.get_all_vars("ctx2"), [("var4", "val4", [])])
 
     def testDslType20_TestNewContextFail1(self):
 
@@ -497,13 +497,13 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl._parse_variable("var1 = \"val1\"", "nonexistent context")
         self.assertFalse(v)
 
-    def testDslType20_TestContextGetAllVarsFail1(self):
+    def testDslType20_TestContextget_all_varsFail1(self):
 
         dsl = dsl_type20.DSLType20(False, False)
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
         self.assertTrue(v)
-        self.assertEqual(dsl.getallvars("ctx1"), [("var1", "val1", [])])
-        self.assertEqual(dsl.getallvars("nonexistent context"), None)
+        self.assertEqual(dsl.get_all_vars("ctx1"), [("var1", "val1", [])])
+        self.assertEqual(dsl.get_all_vars("nonexistent context"), None)
 
     def testDslType20_TestContextGetVarsFail1(self):
 
@@ -511,9 +511,9 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
 
         self.assertTrue(v)
-        self.assertEqual(dsl.getvars("var1", None), [])
-        self.assertEqual(dsl.getvars("var1", "ctx1"), [("var1", "val1", [])])
-        self.assertEqual(dsl.getvars("var1", "nonexistent context"), None)
+        self.assertEqual(dsl.get_vars("var1", None), [])
+        self.assertEqual(dsl.get_vars("var1", "ctx1"), [("var1", "val1", [])])
+        self.assertEqual(dsl.get_vars("var1", "nonexistent context"), None)
 
     def testDslType20_TestAddContext1(self):
         dsl = dsl_type20.DSLType20(False, False)

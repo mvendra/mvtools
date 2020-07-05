@@ -88,7 +88,7 @@ class BackupPreparation:
     def setup_configuration(self):
 
         # does the first pass to setup the configuration
-        vars = self.dsl.getallvars()
+        vars = self.dsl.get_all_vars()
         for v in vars:
             p = self.proc_single_config(v[0], v[1], v[2])
             if not p:

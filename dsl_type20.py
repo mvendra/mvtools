@@ -424,7 +424,7 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def getallvars(self, context=None):
+    def get_all_vars(self, context=None):
 
         local_context = self.global_context_id
         if context is not None:
@@ -434,7 +434,7 @@ class DSLType20:
 
         return self.data[local_context]
 
-    def getvars(self, varname, context=None):
+    def get_vars(self, varname, context=None):
 
         local_context = self.global_context_id
         if context is not None:

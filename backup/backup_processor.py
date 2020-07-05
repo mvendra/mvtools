@@ -95,7 +95,7 @@ def read_config(config_file):
     BKWARNING_EACH = (None, None)
     BKWARNING_FINAL = (None, None)
 
-    vars = dsl.getallvars()
+    vars = dsl.get_all_vars()
     for v in vars:
 
         var_name = v[0]
