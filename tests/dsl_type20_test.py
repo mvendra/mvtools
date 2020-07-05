@@ -515,5 +515,99 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.getvars("var1", "ctx1"), [("var1", "val1", [])])
         self.assertEqual(dsl.getvars("var1", "nonexistent context"), None)
 
+    def testDslType20_TestAddContext1(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_context("ok"))
+
+    def testDslType20_TestAddContext2(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_context("ok1"))
+
+    def testDslType20_TestAddContext3(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_context("_ok-90"))
+
+    def testDslType20_TestAddContextFail1(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_context([]))
+
+    def testDslType20_TestAddContextFail2(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_context(""))
+
+    def testDslType20_TestAddContextFail3(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_context("ok!"))
+
+    def testDslType20_TestAddContextFail4(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_context("@ok"))
+
+    def testDslType20_TestAddContextFail5(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_context("ok"))
+        self.assertFalse(dsl.add_context("ok"))
+
+    def testDslType20_TestAddVar1(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_var("var1", "", [ ] ))
+
+    def testDslType20_TestAddVar2(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_var("var1", "val1", [ ] ))
+
+    def testDslType20_TestAddVar3(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2") ] ))
+
+    def testDslType20_TestAddVar4(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
+
+    def testDslType20_TestAddVar5(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
+        self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
+
+    def testDslType20_TestAddVarFail1(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", None, [ ] ))
+
+    def testDslType20_TestAddVarFail2(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", [], [ ] ))
+
+    def testDslType20_TestAddVarFail3(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", "val1", [ ("opt") ] ))
+
+    def testDslType20_TestAddVarFail4(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", "val1", [ ("opt", 1) ] ))
+
+    def testDslType20_TestAddVarFail5(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", "val1", [ ("opt", "val", "again") ] ))
+
+    def testDslType20_TestAddVarFail6(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", "val1", [ ["opt", "val"] ] ))
+
+    def testDslType20_TestAddVarFail7(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", "val1", [ None ] ))
+
+    def testDslType20_TestAddVarFail8(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var("var1", "val1", None ))
+
+    def testDslType20_TestAddVarFail9(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var(1, "val1", [ ("opt", "val") ] ))
+
+    def testDslType20_TestAddVarFail10(self):
+        dsl = dsl_type20.DSLType20(False, False)
+        self.assertFalse(dsl.add_var(None, "val1", [ ("opt", "val") ] ))
+
 if __name__ == '__main__':
     unittest.main()

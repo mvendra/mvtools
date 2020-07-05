@@ -104,8 +104,19 @@ class DSLType20:
         return line_out.strip()
 
     def add_context(self, context):
+
+        if not isinstance(context, str):
+            return False
+
+        v, r = miniparse.scan_and_slice_beginning(context, self.IDENTIFIER)
+        if not v:
+            return False
+        if r[1] != "":
+            return False
+
         if context in self.data:
             return False
+
         self.data[context] = []
         return True
 
@@ -277,8 +288,7 @@ class DSLType20:
         if var_value == "":
             return False, "Empty var value: [%s]" % str_input
 
-        # add new variable to internal data
-        self.data[local_context].append( (var_name, var_value, parsed_opts) )
+        self.add_var(var_name, var_value, parsed_opts, local_context)
 
         return True, None
 
@@ -437,6 +447,46 @@ class DSLType20:
             if v[0] == varname:
                 ret.append(v)
         return ret
+
+    def add_var(self, var_name, var_val, var_opts, context=None):
+
+        local_context = context
+
+        if local_context is None:
+            local_context = self.global_context_id
+        else:
+            self.add_context(local_context)
+
+        # validate var_name
+        if not isinstance(var_name, str):
+            return False
+        v, r = miniparse.scan_and_slice_beginning(var_name, self.IDENTIFIER)
+        if not v:
+            return False
+        if r[1] != "":
+            return False
+
+        # validate var_val
+        if not isinstance(var_val, str):
+            return False
+
+        # validate var_opts
+        if not isinstance(var_opts, list):
+            return False
+        for i in var_opts:
+            if not isinstance(i, tuple):
+                return False
+            if not len(i) == 2:
+                return  False
+            if not isinstance(i[0], str):
+                return False
+            if not ( (isinstance(i[1], str)) or (i[1] is None) ):
+                return False
+
+        # add new variable to internal data
+        self.data[local_context].append( (var_name, var_val, var_opts) )
+
+        return True
 
 def puaq():
     print("Usage: %s file_to_parse.cfg" % os.path.basename(__file__))
