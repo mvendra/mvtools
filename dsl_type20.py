@@ -533,6 +533,33 @@ class DSLType20:
 
         return True
 
+    def rem_var(self, var_name, index=None, context=None):
+
+        local_context = self.global_context_id
+        if context is not None:
+            local_context = context
+        if not local_context in self.data:
+            return False
+
+        local_all_vars_new = []
+        local_all_vars = self.data[local_context]
+
+        for i in range(len(local_all_vars)):
+
+            if (local_all_vars[i])[0] == var_name:
+
+                if index is not None:
+                    if index == i:
+                        continue
+                else:
+                    continue
+
+            local_all_vars_new.append(local_all_vars[i])
+
+        self.data[local_context] = local_all_vars_new
+
+        return (len(local_all_vars) != len(local_all_vars_new))
+
 def puaq():
     print("Usage: %s file_to_parse.cfg" % os.path.basename(__file__))
     sys.exit(1)
