@@ -50,16 +50,25 @@ def printable_context(context):
         return "(global context)"
     return context
 
-def select_dsltype20_options(expand_envvars = False, expand_user = False):
+def count_occurrence_first_of_pair(list_target, first_value):
+    c = 0
+    for i in list_target:
+        if i[0] == first_value:
+            c += 1
+    return c
+
+def select_dsltype20_options(expand_envvars = False, expand_user = False, allow_dupes = True):
     opts = DSLType20_Options()
     opts._expand_envvars = expand_envvars
     opts._expand_user = expand_user
+    opts._allow_dupes = allow_dupes
     return opts
 
 class DSLType20_Options:
     def __init__(self):
         self._expand_envvars = False
         self._expand_user = False
+        self._allow_dupes = False
 
 class DSLType20:
     def __init__(self, _options):
@@ -87,6 +96,7 @@ class DSLType20:
         # read options
         self.expand_envvars = _options._expand_envvars
         self.expand_user = _options._expand_user
+        self.allow_dupes = _options._allow_dupes
 
     def clear(self):
         self.data = {}
@@ -495,7 +505,7 @@ class DSLType20:
         # expand the variable's value
         v, r = self._expand(var_val)
         if not v:
-            return False, "Variable expansion failed: [%s]" % var_val
+            return False
         var_val = r
 
         # expand the option's value
@@ -509,8 +519,21 @@ class DSLType20:
 
             v, r = self._expand(o[1])
             if not v:
-                return False, "Option expansion failed: [%s]" % o[1]
+                return False
             var_opts.append( (o[0], r) )
+
+         # check for duplicates, if checking is enabled
+        if not self.allow_dupes:
+
+            # check for duplicated variable
+            for v in self.data[local_context]:
+                if v[0] == var_name:
+                    return False
+
+            # check for duplicated option inside the provided options
+            for o in var_opts:
+                if count_occurrence_first_of_pair(var_opts, o[0]) > 1:
+                    return False
 
         # add new variable to internal data
         self.data[local_context].append( (var_name, var_val, var_opts) )

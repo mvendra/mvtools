@@ -609,5 +609,27 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
         self.assertFalse(dsl.add_var(None, "val1", [ ("opt", "val") ] ))
 
+    def testDslType20_TestCountOccurrenceFirstOfPair1(self):
+        self.assertEqual(dsl_type20.count_occurrence_first_of_pair( [ ("b", None) ], "a" ), 0)
+
+    def testDslType20_TestCountOccurrenceFirstOfPair2(self):
+        self.assertEqual(dsl_type20.count_occurrence_first_of_pair( [ ("b", None) ], "b" ), 1)
+
+    def testDslType20_TestCountOccurrenceFirstOfPair3(self):
+        self.assertEqual(dsl_type20.count_occurrence_first_of_pair( [ ("b", None), ("b", None) ], "b" ), 2)
+
+    def testDslType20_TestDisallowDupes1(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(allow_dupes=False))
+        self.assertTrue(dsl.add_var("var1", "val1", []))
+        self.assertFalse(dsl.add_var("var1", "val2", []))
+
+    def testDslType20_TestDisallowDupes2(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(allow_dupes=False))
+        self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", None) ] ))
+
+    def testDslType20_TestDisallowDupes3(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(allow_dupes=False))
+        self.assertFalse(dsl.add_var("var1", "val1", [ ("opt1", None), ("opt1", None) ] ))
+
 if __name__ == '__main__':
     unittest.main()
