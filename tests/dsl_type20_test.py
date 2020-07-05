@@ -551,23 +551,28 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestAddVar1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "", [ ] ))
+        self.assertEqual(dsl.get_all_vars(), [ ("var1", "", [ ]) ] )
 
     def testDslType20_TestAddVar2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ] ))
+        self.assertEqual(dsl.get_all_vars(), [ ("var1", "val1", [ ]) ] )
 
     def testDslType20_TestAddVar3(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2") ] ))
+        self.assertEqual(dsl.get_all_vars(), [ ("var1", "val1", [ ("opt1", "val2") ]) ] )
 
     def testDslType20_TestAddVar4(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
+        self.assertEqual(dsl.get_all_vars(), [ ("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ]) ] )
 
     def testDslType20_TestAddVar5(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
+        self.assertEqual(dsl.get_all_vars(), [ ("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ]), ("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ]) ] )
 
     def testDslType20_TestAddVarFail1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
@@ -630,6 +635,11 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestDisallowDupes3(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
         self.assertFalse(dsl.add_var("var1", "val1", [ ("opt1", None), ("opt1", None) ] ))
+
+    def testDslType20_TestDisallowDupes4(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", None) ] ))
+        self.assertTrue(dsl.add_var("var2", "val1", [ ("opt1", None) ] ))
 
 if __name__ == '__main__':
     unittest.main()
