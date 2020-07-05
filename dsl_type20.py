@@ -50,14 +50,27 @@ def printable_context(context):
         return "(global context)"
     return context
 
+def select_dsltype20_options(expand_envvars = False, expand_user = False):
+    opts = DSLType20_Options()
+    opts._expand_envvars = expand_envvars
+    opts._expand_user = expand_user
+    return opts
+
+class DSLType20_Options:
+    def __init__(self):
+        self._expand_envvars = False
+        self._expand_user = False
+
 class DSLType20:
-    def __init__(self, _expand_envvars, _expand_user):
-        self.expand_envvars = _expand_envvars
-        self.expand_user = _expand_user
+    def __init__(self, _options):
+
+        # internal
         self.data = {}
         self.global_context_id = "global context" # unparseable string - so as to not impose too many restrictions on client code
+        self.max_number_variable_options = 1024
         self.clear()
 
+        # string parsing
         self.IDENTIFIER = "[_\\-a-zA-Z0-9]+"
         self.ANYSPACE = "[ ]*"
         self.COLON = ":"
@@ -71,7 +84,9 @@ class DSLType20:
         self.BSLASH = "\\"
         self.FSLASH = "/"
 
-        self.max_number_options = 1024
+        # read options
+        self.expand_envvars = _options._expand_envvars
+        self.expand_user = _options._expand_user
 
     def clear(self):
         self.data = {}
@@ -304,8 +319,8 @@ class DSLType20:
         while True:
             counter += 1
 
-            if counter >= self.max_number_options:
-                return False, "Failed parsing: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_options), None
+            if counter >= self.max_number_variable_options:
+                return False, "Failed parsing: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_variable_options), None
 
             v, r1, r2, r3 = self._parse_next_option(local_str_input)
             if not v:

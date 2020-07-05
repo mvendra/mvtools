@@ -43,7 +43,7 @@ class BackupPreparation:
 
     def __init__(self, _config_file):
         self.config_file = _config_file
-        self.dsl = dsl_type20.DSLType20(True, True)
+        self.dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(True, True))
         self.instructions = [] # the instructions only, without the config/setup variables
 
         # default configs
