@@ -795,5 +795,90 @@ class MiniparseTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "b")
 
+    def testEscape1(self):
+        v, r = miniparse.escape(None, "a", ["b"])
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape2(self):
+        v, r = miniparse.escape([], "a", ["b"])
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape3(self):
+        v, r = miniparse.escape("", "a", ["b"])
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape4(self):
+        v, r = miniparse.escape("aaa", None, ["b"])
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape5(self):
+        v, r = miniparse.escape("aaa", [], ["b"])
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape6(self):
+        v, r = miniparse.escape("aaa", "", ["b"])
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape7(self):
+        v, r = miniparse.escape("aaa", "a", None)
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape8(self):
+        v, r = miniparse.escape("aaa", "a", "")
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape9(self):
+        v, r = miniparse.escape("aaa", "a", [])
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+
+    def testEscape10(self):
+        v, r = miniparse.escape("aaaqbbb", "s", ["q"])
+        self.assertTrue(v)
+        self.assertEqual(r, "aaasqbbb")
+
+    def testEscape11(self):
+        v, r = miniparse.escape("aaaqbbbqccc", "s", ["q"])
+        self.assertTrue(v)
+        self.assertEqual(r, "aaasqbbbsqccc")
+
+    def testEscape12(self):
+        v, r = miniparse.escape("aaaqbbsbbqccc", "s", ["q"])
+        self.assertTrue(v)
+        self.assertEqual(r, "aaasqbbssbbsqccc")
+
+    def testEscape13(self):
+        v, r = miniparse.escape("aqqa", "s", ["q"])
+        self.assertTrue(v)
+        self.assertEqual(r, "asqsqa")
+
+    def testEscape14(self):
+        v, r = miniparse.escape("aqqqa", "s", ["q"])
+        self.assertTrue(v)
+        self.assertEqual(r, "asqsqsqa")
+
+    def testEscape15(self):
+        v, r = miniparse.escape("cssc", "s", ["q"])
+        self.assertTrue(v)
+        self.assertEqual(r, "cssssc")
+
+    def testEscape16(self):
+        v, r = miniparse.escape("csssc", "s", ["q"])
+        self.assertTrue(v)
+        self.assertEqual(r, "cssssssc")
+
+    def testEscape17(self):
+        v, r = miniparse.escape("aqaaabssbbbcccxc", "s", ["q", "x"])
+        self.assertTrue(v)
+        self.assertEqual(r, "asqaaabssssbbbcccsxc")
+
 if __name__ == '__main__':
     unittest.main()

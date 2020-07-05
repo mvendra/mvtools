@@ -364,5 +364,36 @@ def descape(thestr, escape_char):
     # second step is to just remove the relevant indices
     return True, delete_indices_from_string(thestr, list_escape)
 
+def escape(thestr, escape_char, target_chars):
+
+    if thestr is None:
+        return False, None
+    if not isinstance(thestr, str):
+        return False, None
+    if thestr == "":
+        return False, None
+
+    if escape_char is None:
+        return False, None
+    if not isinstance(escape_char, str):
+        return False, None
+    if escape_char == "":
+        return False, None
+
+    if target_chars is None:
+        return None, None
+    if not isinstance(target_chars, list):
+        return None, None
+    if len(target_chars) == 0:
+        return False, None
+
+    result = ""
+    for a in thestr:
+        if a in target_chars or a == escape_char:
+            result += escape_char
+        result += a
+
+    return True, result
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
