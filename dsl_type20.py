@@ -94,6 +94,12 @@ class DSLType20:
 
     def _expand(self, str_input):
 
+        if str_input is None:
+            return False, str_input
+
+        if not isinstance(str_input, str):
+            return False, str_input
+
         local_str_input = str_input
 
         if self.expand_envvars:
@@ -496,6 +502,11 @@ class DSLType20:
         var_opts_pre = var_opts
         var_opts = []
         for o in var_opts_pre:
+
+            if o[1] is None:
+                var_opts.append( o )
+                continue
+
             v, r = self._expand(o[1])
             if not v:
                 return False, "Option expansion failed: [%s]" % o[1]
