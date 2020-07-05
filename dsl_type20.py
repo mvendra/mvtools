@@ -57,18 +57,11 @@ def count_occurrence_first_of_pair(list_target, first_value):
             c += 1
     return c
 
-def select_dsltype20_options(expand_envvars = False, expand_user = False, allow_dupes = True):
-    opts = DSLType20_Options()
-    opts._expand_envvars = expand_envvars
-    opts._expand_user = expand_user
-    opts._allow_dupes = allow_dupes
-    return opts
-
 class DSLType20_Options:
-    def __init__(self):
-        self._expand_envvars = False
-        self._expand_user = False
-        self._allow_dupes = False
+    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True):
+        self._expand_envvars = expand_envvars
+        self._expand_user = expand_user
+        self._allow_dupes = allow_dupes
 
 class DSLType20:
     def __init__(self, _options):

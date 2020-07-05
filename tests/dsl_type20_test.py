@@ -111,7 +111,7 @@ class DSLType20Test(unittest.TestCase):
         return v
 
     def testDslType20_SanitizeLine(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertEqual(dsl.sanitize_line("abc"), "abc")
         self.assertEqual(dsl.sanitize_line("#abc"), "")
         self.assertEqual(dsl.sanitize_line("abc#def"), "abc")
@@ -120,32 +120,32 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.sanitize_line("   abc   #"), "abc")
 
     def testDslType20_Parse1(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.select_dsltype20_options()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse2(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, dsl_type20.select_dsltype20_options()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse3(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.select_dsltype20_options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse4(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_2, dsl_type20.select_dsltype20_options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_2, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse5(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, dsl_type20.select_dsltype20_options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse6(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, dsl_type20.select_dsltype20_options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse7(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_5, dsl_type20.select_dsltype20_options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_5, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse8(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_5, dsl_type20.select_dsltype20_options()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_5, dsl_type20.DSLType20_Options()))
 
     def testDslType20_GetVars1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse(self.contents_cfg_test_ok_1)
         self.assertTrue(v)
 
@@ -168,7 +168,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetVars2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse(self.contents_cfg_test_ok_2)
         self.assertTrue(v)
 
@@ -186,7 +186,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetVars3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse(self.contents_cfg_test_ok_3)
         self.assertTrue(v)
 
@@ -199,7 +199,7 @@ class DSLType20Test(unittest.TestCase):
             os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
             os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-            dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(True, True))
+            dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(True, True))
             v, r = dsl.parse(self.contents_cfg_test_ok_4)
 
             self.assertTrue(v)
@@ -210,7 +210,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestVanilla1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"")
         self.assertTrue(v)
 
@@ -218,7 +218,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestVanilla2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1} = \"val1\"")
         self.assertTrue(v)
 
@@ -226,19 +226,19 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestNonEscapedQuoteVarVal(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val \"1\"\"")
         self.assertFalse(v)
 
     def testDslType20_TestNonEscapedQuoteVarOptVal(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1: \"val \"2\"\"} = \"val \\\"1\\\"\"")
         self.assertFalse(v)
 
     def testDslType20_TestSlashInsideVarOptVal(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1   {  _opt-1   :    \"val \\\\  =  \\\"1/2\\\"\" / opt2  :  \"val = \\\"2/4\\\"\" }     =  \"val = \\\"1\\\"\"  ")
         self.assertTrue(v)
 
@@ -246,7 +246,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestBlankAndNoneOption(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1: \"\" / opt2} = \"val1\"")
         self.assertTrue(v)
 
@@ -254,7 +254,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestSpacedOptionValueless1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("    var1   {  the_option     }     =    \"val1\"  ")
         self.assertTrue(v)
 
@@ -262,7 +262,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestSpacedOptionValueless2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("    var1   {  the_option1   /   the_option2    }     =    \"val1\"  ")
         self.assertTrue(v)
 
@@ -270,7 +270,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestOptionsAlternated1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1 / opt2: \"val2\" / opt3 / opt4: \"val3\"} = \"val1\"")
         self.assertTrue(v)
 
@@ -278,7 +278,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestOptionsAlternated2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt2: \"val2\" / opt1 / opt4: \"val3\" / opt3} = \"val1\"")
         self.assertTrue(v)
 
@@ -286,25 +286,25 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestMalformedOptName(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt=1: \"optval\"} = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestMalformedValueQuotesEscaped1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\\\"")
         self.assertFalse(v)
 
     def testDslType20_TestMalformedValueQuotesEscaped2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \\\"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestVarValueParsing1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"   val1\"")
         self.assertTrue(v)
 
@@ -312,7 +312,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestVarValueParsing2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1   \"")
         self.assertTrue(v)
 
@@ -320,7 +320,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestVarValueParsing3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1   val2\"")
         self.assertTrue(v)
 
@@ -328,7 +328,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestOptValueParsing1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1: \"   val2\"} = \"val1\"")
         self.assertTrue(v)
 
@@ -336,7 +336,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestOptValueParsing2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1: \"val2   \"} = \"val1\"")
         self.assertTrue(v)
 
@@ -344,7 +344,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestOptValueParsing3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1: \"val2   val3\"} = \"val1\"")
         self.assertTrue(v)
 
@@ -352,7 +352,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestUnspacing(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1{opt1/opt2/opt3:\"val\\\"2\"}=\"val1\"")
         self.assertTrue(v)
 
@@ -360,87 +360,87 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestLeftoversFail1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 abc = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = abc \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\" abc")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail4(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = {opt1} \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail5(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1 opt2} = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail6(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1 /} = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail7(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {{opt1} = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail8(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1}} = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail9(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1} abc = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail10(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 == \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestLeftoversFail11(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 {opt1} == \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestExceedMaxNumberOptionsFail(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         dsl.max_number_options = 2
         v, r = dsl.parse("var1 {opt1 / opt2 / opt3} == \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextVanilla1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\n]")
         self.assertTrue(v)
         self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [])])
 
     def testDslType20_TestNewContextVanilla2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\nvar2 = \"val2\"\n]")
         self.assertTrue(v)
         self.assertEqual(dsl.get_all_vars(), [("var1", "val1", [])])
@@ -448,7 +448,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestNewContextVanilla3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\nvar2 {opt1 / opt2} = \"val2\"\n]\nvar3 = \"val3\"\n[\n@ctx2\nvar4 = \"val4\"\n]")
         self.assertTrue(v)
         self.assertEqual(dsl.get_all_vars(), [("var1", "val1", []), ("var3", "val3", [])])
@@ -457,49 +457,49 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestNewContextFail1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n@ctx1\nvar2 = \"val2\"\n]")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n[\n@ctx1\n]")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n]")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail4(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail5(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n@@ctx1\n]")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail6(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx 1\n]")
         self.assertFalse(v)
 
     def testDslType20_TestContextFail1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl._parse_variable("var1 = \"val1\"", "nonexistent context")
         self.assertFalse(v)
 
     def testDslType20_TestContextget_all_varsFail1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
         self.assertTrue(v)
         self.assertEqual(dsl.get_all_vars("ctx1"), [("var1", "val1", [])])
@@ -507,7 +507,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestContextGetVarsFail1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
 
         self.assertTrue(v)
@@ -516,97 +516,97 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.get_vars("var1", "nonexistent context"), None)
 
     def testDslType20_TestAddContext1(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_context("ok"))
 
     def testDslType20_TestAddContext2(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_context("ok1"))
 
     def testDslType20_TestAddContext3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_context("_ok-90"))
 
     def testDslType20_TestAddContextFail1(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_context([]))
 
     def testDslType20_TestAddContextFail2(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_context(""))
 
     def testDslType20_TestAddContextFail3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_context("ok!"))
 
     def testDslType20_TestAddContextFail4(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_context("@ok"))
 
     def testDslType20_TestAddContextFail5(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_context("ok"))
         self.assertFalse(dsl.add_context("ok"))
 
     def testDslType20_TestAddVar1(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "", [ ] ))
 
     def testDslType20_TestAddVar2(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ] ))
 
     def testDslType20_TestAddVar3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2") ] ))
 
     def testDslType20_TestAddVar4(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
 
     def testDslType20_TestAddVar5(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", "val2"), ("opt1", "val2") ] ))
 
     def testDslType20_TestAddVarFail1(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", None, [ ] ))
 
     def testDslType20_TestAddVarFail2(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", [], [ ] ))
 
     def testDslType20_TestAddVarFail3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", "val1", [ ("opt") ] ))
 
     def testDslType20_TestAddVarFail4(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", "val1", [ ("opt", 1) ] ))
 
     def testDslType20_TestAddVarFail5(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", "val1", [ ("opt", "val", "again") ] ))
 
     def testDslType20_TestAddVarFail6(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", "val1", [ ["opt", "val"] ] ))
 
     def testDslType20_TestAddVarFail7(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", "val1", [ None ] ))
 
     def testDslType20_TestAddVarFail8(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", "val1", None ))
 
     def testDslType20_TestAddVarFail9(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var(1, "val1", [ ("opt", "val") ] ))
 
     def testDslType20_TestAddVarFail10(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var(None, "val1", [ ("opt", "val") ] ))
 
     def testDslType20_TestCountOccurrenceFirstOfPair1(self):
@@ -619,16 +619,16 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl_type20.count_occurrence_first_of_pair( [ ("b", None), ("b", None) ], "b" ), 2)
 
     def testDslType20_TestDisallowDupes1(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(allow_dupes=False))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
         self.assertTrue(dsl.add_var("var1", "val1", []))
         self.assertFalse(dsl.add_var("var1", "val2", []))
 
     def testDslType20_TestDisallowDupes2(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(allow_dupes=False))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", None) ] ))
 
     def testDslType20_TestDisallowDupes3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.select_dsltype20_options(allow_dupes=False))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
         self.assertFalse(dsl.add_var("var1", "val1", [ ("opt1", None), ("opt1", None) ] ))
 
 if __name__ == '__main__':
