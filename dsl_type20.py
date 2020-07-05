@@ -242,12 +242,6 @@ class DSLType20:
             return False, "Variable descaping failed: [%s]" % var_value
         var_value = r
 
-        # expand the variable's value
-        v, r = self._expand(var_value)
-        if not v:
-            return False, "Variable expansion failed: [%s]" % var_value
-        var_value = r
-
         # remove first quote of value
         v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
         if not v:
@@ -383,12 +377,6 @@ class DSLType20:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_val = r
 
-            # expand the option's value
-            v, r = self._expand(opt_val)
-            if not v:
-                return False, "Variable expansion failed: [%s]" % opt_val, None, None
-            opt_val = r
-
             # need to advance past this option to look ahead for the next
             v, r = miniparse.scan_and_slice_beginning(local_str_input, self.FSLASH)
             more_options = v
@@ -497,6 +485,21 @@ class DSLType20:
                 return False
             if not ( (isinstance(i[1], str)) or (i[1] is None) ):
                 return False
+
+        # expand the variable's value
+        v, r = self._expand(var_val)
+        if not v:
+            return False, "Variable expansion failed: [%s]" % var_val
+        var_val = r
+
+        # expand the option's value
+        var_opts_pre = var_opts
+        var_opts = []
+        for o in var_opts_pre:
+            v, r = self._expand(o[1])
+            if not v:
+                return False, "Option expansion failed: [%s]" % o[1]
+            var_opts.append( (o[0], r) )
 
         # add new variable to internal data
         self.data[local_context].append( (var_name, var_val, var_opts) )
