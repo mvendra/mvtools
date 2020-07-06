@@ -497,7 +497,13 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl._parse_variable("var1 = \"val1\"", "nonexistent context")
         self.assertFalse(v)
 
-    def testDslType20_TestContextget_all_varsFail1(self):
+    def testDslType20_TestContextReopenFail(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]\nvar2 = \"val2\"\n[\n@ctx1\nvar3 = \"val3\"\n]")
+        self.assertFalse(v)
+
+    def testDslType20_TestContextGetAllVarsFail1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
@@ -529,24 +535,30 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestAddContextFail1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.add_context([]))
+        v, r = dsl.add_context([])
+        self.assertFalse(v)
 
     def testDslType20_TestAddContextFail2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.add_context(""))
+        v, r = dsl.add_context("")
+        self.assertFalse(v)
 
     def testDslType20_TestAddContextFail3(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.add_context("ok!"))
+        v, r = dsl.add_context("ok!")
+        self.assertFalse(v)
 
     def testDslType20_TestAddContextFail4(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.add_context("@ok"))
+        v, r = dsl.add_context("@ok")
+        self.assertFalse(v)
 
     def testDslType20_TestAddContextFail5(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertTrue(dsl.add_context("ok"))
-        self.assertFalse(dsl.add_context("ok"))
+        v, r = dsl.add_context("ok")
+        self.assertTrue(v)
+        v, r = dsl.add_context("ok")
+        self.assertFalse(v)
 
     def testDslType20_TestAddVar1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())

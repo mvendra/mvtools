@@ -187,19 +187,19 @@ class DSLType20:
     def add_context(self, context):
 
         if not isinstance(context, str):
-            return False
+            return False, "Invalid parameter"
 
         v, r = miniparse.scan_and_slice_beginning(context, self.IDENTIFIER)
         if not v:
-            return False
+            return False, "Unable to parse context name: [%s]" % context
         if r[1] != "":
-            return False
+            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context, r[1])
 
         if context in self.data:
-            return False
+            return False, "Failed adding new context: [%s] already exists" % context
 
         self.data[context] = []
-        return True
+        return True, None
 
     def parse(self, contents):
 
@@ -237,7 +237,9 @@ class DSLType20:
                 if not v:
                     return v, r
                 context = r
-                self.add_context(context)
+                v, r = self.add_context(context)
+                if not v:
+                    return False, "Failed creating new context: [%s]." % r
                 continue
 
             v, r = self._parse_variable(line_t, context)
@@ -627,7 +629,7 @@ if __name__ == '__main__':
         puaq()
     file_to_parse = sys.argv[1]
 
-    dsl = DSLType20(False, False)
+    dsl = DSLType20(DSLType20_Options())
 
     if not os.path.exists(file_to_parse):
         print("File [%s] does not exist." % file_to_parse)
