@@ -127,6 +127,63 @@ class DSLType20:
 
         return line_out.strip()
 
+    def produce(self):
+
+        result = ""
+        for ctx in self.data:
+            result += self._produce_context(ctx)
+        return result.strip()
+
+    def _produce_context(self, context):
+
+        if context is None:
+            return None
+        if context not in self.data:
+            return None
+
+        result = ""
+        if context != self.global_context_id:
+            result = "\n[\n@" + context
+
+        for y in self.data[context]:
+
+            cur_var = "\n" + y[0] # variable's name
+
+            # produce the options
+            for o in range(len(y[2])):
+
+                if o == 0: # first option
+                    cur_var += " {"
+
+                cur_var += y[2][o][0] # option's name
+                if y[2][o][1] is not None:
+                    # option has value
+                    v, r = miniparse.escape((y[2][o][1]), self.BSLASH, ["\""])
+                    if not v:
+                        return None
+                    opt_escaped_value = r
+                    cur_var += ": \"" + opt_escaped_value + "\""
+
+                if o == (len(y[2])-1): # last option
+                    cur_var += "}"
+                else:
+                    cur_var += " / "
+
+            # add the variable's value
+            v, r = miniparse.escape(y[1], self.BSLASH, ["\""])
+            if not v:
+                return None
+            var_escaped_value = r
+
+            cur_var += " = \"" + var_escaped_value + "\""
+
+            result += cur_var
+
+        if context != self.global_context_id:
+            result += "\n]\n"
+
+        return result
+
     def add_context(self, context):
 
         if not isinstance(context, str):
