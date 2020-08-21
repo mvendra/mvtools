@@ -200,9 +200,13 @@ def concat_path(*ps):
     if len(ps) < 1:
         return ""
     result_path = ps[0]
+    if result_path is None:
+        return None
     if len(ps) < 2:
         return result_path
     for p in ps[1:]:
+        if p is None:
+            return None
         result_path = os.path.join(result_path, filter_join_abs(p))
     return result_path
 

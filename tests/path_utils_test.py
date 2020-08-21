@@ -128,6 +128,7 @@ class PathUtilsTest(unittest.TestCase):
 
     def testConcatPath(self):
         self.assertEqual(path_utils.concat_path(None), None)
+        self.assertEqual(path_utils.concat_path(None, None), None)
         self.assertEqual(path_utils.concat_path("/home"), "/home")
         self.assertEqual(path_utils.concat_path("/home/user", "home/user"), "/home/user/home/user")
         self.assertEqual(path_utils.concat_path("/home/user", "home"), "/home/user/home")
