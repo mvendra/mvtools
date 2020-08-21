@@ -121,11 +121,13 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual( path_utils.filter_remove_trailing_sep(path3), path1 )
 
     def testJoinpathAbsolute(self):
+        self.assertEqual(path_utils.filter_join_abs(None), None)
         self.assertEqual(path_utils.filter_join_abs("/home/user"), "home/user")
         self.assertEqual(path_utils.filter_join_abs("home/user"), "home/user")
         self.assertEqual(path_utils.filter_join_abs(""), "")
 
     def testConcatPath(self):
+        self.assertEqual(path_utils.concat_path(None), None)
         self.assertEqual(path_utils.concat_path("/home"), "/home")
         self.assertEqual(path_utils.concat_path("/home/user", "home/user"), "/home/user/home/user")
         self.assertEqual(path_utils.concat_path("/home/user", "home"), "/home/user/home")

@@ -179,6 +179,9 @@ def filter_join_abs(path):
     # this little crutch cleans up paths after the first
     # position to alow for adding them all in absolute terms
 
+    if path is None:
+        return None
+
     if len(path) == 0:
         return ""
 
