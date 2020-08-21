@@ -365,7 +365,8 @@ class DSLType20:
         if var_value == "":
             return False, "Empty var value: [%s]" % str_input
 
-        self.add_var(var_name, var_value, parsed_opts, local_context)
+        if not self.add_var(var_name, var_value, parsed_opts, local_context):
+            return False, "Unable to add variable: [%s]" % var_name
 
         return True, None
 

@@ -671,6 +671,15 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", None) ] ))
         self.assertTrue(dsl.add_var("var2", "val1", [ ("opt1", None) ] ))
 
+    def testDslType20_TestDisallowDupesParse1(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+
+        contents_cfg_test_fail_dupevar = "var1 = \"val1\"" + os.linesep
+        contents_cfg_test_fail_dupevar += "var1 = \"val2\"" + os.linesep
+
+        v, r = dsl.parse(contents_cfg_test_fail_dupevar)
+        self.assertFalse(v)
+
     def testDslType20_TestRemVar1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "val1", []))
