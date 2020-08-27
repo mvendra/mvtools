@@ -78,12 +78,12 @@ class ToolbusTest(unittest.TestCase):
 
     def testGetDbHandle1(self):
 
-        v, r = toolbus.get_db_handle(None)
+        v, r, ext = toolbus.get_db_handle(None)
         self.assertFalse(v)
 
     def testGetDbHandle2(self):
 
-        v, r = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
+        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
         self.assertTrue(v)
 
     def testGetDbHandle3(self):
@@ -93,7 +93,7 @@ class ToolbusTest(unittest.TestCase):
             if not self._setenv(toolbus.TOOLBUS_ENVVAR, self.nonexistent_folder):
                 self.fail("Failed setting envvar: [%s] with value: [%s]" % (toolbus.TOOLBUS_ENVVAR, self.nonexistent_folder))
 
-            v, r = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
+            v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
             self.assertFalse(v)
 
         finally:
@@ -105,25 +105,25 @@ class ToolbusTest(unittest.TestCase):
 
     def testGetDbHandle5(self):
 
-        v, r = toolbus.get_db_handle( os.path.basename(self.nonexistent_file) )
+        v, r, ext = toolbus.get_db_handle( os.path.basename(self.nonexistent_file) )
         self.assertFalse(v)
 
     def testGetDbHandle6(self):
 
-        v, r = toolbus.get_db_handle( os.path.basename(self.db_test_fail_1) )
+        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_fail_1) )
         self.assertFalse(v)
 
     def testGetDbHandle7(self):
 
-        v, r = toolbus.get_db_handle( os.path.basename(self.db_test_fail_2) )
+        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_fail_2) )
         self.assertFalse(v)
 
     def testGetHandleCustomDb1(self):
-        v, r = toolbus.get_handle_custom_db( toolbus.INTERNAL_DB_FILENAME )
+        v, r, ext = toolbus.get_handle_custom_db( toolbus.INTERNAL_DB_FILENAME )
         self.assertFalse(v)
 
     def testGetHandleCustomDb2(self):
-        v, r = toolbus.get_handle_custom_db( self.db_test_ok_1 )
+        v, r, ext = toolbus.get_handle_custom_db( self.db_test_ok_1 )
         self.assertTrue(v)
 
     # mvtodo: get_signal
@@ -169,6 +169,74 @@ class ToolbusTest(unittest.TestCase):
     def testGetField6(self):
 
         v, r = toolbus.get_field(self.nonexistent_file, None, "var1")
+        self.assertFalse(v)
+
+    def testSetField1(self):
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var1", "val1", []))
+
+        v, r = toolbus.set_field(self.db_test_ok_1, None, "var1", "val2", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var1", "val2", []))
+
+    def testSetField2(self):
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var1", "val1", []))
+
+        v, r = toolbus.set_field(self.db_test_ok_1, None, "var1", "val3", [("a", "1")])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var1", "val3", [("a", "1")]))
+
+    def testSetField3(self):
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var2")
+        self.assertFalse(v)
+
+        v, r = toolbus.set_field(self.db_test_ok_1, None, "var2", "val2", [("b", "2")])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var2")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var2", "val2", [("b", "2")]))
+
+    def testSetField4(self):
+
+        v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var2")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var2", "val2", []))
+
+        v, r = toolbus.set_field(self.db_test_ok_2, "ctx1", "var2", "val2", [("c", "3")])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var2")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var2", "val2", [("c", "3")]))
+
+    def testSetField5(self):
+
+        v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var3")
+        self.assertFalse(v)
+
+        v, r = toolbus.set_field(self.db_test_ok_2, "ctx1", "var3", "val3", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var3")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var3", "val3", []))
+
+    def testSetField6(self):
+
+        v, r = toolbus.set_field(self.nonexistent_file, None, "var1", "val1", [])
         self.assertFalse(v)
 
 if __name__ == '__main__':
