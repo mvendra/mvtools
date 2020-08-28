@@ -103,19 +103,42 @@ class ToolbusTest(unittest.TestCase):
             os.environ.update(local_environ_copy)
 
     def testGetDbHandle4(self):
-        pass # mvtodo: test get_db_handle for internal (signalling?)
+
+        self.assertFalse( os.path.exists( self.db_test_internal_database ) )
+        v, r, ext = toolbus.get_db_handle( ("%s.%s" % (toolbus.INTERNAL_DB_FILENAME, toolbus.DB_EXTENSION)), True )
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists( self.db_test_internal_database ) )
 
     def testGetDbHandle5(self):
+
+        self.assertFalse(os.path.exists( self.db_test_internal_database ))
+
+        contents_internal_db  = "[" + os.linesep
+        contents_internal_db += ("@%s" + os.linesep ) % toolbus.TOOLBUS_SIGNAL_CONTEXT
+        contents_internal_db += "]"
+
+        create_and_write_file.create_file_contents(self.db_test_internal_database, contents_internal_db)
+        self.assertTrue(os.path.exists( self.db_test_internal_database ))
+
+        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_internal_database), True )
+        self.assertTrue(v)
+
+        read_contents = ""
+        with open(self.db_test_internal_database) as f:
+            read_contents = f.read()
+        self.assertEqual(contents_internal_db, read_contents)
+
+    def testGetDbHandle6(self):
 
         v, r, ext = toolbus.get_db_handle( os.path.basename(self.nonexistent_file) )
         self.assertFalse(v)
 
-    def testGetDbHandle6(self):
+    def testGetDbHandle7(self):
 
         v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_fail_1) )
         self.assertFalse(v)
 
-    def testGetDbHandle7(self):
+    def testGetDbHandle8(self):
 
         v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_fail_2) )
         self.assertFalse(v)
