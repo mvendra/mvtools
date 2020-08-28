@@ -7,21 +7,31 @@ import path_utils
 import dsl_type20
 
 import trylock
-import retry
 
+TOOLBUS_ENVVAR = "MVTOOLS_TOOLBUS_BASE"
 DB_EXTENSION = "txt"
 INTERNAL_DB_FILENAME = "toolbus_internal"
-TOOLBUS_ENVVAR = "MVTOOLS_TOOLBUS_BASE"
+TOOLBUS_SIGNAL_CONTEXT = "toolbus_internal_signals_context"
 
 def bootstrap_internal_toolbus_db(_filename):
 
     if os.path.exists(_filename):
         return False
 
-    contents = "" # mvtodo
+    db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(False, False, False))
+    db_handle.add_context(TOOLBUS_SIGNAL_CONTEXT)
+    bootstrap_contents = db_handle.produce()
 
-    with open(_filename, "w") as f:
-        f.write(contents)
+    with open(_filename, "a") as f:
+
+        # tries to acquire a mutex lock on this file to prevent concurrent writes
+        if not trylock.try_lock_file(f):
+            return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT)
+
+        f.truncate(0) # clear old contents prior to updating
+        f.write(bootstrap_contents)
+        f.flush()
+        trylock.try_unlock_file(f)
 
     return True
 
@@ -67,31 +77,9 @@ def get_handle_custom_db(_db_name):
         return False, "Failed setting up toolbus - the database name [%s] is reserved." % INTERNAL_DB_FILENAME, None
     return get_db_handle("%s.%s" % (_db_name, DB_EXTENSION))
 
-def get_signal(_sig_name):
+def _get_internal(_dh_handle, _db_name, _context, _var):
 
-    # mvtodo
-
-    v, r, ext = get_handle_internal_db()
-    if not v:
-        return False, r
-
-    signal_value = (r.get_vars(_sig_name))
-
-    return True, signal_value
-
-def set_signal(_sig_name, _sig_val):
-
-    # mvtodo: retry upon lock failure
-
-    pass # mvtodo
-
-def get_field(_db_name, _context, _var):
-
-    v, r, ext = get_handle_custom_db(_db_name)
-    if not v:
-        return False, r
-
-    vars = r.get_vars(_var, _context)
+    vars = _dh_handle.get_vars(_var, _context)
     if vars is None:
         return False, "Variable [%s] is not present (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
@@ -100,32 +88,47 @@ def get_field(_db_name, _context, _var):
 
     return True, vars[0]
 
-def set_field(_db_name, _context, _var, _val, _opts):
+def get_signal(_sig_name):
+
+    v, r, ext = get_handle_internal_db()
+    if not v:
+        return False, r
+
+    v, r = _get_internal(r, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT, _sig_name)
+    if not v:
+        return False, r
+    return True, r[1]
+
+def get_field(_db_name, _context, _var):
 
     v, r, ext = get_handle_custom_db(_db_name)
     if not v:
         return False, r
 
-    vars = r.get_vars(_var, _context)
+    return _get_internal(r, _db_name, _context, _var)
+
+def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts):
+
+    vars = _dh_handle.get_vars(_var, _context)
     if vars is not None:
         if len(vars) != 0:
             # var already exists. must be removed first so it can then be recreated with new value.
-            if not r.rem_var(_var, None, _context):
+            if not _dh_handle.rem_var(_var, None, _context):
                 return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # add/set new variable
-    if not r.add_var(_var, _val, _opts, _context):
+    if not _dh_handle.add_var(_var, _val, _opts, _context):
         return False, "Unable to add variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # serialize updated database
-    new_contents = r.produce()
+    new_contents = _dh_handle.produce()
 
     # save changes to file
-    with open(ext, "a") as f:
+    with open(_db_full_file, "a") as f:
 
-        # tries (and retries if needed) to acquire a mutex lock on this file to prevent concurrent writes
-        if not retry.retry({}, trylock.try_lock_file, f):
-            return False, "Unable to acquire write lock on file [%s] - failed all retries (database: [%s], context: [%s])" % (ext, _db_name, _context)
+        # tries to acquire a mutex lock on this file to prevent concurrent writes
+        if not trylock.try_lock_file(f):
+            return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (_db_full_file, _db_name, _context)
 
         f.truncate(0) # clear old contents prior to updating
         f.write(new_contents)
@@ -133,6 +136,22 @@ def set_field(_db_name, _context, _var, _val, _opts):
         trylock.try_unlock_file(f)
 
     return True, None
+
+def set_signal(_sig_name, _sig_val):
+
+    v, r, ext = get_handle_internal_db()
+    if not v:
+        return False, r
+
+    return _set_internal(r, "(internal toolbus database)", ext, TOOLBUS_SIGNAL_CONTEXT, _sig_name, _sig_val, [])
+
+def set_field(_db_name, _context, _var, _val, _opts):
+
+    v, r, ext = get_handle_custom_db(_db_name)
+    if not v:
+        return False, r
+
+    return _set_internal(r, _db_name, ext, _context, _var, _val, _opts)
 
 if __name__ == "__main__":
     print("Hello from toolbus.")

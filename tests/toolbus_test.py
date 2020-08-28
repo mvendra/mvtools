@@ -57,6 +57,8 @@ class ToolbusTest(unittest.TestCase):
         self.contents_db_test_fail_2 += "var1 = \"val1\"" + os.linesep
         self.db_test_fail_2 = path_utils.concat_path(self.test_dir, "test_db_fail_2.txt")
 
+        self.db_test_internal_database = path_utils.concat_path(self.test_dir, "%s.%s" % (toolbus.INTERNAL_DB_FILENAME, toolbus.DB_EXTENSION))
+
         create_and_write_file.create_file_contents(self.db_test_ok_1_full, self.contents_db_test_ok_1)
         create_and_write_file.create_file_contents(self.db_test_ok_2_full, self.contents_db_test_ok_2)
         create_and_write_file.create_file_contents(self.db_test_fail_1, self.contents_db_test_fail_1)
@@ -125,9 +127,6 @@ class ToolbusTest(unittest.TestCase):
     def testGetHandleCustomDb2(self):
         v, r, ext = toolbus.get_handle_custom_db( self.db_test_ok_1 )
         self.assertTrue(v)
-
-    # mvtodo: get_signal
-    # mvtodo: set_signal
 
     def testGetField1(self):
 
@@ -250,6 +249,48 @@ class ToolbusTest(unittest.TestCase):
         v, r = toolbus.get_field(self.db_test_ok_1, "new-ctx", "var5")
         self.assertTrue(v)
         self.assertEqual(r, ("var5", "val5", [("a", "1")]))
+
+    def testGetSignal1(self):
+        self.assertFalse(os.path.exists( self.db_test_internal_database ))
+        v, r = toolbus.get_signal("novar")
+        self.assertTrue(os.path.exists( self.db_test_internal_database ))
+
+    def testGetSignal2(self):
+
+        self.assertFalse(os.path.exists( self.db_test_internal_database ))
+
+        contents_internal_db  = "[" + os.linesep
+        contents_internal_db += ("@%s" + os.linesep ) % toolbus.TOOLBUS_SIGNAL_CONTEXT
+        contents_internal_db += "var7 = \"val7\"" + os.linesep
+        contents_internal_db += "]"
+        create_and_write_file.create_file_contents(self.db_test_internal_database, contents_internal_db)
+        self.assertTrue(os.path.exists( self.db_test_internal_database ))
+
+        v, r = toolbus.get_signal("var7")
+        self.assertTrue(v)
+        self.assertEqual(r, "val7")
+
+        v, r = toolbus.get_signal("var8")
+        self.assertFalse(v)
+
+    def testSetSignal1(self):
+
+        self.assertFalse(os.path.exists( self.db_test_internal_database ))
+        v, r = toolbus.set_signal("var10", "val10")
+        self.assertTrue(os.path.exists( self.db_test_internal_database ))
+        self.assertTrue(v)
+
+    def testSetSignal2(self):
+
+        v, r = toolbus.get_signal("var11")
+        self.assertFalse(v)
+
+        v, r = toolbus.set_signal("var11", "val11")
+        self.assertTrue(v)
+
+        v, r = toolbus.get_signal("var11")
+        self.assertTrue(v)
+        self.assertEqual(r, "val11")
 
 if __name__ == '__main__':
     unittest.main()
