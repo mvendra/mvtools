@@ -239,5 +239,17 @@ class ToolbusTest(unittest.TestCase):
         v, r = toolbus.set_field(self.nonexistent_file, None, "var1", "val1", [])
         self.assertFalse(v)
 
+    def testSetField7(self):
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "new-ctx", "var5")
+        self.assertFalse(v)
+
+        v, r = toolbus.set_field(self.db_test_ok_1, "new-ctx", "var5", "val5", [("a", "1")])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "new-ctx", "var5")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var5", "val5", [("a", "1")]))
+
 if __name__ == '__main__':
     unittest.main()
