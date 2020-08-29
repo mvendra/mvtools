@@ -173,5 +173,62 @@ def set_field(_db_name, _context, _var, _val, _opts):
 
     return _set_internal(r, _db_name, ext, _context, _var, _val, _opts)
 
+def puaq():
+    print("Usage: %s [--get-signal signame] [--set-signal signame sigvalue]" % os.path.basename(__file__))
+    sys.exit(1)
+
 if __name__ == "__main__":
-    print("Hello from toolbus.")
+
+    if len(sys.argv) < 2:
+        puaq()
+
+    params = sys.argv[1:]
+    get_signal_signame_next = False
+    set_signal_signame_next = False
+    set_signal_sigval_next = False
+
+    get_signame = None
+    set_signame = None
+    set_sigval = None
+
+    for p in params:
+
+        if get_signal_signame_next:
+            get_signal_signame_next = False
+            get_signame = p
+            continue
+
+        if set_signal_signame_next:
+            set_signal_signame_next = False
+            set_signal_sigval_next = True
+            set_signame = p
+            continue
+
+        if set_signal_sigval_next:
+            set_signal_sigval_next = False
+            set_sigval = p
+            continue
+
+        if p == "--get-signal":
+            get_signal_signame_next = True
+        elif p == "--set-signal":
+            set_signal_signame_next = True
+
+    if not get_signame is None:
+        v, r = get_signal(get_signame)
+        if v:
+            print(r)
+        else:
+            print("Toolbus get_signal failed: %s" % r)
+            sys.exit(1)
+
+    if not set_signame is None:
+        if set_sigval is None:
+            print("--set-signal was specified. It requires two parameters but only one was provided. Aborting.")
+            sys.exit(1)
+        v, r = set_signal(set_signame, set_sigval)
+        if v:
+            print("Signal [%s] set." % set_signame)
+        else:
+            print("Toolbus set_signal failed: %s" % r)
+            sys.exit(1)
