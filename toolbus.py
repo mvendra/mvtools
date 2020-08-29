@@ -93,10 +93,30 @@ def get_signal(_sig_name):
     v, r, ext = get_handle_internal_db()
     if not v:
         return False, r
+    _db_handle = r
 
-    v, r = _get_internal(r, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT, _sig_name)
+    v, r = _get_internal(_db_handle, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT, _sig_name)
     if not v:
         return False, r
+
+    # delete the consumed variable
+    if not _db_handle.rem_var(_sig_name, None, TOOLBUS_SIGNAL_CONTEXT):
+        return False, "Unable to remove variable (already used signal) [%s] (database: [%s], context: [%s])" % (_sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
+
+    new_contents = _db_handle.produce()
+
+    # save changes to file
+    with open(ext, "a") as f:
+
+        # tries to acquire a mutex lock on this file to prevent concurrent writes
+        if not trylock.try_lock_file(f):
+            return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
+
+        f.truncate(0) # clear old contents prior to updating
+        f.write(new_contents)
+        f.flush()
+        trylock.try_unlock_file(f)
+
     return True, r[1]
 
 def get_field(_db_name, _context, _var):
