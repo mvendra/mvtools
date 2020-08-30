@@ -179,7 +179,7 @@ def puaq():
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         puaq()
 
     params = sys.argv[1:]
