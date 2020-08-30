@@ -127,11 +127,15 @@ def get_field(_db_name, _context, _var):
 
     return _get_internal(r, _db_name, _context, _var)
 
-def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts):
+def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
     vars = _dh_handle.get_vars(_var, _context)
     if vars is not None:
         if len(vars) != 0:
+
+            if not allow_overwrite:
+                return False, "Setting variable [%s] failed - overwrites are not allowed (database: [%s], context: [%s])" % (_var, _db_name, _context)
+
             # var already exists. must be removed first so it can then be recreated with new value.
             if not _dh_handle.rem_var(_var, None, _context):
                 return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
@@ -163,7 +167,7 @@ def set_signal(_sig_name, _sig_val):
     if not v:
         return False, r
 
-    return _set_internal(r, "(internal toolbus database)", ext, TOOLBUS_SIGNAL_CONTEXT, _sig_name, _sig_val, [])
+    return _set_internal(r, "(internal toolbus database)", ext, TOOLBUS_SIGNAL_CONTEXT, _sig_name, _sig_val, [], False)
 
 def set_field(_db_name, _context, _var, _val, _opts):
 
@@ -171,7 +175,7 @@ def set_field(_db_name, _context, _var, _val, _opts):
     if not v:
         return False, r
 
-    return _set_internal(r, _db_name, ext, _context, _var, _val, _opts)
+    return _set_internal(r, _db_name, ext, _context, _var, _val, _opts, True)
 
 def puaq():
     print("Usage: %s [--get-signal signame] [--set-signal signame sigvalue]" % os.path.basename(__file__))

@@ -315,6 +315,17 @@ class ToolbusTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "val11")
 
+    def testSetSignal3(self):
+
+        v, r = toolbus.get_signal("var13")
+        self.assertFalse(v)
+
+        v, r = toolbus.set_signal("var13", "val13")
+        self.assertTrue(v)
+
+        v, r = toolbus.set_signal("var13", "val13")
+        self.assertFalse(v)
+
     def testSetAndGetSignal1(self):
 
         v, r = toolbus.get_signal("var12")
