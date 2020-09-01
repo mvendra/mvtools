@@ -19,7 +19,9 @@ Installation
 
 6) Define the ```MVTOOLS_GIT_VISITOR_BASE``` environment variable inside your ~/.bashrc, to point to your collection of repositories
 
-7) Optionally go into mvtools/tests and run ```run_all_mvtools_tests.py``` for a general sanity check
+7) Define the ```MVTOOLS_TOOLBUS_BASE``` environment variable inside your ~/.bashrc, to point to a folder to store Toolbus databases
+
+8) Optionally go into mvtools/tests and run ```run_all_mvtools_tests.py``` for a general sanity check
 
 Dependencies
 ============
