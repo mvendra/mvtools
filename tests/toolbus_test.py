@@ -296,6 +296,24 @@ class ToolbusTest(unittest.TestCase):
         v, r = toolbus.get_signal("var8")
         self.assertFalse(v)
 
+    def testGetSignal3(self):
+
+        self.assertFalse(os.path.exists( self.db_test_internal_database ))
+        v, r = toolbus.set_signal("var14", "val14")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists( self.db_test_internal_database ))
+
+        v, r = toolbus.get_signal("var14", True)
+        self.assertTrue(v)
+        self.assertEqual(r, "val14")
+
+        v, r = toolbus.get_signal("var14")
+        self.assertTrue(v)
+        self.assertEqual(r, "val14")
+
+        v, r = toolbus.get_signal("var14")
+        self.assertFalse(v)
+
     def testSetSignal1(self):
 
         self.assertFalse(os.path.exists( self.db_test_internal_database ))

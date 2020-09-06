@@ -88,7 +88,7 @@ def _get_internal(_dh_handle, _db_name, _context, _var):
 
     return True, vars[0]
 
-def get_signal(_sig_name):
+def get_signal(_sig_name, probe_only=False):
 
     v, r, ext = get_handle_internal_db()
     if not v:
@@ -99,23 +99,25 @@ def get_signal(_sig_name):
     if not v:
         return False, r
 
-    # delete the consumed variable
-    if not _db_handle.rem_var(_sig_name, None, TOOLBUS_SIGNAL_CONTEXT):
-        return False, "Unable to remove variable (already used signal) [%s] (database: [%s], context: [%s])" % (_sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
+    if not probe_only: # signal consumed
 
-    new_contents = _db_handle.produce()
+        # delete the consumed variable
+        if not _db_handle.rem_var(_sig_name, None, TOOLBUS_SIGNAL_CONTEXT):
+            return False, "Unable to remove variable (already used signal) [%s] (database: [%s], context: [%s])" % (_sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
 
-    # save changes to file
-    with open(ext, "a") as f:
+        new_contents = _db_handle.produce()
 
-        # tries to acquire a mutex lock on this file to prevent concurrent writes
-        if not trylock.try_lock_file(f):
-            return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
+        # save changes to file
+        with open(ext, "a") as f:
 
-        f.truncate(0) # clear old contents prior to updating
-        f.write(new_contents)
-        f.flush()
-        trylock.try_unlock_file(f)
+            # tries to acquire a mutex lock on this file to prevent concurrent writes
+            if not trylock.try_lock_file(f):
+                return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
+
+            f.truncate(0) # clear old contents prior to updating
+            f.write(new_contents)
+            f.flush()
+            trylock.try_unlock_file(f)
 
     return True, r[1]
 
