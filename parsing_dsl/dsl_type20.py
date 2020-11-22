@@ -25,6 +25,16 @@ import miniparse
 # var1 = "val1"
 # ]
 #
+# contexts can have options too, and variables that belong to such contexts,
+# when requested, are returned with the context's options in addition to their own:
+#
+# [
+# @context-name {option1 / option2: "value1"}
+# var2 = "val3"
+# ]
+#
+# if allow_dupes is not set, then variable options take precedence over context options
+#
 
 def getopts(var, optname):
     ret = []
@@ -69,7 +79,7 @@ class DSLType20:
         # internal
         self.data = {}
         self.global_context_id = "global context" # unparseable string - so as to not impose too many restrictions on client code
-        self.max_number_variable_options = 1024
+        self.max_number_options = 1024
         self.clear()
 
         # string parsing
@@ -93,7 +103,7 @@ class DSLType20:
 
     def clear(self):
         self.data = {}
-        self.data[self.global_context_id] = []
+        self.data[self.global_context_id] = [[], []]
 
     def _expand(self, str_input):
 
@@ -143,31 +153,16 @@ class DSLType20:
 
         result = ""
         if context != self.global_context_id:
-            result = "\n[\n@" + context
+            result = ("\n[\n@" + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
 
-        for y in self.data[context]:
+        for y in self.data[context][1]:
 
             cur_var = "\n" + y[0] # variable's name
 
             # produce the options
-            for o in range(len(y[2])):
-
-                if o == 0: # first option
-                    cur_var += " {"
-
-                cur_var += y[2][o][0] # option's name
-                if y[2][o][1] is not None:
-                    # option has value
-                    v, r = miniparse.escape((y[2][o][1]), self.BSLASH, ["\""])
-                    if not v:
-                        return None
-                    opt_escaped_value = r
-                    cur_var += ": \"" + opt_escaped_value + "\""
-
-                if o == (len(y[2])-1): # last option
-                    cur_var += "}"
-                else:
-                    cur_var += " / "
+            prod_opts = self._produce_options(y[2])
+            if len(prod_opts) > 0:
+                cur_var = ("%s %s" %  (cur_var, prod_opts))
 
             # add the variable's value
             v, r = miniparse.escape(y[1], self.BSLASH, ["\""])
@@ -184,9 +179,35 @@ class DSLType20:
 
         return result
 
-    def add_context(self, context):
+    def _produce_options(self, input_options):
+
+        options_result = ""
+        for o in range(len(input_options)):
+
+            if o == 0: # first option
+                options_result += "{"
+
+            options_result += input_options[o][0] # option's name
+            if input_options[o][1] is not None:
+                # option has value
+                v, r = miniparse.escape((input_options[o][1]), self.BSLASH, ["\""])
+                if not v:
+                    return None
+                opt_escaped_value = r
+                options_result += ": \"" + opt_escaped_value + "\""
+
+            if o == (len(input_options)-1): # last option
+                options_result += "}"
+            else:
+                options_result += " / "
+        return options_result
+
+    def add_context(self, context, context_options):
 
         if not isinstance(context, str):
+            return False, "Invalid parameter"
+
+        if not isinstance(context_options, list):
             return False, "Invalid parameter"
 
         v, r = miniparse.scan_and_slice_beginning(context, self.IDENTIFIER)
@@ -198,7 +219,7 @@ class DSLType20:
         if context in self.data:
             return False, "Failed adding new context: [%s] already exists" % context
 
-        self.data[context] = []
+        self.data[context] = [context_options, []]
         return True, None
 
     def parse(self, contents):
@@ -206,6 +227,7 @@ class DSLType20:
         self.clear()
 
         context = None # global context
+        context_options = []
         expecting_context_name = False
         expecting_context_closure = False
 
@@ -236,8 +258,8 @@ class DSLType20:
                 v, r = self._parse_context_name(line_t)
                 if not v:
                     return v, r
-                context = r
-                v, r = self.add_context(context)
+                context, context_options = r
+                v, r = self.add_context(context, context_options)
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
@@ -255,16 +277,34 @@ class DSLType20:
 
         local_str_input = str_input.strip()
         parsed_context_name = None
-        remainder = None
+        parsed_opts = []
 
         v, r = miniparse.scan_and_slice_beginning(local_str_input, self.AT_SIGN + self.ANYSPACE + self.IDENTIFIER)
         if not v:
             return False, "Malformed context name: [%s]." % str_input
         parsed_context_name = (r[0]).strip()
-        remainder = (r[1]).strip()
+        local_str_input = (r[1]).strip()
 
-        if not remainder == "":
-            return False, "Malformed context name: [%s]." % str_input
+        if not local_str_input == "": # there might be options
+
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.ANYSPACE + self.LCBRACKET)
+
+            if v: # yes there are options
+
+                local_str_input = (r[1]).strip()
+
+                # parse the options
+                v, r1, r2 = self._parse_options(local_str_input)
+                if not v:
+                    return False, "Failed parsing options: [%s]: [%s]" % (local_str_input, r1)
+                parsed_opts = r1
+                local_str_input = r2
+
+                if len(local_str_input) != 0:
+                    return False, "Malformed context name: [%s]: Remaining unparseable contents: [%s]." % (str_input, local_str_input)
+
+            else: # no, its rubbish
+                return False, "Malformed context name: [%s]." % str_input
 
         # remove the at ("@") sign
         v, r = miniparse.remove_next_of(parsed_context_name, self.AT_SIGN)
@@ -272,13 +312,12 @@ class DSLType20:
             return False, "Malformed context name: [%s]." % parsed_context_name
         parsed_context_name = r.strip()
 
-        return True, parsed_context_name
+        return True, (parsed_context_name, parsed_opts)
 
     def _parse_variable(self, str_input, context=None):
 
         var_name = None
         var_value = None
-        var_options = None
         parsed_opts = []
 
         local_str_input = str_input.strip()
@@ -336,9 +375,9 @@ class DSLType20:
             var_name = r.strip()
 
             # parse the options
-            v, r1, r2 = self._parse_variable_options(local_str_input)
+            v, r1, r2 = self._parse_options(local_str_input)
             if not v:
-                return False, "Failed parsing options: [%s]: [%s]" % (var_options, r1)
+                return False, "Failed parsing options: [%s]: [%s]" % (local_str_input, r1)
             parsed_opts = r1
             local_str_input = r2
 
@@ -370,7 +409,7 @@ class DSLType20:
 
         return True, None
 
-    def _parse_variable_options(self, str_input):
+    def _parse_options(self, str_input):
 
         local_str_input = str_input.strip()
 
@@ -382,12 +421,12 @@ class DSLType20:
         while True:
             counter += 1
 
-            if counter >= self.max_number_variable_options:
-                return False, "Failed parsing: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_variable_options), None
+            if counter >= self.max_number_options:
+                return False, "Failed parsing: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_options), None
 
             v, r1, r2, r3 = self._parse_next_option(local_str_input)
             if not v:
-                return False, "Failed parsing variable options: [%s]" % r1, None
+                return False, "Failed parsing options: [%s]" % r1, None
             parsed_opts.append(r1)
             local_str_input = r2
             if not r3: # there are no more options
@@ -497,14 +536,7 @@ class DSLType20:
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
     def get_all_vars(self, context=None):
-
-        local_context = self.global_context_id
-        if context is not None:
-            local_context = context
-        if not local_context in self.data:
-            return None
-
-        return self.data[local_context]
+        return self.get_vars(None, context)
 
     def get_vars(self, varname, context=None):
 
@@ -515,9 +547,18 @@ class DSLType20:
             return None
 
         ret = []
-        for v in self.data[local_context]:
-            if v[0] == varname:
-                ret.append(v)
+        ctx_options_to_add = []
+        for v in self.data[local_context][1]:
+            if ((varname is not None) and (v[0] == varname)) or (varname is None):
+                # add context options to the return list
+                if not self.allow_dupes: # variable options will override context options
+                    for co in self.data[local_context][0]:
+                        if count_occurrence_first_of_pair(v[2], co[0]) < 1:
+                            # var option and context option dupe. skip this context option - i.e. the var's option will effectively override this ctx opt
+                            ctx_options_to_add.append(co)
+                else:
+                    ctx_options_to_add = self.data[local_context][0]
+                ret.append( (v[0], v[1], ctx_options_to_add + v[2] ) )
         return ret
 
     def add_var(self, var_name, var_val, var_opts, context=None):
@@ -527,7 +568,7 @@ class DSLType20:
         if local_context is None:
             local_context = self.global_context_id
         else:
-            self.add_context(local_context)
+            self.add_context(local_context, [])
 
         # validate var_name
         if not isinstance(var_name, str):
@@ -579,7 +620,7 @@ class DSLType20:
         if not self.allow_dupes:
 
             # check for duplicated variable
-            for v in self.data[local_context]:
+            for v in self.data[local_context][1]:
                 if v[0] == var_name:
                     return False
 
@@ -589,7 +630,7 @@ class DSLType20:
                     return False
 
         # add new variable to internal data
-        self.data[local_context].append( (var_name, var_val, var_opts) )
+        self.data[local_context][1].append( (var_name, var_val, var_opts) )
 
         return True
 
@@ -602,7 +643,7 @@ class DSLType20:
             return False
 
         local_all_vars_new = []
-        local_all_vars = self.data[local_context]
+        local_all_vars = self.data[local_context][1]
 
         for i in range(len(local_all_vars)):
 
@@ -616,7 +657,7 @@ class DSLType20:
 
             local_all_vars_new.append(local_all_vars[i])
 
-        self.data[local_context] = local_all_vars_new
+        self.data[local_context][1] = local_all_vars_new
 
         return (len(local_all_vars) != len(local_all_vars_new))
 

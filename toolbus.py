@@ -19,7 +19,7 @@ def bootstrap_internal_toolbus_db(_filename):
         return False
 
     db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(False, False, False))
-    db_handle.add_context(TOOLBUS_SIGNAL_CONTEXT)
+    db_handle.add_context(TOOLBUS_SIGNAL_CONTEXT, [])
     bootstrap_contents = db_handle.produce()
 
     with open(_filename, "a") as f:
