@@ -13,21 +13,25 @@ def puaq():
 
 def getpasswordfromcontents(contents):
 
+    local_contents = contents
+
     ID_PATTERN_S="pw=["
     ID_PATTERN_E="]"
 
-    of_s = contents.find(ID_PATTERN_S)
+    of_s = local_contents.find(ID_PATTERN_S)
 
     if of_s == -1:
         return None
 
-    of_s += len(ID_PATTERN_S)
-    of_e = contents.rfind(ID_PATTERN_E, of_s)
+    local_contents = local_contents[of_s+len(ID_PATTERN_S):]
+    local_contents = local_contents.split("\n")[0].strip()
+
+    of_e = local_contents.rfind(ID_PATTERN_E)
 
     if of_e == -1:
         return None
 
-    return contents[of_s:of_e]
+    return local_contents[:of_e]
 
 if __name__ == "__main__":
 
