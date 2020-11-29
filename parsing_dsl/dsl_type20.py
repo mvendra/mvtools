@@ -6,6 +6,9 @@ import os
 import miniparse
 
 # class for parsing "dsl type 20"
+# it is supposed to be a Create, Read and Delete - but not Update. (CRD, as in CRUD but without the U)
+# updates are supposed to be done manually using text editors - to simplify the implementation.
+#
 # samples:
 # variable1 = "value1" # quotes are mandatory for values
 # variable1 = "value \"1\"" # quotes inside values must be escaped with "\"
