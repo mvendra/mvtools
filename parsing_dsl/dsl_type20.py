@@ -34,6 +34,7 @@ import miniparse
 # ]
 #
 # if allow_dupes is not set, then variable options take precedence over context options
+# freestanding variables (defined outside any explicit contexts) belong to the "default context"
 #
 
 def getopts(var, optname):
@@ -57,7 +58,7 @@ def hasopt_opts(opts, optname):
 
 def printable_context(context):
     if context is None:
-        return "(global context)"
+        return "(default context)"
     return context
 
 def count_occurrence_first_of_pair(list_target, first_value):
@@ -78,7 +79,7 @@ class DSLType20:
 
         # internal
         self.data = {}
-        self.global_context_id = "global context" # unparseable string - so as to not impose too many restrictions on client code
+        self.default_context_id = "default context" # unparseable string - so as to not impose too many restrictions on client code
         self.max_number_options = 1024
         self.clear()
 
@@ -103,7 +104,7 @@ class DSLType20:
 
     def clear(self):
         self.data = {}
-        self.data[self.global_context_id] = [[], []]
+        self.data[self.default_context_id] = [[], []]
 
     def _expand(self, str_input):
 
@@ -152,7 +153,7 @@ class DSLType20:
             return None
 
         result = ""
-        if context != self.global_context_id:
+        if context != self.default_context_id:
             result = ("\n[\n@" + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
 
         for y in self.data[context][1]:
@@ -174,7 +175,7 @@ class DSLType20:
 
             result += cur_var
 
-        if context != self.global_context_id:
+        if context != self.default_context_id:
             result += "\n]\n"
 
         return result
@@ -226,7 +227,7 @@ class DSLType20:
 
         self.clear()
 
-        context = None # global context
+        context = None # default context
         context_options = []
         expecting_context_name = False
         expecting_context_closure = False
@@ -238,6 +239,7 @@ class DSLType20:
             if line_t == "":
                 continue
 
+            # context name, begin
             if line_t == self.LBRACKET:
                 if expecting_context_name or context is not None:
                     return False, "Failed parsing contents: nested contexts are not alllowed."
@@ -245,6 +247,7 @@ class DSLType20:
                 expecting_context_closure = True
                 continue
 
+            # context name, end
             if line_t == self.RBRACKET:
                 if expecting_context_name:
                     return False, "Last context name not specified."
@@ -252,6 +255,7 @@ class DSLType20:
                 expecting_context_closure = False
                 continue
 
+            # context name, the name itself
             if expecting_context_name:
                 expecting_context_name = False
 
@@ -264,6 +268,7 @@ class DSLType20:
                     return False, "Failed creating new context: [%s]." % r
                 continue
 
+            # freestanding (default context) variable 
             v, r = self._parse_variable(line_t, context)
             if not v:
                 return v, r
@@ -322,7 +327,7 @@ class DSLType20:
 
         local_str_input = str_input.strip()
 
-        local_context = self.global_context_id
+        local_context = self.default_context_id
         if context is not None:
             local_context = context
         if not local_context in self.data:
@@ -540,7 +545,7 @@ class DSLType20:
 
     def get_vars(self, varname, context=None):
 
-        local_context = self.global_context_id
+        local_context = self.default_context_id
         if context is not None:
             local_context = context
         if not local_context in self.data:
@@ -566,7 +571,7 @@ class DSLType20:
         local_context = context
 
         if local_context is None:
-            local_context = self.global_context_id
+            local_context = self.default_context_id
         else:
             self.add_context(local_context, [])
 
@@ -616,7 +621,7 @@ class DSLType20:
                 return False
             var_opts.append( (o[0], r) )
 
-         # check for duplicates, if checking is enabled
+        # check for duplicates, if checking is enabled
         if not self.allow_dupes:
 
             # check for duplicated variable
@@ -636,7 +641,7 @@ class DSLType20:
 
     def rem_var(self, var_name, index=None, context=None):
 
-        local_context = self.global_context_id
+        local_context = self.default_context_id
         if context is not None:
             local_context = context
         if not local_context in self.data:
