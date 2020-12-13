@@ -557,6 +557,14 @@ class DSLType20:
     def get_all_vars(self, context=None):
         return self.get_vars(None, context)
 
+    def get_all_contexts(self):
+
+        result = []
+        for k in self.data:
+            if k != self.default_context_id:
+                result.append(k)
+        return result
+
     def get_vars(self, varname, context=None):
 
         local_context = self.default_context_id
