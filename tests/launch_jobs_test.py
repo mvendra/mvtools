@@ -10,28 +10,31 @@ import path_utils
 import launch_jobs
 
 class CustomStepTrue(launch_jobs.BaseStep):
-    def __init__(self):
-        pass
     def desc(self):
         return "CustomStepTrue"
-    def run_step(self, params):
+    def run_step(self):
         return True, None
 
 class CustomStepFalse(launch_jobs.BaseStep):
-    def __init__(self):
-        pass
     def desc(self):
         return "CustomStepFalse"
-    def run_step(self, params):
+    def run_step(self):
         return False, None
 
 class CustomStepParams(launch_jobs.BaseStep):
-    def __init__(self):
-        pass
     def desc(self):
         return "CustomStepParams"
-    def run_step(self, params):
-        if params["test"]:
+    def run_step(self):
+        if self.params["test"]:
+            return True, None
+        else:
+            return False, None
+
+class CustomStepParams1And2(launch_jobs.BaseStep):
+    def desc(self):
+        return "CustomStepParams"
+    def run_step(self):
+        if self.params["test1"] and self.params["test2"]:
             return True, None
         else:
             return False, None
@@ -109,6 +112,22 @@ class LaunchJobsTest(unittest.TestCase):
             pass
         except:
             self.fail("Unexpected exception")
+
+    def testLaunchJobsCustomStepParams4(self):
+
+        job1 = launch_jobs.BaseJob({"test1": True})
+        job1.add_step(CustomStepParams1And2({"test2": True}))
+
+        v, r = launch_jobs.run_job_list([job1])
+        self.assertTrue(v)
+
+    def testLaunchJobsCustomStepParams5(self):
+
+        job1 = launch_jobs.BaseJob({"test": True})
+        job1.add_step(CustomStepParams({"test": False}))
+
+        v, r = launch_jobs.run_job_list([job1])
+        self.assertFalse(v)
 
 if __name__ == '__main__':
     unittest.main()
