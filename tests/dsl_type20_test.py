@@ -997,5 +997,15 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl_1.get_all_vars(), dsl_2.get_all_vars())
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
+    def testDslType20_TestGetContextOptions1(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertTrue(dsl.add_context("ctx1", [("var1", "val1")]))
+        self.assertEqual(dsl.get_context_options("ctx1"), [("var1", "val1")])
+
+    def testDslType20_TestGetContextOptions2(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertTrue(dsl.add_context("ctx1", [("var1", "val1"), ("var2", "val2")]))
+        self.assertEqual(dsl.get_context_options("ctx1"), [("var1", "val1"), ("var2", "val2")])
+
 if __name__ == '__main__':
     unittest.main()

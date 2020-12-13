@@ -565,6 +565,16 @@ class DSLType20:
                 result.append(k)
         return result
 
+    def get_context_options(self, context):
+
+        if context is None or context == "" or not isinstance(context, str):
+            return False, "Context [%s] is invalid." % context
+
+        if not context in self.data:
+            return False, "Context [%s] does not exist." % context
+
+        return self.data[context][0]
+
     def get_vars(self, varname, context=None):
 
         local_context = self.default_context_id
