@@ -17,6 +17,10 @@ import miniparse
 # variable3 {option2 / option3: "value3"} = "value4"
 # variable4 {option4: "value \"3\""} = "value \"5\"" # again, escaping quotes is necessary wherever you have a value
 #
+# variables can be optionally decorated arbitrarily, by using the variable_decorator option during the DSL object construction
+# example of a decorated variable (where variable_decorator = "* "):
+# * variable1 = "value1"
+#
 # lines starting with "#" are skipped (treated as comment)
 # the comment character may come anywhere in the line
 # lines are string-trimmed (extra spaces are removed)
@@ -72,10 +76,11 @@ def count_occurrence_first_of_pair(list_target, first_value):
     return c
 
 class DSLType20_Options:
-    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True):
+    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, variable_decorator = ""):
         self._expand_envvars = expand_envvars
         self._expand_user = expand_user
         self._allow_dupes = allow_dupes
+        self._variable_decorator = variable_decorator
 
 class DSLType20:
     def __init__(self, _options):
@@ -104,6 +109,7 @@ class DSLType20:
         self.expand_envvars = _options._expand_envvars
         self.expand_user = _options._expand_user
         self.allow_dupes = _options._allow_dupes
+        self.variable_decorator = _options._variable_decorator
 
     def clear(self):
         self.data = {}
@@ -161,7 +167,7 @@ class DSLType20:
 
         for y in self.data[context][1]:
 
-            cur_var = "\n" + y[0] # variable's name
+            cur_var = "\n" + self.variable_decorator + y[0] # variable's name
 
             # produce the options
             prod_opts = self._produce_options(y[2])
@@ -329,6 +335,11 @@ class DSLType20:
         parsed_opts = []
 
         local_str_input = str_input.strip()
+
+        if self.variable_decorator != "":
+            if local_str_input.find(self.variable_decorator) != 0:
+                return False, "Can't parse variable: [%s]: Decorator [%s] not found." % (str_input, self.variable_decorator)
+            local_str_input = (local_str_input[len(self.variable_decorator):]).strip()
 
         local_context = self.default_context_id
         if context is not None:
