@@ -32,8 +32,9 @@ import miniparse
 # var1 = "val1"
 # ]
 #
-# contexts can have options too, and variables that belong to such contexts,
-# when requested, are returned with the context's options in addition to their own:
+# contexts can have options too - when variables that belong to such contexts are
+# requested, if vars_auto_ctx_options is set, then they are returned with the context's options
+# in addition to their own:
 #
 # [
 # @context-name {option1 / option2: "value1"}
@@ -76,10 +77,11 @@ def count_occurrence_first_of_pair(list_target, first_value):
     return c
 
 class DSLType20_Options:
-    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, variable_decorator = ""):
+    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
         self._expand_envvars = expand_envvars
         self._expand_user = expand_user
         self._allow_dupes = allow_dupes
+        self._vars_auto_ctx_options = vars_auto_ctx_options
         self._variable_decorator = variable_decorator
 
 class DSLType20:
@@ -109,6 +111,7 @@ class DSLType20:
         self.expand_envvars = _options._expand_envvars
         self.expand_user = _options._expand_user
         self.allow_dupes = _options._allow_dupes
+        self.vars_auto_ctx_options = _options._vars_auto_ctx_options
         self.variable_decorator = _options._variable_decorator
 
     def clear(self):
@@ -587,15 +590,19 @@ class DSLType20:
         ctx_options_to_add = []
         for v in self.data[local_context][1]:
             if ((varname is not None) and (v[0] == varname)) or (varname is None):
-                # add context options to the return list
-                if not self.allow_dupes: # variable options will override context options
-                    for co in self.data[local_context][0]:
-                        if count_occurrence_first_of_pair(v[2], co[0]) < 1:
-                            # var option and context option dupe. skip this context option - i.e. the var's option will effectively override this ctx opt
-                            ctx_options_to_add.append(co)
-                else:
-                    ctx_options_to_add = self.data[local_context][0]
+
+                # add context options to the return list, if the option is enabled
+                if self.vars_auto_ctx_options:
+                    if not self.allow_dupes: # variable options will override context options
+                        for co in self.data[local_context][0]:
+                            if count_occurrence_first_of_pair(v[2], co[0]) < 1:
+                                # var option and context option dupe. skip this context option - i.e. the var's option will effectively override this ctx opt
+                                ctx_options_to_add.append(co)
+                    else:
+                        ctx_options_to_add = self.data[local_context][0]
+
                 ret.append( (v[0], v[1], ctx_options_to_add + v[2] ) )
+
         return ret
 
     def add_var(self, var_name, var_val, var_opts, context=None):
