@@ -106,6 +106,7 @@ class DSLType20:
         self.QUOTE = "\""
         self.BSLASH = "\\"
         self.FSLASH = "/"
+        self.COMMENTS = ["#", "//"]
 
         # read options
         self.expand_envvars = _options._expand_envvars
@@ -144,9 +145,10 @@ class DSLType20:
 
         line_out = line_in.strip()
 
-        hash_pos = line_out.find("#")
-        if hash_pos != -1:
-            line_out = line_out[0:hash_pos]
+        for c in self.COMMENTS:
+            hash_pos = line_out.find(c)
+            if hash_pos != -1:
+                line_out = line_out[0:hash_pos]
 
         return line_out.strip()
 
