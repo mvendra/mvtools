@@ -11,6 +11,23 @@ import path_utils
 import importlib.machinery
 import importlib.util
 
+# minimal automation framework
+# dsltype20-based recipes are supported, syntax as follows:
+#
+# [
+# @job1 {options_base}
+# * step1 {options_custom} = "sample_echo_true.py"
+# ]
+#
+# this would be a recipe file with only one job, which itself has only one step.
+# job options (options_base in the example above) are inherited/merged downwards
+# onto the job's steps. step options take precedence whenever there are duplications.
+# by default, step scripts are searched inside MVTOOLS/launchers/launch_jobs_plugins
+# this can be changed by adding the following freestanding (i.e. outside any context) variable:
+# * recipe_namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
+#
+# a recipe is deemed successful if (and only if) every single step in every single job succeeded
+
 def _merge_params_downwards(p_parent, p_child):
 
     result = {}

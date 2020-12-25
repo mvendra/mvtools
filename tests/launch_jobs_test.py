@@ -69,6 +69,16 @@ class LaunchJobsTest(unittest.TestCase):
         self.recipe_test_file4 = path_utils.concat_path(self.test_dir, "recipe_test4.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file4, recipe_test_contents4)
 
+        recipe_test_contents5 = "[\n@test-job1\n* step1 = \"sample_echo_true.py\"\n]\n"
+        recipe_test_contents5 += "[\n@test-job2\n* step1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file5 = path_utils.concat_path(self.test_dir, "recipe_test5.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file5, recipe_test_contents5)
+
+        recipe_test_contents6 = "[\n@test-job1\n* step1 = \"sample_echo_true.py\"\n]\n"
+        recipe_test_contents6 += "[\n@test-job2\n* step1 = \"sample_echo_false.py\"\n]"
+        self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
+
     def delegate_setUp(self):
 
         v, r = mvtools_test_fixture.makeAndGetTestFolder("launch_jobs_test")
@@ -170,6 +180,16 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file4)
         self.assertTrue(v)
+
+    def testLaunchJobsRecipe2JobsBothSucceed(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file5)
+        self.assertTrue(v)
+
+    def testLaunchJobsRecipe2JobsOneFails(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file6)
+        self.assertFalse(v)
 
 if __name__ == '__main__':
     unittest.main()

@@ -43,7 +43,6 @@ import miniparse
 #
 # if allow_dupes is not set, then variable options take precedence over context options
 # freestanding variables (defined outside any explicit contexts) belong to the "default context"
-#
 
 def getopts(var, optname):
     ret = []
