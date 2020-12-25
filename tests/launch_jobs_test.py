@@ -5,25 +5,20 @@ import shutil
 import unittest
 
 import mvtools_test_fixture
+import create_and_write_file
 import path_utils
 
 import launch_jobs
 
 class CustomStepTrue(launch_jobs.BaseStep):
-    def desc(self):
-        return "CustomStepTrue"
     def run_step(self):
         return True, None
 
 class CustomStepFalse(launch_jobs.BaseStep):
-    def desc(self):
-        return "CustomStepFalse"
     def run_step(self):
         return False, None
 
 class CustomStepParams(launch_jobs.BaseStep):
-    def desc(self):
-        return "CustomStepParams"
     def run_step(self):
         if self.params["test"]:
             return True, None
@@ -31,8 +26,6 @@ class CustomStepParams(launch_jobs.BaseStep):
             return False, None
 
 class CustomStepParams1And2(launch_jobs.BaseStep):
-    def desc(self):
-        return "CustomStepParams"
     def run_step(self):
         if self.params["test1"] and self.params["test2"]:
             return True, None
@@ -46,6 +39,18 @@ class LaunchJobsTest(unittest.TestCase):
         if not v:
             self.tearDown()
             self.fail(r)
+
+        recipe_test_contents1 = "[\n@test-job\n* step1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file1, recipe_test_contents1)
+
+        recipe_test_contents2 = "[\n@test-job\n* step1 = \"nonexistent.py\"\n]"
+        self.recipe_test_file2 = path_utils.concat_path(self.test_dir, "recipe_test2.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file2, recipe_test_contents2)
+
+        recipe_test_contents3 = "[\n@test-job\n* step1 = \"sample_echo_false.py\"\n]"
+        self.recipe_test_file3 = path_utils.concat_path(self.test_dir, "recipe_test3.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file3, recipe_test_contents3)
 
     def delegate_setUp(self):
 
@@ -87,7 +92,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomStepParams1(self):
 
-        job1 = launch_jobs.BaseJob({"test": True})
+        job1 = launch_jobs.BaseJob(params={"test": True})
         job1.add_step(CustomStepParams())
 
         v, r = launch_jobs.run_job_list([job1])
@@ -95,7 +100,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomStepParams2(self):
 
-        job1 = launch_jobs.BaseJob({"test": False})
+        job1 = launch_jobs.BaseJob(params={"test": False})
         job1.add_step(CustomStepParams())
 
         v, r = launch_jobs.run_job_list([job1])
@@ -103,7 +108,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomStepParams3(self):
 
-        job1 = launch_jobs.BaseJob({"cause-except": True})
+        job1 = launch_jobs.BaseJob(params={"cause-except": True})
         job1.add_step(CustomStepParams())
 
         try:
@@ -115,18 +120,33 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomStepParams4(self):
 
-        job1 = launch_jobs.BaseJob({"test1": True})
-        job1.add_step(CustomStepParams1And2({"test2": True}))
+        job1 = launch_jobs.BaseJob(params={"test1": True})
+        job1.add_step(CustomStepParams1And2(params={"test2": True}))
 
         v, r = launch_jobs.run_job_list([job1])
         self.assertTrue(v)
 
     def testLaunchJobsCustomStepParams5(self):
 
-        job1 = launch_jobs.BaseJob({"test": True})
-        job1.add_step(CustomStepParams({"test": False}))
+        job1 = launch_jobs.BaseJob(params={"test": True})
+        job1.add_step(CustomStepParams(params={"test": False}))
 
         v, r = launch_jobs.run_job_list([job1])
+        self.assertFalse(v)
+
+    def testLaunchJobsRecipeVanilla(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file1)
+        self.assertTrue(v)
+
+    def testLaunchJobsRecipeNonexistentScript(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file2)
+        self.assertFalse(v)
+
+    def testLaunchJobsRecipeOneStepReturnsFalse(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file3)
         self.assertFalse(v)
 
 if __name__ == '__main__':
