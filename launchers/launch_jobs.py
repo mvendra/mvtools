@@ -102,7 +102,7 @@ def _get_plugins_path(namespace=None):
     full_path = ""
 
     if namespace is not None:
-        pass # mvtodo: could be as simple as just doing "full_path = namespace"
+        full_path = namespace
     else:
         mvtools_env = ""
         try:
@@ -121,7 +121,7 @@ def _get_step_instance(step_script, namespace=None):
 
     v, r = _get_plugins_path(namespace)
     if not v:
-        return r
+        return False, r
     script_base_path = r
 
     step_script_full = path_utils.concat_path(script_base_path, step_script)
@@ -142,7 +142,12 @@ def _get_step_instance(step_script, namespace=None):
 
 def _translate_dsl_into_jobs(dsl):
 
+    namespace = None
     jobs = []
+
+    var_rn = dsl.get_vars("recipe_namespace")
+    if len(var_rn) > 0:
+        namespace = var_rn[0][1]
 
     for ctx in dsl.get_all_contexts():
 
@@ -155,7 +160,7 @@ def _translate_dsl_into_jobs(dsl):
 
             step_params = _convert_dsl_opts_into_py_map(var[2])
 
-            v, r = _get_step_instance(var[1]) # mvtodo: namespace unused right now - perhaps could be hooked into one of the  recipe's global vars
+            v, r = _get_step_instance(var[1], namespace)
             if not v:
                 return False, r
 

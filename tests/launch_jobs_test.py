@@ -40,6 +40,18 @@ class LaunchJobsTest(unittest.TestCase):
             self.tearDown()
             self.fail(r)
 
+        sample_custom_echo_true_script_contents = "#!/usr/bin/env python3\n\n"
+        sample_custom_echo_true_script_contents += "import launch_jobs\n\n"
+        sample_custom_echo_true_script_contents += "class CustomStep(launch_jobs.BaseStep):\n"
+        sample_custom_echo_true_script_contents += "    def __init__(self, params=None):\n"
+        sample_custom_echo_true_script_contents += "        self.params = params\n"
+        sample_custom_echo_true_script_contents += "    def get_desc(self):\n"
+        sample_custom_echo_true_script_contents += "        return \"sample_custom_echo_true\"\n"
+        sample_custom_echo_true_script_contents += "    def run_step(self):\n"
+        sample_custom_echo_true_script_contents += "        return True, None\n"
+        self.sample_custom_echo_true_script_file = path_utils.concat_path(self.test_dir, "sample_custom_echo_true.py")
+        create_and_write_file.create_file_contents(self.sample_custom_echo_true_script_file, sample_custom_echo_true_script_contents)
+
         recipe_test_contents1 = "[\n@test-job\n* step1 = \"sample_echo_true.py\"\n]"
         self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file1, recipe_test_contents1)
@@ -51,6 +63,11 @@ class LaunchJobsTest(unittest.TestCase):
         recipe_test_contents3 = "[\n@test-job\n* step1 = \"sample_echo_false.py\"\n]"
         self.recipe_test_file3 = path_utils.concat_path(self.test_dir, "recipe_test3.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file3, recipe_test_contents3)
+
+        recipe_test_contents4 = "* recipe_namespace = \"%s\"\n" % self.test_dir
+        recipe_test_contents4 += "[\n@test-job\n* step1 = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_script_file)
+        self.recipe_test_file4 = path_utils.concat_path(self.test_dir, "recipe_test4.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file4, recipe_test_contents4)
 
     def delegate_setUp(self):
 
@@ -148,6 +165,11 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file3)
         self.assertFalse(v)
+
+    def testLaunchJobsRecipeCustomNamespace(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file4)
+        self.assertTrue(v)
 
 if __name__ == '__main__':
     unittest.main()
