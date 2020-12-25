@@ -21,7 +21,7 @@ import miniparse
 # example of a decorated variable (where variable_decorator = "* "):
 # * variable1 = "value1"
 #
-# lines starting with "#" are skipped (treated as comment)
+# lines starting with "#" or "//" are skipped (treated as comment)
 # the comment character may come anywhere in the line
 # lines are string-trimmed (extra spaces are removed)
 # variable names and options can be repeated
