@@ -281,10 +281,10 @@ class DSLType20:
                     return False, "Failed creating new context: [%s]." % r
                 continue
 
-            # freestanding (default context) variable 
+            # freestanding (default context) variable
             v, r = self._parse_variable(line_t, context)
             if not v:
-                return v, r
+                return False, r
 
         if expecting_context_closure:
             return False, "Last context: [%s] was not closed." % printable_context(context)
