@@ -79,6 +79,33 @@ class LaunchJobsTest(unittest.TestCase):
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
+        recipe_test_contents7 = "* include_recipe = \"%s\"\n" % self.recipe_test_file3
+        recipe_test_contents7 += "[\n@test-job\n* step1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
+
+        self.recipe_test_file8 = path_utils.concat_path(self.test_dir, "recipe_test8.t20")
+        recipe_test_contents8 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8
+        recipe_test_contents8 += "[\n@test-job\n* step1 = \"sample_echo_true.py\"\n]"
+        create_and_write_file.create_file_contents(self.recipe_test_file8, recipe_test_contents8)
+
+        recipe_test_contents9 = "* include_recipe = \"%s\"\n" % self.recipe_test_file1
+        recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file4
+        recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file5
+        recipe_test_contents9 += "[\n@test-job\n* step1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file9 = path_utils.concat_path(self.test_dir, "recipe_test9.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file9, recipe_test_contents9)
+
+        recipe_test_contents10 = "* include_recipe = \"%s\"\n" % self.recipe_test_file9
+        recipe_test_contents10 += "[\n@test-job\n* step1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file10 = path_utils.concat_path(self.test_dir, "recipe_test10.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file10, recipe_test_contents10)
+
+        recipe_test_contents11 = "* include_recipe = \"%s\"\n" % self.recipe_test_file7
+        recipe_test_contents11 += "[\n@test-job\n* step1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file11 = path_utils.concat_path(self.test_dir, "recipe_test11.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file11, recipe_test_contents11)
+
     def delegate_setUp(self):
 
         v, r = mvtools_test_fixture.makeAndGetTestFolder("launch_jobs_test")
@@ -189,6 +216,43 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsRecipe2JobsOneFails(self):
 
         v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file6)
+        self.assertFalse(v)
+
+    def testLaunchJobsRecipeIncludesOneFalse(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file7)
+        self.assertFalse(v)
+
+    def testLaunchJobsRecipeCircularDependency(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file8)
+        self.assertFalse(v)
+
+    def testLaunchJobsRecipeDepthLimit_BreadthTest(self):
+
+        ridl = launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER
+
+        try:
+            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = 2
+            v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file9)
+            self.assertTrue(v)
+        finally:
+            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
+
+    def testLaunchJobsRecipeDepthLimit_DepthTest(self):
+
+        ridl = launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER
+
+        try:
+            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = 2
+            v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file10)
+            self.assertFalse(v)
+        finally:
+            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
+
+    def testLaunchJobsRecipeThirdDegreeFalse(self):
+
+        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file11)
         self.assertFalse(v)
 
 if __name__ == '__main__':
