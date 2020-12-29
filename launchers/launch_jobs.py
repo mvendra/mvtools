@@ -173,7 +173,7 @@ class RecipeProcessor:
     def _bootstrap_dsl_object(self, local_recipe):
 
         if (os.path.basename(local_recipe)) in self.circular_tracker:
-            return False, "Recipe file [%s]: circular inclusion detected." % local_recipe
+            return False, "Recipe file [%s]: circular inclusion detected while including [%s]." % (self.recipe, local_recipe)
 
         if not os.path.exists(local_recipe):
             return False, "Recipe file [%s] does not exist." % local_recipe
