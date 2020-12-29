@@ -16,17 +16,17 @@ import importlib.util
 #
 # [
 # @job1 {options_base}
-# * step1 {options_custom} = "sample_echo_true.py"
+# * task1 {options_custom} = "sample_echo_true.py"
 # ]
 #
-# this would be a recipe file with only one job, which itself has only one step.
+# this would be a recipe file with only one job, which itself has only one task.
 # job options (options_base in the example above) are inherited/merged downwards
-# onto the job's steps. step options take precedence whenever there are duplications.
-# by default, step scripts are searched inside MVTOOLS/launchers/launch_jobs_plugins
+# onto the job's tasks. task options take precedence whenever there are duplications.
+# by default, task scripts are searched inside MVTOOLS/launchers/launch_jobs_plugins
 # this can be changed by adding the following freestanding (i.e. outside any context) variable:
 # * recipe_namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
 #
-# a recipe is deemed successful if (and only if) every single step in every single job succeeded
+# a recipe is deemed successful if (and only if) every single task in every single job succeeded
 # a recipe may include other recipes using the following freestanding variable:
 # * include_recipe = "/home/user/other_recipe.t20"
 # includes are recursive.
@@ -80,56 +80,56 @@ def _get_plugins_path(namespace=None):
 
     return True, full_path
 
-def _get_step_instance(step_script, namespace=None):
+def _get_task_instance(task_script, namespace=None):
 
     v, r = _get_plugins_path(namespace)
     if not v:
         return False, r
     script_base_path = r
 
-    step_script_full = path_utils.concat_path(script_base_path, step_script)
-    if not os.path.exists(step_script_full):
-        return False, "Step script [%s] does not exist." % step_script_full
+    task_script_full = path_utils.concat_path(script_base_path, task_script)
+    if not os.path.exists(task_script_full):
+        return False, "Task script [%s] does not exist." % task_script_full
 
-    loader = importlib.machinery.SourceFileLoader("CustomStepMod", step_script_full) # (partly) red meat
+    loader = importlib.machinery.SourceFileLoader("CustomTaskMod", task_script_full) # (partly) red meat
     spec = importlib.util.spec_from_loader(loader.name, loader) # pork
     mod = importlib.util.module_from_spec(spec) # pork
     loader.exec_module(mod) # pork
 
     try:
-        di = mod.CustomStep()
+        di = mod.CustomTask()
     except:
-        return False, "Step script [%s] has no class named CustomStep." % step_script_full
+        return False, "Task script [%s] has no class named CustomTask." % task_script_full
 
-    return True, mod.CustomStep
+    return True, mod.CustomTask
 
-class BaseStep:
+class BaseTask:
     def __init__(self, params=None):
         self.params = params
     def get_desc(self):
-        return "Generic base step"
-    def run_step(self):
+        return "Generic base task"
+    def run_task(self):
         return False, "Not implemented"
 
 class BaseJob:
     def __init__(self, desc="", params=None):
         self.desc = desc
         self.params = params
-        self.step_list = []
+        self.task_list = []
 
     def get_desc(self):
         return self.desc
 
-    def add_step(self, the_step):
-        the_step.params = _merge_params_downwards(self.params, the_step.params)
-        self.step_list.append(the_step)
+    def add_task(self, the_task):
+        the_task.params = _merge_params_downwards(self.params, the_task.params)
+        self.task_list.append(the_task)
 
     def run_job(self):
-        for s in self.step_list:
-            print("run_job (%s): now running step: [%s]" % (self.get_desc(), s.get_desc()))
-            v, r = s.run_step()
+        for s in self.task_list:
+            print("run_job (%s): now running task: [%s]" % (self.get_desc(), s.get_desc()))
+            v, r = s.run_task()
             if not v:
-                return False, "Step [%s] failed: [%s]" % (s.get_desc(), r)
+                return False, "Task [%s] failed: [%s]" % (s.get_desc(), r)
         return True, None
 
 def run_job_list(job_list):
@@ -137,7 +137,7 @@ def run_job_list(job_list):
     for j in job_list:
         v, r = j.run_job()
         if not v:
-            return False, "Job [%s] failed. Step: [%s]" % (j.get_desc(), r)
+            return False, "Job [%s] failed. Task: [%s]" % (j.get_desc(), r)
     return True, None
 
 class RecipeProcessor:
@@ -203,7 +203,7 @@ class RecipeProcessor:
         namespace = None
         jobs = []
 
-        # recipe namespace (for steps/plugins)
+        # recipe namespace (for tasks/plugins)
         var_rn = dsl.get_vars("recipe_namespace")
         if len(var_rn) > 0:
             namespace = var_rn[0][1]
@@ -227,14 +227,14 @@ class RecipeProcessor:
 
                 # var[0] is currently not used for anything (the variable name)
 
-                step_params = _convert_dsl_opts_into_py_map(var[2])
+                task_params = _convert_dsl_opts_into_py_map(var[2])
 
-                v, r = _get_step_instance(var[1], namespace)
+                v, r = _get_task_instance(var[1], namespace)
                 if not v:
                     return False, r
 
-                new_step = r(step_params)
-                new_job.add_step(new_step)
+                new_task = r(task_params)
+                new_job.add_task(new_task)
 
             jobs.append(new_job)
 
