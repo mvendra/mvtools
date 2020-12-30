@@ -5,8 +5,6 @@ import shutil
 import unittest
 
 import mvtools_test_fixture
-import create_and_write_file
-import path_utils
 
 import launch_jobs
 
@@ -32,6 +30,16 @@ class CustomTaskParams1And2(launch_jobs.BaseTask):
         else:
             return False, None
 
+class CustomJob(launch_jobs.BaseJob):
+    def add_task(self, task):
+        task.params = launch_jobs._merge_params_downwards(self.params, task.params)
+        self.task_list.append(task)
+    def run_job(self):
+        res = True
+        for t in self.task_list:
+            res &= (t.run_task())[0]
+        return res, None
+
 class LaunchJobsTest(unittest.TestCase):
 
     def setUp(self):
@@ -39,83 +47,6 @@ class LaunchJobsTest(unittest.TestCase):
         if not v:
             self.tearDown()
             self.fail(r)
-
-        sample_custom_echo_true_script_contents = "#!/usr/bin/env python3\n\n"
-        sample_custom_echo_true_script_contents += "import launch_jobs\n\n"
-        sample_custom_echo_true_script_contents += "class CustomTask(launch_jobs.BaseTask):\n"
-        sample_custom_echo_true_script_contents += "    def __init__(self, params=None):\n"
-        sample_custom_echo_true_script_contents += "        self.params = params\n"
-        sample_custom_echo_true_script_contents += "    def get_desc(self):\n"
-        sample_custom_echo_true_script_contents += "        return \"sample_custom_echo_true\"\n"
-        sample_custom_echo_true_script_contents += "    def run_task(self):\n"
-        sample_custom_echo_true_script_contents += "        return True, None\n"
-        self.sample_custom_echo_true_script_file = path_utils.concat_path(self.test_dir, "sample_custom_echo_true.py")
-        create_and_write_file.create_file_contents(self.sample_custom_echo_true_script_file, sample_custom_echo_true_script_contents)
-
-        recipe_test_contents1 = "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file1, recipe_test_contents1)
-
-        recipe_test_contents2 = "[\n@test-job\n* task1 = \"nonexistent.py\"\n]"
-        self.recipe_test_file2 = path_utils.concat_path(self.test_dir, "recipe_test2.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file2, recipe_test_contents2)
-
-        recipe_test_contents3 = "[\n@test-job\n* task1 = \"sample_echo_false.py\"\n]"
-        self.recipe_test_file3 = path_utils.concat_path(self.test_dir, "recipe_test3.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file3, recipe_test_contents3)
-
-        recipe_test_contents4 = "* recipe_namespace = \"%s\"\n" % self.test_dir
-        recipe_test_contents4 += "[\n@test-job\n* task1 = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_script_file)
-        self.recipe_test_file4 = path_utils.concat_path(self.test_dir, "recipe_test4.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file4, recipe_test_contents4)
-
-        recipe_test_contents5 = "[\n@test-job1\n* task1 = \"sample_echo_true.py\"\n]\n"
-        recipe_test_contents5 += "[\n@test-job2\n* task1 = \"sample_echo_true.py\"\n]"
-        self.recipe_test_file5 = path_utils.concat_path(self.test_dir, "recipe_test5.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file5, recipe_test_contents5)
-
-        recipe_test_contents6 = "[\n@test-job1\n* task1 = \"sample_echo_true.py\"\n]\n"
-        recipe_test_contents6 += "[\n@test-job2\n* task1 = \"sample_echo_false.py\"\n]"
-        self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
-
-        recipe_test_contents7 = "* include_recipe = \"%s\"\n" % self.recipe_test_file3
-        recipe_test_contents7 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
-
-        self.recipe_test_file8_1 = path_utils.concat_path(self.test_dir, "recipe_test8_1.t20")
-        self.recipe_test_file8_2 = path_utils.concat_path(self.test_dir, "recipe_test8_2.t20")
-        self.recipe_test_file8_3 = path_utils.concat_path(self.test_dir, "recipe_test8_3.t20")
-
-        recipe_test_contents8_1 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_2
-        recipe_test_contents8_1 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        create_and_write_file.create_file_contents(self.recipe_test_file8_1, recipe_test_contents8_1)
-
-        recipe_test_contents8_2 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_3
-        recipe_test_contents8_2 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        create_and_write_file.create_file_contents(self.recipe_test_file8_2, recipe_test_contents8_2)
-
-        recipe_test_contents8_3 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_2
-        recipe_test_contents8_3 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        create_and_write_file.create_file_contents(self.recipe_test_file8_3, recipe_test_contents8_3)
-
-        recipe_test_contents9 = "* include_recipe = \"%s\"\n" % self.recipe_test_file1
-        recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file4
-        recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file5
-        recipe_test_contents9 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        self.recipe_test_file9 = path_utils.concat_path(self.test_dir, "recipe_test9.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file9, recipe_test_contents9)
-
-        recipe_test_contents10 = "* include_recipe = \"%s\"\n" % self.recipe_test_file9
-        recipe_test_contents10 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        self.recipe_test_file10 = path_utils.concat_path(self.test_dir, "recipe_test10.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file10, recipe_test_contents10)
-
-        recipe_test_contents11 = "* include_recipe = \"%s\"\n" % self.recipe_test_file7
-        recipe_test_contents11 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
-        self.recipe_test_file11 = path_utils.concat_path(self.test_dir, "recipe_test11.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file11, recipe_test_contents11)
 
     def delegate_setUp(self):
 
@@ -132,7 +63,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsVanilla(self):
 
-        job1 = launch_jobs.BaseJob()
+        job1 = CustomJob()
         job1.add_task(launch_jobs.BaseTask())
 
         v, r = launch_jobs.run_job_list([job1])
@@ -140,7 +71,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTask1(self):
 
-        job1 = launch_jobs.BaseJob()
+        job1 = CustomJob()
         job1.add_task(CustomTaskTrue())
 
         v, r = launch_jobs.run_job_list([job1])
@@ -148,7 +79,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTask2(self):
 
-        job1 = launch_jobs.BaseJob()
+        job1 = CustomJob()
         job1.add_task(CustomTaskTrue())
         job1.add_task(CustomTaskFalse())
 
@@ -157,7 +88,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams1(self):
 
-        job1 = launch_jobs.BaseJob(params={"test": True})
+        job1 = CustomJob(params={"test": True})
         job1.add_task(CustomTaskParams())
 
         v, r = launch_jobs.run_job_list([job1])
@@ -165,7 +96,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams2(self):
 
-        job1 = launch_jobs.BaseJob(params={"test": False})
+        job1 = CustomJob(params={"test": False})
         job1.add_task(CustomTaskParams())
 
         v, r = launch_jobs.run_job_list([job1])
@@ -173,7 +104,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams3(self):
 
-        job1 = launch_jobs.BaseJob(params={"cause-except": True})
+        job1 = CustomJob(params={"cause-except": True})
         job1.add_task(CustomTaskParams())
 
         try:
@@ -185,7 +116,7 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams4(self):
 
-        job1 = launch_jobs.BaseJob(params={"test1": True})
+        job1 = CustomJob(params={"test1": True})
         job1.add_task(CustomTaskParams1And2(params={"test2": True}))
 
         v, r = launch_jobs.run_job_list([job1])
@@ -193,77 +124,10 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams5(self):
 
-        job1 = launch_jobs.BaseJob(params={"test": True})
+        job1 = CustomJob(params={"test": True})
         job1.add_task(CustomTaskParams(params={"test": False}))
 
         v, r = launch_jobs.run_job_list([job1])
-        self.assertFalse(v)
-
-    def testLaunchJobsRecipeVanilla(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file1)
-        self.assertTrue(v)
-
-    def testLaunchJobsRecipeNonexistentScript(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file2)
-        self.assertFalse(v)
-
-    def testLaunchJobsRecipeOneTaskReturnsFalse(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file3)
-        self.assertFalse(v)
-
-    def testLaunchJobsRecipeCustomNamespace(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file4)
-        self.assertTrue(v)
-
-    def testLaunchJobsRecipe2JobsBothSucceed(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file5)
-        self.assertTrue(v)
-
-    def testLaunchJobsRecipe2JobsOneFails(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file6)
-        self.assertFalse(v)
-
-    def testLaunchJobsRecipeIncludesOneFalse(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file7)
-        self.assertFalse(v)
-
-    def testLaunchJobsRecipeCircularDependency(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file8_1)
-        self.assertFalse(v)
-
-    def testLaunchJobsRecipeDepthLimit_BreadthTest(self):
-
-        ridl = launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER
-
-        try:
-            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = 2
-            v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file9)
-            self.assertTrue(v)
-        finally:
-            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
-
-    def testLaunchJobsRecipeDepthLimit_DepthTest(self):
-
-        ridl = launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER
-
-        try:
-            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = 2
-            v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file10)
-            self.assertFalse(v)
-        finally:
-            launch_jobs.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
-
-    def testLaunchJobsRecipeThirdDegreeFalse(self):
-
-        v, r = launch_jobs.run_jobs_from_recipe_file(self.recipe_test_file11)
         self.assertFalse(v)
 
 if __name__ == '__main__':
