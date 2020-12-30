@@ -66,7 +66,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_task(launch_jobs.BaseTask())
 
-        v, r = launch_jobs.run_job_list([job1])
+        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         self.assertFalse(v)
 
     def testLaunchJobsCustomTask1(self):
@@ -74,7 +74,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_task(CustomTaskTrue())
 
-        v, r = launch_jobs.run_job_list([job1])
+        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         self.assertTrue(v)
 
     def testLaunchJobsCustomTask2(self):
@@ -83,7 +83,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.add_task(CustomTaskTrue())
         job1.add_task(CustomTaskFalse())
 
-        v, r = launch_jobs.run_job_list([job1])
+        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         self.assertFalse(v)
 
     def testLaunchJobsCustomTaskParams1(self):
@@ -91,7 +91,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test": True})
         job1.add_task(CustomTaskParams())
 
-        v, r = launch_jobs.run_job_list([job1])
+        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         self.assertTrue(v)
 
     def testLaunchJobsCustomTaskParams2(self):
@@ -99,7 +99,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test": False})
         job1.add_task(CustomTaskParams())
 
-        v, r = launch_jobs.run_job_list([job1])
+        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         self.assertFalse(v)
 
     def testLaunchJobsCustomTaskParams3(self):
@@ -108,7 +108,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.add_task(CustomTaskParams())
 
         try:
-            v, r = launch_jobs.run_job_list([job1])
+            v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         except KeyError:
             pass
         except:
@@ -119,7 +119,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test1": True})
         job1.add_task(CustomTaskParams1And2(params={"test2": True}))
 
-        v, r = launch_jobs.run_job_list([job1])
+        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         self.assertTrue(v)
 
     def testLaunchJobsCustomTaskParams5(self):
@@ -127,8 +127,50 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test": True})
         job1.add_task(CustomTaskParams(params={"test": False}))
 
-        v, r = launch_jobs.run_job_list([job1])
+        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
         self.assertFalse(v)
+
+    def testLaunchJobsRunOptions1(self):
+
+        job1 = CustomJob()
+        job1.add_task(CustomTaskFalse())
+
+        job2 = CustomJob()
+        job2.add_task(CustomTaskFalse())
+
+        job_list = [job1, job2]
+
+        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions())
+        self.assertFalse(v)
+        self.assertEqual(len(r), 1)
+
+    def testLaunchJobsRunOptions2(self):
+
+        job1 = CustomJob()
+        job1.add_task(CustomTaskFalse())
+
+        job2 = CustomJob()
+        job2.add_task(CustomTaskFalse())
+
+        job_list = [job1, job2]
+
+        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(early_abort=False))
+        self.assertFalse(v)
+        self.assertEqual(len(r), 2)
+
+    def testLaunchJobsRunOptions3(self):
+
+        job1 = CustomJob()
+        job1.add_task(CustomTaskTrue())
+
+        job2 = CustomJob()
+        job2.add_task(CustomTaskTrue())
+
+        job_list = [job1, job2]
+
+        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(early_abort=False))
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
 
 if __name__ == '__main__':
     unittest.main()

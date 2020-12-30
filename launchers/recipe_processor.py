@@ -113,7 +113,7 @@ class RecipeProcessor:
             return False, r
         jobs = r
 
-        v, r = launch_jobs.run_job_list(jobs)
+        v, r = launch_jobs.run_job_list(jobs, launch_jobs.RunOptions()) # mvtodo: maybe get something from the recipe to change this too
         if not v:
             return False, r
 
