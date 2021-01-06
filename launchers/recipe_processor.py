@@ -42,7 +42,7 @@ import terminal_colors
 #
 # a recipe may include other recipes using the following freestanding variable:
 # * include_recipe = "/home/user/other_recipe.t20"
-# includes are recursive. mvtodo: can includes have their own namespaces?
+# includes are recursive. included recipes can have their own namespaces.
 #
 # mvtodo: also document custom jobs and stuff
 
