@@ -134,6 +134,12 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
 
+        recipe_test_contents16 = "* recipe_namespace = \"%s\"\n" % self.test_dir
+        recipe_test_contents16 += "* recipe_namespace = \"%s\"\n" % self.test_dir
+        recipe_test_contents16 += "[\n@test-job\n* task1 = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_script_file)
+        self.recipe_test_file16 = path_utils.concat_path(self.test_dir, "recipe_test16.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file16, recipe_test_contents16)
+
     def delegate_setUp(self):
 
         v, r = mvtools_test_fixture.makeAndGetTestFolder("recipe_processor_test")
@@ -216,6 +222,10 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorRecipeDoubleEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
+        self.assertFalse(v)
+
+    def testRecipeProcessorDoubleCustomNamespace(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file16)
         self.assertFalse(v)
 
 if __name__ == '__main__':

@@ -170,8 +170,9 @@ class RecipeProcessor:
 
         # recipe namespace (for tasks/plugins)
         var_rn = dsl.get_vars("recipe_namespace")
-        # mvtodo: accept only ONE recipe namespace
-        if len(var_rn) > 0:
+        if len(var_rn) > 1:
+            return False, "Recipe's recipe_namespace has been specified multiple times."
+        elif len(var_rn) == 1:
             namespace = var_rn[0][1]
 
         # recipe includes
