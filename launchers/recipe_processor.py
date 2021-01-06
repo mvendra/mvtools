@@ -113,7 +113,12 @@ class RecipeProcessor:
             return False, r
         jobs = r
 
-        v, r = launch_jobs.run_job_list(jobs, launch_jobs.RunOptions()) # mvtodo: maybe get something from the recipe to change this too
+        v, r = self._get_launch_options_from_recipe_file(dsl)
+        if not v:
+            return False, r
+        options = r
+
+        v, r = launch_jobs.run_job_list(jobs, options)
         if not v:
             return False, r
 
@@ -187,6 +192,24 @@ class RecipeProcessor:
 
         self.depth_counter -= 1
         return True, jobs
+
+    def _get_launch_options_from_recipe_file(self, dsl):
+
+        default_options = launch_jobs.RunOptions()
+
+        local_early_abort = default_options.early_abort
+
+        # early abort option
+        var_rn = dsl.get_vars("early_abort")
+        if len(var_rn) > 0: # has been specified in the recipe file
+            if (var_rn[0][1]).lower() == "true":
+                local_early_abort = True
+            elif (var_rn[0][1]).lower() == "false":
+                local_early_abort = False
+            else:
+                return False, "Recipe's early_abort option has an invalid value: [%s]" % var_rn[0][1]
+
+        return True, launch_jobs.RunOptions(early_abort=local_early_abort)
 
 def run_jobs_from_recipe_file(recipe_file):
     recipe_processor = RecipeProcessor(recipe_file)

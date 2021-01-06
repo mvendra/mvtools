@@ -38,21 +38,15 @@ class BaseJob:
         self.params = params
         self.task_list = []
     def get_desc(self):
-        return "Generic base job"
+        return "Base job"
     def add_task(self, task):
-        task.params = _merge_params_downwards(self.params, task.params)
-        self.task_list.append(task)
+        return False, None
     def run_job(self):
-        for t in self.task_list:
-            print("run_job [%s][%s]: now running task: [%s][%s]" % (self.name, self.get_desc(), t.name, t.get_desc()))
-            v, r = t.run_task()
-            if not v:
-                return False, "Task [%s][%s] failed: [%s]" % (t.name, t.get_desc(), r)
-        return True, None
+        return False, None
 
 class RunOptions:
     def __init__(self, early_abort=True):
-        self.early_abort = early_abort # immediately stop the execution whenever any job fails (stop upon first failure)
+        self.early_abort = early_abort # stop upon first job failure (note: applies to jobs *only*)
 
 def run_job_list(job_list, options):
 

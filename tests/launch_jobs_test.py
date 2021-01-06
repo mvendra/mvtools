@@ -34,6 +34,7 @@ class CustomJob(launch_jobs.BaseJob):
     def add_task(self, task):
         task.params = launch_jobs._merge_params_downwards(self.params, task.params)
         self.task_list.append(task)
+        return True, None
     def run_job(self):
         res = True
         for t in self.task_list:

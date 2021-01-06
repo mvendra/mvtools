@@ -116,6 +116,16 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file13 = path_utils.concat_path(self.test_dir, "recipe_test13.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file13, recipe_test_contents13)
 
+        recipe_test_contents14 = "* early_abort = \"false\"\n"
+        recipe_test_contents14 += "[\n@test-job-1\n"
+        recipe_test_contents14 += "* task1 = \"sample_echo_false.py\"\n"
+        recipe_test_contents14 += "]\n"
+        recipe_test_contents14 += "[\n@test-job-2\n"
+        recipe_test_contents14 += "* task1 = \"sample_echo_false.py\"\n"
+        recipe_test_contents14 += "]"
+        self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
+
     def delegate_setUp(self):
 
         v, r = mvtools_test_fixture.makeAndGetTestFolder("recipe_processor_test")
@@ -130,49 +140,39 @@ class RecipeProcessorTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testRecipeProcessorVanilla(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file1)
         self.assertTrue(v)
 
     def testRecipeProcessorNonexistentScript(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file2)
         self.assertFalse(v)
 
     def testRecipeProcessorOneTaskReturnsFalse(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file3)
         self.assertFalse(v)
 
     def testRecipeProcessorCustomNamespace(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file4)
         self.assertTrue(v)
 
     def testRecipeProcessor2JobsBothSucceed(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file5)
         self.assertTrue(v)
 
     def testRecipeProcessor2JobsOneFails(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file6)
         self.assertFalse(v)
 
     def testRecipeProcessorIncludesOneFalse(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file7)
         self.assertFalse(v)
 
     def testRecipeProcessorCircularDependency(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file8_1)
         self.assertFalse(v)
 
     def testRecipeProcessorDepthLimit_BreadthTest(self):
-
         ridl = recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER
-
         try:
             recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = 2
             v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file9)
@@ -181,9 +181,7 @@ class RecipeProcessorTest(unittest.TestCase):
             recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
 
     def testRecipeProcessorDepthLimit_DepthTest(self):
-
         ridl = recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER
-
         try:
             recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = 2
             v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file10)
@@ -192,19 +190,21 @@ class RecipeProcessorTest(unittest.TestCase):
             recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
 
     def testRecipeProcessorThirdDegreeFalse(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file11)
         self.assertFalse(v)
 
     def testRecipeProcessorCustomNamespaceCustomJobParams(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file12)
         self.assertTrue(v)
 
     def testRecipeProcessorCustomNamespaceCustomTaskParams(self):
-
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file13)
         self.assertTrue(v)
+
+    def testRecipeProcessorRecipeNoEarlyAbort(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
+        self.assertEqual(len(r), 2) # two job executions
+        self.assertFalse(v)
 
 if __name__ == '__main__':
     unittest.main()
