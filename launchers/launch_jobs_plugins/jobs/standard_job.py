@@ -11,8 +11,8 @@ class StandardJob(launch_jobs.BaseJob):
         return True, None
     def run_job(self):
         for t in self.task_list:
-            print("run_job [%s][%s]: now running task: [%s][%s]" % (self.name, self.get_desc(), t.name, t.get_desc()))
+            print(launch_jobs._format_job_info_msg(self, t))
             v, r = t.run_task()
             if not v:
-                return False, "Task [%s][%s] failed: [%s]" % (t.name, t.get_desc(), r)
+                return False, launch_jobs._format_task_error_msg(t, r)
         return True, None

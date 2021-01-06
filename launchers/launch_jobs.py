@@ -23,6 +23,12 @@ def _merge_params_downwards(p_parent, p_child):
 
     return result
 
+def _format_job_info_msg(job, task):
+    return "Job: [%s][%s]: now running task: [%s][%s]" % (job.name, job.get_desc(), task.name, task.get_desc())
+
+def _format_task_error_msg(task, detail):
+    return "Task [%s][%s] failed: [%s]" % (task.name, task.get_desc(), detail)
+
 class BaseTask:
     def __init__(self, name=None, params=None):
         self.name = name
