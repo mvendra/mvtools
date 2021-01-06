@@ -22,17 +22,28 @@ import terminal_colors
 # * task1 {options_custom} = "sample_echo_true.py"
 # ]
 #
-# this would be a recipe file with only one job, which itself has only one task.
+# this would be a recipe file with only one job, which itself has only one task (task1)
 # job options (options_base in the example above) are inherited/merged downwards
 # onto the job's tasks. task options take precedence whenever there are duplications.
+# a recipe is deemed successful if (and only if) every single task in every single job
+# succeeded (some exceptions may apply - see below)
+#
 # by default, task scripts are searched inside MVTOOLS/launchers/launch_jobs_plugins/tasks
 # this can be changed by adding the following freestanding (i.e. outside any context) variable:
 # * recipe_namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
 #
-# a recipe is deemed successful if (and only if) every single task in every single job succeeded
+# it is possible to define launch_jobs's execution options using freestanding variables
+# inside the recipe:
+#
+# * early_abort = "true" # "true" or "false" are accepted - exclusively
+# this will specify whether an execution should be aborted whenever any job fails. the execution
+# itself will be deemed a failure upon any job failure, but with this option enabled, the execution
+# will nonetheless continue until there are no more jobs in the list.
+#
 # a recipe may include other recipes using the following freestanding variable:
 # * include_recipe = "/home/user/other_recipe.t20"
-# includes are recursive.
+# includes are recursive. mvtodo: can includes have their own namespaces?
+#
 # mvtodo: also document custom jobs and stuff
 
 RECIPE_INCLUDES_DEPTH_LIMITER = 100 # disallow more than 100 recursive includes
@@ -159,6 +170,7 @@ class RecipeProcessor:
 
         # recipe namespace (for tasks/plugins)
         var_rn = dsl.get_vars("recipe_namespace")
+        # mvtodo: accept only ONE recipe namespace
         if len(var_rn) > 0:
             namespace = var_rn[0][1]
 
@@ -201,7 +213,9 @@ class RecipeProcessor:
 
         # early abort option
         var_rn = dsl.get_vars("early_abort")
-        if len(var_rn) > 0: # has been specified in the recipe file
+        if len(var_rn) > 1: # has been specified more than once. fail.
+            return False, "Recipe's early_abort option has been specified more than once."
+        elif len(var_rn) == 1: # has been specified in the recipe file
             if (var_rn[0][1]).lower() == "true":
                 local_early_abort = True
             elif (var_rn[0][1]).lower() == "false":

@@ -126,6 +126,14 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
 
+        recipe_test_contents15 = "* early_abort = \"true\"\n"
+        recipe_test_contents15 += "* early_abort = \"false\"\n"
+        recipe_test_contents15 += "[\n@test-job-1\n"
+        recipe_test_contents15 += "* task1 = \"sample_echo_true.py\"\n"
+        recipe_test_contents15 += "]"
+        self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
+
     def delegate_setUp(self):
 
         v, r = mvtools_test_fixture.makeAndGetTestFolder("recipe_processor_test")
@@ -204,6 +212,10 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorRecipeNoEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
         self.assertEqual(len(r), 2) # two job executions
+        self.assertFalse(v)
+
+    def testRecipeProcessorRecipeDoubleEarlyAbort(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
         self.assertFalse(v)
 
 if __name__ == '__main__':
