@@ -24,7 +24,8 @@ def _merge_params_downwards(p_parent, p_child):
     return result
 
 class BaseTask:
-    def __init__(self, params=None):
+    def __init__(self, name=None, params=None):
+        self.name = name
         self.params = params
     def get_desc(self):
         return "Generic base task"
@@ -32,15 +33,22 @@ class BaseTask:
         return False, "Not implemented"
 
 class BaseJob:
-    def __init__(self, params=None):
+    def __init__(self, name=None, params=None):
+        self.name = name
         self.params = params
         self.task_list = []
     def get_desc(self):
         return "Generic base job"
     def add_task(self, task):
-        return None
+        task.params = _merge_params_downwards(self.params, task.params)
+        self.task_list.append(task)
     def run_job(self):
-        return False, "Not implemented"
+        for t in self.task_list:
+            print("run_job [%s][%s]: now running task: [%s][%s]" % (self.name, self.get_desc(), t.name, t.get_desc()))
+            v, r = t.run_task()
+            if not v:
+                return False, "Task [%s][%s] failed: [%s]" % (t.name, t.get_desc(), r)
+        return True, None
 
 class RunOptions:
     def __init__(self, early_abort=True):
@@ -56,9 +64,9 @@ def run_job_list(job_list, options):
         j_msg = ""
 
         if v:
-            j_msg = "Job [%s] succeeded." % j.get_desc()
+            j_msg = "Job [%s][%s] succeeded." % (j.name, j.get_desc())
         else:
-            j_msg = "Job [%s] failed: [%s]." % (j.get_desc(), r)
+            j_msg = "Job [%s][%s] failed: [%s]." % (j.name, j.get_desc(), r)
             has_any_failed = True
 
         report.append((v, j_msg))

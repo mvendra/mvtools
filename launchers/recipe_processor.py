@@ -174,15 +174,13 @@ class RecipeProcessor:
 
             for var in dsl.get_all_vars(ctx):
 
-                # var[0] is currently not used for anything (the variable name)
-
                 task_params = _convert_dsl_opts_into_py_map(var[2])
 
                 v, r = _get_task_instance(var[1], namespace)
                 if not v:
                     return False, r
 
-                new_task = r(task_params)
+                new_task = r(var[0], task_params)
                 new_job.add_task(new_task)
 
             jobs.append(new_job)
