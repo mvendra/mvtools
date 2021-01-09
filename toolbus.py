@@ -6,34 +6,26 @@ import os
 import path_utils
 import dsl_type20
 
-import trylock
+import sync_write_file
 
 TOOLBUS_ENVVAR = "MVTOOLS_TOOLBUS_BASE"
-DB_EXTENSION = "txt"
+DB_EXTENSION = "t20"
 INTERNAL_DB_FILENAME = "toolbus_internal"
 TOOLBUS_SIGNAL_CONTEXT = "toolbus_internal_signals_context"
 
 def bootstrap_internal_toolbus_db(_filename):
 
     if os.path.exists(_filename):
-        return False
+        return False, "Unable to bootstrap internal database file [%s] (database: [%s], context: [%s]): File already exists." % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT)
 
     db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(False, False, False))
     db_handle.add_context(TOOLBUS_SIGNAL_CONTEXT, [])
     bootstrap_contents = db_handle.produce()
 
-    with open(_filename, "a") as f:
+    if not sync_write_file.sync_write_file(_filename, bootstrap_contents):
+        return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT)
 
-        # tries to acquire a mutex lock on this file to prevent concurrent writes
-        if not trylock.try_lock_file(f):
-            return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT)
-
-        f.truncate(0) # clear old contents prior to updating
-        f.write(bootstrap_contents)
-        f.flush()
-        trylock.try_unlock_file(f)
-
-    return True
+    return True, None
 
 def get_db_handle(_db_name, bootstrap_internal=False):
 
@@ -52,8 +44,9 @@ def get_db_handle(_db_name, bootstrap_internal=False):
 
     if not os.path.exists(db_file_full):
         if bootstrap_internal:
-            if not bootstrap_internal_toolbus_db(db_file_full):
-                return False, "Failed setting up toolbus - unable to bootstrap toolbus internal database.", None
+            v, r = bootstrap_internal_toolbus_db(db_file_full)
+            if not v:
+                return False, "Failed setting up toolbus - unable to bootstrap toolbus internal database: [%s]" % r, None
         else:
             return False, "Failed setting up toolbus - database [%s] does not exist." % db_file_full, None
 
@@ -108,16 +101,8 @@ def get_signal(_sig_name, probe_only=False):
         new_contents = _db_handle.produce()
 
         # save changes to file
-        with open(ext, "a") as f:
-
-            # tries to acquire a mutex lock on this file to prevent concurrent writes
-            if not trylock.try_lock_file(f):
-                return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
-
-            f.truncate(0) # clear old contents prior to updating
-            f.write(new_contents)
-            f.flush()
-            trylock.try_unlock_file(f)
+        if not sync_write_file.sync_write_file(ext, new_contents):
+            return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
 
     return True, r[1]
 
@@ -150,16 +135,8 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
     new_contents = _dh_handle.produce()
 
     # save changes to file
-    with open(_db_full_file, "a") as f:
-
-        # tries to acquire a mutex lock on this file to prevent concurrent writes
-        if not trylock.try_lock_file(f):
-            return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (_db_full_file, _db_name, _context)
-
-        f.truncate(0) # clear old contents prior to updating
-        f.write(new_contents)
-        f.flush()
-        trylock.try_unlock_file(f)
+    if not sync_write_file.sync_write_file(_db_full_file, new_contents):
+        return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (_db_full_file, _db_name, _context)
 
     return True, None
 

@@ -40,7 +40,7 @@ class ToolbusTest(unittest.TestCase):
 
         self.contents_db_test_ok_1 = "var1 = \"val1\"" + os.linesep
         self.db_test_ok_1 = "test_db_ok_1"
-        self.db_test_ok_1_full = path_utils.concat_path(self.test_dir, "%s.txt" % self.db_test_ok_1)
+        self.db_test_ok_1_full = path_utils.concat_path(self.test_dir, "%s.%s" % (self.db_test_ok_1, toolbus.DB_EXTENSION))
 
         self.contents_db_test_ok_2 = "var1 = \"val1\"" + os.linesep
         self.contents_db_test_ok_2 += "[" + os.linesep
@@ -48,14 +48,14 @@ class ToolbusTest(unittest.TestCase):
         self.contents_db_test_ok_2 += "var2 = \"val2\"" + os.linesep
         self.contents_db_test_ok_2 += "]" + os.linesep
         self.db_test_ok_2 = "test_db_ok_2"
-        self.db_test_ok_2_full = path_utils.concat_path(self.test_dir, "%s.txt" % self.db_test_ok_2)
+        self.db_test_ok_2_full = path_utils.concat_path(self.test_dir, "%s.%s" % (self.db_test_ok_2, toolbus.DB_EXTENSION))
 
         self.contents_db_test_fail_1 = "var1 ! \"val1\"" + os.linesep
-        self.db_test_fail_1 = path_utils.concat_path(self.test_dir, "test_db_fail_1.txt")
+        self.db_test_fail_1 = path_utils.concat_path(self.test_dir, "test_db_fail_1.%s" % (toolbus.DB_EXTENSION))
 
         self.contents_db_test_fail_2 = "var1 = \"val1\"" + os.linesep
         self.contents_db_test_fail_2 += "var1 = \"val1\"" + os.linesep
-        self.db_test_fail_2 = path_utils.concat_path(self.test_dir, "test_db_fail_2.txt")
+        self.db_test_fail_2 = path_utils.concat_path(self.test_dir, "test_db_fail_2.%s" % (toolbus.DB_EXTENSION))
 
         self.db_test_internal_database = path_utils.concat_path(self.test_dir, "%s.%s" % (toolbus.INTERNAL_DB_FILENAME, toolbus.DB_EXTENSION))
 
