@@ -13,7 +13,24 @@ DB_EXTENSION = "t20"
 INTERNAL_DB_FILENAME = "toolbus_internal"
 TOOLBUS_SIGNAL_CONTEXT = "toolbus_internal_signals_context"
 
-def bootstrap_internal_toolbus_db(_filename):
+def bootstrap_custom_toolbus_db(db_name):
+
+    try:
+        db_base = os.environ[TOOLBUS_ENVVAR]
+    except:
+        return False, "Failed setting up toolbus database: [%s]. Is the %s environment variable defined?" % (db_name, TOOLBUS_ENVVAR)
+
+    full_db_filename = "%s.%s" % (path_utils.concat_path(db_base, db_name), DB_EXTENSION)
+
+    if os.path.exists(full_db_filename):
+        return False, "Unable to bootstrap custom toolbus database [%s]: File already exists." % full_db_filename
+
+    if not sync_write_file.sync_write_file(full_db_filename, ""):
+        return False, "Unable to bootstrap custom toolbus database [%s]: Unable to acquire write lock on file." % full_db_filename
+
+    return True, None
+
+def _bootstrap_internal_toolbus_db(_filename): # this is supposed to be a "private" function
 
     if os.path.exists(_filename):
         return False, "Unable to bootstrap internal database file [%s] (database: [%s], context: [%s]): File already exists." % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT)
@@ -44,7 +61,7 @@ def get_db_handle(_db_name, bootstrap_internal=False):
 
     if not os.path.exists(db_file_full):
         if bootstrap_internal:
-            v, r = bootstrap_internal_toolbus_db(db_file_full)
+            v, r = _bootstrap_internal_toolbus_db(db_file_full)
             if not v:
                 return False, "Failed setting up toolbus - unable to bootstrap toolbus internal database: [%s]" % r, None
         else:

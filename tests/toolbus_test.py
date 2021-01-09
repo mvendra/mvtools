@@ -58,6 +58,7 @@ class ToolbusTest(unittest.TestCase):
         self.db_test_fail_2 = path_utils.concat_path(self.test_dir, "test_db_fail_2.%s" % (toolbus.DB_EXTENSION))
 
         self.db_test_internal_database = path_utils.concat_path(self.test_dir, "%s.%s" % (toolbus.INTERNAL_DB_FILENAME, toolbus.DB_EXTENSION))
+        self.db_test_custom_database = path_utils.concat_path(self.test_dir, "%s.%s" % ("custom-test-db", toolbus.DB_EXTENSION))
 
         create_and_write_file.create_file_contents(self.db_test_ok_1_full, self.contents_db_test_ok_1)
         create_and_write_file.create_file_contents(self.db_test_ok_2_full, self.contents_db_test_ok_2)
@@ -77,6 +78,13 @@ class ToolbusTest(unittest.TestCase):
         os.environ.clear()
         os.environ.update(self.environ_copy)
         shutil.rmtree(self.test_base_dir)
+
+    def testBootstrapCustomToolbusDb(self):
+        v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(os.path.basename(self.db_test_custom_database)))
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.db_test_custom_database))
+        v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(os.path.basename(self.db_test_custom_database)))
+        self.assertFalse(v)
 
     def testGetDbHandle1(self):
 
