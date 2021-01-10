@@ -28,7 +28,7 @@ class ToolbusTest(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
-        if not self._setenv(toolbus.TOOLBUS_ENVVAR, self.test_dir):
+        if not mvtools_test_fixture.setEnv(toolbus.TOOLBUS_ENVVAR, self.test_dir):
             return False, "Failed setting up the %s env var for testing." % toolbus.TOOLBUS_ENVVAR
 
         self.reserved_test_env_var = "$MVTOOLS_TOOLBUS_TEST_RESERVED_1"
@@ -67,13 +67,6 @@ class ToolbusTest(unittest.TestCase):
 
         return True, ""
 
-    def _setenv(self, _var, _val):
-        try:
-            os.environ[ _var ] = _val
-        except:
-            return False
-        return True
-
     def tearDown(self):
         os.environ.clear()
         os.environ.update(self.environ_copy)
@@ -100,7 +93,7 @@ class ToolbusTest(unittest.TestCase):
 
         local_environ_copy = os.environ.copy()
         try:
-            if not self._setenv(toolbus.TOOLBUS_ENVVAR, self.nonexistent_folder):
+            if not mvtools_test_fixture.setEnv(toolbus.TOOLBUS_ENVVAR, self.nonexistent_folder):
                 self.fail("Failed setting envvar: [%s] with value: [%s]" % (toolbus.TOOLBUS_ENVVAR, self.nonexistent_folder))
 
             v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )

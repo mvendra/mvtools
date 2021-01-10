@@ -23,3 +23,10 @@ def makeAndGetTestFolder(additional_folder):
         os.mkdir(final_dir)
 
     return True, (test_dir_pre, final_dir)
+
+def setEnv(_var, _val):
+    try:
+        os.environ[ _var ] = _val
+    except:
+        return False
+    return True
