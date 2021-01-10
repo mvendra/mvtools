@@ -360,5 +360,70 @@ class ToolbusTest(unittest.TestCase):
         v, r = toolbus.get_signal("var12")
         self.assertFalse(v)
 
+    def testRemoveField1(self):
+
+        v, r = toolbus.set_field(self.db_test_ok_1, None, "var1", "val2", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+
+        v, r = toolbus.remove_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertFalse(v)
+
+    def testRemoveField2(self):
+
+        v, r = toolbus.set_field(self.db_test_ok_1, None, "var1", "val2", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+
+        v, r = toolbus.remove_field(self.db_test_ok_1, None, "var2")
+        self.assertFalse(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
+        self.assertTrue(v)
+
+    def testRemoveTable1(self):
+
+        v, r = toolbus.set_field(self.db_test_ok_1, "ctx1", "var1", "val1", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "ctx1", "var1")
+        self.assertTrue(v)
+
+        v, r = toolbus.remove_table(self.db_test_ok_1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "ctx1", "var1")
+        self.assertFalse(v)
+
+    def testRemoveTable2(self):
+
+        v, r = toolbus.set_field(self.db_test_ok_1, "ctx1", "var1", "val1", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.set_field(self.db_test_ok_1, "ctx2", "var2", "val2", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "ctx1", "var1")
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "ctx2", "var2")
+        self.assertTrue(v)
+
+        v, r = toolbus.remove_table(self.db_test_ok_1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "ctx1", "var1")
+        self.assertFalse(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_1, "ctx2", "var2")
+        self.assertTrue(v)
+
 if __name__ == '__main__':
     unittest.main()

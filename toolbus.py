@@ -131,6 +131,42 @@ def get_field(_db_name, _context, _var):
 
     return _get_internal(r, _db_name, _context, _var)
 
+def remove_field(_db_name, _context, _var):
+
+    v, r, ext = get_handle_custom_db(_db_name)
+    if not v:
+        return False, r
+    _db_handle = r
+
+    if not _db_handle.rem_var(_var, _context):
+        return False, "Unable to remove variable [%s] (database: [%s], context: [%s])." % (_var, _db_name, _context)
+
+    new_contents = _db_handle.produce()
+
+    # save changes to file
+    if not sync_write_file.sync_write_file(ext, new_contents):
+        return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "_db_name", _context)
+
+    return True, None
+
+def remove_table(_db_name, _context):
+
+    v, r, ext = get_handle_custom_db(_db_name)
+    if not v:
+        return False, r
+    _db_handle = r
+
+    if not _db_handle.rem_ctx(_context):
+        return False, "Unable to remove context [%s] (database: [%s])." % (_context, _db_name)
+
+    new_contents = _db_handle.produce()
+
+    # save changes to file
+    if not sync_write_file.sync_write_file(ext, new_contents):
+        return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "_db_name", _context)
+
+    return True, None
+
 def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
     vars = _dh_handle.get_vars(_var, _context)
