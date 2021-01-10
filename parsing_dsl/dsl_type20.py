@@ -706,6 +706,22 @@ class DSLType20:
 
         return (len(local_all_vars) != len(local_all_vars_new))
 
+    def rem_ctx(self, context):
+
+        if context == self.default_context_id:
+            return False
+        if not isinstance(context, str):
+            return False
+        if not context in self.data:
+            return False
+
+        try:
+            del self.data[context]
+        except:
+            return False
+
+        return True
+
 def puaq():
     print("Usage: %s file_to_parse.cfg" % os.path.basename(__file__))
     sys.exit(1)
