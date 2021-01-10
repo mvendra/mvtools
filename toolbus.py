@@ -138,7 +138,7 @@ def remove_field(_db_name, _context, _var):
         return False, r
     _db_handle = r
 
-    if not _db_handle.rem_var(_var, _context):
+    if not _db_handle.rem_var(_var, None, _context):
         return False, "Unable to remove variable [%s] (database: [%s], context: [%s])." % (_var, _db_name, _context)
 
     new_contents = _db_handle.produce()
@@ -166,6 +166,24 @@ def remove_table(_db_name, _context):
         return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "_db_name", _context)
 
     return True, None
+
+def get_all_tables(_db_name):
+
+    v, r, ext = get_handle_custom_db(_db_name)
+    if not v:
+        return False, r
+    _db_handle = r
+
+    return True, _db_handle.get_all_contexts()
+
+def get_all_fields(_db_name, _context):
+
+    v, r, ext = get_handle_custom_db(_db_name)
+    if not v:
+        return False, r
+    _db_handle = r
+
+    return True, _db_handle.get_all_vars(_context)
 
 def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
