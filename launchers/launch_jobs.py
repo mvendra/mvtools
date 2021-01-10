@@ -3,6 +3,10 @@
 import sys
 import os
 
+import toolbus
+
+LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
+
 def _merge_params_downwards(p_parent, p_child):
 
     result = {}
@@ -54,7 +58,26 @@ class RunOptions:
     def __init__(self, early_abort=True):
         self.early_abort = early_abort # stop upon first job failure (note: applies to jobs *only*)
 
-def run_job_list(job_list, options):
+def run_job_list(job_list, options, execution_name=None):
+
+    if execution_name is None:
+        execution_name = "launch_jobs_%d" % os.getpid()
+
+    # ensures the toolbus database exists
+    v, r = toolbus.bootstrap_custom_toolbus_db(LAUNCHJOBS_TOOLBUS_DATABASE)
+    # no need to check the return
+
+    # if the following field already exists, then this execution has already been registered on toolbus. fail.
+    v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status")
+    if v:
+        return False, ["Unable to start execution: execution name [%s] already exists inside launch_jobs's toolbus database." % execution_name]
+
+    # setup the status of the soon-to-start execution
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status", "running", [])
+    if not v:
+        return False, ["Unable to start execution: execution name [%s] couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
+
+    print("Execution context [%s] will begin running." % execution_name)
 
     report = []
     has_any_failed = False
@@ -74,7 +97,31 @@ def run_job_list(job_list, options):
         if not v and options.early_abort:
             break
 
+    v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
+    if not v:
+        return False, ["Unable to remove execution named [%s] from toolbus database." % execution_name] + report
+
     return (not(has_any_failed)), report
 
+def print_current_executions():
+
+    v, r = toolbus.get_all_tables(LAUNCHJOBS_TOOLBUS_DATABASE)
+    if not v:
+        return False, "Unable to fetch executions from toolbus launch_jobs database: [%s]" % r
+
+    report = []
+    for exe_name in r:
+        v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, exe_name, "status")
+        if not v:
+            return False, "Unable to fetch execution [%s]'s status: [%s]" % (exe_name, r)
+        report.append("%s: %s" % (exe_name, r[1]))
+
+    return True, report
+
 if __name__ == "__main__":
-    print("Hello from %s" % os.path.basename(__file__))
+    v, r = print_current_executions()
+    if not v:
+        print(r)
+        sys.exit(1)
+    for l in r:
+        print(l)
