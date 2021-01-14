@@ -44,7 +44,16 @@ import terminal_colors
 # * include_recipe = "/home/user/other_recipe.t20"
 # includes are recursive. included recipes can have their own namespaces.
 #
-# mvtodo: also document custom jobs and stuff
+# it is possible to override the standard job (jobs/standard_job.py) default implementation
+# by using the following syntax:
+#
+# [
+# @job1 {mvtools_recipe_processor_plugin_job: "custom_job_impl.py"}
+# * task1 = "sample_echo_true.py"
+# ]
+#
+# which makes the option "mvtools_recipe_processor_plugin_job" not available for
+# custom/general use (i.e. not usable by task plugins)
 
 RECIPE_INCLUDES_DEPTH_LIMITER = 100 # disallow more than 100 recursive includes
 
@@ -99,6 +108,35 @@ def _get_task_instance(task_script, namespace=None):
         return False, "Task script [%s] has no class named CustomTask." % task_script_full
 
     return True, mod.CustomTask
+
+def _get_job_instance(job_params, namespace=None):
+
+    if not "mvtools_recipe_processor_plugin_job" in job_params:
+        return True, standard_job.StandardJob
+    job_script = job_params["mvtools_recipe_processor_plugin_job"]
+
+    v, r = _get_plugins_path(namespace)
+    if not v:
+        return False, r
+    script_base_path = r
+    if namespace is None:
+        script_base_path = path_utils.concat_path(r, "jobs")
+
+    job_script_full = path_utils.concat_path(script_base_path, job_script)
+    if not os.path.exists(job_script_full):
+        return False, "Job script [%s] does not exist." % job_script_full
+
+    loader = importlib.machinery.SourceFileLoader("CustomJobMod", job_script_full) # (partly) red meat
+    spec = importlib.util.spec_from_loader(loader.name, loader) # pork
+    mod = importlib.util.module_from_spec(spec) # pork
+    loader.exec_module(mod) # pork
+
+    try:
+        di = mod.CustomJob()
+    except:
+        return False, "Job script [%s] has no class named CustomJob." % job_script_full
+
+    return True, mod.CustomJob
 
 class RecipeProcessor:
 
@@ -188,7 +226,10 @@ class RecipeProcessor:
         for ctx in dsl.get_all_contexts():
 
             job_params = _convert_dsl_opts_into_py_map(dsl.get_context_options(ctx))
-            new_job = standard_job.StandardJob(ctx, job_params) # mvtodo: allow this to be customizable {and also ship an ExtendedJob with lotsa extra features too, maybe}
+            v, r = _get_job_instance(job_params, namespace)
+            if not v:
+                return False, r
+            new_job = r(ctx, job_params)
 
             for var in dsl.get_all_vars(ctx):
 

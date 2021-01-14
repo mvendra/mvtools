@@ -50,6 +50,23 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_params_script_file_namespace1, sample_custom_echo_true_params_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_params_script_file_namespace2, sample_custom_echo_true_params_script_contents)
 
+        sample_custom_job_script_contents = "#!/usr/bin/env python3\n\n"
+        sample_custom_job_script_contents += "import launch_jobs\n\n"
+        sample_custom_job_script_contents += "class CustomJob(launch_jobs.BaseJob):\n"
+        sample_custom_job_script_contents += "    def get_desc(self):\n"
+        sample_custom_job_script_contents += "        return \"CustomJob\"\n"
+        sample_custom_job_script_contents += "    def add_task(self, task):\n"
+        sample_custom_job_script_contents += "        self.task_list.append(task)\n"
+        sample_custom_job_script_contents += "    def run_job(self):\n"
+        sample_custom_job_script_contents += "        if len(self.task_list) % 2 == 0:\n"
+        sample_custom_job_script_contents += "            return True, None\n"
+        sample_custom_job_script_contents += "        else:\n"
+        sample_custom_job_script_contents += "            return False, None\n"
+        self.sample_custom_job_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_job.py")
+        self.sample_custom_job_script_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_job.py")
+        create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace1, sample_custom_job_script_contents)
+        create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace2, sample_custom_job_script_contents)
+
         recipe_test_contents1 = "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
         self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file1, recipe_test_contents1)
@@ -155,6 +172,16 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file17 = path_utils.concat_path(self.test_dir, "recipe_test17.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file17, recipe_test_contents17)
 
+        recipe_test_contents18 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents18 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n]" % (os.path.basename(self.sample_custom_job_script_file_namespace1), os.path.basename(self.sample_custom_echo_true_script_file_namespace1))
+        self.recipe_test_file18 = path_utils.concat_path(self.test_dir, "recipe_test18.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file18, recipe_test_contents18)
+
+        recipe_test_contents19 = "* recipe_namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents19 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (os.path.basename(self.sample_custom_job_script_file_namespace1), os.path.basename(self.sample_custom_echo_true_script_file_namespace2), os.path.basename(self.sample_custom_echo_true_script_file_namespace2))
+        self.recipe_test_file19 = path_utils.concat_path(self.test_dir, "recipe_test19.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file19, recipe_test_contents19)
+
     def delegate_setUp(self):
 
         v, r = mvtools_test_fixture.makeAndGetTestFolder("recipe_processor_test")
@@ -245,6 +272,14 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorCustomNamespaceIncludesAnotherCustomNamespace(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file17)
+        self.assertTrue(v)
+
+    def testRecipeProcessorCustomJobCustomNamespace1(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file18)
+        self.assertFalse(v)
+
+    def testRecipeProcessorCustomJobCustomNamespace2(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file19)
         self.assertTrue(v)
 
 if __name__ == '__main__':
