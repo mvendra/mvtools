@@ -153,7 +153,7 @@ class LaunchJobsTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(len(r), 1)
 
-    def testLaunchJobsRunOptions2(self):
+    def testLaunchJobsRunOptionsEarlyAbort1(self):
 
         job1 = CustomJob()
         job1.add_task(CustomTaskFalse())
@@ -167,7 +167,7 @@ class LaunchJobsTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(len(r), 2)
 
-    def testLaunchJobsRunOptions3(self):
+    def testLaunchJobsRunOptionsEarlyAbort2(self):
 
         job1 = CustomJob()
         job1.add_task(CustomTaskTrue())
@@ -180,6 +180,16 @@ class LaunchJobsTest(unittest.TestCase):
         v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(early_abort=False))
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
+
+    def testLaunchJobsRunOptionsTimeDelay1(self):
+
+        job1 = CustomJob()
+        job1.add_task(CustomTaskTrue())
+
+        job_list = [job1]
+
+        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(time_delay="2s"))
+        self.assertTrue(v)
 
 if __name__ == '__main__':
     unittest.main()
