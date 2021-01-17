@@ -217,6 +217,17 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file23 = path_utils.concat_path(self.test_dir, "recipe_test23.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file23, recipe_test_contents23)
 
+        recipe_test_contents24 = "* signal_delay = \"test-signal\"\n"
+        recipe_test_contents24 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file24 = path_utils.concat_path(self.test_dir, "recipe_test24.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file24, recipe_test_contents24)
+
+        recipe_test_contents25 = "* signal_delay = \"test-signal1\"\n"
+        recipe_test_contents25 += "* signal_delay = \"test-signal2\"\n"
+        recipe_test_contents25 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
+
         return True, ""
 
     def tearDown(self):
@@ -325,6 +336,16 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorTimeDelay2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file23)
+        self.assertFalse(v)
+
+    def testRecipeProcessorSignalDelay1(self):
+        v, r = toolbus.set_signal("test-signal", "set")
+        self.assertTrue(v)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file24)
+        self.assertTrue(v)
+
+    def testRecipeProcessorSignalDelay2(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file25)
         self.assertFalse(v)
 
 if __name__ == '__main__':

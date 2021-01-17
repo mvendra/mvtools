@@ -45,7 +45,8 @@ import terminal_colors
 #
 # * time_delay = "1h" # defines a pre-execution delay. examples: "7h", "30m", "15".
 #
-# mvtodo: signal_delay
+# * signal_delay = "sig-name" # defines a toolbus internal signal to be waited for before starting this
+# execution. the signal gets consumed upon availability.
 #
 # mvtodo: execution_delay
 #
@@ -294,6 +295,7 @@ class RecipeProcessor:
         default_options = launch_jobs.RunOptions()
         local_early_abort = default_options.early_abort
         local_time_delay = default_options.time_delay
+        local_signal_delay = default_options.signal_delay
 
         # early abort option
         v, r = self._get_launch_options_helper(dsl, "early_abort", [True, False], self._lowercase_bool_option_value_filter)
@@ -307,7 +309,13 @@ class RecipeProcessor:
             return False, r
         local_time_delay = r
 
-        return True, launch_jobs.RunOptions(early_abort=local_early_abort, time_delay=local_time_delay)
+        # signal delay option
+        v, r = self._get_launch_options_helper(dsl, "signal_delay", None, self._lowercase_str_option_value_filter)
+        if not v:
+            return False, r
+        local_signal_delay = r
+
+        return True, launch_jobs.RunOptions(early_abort=local_early_abort, time_delay=local_time_delay, signal_delay=local_signal_delay)
 
     def _get_exec_name_from_recipe(self, dsl):
 
