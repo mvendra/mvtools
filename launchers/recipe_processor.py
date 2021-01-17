@@ -48,7 +48,9 @@ import terminal_colors
 # * signal_delay = "sig-name" # defines a toolbus internal signal to be waited for before starting this
 # execution. the signal gets consumed upon availability.
 #
-# mvtodo: execution_delay
+# * execution_delay = "exec-name" # defines a toolbus launch_jobs database-registered execution name
+# to be waited for before starting this execution. this will cause this execution to be delayed *until*
+# the defined execution name is concluded (i.e. has bee removed from launch_jobs's toolbus database)
 #
 # a recipe may include other recipes using the following freestanding variable:
 # * include_recipe = "/home/user/other_recipe.t20"
@@ -296,6 +298,7 @@ class RecipeProcessor:
         local_early_abort = default_options.early_abort
         local_time_delay = default_options.time_delay
         local_signal_delay = default_options.signal_delay
+        local_execution_delay = default_options.execution_delay
 
         # early abort option
         v, r = self._get_launch_options_helper(dsl, "early_abort", [True, False], self._lowercase_bool_option_value_filter)
@@ -315,7 +318,13 @@ class RecipeProcessor:
             return False, r
         local_signal_delay = r
 
-        return True, launch_jobs.RunOptions(early_abort=local_early_abort, time_delay=local_time_delay, signal_delay=local_signal_delay)
+        # execution delay option
+        v, r = self._get_launch_options_helper(dsl, "execution_delay", None, self._lowercase_str_option_value_filter)
+        if not v:
+            return False, r
+        local_execution_delay = r
+
+        return True, launch_jobs.RunOptions(early_abort=local_early_abort, time_delay=local_time_delay, signal_delay=local_signal_delay, execution_delay=local_execution_delay)
 
     def _get_exec_name_from_recipe(self, dsl):
 
