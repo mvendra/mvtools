@@ -69,6 +69,25 @@ def _setup_toolbus(execution_name):
 
     return True, None
 
+def _retry_helper(wait_object, wait_object_name, function):
+
+    if wait_object is None:
+        return True, None
+
+    retry_opts = {"retries_max": 800000, "retry_sleep_random": 2000}
+    if not retry.retry(retry_opts, function, wait_object):
+        return False, "Timed out waiting for %s [%s]." % (wait_object_name, wait_object)
+
+    return True, False
+
+def _handle_delayed_start_signal_delegate(signal_delay):
+    v, r = toolbus.get_signal(signal_delay) # signal will be consumed
+    return v
+
+def _handle_delayed_start_execution_delegate(execution_delay):
+    v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_delay, "status")
+    return not v
+
 def _handle_delayed_start_time(time_delay):
 
     if time_delay is None:
@@ -82,28 +101,11 @@ def _handle_delayed_start_time(time_delay):
 
     return True, None
 
-def _handle_delayed_start_signal_delegate(signal_delay):
-    v, r = toolbus.get_signal(signal_delay) # signal will be consumed
-    if v:
-        return True
-
 def _handle_delayed_start_signal(signal_delay):
-
-    if signal_delay is None:
-        return True, None
-
-    retry_opts = {"retries_max": 800000, "retry_sleep_random": 2000}
-    if not retry.retry(retry_opts, _handle_delayed_start_signal_delegate, signal_delay):
-        return False, "Timed out waiting for signal [%s]." % (signal_delay)
-
-    return True, False
+    return _retry_helper(signal_delay, "signal", _handle_delayed_start_signal_delegate)
 
 def _handle_delayed_start_execution(execution_delay):
-
-    if execution_delay is None:
-        return True, None
-
-    return False, "mvtodo"
+    return _retry_helper(execution_delay, "execution", _handle_delayed_start_execution_delegate)
 
 def _handle_delayed_start(execution_name, time_delay, signal_delay, execution_delay):
 
@@ -139,10 +141,13 @@ class RunOptions:
         self.signal_delay = signal_delay # wait for the given toolbus signal before starting this execution
         self.execution_delay = execution_delay # wait for the given execution to end before starting this execution
 
-def run_job_list(job_list, options, execution_name=None):
+def run_job_list(job_list, execution_name=None, options=None):
 
     if execution_name is None:
         execution_name = "launch_jobs_%d" % os.getpid()
+
+    if options is None:
+        options = RunOptions()
 
     # setup toolbus
     v, r = _setup_toolbus(execution_name)

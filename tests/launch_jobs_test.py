@@ -75,7 +75,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_task(launch_jobs.BaseTask())
 
-        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list([job1])
         self.assertFalse(v)
 
     def testLaunchJobsCustomTask1(self):
@@ -83,7 +83,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_task(CustomTaskTrue())
 
-        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list([job1])
         self.assertTrue(v)
 
     def testLaunchJobsCustomTask2(self):
@@ -92,7 +92,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.add_task(CustomTaskTrue())
         job1.add_task(CustomTaskFalse())
 
-        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list([job1])
         self.assertFalse(v)
 
     def testLaunchJobsCustomTaskParams1(self):
@@ -100,7 +100,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test": True})
         job1.add_task(CustomTaskParams())
 
-        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list([job1])
         self.assertTrue(v)
 
     def testLaunchJobsCustomTaskParams2(self):
@@ -108,7 +108,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test": False})
         job1.add_task(CustomTaskParams())
 
-        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list([job1])
         self.assertFalse(v)
 
     def testLaunchJobsCustomTaskParams3(self):
@@ -117,7 +117,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.add_task(CustomTaskParams())
 
         try:
-            v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+            v, r = launch_jobs.run_job_list([job1])
         except KeyError:
             pass
         except:
@@ -128,7 +128,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test1": True})
         job1.add_task(CustomTaskParams1And2(params={"test2": True}))
 
-        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list([job1])
         self.assertTrue(v)
 
     def testLaunchJobsCustomTaskParams5(self):
@@ -136,7 +136,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob(params={"test": True})
         job1.add_task(CustomTaskParams(params={"test": False}))
 
-        v, r = launch_jobs.run_job_list([job1], launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list([job1])
         self.assertFalse(v)
 
     def testLaunchJobsRunOptions1(self):
@@ -149,7 +149,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         job_list = [job1, job2]
 
-        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions())
+        v, r = launch_jobs.run_job_list(job_list)
         self.assertFalse(v)
         self.assertEqual(len(r), 1)
 
@@ -163,7 +163,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         job_list = [job1, job2]
 
-        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(early_abort=False))
+        v, r = launch_jobs.run_job_list(job_list, options=launch_jobs.RunOptions(early_abort=False))
         self.assertFalse(v)
         self.assertEqual(len(r), 2)
 
@@ -177,7 +177,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         job_list = [job1, job2]
 
-        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(early_abort=False))
+        v, r = launch_jobs.run_job_list(job_list, options=launch_jobs.RunOptions(early_abort=False))
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
@@ -188,7 +188,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         job_list = [job1]
 
-        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(time_delay="2s"))
+        v, r = launch_jobs.run_job_list(job_list, options=launch_jobs.RunOptions(time_delay="2s"))
         self.assertTrue(v)
 
     def testLaunchJobsRunOptionsSignalDelay1(self):
@@ -201,7 +201,22 @@ class LaunchJobsTest(unittest.TestCase):
         v, r = toolbus.set_signal("mvtools-launch-jobs-test-signal-delay-option", "set")
         self.assertTrue(v)
 
-        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(signal_delay="mvtools-launch-jobs-test-signal-delay-option"))
+        v, r = launch_jobs.run_job_list(job_list, options=launch_jobs.RunOptions(signal_delay="mvtools-launch-jobs-test-signal-delay-option"))
+        self.assertTrue(v)
+
+    def testLaunchJobsRunOptionsExecutionDelay1(self):
+
+        first_exec = "first-exec"
+
+        job1 = CustomJob()
+        job1.add_task(CustomTaskTrue())
+
+        job_list = [job1]
+
+        v, r = launch_jobs.run_job_list(job_list, first_exec)
+        self.assertTrue(v)
+
+        v, r = launch_jobs.run_job_list(job_list, options=launch_jobs.RunOptions(execution_delay=first_exec))
         self.assertTrue(v)
 
 if __name__ == '__main__':
