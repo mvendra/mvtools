@@ -206,6 +206,17 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test21.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file21, recipe_test_contents21)
 
+        recipe_test_contents22 = "* time_delay = \"2s\"\n"
+        recipe_test_contents22 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file22 = path_utils.concat_path(self.test_dir, "recipe_test22.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file22, recipe_test_contents22)
+
+        recipe_test_contents23 = "* time_delay = \"2s\"\n"
+        recipe_test_contents23 += "* time_delay = \"3s\"\n"
+        recipe_test_contents23 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file23 = path_utils.concat_path(self.test_dir, "recipe_test23.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file23, recipe_test_contents23)
+
         return True, ""
 
     def tearDown(self):
@@ -306,6 +317,14 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorCustomExecutionName2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file21)
+        self.assertFalse(v)
+
+    def testRecipeProcessorTimeDelay1(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file22)
+        self.assertTrue(v)
+
+    def testRecipeProcessorTimeDelay2(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file23)
         self.assertFalse(v)
 
 if __name__ == '__main__':

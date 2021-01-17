@@ -43,7 +43,7 @@ import terminal_colors
 # itself will be deemed a failure upon any job failure, but with this option enabled, the execution
 # will nonetheless continue until there are no more jobs in the list.
 #
-# mvtodo: time_delay
+# * time_delay = "1h" # defines a pre-execution delay. examples: "7h", "30m", "15".
 #
 # mvtodo: signal_delay
 #
@@ -261,25 +261,53 @@ class RecipeProcessor:
         self.depth_counter -= 1
         return True, jobs
 
+    def _lowercase_str_option_value_filter(self, opt_val):
+        return opt_val.lower()
+
+    def _lowercase_bool_option_value_filter(self, opt_val):
+        local_opt_val = opt_val.lower()
+        if local_opt_val == "true":
+            return True
+        elif local_opt_val == "false":
+            return False
+        return None
+
+    def _get_launch_options_helper(self, dsl, option, valid_values, value_filter_function):
+
+        local_option = None
+
+        var_rn = dsl.get_vars(option)
+        if len(var_rn) > 1: # has been specified more than once. fail.
+            return False, "Recipe's %s option has been specified more than once." % option
+        elif len(var_rn) == 1: # has been specified once in the recipe file
+            unfiltered_val = var_rn[0][1]
+            filtered_val = value_filter_function(unfiltered_val)
+            if valid_values is not None:
+                if not filtered_val in valid_values:
+                    return False, "Recipe's %s option has an invalid value: [%s]" % (option, unfiltered_val)
+            local_option = filtered_val
+
+        return True, local_option
+
     def _get_launch_options_from_recipe(self, dsl):
 
         default_options = launch_jobs.RunOptions()
-
         local_early_abort = default_options.early_abort
+        local_time_delay = default_options.time_delay
 
         # early abort option
-        var_rn = dsl.get_vars("early_abort")
-        if len(var_rn) > 1: # has been specified more than once. fail.
-            return False, "Recipe's early_abort option has been specified more than once."
-        elif len(var_rn) == 1: # has been specified in the recipe file
-            if (var_rn[0][1]).lower() == "true":
-                local_early_abort = True
-            elif (var_rn[0][1]).lower() == "false":
-                local_early_abort = False
-            else:
-                return False, "Recipe's early_abort option has an invalid value: [%s]" % var_rn[0][1]
+        v, r = self._get_launch_options_helper(dsl, "early_abort", [True, False], self._lowercase_bool_option_value_filter)
+        if not v:
+            return False, r
+        local_early_abort = r
 
-        return True, launch_jobs.RunOptions(early_abort=local_early_abort)
+        # time delay option
+        v, r = self._get_launch_options_helper(dsl, "time_delay", None, self._lowercase_str_option_value_filter)
+        if not v:
+            return False, r
+        local_time_delay = r
+
+        return True, launch_jobs.RunOptions(early_abort=local_early_abort, time_delay=local_time_delay)
 
     def _get_exec_name_from_recipe(self, dsl):
 
