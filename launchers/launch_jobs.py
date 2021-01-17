@@ -5,6 +5,7 @@ import os
 
 import toolbus
 import minicron
+import retry
 
 LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
 
@@ -68,9 +69,45 @@ def _setup_toolbus(execution_name):
 
     return True, None
 
-def _handle_delayed_start(execution_name, time_delay):
+def _handle_delayed_start_time(time_delay):
 
-    if time_delay is None: # no delay applicable
+    if time_delay is None:
+        return True, None
+
+    wait_duration = minicron.convert_time_string(time_delay)
+    if wait_duration is None:
+        return False, "Requested delay of [%s] couldn't be parsed." % (time_delay)
+    if not minicron.busy_wait(wait_duration):
+        return False, "Requested delay of [%s] failed to be performed." % (time_delay)
+
+    return True, None
+
+def _handle_delayed_start_signal_delegate(signal_delay):
+    v, r = toolbus.get_signal(signal_delay) # signal will be consumed
+    if v:
+        return True
+
+def _handle_delayed_start_signal(signal_delay):
+
+    if signal_delay is None:
+        return True, None
+
+    retry_opts = {"retries_max": 800000, "retry_sleep_random": 2000}
+    if not retry.retry(retry_opts, _handle_delayed_start_signal_delegate, signal_delay):
+        return False, "Timed out waiting for signal [%s]." % (signal_delay)
+
+    return True, False
+
+def _handle_delayed_start_execution(execution_delay):
+
+    if execution_delay is None:
+        return True, None
+
+    return False, "mvtodo"
+
+def _handle_delayed_start(execution_name, time_delay, signal_delay, execution_delay):
+
+    if time_delay is None and signal_delay is None and execution_delay is None: # no delay applicable
         return True, None
 
     # setup initial delayed state
@@ -78,18 +115,29 @@ def _handle_delayed_start(execution_name, time_delay):
     if not v:
         return False, "Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
-    wait_duration = minicron.convert_time_string(time_delay)
-    if wait_duration is None:
-        return False, "Unable to start execution [%s]: requested delay of [%s] couldn't be parsed." % (execution_name, options.time_delay)
-    if not minicron.busy_wait(wait_duration):
-        return False, "Unable to start execution [%s]: requested delay of [%s] failed to be performed." % (execution_name, options.time_delay)
+    # time delay
+    v, r = _handle_delayed_start_time(time_delay)
+    if not v:
+        return False, "Unable to start execution [%s]: %s." % (execution_name, r)
+
+    # signal delay
+    v, r = _handle_delayed_start_signal(signal_delay)
+    if not v:
+        return False, "Unable to start execution [%s]: %s." % (execution_name, r)
+
+    # execution delay
+    v, r = _handle_delayed_start_execution(execution_delay)
+    if not v:
+        return False, "Unable to start execution [%s]: %s." % (execution_name, r)
 
     return True, None
 
 class RunOptions:
-    def __init__(self, early_abort=True, time_delay=None):
+    def __init__(self, early_abort=True, time_delay=None, signal_delay=None, execution_delay=None):
         self.early_abort = early_abort # stop upon first job failure (note: applies to jobs *only*)
         self.time_delay = time_delay # wait for a given amount of time before starting this execution (7h, 30m, 20s for example)
+        self.signal_delay = signal_delay # wait for the given toolbus signal before starting this execution
+        self.execution_delay = execution_delay # wait for the given execution to end before starting this execution
 
 def run_job_list(job_list, options, execution_name=None):
 
@@ -102,7 +150,7 @@ def run_job_list(job_list, options, execution_name=None):
         return False, [r]
 
     # delayed start if configured
-    v, r = _handle_delayed_start(execution_name, options.time_delay)
+    v, r = _handle_delayed_start(execution_name, options.time_delay, options.signal_delay, options.execution_delay)
     if not v:
         return False, [r]
 

@@ -191,5 +191,18 @@ class LaunchJobsTest(unittest.TestCase):
         v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(time_delay="2s"))
         self.assertTrue(v)
 
+    def testLaunchJobsRunOptionsSignalDelay1(self):
+
+        job1 = CustomJob()
+        job1.add_task(CustomTaskTrue())
+
+        job_list = [job1]
+
+        v, r = toolbus.set_signal("mvtools-launch-jobs-test-signal-delay-option", "set")
+        self.assertTrue(v)
+
+        v, r = launch_jobs.run_job_list(job_list, launch_jobs.RunOptions(signal_delay="mvtools-launch-jobs-test-signal-delay-option"))
+        self.assertTrue(v)
+
 if __name__ == '__main__':
     unittest.main()
