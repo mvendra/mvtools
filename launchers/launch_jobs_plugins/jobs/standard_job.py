@@ -2,7 +2,7 @@
 
 import launch_jobs
 
-class StandardJob(launch_jobs.BaseJob):
+class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class named CustomJob
     def get_desc(self):
         return "Standard job"
     def add_task(self, task):

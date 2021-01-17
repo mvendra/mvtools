@@ -7,16 +7,29 @@ import unittest
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
+import toolbus
 
 import recipe_processor
 
 class RecipeProcessorTest(unittest.TestCase):
 
     def setUp(self):
+        self.environ_copy = os.environ.copy()
         v, r = self.delegate_setUp()
         if not v:
             self.tearDown()
             self.fail(r)
+
+    def delegate_setUp(self):
+
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("recipe_processor_test")
+        if not v:
+            return v, r
+        self.test_base_dir = r[0]
+        self.test_dir = r[1]
+
+        if not mvtools_test_fixture.setEnv(toolbus.TOOLBUS_ENVVAR, self.test_dir):
+            return False, "Failed setting up the %s env var for testing." % toolbus.TOOLBUS_ENVVAR
 
         self.namespace1 = path_utils.concat_path(self.test_dir, "namespace1")
         os.mkdir(self.namespace1)
@@ -182,17 +195,22 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file19 = path_utils.concat_path(self.test_dir, "recipe_test19.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file19, recipe_test_contents19)
 
-    def delegate_setUp(self):
+        recipe_test_contents20 = "* execution_name = \"test-exec-name\"\n"
+        recipe_test_contents20 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file20 = path_utils.concat_path(self.test_dir, "recipe_test20.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file20, recipe_test_contents20)
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("recipe_processor_test")
-        if not v:
-            return v, r
-        self.test_base_dir = r[0]
-        self.test_dir = r[1]
+        recipe_test_contents21 = "* execution_name = \"test-exec-name1\"\n"
+        recipe_test_contents21 += "* execution_name = \"test-exec-name2\"\n"
+        recipe_test_contents21 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test21.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file21, recipe_test_contents21)
 
         return True, ""
 
     def tearDown(self):
+        os.environ.clear()
+        os.environ.update(self.environ_copy)
         shutil.rmtree(self.test_base_dir)
 
     def testRecipeProcessorVanilla(self):
@@ -281,6 +299,14 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorCustomJobCustomNamespace2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file19)
         self.assertTrue(v)
+
+    def testRecipeProcessorCustomExecutionName1(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file20)
+        self.assertTrue(v)
+
+    def testRecipeProcessorCustomExecutionName2(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file21)
+        self.assertFalse(v)
 
 if __name__ == '__main__':
     unittest.main()

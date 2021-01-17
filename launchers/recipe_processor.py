@@ -35,10 +35,19 @@ import terminal_colors
 # it is possible to define launch_jobs's execution options using freestanding variables
 # inside the recipe:
 #
+# * execution name = "exec-name" # this will define the execution name that will be written
+# to the launch_jobs toolbus database
+#
 # * early_abort = "true" # "true" or "false" are accepted - exclusively
 # this will specify whether an execution should be aborted whenever any job fails. the execution
 # itself will be deemed a failure upon any job failure, but with this option enabled, the execution
 # will nonetheless continue until there are no more jobs in the list.
+#
+# mvtodo: time_delay
+#
+# mvtodo: signal_delay
+#
+# mvtodo: execution_delay
 #
 # a recipe may include other recipes using the following freestanding variable:
 # * include_recipe = "/home/user/other_recipe.t20"
@@ -162,12 +171,17 @@ class RecipeProcessor:
             return False, r
         jobs = r
 
-        v, r = self._get_launch_options_from_recipe_file(dsl)
+        v, r = self._get_launch_options_from_recipe(dsl)
         if not v:
             return False, r
         options = r
 
-        v, r = launch_jobs.run_job_list(jobs, options)
+        v, r = self._get_exec_name_from_recipe(dsl)
+        if not v:
+            return False, r
+        exec_name = r
+
+        v, r = launch_jobs.run_job_list(jobs, exec_name, options)
         if not v:
             return False, r
 
@@ -247,7 +261,7 @@ class RecipeProcessor:
         self.depth_counter -= 1
         return True, jobs
 
-    def _get_launch_options_from_recipe_file(self, dsl):
+    def _get_launch_options_from_recipe(self, dsl):
 
         default_options = launch_jobs.RunOptions()
 
@@ -266,6 +280,15 @@ class RecipeProcessor:
                 return False, "Recipe's early_abort option has an invalid value: [%s]" % var_rn[0][1]
 
         return True, launch_jobs.RunOptions(early_abort=local_early_abort)
+
+    def _get_exec_name_from_recipe(self, dsl):
+
+        var_rn = dsl.get_vars("execution_name")
+        if len(var_rn) > 1:
+            return False, "Recipe's execution_name has been specified more than once."
+        elif len(var_rn) == 1:
+            return True, (var_rn[0][1])
+        return True, None
 
 def run_jobs_from_recipe_file(recipe_file):
     recipe_processor = RecipeProcessor(recipe_file)
