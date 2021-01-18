@@ -2,6 +2,8 @@
 
 import sys
 import os
+import datetime
+import time
 
 import toolbus
 import minicron
@@ -164,7 +166,13 @@ def run_job_list(job_list, execution_name=None, options=None):
     if not v:
         return False, ["Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
 
-    print("Execution context [%s] will begin running." % execution_name)
+    begin_timestamp = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
+
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "begin-timestamp", begin_timestamp, [])
+    if not v:
+        return False, ["Unable to start execution: execution name [%s]'s begin-timestamp couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
+
+    print("Execution context [%s] will begin running at [%s]." % (execution_name, begin_timestamp))
 
     report = []
     has_any_failed = False
