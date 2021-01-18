@@ -13,15 +13,13 @@ import toolbus
 class ToolbusTest(unittest.TestCase):
 
     def setUp(self):
+        self.environ_copy = os.environ.copy()
         v, r = self.delegate_setUp()
         if not v:
             self.tearDown()
             self.fail(r)
 
     def delegate_setUp(self):
-
-        self.environ_copy = os.environ.copy()
-
         v, r = mvtools_test_fixture.makeAndGetTestFolder("toolbus_test")
         if not v:
             return v, r
