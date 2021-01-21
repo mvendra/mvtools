@@ -32,10 +32,13 @@ def retry(retry_params, func, p1):
     while retries_count < retries_max:
         retries_count += 1
 
-        if func(p1):
-            return True
+        v, r = func(p1)
+        if not v:
+            return False, r
+        if r:
+            return True, None
 
         rnd_sleep = random.randrange(0, retry_sleep_random)
         time.sleep(rnd_sleep/1000)
 
-    return False # all retries failed
+    return False, "All retries failed"
