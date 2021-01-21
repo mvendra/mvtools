@@ -77,18 +77,36 @@ def _retry_helper(wait_object, wait_object_name, function):
         return True, None
 
     retry_opts = {"retries_max": 800000, "retry_sleep_random": 2000}
-    if not retry.retry(retry_opts, function, wait_object):
-        return False, "Timed out waiting for %s [%s]." % (wait_object_name, wait_object)
+    v, r = retry.retry(retry_opts, function, wait_object)
+    if not v:
+        return False, "Failed retrying on %s [%s]: [%s]" % (wait_object_name, wait_object, r)
 
-    return True, False
+    return True, None
 
 def _handle_delayed_start_signal_delegate(signal_delay):
-    v, r = toolbus.get_signal(signal_delay) # signal will be consumed
-    return v
+    return toolbus.get_signal(signal_delay) # signal will be consumed
 
 def _handle_delayed_start_execution_delegate(execution_delay):
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_delay, "status")
-    return not v
+    return not v, r
+
+def _is_status_paused_delegate(execution_name):
+    v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status")
+    if not v:
+        return False, r
+    stat_val = (r[1].lower())
+    if stat_val == "paused":
+        return True, True
+    elif stat_val == "running":
+        return True, False
+    else:
+        return False, "Invalid value on status field: [%s]. Execution: [%s]" % (stat_val, execution_name)
+
+def _is_status_running_delegate(execution_name):
+    v, r = _is_status_paused_delegate(execution_name)
+    if not v:
+        return False, r
+    return v, (not r)
 
 def _handle_delayed_start_time(time_delay):
 
@@ -136,12 +154,34 @@ def _handle_delayed_start(execution_name, time_delay, signal_delay, execution_de
 
     return True, None
 
+def _wait_if_paused(execution_name):
+
+    v, r = _is_status_paused_delegate(execution_name)
+    if not v:
+        return False, r
+    if not r: # has not been paused
+        return True, None
+
+    # yes, execution has been paused
+    print("Execution [%s] has been paused." % execution_name)
+    v, r = _retry_helper(execution_name, "execution name", _is_status_running_delegate)
+    if not v:
+        return False, r
+    print("Execution [%s] will resume." % execution_name)
+    return True, None
+
 class RunOptions:
     def __init__(self, early_abort=True, time_delay=None, signal_delay=None, execution_delay=None):
         self.early_abort = early_abort # stop upon first job failure (note: applies to jobs *only*)
         self.time_delay = time_delay # wait for a given amount of time before starting this execution (7h, 30m, 20s for example)
         self.signal_delay = signal_delay # wait for the given toolbus signal before starting this execution
         self.execution_delay = execution_delay # wait for the given execution to end before starting this execution
+
+def _has_any_job_failed(job_result):
+    for jr in job_result:
+        if not jr[0]:
+            return True
+    return False
 
 def run_job_list(job_list, execution_name=None, options=None):
 
@@ -168,6 +208,7 @@ def run_job_list(job_list, execution_name=None, options=None):
 
     begin_timestamp = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
 
+    # register timestamp in the execution context
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "begin-timestamp", begin_timestamp, [])
     if not v:
         return False, ["Unable to start execution: execution name [%s]'s begin-timestamp couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
@@ -175,17 +216,18 @@ def run_job_list(job_list, execution_name=None, options=None):
     print("Execution context [%s] will begin running at [%s]." % (execution_name, begin_timestamp))
 
     report = []
-    has_any_failed = False
     for j in job_list:
 
-        v, r = j.run_job()
         j_msg = ""
-
-        if v:
-            j_msg = "Job [%s][%s] succeeded." % (j.name, j.get_desc())
+        v, r = _wait_if_paused(execution_name)
+        if not v:
+            j_msg = "Pausing failed: [%s]. Job: [%s]" % (r, j.name)
         else:
-            j_msg = "Job [%s][%s] failed: [%s]." % (j.name, j.get_desc(), r)
-            has_any_failed = True
+            v, r = j.run_job()
+            if v:
+                j_msg = "Job [%s][%s] succeeded." % (j.name, j.get_desc())
+            else:
+                j_msg = "Job [%s][%s] failed: [%s]." % (j.name, j.get_desc(), r)
 
         report.append((v, j_msg))
 
@@ -196,7 +238,7 @@ def run_job_list(job_list, execution_name=None, options=None):
     if not v:
         return False, ["Unable to remove execution named [%s] from toolbus database." % execution_name] + report
 
-    return (not(has_any_failed)), report
+    return (not _has_any_job_failed(report)), report
 
 def print_current_executions():
 
