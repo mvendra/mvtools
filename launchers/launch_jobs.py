@@ -240,7 +240,7 @@ def run_job_list(job_list, execution_name=None, options=None):
 
     return (not _has_any_job_failed(report)), report
 
-def print_current_executions():
+def get_current_executions():
 
     v, r = toolbus.get_all_tables(LAUNCHJOBS_TOOLBUS_DATABASE)
     if not v:
@@ -255,10 +255,69 @@ def print_current_executions():
 
     return True, report
 
-if __name__ == "__main__":
-    v, r = print_current_executions()
+def puaq():
+    print("Usage: %s [--list-executions | --pause-execution | --resume-execution]" % os.path.basename(__file__))
+    sys.exit(1)
+
+def _change_status(exec_name, status_val, log_noun, log_verb):
+
+    v, r = toolbus.get_all_tables(LAUNCHJOBS_TOOLBUS_DATABASE)
+    if not v:
+        print("Unable to fetch executions from toolbus launch_jobs database: [%s]" % r)
+        return
+    if exec_name not in r:
+        print("Execution [%s] is not registered on launch_jobs toolbus database." % exec_name)
+        return
+
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, exec_name, "status", status_val, [])
+    if not v:
+        print("Unable to %s execution [%s]: [%s]" % (log_noun, exec_name, r))
+        return
+
+    print("Execution [%s] has been %s" % (exec_name, log_verb))
+
+def menu_pause(exec_name):
+    _change_status(exec_name, "paused", "pause", "paused")
+
+def menu_resume(exec_name):
+    _change_status(exec_name, "running", "resume", "resumed")
+
+def menu_list():
+
+    print("List of active executions:")
+    v, r = get_current_executions()
     if not v:
         print(r)
-        sys.exit(1)
+        return
+
     for l in r:
         print(l)
+
+if __name__ == "__main__":
+
+    if len(sys.argv) < 2:
+        puaq()
+    params = sys.argv[1:]
+
+    next_pause_exec = False
+    next_resume_exec = False
+
+    for p in params:
+
+        if next_pause_exec:
+            next_pause_exec = False
+            menu_pause(p)
+            continue
+        elif next_resume_exec:
+            next_resume_exec = False
+            menu_resume(p)
+            continue
+
+        if p == "--list-executions":
+            menu_list()
+        elif p == "--pause-execution":
+            next_pause_exec = True
+        elif p == "--resume-execution":
+            next_resume_exec = True
+        else:
+            print("Invalid commandline argument: [%s]" % p)
