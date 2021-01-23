@@ -70,7 +70,7 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_job_script_contents += "        return \"CustomJob\"\n"
         sample_custom_job_script_contents += "    def add_task(self, task):\n"
         sample_custom_job_script_contents += "        self.task_list.append(task)\n"
-        sample_custom_job_script_contents += "    def run_job(self):\n"
+        sample_custom_job_script_contents += "    def run_job(self, execution_name=None):\n"
         sample_custom_job_script_contents += "        if len(self.task_list) % 2 == 0:\n"
         sample_custom_job_script_contents += "            return True, None\n"
         sample_custom_job_script_contents += "        else:\n"

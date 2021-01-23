@@ -55,7 +55,7 @@ class BaseJob:
         return "Base job"
     def add_task(self, task):
         return False, None
-    def run_job(self):
+    def run_job(self, execution_name=None):
         return False, None
 
 def _setup_toolbus(execution_name):
@@ -223,7 +223,7 @@ def run_job_list(job_list, execution_name=None, options=None):
         if not v:
             j_msg = "Pausing failed: [%s]. Job: [%s]" % (r, j.name)
         else:
-            v, r = j.run_job()
+            v, r = j.run_job(execution_name)
             if v:
                 j_msg = "Job [%s][%s] succeeded." % (j.name, j.get_desc())
             else:
