@@ -255,10 +255,6 @@ def get_current_executions():
 
     return True, report
 
-def puaq():
-    print("Usage: %s [--list-executions | --pause-execution | --resume-execution]" % os.path.basename(__file__))
-    sys.exit(1)
-
 def _change_status(exec_name, status_val, log_noun, log_verb):
 
     v, r = toolbus.get_all_tables(LAUNCHJOBS_TOOLBUS_DATABASE)
@@ -292,6 +288,10 @@ def menu_list():
 
     for l in r:
         print(l)
+
+def puaq():
+    print("Usage: %s [--list-executions | --pause-execution execution-name | --resume-execution execution-name]" % os.path.basename(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
 
