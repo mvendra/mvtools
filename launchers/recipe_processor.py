@@ -160,7 +160,7 @@ class RecipeProcessor:
         self.depth_counter = 0
         self.circular_tracker = []
 
-    def run(self):
+    def test(self):
 
         self._clear()
 
@@ -183,6 +183,20 @@ class RecipeProcessor:
         if not v:
             return False, r
         exec_name = r
+
+        return True, (jobs, options, exec_name)
+
+    def run(self):
+
+        self._clear()
+
+        v, r = self.test()
+        if not v:
+            return False, r
+
+        jobs = r[0]
+        options = r[1]
+        exec_name = r[2]
 
         v, r = launch_jobs.run_job_list(jobs, exec_name, options)
         if not v:
@@ -335,22 +349,57 @@ class RecipeProcessor:
             return True, (var_rn[0][1])
         return True, None
 
+def test_jobs_from_recipe_file(recipe_file):
+    recipe_processor = RecipeProcessor(recipe_file)
+    return recipe_processor.test()
+
 def run_jobs_from_recipe_file(recipe_file):
     recipe_processor = RecipeProcessor(recipe_file)
     return recipe_processor.run()
 
+def menu_test_recipe(recipe_file):
+
+    v, r = test_jobs_from_recipe_file(recipe_file)
+    if not v:
+        print("%sTesting of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
+    else:
+        print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
+
+def menu_run_recipe(recipe_file):
+
+    v, r = run_jobs_from_recipe_file(recipe_file)
+    if not v:
+        print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
+    else:
+        print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
+
 def puaq():
-    print("Usage: %s recipe.t20" % os.path.basename(__file__))
+    print("Usage: %s [--run recipe.t20 | --test recipe.t20]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
         puaq()
+    params = sys.argv[1:]
 
-    recipe_file = sys.argv[1]
-    v, r = run_jobs_from_recipe_file(recipe_file)
-    if not v:
-        print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
-    else:
-        print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
+    next_run_recipe = False
+    next_test_recipe = False
+
+    for p in params:
+
+        if next_run_recipe:
+            next_run_recipe = False
+            menu_run_recipe(p)
+            continue
+        elif next_test_recipe:
+            next_test_recipe = False
+            menu_test_recipe(p)
+            continue
+
+        if p == "--run":
+            next_run_recipe = True
+        elif p == "--test":
+            next_test_recipe = True
+        else:
+            print("Invalid commandline argument: [%s]" % p)
