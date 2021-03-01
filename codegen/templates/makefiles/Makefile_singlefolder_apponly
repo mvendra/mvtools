@@ -1,0 +1,70 @@
+
+.PHONY : all clean compile link 
+
+TESTAPPNAME=tester
+
+SRC=main.cpp
+OBJ=$(SRC:.cpp=.o) 
+COMP=g++ # if you change this to gcc, make sure you also adjust the OBJ variable to use .c instead of .cpp or make clean will delete your sources !!
+
+ARCH := $(shell getconf LONG_BIT)
+
+ifeq ($(MODE),)
+	MODE=debug
+endif
+
+ifeq ($(MODE),debug)
+LDFLAGS=-lasan
+INTFLAGS = \
+	-g \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Weffc++ \
+	-Werror \
+	-fPIC \
+	-fsanitize=address \
+	-pthread \
+	-D_GLIBCXX_DEBUG \
+	-std=c++14
+POSTBUILD=
+#DEFINES= -D _DEBUG -D _LOG 
+endif
+
+ifeq ($(MODE),release)
+INTFLAGS = \
+ 	-O2 \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Weffc++ \
+	-Werror \
+	-fPIC \
+	-pthread \
+	-std=c++14
+POSTBUILD= strip $(TESTAPPNAME)
+#DEFINES= -D _LOG 
+endif
+
+ifeq ($(ARCH),64)
+CPPFLAGS = $(INTFLAGS) -m64
+else 
+CPPFLAGSS = $(INTFLAGS)
+endif
+
+INCLUDES=-I.
+LDFLAGS+=
+
+all: compile link 
+
+compile:
+	$(COMP) -c $(INCLUDES) $(SRC) $(CPPFLAGS)
+
+link:
+	$(COMP) -o $(TESTAPPNAME) $(OBJ) $(LDFLAGS)
+	$(POSTBUILD)
+
+clean:
+	rm -rf $(OBJ)
+	rm -rf $(TESTAPPNAME)
+

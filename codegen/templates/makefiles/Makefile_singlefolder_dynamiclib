@@ -1,0 +1,79 @@
+
+.PHONY : all clean compile link testapp 
+
+LIBNAME= libdynamicsample.so
+LIBLINKFNAME = dynamicsample
+TESTAPPNAME= testlib
+SONAME=libdynamicsample-dev.1.so
+
+SRC= libraryfile.cpp
+OBJ=$(SRC:.cpp=.o)
+COMP=g++ # if you change this to gcc, make sure you also adjust the OBJ variable to use .c instead of .cpp or make clean will delete your sources !!
+
+ARCH := $(shell getconf LONG_BIT)
+
+ifeq ($(MODE),)
+	MODE=debug
+endif
+
+ifeq ($(MODE),debug)
+LDFLAGS=-lasan
+INTFLAGS = \
+	-g \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Weffc++ \
+	-Werror \
+	-fPIC \
+	-fsanitize=address \
+	-pthread \
+	-D_GLIBCXX_DEBUG \
+	-std=c++14
+POSTBUILD=
+#DEFINES= -D _DEBUG -D _LOG 
+endif
+
+ifeq ($(MODE),release)
+INTFLAGS = \
+ 	-O2 \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Weffc++ \
+	-Werror \
+	-fPIC \
+	-pthread \
+	-std=c++14
+POSTBUILD= strip $(LIBNAME)
+#DEFINES= -D _LOG 
+endif
+
+ifeq ($(ARCH),64)
+CPPFLAGS = $(INTFLAGS) -m64
+else 
+CPPFLAGSS = $(INTFLAGS)
+endif
+
+INCLUDES=-I.
+LDFLAGS+=
+
+all: compile link testapp
+
+compile:
+	$(COMP) -c $(SRC) $(CPPFLAGS)
+	$(POSTBUILD)
+
+link:
+	$(COMP) -o $(LIBNAME) -shared $(OBJ) -Wl,-soname,$(SONAME)
+
+testapp:
+	$(COMP) -c $(CPPFLAGS) $(INCLUDES) main.cpp
+	$(COMP) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME) -Wl,-rpath,"." $(LDFLAGS)
+
+clean:
+	rm -rf $(LIBNAME)
+	rm -rf $(TESTAPPNAME)
+	rm -rf $(OBJ)
+	rm -rf main.o
+

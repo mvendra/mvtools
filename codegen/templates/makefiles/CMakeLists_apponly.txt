@@ -1,0 +1,11 @@
+
+cmake_minimum_required(VERSION 2.8)
+project( myproject )
+find_package( SDL REQUIRED )
+find_package( OpenGL REQUIRED )
+add_definitions( -DHAVE_LIBPNG=1 )
+set ( SOURCES main.cpp other.cpp )
+add_executable ( myapp ${ SOURCES } )
+
+target_link_libraries( myproject ${SDL_LIBS} ${OpenGL_LIBS} -L/usr/lib64 -Wl,-rpath,/usr/lib64 -lSDL -lpthread -lGL -lGLU -lm -lpng -ljpeg -lz )
+

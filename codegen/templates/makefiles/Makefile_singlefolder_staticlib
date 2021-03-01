@@ -1,0 +1,76 @@
+
+.PHONY : all clean compile testapp 
+
+LIBNAME= libstaticsample.a 
+LIBLINKFNAME = staticsample
+TESTAPPNAME= testlib
+
+SRC= libraryfile.cpp
+OBJ=$(SRC:.cpp=.o)
+COMP=g++ # if you change this to gcc, make sure you also adjust the OBJ variable to use .c instead of .cpp or make clean will delete your sources !!
+
+ARCH := $(shell getconf LONG_BIT)
+
+ifeq ($(MODE),)
+	MODE=debug
+endif
+
+ifeq ($(MODE),debug)
+INTFLAGS = \
+	-g \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Weffc++ \
+	-Werror \
+	-static \
+	-fPIC \
+	-fsanitize=address \
+	-pthread \
+	-D_GLIBCXX_DEBUG \
+	-std=c++14
+POSTBUILD=
+#DEFINES= -D _DEBUG -D _LOG 
+endif
+
+ifeq ($(MODE),release)
+INTFLAGS = \
+ 	-O2 \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Weffc++ \
+	-Werror \
+	-static \
+	-fPIC \
+	-pthread \
+	-std=c++14
+POSTBUILD= strip $(LIBNAME)
+#DEFINES= -D _LOG 
+endif
+
+ifeq ($(ARCH),64)
+CPPFLAGS = $(INTFLAGS) -m64
+else 
+CPPFLAGSS = $(INTFLAGS)
+endif
+
+INCLUDES=-I.
+
+all: compile testapp
+
+compile:
+	$(COMP) -c $(SRC) $(CPPFLAGS)
+	ar -rcs $(LIBNAME) $(OBJ)
+	$(POSTBUILD)
+
+testapp:
+	$(COMP) -c $(CPPFLAGS) $(INCLUDES) main.cpp
+	$(COMP) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME)
+
+clean:
+	rm -rf $(LIBNAME)
+	rm -rf $(TESTAPPNAME)
+	rm -rf $(OBJ)
+	rm -rf main.o
+
