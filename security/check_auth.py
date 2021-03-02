@@ -7,6 +7,8 @@ import stat
 import terminal_colors
 
 import fsquery
+import fsquery_adv_filter
+import path_utils
 
 def print_success(msg):
     print("%s%s%s" % (terminal_colors.TTY_GREEN, msg, terminal_colors.get_standard_color()))
@@ -15,47 +17,59 @@ def print_error(msg):
     print("%s%s%s" % (terminal_colors.TTY_RED, msg, terminal_colors.get_standard_color()))
 
 def check_permission(path):
-
     p = os.stat(path)
     if p.st_mode & stat.S_IRWXG:
         return False # has group permissions
     if p.st_mode & stat.S_IRWXO:
         return False # has permissions for others
-
     return True
 
-def check_auth_envvar():
+def check_auth_folder(path):
 
-    MVAUTH = ""
-    try:
-        MVAUTH = os.environ['MVAUTH']
-    except KeyError:
-        print_error("MVAUTH is not defined. Aborting.")
-        return False
+    files_probe = fsquery.makecontentlist(path, True, True, True, True, True, True, "")
 
-    if not os.path.exists(MVAUTH):
-        print_error("MVAUTH points to nonexistent path.")
-        return False
+    exclude_list = ["*/.git/*"]
+    filters = []
+    filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
+    for ei in exclude_list:
+        filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei)) )
 
-    files_probe = fsquery.makecontentlist(MVAUTH, True, True, True, True, True, True, "")
+    items_filtered = fsquery_adv_filter.filter_path_list_and(files_probe, filters)
 
     result = True
-    for f in files_probe:
+    for f in items_filtered:
         if not check_permission(f):
             print_error("%s has bad permissions." % f)
             result = False
 
     return result
 
-def check_auth():
-    r = check_auth_envvar()
-    if r:
-        print_success("check_auth: All good.")
-        return True
+def check_auth(paths):
+
+    for p in paths:
+        if not os.path.exists(p):
+            print_error("Path [%s] does not exist." % p)
+            return
+
+    any_errors = False
+    for p in paths:
+        if not check_auth_folder(p):
+            any_errors = True
+            print_error("Path [%s]: Incorrect permissions detected." % p)
+
+    if not any_errors:
+        print_success("All good.")
     else:
-        print_error("check_auth: Incorrect permissions detected")
-        return False
+        print_error("Errors detected.")
+
+def puaq():
+    print("Usage: %s [path1 | path2]" % os.path.basename(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
-    check_auth()
 
+    if len(sys.argv) < 2:
+        puaq()
+    paths = sys.argv[1:]
+
+    check_auth(paths)
