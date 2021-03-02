@@ -4,8 +4,7 @@ import sys
 import os
 import platform
 
-from subprocess import check_output
-from subprocess import CalledProcessError
+import generic_run
 
 """
 build.py
@@ -184,13 +183,18 @@ class Builder():
         _self.do_link()
 
     def call_cmd(_self, cmd):
-        try:
-            out = check_output(cmd)
-            print("Command succeeded")
-            return True
-        except CalledProcessError as cper:
-            print("Failed")
-            return False
+        ret = generic_run.run_cmd(cmd)
+        cmd_str = ""
+        for c in cmd:
+            cmd_str += "%s " % c
+        cmd_str = cmd_str.rstrip()
+        if ret[0]:
+            if ret[2].success:
+                print("%s: Command succeeded." % cmd_str)
+            else:
+                print("%s: Failed." % cmd_str)
+        else:
+            print("%s: Failed." % cmd_str)
 
 if __name__ == "__main__":
 
@@ -200,4 +204,3 @@ if __name__ == "__main__":
 
     bd = Builder(os.path.abspath(os.path.dirname(sys.argv[0])), opt)
     bd.run()
-
