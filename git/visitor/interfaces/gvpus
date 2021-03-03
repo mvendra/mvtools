@@ -15,5 +15,5 @@ if [ ! -z $REPO_BASE ]; then
     EXTRA_OPTION="--repo-base $REPO_BASE"
 fi
 
-git_visitor_push.py --not-remotename offline $EXTRA_OPTION
-
+#git_visitor_push.py --not-remotename offline $EXTRA_OPTION
+git_visitor_push.py $EXTRA_OPTION
