@@ -11,10 +11,10 @@ import fsquery_adv_filter
 import path_utils
 
 def print_success(msg):
-    print("%s%s%s" % (terminal_colors.TTY_GREEN, msg, terminal_colors.get_standard_color()))
+    print("%s: %s%s%s" % (os.path.basename(__file__), terminal_colors.TTY_GREEN, msg, terminal_colors.get_standard_color()))
 
 def print_error(msg):
-    print("%s%s%s" % (terminal_colors.TTY_RED, msg, terminal_colors.get_standard_color()))
+    print("%s: %s%s%s" % (os.path.basename(__file__), terminal_colors.TTY_RED, msg, terminal_colors.get_standard_color()))
 
 def check_permission(path):
     p = os.stat(path)
