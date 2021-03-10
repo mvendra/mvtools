@@ -7,31 +7,34 @@ import unittest
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
+import mvtools_envvars
 
 import toolbus
 
 class ToolbusTest(unittest.TestCase):
 
     def setUp(self):
-        self.environ_copy = os.environ.copy()
+        self.mvtools_envvars_inst = mvtools_envvars.Mvtools_Envvars()
+        v, r = self.mvtools_envvars_inst.make_copy_environ()
+        if not v:
+            self.tearDown()
+            self.fail(r)
         v, r = self.delegate_setUp()
         if not v:
             self.tearDown()
             self.fail(r)
 
     def delegate_setUp(self):
+
         v, r = mvtools_test_fixture.makeAndGetTestFolder("toolbus_test")
         if not v:
             return v, r
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
-        if not mvtools_test_fixture.setEnv(toolbus.TOOLBUS_ENVVAR, self.test_dir):
-            return False, "Failed setting up the %s env var for testing." % toolbus.TOOLBUS_ENVVAR
-
-        self.reserved_test_env_var = "$MVTOOLS_TOOLBUS_TEST_RESERVED_1"
-        if self.reserved_test_env_var[1:] in os.environ:
-            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var[1:])
+        v, r = mvtools_envvars.mvtools_envvar_write_toolbus_base(self.test_dir)
+        if not v:
+            return False, "Failed setting up toolbus envvar for testing."
 
         self.nonexistent_folder = path_utils.concat_path(self.test_dir, "nonexistent_folder")
         self.nonexistent_file = path_utils.concat_path(self.test_dir, "nonexistent_file")
@@ -70,9 +73,10 @@ class ToolbusTest(unittest.TestCase):
         return True, ""
 
     def tearDown(self):
-        os.environ.clear()
-        os.environ.update(self.environ_copy)
         shutil.rmtree(self.test_base_dir)
+        v, r = self.mvtools_envvars_inst.restore_copy_environ()
+        if not v:
+            self.fail(r)
 
     def testBootstrapCustomToolbusDb(self):
         v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(os.path.basename(self.db_test_custom_database)))
@@ -93,17 +97,12 @@ class ToolbusTest(unittest.TestCase):
 
     def testGetDbHandle3(self):
 
-        local_environ_copy = os.environ.copy()
-        try:
-            if not mvtools_test_fixture.setEnv(toolbus.TOOLBUS_ENVVAR, self.nonexistent_folder):
-                self.fail("Failed setting envvar: [%s] with value: [%s]" % (toolbus.TOOLBUS_ENVVAR, self.nonexistent_folder))
+        v, r = mvtools_envvars.mvtools_envvar_write_toolbus_base(self.nonexistent_folder)
+        if not v:
+            self.fail("Failed setting toolbus envvar with value: [%s]" % (self.nonexistent_folder))
 
-            v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
-            self.assertFalse(v)
-
-        finally:
-            os.environ.clear()
-            os.environ.update(local_environ_copy)
+        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
+        self.assertFalse(v)
 
     def testGetDbHandle4(self):
 

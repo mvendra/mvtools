@@ -6,8 +6,9 @@ import unittest
 
 import create_and_write_file
 import mvtools_test_fixture
-
 import path_utils
+import mvtools_envvars
+
 import dsl_type20
 
 def getcontents(filename):
@@ -34,12 +35,15 @@ class DSLType20Test(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
-        self.reserved_test_env_var_1 = "$MVTOOLS_TEST_DSLTYPE20_ENVVAR_RESERVED_1"
-        if self.reserved_test_env_var_1[1:] in os.environ:
-            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var_1[1:])
-        self.reserved_test_env_var_2 = "$MVTOOLS_TEST_DSLTYPE20_ENVVAR_RESERVED_2"
-        if self.reserved_test_env_var_2[1:] in os.environ:
-            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var_2[1:])
+        v, r = mvtools_envvars.mvtools_envvar_read_test_dsltype20_reserved_1()
+        if v:
+            return False, "DSLType20's first test envvar is defined. This test requires it to be undefined."
+        self.reserved_test_env_var_1 = "$MVTOOLS_TEST_DSLTYPE20_RESERVED_1"
+
+        v, r = mvtools_envvars.mvtools_envvar_read_test_dsltype20_reserved_2()
+        if v:
+            return False, "DSLType20's second test envvar is defined. This test requires it to be undefined."
+        self.reserved_test_env_var_2 = "$MVTOOLS_TEST_DSLTYPE20_RESERVED_2"
 
         self.reserved_path_with_user_1 = "~/nuke/folder"
 

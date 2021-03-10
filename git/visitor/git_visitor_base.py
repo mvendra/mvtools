@@ -7,6 +7,8 @@ import path_utils
 import git_lib
 import terminal_colors
 
+import mvtools_envvars
+
 class gvbexcept(RuntimeError):
     def __init__(self, msg):
         self._set_message(msg)
@@ -203,12 +205,10 @@ def get_path_from_env():
     will return the path defined by the environment. returns None if its undefined.
     """
 
-    path = None
-    try:
-        path = os.environ["MVTOOLS_GIT_VISITOR_BASE"]
-    except KeyError:
-        pass
-    return path
+    v, r = mvtools_envvars.mvtools_envvar_read_git_visitor_base()
+    if not v:
+        return None
+    return r
 
 def make_repo_list(path):
 

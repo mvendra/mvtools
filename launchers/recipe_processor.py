@@ -14,6 +14,8 @@ import standard_job
 import path_utils
 import terminal_colors
 
+import mvtools_envvars
+
 # minimal automation framework
 # dsltype20-based recipes are supported, syntax as follows:
 #
@@ -83,11 +85,12 @@ def _get_plugins_path(namespace=None):
     if namespace is not None:
         full_path = namespace
     else:
-        mvtools_env = ""
-        try:
-            mvtools_env = os.environ["MVTOOLS"]
-        except KeyError:
-            return False, "The MVTOOLS environment variable is not defined. It is required to resolve included plugins."
+
+        v, r = mvtools_envvars.mvtools_envvar_read_main()
+        if not v:
+            return False, "The main MVTOOLS environment variable is not defined. It is required to resolve included plugins."
+        mvtools_env = r
+
         plugins_base_folder = path_utils.concat_path("launchers", "launch_jobs_plugins")
         full_path = path_utils.concat_path(mvtools_env, plugins_base_folder)
 

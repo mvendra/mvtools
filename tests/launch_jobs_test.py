@@ -5,6 +5,7 @@ import shutil
 import unittest
 
 import mvtools_test_fixture
+import mvtools_envvars
 
 import toolbus
 import launch_jobs
@@ -45,7 +46,11 @@ class CustomJob(launch_jobs.BaseJob):
 class LaunchJobsTest(unittest.TestCase):
 
     def setUp(self):
-        self.environ_copy = os.environ.copy()
+        self.mvtools_envvars_inst = mvtools_envvars.Mvtools_Envvars()
+        v, r = self.mvtools_envvars_inst.make_copy_environ()
+        if not v:
+            self.tearDown()
+            self.fail(r)
         v, r = self.delegate_setUp()
         if not v:
             self.tearDown()
@@ -59,15 +64,17 @@ class LaunchJobsTest(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
-        if not mvtools_test_fixture.setEnv(toolbus.TOOLBUS_ENVVAR, self.test_dir):
-            return False, "Failed setting up the %s env var for testing." % toolbus.TOOLBUS_ENVVAR
+        v, r = mvtools_envvars.mvtools_envvar_write_toolbus_base(self.test_dir)
+        if not v:
+            return False, "Failed setting up toolbus envvar for testing."
 
         return True, ""
 
     def tearDown(self):
-        os.environ.clear()
-        os.environ.update(self.environ_copy)
         shutil.rmtree(self.test_base_dir)
+        v, r = self.mvtools_envvars_inst.restore_copy_environ()
+        if not v:
+            self.fail(r)
 
     def testLaunchJobsVanilla(self):
 

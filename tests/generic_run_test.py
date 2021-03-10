@@ -9,6 +9,7 @@ import unittest
 import path_utils
 import mvtools_test_fixture
 import create_and_write_file
+import mvtools_envvars
 import generic_run
 
 class GenericRunTest(unittest.TestCase):
@@ -39,9 +40,10 @@ class GenericRunTest(unittest.TestCase):
         self.file_test_filename = "test_file.txt"
         self.file_test_content = "the test file contents"
 
-        self.reserved_test_env_var_1 = "MVTOOLS_TEST_GENERIC_RUN_ENVVAR_RESERVED_1"
-        if self.reserved_test_env_var_1 in os.environ:
-            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var_1)
+        v, r = mvtools_envvars.mvtools_envvar_read_test_generic_run_reserved_1()
+        if v:
+            return False, "Mvtool's generic_run's test envvar is defined. This test requires is to be undefined."
+        self.reserved_test_env_var_1 = r
 
         # first script
         self.test_script_ret_0_content = "#!/usr/bin/env python3" + os.linesep

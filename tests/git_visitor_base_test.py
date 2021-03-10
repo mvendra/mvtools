@@ -73,17 +73,6 @@ class GitVisitorBaseTest(unittest.TestCase):
     def testPrintReport(self):
         pass
 
-    def testGetPathFromEnv(self):
-        #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
-        _environ = os.environ.copy()
-        try:
-            os.environ["MVTOOLS_GIT_VISITOR_BASE"] = "/sample/path"
-            r = git_visitor_base.get_path_from_env()
-            self.assertEqual(r, "/sample/path")
-        finally:
-            os.environ.clear()
-            os.environ.update(_environ)
-
     def testMakeRepoList(self):
 
         r = git_visitor_base.make_repo_list(self.test_dir)

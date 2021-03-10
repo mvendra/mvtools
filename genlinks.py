@@ -7,27 +7,13 @@ import shutil
 import fsquery
 import fsquery_adv_filter
 import path_utils
-
-def has_and_get_envvar(the_envvar):
-    e = ""
-    try:
-        e = os.environ[the_envvar]
-    except:
-        return False, None
-    return True, e
-
-def has_mvtools_envvar():
-    return has_and_get_envvar("MVTOOLS")
-
-def has_mvtools_links_path_envvar():
-    return has_and_get_envvar("MVTOOLS_LINKS_PATH")
+import mvtools_envvars
 
 def get_mvtools_links_path():
 
     # detect if path is mvtools
     path = os.getcwd()
-    v, r = has_mvtools_envvar()
-
+    v, r = mvtools_envvars.mvtools_envvar_read_main()
     if not v:
         print("MVTOOLS envvar is not defined.")
         return None, None
@@ -40,7 +26,7 @@ def get_mvtools_links_path():
         return None, None
 
     # MVTOOLS_LINKS_PATH is optional
-    v, r = has_mvtools_links_path_envvar()
+    v, r = mvtools_envvars.mvtools_envvar_read_links_path()
     if not v:
         mvtools_links_path = path_utils.concat_path(path, "links")
     else:

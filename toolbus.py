@@ -5,20 +5,19 @@ import os
 
 import path_utils
 import dsl_type20
-
 import sync_write_file
+import mvtools_envvars
 
-TOOLBUS_ENVVAR = "MVTOOLS_TOOLBUS_BASE"
 DB_EXTENSION = "t20"
 INTERNAL_DB_FILENAME = "toolbus_internal"
 TOOLBUS_SIGNAL_CONTEXT = "toolbus_internal_signals_context"
 
 def bootstrap_custom_toolbus_db(db_name):
 
-    try:
-        db_base = os.environ[TOOLBUS_ENVVAR]
-    except:
-        return False, "Failed setting up toolbus database: [%s]. Is the %s environment variable defined?" % (db_name, TOOLBUS_ENVVAR)
+    v, r = mvtools_envvars.mvtools_envvar_read_toolbus_base()
+    if not v:
+        return False, "Failed setting up toolbus database: [%s]: [%s]." % (db_name, r)
+    db_base = r
 
     full_db_filename = "%s.%s" % (path_utils.concat_path(db_base, db_name), DB_EXTENSION)
 
@@ -49,10 +48,10 @@ def get_db_handle(_db_name, bootstrap_internal=False):
     if _db_name is None:
         return False, "Invalid parameters.", None
 
-    try:
-        db_base = os.environ[TOOLBUS_ENVVAR]
-    except:
-        return False, "Failed setting up toolbus. Is the %s environment variable defined?" % TOOLBUS_ENVVAR, None
+    v, r = mvtools_envvars.mvtools_envvar_read_toolbus_base()
+    if not v:
+        return False, "Failed setting up toolbus. database: [%s]: [%s]." % (_db_name, r)
+    db_base = r
 
     if not os.path.exists(db_base):
         return False, "Failed setting up toolbus - base path [%s] does not exist." % db_base, None

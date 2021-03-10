@@ -6,7 +6,7 @@ import path_utils
 def makeAndGetTestFolder(additional_folder):
 
     nuke_dir = os.path.expanduser("~/nuke")
-    # must have a $home/nuke folder, for creating test repos
+    # must have a $home/nuke folder, for creating test folders
     if not os.path.exists(nuke_dir):
         return False, "[%s] doesn't exist. Can't proceed." % nuke_dir
 
@@ -23,10 +23,3 @@ def makeAndGetTestFolder(additional_folder):
         os.mkdir(final_dir)
 
     return True, (test_dir_pre, final_dir)
-
-def setEnv(_var, _val):
-    try:
-        os.environ[ _var ] = _val
-    except:
-        return False
-    return True

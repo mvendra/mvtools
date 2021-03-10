@@ -11,13 +11,14 @@ from unittest.mock import patch
 import create_and_write_file
 import mvtools_test_fixture
 
-import backup_processor
-
 import hash_check
 import decrypt
 import tar_wrapper
 import path_utils
 import convert_unit
+import mvtools_envvars
+
+import backup_processor
 
 def get_tuple_list_index(the_tuple_list, the_key):
     for i in range(len(the_tuple_list)):
@@ -52,9 +53,10 @@ class BackupProcessorTest(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
+        v, r = mvtools_envvars.mvtools_envvar_read_test_bkproc_reserved_1()
+        if v:
+            return False, "Mvtool's backup_processor's test envvar is in use. This test requires it to not be in use."
         self.reserved_test_env_var = "$MVTOOLS_BKPROC_TEST_RESERVED_1"
-        if self.reserved_test_env_var[1:] in os.environ:
-            return False, "Environment variable [%s] is in use. This test requires it to be undefined." % (self.reserved_test_env_var[1:])
 
         # folder where extracted stuff will be stored at
         self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
@@ -582,8 +584,12 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertEqual( r[5], ( (convert_unit.convert_to_bytes(self.warn_each_1)[1],False) , (convert_unit.convert_to_bytes(self.warn_final_1)[1],False) ) )
 
     def testReadConfigPrepParamEnvVar(self):
-        #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
-        _environ = os.environ.copy()
+
+        envvars_inst = mvtools_envvars.Mvtools_Envvars()
+        v, r = envvars_inst.make_copy_environ()
+        if not v:
+            self.fail("Failed making copy of envvars")
+
         try:
             os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
             v, r = backup_processor.read_config(self.test_config_file_prep_param)
@@ -595,8 +601,9 @@ class BackupProcessorTest(unittest.TestCase):
             self.assertEqual(r[4], self.bk_test_temp_folder)
             self.assertEqual( r[5], ( (convert_unit.convert_to_bytes(self.warn_each_2)[1],True) , (convert_unit.convert_to_bytes(self.warn_final_2)[1],True) ) )
         finally:
-            os.environ.clear()
-            os.environ.update(_environ)
+            v, r = envvars_inst.restore_copy_environ()
+            if not v:
+                self.fail("Failed restoring copy of envvars")
 
     def testInvalidConfig1(self):
         v, r = backup_processor.read_config(self.test_malformed_config_file1)
@@ -652,8 +659,12 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertFalse(r)
 
     def testPrepParams(self):
-        #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
-        _environ = os.environ.copy()
+
+        envvars_inst = mvtools_envvars.Mvtools_Envvars()
+        v, r = envvars_inst.make_copy_environ()
+        if not v:
+            self.fail("Failed making copy of envvars")
+
         try:
             os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
             with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
@@ -665,8 +676,9 @@ class BackupProcessorTest(unittest.TestCase):
                 test_content = f.read()
             self.assertEqual(test_content, self.prep_generated_param_test_content)
         finally:
-            os.environ.clear()
-            os.environ.update(_environ)
+            v, r = envvars_inst.restore_copy_environ()
+            if not v:
+                self.fail("Failed restoring copy of envvars")
 
     def testAbortNonexistentBktemp(self):
         v, r = backup_processor.read_config(self.test_config_bktemp_nonexistent_file)
