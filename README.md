@@ -24,15 +24,15 @@ git
 
 tree
 
-silversearcher-ag
-
-sox
-
 xclip
+
+silversearcher-ag
 
 meld
 
 openssl
+
+sox
 
 unison
 
