@@ -7,21 +7,11 @@ A collection of tools.
 Installation
 ============
 
-1) Clone the repo somewhere in your system
+1) Clone the repo somewhere in your system.
 
-2) Add: ```export MVTOOLS=/path/to/mvtools``` to your ~/.bashrc
+2) Run ```mvtools_setup.py``` and follow the steps.
 
-3) Add: ```source $MVTOOLS/mvtools_main.sh``` to your ~/.bashrc
-
-4) Optionally define the ```MVTOOLS_LINKS_PATH``` somewhere in your system - make sure it stays out of your ```PATH``` / ```PYTHONPATH```
-
-5) Go (cd) inside the recently checked out mvtools folder, and run the ```genlinks.py``` script
-
-6) Define the ```MVTOOLS_GIT_VISITOR_BASE``` environment variable inside your ~/.bashrc, to point to your collection of repositories
-
-7) Define the ```MVTOOLS_TOOLBUS_BASE``` environment variable inside your ~/.bashrc, to point to a folder to store Toolbus databases
-
-8) Optionally go into mvtools/tests and run ```run_all_mvtools_tests.py``` for a general sanity check
+3) Add or source the output of the previous command in your ~/.bashrc
 
 Dependencies
 ============
@@ -30,21 +20,23 @@ The dependencies are optional, depending on which scripts are intended for use.
 
 python
 
-sox
-
 git
 
-openssl
+tree
 
 silversearcher-ag
+
+sox
+
+xclip
+
+meld
+
+openssl
 
 unison
 
 java
-
-meld
-
-xclip
 
 rpm2cpio
 
