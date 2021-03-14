@@ -1,7 +1,6 @@
 #!/bin/bash
 
 add2path(){
-
   unamestr=`uname`
   if [[ ! ${unamestr:0:14} == "CYGWIN_NT-10.0" ]]; then
       if [ -z $PATH ]; then
@@ -10,9 +9,7 @@ add2path(){
         return
       fi
   fi
-
   export PATH=${PATH}:${1}
-
 }
 
 add2pythonpath(){
@@ -28,7 +25,7 @@ if [ -z $MVTOOLS_LINKS_PATH ]; then
   MVTOOLS_LINKS_PATH=$MVTOOLS/links
 fi
 
-# this requires the MVTOOLS envvar to be defined somewhere else (.bashrc, likely).
+# this requires the MVTOOLS envvar to be defined in the environment
 
 if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
 
@@ -42,6 +39,5 @@ if [[ ! -z $MVTOOLS && -d $MVTOOLS ]]; then
   source $MVTOOLS/git/git_aliases.sh
 
 else
-  echo "WARNING: MVTOOLS envvar incorrectly defined. Check your ~/.bashrc"
+  echo "WARNING: MVTOOLS envvar is defined incorrectly."
 fi
-
