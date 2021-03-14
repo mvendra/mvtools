@@ -36,6 +36,8 @@ def check_mvtags_in_file(repo, thefile):
     contents = contents[nl+1:]
 
     for l in contents.split("\n"):
+        if len(l) == 0:
+            continue
         if l[0] == "+":
             r = l.find("mvtodo")
             if r != -1:
