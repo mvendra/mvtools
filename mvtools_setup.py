@@ -116,7 +116,7 @@ def mvtools_setup(profile_filename, mvtools_path, links_path, toolbus_dbs_path, 
     # links folder
     if links_path is None:
         print("Mvtools requires a local folder to store its links.")
-        links_path = input("Choose your local links folder:")
+        links_path = input("Choose your local links folder (must not preexist):")
         print("")
     links_path_copy = links_path
     links_path = _resolve_path(links_path)
