@@ -11,22 +11,22 @@ import toolbus
 import launch_jobs
 
 class CustomTaskTrue(launch_jobs.BaseTask):
-    def run_task(self):
+    def run_task(self, execution_name=None):
         return True, None
 
 class CustomTaskFalse(launch_jobs.BaseTask):
-    def run_task(self):
+    def run_task(self, execution_name=None):
         return False, None
 
 class CustomTaskParams(launch_jobs.BaseTask):
-    def run_task(self):
+    def run_task(self, execution_name=None):
         if self.params["test"]:
             return True, None
         else:
             return False, None
 
 class CustomTaskParams1And2(launch_jobs.BaseTask):
-    def run_task(self):
+    def run_task(self, execution_name=None):
         if self.params["test1"] and self.params["test2"]:
             return True, None
         else:
@@ -40,7 +40,7 @@ class CustomJob(launch_jobs.BaseJob):
     def run_job(self, execution_name=None):
         res = True
         for t in self.task_list:
-            res &= (t.run_task())[0]
+            res &= (t.run_task(execution_name))[0]
         return res, None
 
 class LaunchJobsTest(unittest.TestCase):

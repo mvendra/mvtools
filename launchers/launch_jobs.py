@@ -43,7 +43,7 @@ class BaseTask:
         self.params = params
     def get_desc(self):
         return "Generic base task"
-    def run_task(self):
+    def run_task(self, execution_name=None):
         return False, "Not implemented"
 
 class BaseJob:

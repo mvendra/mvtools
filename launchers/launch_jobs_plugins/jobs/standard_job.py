@@ -15,7 +15,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             if not v:
                 return False, r
             print(launch_jobs._format_job_info_msg(self, t))
-            v, r = t.run_task()
+            v, r = t.run_task(execution_name)
             if not v:
                 return False, launch_jobs._format_task_error_msg(t, r)
         return True, None

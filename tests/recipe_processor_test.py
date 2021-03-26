@@ -47,7 +47,7 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_echo_true_script_contents += "class CustomTask(launch_jobs.BaseTask):\n"
         sample_custom_echo_true_script_contents += "    def get_desc(self):\n"
         sample_custom_echo_true_script_contents += "        return \"sample_custom_echo_true\"\n"
-        sample_custom_echo_true_script_contents += "    def run_task(self):\n"
+        sample_custom_echo_true_script_contents += "    def run_task(self, execution_name=None):\n"
         sample_custom_echo_true_script_contents += "        return True, None\n"
         self.sample_custom_echo_true_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_echo_true.py")
         self.sample_custom_echo_true_script_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_echo_true.py")
@@ -59,7 +59,7 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_echo_true_params_script_contents += "class CustomTask(launch_jobs.BaseTask):\n"
         sample_custom_echo_true_params_script_contents += "    def get_desc(self):\n"
         sample_custom_echo_true_params_script_contents += "        return \"sample_custom_echo_true_params\"\n"
-        sample_custom_echo_true_params_script_contents += "    def run_task(self):\n"
+        sample_custom_echo_true_params_script_contents += "    def run_task(self, execution_name=None):\n"
         sample_custom_echo_true_params_script_contents += "        if \"test\" in self.params:\n"
         sample_custom_echo_true_params_script_contents += "            return True, None\n"
         sample_custom_echo_true_params_script_contents += "        else:\n"
@@ -68,6 +68,39 @@ class RecipeProcessorTest(unittest.TestCase):
         self.sample_custom_echo_true_params_script_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_echo_true_params.py")
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_params_script_file_namespace1, sample_custom_echo_true_params_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_params_script_file_namespace2, sample_custom_echo_true_params_script_contents)
+
+        sample_custom_exe_name_contents1 = "#!/usr/bin/env python3\n\n"
+        sample_custom_exe_name_contents1 += "import launch_jobs\n"
+        sample_custom_exe_name_contents1 += "import toolbus\n\n"
+        sample_custom_exe_name_contents1 += "class CustomTask(launch_jobs.BaseTask):\n"
+        sample_custom_exe_name_contents1 += "    def get_desc(self):\n"
+        sample_custom_exe_name_contents1 += "        return \"sample_custom_exe_name_1\"\n"
+        sample_custom_exe_name_contents1 += "    def run_task(self, execution_name=None):\n"
+        sample_custom_exe_name_contents1 += "        v, r = toolbus.bootstrap_custom_toolbus_db(execution_name)\n"
+        sample_custom_exe_name_contents1 += "        if not v:\n"
+        sample_custom_exe_name_contents1 += "            return False, \"Failure in test infrastructure: [%s]\" % r\n"
+        sample_custom_exe_name_contents1 += "        v, r = toolbus.set_field(execution_name, \"test-ctx-custom\", \"test-var-name\", \"test-var-val\", [])\n"
+        sample_custom_exe_name_contents1 += "        if not v:\n"
+        sample_custom_exe_name_contents1 += "            return False, \"Failure in test infrastructure: [%s]\" % r\n"
+        sample_custom_exe_name_contents1 += "        return True, None\n"
+        self.sample_custom_exe_name_contents_file1 = path_utils.concat_path(self.test_dir, "sample_custom_exe_name1.py")
+        create_and_write_file.create_file_contents(self.sample_custom_exe_name_contents_file1, sample_custom_exe_name_contents1)
+
+        sample_custom_exe_name_contents2 = "#!/usr/bin/env python3\n\n"
+        sample_custom_exe_name_contents2 += "import launch_jobs\n"
+        sample_custom_exe_name_contents2 += "import toolbus\n\n"
+        sample_custom_exe_name_contents2 += "class CustomTask(launch_jobs.BaseTask):\n"
+        sample_custom_exe_name_contents2 += "    def get_desc(self):\n"
+        sample_custom_exe_name_contents2 += "        return \"sample_custom_exe_name_2\"\n"
+        sample_custom_exe_name_contents2 += "    def run_task(self, execution_name=None):\n"
+        sample_custom_exe_name_contents2 += "        v, r = toolbus.get_field(execution_name, \"test-ctx-custom\", \"test-var-name\")\n"
+        sample_custom_exe_name_contents2 += "        if not v:\n"
+        sample_custom_exe_name_contents2 += "            return False, \"Failure in test infrastructure: [%s]\" % r\n"
+        sample_custom_exe_name_contents2 += "        if r[1] == \"test-var-val\":\n"
+        sample_custom_exe_name_contents2 += "            return True, None\n"
+        sample_custom_exe_name_contents2 += "        return False, r\n"
+        self.sample_custom_exe_name_contents_file2 = path_utils.concat_path(self.test_dir, "sample_custom_exe_name2.py")
+        create_and_write_file.create_file_contents(self.sample_custom_exe_name_contents_file2, sample_custom_exe_name_contents2)
 
         sample_custom_job_script_contents = "#!/usr/bin/env python3\n\n"
         sample_custom_job_script_contents += "import launch_jobs\n\n"
@@ -245,6 +278,16 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file27 = path_utils.concat_path(self.test_dir, "recipe_test27.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file27, recipe_test_contents27)
 
+        recipe_test_contents28 = "* recipe_namespace = \"%s\"\n" % self.test_dir
+        recipe_test_contents28 += "[\n@test-job-1\n"
+        recipe_test_contents28 += "* task1 = \"%s\"\n" % os.path.basename(self.sample_custom_exe_name_contents_file1)
+        recipe_test_contents28 += "]\n"
+        recipe_test_contents28 += "[\n@test-job-2\n"
+        recipe_test_contents28 += "* task2 = \"%s\"\n" % os.path.basename(self.sample_custom_exe_name_contents_file2)
+        recipe_test_contents28 += "]"
+        self.recipe_test_file28 = path_utils.concat_path(self.test_dir, "recipe_test28.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file28, recipe_test_contents28)
+
         return True, ""
 
     def tearDown(self):
@@ -267,6 +310,11 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorCustomNamespace(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file4)
+        self.assertTrue(v)
+
+    def testRecipeProcessorCustomTaskUseExecutionName(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file28)
+        print(r)
         self.assertTrue(v)
 
     def testRecipeProcessor2JobsBothSucceed(self):
