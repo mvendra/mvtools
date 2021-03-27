@@ -25,6 +25,14 @@ class BackupPreparationTest(unittest.TestCase):
             self.tearDown()
             self.fail(r)
 
+    def delegate_setUp(self):
+
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("backup_preparation_test")
+        if not v:
+            return v, r
+        self.test_base_dir = r[0]
+        self.test_dir = r[1]
+
         # folder where to store the preparation artifacts
         self.prep_target = path_utils.concat_path(self.test_dir, "preptarget")
         path_utils.scratchfolder(self.prep_target)
@@ -145,14 +153,6 @@ class BackupPreparationTest(unittest.TestCase):
         cfg_file_contents_fail4 += ("COPY_PATH = \"%s\"" + os.linesep) % (self.file4)
         self.test_config_file_fail4 = path_utils.concat_path(self.test_dir, "test_config_file_fail4.cfg")
         create_and_write_file.create_file_contents(self.test_config_file_fail4, cfg_file_contents_fail4)
-
-    def delegate_setUp(self):
-
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("backup_preparation_test")
-        if not v:
-            return v, r
-        self.test_base_dir = r[0]
-        self.test_dir = r[1]
 
         return True, ""
 
