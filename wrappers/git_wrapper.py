@@ -102,6 +102,13 @@ def rev_parse_is_inside_work_tree(repo):
     cmd = ["git", "-C", repo, "rev-parse", "--is-inside-work-tree"]
     return git_wrapper_standard_command(cmd, "rev-parse")
 
+def rev_parse_absolute_git_dir(repo):
+    cmd = ["git", "-C", repo, "rev-parse", "--absolute-git-dir"]
+    v, r = git_wrapper_standard_command(cmd, "rev-parse")
+    if not v:
+        return False, r
+    return True, r.rstrip(os.linesep)
+
 def ls_files(repo):
     cmd = ["git", "-C", repo, "ls-files", "--exclude-standard", "--others"]
     return git_wrapper_standard_command(cmd, "ls-files")

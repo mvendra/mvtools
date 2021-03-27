@@ -39,8 +39,15 @@ class GitWrapperTest(unittest.TestCase):
         if not v:
             return v, r
 
+        # second repo
         self.second_repo = path_utils.concat_path(self.test_dir, "second")
         v, r = git_wrapper.clone(self.first_repo, self.second_repo)
+        if not v:
+            return v, r
+
+        # third repo
+        self.third_repo = path_utils.concat_path(self.test_dir, "   third   ")
+        v, r = git_wrapper.init(self.test_dir, "   third   ", True)
         if not v:
             return v, r
 
@@ -446,6 +453,26 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.rev_parse_is_inside_work_tree(self.second_repo)
         self.assertTrue(v)
         self.assertTrue("true" in r)
+
+    def testRevParseAbsoluteGitDir(self):
+
+        v, r = git_wrapper.rev_parse_absolute_git_dir(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(self.first_repo, r)
+
+        first_objects = os.path.join(self.first_repo, "objects")
+        self.assertTrue(os.path.exists(first_objects))
+        v, r = git_wrapper.rev_parse_absolute_git_dir(first_objects)
+        self.assertTrue(v)
+        self.assertEqual(self.first_repo, r)
+
+        v, r = git_wrapper.rev_parse_absolute_git_dir(self.second_repo)
+        self.assertTrue(v)
+        self.assertNotEqual(self.second_repo, r)
+
+        v, r = git_wrapper.rev_parse_absolute_git_dir(self.third_repo)
+        self.assertTrue(v)
+        self.assertEqual(self.third_repo, r)
 
     def testLsFiles1(self):
 
