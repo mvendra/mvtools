@@ -4,6 +4,7 @@ import os
 import shutil
 import unittest
 
+import mvtools_test_fixture
 import path_utils
 
 class PathUtilsTest(unittest.TestCase):
@@ -15,10 +16,23 @@ class PathUtilsTest(unittest.TestCase):
             self.fail(r)
 
     def delegate_setUp(self):
+
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("path_utils_test")
+        if not v:
+            return v, r
+        self.test_base_dir = r[0]
+        self.test_dir = r[1]
+
+        self.folder1 = os.path.join(self.test_dir, "folder1")
+        os.mkdir(self.folder1)
+        self.folder2 = os.path.join(self.test_dir, "folder2")
+        os.mkdir(self.folder2)
+        self.nonexistent = os.path.join(self.test_dir, "nonexistent")
+
         return True, ""
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.test_base_dir)
 
     def testPopLastExtension(self):
         expected = "file.txt"
@@ -166,6 +180,26 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.getextension("/usr/local/file"), "")
         self.assertEqual(path_utils.getextension("/usr/local/file.dat"), "dat")
         self.assertEqual(path_utils.getextension("/usr/local/file.dat.bin"), "bin")
+
+    def testCheckIfPathsExistStopFirst(self):
+        v, r = path_utils.check_if_paths_exist_stop_first([self.folder1, self.folder2])
+        self.assertFalse(v)
+        v, r = path_utils.check_if_paths_exist_stop_first([self.folder2])
+        self.assertFalse(v)
+        v, r = path_utils.check_if_paths_exist_stop_first([self.nonexistent])
+        self.assertTrue(v)
+        v, r = path_utils.check_if_paths_exist_stop_first([self.nonexistent, self.folder1, self.folder2])
+        self.assertFalse(v)
+
+    def testCheckIfPathsNotExistStopFirst(self):
+        v, r = path_utils.check_if_paths_not_exist_stop_first([self.folder1, self.folder2])
+        self.assertTrue(v)
+        v, r = path_utils.check_if_paths_not_exist_stop_first([self.folder2])
+        self.assertTrue(v)
+        v, r = path_utils.check_if_paths_not_exist_stop_first([self.nonexistent])
+        self.assertFalse(v)
+        v, r = path_utils.check_if_paths_not_exist_stop_first([self.nonexistent, self.folder1, self.folder2])
+        self.assertFalse(v)
 
 if __name__ == '__main__':
     unittest.main()

@@ -241,5 +241,17 @@ def copy_to(origin, target):
 
     return True
 
+def check_if_paths_exist_stop_first(list_paths):
+    for n in list_paths:
+        if os.path.exists(n):
+            return False, "Path [%s] already exists." % n
+    return True, None
+
+def check_if_paths_not_exist_stop_first(list_paths):
+    for n in list_paths:
+        if not os.path.exists(n):
+            return False, "Path [%s] does not exist." % n
+    return True, None
+
 if __name__ == "__main__":
     print("Hello from %s" % basename_filtered(__file__))
