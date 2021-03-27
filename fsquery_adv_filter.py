@@ -91,11 +91,16 @@ def filter_is_last_equal_to(path, params):
     return False
 
 def filter_is_not_repo(path, params):
-    return not filter_is_repo(path, params)
+    v = filter_is_repo(path, params)
+    if v is None:
+        return None
+    return not v
 
 def filter_is_repo(path, params):
     v, r = detect_repo_type.detect_repo_type(path)
-    return v
+    if not v:
+        return None
+    return detect_repo_type.is_any_repo_type(r)
 
 def filter_path_not_exists(path, params):
     return not filter_path_exists(path, params)
