@@ -299,7 +299,21 @@ def is_repo_bare(repo):
     v, r = git_wrapper.rev_parse_is_bare_repo(repo)
     if not v:
         return False, "git_lib.is_repo_bare failed: %s" % r
-    return True, "true" in r
+    bare_query_result = "true" in r
+
+    if not bare_query_result:
+        return True, False
+
+    v, r = git_wrapper.rev_parse_absolute_git_dir(repo)
+    if not v:
+        return False, "git_lib.is_repo_bare failed: %s" % r
+    abs_path_found = r
+
+    if abs_path_found != repo:
+        # is a subdirectory of a bare repo
+        return True, False
+
+    return True, True
 
 def is_repo_standard(repo):
 

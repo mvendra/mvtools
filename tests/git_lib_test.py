@@ -319,6 +319,11 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
+        second_repo_objects = os.path.join(self.second_repo, "objects")
+        v, r = git_lib.is_repo_bare(second_repo_objects)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
         v, r = git_lib.is_repo_bare(self.first_repo)
         self.assertTrue(v)
         self.assertFalse(r)
