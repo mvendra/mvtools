@@ -254,5 +254,51 @@ def check_if_paths_not_exist_stop_first(list_paths):
             return False, "Path [%s] does not exist." % n
     return True, None
 
+def find_middle_path_parts(basepath, fullpath):
+
+    # given two paths with a common base
+    # for example: /home and /home/user/folder
+    # return the middle parts in relation to the
+    # fullpath. so in this example, that'd be "user".
+    # another example: /home and /home/user/folder/second
+    # the return would be "user/folder"
+    # returns None on errors
+
+    if basepath is None or fullpath is None:
+        return None
+
+    basepath_pieces = splitpath(basepath)
+    fullpath_pieces = splitpath(fullpath)
+
+    if (len(basepath_pieces) < 1) or (len(fullpath_pieces) <= len(basepath_pieces)):
+        return None
+
+    if basepath_pieces[0] != fullpath_pieces[0]:
+        return None
+
+    assembled_middle = ""
+    for i in range(len(basepath_pieces)):
+        if fullpath_pieces[i] != basepath_pieces[i]:
+            return None
+
+    idx_first = i+1
+    idx_second = len(fullpath_pieces)-1
+
+    if idx_second == idx_first:
+        return ""
+    elif not idx_second > idx_first:
+        return None
+
+    assembled_middle = fullpath_pieces[idx_first:idx_second]
+
+    assembled_middle_string = ""
+    for i in range(len(assembled_middle)):
+        if i < len(assembled_middle) - 1:
+            assembled_middle_string += assembled_middle[i] + os.sep
+        else:
+            assembled_middle_string += assembled_middle[i]
+
+    return assembled_middle_string
+
 if __name__ == "__main__":
     print("Hello from %s" % basename_filtered(__file__))

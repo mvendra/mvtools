@@ -203,5 +203,16 @@ class PathUtilsTest(unittest.TestCase):
         v, r = path_utils.check_if_paths_not_exist_stop_first([self.nonexistent, self.folder1, self.folder2])
         self.assertFalse(v)
 
+    def testFindMiddlePathParts(self):
+        self.assertEqual(path_utils.find_middle_path_parts(None, None), None)
+        self.assertEqual(path_utils.find_middle_path_parts("/valid/path", None), None)
+        self.assertEqual(path_utils.find_middle_path_parts(None, "/second/path"), None)
+        self.assertEqual(path_utils.find_middle_path_parts("/valid/path", "/second/path"), None)
+        self.assertEqual(path_utils.find_middle_path_parts("/valid/path", "/second/path/more"), None)
+        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user"), None)
+        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder"), "")
+        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/path"), "folder")
+        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/another/path"), "folder/another")
+
 if __name__ == '__main__':
     unittest.main()
