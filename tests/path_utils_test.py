@@ -55,9 +55,11 @@ class PathUtilsTest(unittest.TestCase):
         self.assertFalse(os.path.exists(full_test_file_path))
 
     def testBackpedal_Path(self):
-        expected = "/"
-        result = path_utils.backpedal_path("/tmp")
-        self.assertEqual(expected, result)
+        self.assertEqual("/", path_utils.backpedal_path("/tmp"))
+        self.assertEqual("/tmp", path_utils.backpedal_path("/tmp/folder"))
+        self.assertEqual(None, path_utils.backpedal_path("/"))
+        self.assertEqual(None, None)
+        self.assertEqual("/tmp/folder", path_utils.backpedal_path("/tmp/folder/next"))
 
     def testArrayToPath(self):
         expected = "/home/user/nuke/"

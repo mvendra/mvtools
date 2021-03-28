@@ -39,9 +39,10 @@ def deletefile_ignoreerrors(filepath):
         pass
 
 def backpedal_path(path):
-    if not os.path.exists(path):
+    if path is None:
         return None
-    parent = os.path.abspath(os.path.join(path, os.pardir))
+    partial = os.path.join(path, os.pardir)
+    parent = os.path.abspath(partial)
     if parent == path:
         return None
     return parent
