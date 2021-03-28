@@ -7,6 +7,7 @@ import unittest
 
 import path_utils
 import git_wrapper
+import detect_repo_type
 import mvtools_test_fixture
 import fsquery_adv_filter
 
@@ -137,6 +138,114 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         paths = [first_repo, second_repo, third_notrepo]
         paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_is_not_repo, "not-used")])
         self.assertEqual(paths_returned, [third_notrepo])
+
+    def testFilterReposMiddle_And(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        if not v:
+            self.fail(r)
+
+        first_repo_objects = path_utils.concat_path(first_repo, "objects")
+        self.assertTrue( os.path.exists(first_repo_objects) )
+
+        first_repo_subfolder = path_utils.concat_path(first_repo, "first_sub")
+        os.mkdir(first_repo_subfolder)
+        self.assertTrue( os.path.exists(first_repo_subfolder) )
+
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.init(self.test_dir, "second", False)
+        if not v:
+            self.fail(r)
+
+        third_notrepo = path_utils.concat_path(self.test_dir, "third")
+        os.mkdir(third_notrepo)
+
+        paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
+        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_has_middle_repos, git_repos )])
+        self.assertEqual(paths_returned, [first_repo_objects, first_repo_subfolder])
+
+    def testFilterReposNotMiddle_And(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        if not v:
+            self.fail(r)
+
+        first_repo_objects = path_utils.concat_path(first_repo, "objects")
+        self.assertTrue( os.path.exists(first_repo_objects) )
+
+        first_repo_subfolder = path_utils.concat_path(first_repo, "first_sub")
+        os.mkdir(first_repo_subfolder)
+        self.assertTrue( os.path.exists(first_repo_subfolder) )
+
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.init(self.test_dir, "second", False)
+        if not v:
+            self.fail(r)
+
+        third_notrepo = path_utils.concat_path(self.test_dir, "third")
+        os.mkdir(third_notrepo)
+
+        paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
+        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_has_not_middle_repos, git_repos )])
+        self.assertEqual(paths_returned, [first_repo, second_repo, third_notrepo])
+
+    def testFilterReposMiddle_Or(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        if not v:
+            self.fail(r)
+
+        first_repo_objects = path_utils.concat_path(first_repo, "objects")
+        self.assertTrue( os.path.exists(first_repo_objects) )
+
+        first_repo_subfolder = path_utils.concat_path(first_repo, "first_sub")
+        os.mkdir(first_repo_subfolder)
+        self.assertTrue( os.path.exists(first_repo_subfolder) )
+
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.init(self.test_dir, "second", False)
+        if not v:
+            self.fail(r)
+
+        third_notrepo = path_utils.concat_path(self.test_dir, "third")
+        os.mkdir(third_notrepo)
+
+        paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
+        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, [(fsquery_adv_filter.filter_has_middle_repos, git_repos )])
+        self.assertEqual(paths_returned, [first_repo_objects, first_repo_subfolder])
+
+    def testFilterReposNotMiddle_Or(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        if not v:
+            self.fail(r)
+
+        first_repo_objects = path_utils.concat_path(first_repo, "objects")
+        self.assertTrue( os.path.exists(first_repo_objects) )
+
+        first_repo_subfolder = path_utils.concat_path(first_repo, "first_sub")
+        os.mkdir(first_repo_subfolder)
+        self.assertTrue( os.path.exists(first_repo_subfolder) )
+
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        v, r = git_wrapper.init(self.test_dir, "second", False)
+        if not v:
+            self.fail(r)
+
+        third_notrepo = path_utils.concat_path(self.test_dir, "third")
+        os.mkdir(third_notrepo)
+
+        paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
+        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, [(fsquery_adv_filter.filter_has_not_middle_repos, git_repos )])
+        self.assertEqual(paths_returned, [first_repo, second_repo, third_notrepo])
 
     def testFilterLastEqual_And(self):
 
