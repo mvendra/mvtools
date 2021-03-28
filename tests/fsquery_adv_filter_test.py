@@ -7,7 +7,6 @@ import unittest
 
 import path_utils
 import git_wrapper
-import detect_repo_type
 import mvtools_test_fixture
 import fsquery_adv_filter
 
@@ -162,8 +161,7 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         os.mkdir(third_notrepo)
 
         paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
-        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
-        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_has_middle_repos, git_repos )])
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_has_middle_repos, "not-used" )])
         self.assertEqual(paths_returned, [first_repo_objects, first_repo_subfolder])
 
     def testFilterReposNotMiddle_And(self):
@@ -189,8 +187,7 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         os.mkdir(third_notrepo)
 
         paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
-        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
-        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_has_not_middle_repos, git_repos )])
+        paths_returned = fsquery_adv_filter.filter_path_list_and(paths, [(fsquery_adv_filter.filter_has_not_middle_repos, "not-used" )])
         self.assertEqual(paths_returned, [first_repo, second_repo, third_notrepo])
 
     def testFilterReposMiddle_Or(self):
@@ -216,8 +213,7 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         os.mkdir(third_notrepo)
 
         paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
-        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
-        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, [(fsquery_adv_filter.filter_has_middle_repos, git_repos )])
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, [(fsquery_adv_filter.filter_has_middle_repos, "not-used" )])
         self.assertEqual(paths_returned, [first_repo_objects, first_repo_subfolder])
 
     def testFilterReposNotMiddle_Or(self):
@@ -243,8 +239,7 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         os.mkdir(third_notrepo)
 
         paths = [first_repo, first_repo_objects, first_repo_subfolder, second_repo, third_notrepo]
-        git_repos = [detect_repo_type.REPO_TYPE_GIT_BARE, detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_GIT_SUB]
-        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, [(fsquery_adv_filter.filter_has_not_middle_repos, git_repos )])
+        paths_returned = fsquery_adv_filter.filter_path_list_or(paths, [(fsquery_adv_filter.filter_has_not_middle_repos, "not-used" )])
         self.assertEqual(paths_returned, [first_repo, second_repo, third_notrepo])
 
     def testFilterLastEqual_And(self):

@@ -83,16 +83,14 @@ def filter_has_middle_pieces(path, params):
     return False
 
 def filter_has_middle_repos(path, params):
-    path_pieces = path_utils.splitpath(path)
-    middle_repos = params
 
-    if (len(path_pieces) < 1) or (len(middle_repos) < 1):
+    path_pieces = path_utils.splitpath(path)
+    if (len(path_pieces) < 1):
         return False
 
     current_path = path_utils.backpedal_path(path)
     while current_path is not None:
-        v, r = detect_repo_type.detect_repo_type(current_path)
-        if v and (r in middle_repos):
+        if detect_repo_type.is_any_repo_type(detect_repo_type.detect_repo_type(current_path)[1]):
             return True
         current_path = path_utils.backpedal_path(current_path)
 
