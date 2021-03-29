@@ -54,6 +54,10 @@ def clone(repo_source, repo_target, remotename=None):
         cmd.append(remotename)
     return git_wrapper_standard_command(cmd, "clone")
 
+def clone_bare(repo_source, repo_target):
+    cmd = ["git", "clone", "--bare", repo_source, repo_target]
+    return git_wrapper_standard_command(cmd, "clone-bare")
+
 def stage(repo, file_list=None):
 
     add_list = []

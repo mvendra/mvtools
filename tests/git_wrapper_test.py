@@ -228,6 +228,31 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("not-origin" in r)
 
+    def testCloneBare1(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.second_repo, [test_file])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        bare_cloned_repo = path_utils.concat_path(self.test_dir, "bare_cloned_repo")
+        v, r = git_wrapper.clone_bare(self.second_repo, bare_cloned_repo)
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists(bare_cloned_repo) )
+        bare_cloned_repo_objects = path_utils.concat_path(bare_cloned_repo, "objects")
+        self.assertTrue( os.path.exists(bare_cloned_repo_objects) )
+
+        third_cloned_from_bare = path_utils.concat_path(self.test_dir, "third_cloned_from_bare")
+        v, r = git_wrapper.clone(bare_cloned_repo, third_cloned_from_bare)
+        self.assertTrue(third_cloned_from_bare)
+        third_cloned_from_bare_test_file = path_utils.concat_path(third_cloned_from_bare, os.path.basename(test_file))
+        self.assertTrue(os.path.exists(third_cloned_from_bare_test_file))
+
     def testDiff1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
