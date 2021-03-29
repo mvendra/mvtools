@@ -212,7 +212,7 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user"), None)
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder"), "")
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/path"), "folder")
-        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/another/path"), "folder/another")
+        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/another/path"), "folder%sanother" % os.sep)
 
 if __name__ == '__main__':
     unittest.main()
