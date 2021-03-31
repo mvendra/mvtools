@@ -34,7 +34,7 @@ class GitSubPushTest(unittest.TestCase):
 
         self.internal_counter = 0
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("git_sub_push_test_base")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("git_sub_push_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases

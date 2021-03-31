@@ -22,7 +22,7 @@ class PakGenTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("pakgen_wrapper_test_base")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("pakgen_wrapper_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
