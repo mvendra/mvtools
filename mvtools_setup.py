@@ -59,12 +59,13 @@ def run_genlinks(mvtools_path, links_path):
     except Exception as ex:
         return False, "genlinks process call failed: [%s]." % (str(ex))
 
-def generate_mvtools_profile(mvtools_path, links_path, toolbus_dbs_path, git_visitor_path):
+def generate_mvtools_profile(mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path):
 
     contents = ""
 
     contents += "export MVTOOLS=%s\n" % mvtools_path
     contents += "export MVTOOLS_LINKS_PATH=%s\n" % links_path
+    contents += "export MVTOOLS_TEMP_PATH=%s\n" % temp_path
     contents += "export MVTOOLS_TOOLBUS_BASE=%s\n" % toolbus_dbs_path
     contents += "export MVTOOLS_GIT_VISITOR_BASE=%s\n" % git_visitor_path
     contents += "source $MVTOOLS/mvtools_main.sh"
@@ -89,7 +90,7 @@ def run_uts(mvtools_path, links_path):
     except Exception as ex:
         return False, "run_all_mvtools_tests process call failed: [%s]." % (str(ex))
 
-def mvtools_setup(profile_filename, mvtools_path, links_path, toolbus_dbs_path, git_visitor_path, run_unit_tests):
+def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, run_unit_tests):
 
     if profile_filename is not None:
         profile_filename = _resolve_path(profile_filename)
@@ -111,6 +112,16 @@ def mvtools_setup(profile_filename, mvtools_path, links_path, toolbus_dbs_path, 
     mvtools_path = _resolve_path(mvtools_path)
     if not os.path.exists(mvtools_path):
         print("The chosen path for the mvtools main path [%s] is invalid. Aborting..." % mvtools_path)
+        return False
+
+    if temp_path is None:
+        print("Mvtools requires a local folder for temporary storage.")
+        temp_path = input("Choose your local temp folder (must preexist):")
+        print("")
+    temp_path_copy = temp_path
+    temp_path = _resolve_path(temp_path)
+    if not os.path.exists(temp_path):
+        print("The chosen path for mvtool's temp path [%s] does not exist. Aborting..." % temp_path)
         return False
 
     # links folder
@@ -158,13 +169,14 @@ def mvtools_setup(profile_filename, mvtools_path, links_path, toolbus_dbs_path, 
     # receipt / confirmation
     print("Will generate an installation profile with the following variables:")
     print("[%s] for MVTOOLS" % mvtools_path_copy)
+    print("[%s] for MVTOOLS_TEMP_PATH" % temp_path_copy)
     print("[%s] for MVTOOLS_LINKS_PATH" % links_path_copy)
     print("[%s] for MVTOOLS_TOOLBUS_BASE" % toolbus_dbs_path_copy)
     print("[%s] for MVTOOLS_GIT_VISITOR_BASE" % git_visitor_path_copy)
     print("")
 
     # generate profile
-    generated_contents = generate_mvtools_profile(mvtools_path_copy, links_path_copy, toolbus_dbs_path_copy, git_visitor_path_copy)
+    generated_contents = generate_mvtools_profile(mvtools_path_copy, temp_path_copy, links_path_copy, toolbus_dbs_path_copy, git_visitor_path_copy)
     if profile_filename is None:
         print("# --- BEGIN GENERATED PROFILE CONTENTS ---")
         print(generated_contents)
@@ -198,6 +210,7 @@ def puaq():
     print("Valid options are:")
     print("[--profile-filename] -> defines the bash file to write the installation recipe to. If ommitted, its contents will be printed to stdout.")
     print("[--mvtools-path] -> defines the MVTOOLS envvar. It should point to the mvtools base folder. If ommitted, it will be prompted from stdin.")
+    print("[--temp-path] -> defines the MVTOOLS_TEMP_PATH envvar. If ommitted, it will be prompted from stdin.")
     print("[--links-path] -> defines the MVTOOLS_LINKS_PATH envvar. If ommitted, it will be prompted from stdin.")
     print("[--toolbus-db-path] -> defines the MVTOOLS_TOOLBUS_BASE envvar. If ommitted, it will be prompted from stdin.")
     print("[--git-visitor-path] -> defines the MVTOOLS_GIT_VISITOR_BASE envvar. If ommitted, it will be prompted from stdin.")
@@ -221,6 +234,9 @@ if __name__ == "__main__":
     mvtools_path = None
     mvtools_path_next = False
 
+    temp_path = None
+    temp_path_next = False
+
     links_path = None
     links_path_next = False
 
@@ -240,6 +256,11 @@ if __name__ == "__main__":
         if mvtools_path_next:
             mvtools_path_next = False
             mvtools_path = o
+            continue
+
+        if temp_path_next:
+            temp_path_next = False
+            temp_path = o
             continue
 
         if links_path_next:
@@ -265,6 +286,10 @@ if __name__ == "__main__":
             mvtools_path_next = True
             continue
 
+        if o == "--temp-path":
+            temp_path_next = True
+            continue
+
         if o == "--links-path":
             links_path_next = True
             continue
@@ -281,5 +306,5 @@ if __name__ == "__main__":
             run_unit_tests = True
             continue
 
-    if not mvtools_setup(profile_filename, mvtools_path, links_path, toolbus_dbs_path, git_visitor_path, run_unit_tests):
+    if not mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, run_unit_tests):
         sys.exit(1)
