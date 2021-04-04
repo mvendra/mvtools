@@ -45,7 +45,7 @@ class DSLType20Test(unittest.TestCase):
             return False, "DSLType20's second test envvar is defined. This test requires it to be undefined."
         self.reserved_test_env_var_2 = "$MVTOOLS_TEST_DSLTYPE20_RESERVED_2"
 
-        self.reserved_path_with_user_1 = "~/nuke/folder"
+        self.reserved_path_with_user_1 = "/tmp/folder"
 
         self.contents_cfg_test_ok_1 = "var1 = \"val1\"" + os.linesep
         self.contents_cfg_test_ok_1 += "var2 {opt1} = \"val2\"" + os.linesep
@@ -211,7 +211,7 @@ class DSLType20Test(unittest.TestCase):
             v, r = dsl.parse(self.contents_cfg_test_ok_4)
 
             self.assertTrue(v)
-            self.assertEqual(dsl.get_all_vars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")]), ("var3", path_utils.concat_path(os.path.expanduser("~/nuke/folder")), [])])
+            self.assertEqual(dsl.get_all_vars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")]), ("var3", path_utils.concat_path(os.path.expanduser("/tmp/folder")), [])])
         finally:
             os.environ.clear()
             os.environ.update(_environ)

@@ -22,8 +22,8 @@ gikill(){
 
   # removes $1 commits from the repository
   # saves a backup of each commit as a patch
-  # on this user's nuke folder ($HOME/nuke)
-  # will not run if there is no nuke folder
+  # on this user's defined temp folder (MVTOOLS_TEMP_PATH)
+  # will not run if there is no pre-existing temp folder
   # HEAD is patch-0, deepest ($1) commit
   # is patch-$1
 
@@ -33,9 +33,9 @@ gikill(){
     return
   fi
 
-  NUKE="$HOME/nuke"
-  if [ ! -d $NUKE ]; then
-    echo "No $NUKE folder found. Aborting."
+  TEMP_FOLDER="$MVTOOLS_TEMP_PATH"
+  if [ ! -d $TEMP_FOLDER ]; then
+    echo "No [$TEMP_FOLDER] (MVTOOLS_TEMP_PATH envvar) folder found. Aborting."
     return
   fi
 
@@ -56,7 +56,7 @@ gikill(){
   MAX=$RANGE
   (( MAX-- ))
   for i in `seq 0 $MAX`; do
-    FN="$NUKE/gikill_backup_$i.patch"
+    FN="$TEMP_FOLDER/gikill_backup_$i.patch"
     git show HEAD~$i > $FN
   done
 

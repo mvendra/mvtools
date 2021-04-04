@@ -11,6 +11,7 @@ class Mvtools_Envvars:
 
         # register more mvtools envvars here
         self.register_mvtools_envvar("MVTOOLS")
+        self.register_mvtools_envvar("MVTOOLS_TEMP_PATH")
         self.register_mvtools_envvar("MVTOOLS_LINKS_PATH")
         self.register_mvtools_envvar("MVTOOLS_TOOLBUS_BASE")
         self.register_mvtools_envvar("MVTOOLS_GIT_VISITOR_BASE")
@@ -66,6 +67,12 @@ def mvtools_envvar_read_main():
     return Mvtools_Envvars()._read_envvar("MVTOOLS")
 def mvtools_envvar_write_main(val):
     return Mvtools_Envvars()._write_envvar("MVTOOLS", val)
+
+# MVTOOLS_TEMP_PATH
+def mvtools_envvar_read_temp_path():
+    return Mvtools_Envvars()._read_envvar("MVTOOLS_TEMP_PATH")
+def mvtools_envvar_write_temp_path(val):
+    return Mvtools_Envvars()._write_envvar("MVTOOLS_TEMP_PATH", val)
 
 # MVTOOLS_LINKS_PATH
 def mvtools_envvar_read_links_path():

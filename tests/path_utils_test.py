@@ -41,11 +41,7 @@ class PathUtilsTest(unittest.TestCase):
 
     def testDeleteFile_IgnoreErrors(self):
 
-        test_folder = os.path.expanduser("~/nuke")
-        full_test_file_path = path_utils.concat_path(test_folder, "test_file")
-
-        if not os.path.exists(test_folder):
-            self.fail("[%s] does not exist." % test_folder)
+        full_test_file_path = path_utils.concat_path(self.test_dir, "test_file")
 
         with open(full_test_file_path, "w+") as f:
             f.write("rubbish\n")
@@ -73,11 +69,8 @@ class PathUtilsTest(unittest.TestCase):
 
     def testScratchFolder1(self):
 
-        test_folder_base = os.path.expanduser("~/nuke")
-        test_folder_full = path_utils.concat_path(test_folder_base, "scratch")
+        test_folder_full = path_utils.concat_path(self.test_dir, "scratch")
 
-        if not os.path.exists(test_folder_base):
-            self.fail("[%s] does not exist." % test_folder_base)
         # safety first
         if os.path.exists(test_folder_full):
             self.fail("[%s] already exists." % test_folder_full)
@@ -89,11 +82,8 @@ class PathUtilsTest(unittest.TestCase):
 
     def testScratchFolder2(self):
 
-        test_folder_base = os.path.expanduser("~/nuke")
-        test_folder_full = path_utils.concat_path(test_folder_base, "scratch")
+        test_folder_full = path_utils.concat_path(self.test_dir, "scratch")
 
-        if not os.path.exists(test_folder_base):
-            self.fail("[%s] does not exist." % test_folder_base)
         # safety first
         if os.path.exists(test_folder_full):
             self.fail("[%s] already exists." % test_folder_full)
@@ -106,12 +96,8 @@ class PathUtilsTest(unittest.TestCase):
 
     def testGuaranteeFolder(self):
 
-        test_folder_base = os.path.expanduser("~/nuke")
-        test_folder_first = path_utils.concat_path(test_folder_base, "first")
+        test_folder_first = path_utils.concat_path(self.test_dir, "first")
         test_folder_second = path_utils.concat_path(test_folder_first, "second")
-
-        if not os.path.exists(test_folder_base):
-            self.fail("[%s] does not exist." % test_folder_base)
 
         # safety first
         if os.path.exists(test_folder_first):
