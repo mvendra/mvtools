@@ -194,7 +194,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
             print(r)
             print("Please note that the UTs will fail if some external dependencies are missing. Try sourcing the generated profile and then running the unit tests manually at tests/run_all_mvtools_tests.py for details.")
             return False
-        print("Finished running unit tests.")
+        print("Finished running unit tests: All successful.")
         print("")
 
     last_message = ""
