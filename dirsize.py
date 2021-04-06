@@ -21,7 +21,7 @@ def get_dir_size(path, human):
     else:
         cmd = ["du", "-b", path]
 
-    p = run(cmd, stdout=PIPE, encoding="ascii")
+    p = run(cmd, stdout=PIPE, encoding="utf8")
     out = p.stdout
 
     # removes the last empty line
