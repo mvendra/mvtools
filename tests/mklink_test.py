@@ -88,6 +88,16 @@ class MklinkTest(unittest.TestCase):
         v, r = self.mklink_task.run_task("exe_name")
         self.assertFalse(v)
 
+    def testMklinkFail5(self):
+
+        local_params = {}
+        local_params["source_path"] = self.test_source_file
+        local_params["target_path"] = path_utils.concat_path(self.test_dir, "test_target_file", "second_level")
+        self.mklink_task.params = local_params
+
+        v, r = self.mklink_task.run_task("exe_name")
+        self.assertFalse(v)
+
     def testMklinkVanilla(self):
 
         local_params = {}

@@ -67,6 +67,17 @@ class MkdirTest(unittest.TestCase):
         v, r = self.mkdir_task.run_task("exe_name")
         self.assertFalse(v)
 
+    def testMkdirVanillaBadPathError(self):
+
+        local_test_folder = path_utils.concat_path(self.test_target_folder, "second_level")
+        local_params = {}
+        local_params["target_folder"] = local_test_folder
+        self.assertFalse(os.path.exists( local_test_folder ))
+
+        self.mkdir_task.params = local_params
+        v, r = self.mkdir_task.run_task("exe_name")
+        self.assertFalse(v)
+
     def testMkdirVanillaRedundantNoError(self):
 
         local_params = {}

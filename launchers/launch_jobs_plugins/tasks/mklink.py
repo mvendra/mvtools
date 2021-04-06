@@ -30,7 +30,10 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "mkdir failed - target path [%s] already exists" % target_path
 
         # actual execution
-        os.symlink(source_path, target_path)
+        try:
+            os.symlink(source_path, target_path)
+        except FileNotFoundError as ex:
+            return False, "mkdir failed - unable to create symlink from [%s] to [%s]" % (source_path, target_path)
 
         # post-verification
         if not os.path.exists(target_path):

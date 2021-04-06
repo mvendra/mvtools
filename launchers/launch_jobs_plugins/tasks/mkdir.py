@@ -19,7 +19,12 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "mkdir failed - target_folder is a required parameter"
 
         if not os.path.exists(target_folder):
-            os.mkdir(target_folder)
+
+            try:
+                os.mkdir(target_folder)
+            except FileNotFoundError as ex:
+                return False, "mkdir failed - unable to create folder [%s]" % target_folder
+
             if not os.path.exists(target_folder):
                 return False, "mkdir failed - unable to create folder [%s]" % target_folder
         else:
