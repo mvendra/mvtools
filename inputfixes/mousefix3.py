@@ -92,6 +92,10 @@ def detect_and_apply(opts):
         if (countlistprops(sc) > sensei_selected[1]):
             sensei_selected = (sc, countlistprops(sc))
 
+    if len(sensei_selected) == 0:
+        print("%s: WARNING: mouse not detected." % os.path.basename(__file__))
+        return False
+
     mouse_id = sensei_selected[0]
     dap = getlibinputaccelspeedfromid(mouse_id)
     if dap is not None:
