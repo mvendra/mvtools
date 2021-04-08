@@ -104,7 +104,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     # main envvar
     if mvtools_path is None:
         print("Mvtools requires the 'MVTOOLS' envvar to point to the installation folder.")
-        mvtools_path = input("Choose your mvtools instalation folder (leave empty for automatic discovery):")
+        mvtools_path = input("Choose your mvtools instalation folder (must preexist - leave empty for automatic discovery):")
         print("")
     if mvtools_path == "":
         mvtools_path = os.path.dirname(os.path.abspath(__file__))
@@ -138,7 +138,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     # toolbus databases
     if toolbus_dbs_path is None:
         print("Mvtools requires a local folder to store its toolbus databases.")
-        toolbus_dbs_path = input("Choose your local toolbus databases folder:")
+        toolbus_dbs_path = input("Choose your local toolbus databases folder (must preexist):")
         print("")
     toolbus_dbs_path_copy = toolbus_dbs_path
     toolbus_dbs_path = _resolve_path(toolbus_dbs_path)
@@ -149,7 +149,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     # git-visitor search path
     if git_visitor_path is None:
         print("Mvtools requires the definition of a base path to search for git repos, for git-visitor to use.")
-        git_visitor_path = input("Choose your local search path for your git repos you want git-visitor to use:")
+        git_visitor_path = input("Choose your local search path for your git repos you want git-visitor to use (must preexist):")
         print("")
     git_visitor_path_copy = git_visitor_path
     git_visitor_path = _resolve_path(git_visitor_path)
