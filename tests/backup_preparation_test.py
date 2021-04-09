@@ -46,7 +46,11 @@ class BackupPreparationTest(unittest.TestCase):
         self.second_repo = path_utils.concat_path(self.repo_src_folder, "second")
         self.third_repo = path_utils.concat_path(self.repo_src_folder, "third")
 
-        self.nonexistant = path_utils.concat_path(self.test_dir, "nonexistant")
+        # extra dest path
+        self.extra_dest_path = path_utils.concat_path(self.test_dir, "extra_dest_path")
+        os.mkdir(self.extra_dest_path)
+
+        self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistant")
 
         self.warn_size_each1 = "102400"
         self.warn_size_final1 = "409600"
@@ -122,6 +126,12 @@ class BackupPreparationTest(unittest.TestCase):
         self.test_config_file5 = path_utils.concat_path(self.test_dir, "test_config_file5.cfg")
         create_and_write_file.create_file_contents(self.test_config_file5, cfg_file_contents5)
 
+        cfg_file_contents6 = ""
+        cfg_file_contents6 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
+        cfg_file_contents6 += ("COPY_PATH_TO {source: \"%s\"} = \"%s\"" + os.linesep) % (self.extra_dest_path, self.test_source_folder1)
+        self.test_config_file6 = path_utils.concat_path(self.test_dir, "test_config_file6.cfg")
+        create_and_write_file.create_file_contents(self.test_config_file6, cfg_file_contents6)
+
         file_cnav2_contents = ""
         file_cnav2_contents += "#!/usr/bin/env python3" + os.linesep
         file_cnav2_contents += "def invalid_interface(path):" + os.linesep
@@ -130,7 +140,7 @@ class BackupPreparationTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.test_cnav2_file, file_cnav2_contents)
 
         cfg_file_contents_fail1 = ""
-        cfg_file_contents_fail1 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.nonexistant)
+        cfg_file_contents_fail1 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.nonexistent)
         self.test_config_file_fail1 = path_utils.concat_path(self.test_dir, "test_config_file_fail1.cfg")
         create_and_write_file.create_file_contents(self.test_config_file_fail1, cfg_file_contents_fail1)
 
@@ -224,6 +234,15 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertEqual( "include", bkprep.instructions[0][2][3][0])
         self.assertEqual( "*/second", bkprep.instructions[0][2][3][1])
         self.assertEqual( "head-id", bkprep.instructions[0][2][4][0])
+
+    def testReadConfig6(self):
+        bkprep = backup_preparation.BackupPreparation(self.test_config_file6)
+        bkprep.read_config(bkprep.config_file)
+        bkprep.setup_configuration()
+        self.assertEqual( "COPY_PATH_TO", bkprep.instructions[0][0])
+        self.assertEqual( self.test_source_folder1, bkprep.instructions[0][1])
+        self.assertEqual( "source", bkprep.instructions[0][2][0][0])
+        self.assertEqual( self.extra_dest_path, bkprep.instructions[0][2][0][1])
 
     def testReadConfigFail1(self):
         bkprep = backup_preparation.BackupPreparation(self.test_config_file_fail1)
@@ -522,7 +541,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         bkprep.instructions = []
-        bkprep.instructions.append( ("COPY_PATH", self.nonexistant, []) )
+        bkprep.instructions.append( ("COPY_PATH", self.nonexistent, []) )
 
         ex_raised = False
         try:
@@ -531,13 +550,13 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertFalse(ex_raised)
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistent))))
 
     def testProcessInstructionsFail2(self):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
         bkprep.instructions = []
-        bkprep.instructions.append( ("COPY_PATH {abort}", self.nonexistant, []) )
+        bkprep.instructions.append( ("COPY_PATH {abort}", self.nonexistent, []) )
 
         ex_raised = False
         try:
@@ -546,7 +565,7 @@ class BackupPreparationTest(unittest.TestCase):
             ex_raised = True
 
         self.assertTrue(ex_raised)
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistent))))
 
     def testProcessInstructionsFail3(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -626,17 +645,76 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep.proc_copy_path(self.test_source_folder1, [])
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))))
 
-        bkprep.proc_copy_path(self.nonexistant, [])
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
+        bkprep.proc_copy_path(self.nonexistent, [])
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistent))))
 
         ex_raised = False
         try:
-            bkprep.proc_copy_path(self.nonexistant, [("abort", "")])
+            bkprep.proc_copy_path(self.nonexistent, [("abort", "")])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
         self.assertTrue(ex_raised)
-        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistant))))
+        self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistent))))
+
+    def testProcCopyPathToVanillaFolder(self):
+
+        bkprep = backup_preparation.BackupPreparation("")
+        bkprep.proc_copy_path_to(self.extra_dest_path, [("source", self.test_source_folder1)])
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.extra_dest_path, path_utils.basename_filtered(self.test_source_folder1))))
+
+    def testProcCopyPathToVanillaFile(self):
+        bkprep = backup_preparation.BackupPreparation("")
+        bkprep.proc_copy_path_to(self.extra_dest_path, [("source", self.file1)])
+        self.assertTrue(os.path.exists(path_utils.concat_path(self.extra_dest_path, path_utils.basename_filtered(self.file1))))
+
+    def testProcCopyPathToFailFileToFile(self):
+
+        bkprep = backup_preparation.BackupPreparation("")
+
+        ex_raised = False
+        try:
+            bkprep.proc_copy_path_to(self.file2, [("source", self.file1)])
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testProcCopyPathToFailNoSource(self):
+
+        bkprep = backup_preparation.BackupPreparation("")
+
+        ex_raised = False
+        try:
+            bkprep.proc_copy_path_to(self.extra_dest_path, [])
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testProcCopyPathToFailSourceNonexistent(self):
+
+        bkprep = backup_preparation.BackupPreparation("")
+
+        ex_raised = False
+        try:
+            bkprep.proc_copy_path_to(self.extra_dest_path, [("source", self.nonexistent)])
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testProcCopyPathToFailDestNonexistent(self):
+
+        bkprep = backup_preparation.BackupPreparation("")
+
+        ex_raised = False
+        try:
+            bkprep.proc_copy_path_to(self.nonexistent, [("source", self.file1)])
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
 
     def testProcCopyTreeOut(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -655,7 +733,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.proc_copy_tree_out(self.nonexistant, [])
+            bkprep.proc_copy_tree_out(self.nonexistent, [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -663,7 +741,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.proc_copy_tree_out(self.nonexistant, [("abort", "")])
+            bkprep.proc_copy_tree_out(self.nonexistent, [("abort", "")])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 

@@ -3,6 +3,7 @@
 import sys
 import os
 import getpass
+import shutil
 
 import terminal_colors
 import fsquery
@@ -195,6 +196,8 @@ class BackupPreparation:
 
         if var_name == "COPY_PATH":
             self.proc_copy_path(var_value, var_options)
+        elif var_name == "COPY_PATH_TO":
+            self.proc_copy_path_to(var_value, var_options)
         elif var_name == "COPY_TREE_OUT":
             self.proc_copy_tree_out(var_value, var_options)
         elif var_name == "COPY_SYSTEM":
@@ -229,6 +232,27 @@ class BackupPreparation:
                 override_warn_abort = True
 
         self.do_copy_file(origin_path, override_warn_size, override_warn_abort)
+
+    def proc_copy_path_to(self, var_value, var_options):
+
+        dest_path = path_utils.filter_remove_trailing_sep(var_value)
+
+        if not dsl_type20.hasopt_opts(var_options, "source"):
+            raise BackupPreparationException("Source path option is missing. Aborting.")
+        if not os.path.exists(dest_path):
+            raise BackupPreparationException("Dest path [%s] does not exist. Aborting." % dest_path)
+        if not os.path.isdir(dest_path):
+            raise BackupPreparationException("Dest path [%s] is not a directory. Aborting." % dest_path)
+
+        source_path = None
+        for o in var_options:
+            if o[0] == "source":
+                source_path = o[1]
+
+        if not os.path.exists(source_path):
+            raise BackupPreparationException("Source path [%s] does not exist. Aborting." % source_path)
+
+        path_utils.copy_to(source_path, dest_path)
 
     def proc_copy_tree_out(self, var_value, var_options):
 
