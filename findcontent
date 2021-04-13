@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# usage: cher what_to_grep | cher what_to_find cpp
+# usage: findcontent what_to_grep | findcontent what_to_find cpp
 
 if [ -z $1 ]; then 
     echo "No target"
