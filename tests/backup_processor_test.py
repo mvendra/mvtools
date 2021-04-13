@@ -241,7 +241,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
         cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.cfg")
+        self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.t20")
         create_and_write_file.create_file_contents(self.test_config_file, cfg_file_contents)
 
         # hash file
@@ -254,7 +254,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_bktemp_nonexistent_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_bktemp_nonexistent_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_nonexistent
         cfg_file_bktemp_nonexistent_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_bktemp_nonexistent_file = path_utils.concat_path(self.test_dir, "test_config_bktemp_nonexistent_file.cfg")
+        self.test_config_bktemp_nonexistent_file = path_utils.concat_path(self.test_dir, "test_config_bktemp_nonexistent_file.t20")
         create_and_write_file.create_file_contents(self.test_config_bktemp_nonexistent_file, cfg_file_bktemp_nonexistent_contents)
 
         # special source, 1
@@ -270,7 +270,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_source_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
         special_source_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         special_source_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_special_source_config_file = path_utils.concat_path(self.test_dir, "test_special_source_config_file.cfg")
+        self.test_special_source_config_file = path_utils.concat_path(self.test_dir, "test_special_source_config_file.t20")
         create_and_write_file.create_file_contents(self.test_special_source_config_file, special_source_cfg_file_contents1)
 
         # special targets, 1
@@ -281,7 +281,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_target_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_space_3_folder
         special_target_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         special_target_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_special_target_config_file = path_utils.concat_path(self.test_dir, "test_special_target_config_file.cfg")
+        self.test_special_target_config_file = path_utils.concat_path(self.test_dir, "test_special_target_config_file.t20")
         create_and_write_file.create_file_contents(self.test_special_target_config_file, special_target_cfg_file_contents1)
 
         # special bk base and temp folders, 1
@@ -290,7 +290,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_base_and_tmp_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         special_base_and_tmp_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_1
         special_base_and_tmp_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_1
-        self.test_special_base_and_temp_config_file1 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file1.cfg")
+        self.test_special_base_and_temp_config_file1 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file1.t20")
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file1, special_base_and_tmp_cfg_file_contents1)
 
         special_base_and_tmp_cfg_file_contents2 = ""
@@ -298,7 +298,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_base_and_tmp_cfg_file_contents2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         special_base_and_tmp_cfg_file_contents2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_2
         special_base_and_tmp_cfg_file_contents2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_2
-        self.test_special_base_and_temp_config_file2 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file2.cfg")
+        self.test_special_base_and_temp_config_file2 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file2.t20")
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file2, special_base_and_tmp_cfg_file_contents2)
 
         special_base_and_tmp_cfg_file_contents3 = ""
@@ -306,7 +306,7 @@ class BackupProcessorTest(unittest.TestCase):
         special_base_and_tmp_cfg_file_contents3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         special_base_and_tmp_cfg_file_contents3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder_space_3
         special_base_and_tmp_cfg_file_contents3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test_space_3
-        self.test_special_base_and_temp_config_file3 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file3.cfg")
+        self.test_special_base_and_temp_config_file3 = path_utils.concat_path(self.test_dir, "test_special_base_and_temp_config_file3.t20")
         create_and_write_file.create_file_contents(self.test_special_base_and_temp_config_file3, special_base_and_tmp_cfg_file_contents3)
 
         # malformed cfg file 1
@@ -315,7 +315,7 @@ class BackupProcessorTest(unittest.TestCase):
         malformed_cfg_file_contents1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         malformed_cfg_file_contents1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         malformed_cfg_file_contents1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_malformed_config_file1 = path_utils.concat_path(self.test_dir, "test_malformed_config_file1.cfg")
+        self.test_malformed_config_file1 = path_utils.concat_path(self.test_dir, "test_malformed_config_file1.t20")
         create_and_write_file.create_file_contents(self.test_malformed_config_file1, malformed_cfg_file_contents1)
 
         # malformed cfg file 2
@@ -324,7 +324,7 @@ class BackupProcessorTest(unittest.TestCase):
         #malformed_cfg_file_contents2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\" + os.linesep)" % self.test_target_1_folder
         malformed_cfg_file_contents2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         malformed_cfg_file_contents2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_malformed_config_file2 = path_utils.concat_path(self.test_dir, "test_malformed_config_file2.cfg")
+        self.test_malformed_config_file2 = path_utils.concat_path(self.test_dir, "test_malformed_config_file2.t20")
         create_and_write_file.create_file_contents(self.test_malformed_config_file2, malformed_cfg_file_contents2)
 
         # malformed cfg file 3
@@ -333,7 +333,7 @@ class BackupProcessorTest(unittest.TestCase):
         malformed_cfg_file_contents3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         malformed_cfg_file_contents3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         malformed_cfg_file_contents3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_malformed_config_file3 = path_utils.concat_path(self.test_dir, "test_malformed_config_file3.cfg")
+        self.test_malformed_config_file3 = path_utils.concat_path(self.test_dir, "test_malformed_config_file3.t20")
         create_and_write_file.create_file_contents(self.test_malformed_config_file3, malformed_cfg_file_contents3)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 1
@@ -343,7 +343,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_space_1 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_space_1 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_space_1 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_space_1 = path_utils.concat_path(self.test_dir, "config_file_prep_space_1.cfg")
+        self.cfg_file_prep_space_1 = path_utils.concat_path(self.test_dir, "config_file_prep_space_1.t20")
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_1, cfg_file_contents_prep_space_1)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 2
@@ -353,7 +353,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_space_2 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_space_2 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_space_2 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_space_2 = path_utils.concat_path(self.test_dir, "config_file_prep_space_2.cfg")
+        self.cfg_file_prep_space_2 = path_utils.concat_path(self.test_dir, "config_file_prep_space_2.t20")
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_2, cfg_file_contents_prep_space_2)
 
         # config file, with BKPREPARATION pointing to values (paths with spaces) 3
@@ -363,7 +363,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_space_3 += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_space_3 += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_space_3 += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_space_3 = path_utils.concat_path(self.test_dir, "config_file_prep_space_3.cfg")
+        self.cfg_file_prep_space_3 = path_utils.concat_path(self.test_dir, "config_file_prep_space_3.t20")
         create_and_write_file.create_file_contents(self.cfg_file_prep_space_3, cfg_file_contents_prep_space_3)
 
         # config file, with BKPREPARATION pointing to a script that fails
@@ -373,7 +373,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_fails += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_fails += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_fails += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.cfg_file_prep_fails = path_utils.concat_path(self.test_dir, "config_file_prep_fails.cfg")
+        self.cfg_file_prep_fails = path_utils.concat_path(self.test_dir, "config_file_prep_fails.t20")
         create_and_write_file.create_file_contents(self.cfg_file_prep_fails, cfg_file_contents_prep_fails)
 
         # config file, BKPREPARATION that receives params, specified with an envvar
@@ -385,7 +385,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_prep_param += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_prep_param += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_prep_param += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_prep_param = path_utils.concat_path(self.test_dir, "test_config_file_prep_param.cfg")
+        self.test_config_file_prep_param = path_utils.concat_path(self.test_dir, "test_config_file_prep_param.t20")
         create_and_write_file.create_file_contents(self.test_config_file_prep_param, cfg_file_contents_prep_param)
 
         # config file with a nonaborting nonexistent source
@@ -395,7 +395,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_noabort_nonexistent += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_noabort_nonexistent += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_noabort_nonexistent += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_noabort_nonexistent = path_utils.concat_path(self.test_dir, "test_config_file_noabort_nonexistent.cfg")
+        self.test_config_file_noabort_nonexistent = path_utils.concat_path(self.test_dir, "test_config_file_noabort_nonexistent.t20")
         create_and_write_file.create_file_contents(self.test_config_file_noabort_nonexistent, cfg_file_contents_noabort_nonexistent)
 
         # config file with an aborting nonexistent source
@@ -405,7 +405,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_abort_nonexistent += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_abort_nonexistent += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_abort_nonexistent += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_abort_nonexistent = path_utils.concat_path(self.test_dir, "test_config_file_abort_nonexistent.cfg")
+        self.test_config_file_abort_nonexistent = path_utils.concat_path(self.test_dir, "test_config_file_abort_nonexistent.t20")
         create_and_write_file.create_file_contents(self.test_config_file_abort_nonexistent, cfg_file_contents_abort_nonexistent)
 
         # config file, global warnings (each/final) that do not cause aborts
@@ -416,7 +416,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_final_noabort += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_final_noabort += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_final_noabort += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_final_noabort = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_noabort.cfg")
+        self.test_config_file_warn_global_each_final_noabort = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_noabort.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_final_noabort, cfg_file_contents_warn_global_each_final_noabort)
 
         # config file, global warnings (each) that do cause aborts
@@ -427,7 +427,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_abort += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_abort += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_abort += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_abort = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_abort.cfg")
+        self.test_config_file_warn_global_each_abort = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_abort.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_abort, cfg_file_contents_warn_global_each_abort)
 
         # config file, global warnings (final) that do cause aborts
@@ -438,7 +438,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_final_abort += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_final_abort += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_final_abort += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_final_abort = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_final_abort.cfg")
+        self.test_config_file_warn_global_final_abort = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_final_abort.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_final_abort, cfg_file_contents_warn_global_final_abort)
 
         # config file, global warnings (each/final), no aborts, each overridden
@@ -449,7 +449,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_final_noabort_each_overridden += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_final_noabort_each_overridden += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_final_noabort_each_overridden += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_final_noabort_each_overridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_noabort_each_overridden.cfg")
+        self.test_config_file_warn_global_each_final_noabort_each_overridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_noabort_each_overridden.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_final_noabort_each_overridden, cfg_file_contents_warn_global_each_final_noabort_each_overridden)
 
         # config file, global warnings (each/final), no aborts, each overridden + abort overridden
@@ -460,7 +460,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_final_noabort_each_overridden_abortoverridden += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_final_noabort_each_overridden_abortoverridden += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_final_noabort_each_overridden_abortoverridden += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_final_noabort_each_overridden_abortoverridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_noabort_each_overridden_abortoverridden.cfg")
+        self.test_config_file_warn_global_each_final_noabort_each_overridden_abortoverridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_noabort_each_overridden_abortoverridden.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_final_noabort_each_overridden_abortoverridden, cfg_file_contents_warn_global_each_final_noabort_each_overridden_abortoverridden)
 
         # config file, global warnings (each/final), each aborts, each overridden
@@ -471,7 +471,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_final_eachabort_each_overridden += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_final_eachabort_each_overridden += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_final_eachabort_each_overridden += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_final_eachabort_each_overridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_eachabort_each_overridden.cfg")
+        self.test_config_file_warn_global_each_final_eachabort_each_overridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_eachabort_each_overridden.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_final_eachabort_each_overridden, cfg_file_contents_warn_global_each_final_eachabort_each_overridden)
 
         # config file, global warnings (each/final), final aborts, each overridden
@@ -482,7 +482,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_final_finalabort_each_overridden += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_final_finalabort_each_overridden += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_final_finalabort_each_overridden += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_final_finalabort_each_overridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_finalabort_each_overridden.cfg")
+        self.test_config_file_warn_global_each_final_finalabort_each_overridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_finalabort_each_overridden.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_final_finalabort_each_overridden, cfg_file_contents_warn_global_each_final_finalabort_each_overridden)
 
         # config file, global warnings (each/final), final aborts, two eachs, one each overridden, the other left original
@@ -494,7 +494,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_final_finalabort_twoeachs_oneoverridden += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_final_finalabort_twoeachs_oneoverridden += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_final_finalabort_twoeachs_oneoverridden += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_final_finalabort_twoeachs_oneoverridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_finalabort_twoeachs_oneoverridden.cfg")
+        self.test_config_file_warn_global_each_final_finalabort_twoeachs_oneoverridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_finalabort_twoeachs_oneoverridden.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_final_finalabort_twoeachs_oneoverridden, cfg_file_contents_warn_global_each_final_finalabort_twoeachs_oneoverridden)
 
         # config file, global warnings (each/final), each aborts, two eachs, one each overridden, the other left original
@@ -506,7 +506,7 @@ class BackupProcessorTest(unittest.TestCase):
         cfg_file_contents_warn_global_each_final_eachabort_twoeachs_oneoverridden += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         cfg_file_contents_warn_global_each_final_eachabort_twoeachs_oneoverridden += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents_warn_global_each_final_eachabort_twoeachs_oneoverridden += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file_warn_global_each_final_eachabort_twoeachs_oneoverridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_eachabort_twoeachs_oneoverridden.cfg")
+        self.test_config_file_warn_global_each_final_eachabort_twoeachs_oneoverridden = path_utils.concat_path(self.test_dir, "test_config_file_warn_global_each_final_eachabort_twoeachs_oneoverridden.t20")
         create_and_write_file.create_file_contents(self.test_config_file_warn_global_each_final_eachabort_twoeachs_oneoverridden, cfg_file_contents_warn_global_each_final_eachabort_twoeachs_oneoverridden)
 
         return True, ""

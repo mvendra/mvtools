@@ -723,7 +723,7 @@ class DSLType20:
         return True
 
 def puaq():
-    print("Usage: %s file_to_parse.cfg" % os.path.basename(__file__))
+    print("Usage: %s file_to_parse.t20" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == '__main__':

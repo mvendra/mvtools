@@ -58,7 +58,7 @@ class MassBackupTesterTest(unittest.TestCase):
         cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_folder
         cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
-        self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.cfg")
+        self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.t20")
         create_and_write_file.create_file_contents(self.test_config_file, cfg_file_contents)
 
         # hash file

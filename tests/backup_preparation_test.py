@@ -86,7 +86,7 @@ class BackupPreparationTest(unittest.TestCase):
         cfg_file_contents1 += ("COPY_PATH {abort} = \"%s\"" + os.linesep) % (self.test_source_folder1)
         cfg_file_contents1 += ("COPY_PATH {abort} = \"%s\"" + os.linesep) % (self.file3)
         cfg_file_contents1 += ("COPY_TREE_OUT {abort} = \"%s\"" + os.linesep) % (self.test_source_folder2)
-        self.test_config_file1 = path_utils.concat_path(self.test_dir, "test_config_file1.cfg")
+        self.test_config_file1 = path_utils.concat_path(self.test_dir, "test_config_file1.t20")
         create_and_write_file.create_file_contents(self.test_config_file1, cfg_file_contents1)
 
         cfg_file_contents2 = ""
@@ -95,18 +95,18 @@ class BackupPreparationTest(unittest.TestCase):
         cfg_file_contents2 += ("SET_WARN_SIZE_FINAL = \"%s\"" + os.linesep) % (self.warn_size_final2)
         cfg_file_contents2 += ("COPY_PATH = \"%s\"" + os.linesep) % (self.test_source_folder2)
         cfg_file_contents2 += ("COPY_TREE_OUT = \"%s\"" + os.linesep) % (self.test_source_folder1)
-        self.test_config_file2 = path_utils.concat_path(self.test_dir, "test_config_file2.cfg")
+        self.test_config_file2 = path_utils.concat_path(self.test_dir, "test_config_file2.t20")
         create_and_write_file.create_file_contents(self.test_config_file2, cfg_file_contents2)
 
         cfg_file_contents3 = ""
         cfg_file_contents3 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
-        self.test_config_file3 = path_utils.concat_path(self.test_dir, "test_config_file3.cfg")
+        self.test_config_file3 = path_utils.concat_path(self.test_dir, "test_config_file3.t20")
         create_and_write_file.create_file_contents(self.test_config_file3, cfg_file_contents3)
 
         cfg_file_contents4 = ""
         cfg_file_contents4 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
         cfg_file_contents4 += ("COPY_PATH = \"%s%s\"" + os.linesep) % (self.test_source_folder3, os.sep)
-        self.test_config_file4 = path_utils.concat_path(self.test_dir, "test_config_file4.cfg")
+        self.test_config_file4 = path_utils.concat_path(self.test_dir, "test_config_file4.t20")
         create_and_write_file.create_file_contents(self.test_config_file4, cfg_file_contents4)
 
         file_cnav1_contents = ""
@@ -123,13 +123,13 @@ class BackupPreparationTest(unittest.TestCase):
         cfg_file_contents5 = ""
         cfg_file_contents5 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
         cfg_file_contents5 += ("RUN_COLLECT_PATCHES {custom-path-navigator: \"%s\" / storage-base: \"collected_patches\" / default-exclude / include: \"*/second\" / head-id} = \"%s\"" + os.linesep) % (self.test_cnav1_file, self.repo_src_folder)
-        self.test_config_file5 = path_utils.concat_path(self.test_dir, "test_config_file5.cfg")
+        self.test_config_file5 = path_utils.concat_path(self.test_dir, "test_config_file5.t20")
         create_and_write_file.create_file_contents(self.test_config_file5, cfg_file_contents5)
 
         cfg_file_contents6 = ""
         cfg_file_contents6 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
         cfg_file_contents6 += ("COPY_PATH_TO {source: \"%s\"} = \"%s\"" + os.linesep) % (self.extra_dest_path, self.test_source_folder1)
-        self.test_config_file6 = path_utils.concat_path(self.test_dir, "test_config_file6.cfg")
+        self.test_config_file6 = path_utils.concat_path(self.test_dir, "test_config_file6.t20")
         create_and_write_file.create_file_contents(self.test_config_file6, cfg_file_contents6)
 
         file_cnav2_contents = ""
@@ -141,12 +141,12 @@ class BackupPreparationTest(unittest.TestCase):
 
         cfg_file_contents_fail1 = ""
         cfg_file_contents_fail1 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.nonexistent)
-        self.test_config_file_fail1 = path_utils.concat_path(self.test_dir, "test_config_file_fail1.cfg")
+        self.test_config_file_fail1 = path_utils.concat_path(self.test_dir, "test_config_file_fail1.t20")
         create_and_write_file.create_file_contents(self.test_config_file_fail1, cfg_file_contents_fail1)
 
         cfg_file_contents_fail2 = ""
         cfg_file_contents_fail2 += ("SET_STORAGE_PATH = %s\"" + os.linesep) % (self.prep_target)
-        self.test_config_file_fail2 = path_utils.concat_path(self.test_dir, "test_config_file_fail2.cfg")
+        self.test_config_file_fail2 = path_utils.concat_path(self.test_dir, "test_config_file_fail2.t20")
         create_and_write_file.create_file_contents(self.test_config_file_fail2, cfg_file_contents_fail2)
 
         cfg_file_contents_fail3 = ""
@@ -154,14 +154,14 @@ class BackupPreparationTest(unittest.TestCase):
         cfg_file_contents_fail3 += ("SET_WARN_SIZE_EACH {abort} = \"%s\"" + os.linesep) % (self.warn_size_each2)
         cfg_file_contents_fail3 += ("COPY_PATH = \"%s\"" + os.linesep) % (self.test_source_folder1)
         cfg_file_contents_fail3 += ("COPY_PATH = \"%s\"" + os.linesep) % (self.file4)
-        self.test_config_file_fail3 = path_utils.concat_path(self.test_dir, "test_config_file_fail3.cfg")
+        self.test_config_file_fail3 = path_utils.concat_path(self.test_dir, "test_config_file_fail3.t20")
         create_and_write_file.create_file_contents(self.test_config_file_fail3, cfg_file_contents_fail3)
 
         cfg_file_contents_fail4 = ""
         cfg_file_contents_fail4 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
         cfg_file_contents_fail4 += ("SET_WARN_SIZE_FINAL {abort} = \"%s\"" + os.linesep) % (self.warn_size_final2)
         cfg_file_contents_fail4 += ("COPY_PATH = \"%s\"" + os.linesep) % (self.file4)
-        self.test_config_file_fail4 = path_utils.concat_path(self.test_dir, "test_config_file_fail4.cfg")
+        self.test_config_file_fail4 = path_utils.concat_path(self.test_dir, "test_config_file_fail4.t20")
         create_and_write_file.create_file_contents(self.test_config_file_fail4, cfg_file_contents_fail4)
 
         return True, ""

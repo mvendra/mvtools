@@ -52,7 +52,7 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_1 += "var3 {opt2: \"val3\"} = \"val4\"" + os.linesep
         self.contents_cfg_test_ok_1 += "var4 {opt3: \"val5\" / opt4: \"val6\"} = \"val7\"" + os.linesep
         self.contents_cfg_test_ok_1 += "var5 {opt5 / opt6: \"val8\" / opt7: \"val9\"} = \"val10\"" + os.linesep
-        self.cfg_test_ok_1 = path_utils.concat_path(self.test_dir, "test_ok_1.cfg")
+        self.cfg_test_ok_1 = path_utils.concat_path(self.test_dir, "test_ok_1.t20")
 
         self.contents_cfg_test_ok_2 = "var1 = \"val1\"" + os.linesep
         self.contents_cfg_test_ok_2 += "var2 = \"a/path/valid1\"" + os.linesep
@@ -60,34 +60,34 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_2 += "var4 = \"$SOME_ENV_VAR\"" + os.linesep
         self.contents_cfg_test_ok_2 += "var5 {r1: \"\" / r1} = \"repeated1\"" + os.linesep
         self.contents_cfg_test_ok_2 += "var5 {r2 / r2} = \"repeated2\"" + os.linesep
-        self.cfg_test_ok_2 = path_utils.concat_path(self.test_dir, "test_ok_2.cfg")
+        self.cfg_test_ok_2 = path_utils.concat_path(self.test_dir, "test_ok_2.t20")
 
         self.contents_cfg_test_ok_3 = "var1 = \"val1\"" + os.linesep
         self.contents_cfg_test_ok_3 += "var2 = \"val2\"" + os.linesep
-        self.cfg_test_ok_3 = path_utils.concat_path(self.test_dir, "test_ok_3.cfg")
+        self.cfg_test_ok_3 = path_utils.concat_path(self.test_dir, "test_ok_3.t20")
 
         self.contents_cfg_test_ok_4 = ("var1 = \"%s\"" + os.linesep) % self.reserved_test_env_var_1
         self.contents_cfg_test_ok_4 += ("var2 {opt1: \"%s\"} = \"val1\"" + os.linesep) % self.reserved_test_env_var_2
         self.contents_cfg_test_ok_4 += ("var3 = \"%s\"" + os.linesep) % self.reserved_path_with_user_1
-        self.cfg_test_ok_4 = path_utils.concat_path(self.test_dir, "test_ok_4.cfg")
+        self.cfg_test_ok_4 = path_utils.concat_path(self.test_dir, "test_ok_4.t20")
 
         self.contents_cfg_test_ok_5 = "var1 = \"val1\" # comment" + os.linesep
-        self.cfg_test_ok_5 = path_utils.concat_path(self.test_dir, "test_ok_5.cfg")
+        self.cfg_test_ok_5 = path_utils.concat_path(self.test_dir, "test_ok_5.t20")
 
         self.contents_cfg_test_fail_1 = "var1 = val1" + os.linesep
-        self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.cfg")
+        self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.t20")
 
         self.contents_cfg_test_fail_2 = "var1" + os.linesep
-        self.cfg_test_fail_2 = path_utils.concat_path(self.test_dir, "test_fail_2.cfg")
+        self.cfg_test_fail_2 = path_utils.concat_path(self.test_dir, "test_fail_2.t20")
 
         self.contents_cfg_test_fail_3 = "{var1 = \"val1\"}" + os.linesep
-        self.cfg_test_fail_3 = path_utils.concat_path(self.test_dir, "test_fail_3.cfg")
+        self.cfg_test_fail_3 = path_utils.concat_path(self.test_dir, "test_fail_3.t20")
 
         self.contents_cfg_test_fail_4 = "{fakeopt} var1 = \"val1\"" + os.linesep
-        self.cfg_test_fail_4 = path_utils.concat_path(self.test_dir, "test_fail_4.cfg")
+        self.cfg_test_fail_4 = path_utils.concat_path(self.test_dir, "test_fail_4.t20")
 
         self.contents_cfg_test_fail_5 = "var1 {opt1: \"val1} = \"val2\"" + os.linesep
-        self.cfg_test_fail_5 = path_utils.concat_path(self.test_dir, "test_fail_5.cfg")
+        self.cfg_test_fail_5 = path_utils.concat_path(self.test_dir, "test_fail_5.t20")
 
         create_and_write_file.create_file_contents(self.cfg_test_ok_1, self.contents_cfg_test_ok_1)
         create_and_write_file.create_file_contents(self.cfg_test_ok_2, self.contents_cfg_test_ok_2)
