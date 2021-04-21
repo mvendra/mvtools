@@ -105,7 +105,7 @@ class DSLType20:
         self.QUOTE = "\""
         self.BSLASH = "\\"
         self.FSLASH = "/"
-        self.COMMENTS = ["#", "//"]
+        self.COMMENTS = [["#"], ["/", "/"]]
 
         # read options
         self.expand_envvars = _options._expand_envvars
@@ -143,12 +143,12 @@ class DSLType20:
     def sanitize_line(self, line_in):
 
         line_out = line_in.strip()
-
+        if line_out == "":
+            return ""
         for c in self.COMMENTS:
-            hash_pos = line_out.find(c)
-            if hash_pos != -1:
-                line_out = line_out[0:hash_pos]
-
+            line_out = miniparse.guarded_right_cut(line_out, c, self.QUOTE)
+            if line_out == "":
+                return ""
         return line_out.strip()
 
     def produce(self):

@@ -116,6 +116,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_SanitizeLine(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertEqual(dsl.sanitize_line(""), "")
         self.assertEqual(dsl.sanitize_line("abc"), "abc")
         self.assertEqual(dsl.sanitize_line("#abc"), "")
         self.assertEqual(dsl.sanitize_line("abc#def"), "abc")
@@ -126,6 +127,8 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.sanitize_line("//   abc   // def"), "")
         self.assertEqual(dsl.sanitize_line("   abc   // def   # xyz"), "abc")
         self.assertEqual(dsl.sanitize_line("   abc   # def   // xyz"), "abc")
+        self.assertEqual(dsl.sanitize_line(" abc \"xyz # def \" # more"), "abc \"xyz # def \"")
+        self.assertEqual(dsl.sanitize_line(" abc \"xyz // def \" // more"), "abc \"xyz // def \"")
 
     def testDslType20_Parse1(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Options()))
@@ -296,13 +299,21 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"val \"2\"\"} = \"val \\\"1\\\"\"")
         self.assertFalse(v)
 
-    def testDslType20_TestSlashInsideVarOptVal(self):
+    def testDslType20_TestSlashInsideVarOptVal1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl.parse("var1   {  _opt-1   :    \"val \\\\  =  \\\"1/2\\\"\" / opt2  :  \"val = \\\"2/4\\\"\" }     =  \"val = \\\"1\\\"\"  ")
         self.assertTrue(v)
 
         self.assertEqual(dsl.get_all_vars(), [("var1", "val = \"1\"", [("_opt-1", "val \\  =  \"1/2\""), ("opt2", "val = \"2/4\"")])])
+
+    def testDslType20_TestCommentInsideVarOptVal1(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        v, r = dsl.parse("var1 { remote_link : \"https://www.url.net/folder/whatever\" } = \"svn.py\"")
+        self.assertTrue(v)
+
+        self.assertEqual(dsl.get_all_vars(), [("var1", "svn.py", [("remote_link", "https://www.url.net/folder/whatever")])])
 
     def testDslType20_TestBlankAndNoneOption(self):
 
