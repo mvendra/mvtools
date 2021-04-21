@@ -146,6 +146,158 @@ class MiniparseTest(unittest.TestCase):
         p = miniparse.guarded_split("aaa{b[]=bb}=ccc", "=", [("[", "]"), ("{", "}")])
         self.assertEqual(p, ["aaa{b[]=bb}", "ccc"])
 
+    def testGuardedRightCut1(self):
+        p = miniparse.guarded_right_cut([], ["#"], "'")
+        self.assertEqual(p, None)
+
+    def testGuardedRightCut2(self):
+        p = miniparse.guarded_right_cut("", ["#"], "'")
+        self.assertEqual(p, None)
+
+    def testGuardedRightCut3(self):
+        p = miniparse.guarded_right_cut("abc", (), "'")
+        self.assertEqual(p, None)
+
+    def testGuardedRightCut4(self):
+        p = miniparse.guarded_right_cut("abc", [], "'")
+        self.assertEqual(p, None)
+
+    def testGuardedRightCut5(self):
+        p = miniparse.guarded_right_cut("abc", ["#"], "")
+        self.assertEqual(p, None)
+
+    def testGuardedRightCut6(self):
+        p = miniparse.guarded_right_cut("abc", ["#"], [])
+        self.assertEqual(p, None)
+
+    def testGuardedRightCut7(self):
+        p = miniparse.guarded_right_cut("abc", ["#"], "#")
+        self.assertEqual(p, None)
+
+    def testGuardedRightCut8(self):
+        p = miniparse.guarded_right_cut("abc", ["#"], "'")
+        self.assertEqual(p, "abc")
+
+    def testGuardedRightCut9(self):
+        p = miniparse.guarded_right_cut("abc #def", ["#"], "'")
+        self.assertEqual(p, "abc ")
+
+    def testGuardedRightCut10(self):
+        p = miniparse.guarded_right_cut("abc ##def", ["#"], "'")
+        self.assertEqual(p, "abc ")
+
+    def testGuardedRightCut11(self):
+        p = miniparse.guarded_right_cut("##abc ##def", ["#"], "'")
+        self.assertEqual(p, "")
+
+    def testGuardedRightCut12(self):
+        p = miniparse.guarded_right_cut("abc 'def'", ["#"], "'")
+        self.assertEqual(p, "abc 'def'")
+
+    def testGuardedRightCut13(self):
+        p = miniparse.guarded_right_cut("abc 'def' #more", ["#"], "'")
+        self.assertEqual(p, "abc 'def' ")
+
+    def testGuardedRightCut14(self):
+        p = miniparse.guarded_right_cut("abc 'def' //more", ["/", "/"], "'")
+        self.assertEqual(p, "abc 'def' ")
+
+    def testGuardedRightCut15(self):
+        p = miniparse.guarded_right_cut("abc 'def' /more", ["/", "/"], "'")
+        self.assertEqual(p, "abc 'def' /more")
+
+    def testGuardedRightCut16(self):
+        p = miniparse.guarded_right_cut("//abc 'def' /more", ["/", "/"], "'")
+        self.assertEqual(p, "")
+
+    def testGuardedRightCut17(self):
+        p = miniparse.guarded_right_cut("//abc 'def' /more", ["/", "/", "/"], "'")
+        self.assertEqual(p, "//abc 'def' /more")
+
+    def testGuardedRightCut18(self):
+        p = miniparse.guarded_right_cut("///abc 'def' /more", ["/", "/", "/"], "'")
+        self.assertEqual(p, "")
+
+    def testGuardedRightCut19(self):
+        p = miniparse.guarded_right_cut("#abc 'def' /more", ["#"], "'")
+        self.assertEqual(p, "")
+
+    def testGuardedRightCut20(self):
+        p = miniparse.guarded_right_cut("#abc 'def' ###more", ["#"], "'")
+        self.assertEqual(p, "")
+
+    def testGuardedRightCut21(self):
+        p = miniparse.guarded_right_cut("#abc 'def' ###more", ["#", "#"], "'")
+        self.assertEqual(p, "#abc 'def' ")
+
+    def testGuardedRightCut22(self):
+        p = miniparse.guarded_right_cut("abc 'def #xyz'", ["#"], "'")
+        self.assertEqual(p, "abc 'def #xyz'")
+
+    def testGuardedRightCut23(self):
+        p = miniparse.guarded_right_cut("abc 'def ##xyz'", ["#"], "'")
+        self.assertEqual(p, "abc 'def ##xyz'")
+
+    def testGuardedRightCut24(self):
+        p = miniparse.guarded_right_cut("abc 'def ##xyz' #more", ["#"], "'")
+        self.assertEqual(p, "abc 'def ##xyz' ")
+
+    def testGuardedRightCut25(self):
+        p = miniparse.guarded_right_cut("abc 'def ##xyz #more", ["#"], "'")
+        self.assertEqual(p, "abc 'def ##xyz #more")
+
+    def testGuardedRightCut26(self):
+        p = miniparse.guarded_right_cut("abc 'def //xyz' //more", ["/", "/"], "'")
+        self.assertEqual(p, "abc 'def //xyz' ")
+
+    def testGuardedRightCut27(self):
+        p = miniparse.guarded_right_cut("abc 'def //xyz //more", ["/", "/"], "'")
+        self.assertEqual(p, "abc 'def //xyz //more")
+
+    def testGuardedRightCut28(self):
+        p = miniparse.guarded_right_cut("abc 'def' '//xyz' //more", ["/", "/"], "'")
+        self.assertEqual(p, "abc 'def' '//xyz' ")
+
+    def testGuardedRightCut29(self):
+        p = miniparse.guarded_right_cut("abc 'def' '//xyz //more", ["/", "/"], "'")
+        self.assertEqual(p, "abc 'def' '//xyz //more")
+
+    def testGuardedRightCut30(self):
+        p = miniparse.guarded_right_cut("abc 'def' '//xyz //more", ["#", "/"], "'")
+        self.assertEqual(p, "abc 'def' '//xyz //more")
+
+    def testGuardedRightCut31(self):
+        p = miniparse.guarded_right_cut("#/abc 'def' '//xyz //more", ["#", "/"], "'")
+        self.assertEqual(p, "")
+
+    def testGuardedRightCut32(self):
+        p = miniparse.guarded_right_cut("abc", ["#", "/", "#", "/"], "'")
+        self.assertEqual(p, "abc")
+
+    def testGuardedRightCut33(self):
+        p = miniparse.guarded_right_cut("a#/#/bc", ["#", "/", "#", "/"], "'")
+        self.assertEqual(p, "a")
+
+    def testGuardedRightCut34(self):
+        p = miniparse.guarded_right_cut("'a#/#/bc", ["#", "/", "#", "/"], "'")
+        self.assertEqual(p, "'a#/#/bc")
+
+    def testGuardedRightCut35(self):
+        p = miniparse.guarded_right_cut("''a#/#/bc", ["#", "/", "#", "/"], "'")
+        self.assertEqual(p, "''a")
+
+    def testGuardedRightCut36(self):
+        p = miniparse.guarded_right_cut("abc'", ["#"], "'")
+        self.assertEqual(p, "abc'")
+
+    def testGuardedRightCut37(self):
+        p = miniparse.guarded_right_cut("abc'#", ["#"], "'")
+        self.assertEqual(p, "abc'#")
+
+    def testGuardedRightCut38(self):
+        p = miniparse.guarded_right_cut("abc''#", ["#"], "'")
+        self.assertEqual(p, "abc''")
+
     def testSplitNext1(self):
         p = miniparse.split_next(None, None)
         self.assertEqual(p, None)

@@ -99,6 +99,67 @@ def guarded_split(thestr, sep_ch, guard_chs):
 
     return ret
 
+def guarded_right_cut(thestr, sep_seq, guard_ch):
+
+    if not isinstance(thestr, str):
+        return None
+    if thestr == "":
+        return None
+    if not isinstance(sep_seq, list):
+        return None
+    if len(sep_seq) < 1:
+        return None
+    if not isinstance(guard_ch, str):
+        return None
+    if guard_ch == "":
+        return None
+    if sep_seq[0] == guard_ch:
+        return None
+
+    guarded = False
+    matching = False
+    sepseq_index = 0
+    match_begin_index = None
+
+    for i in range(len(thestr)):
+
+        if matching:
+
+            if thestr[i] == sep_seq[sepseq_index]:
+                # keep on matching
+                sepseq_index += 1
+                if sepseq_index == len(sep_seq):
+                    # successful match.
+                    matching = False
+                    sepseq_index = 0
+                    if not guarded:
+                        return thestr[:match_begin_index]
+
+            else:
+                # matching failed. reset
+                sepseq_index = 0
+                matching = False
+                match_begin_index = None
+
+        else:
+
+            if thestr[i] == sep_seq[0]:
+                # start matching
+                matching = True
+                sepseq_index = 1
+                match_begin_index = i
+                if sepseq_index == len(sep_seq):
+                    # successful match.
+                    matching = False
+                    sepseq_index = 0
+                    if not guarded:
+                        return thestr[:match_begin_index]
+
+        if thestr[i] == guard_ch:
+            guarded = not guarded
+
+    return thestr
+
 def opt_get(thestr, sep_ch):
     if thestr is None:
         return None, None
