@@ -10,7 +10,7 @@ class CustomTask(launch_jobs.BaseTask):
     def get_desc(self):
         return "svn"
 
-    def run_task(self, execution_name=None):
+    def run_task(self, feedback_object, execution_name=None):
 
         # operation
         try:
@@ -28,11 +28,11 @@ class CustomTask(launch_jobs.BaseTask):
 
         # delegate
         if operation == "checkout":
-            return self.run_task_checkout(target_path)
+            return self.run_task_checkout(feedback_object, target_path)
         elif operation == "update":
-            return self.run_task_update(target_path)
+            return self.run_task_update(feedback_object, target_path)
 
-    def run_task_checkout(self, target_path):
+    def run_task_checkout(self, feedback_object, target_path):
 
         print("mvdebug checkout")
 
@@ -58,7 +58,7 @@ class CustomTask(launch_jobs.BaseTask):
         # normal return
         return True, None
 
-    def run_task_update(self, target_path):
+    def run_task_update(self, feedback_object, target_path):
 
         print("mvdebug update")
 

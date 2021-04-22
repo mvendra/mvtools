@@ -201,7 +201,7 @@ class RecipeProcessor:
         options = r[1]
         exec_name = r[2]
 
-        v, r = launch_jobs.run_job_list(jobs, exec_name, options)
+        v, r = launch_jobs.run_job_list(jobs, print, exec_name, options)
         if not v:
             return False, r
 

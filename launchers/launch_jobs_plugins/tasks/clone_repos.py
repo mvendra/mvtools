@@ -12,7 +12,7 @@ import git_wrapper
 class CustomTask(launch_jobs.BaseTask):
     def get_desc(self):
         return "clone_repos"
-    def run_task(self, execution_name=None):
+    def run_task(self, feedback_object, execution_name=None):
 
         # read out required parameters
         # source_path

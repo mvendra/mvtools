@@ -9,7 +9,7 @@ class CustomTask(launch_jobs.BaseTask):
     def get_desc(self):
         return "mklink"
 
-    def run_task(self, execution_name=None):
+    def run_task(self, feedback_object, execution_name=None):
 
         # source_path
         try:

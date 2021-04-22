@@ -43,7 +43,7 @@ class BaseTask:
         self.params = params
     def get_desc(self):
         return "Generic base task"
-    def run_task(self, execution_name=None):
+    def run_task(self, feedback_object, execution_name=None):
         return False, "Not implemented"
 
 class BaseJob:
@@ -55,7 +55,7 @@ class BaseJob:
         return "Base job"
     def add_task(self, task):
         return False, None
-    def run_job(self, execution_name=None):
+    def run_job(self, feedback_object, execution_name=None):
         return False, None
 
 def _setup_toolbus(execution_name):
@@ -183,7 +183,7 @@ def _has_any_job_failed(job_result):
             return True
     return False
 
-def run_job_list(job_list, execution_name=None, options=None):
+def run_job_list(job_list, feedback_object, execution_name=None, options=None):
 
     if execution_name is None:
         execution_name = "launch_jobs_%d" % os.getpid()
@@ -213,7 +213,7 @@ def run_job_list(job_list, execution_name=None, options=None):
     if not v:
         return False, ["Unable to start execution: execution name [%s]'s begin-timestamp couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
 
-    print("Execution context [%s] will begin running at [%s]." % (execution_name, begin_timestamp))
+    feedback_object("Execution context [%s] will begin running at [%s]." % (execution_name, begin_timestamp))
 
     report = []
     for j in job_list:
@@ -223,7 +223,7 @@ def run_job_list(job_list, execution_name=None, options=None):
         if not v:
             j_msg = "Pausing failed: [%s]. Job: [%s]" % (r, j.name)
         else:
-            v, r = j.run_job(execution_name)
+            v, r = j.run_job(feedback_object, execution_name)
             if v:
                 j_msg = "Job [%s][%s] succeeded." % (j.name, j.get_desc())
             else:
