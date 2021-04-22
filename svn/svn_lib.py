@@ -134,3 +134,23 @@ def is_svn_repo(repo):
     if os.path.exists(the_svn_obj) and os.path.isdir(the_svn_obj):
         return True, "svn"
     return True, False
+
+def checkout_autoretry(remote_link, local_repo):
+
+    v, r = svn_wrapper.checkout(remote_link, local_repo)
+    if not v:
+        return False, r
+
+    return True, None
+
+    # mvtodo: detect errors, issue cleanups whenever needed, and update as needed (use update_autoretry)
+
+def update_autoretry(local_repo):
+
+    v, r = svn_wrapper.update(local_repo)
+    if not v:
+        return False, r
+
+    return True, None
+
+    # mvtodo: detect errors, issue cleanups whenever needed, and keep updating as needed
