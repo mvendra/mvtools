@@ -37,6 +37,9 @@ def _format_job_info_msg(job, task):
 def _format_task_error_msg(task, detail):
     return "Task [%s][%s] failed: [%s]" % (task.name, task.get_desc(), detail)
 
+def _format_task_warning_msg(task, detail):
+    return "Task [%s][%s] warns: [%s]" % (task.name, task.get_desc(), detail)
+
 class BaseTask:
     def __init__(self, name=None, params=None):
         self.name = name
