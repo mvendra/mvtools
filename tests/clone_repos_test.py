@@ -88,7 +88,7 @@ class CloneReposTest(unittest.TestCase):
         local_params = {}
         self.clone_repo_task.params = local_params
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testCloneReposEmptyFail2(self):
@@ -97,7 +97,7 @@ class CloneReposTest(unittest.TestCase):
         local_params["source_path"] = self.source_path
         self.clone_repo_task.params = local_params
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testCloneReposEmptyFail3(self):
@@ -107,7 +107,7 @@ class CloneReposTest(unittest.TestCase):
         local_params["dest_path"] = self.dest_path
         self.clone_repo_task.params = local_params
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testCloneReposEmptyFail4(self):
@@ -118,7 +118,7 @@ class CloneReposTest(unittest.TestCase):
         local_params["accepted_repo_type"] = "git/bare"
         self.clone_repo_task.params = local_params
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testCloneReposEmptyFail5(self):
@@ -130,7 +130,7 @@ class CloneReposTest(unittest.TestCase):
         local_params["bare_clone"] = "no"
         self.clone_repo_task.params = local_params
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testCloneReposVanilla1(self):
@@ -142,7 +142,7 @@ class CloneReposTest(unittest.TestCase):
         local_params["bare_clone"] = "yes"
         self.clone_repo_task.params = local_params
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertTrue(v)
         dest_first_objects = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.first_repo), "objects")
         dest_third_objects = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.source_sub1), path_utils.basename_filtered(self.source_sub2), path_utils.basename_filtered(self.third_repo), "objects")
@@ -159,7 +159,7 @@ class CloneReposTest(unittest.TestCase):
         local_params["remote_name"] = "test_remote"
         self.clone_repo_task.params = local_params
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertTrue(v)
         test_file_first_repo = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.first_repo), "test_file.txt")
         print(test_file_first_repo)
@@ -179,7 +179,7 @@ class CloneReposTest(unittest.TestCase):
         os.mkdir(dest_third_sub1)
         self.assertTrue( os.path.exists(dest_third_sub1))
 
-        v, r = self.clone_repo_task.run_task("exe_name")
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
 if __name__ == '__main__':

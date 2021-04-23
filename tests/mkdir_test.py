@@ -41,7 +41,7 @@ class MkdirTest(unittest.TestCase):
         local_params = {}
         self.mkdir_task.params = local_params
 
-        v, r = self.mkdir_task.run_task("exe_name")
+        v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMkdirVanilla(self):
@@ -51,7 +51,7 @@ class MkdirTest(unittest.TestCase):
         self.mkdir_task.params = local_params
 
         self.assertFalse(os.path.exists( self.test_target_folder ))
-        v, r = self.mkdir_task.run_task("exe_name")
+        v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertTrue(v)
         self.assertTrue(os.path.exists( self.test_target_folder ))
 
@@ -64,7 +64,7 @@ class MkdirTest(unittest.TestCase):
         self.assertFalse(os.path.exists( self.test_target_folder ))
         os.mkdir(self.test_target_folder)
         self.assertTrue(os.path.exists( self.test_target_folder ))
-        v, r = self.mkdir_task.run_task("exe_name")
+        v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMkdirVanillaBadPathError(self):
@@ -75,7 +75,7 @@ class MkdirTest(unittest.TestCase):
         self.assertFalse(os.path.exists( local_test_folder ))
 
         self.mkdir_task.params = local_params
-        v, r = self.mkdir_task.run_task("exe_name")
+        v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMkdirVanillaRedundantNoError(self):
@@ -88,7 +88,7 @@ class MkdirTest(unittest.TestCase):
         self.assertFalse(os.path.exists( self.test_target_folder ))
         os.mkdir(self.test_target_folder)
         self.assertTrue(os.path.exists( self.test_target_folder ))
-        v, r = self.mkdir_task.run_task("exe_name")
+        v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertTrue(v)
         self.assertTrue(os.path.exists( self.test_target_folder ))
 

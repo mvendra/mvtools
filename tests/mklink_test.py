@@ -51,7 +51,7 @@ class MklinkTest(unittest.TestCase):
         local_params = {}
         self.mklink_task.params = local_params
 
-        v, r = self.mklink_task.run_task("exe_name")
+        v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMklinkFail2(self):
@@ -60,7 +60,7 @@ class MklinkTest(unittest.TestCase):
         local_params["source_path"] = self.test_source_file
         self.mklink_task.params = local_params
 
-        v, r = self.mklink_task.run_task("exe_name")
+        v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMklinkFail3(self):
@@ -70,7 +70,7 @@ class MklinkTest(unittest.TestCase):
         local_params["target_path"] = path_utils.concat_path(self.test_dir, "test_target_file")
         self.mklink_task.params = local_params
 
-        v, r = self.mklink_task.run_task("exe_name")
+        v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMklinkFail4(self):
@@ -85,7 +85,7 @@ class MklinkTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(local_target_file, "test-contents"))
         self.assertTrue(os.path.exists(local_target_file))
 
-        v, r = self.mklink_task.run_task("exe_name")
+        v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMklinkFail5(self):
@@ -95,7 +95,7 @@ class MklinkTest(unittest.TestCase):
         local_params["target_path"] = path_utils.concat_path(self.test_dir, "test_target_file", "second_level")
         self.mklink_task.params = local_params
 
-        v, r = self.mklink_task.run_task("exe_name")
+        v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
     def testMklinkVanilla(self):
@@ -105,7 +105,7 @@ class MklinkTest(unittest.TestCase):
         local_params["target_path"] = path_utils.concat_path(self.test_dir, "test_target_file")
         self.mklink_task.params = local_params
 
-        v, r = self.mklink_task.run_task("exe_name")
+        v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertTrue(v)
 
 if __name__ == '__main__':
