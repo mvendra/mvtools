@@ -17,8 +17,6 @@ class CustomTask(launch_jobs.BaseTask):
             operation = self.params["operation"]
         except KeyError:
             return False, "svn failed - operation is a required parameter"
-        if operation != "checkout" and operation != "update":
-            return False, "svn failed - operation [%s] is invalid" % operation
 
         # target_path
         try:
@@ -28,47 +26,87 @@ class CustomTask(launch_jobs.BaseTask):
 
         # delegate
         if operation == "checkout":
-            return self.run_task_checkout(feedback_object, target_path)
+            return self.run_task_checkout(target_path)
         elif operation == "update":
-            return self.run_task_update(feedback_object, target_path)
+            return self.run_task_update(target_path)
+        elif operation == "revert":
+            return self.run_task_revert(target_path)
+        else:
+            return False, "svn failed - operation [%s] is invalid" % operation
 
-    def run_task_checkout(self, feedback_object, target_path):
+    def run_task_checkout(self, target_path):
 
-        print("mvdebug checkout")
+        warnings = None
 
         # pre-check
         if os.path.exists(target_path):
-            return False, "svn failed - target path [%s] already exists" % target_path
+            return False, "svn checkout failed - target path [%s] already exists" % target_path
 
         # remote_link
         try:
             remote_link = self.params["remote_link"]
         except KeyError:
-            return False, "svn failed - remote_link is a required parameter"
+            return False, "svn checkout failed - remote_link is a required parameter"
 
         # actual execution
-        v, r = svn_lib.checkout_autoretry(remote_link, target_path)
+        v, r = svn_lib.checkout_autorepair(remote_link, target_path)
         if not v:
             return False, r
+
+        if r is not None:
+            # succeeded, but warnings were issued
+            warnings = r
 
         # post-verification
         if not os.path.exists(target_path):
-            return False, "svn failed - unable to checkout into [%s]" % (target_path)
+            return False, "svn checkout failed - unable to checkout into [%s]" % (target_path)
 
         # normal return
-        return True, None
+        return True, warnings
 
-    def run_task_update(self, feedback_object, target_path):
+    def run_task_update(self, target_path):
 
-        print("mvdebug update")
+        warnings = None
 
         # pre-check
         if not os.path.exists(target_path):
-            return False, "svn failed - target path [%s] does not exist" % target_path
+            return False, "svn update failed - target path [%s] does not exist" % target_path
 
-        v, r = svn_lib.update_autoretry(target_path)
+        # actual execution
+        v, r = svn_lib.update_autorepair(target_path)
         if not v:
             return False, r
 
+        if r is not None:
+            # succeeded, but warnings were issued
+            warnings = r
+
         # normal return
-        return True, None
+        return True, warnings
+
+    def run_task_revert(self, target_path):
+
+        warnings = None
+        repo_item = None
+
+        # pre-check
+        if not os.path.exists(target_path):
+            return False, "svn revert failed - target path [%s] does not exist" % target_path
+
+        # repo_item
+        try:
+            repo_item = self.params["repo_item"]
+        except KeyError:
+            pass # its optional
+
+        # actual execution
+        v, r = svn_lib.revert(target_path, repo_item)
+        if not v:
+            return False, r
+
+        if r is not None:
+            # succeeded, but warnings were issued
+            warnings = r
+
+        # normal return
+        return True, warnings

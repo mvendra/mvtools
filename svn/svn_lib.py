@@ -18,6 +18,11 @@ def is_nonnumber(thechar):
 def is_nonspaceortabs(thechar):
     return is_non_generic(thechar, [" ", "\t"])
 
+def _add_to_warnings(warnings, latest_msg):
+    if warnings is None:
+        return latest_msg
+    return "%s%s%s" % (warnings, os.linesep, latest_msg)
+
 def status_filter_function_unversioned(the_line):
     if the_line is None:
         return None
@@ -135,22 +140,82 @@ def is_svn_repo(repo):
         return True, "svn"
     return True, False
 
-def checkout_autoretry(remote_link, local_repo):
+def revert(local_repo, repo_item):
+    return svn_wrapper.revert(local_repo, repo_item)
+
+def _check_valid_codes(output_message, valid_codes):
+
+    om_lines = [x for x in output_message.split(os.linesep) if len(x) > 0]
+    if len(om_lines) < 1:
+        return False
+    last_line = om_lines[len(om_lines)-1]
+
+    for vc in valid_codes:
+        if vc in last_line:
+            return True
+    return False
+
+def _update_autorepair_check_return(local_repo):
+    return _check_valid_codes(output_message, ["E205011"]) # the error code {E155016 - repository is corrupt} is irrecoverable, for example
+
+def update_autorepair(local_repo):
+
+    warnings = None
+    iterations = 0
+    MAX_ITERATIONS = 21
+
+    while True:
+
+        iterations += 1
+        if iterations > MAX_ITERATIONS:
+            return False, "update_autorepair: max iterations [%s] exceeded" % MAX_ITERATIONS
+
+        v, r = svn_wrapper.cleanup(local_repo)
+        if not v:
+            return False, r
+
+        v, r = svn_wrapper.update(local_repo)
+        if v:
+            break # both cleanup and update worked. we're done.
+        output_message = r
+
+        if not _update_autorepair_check_return(output_message):
+            # failed, irrecoverably. give up.
+            return False, r
+        else:
+            warnings = _add_to_warnings(warnings, "update_autorepair warning: update operation failed but was accepted for repairing.")
+            """
+            # mvtodo: it might be enough to just let it spin for a while. if not, then it would be necessary to parse the output of update
+            like so:
+
+            om_lines = [x for x in output_message.split(os.linesep) if len(x) > 0]
+            if len(om_lines) < 1:
+                return False, "Unparseable output message: [%s]" % output_message
+
+            ... and then:
+
+            # mvtodo: group together externals
+            # mvtodo: find which externals failed, then cleanup+update those, one by one (issue warnings, mind the counters)
+            # mvtodo: cleanup+update base one more time ( just continue into the next loop cycle - this would make the last MAX_ITERATIONS unsupported, but thats tolerable
+            """
+
+    return True, warnings
+
+def _checkout_autorepair_check_return(output_message):
+    return _check_valid_codes(output_message, ["E205011"])
+
+def checkout_autorepair(remote_link, local_repo):
+
+    warnings = None
 
     v, r = svn_wrapper.checkout(remote_link, local_repo)
     if not v:
-        return False, r
+        if not _checkout_autorepair_check_return(r):
+            return False, r
+        else:
+            warnings = "checkout_autorepair warning: checkout operation failed but was accepted for repairing."
 
-    return True, None
-
-    # mvtodo: detect errors, issue cleanups whenever needed, and update as needed (use update_autoretry)
-
-def update_autoretry(local_repo):
-
-    v, r = svn_wrapper.update(local_repo)
-    if not v:
-        return False, r
-
-    return True, None
-
-    # mvtodo: detect errors, issue cleanups whenever needed, and keep updating as needed
+    v, r = update_autorepair(local_repo)
+    if r is not None:
+        warnings = "%s%s" % (os.linesep, warnings)
+    return v, warnings

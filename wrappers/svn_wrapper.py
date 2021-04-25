@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import generic_run
 
 def status(repo):
@@ -80,11 +81,7 @@ def cleanup(local_repo):
     if not os.path.exists(local_repo):
         return False, "%s does not exist." % local_repo
 
-    base_path = os.path.dirname(local_repo)
-    if base_path == local_repo:
-        return False, "Target path [%s] is invalid." % local_repo
-
-    v, r = generic_run.run_cmd_simple(["svn", "cleanup"], use_cwd=base_path)
+    v, r = generic_run.run_cmd_simple(["svn", "cleanup"], use_cwd=local_repo)
     if not v:
         return False, "Failed calling svn-cleanup command: %s." % r
 
@@ -95,18 +92,32 @@ def update(local_repo):
     if not os.path.exists(local_repo):
         return False, "%s does not exist." % local_repo
 
-    base_path = os.path.dirname(local_repo)
-    if base_path == local_repo:
-        return False, "Target path [%s] is invalid." % local_repo
-    local_target_name = os.path.basename(local_repo)
-
-    v, r = generic_run.run_cmd_simple(["svn", "update", local_target_name], use_cwd=base_path)
+    v, r = generic_run.run_cmd_simple(["svn", "update"], use_cwd=local_repo)
     if not v:
         return False, "Failed calling svn-update command: %s." % r
 
     return v, r
 
-# mvtodo: revert as well
+def revert(local_repo, repo_item):
+
+    if not os.path.exists(local_repo):
+        return False, "Base repo [%s] does not exist." % local_repo
+
+    the_cmd = ["svn", "revert"]
+
+    if repo_item is None:
+        the_cmd += ["--recursive", "."]
+    else:
+        the_cmd += [repo_item]
+        full_repo_item_path = path_utils.concat_path(local_repo, repo_item)
+        if not os.path.exists(full_repo_item_path):
+            return False, "Repo item [%s] does not exist." % full_repo_item_path
+
+    v, r = generic_run.run_cmd_simple(the_cmd, use_cwd=local_repo)
+    if not v:
+        return False, "Failed calling svn-revert command: %s." % r
+
+    return True, None
 
 def puaq():
     print("Hello from %s" % os.path.basename(__file__))
