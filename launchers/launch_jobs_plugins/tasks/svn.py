@@ -73,7 +73,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "svn update failed - target path [%s] does not exist" % target_path
 
         # actual execution
-        v, r = svn_lib.update_autorepair(target_path)
+        v, r = svn_lib.update_autorepair(target_path, True)
         if not v:
             return False, r
 
