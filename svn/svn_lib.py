@@ -23,6 +23,12 @@ def _add_to_warnings(warnings, latest_msg):
         return latest_msg
     return "%s%s%s" % (warnings, os.linesep, latest_msg)
 
+def has_string_in_list(the_list, the_str):
+    for li in the_list:
+        if the_str in li:
+            return True
+    return False
+
 def status_filter_function_unversioned(the_line):
     if the_line is None:
         return None
@@ -143,6 +149,51 @@ def is_svn_repo(repo):
 def revert(local_repo, repo_item):
     return svn_wrapper.revert(local_repo, repo_item)
 
+def _parse_externals_update_message(output_message):
+
+    MATCH_PHRASE_BEGIN = "Fetching external item into '"
+    MATCH_PHRASE_END = "External at revision "
+
+    om_lines = [x for x in output_message.split(os.linesep) if len(x) > 0]
+    if len(om_lines) < 1:
+        return None
+    om_lines = om_lines[1:] # get rid of the "Updating '.':"
+    if len(om_lines) < 2:
+        return None
+    if not MATCH_PHRASE_BEGIN in om_lines[0]:
+        return None
+
+    messages = []
+    current_external_path = None
+    current_external_messages = []
+
+    for l in om_lines:
+
+        if MATCH_PHRASE_BEGIN in l:
+
+            # new external
+            if current_external_path is not None:
+                messages.append( (current_external_path, current_external_messages.copy()) )
+                current_external_messages.clear()
+            current_external_path = l[len(MATCH_PHRASE_BEGIN):len(l)-2]
+
+        elif MATCH_PHRASE_END in l:
+
+            # last (current) external just ended
+            current_external_messages.append(l)
+            messages.append( (current_external_path, current_external_messages.copy()) )
+            current_external_messages.clear()
+            current_external_path = None
+
+        else:
+
+            # abnormal / warnings / error messages
+            current_external_messages.append(l)
+
+    messages.append( (current_external_path, current_external_messages) ) # append the last entry
+
+    return messages
+
 def _check_valid_codes(output_message, valid_codes):
 
     om_lines = [x for x in output_message.split(os.linesep) if len(x) > 0]
@@ -155,10 +206,28 @@ def _check_valid_codes(output_message, valid_codes):
             return True
     return False
 
-def _update_autorepair_check_return(local_repo):
+def _update_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011"]) # the error code {E155016 - repository is corrupt} is irrecoverable, for example
 
-def update_autorepair(local_repo):
+def _update_and_cleanup(local_repo):
+
+    # cleanup
+    v, r = svn_wrapper.cleanup(local_repo)
+    if not v:
+        return False, r
+
+    # update
+    v, r = svn_wrapper.update(local_repo)
+    if v:
+        return True, None
+
+    # check update's result
+    if not _update_autorepair_check_return(r):
+        return False, r # failed, irrecoverably. give up.
+
+    return True, ("update_autorepair warning: update operation failed but was accepted for repairing (at %s)." % local_repo, r)
+
+def update_autorepair(local_repo, do_recursion):
 
     warnings = None
     iterations = 0
@@ -166,38 +235,41 @@ def update_autorepair(local_repo):
 
     while True:
 
+        # loop sentinel
         iterations += 1
         if iterations > MAX_ITERATIONS:
-            return False, "update_autorepair: max iterations [%s] exceeded" % MAX_ITERATIONS
+            return False, "update_autorepair: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo)
 
-        v, r = svn_wrapper.cleanup(local_repo)
+        v, r = _update_and_cleanup(local_repo)
         if not v:
-            return False, r
-
-        v, r = svn_wrapper.update(local_repo)
-        if v:
+            return False, r # failed, irrecoverably. give up.
+        if r is None:
             break # both cleanup and update worked. we're done.
-        output_message = r
 
-        if not _update_autorepair_check_return(output_message):
-            # failed, irrecoverably. give up.
-            return False, r
-        else:
-            warnings = _add_to_warnings(warnings, "update_autorepair warning: update operation failed but was accepted for repairing.")
-            """
-            # mvtodo: it might be enough to just let it spin for a while. if not, then it would be necessary to parse the output of update
-            like so:
+        # failed but its possible to attempt to autorepair it.
+        warnings = _add_to_warnings(warnings, r[0])
+        output_message = r[1]
 
-            om_lines = [x for x in output_message.split(os.linesep) if len(x) > 0]
-            if len(om_lines) < 1:
-                return False, "Unparseable output message: [%s]" % output_message
+        if not do_recursion:
+            continue
 
-            ... and then:
+        externals_result = _parse_externals_update_message(output_message)
+        if externals_result is None:
+            return False, "Unparseable output message (can't parse the status of externals): [%s]" % output_message
 
-            # mvtodo: group together externals
-            # mvtodo: find which externals failed, then cleanup+update those, one by one (issue warnings, mind the counters)
-            # mvtodo: cleanup+update base one more time ( just continue into the next loop cycle - this would make the last MAX_ITERATIONS unsupported, but thats tolerable
-            """
+        # try to autorepair externals that failed
+        for er in externals_result:
+
+            external_path = er[0]
+            external_messages = er[1]
+
+            if has_string_in_list(external_messages, "W155004"):
+                externals_full_path = path_utils.concat_path(local_repo, external_path)
+                v, r = update_autorepair(externals_full_path, False)
+                if not v:
+                    return False, r
+                if r is not None:
+                    warnings = _add_to_warnings(warnings, r)
 
     return True, warnings
 
@@ -213,9 +285,9 @@ def checkout_autorepair(remote_link, local_repo):
         if not _checkout_autorepair_check_return(r):
             return False, r
         else:
-            warnings = "checkout_autorepair warning: checkout operation failed but was accepted for repairing."
+            warnings = "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo
 
-    v, r = update_autorepair(local_repo)
+    v, r = update_autorepair(local_repo, True)
     if r is not None:
-        warnings = "%s%s" % (os.linesep, warnings)
+        warnings = _add_to_warnings(warnings, r)
     return v, warnings
