@@ -285,7 +285,7 @@ def checkout_autorepair(remote_link, local_repo):
         if not _checkout_autorepair_check_return(r):
             return False, r
         else:
-            warnings = "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo
+            warnings = _add_to_warnings(warnings, "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo)
 
     v, r = update_autorepair(local_repo, True)
     if r is not None:
