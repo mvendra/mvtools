@@ -201,6 +201,12 @@ def _check_valid_codes(output_message, valid_codes):
         return False
     last_line = om_lines[len(om_lines)-1]
 
+    if last_line == ".":
+        if len(om_lines) < 2:
+            return False
+        om_lines = om_lines[:len(om_lines)-1]
+        last_line = om_lines[len(om_lines)-1]
+
     for vc in valid_codes:
         if vc in last_line:
             return True
