@@ -213,7 +213,7 @@ def _check_valid_codes(output_message, valid_codes):
     return False
 
 def _update_autorepair_check_return(output_message):
-    return _check_valid_codes(output_message, ["E205011"]) # the error code {E155016 - repository is corrupt} is irrecoverable, for example
+    return _check_valid_codes(output_message, ["E205011", "W000104"])
 
 def _update_and_cleanup(local_repo):
 
@@ -280,7 +280,7 @@ def update_autorepair(local_repo, do_recursion):
     return True, warnings
 
 def _checkout_autorepair_check_return(output_message):
-    return _check_valid_codes(output_message, ["E205011"])
+    return _check_valid_codes(output_message, ["E205011", "W000104"])
 
 def checkout_autorepair(remote_link, local_repo):
 
