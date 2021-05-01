@@ -123,12 +123,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.sanitize_line("   abc   "), "abc")
         self.assertEqual(dsl.sanitize_line(" #   abc   "), "")
         self.assertEqual(dsl.sanitize_line("   abc   #"), "abc")
-        self.assertEqual(dsl.sanitize_line("   abc   // def"), "abc")
-        self.assertEqual(dsl.sanitize_line("//   abc   // def"), "")
-        self.assertEqual(dsl.sanitize_line("   abc   // def   # xyz"), "abc")
-        self.assertEqual(dsl.sanitize_line("   abc   # def   // xyz"), "abc")
-        self.assertEqual(dsl.sanitize_line(" abc \"xyz # def \" # more"), "abc \"xyz # def \"")
-        self.assertEqual(dsl.sanitize_line(" abc \"xyz // def \" // more"), "abc \"xyz // def \"")
+        self.assertEqual(dsl.sanitize_line("   abc   // def   # xyz"), "abc   // def")
 
     def testDslType20_Parse1(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Options()))
