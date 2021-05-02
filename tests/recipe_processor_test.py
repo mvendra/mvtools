@@ -102,6 +102,20 @@ class RecipeProcessorTest(unittest.TestCase):
         self.sample_custom_exe_name_contents_file2 = path_utils.concat_path(self.test_dir, "sample_custom_exe_name2.py")
         create_and_write_file.create_file_contents(self.sample_custom_exe_name_contents_file2, sample_custom_exe_name_contents2)
 
+        sample_custom_echo_true_repeated_params_script_contents = "#!/usr/bin/env python3\n\n"
+        sample_custom_echo_true_repeated_params_script_contents += "import launch_jobs\n\n"
+        sample_custom_echo_true_repeated_params_script_contents += "class CustomTask(launch_jobs.BaseTask):\n"
+        sample_custom_echo_true_repeated_params_script_contents += "    def get_desc(self):\n"
+        sample_custom_echo_true_repeated_params_script_contents += "        return \"sample_custom_echo_true_repeated_params\"\n"
+        sample_custom_echo_true_repeated_params_script_contents += "    def run_task(self, feedback_object, execution_name=None):\n"
+        sample_custom_echo_true_repeated_params_script_contents += "        if not \"test\" in self.params:\n"
+        sample_custom_echo_true_repeated_params_script_contents += "            return False, None\n"
+        sample_custom_echo_true_repeated_params_script_contents += "        if not isinstance(self.params[\"test\"], list):\n"
+        sample_custom_echo_true_repeated_params_script_contents += "            return False, None\n"
+        sample_custom_echo_true_repeated_params_script_contents += "        return True, None\n"
+        self.sample_custom_echo_true_repeated_params_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_echo_true_repeated_params.py")
+        create_and_write_file.create_file_contents(self.sample_custom_echo_true_repeated_params_script_file_namespace1, sample_custom_echo_true_repeated_params_script_contents)
+
         sample_custom_job_script_contents = "#!/usr/bin/env python3\n\n"
         sample_custom_job_script_contents += "import launch_jobs\n\n"
         sample_custom_job_script_contents += "class CustomJob(launch_jobs.BaseJob):\n"
@@ -288,6 +302,11 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file28 = path_utils.concat_path(self.test_dir, "recipe_test28.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file28, recipe_test_contents28)
 
+        recipe_test_contents29 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents29 += "[\n@test-job\n* task1 {test: \"val1\" / test: \"val2\"} = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_repeated_params_script_file_namespace1)
+        self.recipe_test_file29 = path_utils.concat_path(self.test_dir, "recipe_test29.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file29, recipe_test_contents29)
+
         return True, ""
 
     def tearDown(self):
@@ -314,7 +333,6 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorCustomTaskUseExecutionName(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file28)
-        print(r)
         self.assertTrue(v)
 
     def testRecipeProcessor2JobsBothSucceed(self):
@@ -423,6 +441,10 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorExecutionDelay2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file27)
         self.assertFalse(v)
+
+    def testRecipeProcessorRepeatedParams(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file29)
+        self.assertTrue(v)
 
 if __name__ == '__main__':
     unittest.main()

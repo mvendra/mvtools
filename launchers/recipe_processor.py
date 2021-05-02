@@ -75,7 +75,13 @@ def _convert_dsl_opts_into_py_map(options):
 
     result = {}
     for o in options:
-        result[o[0]] = o[1]
+        if o[0] in result: # repeated option. stack it up. dupes are allowed.
+            val_read = result[o[0]]
+            if not isinstance(val_read, list):
+                result[o[0]] = [val_read] # re-set this entry as a list, with the previously existing item as the first item in it
+            result[o[0]].append(o[1])
+        else:
+            result[o[0]] = o[1]
     return result
 
 def _get_plugins_path(namespace=None):
