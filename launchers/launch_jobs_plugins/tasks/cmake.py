@@ -19,6 +19,13 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # install_prefix
+        install_prefix = None
+        try:
+            install_prefix = self.params["install_prefix"]
+        except KeyError:
+            pass # optional
+
         # source_path
         try:
             source_path = self.params["source_path"]
@@ -71,6 +78,10 @@ class CustomTask(launch_jobs.BaseTask):
         # toolchain
         if toolchain is not None:
             options = cmake_lib.set_option_toolchain(options, toolchain)
+
+        # install_prefix
+        if install_prefix is not None:
+            options = cmake_lib.set_option_install_prefix(options, install_prefix)
 
         # generic options
         for opt in custom_options:

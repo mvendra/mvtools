@@ -43,6 +43,9 @@ def set_option_parse(options, option_string):
 def set_option_toolchain(options, option_value):
     return set_option(options, "CMAKE_TOOLCHAIN_FILE", "STRING", option_value)
 
+def set_option_install_prefix(options, option_value):
+    return set_option(options, "CMAKE_INSTALL_PREFIX", "STRING", option_value)
+
 def configure_and_generate(cmake_path, source_path, output_path, generator_type, options):
 
     local_generator_type = generator_type
