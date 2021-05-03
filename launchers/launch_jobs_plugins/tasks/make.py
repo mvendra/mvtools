@@ -34,7 +34,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(work_dir):
             return False, "make failed - work_dir [%s] does not exist." % work_dir
 
-        v, r = make_wrapper.make(work_dir, target)
+        v, r = make_wrapper.make(work_dir, suppress_make_output, target)
         if r is not None and suppress_make_output:
             r = "make's output was suppressed"
         return v, r

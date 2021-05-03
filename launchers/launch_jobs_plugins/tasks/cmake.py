@@ -87,7 +87,7 @@ class CustomTask(launch_jobs.BaseTask):
         for opt in custom_options:
             options = cmake_lib.set_option_parse(options, opt)
 
-        v, r = cmake_lib.configure_and_generate(cmake_path, source_path, output_path, gen_type, options)
+        v, r = cmake_lib.configure_and_generate(cmake_path, suppress_cmake_output, source_path, output_path, gen_type, options)
         if r is not None and suppress_cmake_output:
             r = "cmake's output was suppressed"
         return v, r

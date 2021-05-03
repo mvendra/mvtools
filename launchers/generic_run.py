@@ -30,7 +30,7 @@ def run_cmd(cmd_list, use_input=None, use_shell=False, use_cwd=None, use_env=Non
         return False, str(ex), None
     return False, "run_cmd NOTREACHED", None
 
-def run_cmd_simple(cmd_list, use_input=None, use_shell=False, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore", use_timeout=None):
+def run_cmd_simple(cmd_list, suppress_stderr=False, use_input=None, use_shell=False, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore", use_timeout=None):
 
     # return format: bool, string
     # the first (bool) returns true is everything ran fine, false if anything at all went wrong
@@ -44,6 +44,6 @@ def run_cmd_simple(cmd_list, use_input=None, use_shell=False, use_cwd=None, use_
     if not r.success:
         return False, "Failed running command: %s" % r.stderr
 
-    if len(r.stderr) > 0:
+    if len(r.stderr) > 0 and not suppress_stderr:
         print(r.stderr, end="")
     return True, r.stdout

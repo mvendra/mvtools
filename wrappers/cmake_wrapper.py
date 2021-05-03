@@ -6,7 +6,7 @@ import os
 import generic_run
 import path_utils
 
-def configure_and_generate(cmake_path, source_path, output_path, generator_type, options):
+def configure_and_generate(cmake_path, suppress_cmake_output, source_path, output_path, generator_type, options):
 
     if options is None:
         return False, "Invalid options"
@@ -25,7 +25,7 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
     full_cmd.append(generator_type)
     full_cmd += options_cmdline
 
-    return generic_run.run_cmd_simple(full_cmd, use_cwd=output_path)
+    return generic_run.run_cmd_simple(full_cmd, suppress_cmake_output, use_cwd=output_path)
 
 def puaq():
     print("Hello from %s" % os.path.basename(__file__))
