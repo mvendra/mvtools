@@ -26,7 +26,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         # delegate
         if operation == "checkout":
-            return self.run_task_checkout(target_path)
+            return self.run_task_checkout(feedback_object, target_path)
         elif operation == "update":
             return self.run_task_update(target_path)
         elif operation == "revert":
@@ -34,7 +34,7 @@ class CustomTask(launch_jobs.BaseTask):
         else:
             return False, "svn failed - operation [%s] is invalid" % operation
 
-    def run_task_checkout(self, target_path):
+    def run_task_checkout(self, feedback_object, target_path):
 
         warnings = None
 
@@ -49,7 +49,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "svn checkout failed - remote_link is a required parameter"
 
         # actual execution
-        v, r = svn_lib.checkout_autorepair(remote_link, target_path)
+        v, r = svn_lib.checkout_autoretry(feedback_object, remote_link, target_path)
         if not v:
             return False, r
 

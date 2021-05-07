@@ -2,9 +2,10 @@
 
 import sys
 import os
+import time
 
-import svn_wrapper
 import path_utils
+import svn_wrapper
 
 def is_non_generic(char_input, list_select):
     for c in list_select:
@@ -282,7 +283,7 @@ def update_autorepair(local_repo, do_recursion):
 def _checkout_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011", "W000104"])
 
-def checkout_autorepair(remote_link, local_repo):
+def checkout_with_update(remote_link, local_repo):
 
     warnings = None
 
@@ -297,3 +298,30 @@ def checkout_autorepair(remote_link, local_repo):
     if r is not None:
         warnings = _add_to_warnings(warnings, r)
     return v, warnings
+
+def checkout_autoretry(feedback_object, remote_link, local_repo):
+
+    warnings = None
+    iterations = 0
+    MAX_ITERATIONS = 6
+
+    while True:
+
+        # loop sentinel
+        iterations += 1
+        if iterations > MAX_ITERATIONS:
+            return False, "repeated_checkout: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo)
+
+        v, r = checkout_with_update(remote_link, local_repo)
+        if v:
+            # this iteration worked. its done
+            warnings = _add_to_warnings(warnings, r)
+            return True, warnings
+
+        # failed iteration. reset and start over
+        warnings = _add_to_warnings(warnings, "Iteration [%d] failed and was sleep-retried." % iterations)
+        path_utils.deletefolder_ignoreerrors(local_repo)
+        SLEEP_TIME = 15 # minutes
+        feedback_object("Iteration number [%d] has failed. Will sleep for [%d] minutes before retrying." % (iterations, SLEEP_TIME))
+        time.sleep(SLEEP_TIME * 60)
+        feedback_object("Iteration number [%d] will resume now." % iterations)
