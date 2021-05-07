@@ -50,6 +50,28 @@ class PathUtilsTest(unittest.TestCase):
 
         self.assertFalse(os.path.exists(full_test_file_path))
 
+    def testDeleteFolder_IgnoreErrors1(self):
+
+        self.assertTrue(os.path.exists(self.folder1))
+
+        raised_except = False
+        try:
+            path_utils.deletefolder_ignoreerrors(self.folder1)
+        except:
+            raised_except = True
+        self.assertFalse(raised_except)
+
+    def testDeleteFolder_IgnoreErrors2(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent))
+
+        raised_except = False
+        try:
+            path_utils.deletefolder_ignoreerrors(self.nonexistent)
+        except:
+            raised_except = True
+        self.assertFalse(raised_except)
+
     def testBackpedal_Path(self):
         self.assertEqual("/", path_utils.backpedal_path("/tmp"))
         self.assertEqual("/tmp", path_utils.backpedal_path("/tmp/folder"))

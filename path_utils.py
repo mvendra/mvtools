@@ -38,6 +38,12 @@ def deletefile_ignoreerrors(filepath):
     except:
         pass
 
+def deletefolder_ignoreerrors(folderpath):
+    try:
+        shutil.rmtree(folderpath)
+    except FileNotFoundError as fnfe_ex:
+        pass
+
 def backpedal_path(path):
     if path is None:
         return None
