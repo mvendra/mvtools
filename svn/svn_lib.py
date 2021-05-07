@@ -237,7 +237,7 @@ def update_autorepair(local_repo, do_recursion):
 
     warnings = None
     iterations = 0
-    MAX_ITERATIONS = 21
+    MAX_ITERATIONS = 6
 
     while True:
 
