@@ -50,7 +50,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.extra_dest_path = path_utils.concat_path(self.test_dir, "extra_dest_path")
         os.mkdir(self.extra_dest_path)
 
-        self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistant")
+        self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistent")
 
         self.warn_size_each1 = "102400"
         self.warn_size_final1 = "409600"
