@@ -10,7 +10,7 @@ import path_utils
 
 import timestamper_plugin
 
-class TimestamperTest(unittest.TestCase):
+class TimestamperPluginTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -20,7 +20,7 @@ class TimestamperTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("timestamper_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("timestamper_plugin_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -36,7 +36,7 @@ class TimestamperTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testTimestamperFail1(self):
+    def testTimestamperPluginFail1(self):
 
         local_params = {}
         self.timestamper_task.params = local_params
@@ -44,7 +44,7 @@ class TimestamperTest(unittest.TestCase):
         v, r = self.timestamper_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testTimestamperFail2(self):
+    def testTimestamperPluginFail2(self):
 
         local_params = {}
         local_params["target_filename"] = self.test_file
@@ -57,7 +57,7 @@ class TimestamperTest(unittest.TestCase):
         v, r = self.timestamper_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testTimestamperVanilla(self):
+    def testTimestamperPluginVanilla(self):
 
         local_params = {}
         local_params["target_filename"] = self.test_file
@@ -68,7 +68,7 @@ class TimestamperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.test_file))
 
-    def testTimestamperCustomMessage(self):
+    def testTimestamperPluginCustomMessage(self):
 
         LOCAL_CUSTOM_MESSAGE = "sun dogs fire on the horizon"
 

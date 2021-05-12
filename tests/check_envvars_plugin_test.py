@@ -11,7 +11,7 @@ import mvtools_envvars
 
 import check_envvars_plugin
 
-class CheckEnvvarsTest(unittest.TestCase):
+class CheckEnvvarsPluginTest(unittest.TestCase):
 
     def setUp(self):
         self.mvtools_envvars_inst = mvtools_envvars.Mvtools_Envvars()
@@ -26,22 +26,22 @@ class CheckEnvvarsTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("check_envvars_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("check_envvars_plugin_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # envvars
-        v, r = mvtools_envvars.mvtools_envvar_read_test_check_envvars_reserved_1()
+        v, r = mvtools_envvars.mvtools_envvar_read_test_check_envvars_plugin_reserved_1()
         if v:
-            return False, "Check_Envvars's first test envvar is defined. This test requires it to be undefined."
-        self.reserved_test_env_var_1 = "$MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_1"
+            return False, "Check_Envvars_Plugin's first test envvar is defined. This test requires it to be undefined."
+        self.reserved_test_env_var_1 = "$MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_1"
 
-        v, r = mvtools_envvars.mvtools_envvar_read_test_check_envvars_reserved_2()
+        v, r = mvtools_envvars.mvtools_envvar_read_test_check_envvars_plugin_reserved_2()
         if v:
-            return False, "Check_Envvars's second test envvar is defined. This test requires it to be undefined."
-        self.reserved_test_env_var_2 = "$MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_2"
+            return False, "Check_Envvars_Plugin's second test envvar is defined. This test requires it to be undefined."
+        self.reserved_test_env_var_2 = "$MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_2"
 
         # the test task
         self.check_envvars_task = check_envvars_plugin.CustomTask()
@@ -54,7 +54,7 @@ class CheckEnvvarsTest(unittest.TestCase):
         if not v:
             self.fail(r)
 
-    def testCheckEnvvarsFail1(self):
+    def testCheckEnvvarsPluginFail1(self):
 
         local_params = {}
         self.check_envvars_task.params = local_params
@@ -62,7 +62,7 @@ class CheckEnvvarsTest(unittest.TestCase):
         v, r = self.check_envvars_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCheckEnvvarsFail2(self):
+    def testCheckEnvvarsPluginFail2(self):
 
         local_params = {}
         local_params["envvar"] = (self.reserved_test_env_var_1)[1:]
@@ -71,7 +71,7 @@ class CheckEnvvarsTest(unittest.TestCase):
         v, r = self.check_envvars_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCheckEnvvarsFail3(self):
+    def testCheckEnvvarsPluginFail3(self):
 
         local_params = {}
         local_params["envvar"] = (self.reserved_test_env_var_2)[1:]
@@ -81,7 +81,7 @@ class CheckEnvvarsTest(unittest.TestCase):
         v, r = self.check_envvars_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCheckEnvvarsFail4(self):
+    def testCheckEnvvarsPluginFail4(self):
 
         local_params = {}
         local_params["envvar"] = (self.reserved_test_env_var_1)[1:]
@@ -94,7 +94,7 @@ class CheckEnvvarsTest(unittest.TestCase):
         v, r = self.check_envvars_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCheckEnvvarsVanilla(self):
+    def testCheckEnvvarsPluginVanilla(self):
 
         local_params = {}
         local_params["envvar"] = (self.reserved_test_env_var_1)[1:]
@@ -104,7 +104,7 @@ class CheckEnvvarsTest(unittest.TestCase):
         v, r = self.check_envvars_task.run_task(print, "exe_name")
         self.assertTrue(v)
 
-    def testCheckEnvvarsMultipleChecks(self):
+    def testCheckEnvvarsPluginMultipleChecks(self):
 
         local_params = {}
         local_params["envvar"] = (self.reserved_test_env_var_1)[1:]

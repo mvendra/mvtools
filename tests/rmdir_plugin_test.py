@@ -10,7 +10,7 @@ import path_utils
 
 import rmdir_plugin
 
-class RmdirTest(unittest.TestCase):
+class RmdirPluginTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -20,7 +20,7 @@ class RmdirTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("rmdir_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("rmdir_plugin_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -41,7 +41,7 @@ class RmdirTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testRmdirFail1(self):
+    def testRmdirPluginFail1(self):
 
         local_params = {}
         self.rmdir_task.params = local_params
@@ -49,7 +49,7 @@ class RmdirTest(unittest.TestCase):
         v, r = self.rmdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testRmdirFail2(self):
+    def testRmdirPluginFail2(self):
 
         local_params = {}
         local_params["target_path"] = self.nonexistent
@@ -58,7 +58,7 @@ class RmdirTest(unittest.TestCase):
         v, r = self.rmdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testRmdirErrorIgnored(self):
+    def testRmdirPluginErrorIgnored(self):
 
         local_params = {}
         local_params["target_path"] = self.nonexistent
@@ -68,7 +68,7 @@ class RmdirTest(unittest.TestCase):
         v, r = self.rmdir_task.run_task(print, "exe_name")
         self.assertTrue(v)
 
-    def testRmdirVanilla(self):
+    def testRmdirPluginVanilla(self):
 
         local_params = {}
         local_params["target_path"] = self.folder1

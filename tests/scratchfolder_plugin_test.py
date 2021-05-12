@@ -10,7 +10,7 @@ import path_utils
 
 import scratchfolder_plugin
 
-class ScratchfolderTest(unittest.TestCase):
+class ScratchfolderPluginTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -20,7 +20,7 @@ class ScratchfolderTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("scratchfolder_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("scratchfolder_plugin_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -39,7 +39,7 @@ class ScratchfolderTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testScratchfolderFail1(self):
+    def testScratchfolderPluginFail1(self):
 
         local_params = {}
         self.scratchfolder_task.params = local_params
@@ -47,7 +47,7 @@ class ScratchfolderTest(unittest.TestCase):
         v, r = self.scratchfolder_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testScratchfolderVanilla1(self):
+    def testScratchfolderPluginVanilla1(self):
 
         local_params = {}
         local_params["target_path"] = self.nonexistent
@@ -58,7 +58,7 @@ class ScratchfolderTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists( self.nonexistent ))
 
-    def testScratchfolderVanilla2(self):
+    def testScratchfolderPluginVanilla2(self):
 
         local_params = {}
         local_params["target_path"] = self.test_target_path

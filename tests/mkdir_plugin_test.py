@@ -10,7 +10,7 @@ import path_utils
 
 import mkdir_plugin
 
-class MkdirTest(unittest.TestCase):
+class MkdirPluginTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -20,7 +20,7 @@ class MkdirTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("mkdir_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("mkdir_plugin_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -36,7 +36,7 @@ class MkdirTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testMkdirFail1(self):
+    def testMkdirPluginFail1(self):
 
         local_params = {}
         self.mkdir_task.params = local_params
@@ -44,7 +44,7 @@ class MkdirTest(unittest.TestCase):
         v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMkdirVanilla(self):
+    def testMkdirPluginVanilla(self):
 
         local_params = {}
         local_params["target_path"] = self.test_target_path
@@ -55,7 +55,7 @@ class MkdirTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists( self.test_target_path ))
 
-    def testMkdirVanillaRedundantError(self):
+    def testMkdirPluginVanillaRedundantError(self):
 
         local_params = {}
         local_params["target_path"] = self.test_target_path
@@ -67,7 +67,7 @@ class MkdirTest(unittest.TestCase):
         v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMkdirVanillaBadPathError(self):
+    def testMkdirPluginVanillaBadPathError(self):
 
         local_test_folder = path_utils.concat_path(self.test_target_path, "second_level")
         local_params = {}
@@ -78,7 +78,7 @@ class MkdirTest(unittest.TestCase):
         v, r = self.mkdir_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMkdirVanillaRedundantNoError(self):
+    def testMkdirPluginVanillaRedundantNoError(self):
 
         local_params = {}
         local_params["target_path"] = self.test_target_path

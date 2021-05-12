@@ -19,8 +19,8 @@ class Mvtools_Envvars:
         self.register_mvtools_envvar("MVTOOLS_TEST_GENERIC_RUN_RESERVED_1")
         self.register_mvtools_envvar("MVTOOLS_TEST_DSLTYPE20_RESERVED_1")
         self.register_mvtools_envvar("MVTOOLS_TEST_DSLTYPE20_RESERVED_2")
-        self.register_mvtools_envvar("MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_1")
-        self.register_mvtools_envvar("MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_2")
+        self.register_mvtools_envvar("MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_1")
+        self.register_mvtools_envvar("MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_2")
         self.register_mvtools_envvar("MVTOOLS_TEST_BKPROC_RESERVED_1")
 
     def _read_envvar(self, envvar):
@@ -112,17 +112,17 @@ def mvtools_envvar_read_test_dsltype20_reserved_2():
 def mvtools_envvar_write_test_dsltype20_reserved_2(val):
     return Mvtools_Envvars()._write_envvar("MVTOOLS_TEST_DSLTYPE20_RESERVED_2", val)
 
-# MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_1
-def mvtools_envvar_read_test_check_envvars_reserved_1():
-    return Mvtools_Envvars()._read_envvar("MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_1")
-def mvtools_envvar_write_test_check_envvars_reserved_1(val):
-    return Mvtools_Envvars()._write_envvar("MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_1", val)
+# MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_1
+def mvtools_envvar_read_test_check_envvars_plugin_reserved_1():
+    return Mvtools_Envvars()._read_envvar("MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_1")
+def mvtools_envvar_write_test_check_envvars_plugin_reserved_1(val):
+    return Mvtools_Envvars()._write_envvar("MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_1", val)
 
-# MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_2
-def mvtools_envvar_read_test_check_envvars_reserved_2():
-    return Mvtools_Envvars()._read_envvar("MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_2")
-def mvtools_envvar_write_test_check_envvars_reserved_2(val):
-    return Mvtools_Envvars()._write_envvar("MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_2", val)
+# MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_2
+def mvtools_envvar_read_test_check_envvars_plugin_reserved_2():
+    return Mvtools_Envvars()._read_envvar("MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_2")
+def mvtools_envvar_write_test_check_envvars_plugin_reserved_2(val):
+    return Mvtools_Envvars()._write_envvar("MVTOOLS_TEST_CHECK_ENVVARS_PLUGIN_RESERVED_2", val)
 
 # MVTOOLS_TEST_BKPROC_RESERVED_1
 def mvtools_envvar_read_test_bkproc_reserved_1():

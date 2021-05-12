@@ -12,7 +12,7 @@ import path_utils
 
 import mklink_plugin
 
-class MklinkTest(unittest.TestCase):
+class MklinkPluginTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -22,7 +22,7 @@ class MklinkTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("mklink_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("mklink_plugin_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -46,7 +46,7 @@ class MklinkTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testMklinkFail1(self):
+    def testMklinkPluginFail1(self):
 
         local_params = {}
         self.mklink_task.params = local_params
@@ -54,7 +54,7 @@ class MklinkTest(unittest.TestCase):
         v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMklinkFail2(self):
+    def testMklinkPluginFail2(self):
 
         local_params = {}
         local_params["source_path"] = self.test_source_file
@@ -63,7 +63,7 @@ class MklinkTest(unittest.TestCase):
         v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMklinkFail3(self):
+    def testMklinkPluginFail3(self):
 
         local_params = {}
         local_params["source_path"] = self.test_nonexistent_file
@@ -73,7 +73,7 @@ class MklinkTest(unittest.TestCase):
         v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMklinkFail4(self):
+    def testMklinkPluginFail4(self):
 
         local_target_file = path_utils.concat_path(self.test_dir, "test_target_file")
 
@@ -88,7 +88,7 @@ class MklinkTest(unittest.TestCase):
         v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMklinkFail5(self):
+    def testMklinkPluginFail5(self):
 
         local_params = {}
         local_params["source_path"] = self.test_source_file
@@ -98,7 +98,7 @@ class MklinkTest(unittest.TestCase):
         v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testMklinkVanilla(self):
+    def testMklinkPluginVanilla(self):
 
         local_params = {}
         local_params["source_path"] = self.test_source_file

@@ -12,7 +12,7 @@ import git_wrapper
 
 import clone_repos_plugin
 
-class CloneReposTest(unittest.TestCase):
+class CloneReposPluginTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -22,7 +22,7 @@ class CloneReposTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("clone_repos_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("clone_repos_plugin_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -83,7 +83,7 @@ class CloneReposTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testCloneReposEmptyFail1(self):
+    def testCloneReposPluginEmptyFail1(self):
 
         local_params = {}
         self.clone_repo_task.params = local_params
@@ -91,7 +91,7 @@ class CloneReposTest(unittest.TestCase):
         v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCloneReposEmptyFail2(self):
+    def testCloneReposPluginEmptyFail2(self):
 
         local_params = {}
         local_params["source_path"] = self.source_path
@@ -100,7 +100,7 @@ class CloneReposTest(unittest.TestCase):
         v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCloneReposEmptyFail3(self):
+    def testCloneReposPluginEmptyFail3(self):
 
         local_params = {}
         local_params["source_path"] = self.source_path
@@ -110,7 +110,7 @@ class CloneReposTest(unittest.TestCase):
         v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCloneReposEmptyFail4(self):
+    def testCloneReposPluginEmptyFail4(self):
 
         local_params = {}
         local_params["source_path"] = self.source_path
@@ -121,7 +121,7 @@ class CloneReposTest(unittest.TestCase):
         v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCloneReposEmptyFail5(self):
+    def testCloneReposPluginEmptyFail5(self):
 
         local_params = {}
         local_params["source_path"] = self.source_path
@@ -133,7 +133,7 @@ class CloneReposTest(unittest.TestCase):
         v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertFalse(v)
 
-    def testCloneReposVanilla1(self):
+    def testCloneReposPluginVanilla1(self):
 
         local_params = {}
         local_params["source_path"] = self.source_path
@@ -149,7 +149,7 @@ class CloneReposTest(unittest.TestCase):
         self.assertTrue( os.path.exists(dest_first_objects) )
         self.assertTrue( os.path.exists(dest_third_objects) )
 
-    def testCloneReposVanilla2(self):
+    def testCloneReposPluginVanilla2(self):
 
         local_params = {}
         local_params["source_path"] = self.source_path
@@ -165,7 +165,7 @@ class CloneReposTest(unittest.TestCase):
         print(test_file_first_repo)
         self.assertTrue( os.path.exists(test_file_first_repo) )
 
-    def testCloneReposCheckFail1(self):
+    def testCloneReposPluginCheckFail1(self):
 
         local_params = {}
         local_params["source_path"] = self.source_path
