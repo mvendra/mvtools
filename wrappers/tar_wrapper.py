@@ -36,21 +36,21 @@ def make_pack(file_to_create, incl_list, excl_list=None):
     v, r = generic_run.run_cmd_simple(tar_cmd)
     return v, r
 
-def extract(file_to_extract, target_folder):
+def extract(file_to_extract, target_path):
 
     # file_to_extract: tar file to extract from
-    # target_folder: target folder to extract to
+    # target_path: target folder to extract to
 
     file_to_extract = path_utils.filter_remove_trailing_sep(file_to_extract)
 
     # prechecks
     if not os.path.exists(file_to_extract):
         return False, "%s does not exist." % file_to_extract
-    if not os.path.exists(target_folder):
-        return False, "%s does not exist." % target_folder
+    if not os.path.exists(target_path):
+        return False, "%s does not exist." % target_path
 
     # actual command
-    tar_cmd = ["tar", "-xf", file_to_extract, "-C", target_folder]
+    tar_cmd = ["tar", "-xf", file_to_extract, "-C", target_path]
     v, r = generic_run.run_cmd_simple(tar_cmd)
     return v, r
 

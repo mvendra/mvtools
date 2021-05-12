@@ -35,8 +35,8 @@ class MassBackupTesterTest(unittest.TestCase):
         self.bk_base_folder_test = "BackupTests"
         self.test_source_folder = path_utils.concat_path(self.test_dir, "source_test")
         os.mkdir(self.test_source_folder)
-        self.test_target_folder = path_utils.concat_path(self.test_dir, "target_test")
-        os.mkdir(self.test_target_folder)
+        self.test_target_path = path_utils.concat_path(self.test_dir, "target_test")
+        os.mkdir(self.test_target_path)
 
         # create test folders
         self.folder1 = path_utils.concat_path(self.test_source_folder, "folder1")
@@ -55,7 +55,7 @@ class MassBackupTesterTest(unittest.TestCase):
         # create config file
         cfg_file_contents = ""
         cfg_file_contents += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
-        cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_folder
+        cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_path
         cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
         cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.t20")
@@ -78,7 +78,7 @@ class MassBackupTesterTest(unittest.TestCase):
             r = backup_processor.run_backup(self.test_config_file, self.hash_file)
         self.assertTrue(r)
 
-        tg_final = path_utils.concat_path(self.test_target_folder, self.bk_base_folder_test)
+        tg_final = path_utils.concat_path(self.test_target_path, self.bk_base_folder_test)
 
         # sanity checks on the backup products themselves
         self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "bk_date.txt")) ) 
@@ -102,7 +102,7 @@ class MassBackupTesterTest(unittest.TestCase):
             r = backup_processor.run_backup(self.test_config_file, self.hash_file)
         self.assertTrue(r)
 
-        tg_final = path_utils.concat_path(self.test_target_folder, self.bk_base_folder_test)
+        tg_final = path_utils.concat_path(self.test_target_path, self.bk_base_folder_test)
 
         # sanity checks on the backup products themselves
         self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "bk_date.txt")) ) 
@@ -129,7 +129,7 @@ class MassBackupTesterTest(unittest.TestCase):
             r = backup_processor.run_backup(self.test_config_file, self.hash_file)
         self.assertTrue(r)
 
-        tg_final = path_utils.concat_path(self.test_target_folder, self.bk_base_folder_test)
+        tg_final = path_utils.concat_path(self.test_target_path, self.bk_base_folder_test)
 
         # sanity checks on the backup products themselves
         self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "bk_date.txt")) ) 

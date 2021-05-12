@@ -26,7 +26,7 @@ class RmdirTest(unittest.TestCase):
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
-        self.test_target_folder = path_utils.concat_path(self.test_dir, "test_target_folder")
+        self.test_target_path = path_utils.concat_path(self.test_dir, "test_target_path")
 
         self.folder1 = path_utils.concat_path(self.test_dir, "folder1")
         os.mkdir(self.folder1)

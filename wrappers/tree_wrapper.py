@@ -28,11 +28,11 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         puaq()
 
-    target_folder = sys.argv[1]
+    target_path = sys.argv[1]
 
-    v, r = make_tree(target_folder)
+    v, r = make_tree(target_path)
     if v:
         print(r)
     else:
-        print("Failed calling 'tree' on [%s]." % target_folder)
+        print("Failed calling 'tree' on [%s]." % target_path)
         sys.exit(1)

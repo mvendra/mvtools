@@ -14,21 +14,21 @@ class CustomTask(launch_jobs.BaseTask):
         ignore_pre_existence = "ignore_pre_existence" in self.params
 
         try:
-            target_folder = self.params["target_folder"]
+            target_path = self.params["target_path"]
         except KeyError:
-            return False, "mkdir failed - target_folder is a required parameter"
+            return False, "mkdir failed - target_path is a required parameter"
 
-        if not os.path.exists(target_folder):
+        if not os.path.exists(target_path):
 
             try:
-                os.mkdir(target_folder)
+                os.mkdir(target_path)
             except FileNotFoundError as ex:
-                return False, "mkdir failed - unable to create folder [%s]" % target_folder
+                return False, "mkdir failed - unable to create folder [%s]" % target_path
 
-            if not os.path.exists(target_folder):
-                return False, "mkdir failed - unable to create folder [%s]" % target_folder
+            if not os.path.exists(target_path):
+                return False, "mkdir failed - unable to create folder [%s]" % target_path
         else:
             if not ignore_pre_existence:
-                return False, "mkdir failed - unable to create folder [%s] because it already exists" % target_folder
+                return False, "mkdir failed - unable to create folder [%s] because it already exists" % target_path
 
         return True, None

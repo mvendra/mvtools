@@ -6,7 +6,7 @@ import os
 import fsquery
 
 def puaq():
-    print("Usage: %s target_folder" % os.path.basename(__file__))
+    print("Usage: %s target_path" % os.path.basename(__file__))
     sys.exit(1)
 
 def get_content(file):

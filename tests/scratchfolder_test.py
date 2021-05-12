@@ -28,8 +28,8 @@ class ScratchfolderTest(unittest.TestCase):
 
         self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistent")
 
-        self.test_target_folder = path_utils.concat_path(self.test_dir, "test_target_folder")
-        os.mkdir(self.test_target_folder)
+        self.test_target_path = path_utils.concat_path(self.test_dir, "test_target_path")
+        os.mkdir(self.test_target_path)
 
         # the test task
         self.scratchfolder_task = scratchfolder.CustomTask()
@@ -61,13 +61,13 @@ class ScratchfolderTest(unittest.TestCase):
     def testScratchfolderVanilla2(self):
 
         local_params = {}
-        local_params["target_path"] = self.test_target_folder
+        local_params["target_path"] = self.test_target_path
         self.scratchfolder_task.params = local_params
 
-        self.assertTrue(os.path.exists( self.test_target_folder ))
+        self.assertTrue(os.path.exists( self.test_target_path ))
         v, r = self.scratchfolder_task.run_task(print, "exe_name")
         self.assertTrue(v)
-        self.assertTrue(os.path.exists( self.test_target_folder ))
+        self.assertTrue(os.path.exists( self.test_target_path ))
 
 if __name__ == '__main__':
     unittest.main()
