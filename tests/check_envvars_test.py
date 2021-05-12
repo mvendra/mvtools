@@ -9,7 +9,7 @@ import mvtools_test_fixture
 import path_utils
 import mvtools_envvars
 
-import check_envvars
+import check_envvars_plugin
 
 class CheckEnvvarsTest(unittest.TestCase):
 
@@ -44,7 +44,7 @@ class CheckEnvvarsTest(unittest.TestCase):
         self.reserved_test_env_var_2 = "$MVTOOLS_TEST_CHECK_ENVVARS_RESERVED_2"
 
         # the test task
-        self.check_envvars_task = check_envvars.CustomTask()
+        self.check_envvars_task = check_envvars_plugin.CustomTask()
 
         return True, ""
 

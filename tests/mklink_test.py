@@ -10,7 +10,7 @@ import mvtools_test_fixture
 import create_and_write_file
 import path_utils
 
-import mklink
+import mklink_plugin
 
 class MklinkTest(unittest.TestCase):
 
@@ -39,7 +39,7 @@ class MklinkTest(unittest.TestCase):
             return False, "File [%s] already exists" % self.test_nonexistent_file
 
         # the test task
-        self.mklink_task = mklink.CustomTask()
+        self.mklink_task = mklink_plugin.CustomTask()
 
         return True, ""
 

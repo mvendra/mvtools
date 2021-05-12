@@ -8,7 +8,7 @@ import unittest
 import mvtools_test_fixture
 import path_utils
 
-import mkdir
+import mkdir_plugin
 
 class MkdirTest(unittest.TestCase):
 
@@ -29,7 +29,7 @@ class MkdirTest(unittest.TestCase):
         self.test_target_path = path_utils.concat_path(self.test_dir, "test_target_path")
 
         # the test task
-        self.mkdir_task = mkdir.CustomTask()
+        self.mkdir_task = mkdir_plugin.CustomTask()
 
         return True, ""
 

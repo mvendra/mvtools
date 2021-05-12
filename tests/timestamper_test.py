@@ -8,7 +8,7 @@ import unittest
 import mvtools_test_fixture
 import path_utils
 
-import timestamper
+import timestamper_plugin
 
 class TimestamperTest(unittest.TestCase):
 
@@ -29,7 +29,7 @@ class TimestamperTest(unittest.TestCase):
         self.test_file = path_utils.concat_path(self.test_dir, "test_file.txt")
 
         # the test task
-        self.timestamper_task = timestamper.CustomTask()
+        self.timestamper_task = timestamper_plugin.CustomTask()
 
         return True, ""
 

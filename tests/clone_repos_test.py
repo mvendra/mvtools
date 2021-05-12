@@ -10,7 +10,7 @@ import mvtools_test_fixture
 import path_utils
 import git_wrapper
 
-import clone_repos
+import clone_repos_plugin
 
 class CloneReposTest(unittest.TestCase):
 
@@ -76,7 +76,7 @@ class CloneReposTest(unittest.TestCase):
             return v, r
 
         # the test task
-        self.clone_repo_task = clone_repos.CustomTask()
+        self.clone_repo_task = clone_repos_plugin.CustomTask()
 
         return True, ""
 

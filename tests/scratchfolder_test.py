@@ -8,7 +8,7 @@ import unittest
 import mvtools_test_fixture
 import path_utils
 
-import scratchfolder
+import scratchfolder_plugin
 
 class ScratchfolderTest(unittest.TestCase):
 
@@ -32,7 +32,7 @@ class ScratchfolderTest(unittest.TestCase):
         os.mkdir(self.test_target_path)
 
         # the test task
-        self.scratchfolder_task = scratchfolder.CustomTask()
+        self.scratchfolder_task = scratchfolder_plugin.CustomTask()
 
         return True, ""
 

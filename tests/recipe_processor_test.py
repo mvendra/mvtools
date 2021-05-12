@@ -49,8 +49,8 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_echo_true_script_contents += "        return \"sample_custom_echo_true\"\n"
         sample_custom_echo_true_script_contents += "    def run_task(self, feedback_object, execution_name=None):\n"
         sample_custom_echo_true_script_contents += "        return True, None\n"
-        self.sample_custom_echo_true_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_echo_true.py")
-        self.sample_custom_echo_true_script_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_echo_true.py")
+        self.sample_custom_echo_true_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_echo_true_plugin.py")
+        self.sample_custom_echo_true_script_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_echo_true_plugin.py")
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_script_file_namespace1, sample_custom_echo_true_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_script_file_namespace2, sample_custom_echo_true_script_contents)
 
@@ -133,7 +133,7 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace1, sample_custom_job_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace2, sample_custom_job_script_contents)
 
-        recipe_test_contents1 = "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents1 = "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file1, recipe_test_contents1)
 
@@ -141,7 +141,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file2 = path_utils.concat_path(self.test_dir, "recipe_test2.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file2, recipe_test_contents2)
 
-        recipe_test_contents3 = "[\n@test-job\n* task1 = \"sample_echo_false.py\"\n]"
+        recipe_test_contents3 = "[\n@test-job\n* task1 = \"sample_echo_false_plugin.py\"\n]"
         self.recipe_test_file3 = path_utils.concat_path(self.test_dir, "recipe_test3.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file3, recipe_test_contents3)
 
@@ -150,18 +150,18 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file4 = path_utils.concat_path(self.test_dir, "recipe_test4.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file4, recipe_test_contents4)
 
-        recipe_test_contents5 = "[\n@test-job1\n* task1 = \"sample_echo_true.py\"\n]\n"
-        recipe_test_contents5 += "[\n@test-job2\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents5 = "[\n@test-job1\n* task1 = \"sample_echo_true_plugin.py\"\n]\n"
+        recipe_test_contents5 += "[\n@test-job2\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file5 = path_utils.concat_path(self.test_dir, "recipe_test5.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file5, recipe_test_contents5)
 
-        recipe_test_contents6 = "[\n@test-job1\n* task1 = \"sample_echo_true.py\"\n]\n"
-        recipe_test_contents6 += "[\n@test-job2\n* task1 = \"sample_echo_false.py\"\n]"
+        recipe_test_contents6 = "[\n@test-job1\n* task1 = \"sample_echo_true_plugin.py\"\n]\n"
+        recipe_test_contents6 += "[\n@test-job2\n* task1 = \"sample_echo_false_plugin.py\"\n]"
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
         recipe_test_contents7 = "* include_recipe = \"%s\"\n" % self.recipe_test_file3
-        recipe_test_contents7 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents7 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
 
@@ -170,31 +170,31 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file8_3 = path_utils.concat_path(self.test_dir, "recipe_test8_3.t20")
 
         recipe_test_contents8_1 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_2
-        recipe_test_contents8_1 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents8_1 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         create_and_write_file.create_file_contents(self.recipe_test_file8_1, recipe_test_contents8_1)
 
         recipe_test_contents8_2 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_3
-        recipe_test_contents8_2 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents8_2 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         create_and_write_file.create_file_contents(self.recipe_test_file8_2, recipe_test_contents8_2)
 
         recipe_test_contents8_3 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_2
-        recipe_test_contents8_3 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents8_3 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         create_and_write_file.create_file_contents(self.recipe_test_file8_3, recipe_test_contents8_3)
 
         recipe_test_contents9 = "* include_recipe = \"%s\"\n" % self.recipe_test_file1
         recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file4
         recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file5
-        recipe_test_contents9 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents9 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file9 = path_utils.concat_path(self.test_dir, "recipe_test9.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file9, recipe_test_contents9)
 
         recipe_test_contents10 = "* include_recipe = \"%s\"\n" % self.recipe_test_file9
-        recipe_test_contents10 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents10 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file10 = path_utils.concat_path(self.test_dir, "recipe_test10.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file10, recipe_test_contents10)
 
         recipe_test_contents11 = "* include_recipe = \"%s\"\n" % self.recipe_test_file7
-        recipe_test_contents11 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents11 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file11 = path_utils.concat_path(self.test_dir, "recipe_test11.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file11, recipe_test_contents11)
 
@@ -210,10 +210,10 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents14 = "* early_abort = \"false\"\n"
         recipe_test_contents14 += "[\n@test-job-1\n"
-        recipe_test_contents14 += "* task1 = \"sample_echo_false.py\"\n"
+        recipe_test_contents14 += "* task1 = \"sample_echo_false_plugin.py\"\n"
         recipe_test_contents14 += "]\n"
         recipe_test_contents14 += "[\n@test-job-2\n"
-        recipe_test_contents14 += "* task1 = \"sample_echo_false.py\"\n"
+        recipe_test_contents14 += "* task1 = \"sample_echo_false_plugin.py\"\n"
         recipe_test_contents14 += "]"
         self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
@@ -221,7 +221,7 @@ class RecipeProcessorTest(unittest.TestCase):
         recipe_test_contents15 = "* early_abort = \"true\"\n"
         recipe_test_contents15 += "* early_abort = \"false\"\n"
         recipe_test_contents15 += "[\n@test-job-1\n"
-        recipe_test_contents15 += "* task1 = \"sample_echo_true.py\"\n"
+        recipe_test_contents15 += "* task1 = \"sample_echo_true_plugin.py\"\n"
         recipe_test_contents15 += "]"
         self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
@@ -249,46 +249,46 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.recipe_test_file19, recipe_test_contents19)
 
         recipe_test_contents20 = "* execution_name = \"test-exec-name\"\n"
-        recipe_test_contents20 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents20 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file20 = path_utils.concat_path(self.test_dir, "recipe_test20.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file20, recipe_test_contents20)
 
         recipe_test_contents21 = "* execution_name = \"test-exec-name1\"\n"
         recipe_test_contents21 += "* execution_name = \"test-exec-name2\"\n"
-        recipe_test_contents21 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents21 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test21.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file21, recipe_test_contents21)
 
         recipe_test_contents22 = "* time_delay = \"2s\"\n"
-        recipe_test_contents22 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents22 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file22 = path_utils.concat_path(self.test_dir, "recipe_test22.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file22, recipe_test_contents22)
 
         recipe_test_contents23 = "* time_delay = \"2s\"\n"
         recipe_test_contents23 += "* time_delay = \"3s\"\n"
-        recipe_test_contents23 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents23 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file23 = path_utils.concat_path(self.test_dir, "recipe_test23.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file23, recipe_test_contents23)
 
         recipe_test_contents24 = "* signal_delay = \"test-signal\"\n"
-        recipe_test_contents24 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents24 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file24 = path_utils.concat_path(self.test_dir, "recipe_test24.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file24, recipe_test_contents24)
 
         recipe_test_contents25 = "* signal_delay = \"test-signal1\"\n"
         recipe_test_contents25 += "* signal_delay = \"test-signal2\"\n"
-        recipe_test_contents25 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents25 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
 
         recipe_test_contents26 = "* execution_delay = \"test-exec-name\"\n"
-        recipe_test_contents26 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents26 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file26 = path_utils.concat_path(self.test_dir, "recipe_test26.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file26, recipe_test_contents26)
 
         recipe_test_contents27 = "* execution_delay = \"test-exec1\"\n"
         recipe_test_contents27 += "* execution_delay = \"test-exec2\"\n"
-        recipe_test_contents27 += "[\n@test-job\n* task1 = \"sample_echo_true.py\"\n]"
+        recipe_test_contents27 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file27 = path_utils.concat_path(self.test_dir, "recipe_test27.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file27, recipe_test_contents27)
 

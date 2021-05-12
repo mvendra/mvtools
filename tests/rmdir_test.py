@@ -8,7 +8,7 @@ import unittest
 import mvtools_test_fixture
 import path_utils
 
-import rmdir
+import rmdir_plugin
 
 class RmdirTest(unittest.TestCase):
 
@@ -34,7 +34,7 @@ class RmdirTest(unittest.TestCase):
         self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistent")
 
         # the test task
-        self.rmdir_task = rmdir.CustomTask()
+        self.rmdir_task = rmdir_plugin.CustomTask()
 
         return True, ""
 
