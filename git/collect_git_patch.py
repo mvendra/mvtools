@@ -23,7 +23,7 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
     with open(output_filename_full, "w") as f:
         f.write(content)
 
-    return True, ""
+    return True, output_filename_full
 
 def collect_git_patch_head(repo, storage_path):
     v, r = git_wrapper.diff(repo)
@@ -49,6 +49,7 @@ def collect_git_patch_head_unversioned(repo, storage_path):
     if not v:
         return False, "Failed calling git command for head-unversioned: %s. Repository: %s." % (r, repo)
     unversioned_files = r
+    written_file_list = []
 
     for uf in unversioned_files:
         target_file = path_utils.concat_path(storage_path, repo, "head_unversioned", uf)
@@ -61,8 +62,9 @@ def collect_git_patch_head_unversioned(repo, storage_path):
             return False, "Can't collect patch for head-unversioned: %s already exists" % target_file
         if not path_utils.copy_to( source_file, target_file ):
             return False, "Can't collect patch for head-unversioned: Cant copy %s to %s" % (source_file, target_file)
+        written_file_list.append(target_file)
 
-    return True, ""
+    return True, written_file_list
 
 def collect_git_patch_stash(repo, storage_path):
 
@@ -70,6 +72,7 @@ def collect_git_patch_stash(repo, storage_path):
     if not v:
         return False, "Failed calling git command for stash: %s. Repository: %s." % (r, repo)
     stash_list = r
+    written_file_list = []
 
     for si in stash_list:
 
@@ -89,8 +92,9 @@ def collect_git_patch_stash(repo, storage_path):
             return False, "Can't collect patch for stash: %s already exists" % stash_current_file_name
         with open(stash_current_file_name, "w") as f:
             f.write(stash_current_contents)
+        written_file_list.append(stash_current_file_name)
 
-    return True, ""
+    return True, written_file_list
 
 def collect_git_patch_previous(repo, storage_path, previous_number):
 
@@ -101,6 +105,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
     if not v:
         return False, "Failed calling git command for previous: %s. Repository: %s." % (r, repo)
     prev_list = r
+    written_file_list = []
 
     if previous_number > len(prev_list):
         return False, "Can't collect patch for previous: requested %d commits, but there are only %d in total" % (previous_number, len(prev_list))
@@ -122,8 +127,9 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
             return False, "Can't collect patch for previous: %s already exists" % previous_file_name
         with open(previous_file_name, "w") as f:
             f.write(previous_file_content)
+        written_file_list.append(previous_file_name)
 
-    return True, ""
+    return True, written_file_list
 
 def collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unversioned, stash, previous):
 
@@ -139,44 +145,45 @@ def collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unver
         return False, ["Storage path %s does not exist" % storage_path]
 
     report = []
+    has_any_failed = False
 
     # head
     if head:
         v, r = collect_git_patch_head(repo, storage_path)
-        if not v:
-            report.append(r)
+        has_any_failed |= (not v)
+        report.append(r)
 
     # head-id
     if head_id:
         v, r = collect_git_patch_head_id(repo, storage_path)
-        if not v:
-            report.append(r)
+        has_any_failed |= (not v)
+        report.append(r)
 
     # head_staged
     if head_staged:
         v, r = collect_git_patch_head_staged(repo, storage_path)
-        if not v:
-            report.append(r)
+        has_any_failed |= (not v)
+        report.append(r)
 
     # head_unversioned
     if head_unversioned:
         v, r = collect_git_patch_head_unversioned(repo, storage_path)
-        if not v:
-            report.append(r)
+        has_any_failed |= (not v)
+        report.append(r)
 
     # stash
     if stash:
         v, r = collect_git_patch_stash(repo, storage_path)
-        if not v:
-            report.append(r)
+        has_any_failed |= (not v)
+        report.append(r)
 
     # previous
     if previous > 0:
         v, r = collect_git_patch_previous(repo, storage_path, previous)
-        if not v:
-            report.append(r)
+        has_any_failed |= (not v)
+        report.append(r)
 
-    return (len(report)==0), report
+    return (not has_any_failed), report
 
 def puaq():
     print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X]" % os.path.basename(__file__))
