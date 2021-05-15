@@ -9,6 +9,7 @@ import create_and_write_file
 import mvtools_test_fixture
 import path_utils
 import git_wrapper
+import collect_git_patch
 
 def is_hex_string(the_string):
     try:
@@ -50,6 +51,10 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.init(self.test_dir, "   third   ", True)
         if not v:
             return v, r
+
+        # patch files storage path
+        self.storage_path = path_utils.concat_path(self.test_dir, "storage_path")
+        os.mkdir(self.storage_path)
 
         return True, ""
 
@@ -1188,6 +1193,206 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         test_file3_thirdrepo_inside_second = path_utils.concat_path(third_inside_second, path_utils.basename_filtered(test_file3_thirdrepo))
         self.assertTrue( os.path.exists(test_file3_thirdrepo_inside_second) )
+
+    def testApplyPatchFromHead(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
+        v, r = git_wrapper.clone(self.second_repo, fourth_repo)
+        self.assertTrue(v)
+
+        test_file2_fourthrepo = path_utils.concat_path(fourth_repo, "test_file2.txt")
+
+        with open(test_file2_fourthrepo, "a") as f:
+            f.write("latest content2")
+
+        v, r = collect_git_patch.collect_git_patch_head(fourth_repo, self.storage_path)
+        self.assertTrue(v)
+        generated_patch_file = r
+        self.assertTrue( os.path.exists(generated_patch_file) )
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(r.strip(), "")
+
+        v, r = git_wrapper.apply(self.second_repo, generated_patch_file)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("test_file2.txt" in r.strip())
+
+    def testApplyPatchFromHeadStaged(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
+        v, r = git_wrapper.clone(self.second_repo, fourth_repo)
+        self.assertTrue(v)
+
+        test_file2_fourthrepo = path_utils.concat_path(fourth_repo, "test_file2.txt")
+
+        with open(test_file2_fourthrepo, "a") as f:
+            f.write("latest content2")
+
+        v, r = git_wrapper.stage(fourth_repo)
+        self.assertTrue(v)
+
+        v, r = collect_git_patch.collect_git_patch_head_staged(fourth_repo, self.storage_path)
+        self.assertTrue(v)
+        generated_patch_file = r
+        self.assertTrue( os.path.exists(generated_patch_file) )
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(r.strip(), "")
+
+        v, r = git_wrapper.apply(self.second_repo, generated_patch_file)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("test_file2.txt" in r.strip())
+
+    def testApplyPatchFromStash(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
+        v, r = git_wrapper.clone(self.second_repo, fourth_repo)
+        self.assertTrue(v)
+
+        test_file2_fourthrepo = path_utils.concat_path(fourth_repo, "test_file2.txt")
+
+        with open(test_file2_fourthrepo, "a") as f:
+            f.write("latest content2")
+
+        v, r = git_wrapper.stash(fourth_repo)
+        self.assertTrue(v)
+
+        v, r = collect_git_patch.collect_git_patch_stash(fourth_repo, self.storage_path)
+        self.assertTrue(v)
+        generated_patch_file = r[0]
+        self.assertTrue( os.path.exists(generated_patch_file) )
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(r.strip(), "")
+
+        v, r = git_wrapper.apply(self.second_repo, generated_patch_file)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("test_file2.txt" in r.strip())
+
+    def testApplyPatchFromPrevious(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        fourth_repo = path_utils.concat_path(self.test_dir, "fourth")
+        v, r = git_wrapper.clone(self.second_repo, fourth_repo)
+        self.assertTrue(v)
+
+        test_file3_fourthrepo = path_utils.concat_path(fourth_repo, "test_file3.txt")
+
+        with open(test_file3_fourthrepo, "a") as f:
+            f.write("latest content3")
+
+        v, r = git_wrapper.stage(fourth_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(fourth_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        v, r = collect_git_patch.collect_git_patch_previous(fourth_repo, self.storage_path, 1)
+        self.assertTrue(v)
+        generated_patch_file = r[0]
+        self.assertTrue( os.path.exists(generated_patch_file) )
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(r.strip(), "")
+
+        v, r = git_wrapper.apply(self.second_repo, generated_patch_file)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("test_file3.txt" in r.strip())
 
 if __name__ == '__main__':
     unittest.main()

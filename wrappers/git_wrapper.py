@@ -23,6 +23,10 @@ def config(key, value, global_cfg=True):
 
     return git_wrapper_standard_command(cmd, "config")
 
+def apply(repo, source_file):
+    cmd = ["git", "-C", repo, "apply", source_file]
+    return git_wrapper_standard_command(cmd, "apply")
+
 def commit_editor(repo):
     retcode = call("git -C %s commit" % repo, shell=True) # mvtodo: still not supported by generic_run
     return (retcode==0), "git_wrapper.commit_editor"
