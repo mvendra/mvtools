@@ -202,16 +202,15 @@ def get_modified_files(repo):
         print("%s is not a git work tree." % repo)
         return None
 
-    ret = []
-
     v, r = git_wrapper.status(repo)
     if not v:
         print("get_unstaged_files failed: %s" % r)
         return None
     out = r.rstrip() # removes the trailing newline
-
     if len(out) == 0:
-        return ""
+        return []
+
+    ret = []
     for l in out.split("\n"):
         cl = l.rstrip()
         if len(cl) < 2:
@@ -220,9 +219,6 @@ def get_modified_files(repo):
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
-
-    if len(ret) == 0:
-        return ""
     return ret
 
 def get_staged_files(repo):
@@ -240,16 +236,15 @@ def get_staged_files(repo):
         print("%s is not a git work tree." % repo)
         return None
 
-    ret = []
-
     v, r = git_wrapper.status(repo)
     if not v:
         print("get_staged_files failed: %s" % r)
         return None
     out = r.rstrip() # removes the trailing newline
-
     if len(out) == 0:
-        return ""
+        return []
+
+    ret = []
     for l in out.split("\n"):
         cl = l.rstrip()
         if len(cl) < 2:
@@ -258,9 +253,6 @@ def get_staged_files(repo):
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
-
-    if len(ret) == 0:
-        return ""
     return ret
 
 def get_unstaged_files(repo):
@@ -278,16 +270,15 @@ def get_unstaged_files(repo):
         print("%s is not a git work tree." % repo)
         return None
 
-    ret = []
-
     v, r = git_wrapper.status(repo)
     if not v:
         print("get_unstaged_files failed: %s" % r)
         return None
     out = r.rstrip() # removes the trailing newline
-
     if len(out) == 0:
-        return ""
+        return []
+
+    ret = []
     for l in out.split("\n"):
         cl = l.rstrip()
         if len(cl) < 2:
@@ -296,9 +287,6 @@ def get_unstaged_files(repo):
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
-
-    if len(ret) == 0:
-        return ""
     return ret
 
 def get_stash_list(repo):

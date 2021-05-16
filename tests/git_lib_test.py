@@ -187,7 +187,7 @@ class GitLibTest(unittest.TestCase):
 
         self.assertEqual(git_lib.get_staged_files(self.fourth_notrepo), None)
 
-        self.assertEqual(git_lib.get_staged_files(self.first_repo), "")
+        self.assertEqual(git_lib.get_staged_files(self.first_repo), [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         if not create_and_write_file.create_file_contents(first_more1, "more1-contents"):
@@ -246,7 +246,7 @@ class GitLibTest(unittest.TestCase):
 
         self.assertEqual(git_lib.get_unstaged_files(self.fourth_notrepo), None)
 
-        self.assertEqual(git_lib.get_unstaged_files(self.first_repo), "")
+        self.assertEqual(git_lib.get_unstaged_files(self.first_repo), [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         if not create_and_write_file.create_file_contents(first_more1, "more1-contents"):
