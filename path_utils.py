@@ -223,6 +223,8 @@ def basename_filtered(path):
     # that ends with a path separator. this one first filters out the
     # trailing path separator
 
+    if path == "":
+        return ""
     return os.path.basename( filter_remove_trailing_sep ( path ) )
 
 def dirname_filtered(path):
@@ -231,6 +233,8 @@ def dirname_filtered(path):
     # in a separator character. this function removes the trailing
     # separator when present before doing dirname.
 
+    if path == "":
+        return ""
     return os.path.dirname( filter_remove_trailing_sep ( path ) )
 
 def copy_to(origin, target):
