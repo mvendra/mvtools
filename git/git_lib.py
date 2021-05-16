@@ -383,5 +383,17 @@ def patch_as_head(repo, patch_file):
 
     return True, None
 
+def patch_as_staged(repo, patch_file):
+
+    v, r = patch_as_head(repo, patch_file)
+    if not v:
+        return False, r
+
+    v, r = git_wrapper.stage(repo)
+    if not v:
+        return False, r
+
+    return True, None
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
