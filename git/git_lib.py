@@ -369,5 +369,19 @@ def is_repo_submodule(repo):
         return True, True
     return True, False
 
+def patch_as_head(repo, patch_file):
+
+    v, r = is_head_clear(repo)
+    if not v:
+        return False, r
+    if not r:
+        return False, "Cannot patch - head is not clear"
+
+    v, r = git_wrapper.apply(repo, patch_file)
+    if not v:
+        return False, r
+
+    return True, None
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))
