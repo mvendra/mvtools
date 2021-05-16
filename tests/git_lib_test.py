@@ -5,12 +5,13 @@ import os
 import shutil
 import unittest
 
-import git_test_fixture
-import git_wrapper
-import path_utils
-import git_lib
 import mvtools_test_fixture
+import git_test_fixture
+import path_utils
 import create_and_write_file
+import git_wrapper
+import collect_git_patch
+import git_lib
 
 class GitLibTest(unittest.TestCase):
 
@@ -39,6 +40,9 @@ class GitLibTest(unittest.TestCase):
         os.mkdir(self.fourth_notrepo)
 
         self.fifth_repo = path_utils.concat_path(self.test_dir, "fifth")
+
+        self.storage_path = path_utils.concat_path(self.test_dir, "storage_path")
+        os.mkdir(self.storage_path)
 
         # creates test repos
         v, r = git_wrapper.init(self.test_dir, "second", True)
@@ -144,6 +148,40 @@ class GitLibTest(unittest.TestCase):
             self.fail(r)
 
         self.assertEqual(git_lib.get_current_branch(self.first_repo), "another-branch")
+
+    def testGetModifiedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        if not create_and_write_file.create_file_contents(first_more1, "more1-contents"):
+            self.fail("Failed creating file %s" % first_more1)
+
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        if not create_and_write_file.create_file_contents(first_more2, "more2-contents"):
+            self.fail("Failed creating file %s" % first_more2)
+
+        first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
+        if not v:
+            return v, r
+
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
+        if not v:
+            self.fail(r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        if not v:
+            self.fail(r)
+
+        with open(first_more3, "a") as f:
+            f.write("actual modification, again")
+
+        self.assertEqual(git_lib.get_modified_files(self.first_repo), [first_more3])
 
     def testGetStagedFiles(self):
 

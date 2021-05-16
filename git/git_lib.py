@@ -192,6 +192,39 @@ def is_head_clear(repo):
 
     return True, (r.strip() == "")
 
+def get_modified_files(repo):
+
+    t1 = is_repo_working_tree(repo)
+    if t1 is None:
+        print("%s does not exist." % repo)
+        return None
+    elif t1 is False:
+        print("%s is not a git work tree." % repo)
+        return None
+
+    ret = []
+
+    v, r = git_wrapper.status(repo)
+    if not v:
+        print("get_unstaged_files failed: %s" % r)
+        return None
+    out = r.rstrip() # removes the trailing newline
+
+    if len(out) == 0:
+        return ""
+    for l in out.split("\n"):
+        cl = l.rstrip()
+        if len(cl) < 2:
+            continue
+        if cl[0:2] == " M":
+            lf = cl[3:]
+            fp = path_utils.concat_path(repo, lf)
+            ret.append(fp)
+
+    if len(ret) == 0:
+        return ""
+    return ret
+
 def get_staged_files(repo):
 
     """ get_staged_files
@@ -213,13 +246,13 @@ def get_staged_files(repo):
     if not v:
         print("get_staged_files failed: %s" % r)
         return None
-    out = r.strip() # removes the trailing newline
+    out = r.rstrip() # removes the trailing newline
 
     if len(out) == 0:
         return ""
     for l in out.split("\n"):
-        cl = l.strip()
-        if len(cl) == 0:
+        cl = l.rstrip()
+        if len(cl) < 2:
             continue
         if is_char_status_staged(cl[0]):
             lf = cl[3:]
@@ -251,13 +284,13 @@ def get_unstaged_files(repo):
     if not v:
         print("get_unstaged_files failed: %s" % r)
         return None
-    out = r.strip() # removes the trailing newline
+    out = r.rstrip() # removes the trailing newline
 
     if len(out) == 0:
         return ""
     for l in out.split("\n"):
-        cl = l.strip()
-        if len(cl) == 0:
+        cl = l.rstrip()
+        if len(cl) < 2:
             continue
         if cl[0] == "?":
             lf = cl[3:]
