@@ -184,6 +184,14 @@ def get_current_branch(repo):
 
     return current_branch[0]
 
+def is_head_clear(repo):
+
+    v, r = git_wrapper.status_simple(repo)
+    if not v:
+        return False, r
+
+    return True, (r.strip() == "")
+
 def get_staged_files(repo):
 
     """ get_staged_files

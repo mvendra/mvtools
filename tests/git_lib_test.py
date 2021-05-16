@@ -383,5 +383,57 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
+    def testIsHeadClear(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra content")
+
+    def testIsHeadClearFail1(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra content")
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearFail2(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra content")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearFail3(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        with open(first_file2, "a") as f:
+            f.write("latest file")
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearStashed(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra content")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
 if __name__ == '__main__':
     unittest.main()
