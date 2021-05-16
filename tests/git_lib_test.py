@@ -689,5 +689,152 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
+    def testPatchAsStash(self):
+
+        first_mirror = path_utils.concat_path(self.test_dir, "first_mirror")
+        v, r = git_wrapper.clone(self.first_repo, first_mirror, "origin")
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("changes")
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+        generated_patch_file = r
+        self.assertTrue(os.path.exists(generated_patch_file))
+
+        v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.get_stash_list(first_mirror)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+    def testPatchAsStashFail1(self):
+
+        first_mirror = path_utils.concat_path(self.test_dir, "first_mirror")
+        v, r = git_wrapper.clone(self.first_repo, first_mirror, "origin")
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("changes")
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+        generated_patch_file = r
+        self.assertTrue(os.path.exists(generated_patch_file))
+
+        first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
+        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
+            self.fail("Failed creating file %s" % first_mirror_more1)
+
+        v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testPatchAsStashFail2(self):
+
+        first_mirror = path_utils.concat_path(self.test_dir, "first_mirror")
+        v, r = git_wrapper.clone(self.first_repo, first_mirror, "origin")
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("changes")
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+        generated_patch_file = r
+        self.assertTrue(os.path.exists(generated_patch_file))
+
+        self.first_mirror_file1 = path_utils.concat_path(first_mirror, "file1.txt")
+        with open(self.first_mirror_file1, "a") as f:
+            f.write("additional content")
+
+        v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = git_lib.get_stash_list(first_mirror)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testPatchAsStashFail3(self):
+
+        first_mirror = path_utils.concat_path(self.test_dir, "first_mirror")
+        v, r = git_wrapper.clone(self.first_repo, first_mirror, "origin")
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("changes")
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        self.assertTrue(v)
+        generated_patch_file = r
+        self.assertTrue(os.path.exists(generated_patch_file))
+
+        self.first_mirror_file1 = path_utils.concat_path(first_mirror, "file1.txt")
+        with open(self.first_mirror_file1, "a") as f:
+            f.write("additional content")
+
+        v, r = git_wrapper.stash(first_mirror)
+        self.assertTrue(v)
+
+        v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_head_clear(first_mirror)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.get_stash_list(first_mirror)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
 if __name__ == '__main__':
     unittest.main()
