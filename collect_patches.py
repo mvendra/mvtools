@@ -31,7 +31,7 @@ def resolve_py_into_custom_pathnav_func(path_to_py_script):
         return None
     return test_bind
 
-def collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, head_staged, head_unversioned, stash, previous, repotype):
+def collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
 
     if repotype != "svn" and repotype != "git" and repotype != "all":
         return False, ["Invalid repository type: %s" % repotype]
@@ -74,13 +74,13 @@ def collect_patches(path, custom_path_navigator, storage_path, default_filter, i
 
         if "git" in repotype_detected and (repotype == "git" or repotype == "all"):
             print("Collecting git patches: [%s]" % it)
-            v, r = collect_git_patch.collect_git_patch(it, storage_path, head, head_id, head_staged, head_unversioned, stash, previous)
+            v, r = collect_git_patch.collect_git_patch(it, storage_path, head, head_id, staged, unversioned, stash, previous)
             if not v:
                 report.append("Failed collecting git patches: %s" % r)
 
         elif "svn" in repotype_detected and (repotype == "svn" or repotype == "all"):
             print("Collecting svn patches: [%s]" % it)
-            v, r = collect_svn_patch.collect_svn_patch(it, storage_path, head, head_id, head_unversioned, previous)
+            v, r = collect_svn_patch.collect_svn_patch(it, storage_path, head, head_id, unversioned, previous)
             if not v:
                 report.append("Failed collecting svn patches: %s" % r)
 
@@ -111,7 +111,7 @@ be cautious about when using, to avoid mismatches and misuse.
 """
 
 def puaq():
-    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % os.path.basename(__file__))
+    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -134,8 +134,8 @@ if __name__ == "__main__":
     exclude_parse_next = False
     head = False
     head_id = False
-    head_staged = False
-    head_unversioned = False
+    staged = False
+    unversioned = False
     stash = False
     previous = 0
     previous_parse_next = False
@@ -186,10 +186,10 @@ if __name__ == "__main__":
             head = True
         elif p == "--head-id":
             head_id = True
-        elif p == "--head-staged":
-            head_staged = True
-        elif p == "--head-unversioned":
-            head_unversioned = True
+        elif p == "--staged":
+            staged = True
+        elif p == "--unversioned":
+            unversioned = True
         elif p == "--stash":
             stash = True
         elif p == "--previous":
@@ -209,7 +209,7 @@ if __name__ == "__main__":
         print("Custom path navigator [%s] does not exist. Aborting." % custom_path_navigator)
         sys.exit(1)
 
-    v, r = collect_patches(path, resolve_py_into_custom_pathnav_func(custom_path_navigator), storage_path, default_filter, include_list, exclude_list, head, head_id, head_staged, head_unversioned, stash, previous, repotype)
+    v, r = collect_patches(path, resolve_py_into_custom_pathnav_func(custom_path_navigator), storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
 
     if not v:
         for i in r:

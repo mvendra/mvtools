@@ -37,30 +37,30 @@ def collect_svn_patch_head_id(repo, storage_path):
         return False, "Failed calling svn command for head-id: [%s]. Repository: [%s]." % (r, repo)
     return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)
 
-def collect_svn_patch_head_unversioned(repo, storage_path):
+def collect_svn_patch_unversioned(repo, storage_path):
 
     v, r = svn_lib.get_list_unversioned(repo)
     if not v:
-        return False, "Failed calling head-unversioned: [%s]. Repository: [%s]." % (r, repo)
+        return False, "Failed calling unversioned: [%s]. Repository: [%s]." % (r, repo)
     unversioned_files = r
 
     for uf in unversioned_files:
-        target_base = path_utils.concat_path(storage_path, repo, "head_unversioned")
+        target_base = path_utils.concat_path(storage_path, repo, "unversioned")
         target_file = path_utils.concat_path(target_base, uf)
         source_file = path_utils.concat_path(repo, uf)
 
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
         except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for head-unversioned: Failed guaranteeing folder: [%s]." % os.path.dirname(target_file)
+            return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % os.path.dirname(target_file)
         if os.path.exists( target_file ):
-            return False, "Can't collect patch for head-unversioned: [%s] already exists" % target_file
+            return False, "Can't collect patch for unversioned: [%s] already exists" % target_file
 
         if os.path.isdir(source_file): # this is necessary to avoid duplicating the copied folder
             target_file = os.path.dirname(target_file)
 
         if not path_utils.copy_to( source_file, target_file ):
-            return False, "Can't collect patch for head-unversioned: Cant copy [%s] to [%s]." % (source_file, target_file)
+            return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]." % (source_file, target_file)
 
     return True, ""
 
@@ -97,7 +97,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
 
     return True, ""
 
-def collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previous):
+def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
 
     repo = path_utils.filter_remove_trailing_sep(repo)
     repo = os.path.abspath(repo)
@@ -124,9 +124,9 @@ def collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previ
         if not v:
             report.append(r)
 
-    # head_unversioned
-    if head_unversioned:
-        v, r = collect_svn_patch_head_unversioned(repo, storage_path)
+    # unversioned
+    if unversioned:
+        v, r = collect_svn_patch_unversioned(repo, storage_path)
         if not v:
             report.append(r)
 
@@ -139,7 +139,7 @@ def collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previ
     return (len(report)==0), report
 
 def puaq():
-    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--head-unversioned] [--previous X]" % os.path.basename(__file__))
+    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--unversioned] [--previous X]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     storage_path_parse_next = False
     head = False
     head_id = False
-    head_unversioned = False
+    unversioned = False
     previous = 0
     previous_parse_next = False
 
@@ -177,15 +177,15 @@ if __name__ == "__main__":
             head = True
         elif p == "--head-id":
             head_id = True
-        elif p == "--head-unversioned":
-            head_unversioned = True
+        elif p == "--unversioned":
+            unversioned = True
         elif p == "--previous":
             previous_parse_next = True
 
     if storage_path is None:
         storage_path = os.getcwd()
 
-    v, r = collect_svn_patch(repo, storage_path, head, head_id, head_unversioned, previous)
+    v, r = collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous)
     if not v:
         for i in r:
             print("Failed: [%s]." % i)
