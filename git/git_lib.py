@@ -369,13 +369,14 @@ def is_repo_submodule(repo):
         return True, True
     return True, False
 
-def patch_as_head(repo, patch_file):
+def patch_as_head(repo, patch_file, override_head_check):
 
-    v, r = is_head_clear(repo)
-    if not v:
-        return False, r
-    if not r:
-        return False, "Cannot patch - head is not clear"
+    if not override_head_check:
+        v, r = is_head_clear(repo)
+        if not v:
+            return False, r
+        if not r:
+            return False, "Cannot patch - head is not clear"
 
     v, r = git_wrapper.apply(repo, patch_file)
     if not v:
@@ -383,9 +384,9 @@ def patch_as_head(repo, patch_file):
 
     return True, None
 
-def patch_as_staged(repo, patch_file):
+def patch_as_staged(repo, patch_file, override_head_check):
 
-    v, r = patch_as_head(repo, patch_file)
+    v, r = patch_as_head(repo, patch_file, override_head_check)
     if not v:
         return False, r
 
@@ -395,15 +396,16 @@ def patch_as_staged(repo, patch_file):
 
     return True, None
 
-def patch_as_stash(repo, patch_file):
+def patch_as_stash(repo, patch_file, override_head_check, override_stash_check):
 
-    v, r = get_stash_list(repo)
-    if not v:
-        return False, r
-    if len(r) != 0:
-        return False, "Cannot patch - stash is not empty"
+    if not override_stash_check:
+        v, r = get_stash_list(repo)
+        if not v:
+            return False, r
+        if len(r) != 0:
+            return False, "Cannot patch - stash is not empty"
 
-    v, r = patch_as_head(repo, patch_file)
+    v, r = patch_as_head(repo, patch_file, override_head_check)
     if not v:
         return False, r
 
