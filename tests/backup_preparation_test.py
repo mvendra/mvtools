@@ -774,14 +774,14 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_first_repo_head_patch = path_utils.concat_path(collected_first_repo, "head.patch")
         collected_first_repo_head_patch_contents = ""
         with open(collected_first_repo_head_patch) as f:
             collected_first_repo_head_patch_contents = f.read()
-        collected_first_repo_head_staged_patch = path_utils.concat_path(collected_first_repo, "head_staged.patch")
+        collected_first_repo_staged_patch = path_utils.concat_path(collected_first_repo, "staged.patch")
         collected_first_repo_head_id_patch = path_utils.concat_path(collected_first_repo, "head_id.txt")
         v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
         if not v:
@@ -796,7 +796,7 @@ class BackupPreparationTest(unittest.TestCase):
         collected_second_repo_head_patch_contents = ""
         with open(collected_second_repo_head_patch) as f:
             collected_second_repo_head_patch_contents = f.read()
-        collected_second_repo_head_staged_patch = path_utils.concat_path(collected_second_repo, "head_staged.patch")
+        collected_second_repo_staged_patch = path_utils.concat_path(collected_second_repo, "staged.patch")
         collected_second_repo_head_id_patch = path_utils.concat_path(collected_second_repo, "head_id.txt")
         v, r = git_lib.get_previous_hash_list(self.second_repo, 1)
         if not v:
@@ -809,7 +809,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(os.path.exists(collected_first_repo))
         self.assertTrue(os.path.exists(collected_first_repo_head_patch))
         self.assertTrue( "additional contents, r1-f1" in collected_first_repo_head_patch_contents )
-        self.assertTrue(os.path.exists(collected_first_repo_head_staged_patch))
+        self.assertTrue(os.path.exists(collected_first_repo_staged_patch))
         self.assertTrue(os.path.exists(collected_first_repo_head_id_patch))
         self.assertTrue(os.path.exists(collected_first_repo_previous_1))
         self.assertTrue( "r1-file1-content1" in collected_first_repo_previous_1_contents )
@@ -817,7 +817,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(os.path.exists(collected_second_repo))
         self.assertTrue(os.path.exists(collected_second_repo_head_patch))
         self.assertTrue( "additional contents, r2-f1" in collected_second_repo_head_patch_contents )
-        self.assertTrue(os.path.exists(collected_second_repo_head_staged_patch))
+        self.assertTrue(os.path.exists(collected_second_repo_staged_patch))
         self.assertTrue(os.path.exists(collected_second_repo_head_id_patch))
         self.assertTrue(os.path.exists(collected_second_repo_previous_1))
         self.assertTrue( "r2-file1-content1" in collected_second_repo_previous_1_contents )
@@ -849,7 +849,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
@@ -889,7 +889,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
@@ -995,7 +995,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("head", ""), ("head-id", ""), ("head-staged", ""), ("head-unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)

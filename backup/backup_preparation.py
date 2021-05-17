@@ -295,8 +295,8 @@ class BackupPreparation:
         excludes = []
         head = False
         head_id = False
-        head_staged = False
-        head_unversioned = False
+        staged = False
+        unversioned = False
         stash = False
         previous = 0
 
@@ -345,10 +345,10 @@ class BackupPreparation:
                 head = True
             if opt_name == "head-id":
                 head_id = True
-            if opt_name == "head-staged":
-                head_staged = True
-            if opt_name == "head-unversioned":
-                head_unversioned = True
+            if opt_name == "staged":
+                staged = True
+            if opt_name == "unversioned":
+                unversioned = True
             if opt_name == "stash":
                 stash = True
             if opt_name == "previous":
@@ -368,7 +368,7 @@ class BackupPreparation:
         path_utils.guaranteefolder(final_storage_path_patch_collector)
 
         # run the actual patch collector
-        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_func, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, head_staged, head_unversioned, stash, previous, repo_type)
+        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_func, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, staged, unversioned, stash, previous, repo_type)
         if not v:
             raise BackupPreparationException("RUN_COLLECT_PATCHES: Running collect_patches failed: [%s]. Aborting." % r)
 

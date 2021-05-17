@@ -251,7 +251,7 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertGreaterEqual(len(contents_read), 40)
 
-    def testPatchHeadStagedFail(self):
+    def testPatchStagedFail(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
@@ -260,17 +260,17 @@ class CollectGitPatchTest(unittest.TestCase):
         if not git_wrapper.stage(self.first_repo):
             self.fail("")
 
-        v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head_staged.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "staged.patch")
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path)
         self.assertFalse(v)
 
-    def testPatchHeadStaged(self):
+    def testPatchStaged(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
@@ -279,10 +279,10 @@ class CollectGitPatchTest(unittest.TestCase):
         if not git_wrapper.stage(self.first_repo):
             self.fail("")
 
-        v, r = collect_git_patch.collect_git_patch_head_staged(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head_staged.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "staged.patch")
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
@@ -292,7 +292,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         self.assertTrue("newfilecontents" in contents_read)
 
-    def testPatchHeadStagedSub(self):
+    def testPatchStagedSub(self):
 
         newfile = path_utils.concat_path(self.second_sub, "newfile_secondsub.txt")
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents_secondsub"):
@@ -301,10 +301,10 @@ class CollectGitPatchTest(unittest.TestCase):
         if not git_wrapper.stage(self.second_sub):
             self.fail("")
 
-        v, r = collect_git_patch.collect_git_patch_head_staged(self.second_sub, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.second_sub, self.storage_path)
         self.assertTrue(v)
 
-        patch_file = path_utils.concat_path(self.storage_path, self.second_sub, "head_staged.patch")
+        patch_file = path_utils.concat_path(self.storage_path, self.second_sub, "staged.patch")
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
@@ -314,23 +314,23 @@ class CollectGitPatchTest(unittest.TestCase):
 
         self.assertTrue("newfilecontents_secondsub" in contents_read)
 
-    def testPatchHeadUnversionedFail(self):
+    def testPatchUnversionedFail(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfile.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfile.txt")
         self.assertTrue(os.path.exists(newfile_storage))
         self.assertEqual(r[0], newfile_storage)
 
-        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path)
         self.assertFalse(v)
 
-    def testPatchHeadUnversioned(self):
+    def testPatchUnversioned(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
@@ -354,10 +354,10 @@ class CollectGitPatchTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(anotherfoldernewfile4, "newfilecontents4"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfile.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfile.txt")
         self.assertTrue(os.path.exists(newfile_storage))
         self.assertTrue(newfile_storage in r)
 
@@ -366,7 +366,7 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertEqual(contents_read, "newfilecontents")
 
-        newfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder")
+        newfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfolder")
         self.assertTrue(os.path.exists(newfolder_storage))
 
         newfoldernewfile2_storage = path_utils.concat_path(newfolder_storage, "newfile2.txt")
@@ -387,7 +387,7 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertEqual(contents_read, "newfilecontents3")
 
-        anotherfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder", "anotherfolder")
+        anotherfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfolder", "anotherfolder")
         self.assertTrue(os.path.exists(anotherfolder_storage))
 
         anotherfoldernewfile4_storage = path_utils.concat_path(anotherfolder_storage, "newfile4.txt")
@@ -399,7 +399,7 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertEqual(contents_read, "newfilecontents4")
 
-    def testPatchHeadUnversioned2(self):
+    def testPatchUnversioned2(self):
 
         newfolder1 = path_utils.concat_path(self.first_repo, "newfolder1")
         os.mkdir(newfolder1)
@@ -410,14 +410,14 @@ class CollectGitPatchTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(newfolder2newfile1, "newfile_twolevels-contents"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder1", "newfolder2", "newfile_twolevels.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfolder1", "newfolder2", "newfile_twolevels.txt")
         self.assertTrue(os.path.exists(newfile_storage))
         self.assertEqual(r[0], newfile_storage)
 
-    def testPatchHeadUnversioned3(self):
+    def testPatchUnversioned3(self):
 
         newfolder1 = path_utils.concat_path(self.first_repo, "newfolder1")
         os.mkdir(newfolder1)
@@ -432,27 +432,27 @@ class CollectGitPatchTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(newfolder2newfile, "newfile-contents"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path)
         self.assertTrue(v)
 
-        newfolder1newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder1", "newfile.txt")
+        newfolder1newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfolder1", "newfile.txt")
         self.assertTrue(os.path.exists(newfolder1newfile_storage))
         self.assertEqual(r[0], newfolder1newfile_storage)
 
-        newfolder2newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "head_unversioned", "newfolder2", "newfile.txt")
+        newfolder2newfile_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfolder2", "newfile.txt")
         self.assertTrue(os.path.exists(newfolder2newfile_storage))
         self.assertEqual(r[1], newfolder2newfile_storage)
 
-    def testPatchHeadUnversionedSub(self):
+    def testPatchUnversionedSub(self):
 
         newfile = path_utils.concat_path(self.second_sub, "newfile.txt")
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
-        v, r = collect_git_patch.collect_git_patch_head_unversioned(self.second_sub, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.second_sub, self.storage_path)
         self.assertTrue(v)
 
-        newfile_storage = path_utils.concat_path(self.storage_path, self.second_sub, "head_unversioned", "newfile.txt")
+        newfile_storage = path_utils.concat_path(self.storage_path, self.second_sub, "unversioned", "newfile.txt")
         self.assertTrue(os.path.exists(newfile_storage))
         self.assertEqual(r[0], newfile_storage)
 

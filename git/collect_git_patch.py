@@ -31,37 +31,37 @@ def collect_git_patch_head(repo, storage_path):
         return False, "Failed calling git command for head: %s. Repository: %s." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
 
-def collect_git_patch_head_staged(repo, storage_path):
-    v, r = git_wrapper.diff_cached(repo)
-    if not v:
-        return False, "Failed calling git command for head-staged: %s. Repository: %s." % (r, repo)
-    return collect_git_patch_cmd_generic(repo, storage_path, "head_staged.patch", "head-staged", r)
-
 def collect_git_patch_head_id(repo, storage_path):
     v, r = git_wrapper.rev_parse_head(repo)
     if not v:
         return False, "Failed calling git command for head-id: %s. Repository: %s." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)
 
-def collect_git_patch_head_unversioned(repo, storage_path):
+def collect_git_patch_staged(repo, storage_path):
+    v, r = git_wrapper.diff_cached(repo)
+    if not v:
+        return False, "Failed calling git command for staged: %s. Repository: %s." % (r, repo)
+    return collect_git_patch_cmd_generic(repo, storage_path, "staged.patch", "staged", r)
+
+def collect_git_patch_unversioned(repo, storage_path):
 
     v, r = git_lib.get_list_unversioned_files(repo)
     if not v:
-        return False, "Failed calling git command for head-unversioned: %s. Repository: %s." % (r, repo)
+        return False, "Failed calling git command for unversioned: %s. Repository: %s." % (r, repo)
     unversioned_files = r
     written_file_list = []
 
     for uf in unversioned_files:
-        target_file = path_utils.concat_path(storage_path, repo, "head_unversioned", uf)
+        target_file = path_utils.concat_path(storage_path, repo, "unversioned", uf)
         source_file = path_utils.concat_path(repo, uf)
         try:
             path_utils.guaranteefolder( os.path.dirname(target_file) )
         except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for head-unversioned: Failed guaranteeing folder [%s]" % os.path.dirname(target_file)
+            return False, "Can't collect patch for unversioned: Failed guaranteeing folder [%s]" % os.path.dirname(target_file)
         if os.path.exists(target_file):
-            return False, "Can't collect patch for head-unversioned: %s already exists" % target_file
+            return False, "Can't collect patch for unversioned: %s already exists" % target_file
         if not path_utils.copy_to( source_file, target_file ):
-            return False, "Can't collect patch for head-unversioned: Cant copy %s to %s" % (source_file, target_file)
+            return False, "Can't collect patch for unversioned: Cant copy %s to %s" % (source_file, target_file)
         written_file_list.append(target_file)
 
     return True, written_file_list
@@ -131,7 +131,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
 
     return True, written_file_list
 
-def collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unversioned, stash, previous):
+def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, stash, previous):
 
     repo = path_utils.filter_remove_trailing_sep(repo)
     repo = os.path.abspath(repo)
@@ -159,15 +159,15 @@ def collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unver
         has_any_failed |= (not v)
         report.append(r)
 
-    # head_staged
-    if head_staged:
-        v, r = collect_git_patch_head_staged(repo, storage_path)
+    # staged
+    if staged:
+        v, r = collect_git_patch_staged(repo, storage_path)
         has_any_failed |= (not v)
         report.append(r)
 
-    # head_unversioned
-    if head_unversioned:
-        v, r = collect_git_patch_head_unversioned(repo, storage_path)
+    # unversioned
+    if unversioned:
+        v, r = collect_git_patch_unversioned(repo, storage_path)
         has_any_failed |= (not v)
         report.append(r)
 
@@ -186,7 +186,7 @@ def collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unver
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--head-staged] [--head-unversioned] [--stash] [--previous X]" % os.path.basename(__file__))
+    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -202,8 +202,8 @@ if __name__ == "__main__":
     storage_path_parse_next = False
     head = False
     head_id = False
-    head_staged = False
-    head_unversioned = False
+    staged = False
+    unversioned = False
     stash = False
     previous = 0
     previous_parse_next = False
@@ -226,10 +226,10 @@ if __name__ == "__main__":
             head = True
         elif p == "--head-id":
             head_id = True
-        elif p == "--head-staged":
-            head_staged = True
-        elif p == "--head-unversioned":
-            head_unversioned = True
+        elif p == "--staged":
+            staged = True
+        elif p == "--unversioned":
+            unversioned = True
         elif p == "--stash":
             stash = True
         elif p == "--previous":
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     if storage_path is None:
         storage_path = os.getcwd()
 
-    v, r = collect_git_patch(repo, storage_path, head, head_id, head_staged, head_unversioned, stash, previous)
+    v, r = collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, stash, previous)
     if not v:
         for i in r:
             print("Failed: %s" % i)
