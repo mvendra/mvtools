@@ -7,6 +7,7 @@ import shutil
 import mvtools_envvars
 import path_utils
 import detect_repo_type
+import collect_git_patch
 import git_lib
 
 def _test_repo_path(path):
@@ -18,6 +19,50 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, None
 
+def apply_git_patch_stash(temp_path, source_repo, target_repo):
+
+    stash_files = None
+    v, r = collect_git_patch.collect_git_patch_stash(source_repo, temp_path)
+    if not v:
+        return False, r
+    stash_files = r
+    if len(stash_files) == 0:
+        return True, None # nothing to patch
+
+    for sf in reversed(stash_files):
+        v, r = git_lib.patch_as_stash(target_repo, sf, True, True)
+        if not v:
+            return False, r
+
+    return True, None
+
+def apply_git_patch_previous(temp_path, source_repo, target_repo, previous_count):
+
+    previous_files = None
+    v, r = collect_git_patch.collect_git_patch_previous(source_repo, temp_path, previous_count)
+    if not v:
+        return False, r
+    previous_files = r
+    if len(previous_files) == 0:
+        return True, None # nothing to patch
+
+    # previous commits will be stacked up ontop of head - no autocommitting is available (on purpose)
+    for pf in reversed(previous_files):
+        v, r = git_lib.patch_as_head(target_repo, pf, True)
+        if not v:
+            return False, r
+
+    return True, None
+
+def apply_git_patch_staged(temp_path, source_repo, target_repo):
+    return False, "mvtodo"
+
+def apply_git_patch_head(temp_path, source_repo, target_repo):
+    return False, "mvtodo"
+
+def apply_git_patch_unversioned(source_repo, target_repo):
+    return False, "mvtodo"
+
 def apply_git_patch(source_repo, target_repo, head, staged, stash, unversioned, previous):
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
@@ -25,11 +70,11 @@ def apply_git_patch(source_repo, target_repo, head, staged, stash, unversioned, 
         return False, r
     temp_path = r
     if not os.path.exists(temp_path):
-        return False, "Can't apply patches. MVTOOLS_TEMP_PATH envvar is not defined or the path does not exist."
+        return False, ["Can't apply patches. MVTOOLS_TEMP_PATH envvar is not defined or the path does not exist."]
 
     temp_path_patches = path_utils.concat_path(temp_path, "temp_path_patches")
     if os.path.exists(temp_path_patches):
-        return False, "Can't apply patches. Temporary path [%s] already exists." % temp_path_patches
+        return False, ["Can't apply patches. Temporary path [%s] already exists." % temp_path_patches]
     os.mkdir(temp_path_patches)
 
     v, r = _apply_git_patch_delegate(temp_path_patches, source_repo, target_repo, head, staged, stash, unversioned, previous)
@@ -60,23 +105,30 @@ def _apply_git_patch_delegate(temp_path, source_repo, target_repo, head, staged,
     report = []
     has_any_failed = False
 
-    # mvtodo: stash
-    # mvtodo: previous
-    # mvtodo: staged
-    # mvtodo: head
-    # mvtodo: unversioned
-
     if stash:
-        pass # mvtodo
-
-    # head
-    """
-    if head:
-        v, r = collect_git_patch_head(source_repo, temp_path)
+        v, r = apply_git_patch_stash(temp_path, source_repo, target_repo)
         has_any_failed |= (not v)
-        # mvtodo: read written patch file from r
         report.append(r)
-    """
+
+    if previous > 0:
+        v, r = apply_git_patch_previous(temp_path, source_repo, target_repo, previous)
+        has_any_failed |= (not v)
+        report.append(r)
+
+    if staged:
+        v, r = apply_git_patch_staged(temp_path, source_repo, target_repo)
+        has_any_failed |= (not v)
+        report.append(r)
+
+    if head:
+        v, r = apply_git_patch_head(temp_path, source_repo, target_repo)
+        has_any_failed |= (not v)
+        report.append(r)
+
+    if unversioned:
+        v, r = apply_git_patch_unversioned(source_repo, target_repo)
+        has_any_failed |= (not v)
+        report.append(r)
 
     return (not has_any_failed), report
 
