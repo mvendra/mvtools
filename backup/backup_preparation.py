@@ -370,7 +370,8 @@ class BackupPreparation:
         # run the actual patch collector
         v, r = collect_patches.collect_patches(source_path, custom_path_navigator_func, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, staged, unversioned, stash, previous, repo_type)
         if not v:
-            raise BackupPreparationException("RUN_COLLECT_PATCHES: Running collect_patches failed: [%s]. Aborting." % r)
+            for i in r:
+                print("proc_run_collect_patches: [%s]" % i)
 
 def backup_preparation(config_file):
 

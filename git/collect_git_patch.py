@@ -9,6 +9,9 @@ import path_utils
 
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, content):
 
+    if len(content) == 0:
+        return False, "Empty contents"
+
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
 
@@ -150,38 +153,56 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
     # head
     if head:
         v, r = collect_git_patch_head(repo, storage_path)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("collect_git_patch_head: [%s]" % r)
+        else:
+            report.append(r)
 
     # head-id
     if head_id:
         v, r = collect_git_patch_head_id(repo, storage_path)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("collect_git_patch_head_id: [%s]" % r)
+        else:
+            report.append(r)
 
     # staged
     if staged:
         v, r = collect_git_patch_staged(repo, storage_path)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("collect_git_patch_staged: [%s]" % r)
+        else:
+            report.append(r)
 
     # unversioned
     if unversioned:
         v, r = collect_git_patch_unversioned(repo, storage_path)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("collect_git_patch_unversioned: [%s]" % r)
+        else:
+            report.append(r)
 
     # stash
     if stash:
         v, r = collect_git_patch_stash(repo, storage_path)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("collect_git_patch_stash: [%s]" % r)
+        else:
+            report.append(r)
 
     # previous
     if previous > 0:
         v, r = collect_git_patch_previous(repo, storage_path, previous)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("collect_git_patch_previous: [%s]" % r)
+        else:
+            report.append(r)
 
     return (not has_any_failed), report
 

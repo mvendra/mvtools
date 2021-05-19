@@ -120,11 +120,10 @@ class CollectGitPatchTest(unittest.TestCase):
     def testGeneralBestEffort(self):
 
         v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, False, False, False, False, 0)
-        self.assertTrue(v)
+        self.assertFalse(v)
         first_head_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         first_head_id_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
-        self.assertEqual(r[0], first_head_patch_filename)
-        self.assertTrue( os.path.exists( first_head_patch_filename ) )
+        self.assertFalse( os.path.exists( first_head_patch_filename ) )
         self.assertFalse( os.path.exists( first_head_id_patch_filename ) )
 
         v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, True, False, False, False, 0)
@@ -133,7 +132,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertNotEqual(r[0], second_head_id_patch_filename)
         self.assertEqual(r[1], second_head_id_patch_filename)
-        self.assertTrue( os.path.exists( second_head_patch_filename ) )
+        self.assertFalse( os.path.exists( second_head_patch_filename ) )
         self.assertTrue( os.path.exists( second_head_id_patch_filename ) )
 
     def testPatchHeadFail(self):
