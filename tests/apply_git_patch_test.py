@@ -344,5 +344,57 @@ class ApplyGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
+    def testApplyGitPatchHeadFail(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = apply_git_patch.apply_git_patch_staged(self.storage_path, self.first_repo, self.second_repo)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+    def testApplyGitPatchHead1(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("latest1")
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = apply_git_patch.apply_git_patch_head(self.storage_path, self.first_repo, self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testApplyGitPatchHead2(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("latest1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("latest2")
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = apply_git_patch.apply_git_patch_head(self.storage_path, self.first_repo, self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
 if __name__ == '__main__':
     unittest.main()

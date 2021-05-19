@@ -65,7 +65,18 @@ def apply_git_patch_staged(temp_path, source_repo, target_repo):
     return True, None
 
 def apply_git_patch_head(temp_path, source_repo, target_repo):
-    return False, "mvtodo"
+
+    head_file = None
+    v, r = collect_git_patch.collect_git_patch_head(source_repo, temp_path)
+    if not v:
+        return False, r
+    head_file = r
+
+    v, r = git_lib.patch_as_head(target_repo, head_file, True)
+    if not v:
+        return False, r
+
+    return True, None
 
 def apply_git_patch_unversioned(source_repo, target_repo):
     return False, "mvtodo"
