@@ -77,6 +77,9 @@ def collect_git_patch_stash(repo, storage_path):
     stash_list = r
     written_file_list = []
 
+    if len(stash_list) == 0:
+        return False, "Can't collect patch for stash: stash is empty. Repository: %s" % repo
+
     for si in stash_list:
 
         v, r = git_wrapper.stash_show(repo, si)

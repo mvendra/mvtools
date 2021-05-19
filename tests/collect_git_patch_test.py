@@ -483,7 +483,7 @@ class CollectGitPatchTest(unittest.TestCase):
         git_wrapper.stash(self.first_repo)
 
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
-        self.assertTrue(v)
+        self.assertFalse(v)
 
         patches = fsquery.makecontentlist(self.storage_path, False, True, False, False, False, True, None)
         self.assertEqual(len(patches), 0)
