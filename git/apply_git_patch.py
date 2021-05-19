@@ -26,8 +26,6 @@ def apply_git_patch_stash(temp_path, source_repo, target_repo):
     if not v:
         return False, r
     stash_files = r
-    if len(stash_files) == 0:
-        return True, None # nothing to patch
 
     for sf in reversed(stash_files):
         v, r = git_lib.patch_as_stash(target_repo, sf, True, True)
@@ -43,8 +41,6 @@ def apply_git_patch_previous(temp_path, source_repo, target_repo, previous_count
     if not v:
         return False, r
     previous_files = r
-    if len(previous_files) == 0:
-        return True, None # nothing to patch
 
     # previous commits will be stacked up ontop of head - no autocommitting is available (on purpose)
     for pf in reversed(previous_files):
@@ -55,7 +51,18 @@ def apply_git_patch_previous(temp_path, source_repo, target_repo, previous_count
     return True, None
 
 def apply_git_patch_staged(temp_path, source_repo, target_repo):
-    return False, "mvtodo"
+
+    staged_file = None
+    v, r = collect_git_patch.collect_git_patch_staged(source_repo, temp_path)
+    if not v:
+        return False, r
+    staged_file = r
+
+    v, r = git_lib.patch_as_staged(target_repo, staged_file, True)
+    if not v:
+        return False, r
+
+    return True, None
 
 def apply_git_patch_head(temp_path, source_repo, target_repo):
     return False, "mvtodo"
@@ -105,30 +112,40 @@ def _apply_git_patch_delegate(temp_path, source_repo, target_repo, head, staged,
     report = []
     has_any_failed = False
 
+    # stash
     if stash:
         v, r = apply_git_patch_stash(temp_path, source_repo, target_repo)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("apply_git_patch_stash: [%s]" % r)
 
+    # previous
     if previous > 0:
         v, r = apply_git_patch_previous(temp_path, source_repo, target_repo, previous)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("apply_git_patch_previous: [%s]" % r)
 
+    # staged
     if staged:
         v, r = apply_git_patch_staged(temp_path, source_repo, target_repo)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("apply_git_patch_staged: [%s]" % r)
 
+    # head
     if head:
         v, r = apply_git_patch_head(temp_path, source_repo, target_repo)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("apply_git_patch_head: [%s]" % r)
 
+    # unversioned
     if unversioned:
         v, r = apply_git_patch_unversioned(source_repo, target_repo)
-        has_any_failed |= (not v)
-        report.append(r)
+        if not v:
+            has_any_failed = True
+            report.append("apply_git_patch_unversioned: [%s]" % r)
 
     return (not has_any_failed), report
 
