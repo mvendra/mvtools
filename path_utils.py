@@ -244,10 +244,19 @@ def copy_to(origin, target):
     if not os.path.exists(origin):
         return False
 
+    target_fix = concat_path(target, basename_filtered(origin))
     if os.path.isdir(origin):
-        target_fix = concat_path(target, basename_filtered(origin))
-        shutil.copytree(origin, target_fix, symlinks=True)
+
+        if not os.path.exists(target):
+            shutil.copytree(origin, target, symlinks=True)
+        else:
+            if os.path.exists(target_fix) or not os.path.isdir(target):
+                return False
+            shutil.copytree(origin, target_fix, symlinks=True)
+
     else:
+        if os.path.exists(target_fix):
+            return False
         shutil.copy(origin, target)
 
     return True
