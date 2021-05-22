@@ -261,6 +261,48 @@ def copy_to(origin, target):
 
     return True
 
+def based_copy_to(source_basepath, source_fullpath, target):
+
+    # a mixture of POSIX's "cp -R" and "mkdir -p"
+
+    if source_basepath == "" or source_basepath is None or not os.path.exists(source_basepath):
+        return False
+    if source_fullpath == "" or source_fullpath is None or not os.path.exists(source_fullpath):
+        return False
+    if target == "" or target is None or not os.path.exists(target):
+        return False
+
+    source_basepath_pieces = splitpath(source_basepath)
+    source_fullpath_pieces = splitpath(source_fullpath)
+    target_pieces = splitpath(target)
+
+    if len(source_basepath_pieces) < 1:
+        return False
+    if len(source_fullpath_pieces) < 1:
+        return False
+    if len(source_fullpath_pieces) < len(source_basepath_pieces):
+        return False
+
+    for i in range(len(source_basepath_pieces)):
+        if source_basepath_pieces[i] != source_fullpath_pieces[i]:
+            return False
+
+    outstanding_path_pieces = source_fullpath_pieces[len(source_basepath_pieces):]
+    current_assembled_path = target
+
+    for i in range(len(outstanding_path_pieces)):
+        current_assembled_path = concat_path(current_assembled_path, outstanding_path_pieces[i])
+        if i == len(outstanding_path_pieces)-1:
+            copy_to(source_fullpath, current_assembled_path)
+        else:
+            if not os.path.exists(current_assembled_path):
+                os.mkdir(current_assembled_path)
+            else:
+                if not os.path.isdir(current_assembled_path): # should never happen, but you never know
+                    return False
+
+    return True
+
 def check_if_paths_exist_stop_first(list_paths):
     for n in list_paths:
         if os.path.exists(n):

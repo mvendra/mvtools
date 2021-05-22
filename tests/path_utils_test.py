@@ -276,6 +276,92 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(path_utils.copy_to(folder1_sub1, folder2_sub2))
         self.assertTrue(os.path.exists(folder2_sub2_file1))
 
+    def testBasedCopyToFail(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        os.mkdir(folder1_sub1)
+        folder1_sub1_file1 = path_utils.concat_path(folder1_sub1, "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_sub1_file1, "file1 contents"))
+
+        folder1_sub2 = path_utils.concat_path(self.folder1, "sub2")
+        os.mkdir(folder1_sub2)
+        folder1_sub2_file1 = path_utils.concat_path(folder1_sub2, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_sub2_file1, "file1 contents"))
+
+        good_base = self.folder1
+        good_fullpath = folder1_sub1_file1
+        good_target = self.folder2
+
+        path_too_small1 = "/"
+
+        sample_base_1 = folder1_sub1
+        sample_full_1 = path_utils.concat_path(good_base, "sub2", "file5.txt")
+
+        self.assertFalse(path_utils.based_copy_to("", good_fullpath, good_target))
+        self.assertFalse(path_utils.based_copy_to(good_base, "", good_target))
+        self.assertFalse(path_utils.based_copy_to(good_base, good_fullpath, ""))
+
+        self.assertFalse(path_utils.based_copy_to(None, good_fullpath, good_target))
+        self.assertFalse(path_utils.based_copy_to(good_base, None, good_target))
+        self.assertFalse(path_utils.based_copy_to(good_base, good_fullpath, None))
+
+        self.assertFalse(path_utils.based_copy_to(self.nonexistent, good_fullpath, good_target))
+        self.assertFalse(path_utils.based_copy_to(good_base, self.nonexistent, good_target))
+        self.assertFalse(path_utils.based_copy_to(good_base, good_fullpath, self.nonexistent))
+
+        self.assertFalse(path_utils.based_copy_to(path_too_small1, good_fullpath, good_target))
+        self.assertFalse(path_utils.based_copy_to(good_base, path_too_small1, good_target))
+
+        self.assertFalse(path_utils.based_copy_to(sample_base_1, sample_full_1, good_target))
+
+    def testBasedCopyToVanilla(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        os.mkdir(folder1_sub1)
+        folder1_sub1_sub2 = path_utils.concat_path(folder1_sub1, "sub2")
+        os.mkdir(folder1_sub1_sub2)
+        folder1_sub1_sub2_file1 = path_utils.concat_path(folder1_sub1_sub2, "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_sub1_sub2_file1, "file1 contents"))
+        self.assertTrue(os.path.exists(folder1_sub1_sub2_file1))
+
+        folder2_sub1 = path_utils.concat_path(self.folder2, "sub1")
+        os.mkdir(folder2_sub1)
+        folder2_sub1_sub2 = path_utils.concat_path(folder2_sub1, "sub2")
+        folder2_sub1_sub2_file1 = path_utils.concat_path(folder2_sub1_sub2, "file1.txt")
+
+        self.assertTrue(path_utils.based_copy_to(folder1_sub1, folder1_sub1_sub2_file1, folder2_sub1))
+        self.assertTrue(os.path.exists(folder2_sub1_sub2))
+        self.assertTrue(os.path.exists(folder2_sub1_sub2_file1))
+
+    def testBasedCopyToFolder(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        os.mkdir(folder1_sub1)
+        folder1_sub1_sub2 = path_utils.concat_path(folder1_sub1, "sub2")
+        os.mkdir(folder1_sub1_sub2)
+        folder1_sub1_sub2_file1 = path_utils.concat_path(folder1_sub1_sub2, "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_sub1_sub2_file1, "file1 contents"))
+        self.assertTrue(os.path.exists(folder1_sub1_sub2_file1))
+
+        folder2_sub1 = path_utils.concat_path(self.folder2, "sub1")
+        os.mkdir(folder2_sub1)
+        folder2_sub1_sub2 = path_utils.concat_path(folder2_sub1, "sub2")
+        folder2_sub1_sub2_file1 = path_utils.concat_path(folder2_sub1_sub2, "file1.txt")
+
+        self.assertTrue(path_utils.based_copy_to(folder1_sub1, folder1_sub1_sub2, folder2_sub1))
+        self.assertTrue(os.path.exists(folder2_sub1_sub2))
+        self.assertTrue(os.path.exists(folder2_sub1_sub2_file1))
+
+    def testBasedCopyToDirectRootFile(self):
+
+        folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_file1, "file1 contents"))
+
+        folder2_file1 = path_utils.concat_path(self.folder2, "file1.txt")
+
+        self.assertTrue(path_utils.based_copy_to(self.folder1, folder1_file1, self.folder2))
+        self.assertTrue(os.path.exists(folder2_file1))
+
     def testSplitPath(self):
         self.assertEqual(path_utils.splitpath(os.sep), [])
         self.assertEqual(path_utils.splitpath("/"), [])
