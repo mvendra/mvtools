@@ -78,8 +78,21 @@ def apply_git_patch_head(temp_path, source_repo, target_repo):
 
     return True, None
 
-def apply_git_patch_unversioned(source_repo, target_repo):
-    return False, "mvtodo"
+def apply_git_patch_unversioned(temp_path, source_repo, target_repo):
+
+    unversioned_files = None
+    v, r = collect_git_patch.collect_git_patch_unversioned(source_repo, temp_path)
+    if not v:
+        return False, r
+    unversioned_files = r
+
+    combined_base = path_utils.concat_path(temp_path, source_repo, "unversioned")
+
+    for uf in unversioned_files:
+        if not path_utils.based_copy_to(combined_base, uf, target_repo):
+            return False, "Failed copying [%s] to [%s]" % (uf, target_repo)
+
+    return True, None
 
 def apply_git_patch(source_repo, target_repo, head, staged, stash, unversioned, previous):
 
@@ -153,7 +166,7 @@ def _apply_git_patch_delegate(temp_path, source_repo, target_repo, head, staged,
 
     # unversioned
     if unversioned:
-        v, r = apply_git_patch_unversioned(source_repo, target_repo)
+        v, r = apply_git_patch_unversioned(temp_path, source_repo, target_repo)
         if not v:
             has_any_failed = True
             report.append("apply_git_patch_unversioned: [%s]" % r)

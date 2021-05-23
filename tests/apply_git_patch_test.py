@@ -71,29 +71,6 @@ class ApplyGitPatchTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    """
-    # mvtodo: maybe I should keep this. ifso, then (re)import fsquery
-    def get_patches_in_order(self, path, repo_path):
-
-        ret = []
-        patches_ranked = {}
-
-        patches = fsquery.makecontentlist(path_utils.concat_path(path, repo_path), False, True, False, False, False, True, None)
-        for p in patches:
-            min_s = 9
-            pn = path_utils.basename_filtered(p)
-            pi = pn.find("_", min_s)
-            if pi == -1:
-                return None
-            rank = pn[min_s:pi]
-            patches_ranked[rank] = p
-
-        for p in sorted(patches_ranked.keys()):
-            ret.append(patches_ranked[p])
-
-        return ret
-    """
-
     def testApplyGitPatchBasicChecks(self):
 
         v, r = apply_git_patch.apply_git_patch(self.nonexistent, self.second_repo, False, False, False, False, 0)
@@ -395,6 +372,78 @@ class ApplyGitPatchTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.second_repo)
         self.assertTrue(v)
         self.assertFalse(r)
+
+    def testApplyGitPatchUnversionedFail(self):
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+
+        first_sub1 = path_utils.concat_path(self.first_repo, "sub1")
+        os.mkdir(first_sub1)
+
+        first_sub1_sub2 = path_utils.concat_path(first_sub1, "sub2")
+        os.mkdir(first_sub1_sub2)
+
+        first_sub1_sub2_file5 = path_utils.concat_path(first_sub1_sub2, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_sub2_file5, "file5-contents"))
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        second_file4 = path_utils.concat_path(self.second_repo, "file4.txt")
+        second_sub1 = path_utils.concat_path(self.second_repo, "sub1")
+        second_sub1_sub2 = path_utils.concat_path(second_sub1, "sub2")
+        second_sub1_sub2_file5 = path_utils.concat_path(second_sub1_sub2, "file5.txt")
+
+        self.assertTrue(create_and_write_file.create_file_contents(second_file4, "file4-contents-dupe"))
+
+        v, r = apply_git_patch.apply_git_patch_unversioned(self.storage_path, self.first_repo, self.second_repo)
+        self.assertFalse(v)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        self.assertTrue(os.path.exists(second_file4))
+        self.assertFalse(os.path.exists(second_sub1))
+        self.assertFalse(os.path.exists(second_sub1_sub2))
+        self.assertFalse(os.path.exists(second_sub1_sub2_file5))
+
+    def testApplyGitPatchUnversioned(self):
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+
+        first_sub1 = path_utils.concat_path(self.first_repo, "sub1")
+        os.mkdir(first_sub1)
+
+        first_sub1_sub2 = path_utils.concat_path(first_sub1, "sub2")
+        os.mkdir(first_sub1_sub2)
+
+        first_sub1_sub2_file5 = path_utils.concat_path(first_sub1_sub2, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_sub2_file5, "file5-contents"))
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = apply_git_patch.apply_git_patch_unversioned(self.storage_path, self.first_repo, self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        second_file4 = path_utils.concat_path(self.second_repo, "file4.txt")
+        second_sub1 = path_utils.concat_path(self.second_repo, "sub1")
+        second_sub1_sub2 = path_utils.concat_path(second_sub1, "sub2")
+        second_sub1_sub2_file5 = path_utils.concat_path(second_sub1_sub2, "file5.txt")
+
+        self.assertTrue(os.path.exists(second_file4))
+        self.assertTrue(os.path.exists(second_sub1))
+        self.assertTrue(os.path.exists(second_sub1_sub2))
+        self.assertTrue(os.path.exists(second_sub1_sub2_file5))
 
 if __name__ == '__main__':
     unittest.main()
