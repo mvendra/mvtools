@@ -7,7 +7,10 @@ import path_utils
 import svn_wrapper
 import svn_lib
 
-def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, contents):
+def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, content):
+
+    if len(content) == 0:
+        return False, "Empty contents"
 
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
@@ -21,9 +24,9 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
         return False, "Can't collect patch for [%s]: [%s] already exists." % (log_title, output_filename_full)
 
     with open(output_filename_full, "w") as f:
-        f.write(contents)
+        f.write(content)
 
-    return True, ""
+    return True, output_filename_full
 
 def collect_svn_patch_head(repo, storage_path):
     v, r = svn_wrapper.diff(repo)
@@ -41,8 +44,9 @@ def collect_svn_patch_unversioned(repo, storage_path):
 
     v, r = svn_lib.get_list_unversioned(repo)
     if not v:
-        return False, "Failed calling unversioned: [%s]. Repository: [%s]." % (r, repo)
+        return False, "Failed calling svn command for unversioned: [%s]. Repository: [%s]." % (r, repo)
     unversioned_files = r
+    written_file_list = []
 
     for uf in unversioned_files:
         target_base = path_utils.concat_path(storage_path, repo, "unversioned")
@@ -54,15 +58,16 @@ def collect_svn_patch_unversioned(repo, storage_path):
         except path_utils.PathUtilsException as puex:
             return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % os.path.dirname(target_file)
         if os.path.exists( target_file ):
-            return False, "Can't collect patch for unversioned: [%s] already exists" % target_file
+            return False, "Can't collect patch for unversioned: [%s] already exists." % target_file
 
         if os.path.isdir(source_file): # this is necessary to avoid duplicating the copied folder
             target_file = os.path.dirname(target_file)
 
-        if not path_utils.copy_to( source_file, target_file ):
+        if not path_utils.copy_to( source_file, os.path.dirname(target_file) ):
             return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]." % (source_file, target_file)
+        written_file_list.append(target_file)
 
-    return True, ""
+    return True, written_file_list
 
 def collect_svn_patch_previous(repo, storage_path, previous_number):
 
@@ -71,8 +76,9 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
 
     v, r = svn_lib.get_previous_list(repo, previous_number)
     if not v:
-        return False, "Failed calling previous: [%s]. Repository: [%s]." % (r, repo)
+        return False, "Failed calling svn command for previous: [%s]. Repository: [%s]." % (r, repo)
     prev_list = r
+    written_file_list = []
 
     if previous_number > len(prev_list):
         return False, "Can't collect patch for previous: requested [%d] commits, but there are only [%d] in total." % (previous_number, len(prev_list))
@@ -80,7 +86,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
     for i in range(previous_number):
         v, r = svn_wrapper.diff(repo, prev_list[i])
         if not v:
-            return False, "Failed calling previous: [%s]. Repository: [%s]. Revision: [%s]." % (r, repo, prev_list[i])
+            return False, "Failed calling svn command for previous: [%s]. Repository: [%s]. Revision: [%s]." % (r, repo, prev_list[i])
 
         previous_file_content = r
         previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
@@ -94,8 +100,9 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
             return False, "Can't collect patch for previous: [%s] already exists." % previous_file_name
         with open(previous_file_name, "w") as f:
             f.write(previous_file_content)
+        written_file_list.append(previous_file_name)
 
-    return True, ""
+    return True, written_file_list
 
 def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
 
@@ -111,32 +118,45 @@ def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
         return False, ["Storage path [%s] does not exist." % storage_path]
 
     report = []
+    has_any_failed = False
 
     # head
     if head:
         v, r = collect_svn_patch_head(repo, storage_path)
         if not v:
+            has_any_failed = True
+            report.append("collect_svn_patch_head: [%s]." % r)
+        else:
             report.append(r)
 
     # head-id
     if head_id:
         v, r = collect_svn_patch_head_id(repo, storage_path)
         if not v:
+            has_any_failed = True
+            report.append("collect_svn_patch_head_id: [%s]." % r)
+        else:
             report.append(r)
 
     # unversioned
     if unversioned:
         v, r = collect_svn_patch_unversioned(repo, storage_path)
         if not v:
+            has_any_failed = True
+            report.append("collect_svn_patch_unversioned: [%s]." % r)
+        else:
             report.append(r)
 
     # previous
     if previous > 0:
         v, r = collect_svn_patch_previous(repo, storage_path, previous)
         if not v:
+            has_any_failed = True
+            report.append("collect_svn_patch_previous: [%s]." % r)
+        else:
             report.append(r)
 
-    return (len(report)==0), report
+    return (not has_any_failed), report
 
 def puaq():
     print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--unversioned] [--previous X]" % os.path.basename(__file__))
