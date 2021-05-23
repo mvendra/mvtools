@@ -63,7 +63,7 @@ def collect_git_patch_unversioned(repo, storage_path):
             return False, "Can't collect patch for unversioned: Failed guaranteeing folder [%s]" % os.path.dirname(target_file)
         if os.path.exists(target_file):
             return False, "Can't collect patch for unversioned: %s already exists" % target_file
-        if not path_utils.copy_to( source_file, target_file ):
+        if not path_utils.copy_to( source_file, os.path.dirname(target_file) ):
             return False, "Can't collect patch for unversioned: Cant copy %s to %s" % (source_file, target_file)
         written_file_list.append(target_file)
 

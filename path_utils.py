@@ -237,28 +237,44 @@ def dirname_filtered(path):
         return ""
     return os.path.dirname( filter_remove_trailing_sep ( path ) )
 
-def copy_to(origin, target):
+def copy_to(source, target):
 
     # works just like the POSIX "cp" app but does not require the "-r" for copying folders
+    # does not allow simultaneous renaming/overwriting of any kind
 
-    if not os.path.exists(origin):
+    if os.path.isdir(source):
+        return copy_folder_to(source, target)
+    else:
+        return copy_file_to(source, target)
+
+def copy_file_to(source, target):
+
+    if not os.path.exists(source):
+        return False
+    if not os.path.exists(target):
+        return False
+    if not os.path.isdir(target):
+        return False
+    if os.path.exists(concat_path(target, basename_filtered(source))):
         return False
 
-    target_fix = concat_path(target, basename_filtered(origin))
-    if os.path.isdir(origin):
+    shutil.copy(source, target)
+    return True
 
-        if not os.path.exists(target):
-            shutil.copytree(origin, target, symlinks=True)
-        else:
-            if os.path.exists(target_fix) or not os.path.isdir(target):
-                return False
-            shutil.copytree(origin, target_fix, symlinks=True)
+def copy_folder_to(source, target):
 
-    else:
-        if os.path.exists(target_fix):
-            return False
-        shutil.copy(origin, target)
+    target_folder_final_path = concat_path(target, basename_filtered(source))
 
+    if not os.path.exists(source):
+        return False
+    if not os.path.exists(target):
+        return False
+    if not os.path.isdir(target):
+        return False
+    if os.path.exists(target_folder_final_path):
+        return False
+
+    shutil.copytree(source, target_folder_final_path, symlinks=True)
     return True
 
 def based_copy_to(source_basepath, source_fullpath, target):
@@ -291,10 +307,10 @@ def based_copy_to(source_basepath, source_fullpath, target):
     current_assembled_path = target
 
     for i in range(len(outstanding_path_pieces)):
-        current_assembled_path = concat_path(current_assembled_path, outstanding_path_pieces[i])
         if i == len(outstanding_path_pieces)-1:
-            copy_to(source_fullpath, current_assembled_path)
+            return copy_to(source_fullpath, current_assembled_path)
         else:
+            current_assembled_path = concat_path(current_assembled_path, outstanding_path_pieces[i])
             if not os.path.exists(current_assembled_path):
                 os.mkdir(current_assembled_path)
             else:
