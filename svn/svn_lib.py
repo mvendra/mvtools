@@ -147,6 +147,23 @@ def is_svn_repo(repo):
         return True, "svn"
     return True, False
 
+def is_head_clear(repo):
+
+    v, r = svn_wrapper.status(repo)
+    if not v:
+        return False, r
+    st_items = r.split(os.linesep)
+
+    clear_st = ["X", "I"]
+    for i in st_items:
+        if i == "":
+            break
+        st_current_item = i[0]
+        if not st_current_item in clear_st:
+            return True, False
+
+    return True, True
+
 def revert(local_repo, repo_item):
     return svn_wrapper.revert(local_repo, repo_item)
 
@@ -325,3 +342,18 @@ def checkout_autoretry(feedback_object, remote_link, local_repo):
         feedback_object("Iteration number [%d] has failed. Will sleep for [%d] minutes before retrying." % (iterations, SLEEP_TIME))
         time.sleep(SLEEP_TIME * 60)
         feedback_object("Iteration number [%d] will resume now." % iterations)
+
+def patch_as_head(repo, patch_file, override_head_check):
+
+    if not override_head_check:
+        v, r = is_head_clear(repo)
+        if not v:
+            return False, r
+        if not r:
+            return False, "Cannot patch - head is not clear"
+
+    v, r = svn_wrapper.patch(repo, patch_file)
+    if not v:
+        return False, r
+
+    return True, None

@@ -119,6 +119,17 @@ def revert(local_repo, repo_item):
 
     return True, None
 
+def patch(repo, source_file):
+
+    if not os.path.exists(repo):
+        return False, "%s does not exist." % repo
+
+    v, r = generic_run.run_cmd_simple(["svn", "patch", source_file], use_cwd=repo)
+    if not v:
+        return False, "Failed calling svn-patch command: %s." % r
+
+    return v, r
+
 def puaq():
     print("Hello from %s" % os.path.basename(__file__))
     sys.exit(1)
