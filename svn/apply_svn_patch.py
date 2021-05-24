@@ -36,10 +36,34 @@ def apply_svn_patch_previous(temp_path, source_repo, target_repo, previous_count
     return True, None
 
 def apply_svn_patch_head(temp_path, source_repo, target_repo):
-    return False, "mvtodo"
+
+    head_file = None
+    v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path)
+    if not v:
+        return False, r
+    head_file = r
+
+    v, r = svn_lib.patch_as_head(target_repo, head_file, True)
+    if not v:
+        return False, r
+
+    return True, None
 
 def apply_svn_patch_unversioned(temp_path, source_repo, target_repo):
-    return False, "mvtodo"
+
+    unversioned_files = None
+    v, r = collect_svn_patch.collect_svn_patch_unversioned(source_repo, temp_path)
+    if not v:
+        return False, r
+    unversioned_files = r
+
+    combined_base = path_utils.concat_path(temp_path, source_repo, "unversioned")
+
+    for uf in unversioned_files:
+        if not path_utils.based_copy_to(combined_base, uf, target_repo):
+            return False, "Failed copying [%s] to [%s]" % (uf, target_repo)
+
+    return True, None
 
 def apply_svn_patch(source_repo, target_repo, head, unversioned, previous):
 
