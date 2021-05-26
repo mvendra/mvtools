@@ -4,10 +4,8 @@ import sys
 import os
 import shutil
 
-import mvtools_envvars
 import path_utils
 import detect_repo_type
-import collect_svn_patch
 import svn_lib
 
 def _test_repo_path(path):
@@ -19,86 +17,34 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, None
 
-def apply_svn_patch_previous(temp_path, source_repo, target_repo, previous_count):
+def apply_svn_patch_head(target_repo, source_files):
 
-    previous_files = None
-    v, r = collect_svn_patch.collect_svn_patch_previous(source_repo, temp_path, previous_count)
-    if not v:
-        return False, r
-    previous_files = r
-
-    # previous commits will be stacked up ontop of head - no autocommitting is available (on purpose)
-    for pf in reversed(previous_files):
-        v, r = svn_lib.patch_as_head(target_repo, pf, True)
+    for sf in source_files:
+        v, r = svn_lib.patch_as_head(target_repo, sf, True)
         if not v:
             return False, r
 
     return True, None
 
-def apply_svn_patch_head(temp_path, source_repo, target_repo):
+def apply_svn_patch_unversioned(target_repo, source_files):
 
-    head_file = None
-    v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path)
-    if not v:
-        return False, r
-    head_file = r
+    for sf in source_files:
 
-    v, r = svn_lib.patch_as_head(target_repo, head_file, True)
-    if not v:
-        return False, r
+        sf_base = sf[0]
+        sf_file = sf[1]
+
+        if not path_utils.based_copy_to(sf_base, sf_file, target_repo):
+            return False, "Failed copying [%s] to [%s]" % (sf, target_repo)
 
     return True, None
 
-def apply_svn_patch_unversioned(temp_path, source_repo, target_repo):
+def apply_svn_patch(target_repo, head_patches, unversioned_patches):
 
-    unversioned_files = None
-    v, r = collect_svn_patch.collect_svn_patch_unversioned(source_repo, temp_path)
-    if not v:
-        return False, r
-    unversioned_files = r
-
-    combined_base = path_utils.concat_path(temp_path, source_repo, "unversioned")
-
-    for uf in unversioned_files:
-        if not path_utils.based_copy_to(combined_base, uf, target_repo):
-            return False, "Failed copying [%s] to [%s]" % (uf, target_repo)
-
-    return True, None
-
-def apply_svn_patch(source_repo, target_repo, head, unversioned, previous):
-
-    v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
-    if not v:
-        return False, r
-    temp_path = r
-    if not os.path.exists(temp_path):
-        return False, ["Can't apply patches. MVTOOLS_TEMP_PATH envvar is not defined or the path does not exist."]
-
-    temp_path_patches = path_utils.concat_path(temp_path, "temp_path_patches")
-    if os.path.exists(temp_path_patches):
-        return False, ["Can't apply patches. Temporary path [%s] already exists." % temp_path_patches]
-    os.mkdir(temp_path_patches)
-
-    v, r = _apply_svn_patch_delegate(temp_path_patches, source_repo, target_repo, head, unversioned, previous)
-    shutil.rmtree(temp_path_patches)
-    return v, r
-
-def _apply_svn_patch_delegate(temp_path, source_repo, target_repo, head, unversioned, previous):
-
-    source_repo = path_utils.filter_remove_trailing_sep(source_repo)
-    source_repo = os.path.abspath(source_repo)
     target_repo = path_utils.filter_remove_trailing_sep(target_repo)
     target_repo = os.path.abspath(target_repo)
 
-    if not os.path.exists(source_repo):
-        return False, ["Source repository %s does not exist" % source_repo]
-
     if not os.path.exists(target_repo):
         return False, ["Target repository %s does not exist" % target_repo]
-
-    v, r = _test_repo_path(source_repo)
-    if not v:
-        return False, r
 
     v, r = _test_repo_path(target_repo)
     if not v:
@@ -107,23 +53,16 @@ def _apply_svn_patch_delegate(temp_path, source_repo, target_repo, head, unversi
     report = []
     has_any_failed = False
 
-    # previous
-    if previous > 0:
-        v, r = apply_svn_patch_previous(temp_path, source_repo, target_repo, previous)
-        if not v:
-            has_any_failed = True
-            report.append("apply_svn_patch_previous: [%s]" % r)
-
     # head
-    if head:
-        v, r = apply_svn_patch_head(temp_path, source_repo, target_repo)
+    if len(head_patches) > 0:
+        v, r = apply_svn_patch_head(target_repo, head_patches)
         if not v:
             has_any_failed = True
             report.append("apply_svn_patch_head: [%s]" % r)
 
     # unversioned
-    if unversioned:
-        v, r = apply_svn_patch_unversioned(temp_path, source_repo, target_repo)
+    if len(unversioned_patches) > 0:
+        v, r = apply_svn_patch_unversioned(target_repo, unversioned_patches)
         if not v:
             has_any_failed = True
             report.append("apply_svn_patch_unversioned: [%s]" % r)
@@ -131,38 +70,48 @@ def _apply_svn_patch_delegate(temp_path, source_repo, target_repo, head, unversi
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--head] [--unversioned] [--previous]" % os.path.basename(__file__))
+    print("Usage: %s target_repo [--head patch-file] [--unversioned file-base patch-file]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 4:
         puaq()
 
-    source_repo = sys.argv[1]
-    target_repo = sys.argv[2]
-    params = sys.argv[3:]
+    target_repo = sys.argv[1]
+    params = sys.argv[2:]
 
-    head = False
-    unversioned = False
-    previous = 0
-    previous_parse_next = False
+    head = []
+    unversioned = []
+
+    head_parse_next = False
+    unversioned_parse_next = 0
+    unversioned_base_buffer = None
 
     for p in params:
 
-        if previous_parse_next:
-            previous = int(p)
-            previous_parse_next = False
+        if head_parse_next:
+            head_parse_next = False
+            head.append(p)
+            continue
+
+        if unversioned_parse_next == 1:
+            unversioned_parse_next = 2
+            unversioned_base_buffer = p
+            continue
+
+        if unversioned_parse_next == 2:
+            unversioned_parse_next = 0
+            unversioned.append( (unversioned_base_buffer, p) )
+            unversioned_base_buffer = None
             continue
 
         if p == "--head":
-            head = True
+            head_parse_next = True
         elif p == "--unversioned":
-            unversioned = True
-        elif p == "--previous":
-            previous_parse_next = True
+            unversioned_parse_next = 1
 
-    v, r = apply_svn_patch(source_repo, target_repo, head, unversioned, previous)
+    v, r = apply_svn_patch(target_repo, head, unversioned)
     if not v:
         for i in r:
             print("Failed: %s" % i)
