@@ -48,24 +48,24 @@ def collect_svn_patch_unversioned(repo, storage_path):
     unversioned_files = r
     written_file_list = []
 
+    target_base = path_utils.concat_path(storage_path, repo, "unversioned")
+    if os.path.exists(target_base):
+        return False, "Can't collect patch for unversioned: [%s] already exists." % target_base
+
+    try:
+        path_utils.guaranteefolder(target_base)
+    except path_utils.PathUtilsException as puex:
+        return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % target_base
+
     for uf in unversioned_files:
-        target_base = path_utils.concat_path(storage_path, repo, "unversioned")
-        target_file = path_utils.concat_path(target_base, uf)
-        source_file = path_utils.concat_path(repo, uf)
+        target_path = path_utils.concat_path(target_base, uf)
+        source_path = path_utils.concat_path(repo, uf)
 
-        try:
-            path_utils.guaranteefolder( os.path.dirname(target_file) )
-        except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % os.path.dirname(target_file)
-        if os.path.exists( target_file ):
-            return False, "Can't collect patch for unversioned: [%s] already exists." % target_file
-
-        if os.path.isdir(source_file): # this is necessary to avoid duplicating the copied folder
-            target_file = os.path.dirname(target_file)
-
-        if not path_utils.copy_to( source_file, os.path.dirname(target_file) ):
-            return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]." % (source_file, target_file)
-        written_file_list.append(target_file)
+        if os.path.exists( target_path ):
+            return False, "Can't collect patch for unversioned: [%s] already exists." % target_path
+        if not path_utils.based_copy_to( repo, source_path, target_base ):
+            return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]." % (source_path, target_base)
+        written_file_list.append(target_path)
 
     return True, written_file_list
 
