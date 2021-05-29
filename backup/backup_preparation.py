@@ -359,16 +359,16 @@ class BackupPreparation:
 
         # resolve custom path navigator function
         if custom_path_navigator_script is not None:
-            custom_path_navigator_func = collect_patches.resolve_py_into_custom_pathnav_func(custom_path_navigator_script)
-            if custom_path_navigator_func is None: # resolution failed, but was requested. must abort.
-                raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options - the custom navigation script [%s] failed to be loaded. Aborting." % (custom_path_navigator_script))
+            custom_path_navigator_probe = collect_patches.resolve_py_into_custom_pathnav_func(custom_path_navigator_script)
+            if custom_path_navigator_probe is None:
+                raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options - the custom navigation script [%s] cannot be loaded. Aborting." % (custom_path_navigator_script))
 
         # guarantee the storage folder
         final_storage_path_patch_collector = path_utils.concat_path(self.storage_path, storage_base)
         path_utils.guaranteefolder(final_storage_path_patch_collector)
 
         # run the actual patch collector
-        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_func, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, staged, unversioned, stash, previous, repo_type)
+        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_script, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, staged, unversioned, stash, previous, repo_type)
         if not v:
             for i in r:
                 print("proc_run_collect_patches: [%s]" % i)

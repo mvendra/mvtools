@@ -9,6 +9,7 @@ from unittest import mock
 from unittest.mock import patch
 import getpass
 
+import fsquery
 import create_and_write_file
 import mvtools_test_fixture
 import backup_preparation
@@ -957,11 +958,15 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.proc_run_collect_patches(self.repo_src_folder, [("custom-path-navigator", self.test_cnav2_file), ("storage-base", "collected_patches"), ("head-id", "")])
+            bkprep.proc_run_collect_patches(self.repo_src_folder, [("custom-path-navigator", self.test_cnav2_file), ("storage-base", "collected_patches"), ("default-include", ""), ("git", ""), ("head-id", "")])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
         self.assertTrue(ex_raised)
+
+        patches_path = path_utils.concat_path(self.prep_target, "collected_patches")
+        generated_files = fsquery.makecontentlist(patches_path, True, True, True, True, True, True, None)
+        self.assertEqual(len(generated_files), 0)
 
     def testProcRunCollectPatches_DefaultInclude_ExcludeThirdOnly(self):
 

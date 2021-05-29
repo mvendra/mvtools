@@ -31,13 +31,40 @@ def resolve_py_into_custom_pathnav_func(path_to_py_script):
         return None
     return test_bind
 
-def collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
+def collect_patch(path, storage_path, head, head_id, staged, unversioned, stash, previous, repotype):
 
     if repotype != "svn" and repotype != "git" and repotype != "all":
         return False, ["Invalid repository type: %s" % repotype]
 
     if not os.path.exists(storage_path):
         return False, ["Storage path [%s] does not exist."  % storage_path]
+
+    v, r = detect_repo_type.detect_repo_type(path)
+    if not v:
+        return False, "Failed collecting patches: [%s]" % r
+    repotype_detected = r
+    if "git" in repotype_detected and "bare" in repotype_detected: # cant collect patches for git bare repos
+        return False, "Can't collect patches from git-bare repos."
+
+    if "git" in repotype_detected and (repotype == "git" or repotype == "all"):
+        v, r = collect_git_patch.collect_git_patch(path, storage_path, head, head_id, staged, unversioned, stash, previous)
+        if not v:
+            return False, "Failed collecting git patches: %s" % r
+
+    elif "svn" in repotype_detected and (repotype == "svn" or repotype == "all"):
+        v, r = collect_svn_patch.collect_svn_patch(path, storage_path, head, head_id, unversioned, previous)
+        if not v:
+            return False, "Failed collecting svn patches: %s" % r
+
+    return True, None
+
+def collect_patches_recursive(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
+
+    custom_path_navigator_local_copy = custom_path_navigator
+    if custom_path_navigator is not None:
+        custom_path_navigator = resolve_py_into_custom_pathnav_func(custom_path_navigator)
+        if custom_path_navigator is None: # custom path navigator has been specified, but could not be resolved. fail.
+            return False, ["Custom path navigator [%s] could not be loaded. Aborting." % custom_path_navigator_local_copy]
 
     items = []
     if custom_path_navigator is None:
@@ -61,30 +88,26 @@ def collect_patches(path, custom_path_navigator, storage_path, default_filter, i
         for ii in include_list:
             filters.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii)) )
         items_filtered = fsquery_adv_filter.filter_path_list_or(items, filters)
+    else:
+        return False, ["Invalid default filter: [%s]" % default_filter]
 
     report = []
     for it in items_filtered:
-
-        v, r = detect_repo_type.detect_repo_type(it)
+        print("Collecting patches on repo: [%s]" % it)
+        v, r = collect_patch(it, storage_path, head, head_id, staged, unversioned, stash, previous, repotype)
         if not v:
-            continue
-        repotype_detected = r
-        if "git" in repotype_detected and "bare" in repotype_detected: # cant collect patches for git bare repos
-            continue
-
-        if "git" in repotype_detected and (repotype == "git" or repotype == "all"):
-            print("Collecting git patches: [%s]" % it)
-            v, r = collect_git_patch.collect_git_patch(it, storage_path, head, head_id, staged, unversioned, stash, previous)
-            if not v:
-                report.append("Failed collecting git patches: %s" % r)
-
-        elif "svn" in repotype_detected and (repotype == "svn" or repotype == "all"):
-            print("Collecting svn patches: [%s]" % it)
-            v, r = collect_svn_patch.collect_svn_patch(it, storage_path, head, head_id, unversioned, previous)
-            if not v:
-                report.append("Failed collecting svn patches: %s" % r)
+            report.append("Failed collecting patches for repo: [%s]: %s" % (it, r))
 
     return (len(report)==0), report
+
+def collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
+
+    v, r = detect_repo_type.detect_repo_type(path)
+    if not (v and (r == detect_repo_type.REPO_TYPE_GIT_STD or r == detect_repo_type.REPO_TYPE_SVN)):
+        return collect_patches_recursive(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
+
+    v, r = collect_patch(path, storage_path, head, head_id, staged, unversioned, stash, previous, repotype)
+    return v, [r]
 
 """
 a warning about the filter selectors (--include and --exclude)
@@ -204,13 +227,7 @@ if __name__ == "__main__":
     if storage_path is None:
         storage_path = os.getcwd()
 
-    if custom_path_navigator is not None and not os.path.exists(custom_path_navigator):
-        # custom path navigator has been specified, but does not exists. fail.
-        print("Custom path navigator [%s] does not exist. Aborting." % custom_path_navigator)
-        sys.exit(1)
-
-    v, r = collect_patches(path, resolve_py_into_custom_pathnav_func(custom_path_navigator), storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
-
+    v, r = collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
     if not v:
         for i in r:
             print("Failed: %s" % i)
