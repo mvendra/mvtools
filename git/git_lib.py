@@ -204,7 +204,7 @@ def get_modified_files(repo):
 
     v, r = git_wrapper.status(repo)
     if not v:
-        print("get_unstaged_files failed: %s" % r)
+        print("get_modified_files failed: %s" % r)
         return None
     out = r.rstrip() # removes the trailing newline
     if len(out) == 0:
