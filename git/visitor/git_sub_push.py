@@ -28,8 +28,10 @@ def push_subs(path):
 
     for s in subs:
 
-        rs = git_lib.get_remotes(s)
-        bs = git_lib.get_branches(s)
+        v, r = git_lib.get_remotes(s)
+        rs = r
+        v, r = git_lib.get_branches(s)
+        bs = r
 
         af, r = git_push.do_push(s, rs, bs)
         anyfailed |= af

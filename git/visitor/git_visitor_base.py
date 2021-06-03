@@ -146,17 +146,21 @@ def apply_filters(repo, options):
     on failure, raises gvbexcept with detail msg
     """
 
-    remotes = git_lib.get_remotes(repo)
-    if remotes is None:
-        raise gvbexcept("No remotes detected")
+    v, r = git_lib.get_remotes(repo)
+    if not v:
+        raise gvbexcept("Unable to detect remotes for repo [%s]: [%s]" % (repo, r))
+    if v and r == {}:
+        raise gvbexcept("No remotes detected for repo: [%s]" % repo)
+    remotes = r
 
     remotes = filter_remotes(remotes, options)
     if remotes is None:
         raise gvbexcept("Failed filtering remotes")
 
-    branches = git_lib.get_branches(repo)
-    if branches is None:
-        raise gvbexcept("No branches detected")
+    v, r = git_lib.get_branches(repo)
+    if not v:
+        raise gvbexcept("No branches detected: [%s]" % r)
+    branches = r
 
     branches = filter_branches(branches, options)
     if branches is None:

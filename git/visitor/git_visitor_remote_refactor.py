@@ -18,8 +18,9 @@ def visitor_remote_refactor(repos, options):
     all_passed = True
 
     for rp in repos:
-        remotes = git_lib.get_remotes(rp)
-        if remotes is None:
+        v, r = git_lib.get_remotes(rp)
+        remotes = r
+        if remotes == {}:
             continue
         for rmn in remotes:
             for rmop in remotes[rmn]:

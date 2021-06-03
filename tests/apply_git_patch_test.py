@@ -186,7 +186,10 @@ class ApplyGitPatchTest(unittest.TestCase):
             contents = f.read()
         self.assertTrue("more stuff" in contents)
 
-        sf = git_lib.get_staged_files(self.second_repo)
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        sf = r
+
         self.assertTrue(sf is not None)
         self.assertTrue(second_file1 in sf)
 

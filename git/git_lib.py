@@ -73,6 +73,14 @@ def discover_repo_root(repo_path):
             return None
     return curpath
 
+def is_head_clear(repo):
+
+    v, r = git_wrapper.status_simple(repo)
+    if not v:
+        return False, r
+
+    return True, (r.strip() == "")
+
 def get_remotes(repo):
 
     """ get_remotes
@@ -80,30 +88,27 @@ def get_remotes(repo):
     example:
     { 'offline': {'push': 'local/path1', 'fetch': 'local/path2'},
       'private': {'push': 'git@remote/path.git', 'fetch': 'git@remote/path.git'} }
-    returns None on failures
+    returns False,error-msg_str on failures
     """
 
     t1 = is_repo_working_tree(repo)
     if t1 is None:
-        print("%s does not exist." % repo)
-        return None
+        return False, "%s does not exist." % repo
     elif t1 is False:
-        print("%s is not a git work tree." % repo)
-        return None
+        return False, "%s is not a git work tree." % repo
 
     v, r = git_wrapper.remote_list(repo)
     if not v:
-        print("get_remotes failed: %s" % r)
-        return None
+        return False, "get_remotes failed: %s" % r
     filtered_list = r.split() # removes the trailing newline
 
     # has to return multiples of 3 (name_remote, remote_path, (fetch/push))
     if len(filtered_list) == 0:
-        return None
+        return True, {} # no remotes
     elif len(filtered_list) % 3 != 0:
-        return None
+        return False, "could not detect remotes"
     elif (len(filtered_list) / 3) % 2 != 0:
-        return None
+        return False, "could not detect remotes"
 
     ret_dict = {}
 
@@ -118,27 +123,19 @@ def get_remotes(repo):
         else:
             ret_dict[remote_name] = {remote_operation: remote_path}
 
-    return ret_dict
+    return True, ret_dict
 
 def get_branches(repo):
 
-    """ get branches
-    on sucess, returns a list with a repo's branches. the first item in the list is the checked out branch
-    on failure, returns None
-    """
-
     t1 = is_repo_working_tree(repo)
     if t1 is None:
-        print("%s does not exist." % repo)
-        return None
+        return False, "%s does not exist." % repo
     elif t1 is False:
-        print("%s is not a git work tree." % repo)
-        return None
+        return False, "%s is not a git work tree." % repo
 
     v, r = git_wrapper.branch(repo)
     if not v:
-        print("get_branches failed: %s" % r)
-        return None
+        return False, "get_branches failed: %s" % r
     branch_list = r.split("\n")
 
     # move the checked out branch to the front
@@ -157,58 +154,39 @@ def get_branches(repo):
     for i in branch_list:
         ret_list.append(i.strip())
 
-    if len(ret_list) > 0:
-        return ret_list
-    else:
-        return None
+    return True, ret_list
 
 def get_current_branch(repo):
 
-    """ get_current_branch
-    on success, returns the name of the checked out branch
-    on failure, returns None
-    """
-
     t1 = is_repo_working_tree(repo)
     if t1 is None:
-        print("%s does not exist." % repo)
-        return None
+        return False, "%s does not exist." % repo
     elif t1 is False:
-        print("%s is not a git work tree." % repo)
-        return None
+        return False, "%s is not a git work tree." % repo
 
-    current_branch = get_branches(repo)
-    if current_branch is None:
-        print("Failed querying the current branch of %s." % repo)
-        return None
-
-    return current_branch[0]
-
-def is_head_clear(repo):
-
-    v, r = git_wrapper.status_simple(repo)
+    v, r = get_branches(repo)
     if not v:
-        return False, r
+        return False, "get_current_branch failed: [%s]" % r
+    current_branch = r
 
-    return True, (r.strip() == "")
+    if len(current_branch) == 0:
+        return True, None
+    return True, current_branch[0]
 
 def get_modified_files(repo):
 
     t1 = is_repo_working_tree(repo)
     if t1 is None:
-        print("%s does not exist." % repo)
-        return None
+        return False, "%s does not exist." % repo
     elif t1 is False:
-        print("%s is not a git work tree." % repo)
-        return None
+        return False, "%s is not a git work tree." % repo
 
     v, r = git_wrapper.status(repo)
     if not v:
-        print("get_modified_files failed: %s" % r)
-        return None
+        return False, "get_modified_files failed: %s" % r
     out = r.rstrip() # removes the trailing newline
     if len(out) == 0:
-        return []
+        return True, []
 
     ret = []
     for l in out.split("\n"):
@@ -219,30 +197,22 @@ def get_modified_files(repo):
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
-    return ret
+    return True, ret
 
 def get_staged_files(repo):
 
-    """ get_staged_files
-    on success, returns a list of staged files on the given repo
-    on failure, returns None
-    """
-
     t1 = is_repo_working_tree(repo)
     if t1 is None:
-        print("%s does not exist." % repo)
-        return None
+        return False, "%s does not exist." % repo
     elif t1 is False:
-        print("%s is not a git work tree." % repo)
-        return None
+        return False, "%s is not a git work tree." % repo
 
     v, r = git_wrapper.status(repo)
     if not v:
-        print("get_staged_files failed: %s" % r)
-        return None
+        return False, "get_staged_files failed: %s" % r
     out = r.rstrip() # removes the trailing newline
     if len(out) == 0:
-        return []
+        return True, []
 
     ret = []
     for l in out.split("\n"):
@@ -253,30 +223,22 @@ def get_staged_files(repo):
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
-    return ret
+    return True, ret
 
 def get_unstaged_files(repo):
 
-    """ get_unstaged_files
-    on success, returns a list of unstaged files on the given repo
-    on failure, returns None
-    """
-
     t1 = is_repo_working_tree(repo)
     if t1 is None:
-        print("%s does not exist." % repo)
-        return None
+        return False, "%s does not exist." % repo
     elif t1 is False:
-        print("%s is not a git work tree." % repo)
-        return None
+        return False, "%s is not a git work tree." % repo
 
     v, r = git_wrapper.status(repo)
     if not v:
-        print("get_unstaged_files failed: %s" % r)
-        return None
+        return False, "get_unstaged_files failed: %s" % r
     out = r.rstrip() # removes the trailing newline
     if len(out) == 0:
-        return []
+        return True, []
 
     ret = []
     for l in out.split("\n"):
@@ -287,7 +249,7 @@ def get_unstaged_files(repo):
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(fp)
-    return ret
+    return True, ret
 
 def get_stash_list(repo):
 

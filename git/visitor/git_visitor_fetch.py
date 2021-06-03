@@ -15,7 +15,8 @@ def visitor_fetch(repos, options):
     report = []
     all_passed = True
     for rp in repos:
-        remotes = git_lib.get_remotes(rp)
+        v, r = git_lib.get_remotes(rp)
+        remotes = r
         remotes = git_visitor_base.filter_remotes(remotes, options)
         if remotes is None:
             report.append("%s%s: Failed filtering remotes.%s" % (terminal_colors.TTY_RED, rp, ORIGINAL_COLOR)) 

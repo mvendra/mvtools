@@ -20,10 +20,11 @@ if __name__ == "__main__":
 
     repos += [sys.argv[1]]
 
-    current_branch = git_lib.get_current_branch(repos[0])
-    if current_branch is None:
+    v, r = git_lib.get_current_branch(repos[0])
+    if v and r == None:
         print("No branches detected in %s. Aborting." % repo_path)
         sys.exit(1)
+    current_branch = r
     options["xor-branch"] = current_branch
 
     if not git_visitor_push.visitor_push(repos, options):

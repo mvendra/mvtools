@@ -10,8 +10,11 @@ def visitor_remote_list(repos, options):
 
     for rp in repos:
         print("\n* Listing remotes of %s ..." % rp)
-        remotes = git_lib.get_remotes(rp)
-        if remotes is None:
+        v, r = git_lib.get_remotes(rp)
+        if not v:
+            print("visitor_remote_list failed: [%s]" % r)
+        remotes = r
+        if remotes == {}:
             print("No remotes.")
             continue
         for rmn in remotes:

@@ -92,62 +92,76 @@ class GitLibTest(unittest.TestCase):
 
     def testGetRemotes(self):
 
-        self.assertEqual(git_lib.get_remotes(self.fourth_notrepo), None)
+        v, r = git_lib.get_remotes(self.fourth_notrepo)
+        self.assertFalse(v)
 
         v, r = git_wrapper.remote_add(self.first_repo, "latest-addition", self.third_repo)
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        ret = git_lib.get_remotes(self.first_repo)
-        self.assertEqual(self.second_repo, ret["origin"]["fetch"])
-        self.assertEqual(self.third_repo, ret["latest-addition"]["fetch"])
+        v, r = git_lib.get_remotes(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(self.second_repo, r["origin"]["fetch"])
+        self.assertEqual(self.third_repo, r["latest-addition"]["fetch"])
 
         v, r = git_wrapper.remote_add(self.first_repo, "latest-addition", self.third_repo)
         self.assertFalse(v) # disallow duplicates
 
         v, r = git_wrapper.remote_add(self.first_repo, "リモート", self.third_repo)
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        ret = git_lib.get_remotes(self.first_repo)
-        self.assertEqual(self.third_repo, ret["リモート"]["fetch"])
+        v, r = git_lib.get_remotes(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(self.third_repo, r["リモート"]["fetch"])
 
     def testGetBranches(self):
 
-        self.assertEqual(git_lib.get_branches(self.fifth_repo), None)
-        self.assertEqual(git_lib.get_branches(self.fourth_notrepo), None)
+        v, r = git_lib.get_branches(self.fifth_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+        v, r = git_lib.get_branches(self.fourth_notrepo)
+        self.assertFalse(v)
 
-        ret = git_lib.get_branches(self.first_repo)
-        self.assertEqual(len(ret), 1)
-        self.assertEqual(ret[0], "master")
+        v, r = git_lib.get_branches(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertEqual(r[0], "master")
 
         v, r = git_wrapper.branch_create_and_switch(self.first_repo, "new-branch")
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        ret = git_lib.get_branches(self.first_repo)
-        self.assertEqual(len(ret), 2)
-        self.assertTrue("master" in ret)
-        self.assertTrue("new-branch" in ret)
+        v, r = git_lib.get_branches(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue("master" in r)
+        self.assertTrue("new-branch" in r)
 
         v, r = git_wrapper.branch_create_and_switch(self.first_repo, "ブランチ")
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        self.assertTrue("ブランチ" in git_lib.get_branches(self.first_repo))
+        v, r = git_lib.get_branches(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("ブランチ" in r)
 
     def testGetCurrentBranch(self):
 
-        self.assertEqual(git_lib.get_current_branch(self.fifth_repo), None)
-        self.assertEqual(git_lib.get_current_branch(self.fourth_notrepo), None)
+        v, r = git_lib.get_current_branch(self.fifth_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
-        self.assertEqual(git_lib.get_current_branch(self.first_repo), "master")
+        v, r = git_lib.get_current_branch(self.fourth_notrepo)
+        self.assertFalse(v)
+        self.assertNotEqual(r, None)
+
+        v, r = git_lib.get_current_branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "master")
 
         v, r = git_wrapper.branch_create_and_switch(self.first_repo, "another-branch")
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        self.assertEqual(git_lib.get_current_branch(self.first_repo), "another-branch")
+        v, r = git_lib.get_current_branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "another-branch")
 
     def testGetModifiedFiles(self):
 
@@ -181,13 +195,18 @@ class GitLibTest(unittest.TestCase):
         with open(first_more3, "a") as f:
             f.write("actual modification, again")
 
-        self.assertEqual(git_lib.get_modified_files(self.first_repo), [first_more3])
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [first_more3])
 
     def testGetStagedFiles(self):
 
-        self.assertEqual(git_lib.get_staged_files(self.fourth_notrepo), None)
+        v, r = git_lib.get_staged_files(self.fourth_notrepo)
+        self.assertFalse(v)
 
-        self.assertEqual(git_lib.get_staged_files(self.first_repo), [])
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         if not create_and_write_file.create_file_contents(first_more1, "more1-contents"):
@@ -210,43 +229,47 @@ class GitLibTest(unittest.TestCase):
             self.fail("Failed creating file %s" % first_more5)
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        self.assertEqual(git_lib.get_staged_files(self.first_repo), [first_more1])
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [first_more1])
 
         v, r = git_wrapper.stage(self.first_repo, [first_more2, first_more3])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        ret = git_lib.get_staged_files(self.first_repo)
-        self.assertEqual(len(ret), 3)
-        self.assertTrue(first_more1 in ret)
-        self.assertTrue(first_more2 in ret)
-        self.assertTrue(first_more3 in ret)
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
+        self.assertTrue(first_more3 in r)
 
         with open(self.first_file1, "a") as f:
             f.write("additional contents")
 
         v, r = git_wrapper.stage(self.first_repo, None)
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        ret = git_lib.get_staged_files(self.first_repo)
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
 
-        self.assertEqual(len(ret), 6)
-        self.assertTrue(self.first_file1 in ret)
-        self.assertTrue(first_more1 in ret)
-        self.assertTrue(first_more2 in ret)
-        self.assertTrue(first_more3 in ret)
-        self.assertTrue(first_more4 in ret)
-        #self.assertTrue(first_more5 in ret) # mvtodo: might require extra system config or ...
+        self.assertEqual(len(r), 6)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
+        self.assertTrue(first_more3 in r)
+        self.assertTrue(first_more4 in r)
+        #self.assertTrue(first_more5 in r) # mvtodo: might require extra system config or ...
 
     def testGetUnstagedFiles(self):
 
-        self.assertEqual(git_lib.get_unstaged_files(self.fourth_notrepo), None)
+        v, r = git_lib.get_unstaged_files(self.fourth_notrepo)
+        self.assertFalse(v)
 
-        self.assertEqual(git_lib.get_unstaged_files(self.first_repo), [])
+        v, r = git_lib.get_unstaged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         if not create_and_write_file.create_file_contents(first_more1, "more1-contents"):
@@ -260,20 +283,21 @@ class GitLibTest(unittest.TestCase):
         if not create_and_write_file.create_file_contents(first_more3, "more3-contents"):
             self.fail("Failed creating file %s" % first_more3)
 
-        ret = git_lib.get_unstaged_files(self.first_repo)
-        self.assertEqual(len(ret), 3)
-        self.assertTrue(first_more1 in ret)
-        self.assertTrue(first_more2 in ret)
-        #self.assertTrue(first_more3 in ret) # mvtodo: might require extra system config or ...
+        v, r = git_lib.get_unstaged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
+        #self.assertTrue(first_more3 in r) # mvtodo: might require extra system config or ...
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
-        ret = git_lib.get_unstaged_files(self.first_repo)
-        self.assertEqual(len(ret), 2)
-        self.assertTrue(first_more2 in ret)
-        #self.assertTrue(first_more3 in ret) # mvtodo: might require extra system config or ...
+        v, r = git_lib.get_unstaged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(first_more2 in r)
+        #self.assertTrue(first_more3 in r) # mvtodo: might require extra system config or ...
 
     def testRemoveGitlogDecorations(self):
 
@@ -503,8 +527,14 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        mod_first = git_lib.get_modified_files(self.first_repo)
-        mod_first_mirror = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        mod_first = r
+
+        v, r = git_lib.get_modified_files(first_mirror)
+        self.assertTrue(v)
+        mod_first_mirror = r
+
         self.assertEqual(path_utils.basename_filtered(mod_first[0]), path_utils.basename_filtered(mod_first_mirror[0]))
 
     def testPatchAsHeadFail1(self):
@@ -537,7 +567,10 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
 
-        self.assertEqual(git_lib.get_modified_files(first_mirror), [])
+        v, r = git_lib.get_modified_files(first_mirror)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+
         v, r = git_lib.is_head_clear(first_mirror)
         self.assertTrue(v)
         self.assertFalse(r)
@@ -575,7 +608,10 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
 
-        self.assertEqual(git_lib.get_modified_files(first_mirror), [])
+        v, r = git_lib.get_modified_files(first_mirror)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+
         v, r = git_lib.is_head_clear(first_mirror)
         self.assertTrue(v)
         self.assertFalse(r)
@@ -614,8 +650,14 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        mod_first = git_lib.get_modified_files(self.first_repo)
-        mod_first_mirror = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        mod_first = r
+
+        v, r = git_lib.get_modified_files(first_mirror)
+        self.assertTrue(v)
+        mod_first_mirror = r
+
         self.assertEqual(path_utils.basename_filtered(mod_first[0]), path_utils.basename_filtered(mod_first_mirror[0]))
 
     def testPatchAsHeadOverrideFail2(self):
@@ -651,8 +693,14 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, True)
         self.assertTrue(v)
 
-        mod_first = git_lib.get_modified_files(self.first_repo)
-        mod_first_mirror = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        mod_first = r
+
+        v, r = git_lib.get_modified_files(first_mirror)
+        self.assertTrue(v)
+        mod_first_mirror = r
+
         self.assertEqual(path_utils.basename_filtered(mod_first[0]), path_utils.basename_filtered(mod_first_mirror[0]))
 
     def testPatchAsStaged(self):
@@ -685,8 +733,14 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        mod_first = git_lib.get_modified_files(self.first_repo)
-        mod_first_mirror = git_lib.get_staged_files(first_mirror)
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        mod_first = r
+
+        v, r = git_lib.get_staged_files(first_mirror)
+        self.assertTrue(v)
+        mod_first_mirror = r
+
         self.assertEqual(path_utils.basename_filtered(mod_first[0]), path_utils.basename_filtered(mod_first_mirror[0]))
 
     def testPatchAsStagedFail1(self):
@@ -719,7 +773,10 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.patch_as_staged(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
 
-        self.assertEqual(git_lib.get_staged_files(first_mirror), [])
+        v, r = git_lib.get_staged_files(first_mirror)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+
         v, r = git_lib.is_head_clear(first_mirror)
         self.assertTrue(v)
         self.assertFalse(r)
@@ -757,7 +814,9 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.patch_as_staged(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
 
-        staged_list_first_mirror = git_lib.get_staged_files(first_mirror)
+        v, r = git_lib.get_staged_files(first_mirror)
+        self.assertTrue(v)
+        staged_list_first_mirror = r
         self.assertEqual(path_utils.basename_filtered(staged_list_first_mirror[0]), path_utils.basename_filtered(first_mirror_more1))
 
         v, r = git_lib.is_head_clear(first_mirror)
@@ -798,8 +857,14 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        mod_first = git_lib.get_modified_files(self.first_repo)
-        mod_first_mirror = git_lib.get_staged_files(first_mirror)
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        mod_first = r
+
+        v, r = git_lib.get_staged_files(first_mirror)
+        self.assertTrue(v)
+        mod_first_mirror = r
+
         self.assertEqual(path_utils.basename_filtered(mod_first[0]), path_utils.basename_filtered(mod_first_mirror[0]))
 
     def testPatchAsStagedOverrideFail2(self):
@@ -839,8 +904,14 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        mod_first = git_lib.get_modified_files(self.first_repo)
-        mod_first_mirror = git_lib.get_staged_files(first_mirror)
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        mod_first = r
+
+        v, r = git_lib.get_staged_files(first_mirror)
+        self.assertTrue(v)
+        mod_first_mirror = r
+
         self.assertEqual(path_utils.basename_filtered(mod_first[0]), path_utils.basename_filtered(mod_first_mirror[0]))
 
     def testPatchAsStash(self):
