@@ -2,6 +2,7 @@
 
 import os
 import sys
+
 import fsquery
 import terminal_colors
 
@@ -29,8 +30,16 @@ def push_subs(path):
     for s in subs:
 
         v, r = git_lib.get_remotes(s)
+        if not v:
+            anyfailed = True
+            report.append("push_subs failed [%s]: [%s]" % (s, r))
+            continue
         rs = r
         v, r = git_lib.get_branches(s)
+        if not v:
+            anyfailed = True
+            report.append("push_subs failed [%s]: [%s]" % (s, r))
+            continue
         bs = r
 
         af, r = git_push.do_push(s, rs, bs)
@@ -56,4 +65,3 @@ if __name__ == "__main__":
         path = os.getcwd()
 
     push_subs(path)
-

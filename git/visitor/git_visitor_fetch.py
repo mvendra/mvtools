@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
+import sys
+
 import terminal_colors
 
 import git_visitor_base
 import git_lib
 import git_fetch
-
-import sys
 
 def visitor_fetch(repos, options):
 
@@ -16,6 +16,10 @@ def visitor_fetch(repos, options):
     all_passed = True
     for rp in repos:
         v, r = git_lib.get_remotes(rp)
+        if not v:
+            all_passed = False
+            report.append("visitor_fetch failed [%s]: [%s]" % (rp, r))
+            continue
         remotes = r
         remotes = git_visitor_base.filter_remotes(remotes, options)
         if remotes is None:
@@ -38,4 +42,3 @@ if __name__ == "__main__":
     r = git_visitor_base.do_visit(None, filters, visitor_fetch)
     if False in r:
         sys.exit(1)
-

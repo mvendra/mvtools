@@ -29,8 +29,16 @@ def pull_subs(path):
     for s in subs:
 
         v, r = git_lib.get_remotes(s)
+        if not v:
+            anyfailed = True
+            report.append("pull_subs failed [%s]: [%s]" % (s, r))
+            continue
         rs = r
         v, r = git_lib.get_branches(s)
+        if not v:
+            anyfailed = True
+            report.append("pull_subs failed [%s]: [%s]" % (s, r))
+            continue
         bs = r
 
         af, r = git_pull.do_pull(s, rs, bs)
@@ -56,4 +64,3 @@ if __name__ == "__main__":
         path = os.getcwd()
 
     pull_subs(path)
-

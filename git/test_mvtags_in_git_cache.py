@@ -61,7 +61,7 @@ def check_mvtags_in_repo(repo):
 
     v, r = git_lib.get_staged_files(repo)
     if not v:
-        print("Failed querying %s. Aborting." % repo)
+        print("Failed querying [%s]. Aborting: [%s]" % (repo, r))
         return None
     files = r
 
@@ -89,4 +89,3 @@ if __name__ == "__main__":
         for r in report:
             print("%s introduces mvtags" % r)
         exit(1)
-

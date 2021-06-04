@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 
 import git_visitor_base
 import git_lib
@@ -19,6 +20,10 @@ def visitor_remote_refactor(repos, options):
 
     for rp in repos:
         v, r = git_lib.get_remotes(rp)
+        if not v:
+            all_passed = False
+            report.append("visitor_remote_refactor failed [%s]: [%s]" % (rp, r))
+            continue
         remotes = r
         if remotes == {}:
             continue
@@ -38,4 +43,3 @@ if __name__ == "__main__":
     r = git_visitor_base.do_visit(None, None, visitor_remote_refactor)
     if False in r:
         sys.exit(1)
-

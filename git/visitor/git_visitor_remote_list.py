@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 
 import git_visitor_base
 import git_lib
@@ -12,7 +13,8 @@ def visitor_remote_list(repos, options):
         print("\n* Listing remotes of %s ..." % rp)
         v, r = git_lib.get_remotes(rp)
         if not v:
-            print("visitor_remote_list failed: [%s]" % r)
+            print("visitor_remote_list failed: [%s]: [%s]" % (rp, r))
+            return False
         remotes = r
         if remotes == {}:
             print("No remotes.")
@@ -32,4 +34,3 @@ if __name__ == "__main__":
     r = git_visitor_base.do_visit(None, None, visitor_remote_list)
     if False in r:
         sys.exit(1)
-

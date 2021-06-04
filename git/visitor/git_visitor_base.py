@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 import os
-import fsquery
+
 import path_utils
-
+import fsquery
 import git_lib
-import terminal_colors
 
+import terminal_colors
 import mvtools_envvars
 
 class gvbexcept(RuntimeError):
@@ -149,7 +149,7 @@ def apply_filters(repo, options):
     v, r = git_lib.get_remotes(repo)
     if not v:
         raise gvbexcept("Unable to detect remotes for repo [%s]: [%s]" % (repo, r))
-    if v and r == {}:
+    elif v and r == {}:
         raise gvbexcept("No remotes detected for repo: [%s]" % repo)
     remotes = r
 
@@ -159,7 +159,9 @@ def apply_filters(repo, options):
 
     v, r = git_lib.get_branches(repo)
     if not v:
-        raise gvbexcept("No branches detected: [%s]" % r)
+        raise gvbexcept("Unable to detect branches for repo [%s]: [%s]" % (repo, r))
+    elif v and r == []:
+        raise gvbexcept("No branches detected: [%s]" % repo)
     branches = r
 
     branches = filter_branches(branches, options)
@@ -297,4 +299,3 @@ def do_visit(path_list, filters_query, func):
         r.append(func(repos, options))
 
     return r
-
