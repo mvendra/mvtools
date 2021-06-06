@@ -1512,6 +1512,84 @@ class GitWrapperTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
         self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
 
+        test_sub = path_utils.concat_path(self.second_repo, "sub")
+        os.mkdir(test_sub)
+        test_sub_file2 = path_utils.concat_path(test_sub, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_sub_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        with open(test_file1, "a") as f:
+            f.write("smore")
+
+        with open(test_sub_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) != 0)
+
+        v, r = git_wrapper.checkout(self.second_repo, test_file1)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) != 0)
+        self.assertFalse(path_utils.basename_filtered(test_file1) in r)
+        self.assertTrue(path_utils.basename_filtered(test_sub_file2) in r)
+
+    def testCheckout5(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        test_sub = path_utils.concat_path(self.second_repo, "sub")
+        os.mkdir(test_sub)
+        test_sub_file2 = path_utils.concat_path(test_sub, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_sub_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        with open(test_file1, "a") as f:
+            f.write("smore")
+
+        with open(test_sub_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) != 0)
+
+        v, r = git_wrapper.checkout(self.second_repo, test_sub_file2)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) != 0)
+        self.assertTrue(path_utils.basename_filtered(test_file1) in r)
+        self.assertFalse(path_utils.basename_filtered(test_sub_file2) in r)
+
+    def testCheckout6(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
         self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
 
@@ -1529,6 +1607,43 @@ class GitWrapperTest(unittest.TestCase):
             f.write("smore")
 
         with open(test_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) != 0)
+
+        v, r = git_wrapper.checkout(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+    def testCheckout7(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        test_sub = path_utils.concat_path(self.second_repo, "sub")
+        os.mkdir(test_sub)
+        test_sub_file2 = path_utils.concat_path(test_sub, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_sub_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        with open(test_file1, "a") as f:
+            f.write("smore")
+
+        with open(test_sub_file2, "a") as f:
             f.write("smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
