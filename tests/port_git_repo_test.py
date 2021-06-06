@@ -36,7 +36,7 @@ class PortGitRepoTest(unittest.TestCase):
         os.mkdir(self.nonrepo)
 
         # storage path
-        self.storage_path = path_utils.concat_path(self.test_dir, "collect_patch_git_storage")
+        self.storage_path = path_utils.concat_path(self.test_dir, "storage_path")
         os.mkdir(self.storage_path)
 
         # first repo
