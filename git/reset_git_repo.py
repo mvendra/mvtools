@@ -34,7 +34,7 @@ class reset_backup_maker:
         return True, target_file_full_path
 
 def make_patch_filename(path, index):
-    return "%s_%s.patch" % (str(index), path_utils.basename_filtered(path))
+    return "%s_reset_git_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
 
 def _report_patch(patch_filename):
     return "generated backup patch: [%s]" % patch_filename
