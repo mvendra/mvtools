@@ -56,78 +56,78 @@ class ResetGitRepoTest(unittest.TestCase):
             return v, r
 
         # backup object
-        self.rbm_storage = path_utils.concat_path(self.test_dir, "rbm_storage")
-        self.rbm = delayed_file_backup.delayed_file_backup(self.rbm_storage)
+        self.rdb_storage = path_utils.concat_path(self.test_dir, "rdb_storage")
+        self.rdb = delayed_file_backup.delayed_file_backup(self.rdb_storage) # rdb: reset delayed backup
 
         return True, ""
 
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testResetGitRepo_ResetBackupMaker_Fail1(self):
+    def testResetGitRepo_DelayedBackup_Fail1(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        os.mkdir(local_rbm_storage)
+        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
+        os.mkdir(local_rdb_storage)
 
         ex_raised = False
         try:
-            local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
+            local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
         except mvtools_exception.mvtools_exception as mvtex:
             ex_raised = True
 
         self.assertTrue(ex_raised)
 
-    def testResetGitRepo_ResetBackupMaker_Fail2(self):
+    def testResetGitRepo_DelayedBackup_Fail2(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
-        self.assertFalse(os.path.exists(local_rbm_storage))
+        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
+        local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
+        self.assertFalse(os.path.exists(local_rdb_storage))
 
         test_fn = "test.patch"
         test_content = "patched contents"
-        test_patch_file_full = path_utils.concat_path(local_rbm_storage, test_fn)
+        test_patch_file_full = path_utils.concat_path(local_rdb_storage, test_fn)
 
         self.assertFalse(os.path.exists(test_patch_file_full))
-        os.mkdir(local_rbm_storage)
+        os.mkdir(local_rdb_storage)
         self.assertTrue(create_and_write_file.create_file_contents(test_patch_file_full, "dummy contents"))
-        v, r = local_rbm.make_backup(test_fn, test_content)
+        v, r = local_rdb.make_backup(test_fn, test_content)
         self.assertFalse(v)
 
-    def testResetGitRepo_ResetBackupMaker1(self):
+    def testResetGitRepo_DelayedBackup1(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
+        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
 
         ex_raised = False
         try:
-            local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
+            local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
         except mvtools_exception.mvtools_exception as mvtex:
             ex_raised = True
 
         self.assertFalse(ex_raised)
 
-    def testResetGitRepo_ResetBackupMaker2(self):
+    def testResetGitRepo_DelayedBackup2(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
-        self.assertFalse(os.path.exists(local_rbm_storage))
+        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
+        local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
+        self.assertFalse(os.path.exists(local_rdb_storage))
 
         test_fn = "test.patch"
         test_content = "patched contents"
-        test_patch_file_full = path_utils.concat_path(local_rbm_storage, test_fn)
+        test_patch_file_full = path_utils.concat_path(local_rdb_storage, test_fn)
 
         self.assertFalse(os.path.exists(test_patch_file_full))
-        v, r = local_rbm.make_backup(test_fn, test_content)
+        v, r = local_rdb.make_backup(test_fn, test_content)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file_full))
 
     def testResetGitRepo_ResetGitRepoFile_Fail1(self):
 
-        v, r = reset_git_repo.reset_git_repo_file(self.nonrepo, self.first_file1, 1, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_file(self.nonrepo, self.first_file1, 1, self.rdb)
         self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepoFile_Fail2(self):
 
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
         self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepoFile_Fail3(self):
@@ -144,13 +144,13 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rbm_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        os.mkdir(self.rbm_storage)
+        os.mkdir(self.rdb_storage)
         self.assertTrue(create_and_write_file.create_file_contents(test_patch_file, "dummy contents"))
 
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
         self.assertFalse(v)
 
         v, r = git_lib.get_modified_files(self.first_repo)
@@ -179,13 +179,13 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rbm_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        os.mkdir(self.rbm_storage)
+        os.mkdir(self.rdb_storage)
         self.assertTrue(create_and_write_file.create_file_contents(test_patch_file, "dummy contents"))
 
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.second_file1, 1, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.second_file1, 1, self.rdb)
         self.assertFalse(v)
 
         v, r = git_lib.get_modified_files(self.first_repo)
@@ -206,10 +206,10 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rbm_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
@@ -234,10 +234,10 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         patch_file_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rbm_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
@@ -247,7 +247,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
     def testResetGitRepo_ResetGitRepoEntire_Fail1(self):
 
-        v, r = reset_git_repo.reset_git_repo_entire(self.nonrepo, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_entire(self.nonrepo, self.rdb)
         self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepoEntire1(self):
@@ -264,10 +264,10 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rbm_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rdb)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
@@ -292,14 +292,14 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         patch_file1_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rbm_storage, patch_file1_filename)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file1_filename)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file2_filename = "2_reset_git_repo_%s.patch" % (path_utils.basename_filtered(self.first_file2))
-        test_patch_file2 = path_utils.concat_path(self.rbm_storage, patch_file2_filename)
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, patch_file2_filename)
         self.assertFalse(os.path.exists(test_patch_file2))
 
-        v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rdb)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file1))
         self.assertTrue(os.path.exists(test_patch_file2))
@@ -314,7 +314,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rbm)
+        v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rdb)
         self.assertTrue(v)
 
         v, r = git_lib.get_modified_files(self.first_repo)
