@@ -55,9 +55,9 @@ class ResetGitRepoTest(unittest.TestCase):
         if not v:
             return v, r
 
-        # backup object
+        # backup object (rdb: reset delayed backup)
         self.rdb_storage = path_utils.concat_path(self.test_dir, "rdb_storage")
-        self.rdb = delayed_file_backup.delayed_file_backup(self.rdb_storage) # rdb: reset delayed backup
+        self.rdb = delayed_file_backup.delayed_file_backup(self.rdb_storage)
 
         return True, ""
 
@@ -191,6 +191,33 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_lib.get_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
+
+    def testResetGitRepo_ResetGitRepoFile_Fail5(self):
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        first_file3 = path_utils.concat_path(self.first_repo, "file3.txt")
+        self.assertFalse(os.path.exists(first_file3))
+        self.assertTrue(create_and_write_file.create_file_contents(first_file3, "first-file3-content"))
+
+        v, r = git_wrapper.stage(self.first_repo, [first_file3])
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(first_file3))
+        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, first_file3, 1, self.rdb)
+        self.assertFalse(v)
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoFile1(self):
 
