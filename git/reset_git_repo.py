@@ -14,24 +14,7 @@ import detect_repo_type
 import git_wrapper
 import git_lib
 
-class reset_backup_maker:
-    def __init__(self, _storage_path):
-        self.storage_path = _storage_path
-        if os.path.exists(self.storage_path):
-            raise mvtools_exception.mvtools_exception("Path [%s] already exists." % self.storage_path)
-
-    def _ascertain_storage_folder(self):
-        if not os.path.exists(self.storage_path):
-            os.mkdir(self.storage_path)
-
-    def make_backup(self, filename, contents):
-        self._ascertain_storage_folder()
-        target_file_full_path = path_utils.concat_path(self.storage_path, filename)
-        if os.path.exists(target_file_full_path):
-            return False, target_file_full_path
-        with open(target_file_full_path, "w") as f:
-            f.write(contents)
-        return True, target_file_full_path
+import delayed_file_backup
 
 def make_patch_filename(path, index):
     return "%s_reset_git_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
@@ -151,7 +134,7 @@ def reset_git_repo(target_repo, files):
     backup_patches_folder_fullpath = path_utils.concat_path(temp_path, backup_patches_folder)
 
     try:
-        backup_obj = reset_backup_maker(backup_patches_folder_fullpath)
+        backup_obj = delayed_file_backup.delayed_file_backup(backup_patches_folder_fullpath)
     except mvtools_exception.mvtools_exception as mvtex:
         return False, [mvtex.message]
 

@@ -12,6 +12,7 @@ import git_test_fixture
 import create_and_write_file
 import path_utils
 import mvtools_exception
+import delayed_file_backup
 
 import git_wrapper
 import git_lib
@@ -56,7 +57,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         # backup object
         self.rbm_storage = path_utils.concat_path(self.test_dir, "rbm_storage")
-        self.rbm = reset_git_repo.reset_backup_maker(self.rbm_storage)
+        self.rbm = delayed_file_backup.delayed_file_backup(self.rbm_storage)
 
         return True, ""
 
@@ -70,7 +71,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            local_rbm = reset_git_repo.reset_backup_maker(local_rbm_storage)
+            local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
         except mvtools_exception.mvtools_exception as mvtex:
             ex_raised = True
 
@@ -79,7 +80,7 @@ class ResetGitRepoTest(unittest.TestCase):
     def testResetGitRepo_ResetBackupMaker_Fail2(self):
 
         local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        local_rbm = reset_git_repo.reset_backup_maker(local_rbm_storage)
+        local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
         self.assertFalse(os.path.exists(local_rbm_storage))
 
         test_fn = "test.patch"
@@ -98,7 +99,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            local_rbm = reset_git_repo.reset_backup_maker(local_rbm_storage)
+            local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
         except mvtools_exception.mvtools_exception as mvtex:
             ex_raised = True
 
@@ -107,7 +108,7 @@ class ResetGitRepoTest(unittest.TestCase):
     def testResetGitRepo_ResetBackupMaker2(self):
 
         local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        local_rbm = reset_git_repo.reset_backup_maker(local_rbm_storage)
+        local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
         self.assertFalse(os.path.exists(local_rbm_storage))
 
         test_fn = "test.patch"
