@@ -84,7 +84,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
         return False, "Can't collect patch for previous: requested [%d] commits, but there are only [%d] in total." % (previous_number, len(prev_list))
 
     for i in range(previous_number):
-        v, r = svn_wrapper.diff(repo, prev_list[i])
+        v, r = svn_wrapper.diff(repo, None, prev_list[i])
         if not v:
             return False, "Failed calling svn command for previous: [%s]. Repository: [%s]. Revision: [%s]." % (r, repo, prev_list[i])
 

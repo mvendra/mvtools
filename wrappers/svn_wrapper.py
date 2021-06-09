@@ -44,7 +44,7 @@ def log(repo, limit=None):
 
     return v, r
 
-def diff(repo, rev=None):
+def diff(repo, file_list=None, rev=None):
 
     if not os.path.exists(repo):
         return False, "%s does not exist." % repo
@@ -53,6 +53,10 @@ def diff(repo, rev=None):
     if rev is not None:
         cmd.append("-c")
         cmd.append(rev)
+
+    if file_list is not None:
+        for fl in file_list:
+            cmd.append(fl)
 
     v, r = generic_run.run_cmd_simple(cmd, use_cwd=repo)
     if not v:
@@ -98,20 +102,13 @@ def update(local_repo):
 
     return v, r
 
-def revert(local_repo, repo_item):
+def revert(local_repo, repo_items):
 
     if not os.path.exists(local_repo):
         return False, "Base repo [%s] does not exist." % local_repo
 
     the_cmd = ["svn", "revert"]
-
-    if repo_item is None:
-        the_cmd += ["--recursive", "."]
-    else:
-        the_cmd += [repo_item]
-        full_repo_item_path = path_utils.concat_path(local_repo, repo_item)
-        if not os.path.exists(full_repo_item_path):
-            return False, "Repo item [%s] does not exist." % full_repo_item_path
+    the_cmd += repo_items
 
     v, r = generic_run.run_cmd_simple(the_cmd, use_cwd=local_repo)
     if not v:

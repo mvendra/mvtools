@@ -30,6 +30,19 @@ def has_string_in_list(the_list, the_str):
             return True
     return False
 
+def extract_file_from_status_line(the_line):
+
+    if len(the_line) < 2:
+        return None
+
+    c = 0
+    while c < len(the_line):
+        c += 1
+        if is_nonspaceortabs(the_line[c]):
+            return the_line[c:]
+
+    return None
+
 def status_filter_function_unversioned(the_line):
     if the_line is None:
         return None
@@ -127,6 +140,28 @@ def get_previous_list(repo, previous_number):
 
     prev_list = rev_entries_filter(log_entries)
     return True, prev_list
+
+def get_modified_files(repo):
+
+    v, r = svn_wrapper.status(repo)
+    if not v:
+        return False, r
+
+    mod_list = []
+
+    for line in r.split(os.linesep):
+
+        if len(line.strip()) == 0:
+            break
+        item_status = line[0]
+
+        if item_status == "M":
+            mod_file = extract_file_from_status_line(line)
+            if mod_file is None:
+                return False, "Unable to detect file from status line: [%s]" % line
+            mod_list.append(path_utils.concat_path(repo, mod_file))
+
+    return True, mod_list
 
 def get_head_revision(repo):
 
