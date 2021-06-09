@@ -64,7 +64,7 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_git_repo_file: failed because [%s] already exists." % gen_patch
 
     # revert file changes
-    v, r = git_wrapper.checkout(target_repo, revert_file)
+    v, r = git_wrapper.checkout(target_repo, [revert_file])
     if not v:
         return False, "reset_git_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
 
