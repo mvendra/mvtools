@@ -7,10 +7,7 @@ import detect_repo_type
 import port_git_repo
 import port_svn_repo
 
-def check_repos_type(source_repo, target_repo, repotype):
-
-    if repotype != "svn" and repotype != "git" and repotype != "all":
-        return False, "Invalid repository type: %s" % repotype
+def check_repos_type(source_repo, target_repo):
 
     supported_repo_types = [detect_repo_type.REPO_TYPE_GIT_STD, detect_repo_type.REPO_TYPE_SVN]
 
@@ -38,7 +35,7 @@ def check_repos_type(source_repo, target_repo, repotype):
 
     return True, detected_source_type
 
-def port_repo(source_repo, target_repo, repotype, head, staged, stash, unversioned, previous):
+def port_repo(source_repo, target_repo, head, staged, stash, unversioned, previous):
 
     if not os.path.exists(source_repo):
         return False, "Source repo [%s] does not exist."  % source_repo
@@ -46,7 +43,7 @@ def port_repo(source_repo, target_repo, repotype, head, staged, stash, unversion
     if not os.path.exists(target_repo):
         return False, "Target repo [%s] does not exist."  % target_repo
 
-    v, r = check_repos_type(source_repo, target_repo, repotype)
+    v, r = check_repos_type(source_repo, target_repo)
     if not v:
         return False, r
     repos_type = r
@@ -59,7 +56,7 @@ def port_repo(source_repo, target_repo, repotype, head, staged, stash, unversion
     return False, "Porting failed: Unsupported repo type: [%s]" % repos_type
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--repo-type git|svn|all] [--head] [--staged] [--stash] [--unversioned] [--previous X]" % os.path.basename(__file__))
+    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash] [--unversioned] [--previous X]" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -71,31 +68,22 @@ if __name__ == "__main__":
     target_repo = sys.argv[2]
     params = sys.argv[3:]
 
-    repotype = "all"
     head = False
     staged = False
     stash = False
     unversioned = False
     previous = 0
 
-    repotype_parse_next = False
     previous_parse_next = False
 
     for p in params:
-
-        if repotype_parse_next:
-            repotype = p
-            repotype_parse_next = False
-            continue
 
         if previous_parse_next:
             previous = int(p)
             previous_parse_next = False
             continue
 
-        if p == "--repo-type":
-            repotype_parse_next = True
-        elif p == "--previous":
+        if p == "--previous":
             previous_parse_next = True
         elif p == "--head":
             head = True
@@ -106,7 +94,7 @@ if __name__ == "__main__":
         elif p == "--unversioned":
             unversioned = True
 
-    v, r = port_repo(source_repo, target_repo, repotype, head, staged, stash, unversioned, previous)
+    v, r = port_repo(source_repo, target_repo, head, staged, stash, unversioned, previous)
     if not v:
         print("Porting repo [%s] to [%s] failed: %s" % (source_repo, target_repo, r))
         sys.exit(1)
