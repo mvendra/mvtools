@@ -377,5 +377,20 @@ def patch_as_stash(repo, patch_file, override_head_check, override_stash_check):
 
     return True, None
 
+def unstage(repo, file_list=None):
+
+    if file_list is not None:
+
+        v, r = get_staged_files(repo)
+        if not v:
+            return False, "Can't unstage: [%s]" % r
+        staged_files = r
+
+        for f in file_list:
+            if not f in staged_files:
+                return False, "File [%s] is not staged" % f
+
+    return git_wrapper.reset_head(repo, file_list)
+
 if __name__ == "__main__":
     print("Hello from %s" % os.path.basename(__file__))

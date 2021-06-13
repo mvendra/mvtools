@@ -1136,5 +1136,137 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
+    def testUnstageFail1(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_lib.unstage(self.first_repo, [first_file2])
+        self.assertFalse(v)
+
+        v, r = git_lib.unstage(self.first_repo, [self.first_file1, first_file2])
+        self.assertFalse(v)
+
+    def testUnstageFail2(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_lib.unstage(self.first_repo, [first_file2])
+        self.assertFalse(v)
+
+    def testUnstageFail3(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        self.assertTrue(create_and_write_file.create_file_contents(first_file2, "more1-contents"))
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_lib.unstage(self.first_repo, [first_file2])
+        self.assertFalse(v)
+
+    def testUnstage1(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        with open(first_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+
+        v, r = git_lib.unstage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testUnstage2(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        with open(first_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+
+        v, r = git_lib.unstage(self.first_repo, [self.first_file1])
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertFalse(self.first_file1 in r)
+        self.assertTrue(first_file2 in r)
+
 if __name__ == '__main__':
     unittest.main()
