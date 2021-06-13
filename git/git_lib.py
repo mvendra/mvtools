@@ -65,8 +65,8 @@ def is_repo_root(path):
         return True
     return False
 
-def discover_repo_root(repo_path):
-    curpath = repo_path
+def discover_repo_root(repo):
+    curpath = repo
     while not is_repo_root(path_utils.concat_path(curpath, ".git")):
         curpath = path_utils.backpedal_path(curpath)
         if curpath is None:
