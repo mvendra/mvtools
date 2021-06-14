@@ -64,63 +64,6 @@ class ResetGitRepoTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    # mvtodo: move all these delayed backup tests away from here
-    def testResetGitRepo_DelayedBackup_Fail1(self):
-
-        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
-        os.mkdir(local_rdb_storage)
-
-        ex_raised = False
-        try:
-            local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
-        except mvtools_exception.mvtools_exception as mvtex:
-            ex_raised = True
-
-        self.assertTrue(ex_raised)
-
-    def testResetGitRepo_DelayedBackup_Fail2(self):
-
-        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
-        local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
-        self.assertFalse(os.path.exists(local_rdb_storage))
-
-        test_fn = "test.patch"
-        test_content = "patched contents"
-        test_patch_file_full = path_utils.concat_path(local_rdb_storage, test_fn)
-
-        self.assertFalse(os.path.exists(test_patch_file_full))
-        os.mkdir(local_rdb_storage)
-        self.assertTrue(create_and_write_file.create_file_contents(test_patch_file_full, "dummy contents"))
-        v, r = local_rdb.make_backup(test_fn, test_content)
-        self.assertFalse(v)
-
-    def testResetGitRepo_DelayedBackup1(self):
-
-        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
-
-        ex_raised = False
-        try:
-            local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
-        except mvtools_exception.mvtools_exception as mvtex:
-            ex_raised = True
-
-        self.assertFalse(ex_raised)
-
-    def testResetGitRepo_DelayedBackup2(self):
-
-        local_rdb_storage = path_utils.concat_path(self.test_dir, "local_rdb_storage")
-        local_rdb = delayed_file_backup.delayed_file_backup(local_rdb_storage)
-        self.assertFalse(os.path.exists(local_rdb_storage))
-
-        test_fn = "test.patch"
-        test_content = "patched contents"
-        test_patch_file_full = path_utils.concat_path(local_rdb_storage, test_fn)
-
-        self.assertFalse(os.path.exists(test_patch_file_full))
-        v, r = local_rdb.make_backup(test_fn, test_content)
-        self.assertTrue(v)
-        self.assertTrue(os.path.exists(test_patch_file_full))
-
     def testResetGitRepo_ResetGitRepoFile_Fail1(self):
 
         v, r = reset_git_repo.reset_git_repo_file(self.nonrepo, self.first_file1, 1, self.rdb)

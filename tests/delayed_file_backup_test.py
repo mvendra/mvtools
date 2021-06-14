@@ -37,12 +37,12 @@ class DelayedFileBackupTest(unittest.TestCase):
 
     def testDelayedFileBackup_Fail1(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        os.mkdir(local_rbm_storage)
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        os.mkdir(local_dfb_storage)
 
         ex_raised = False
         try:
-            local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
+            local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
         except mvtools_exception.mvtools_exception as mvtex:
             ex_raised = True
 
@@ -50,27 +50,27 @@ class DelayedFileBackupTest(unittest.TestCase):
 
     def testDelayedFileBackup_Fail2(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
-        self.assertFalse(os.path.exists(local_rbm_storage))
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
 
         test_fn = "test.patch"
         test_content = "patched contents"
-        test_patch_file_full = path_utils.concat_path(local_rbm_storage, test_fn)
+        test_patch_file_full = path_utils.concat_path(local_dfb_storage, test_fn)
 
         self.assertFalse(os.path.exists(test_patch_file_full))
-        os.mkdir(local_rbm_storage)
+        os.mkdir(local_dfb_storage)
         self.assertTrue(create_and_write_file.create_file_contents(test_patch_file_full, "dummy contents"))
-        v, r = local_rbm.make_backup(test_fn, test_content)
+        v, r = local_dfb.make_backup(test_fn, test_content)
         self.assertFalse(v)
 
     def testDelayedFileBackup1(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
 
         ex_raised = False
         try:
-            local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
+            local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
         except mvtools_exception.mvtools_exception as mvtex:
             ex_raised = True
 
@@ -78,16 +78,16 @@ class DelayedFileBackupTest(unittest.TestCase):
 
     def testDelayedFileBackup2(self):
 
-        local_rbm_storage = path_utils.concat_path(self.test_dir, "local_rbm_storage")
-        local_rbm = delayed_file_backup.delayed_file_backup(local_rbm_storage)
-        self.assertFalse(os.path.exists(local_rbm_storage))
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
 
         test_fn = "test.patch"
         test_content = "patched contents"
-        test_patch_file_full = path_utils.concat_path(local_rbm_storage, test_fn)
+        test_patch_file_full = path_utils.concat_path(local_dfb_storage, test_fn)
 
         self.assertFalse(os.path.exists(test_patch_file_full))
-        v, r = local_rbm.make_backup(test_fn, test_content)
+        v, r = local_dfb.make_backup(test_fn, test_content)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file_full))
 
