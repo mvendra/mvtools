@@ -40,6 +40,17 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
     if not os.path.exists(revert_file):
         return False, "reset_git_repo_file: File [%s] does not exist" % revert_file
 
+    # check if the requested file is staged in the repo - and if so, unstage it
+    v, r = git_lib.get_staged_files(target_repo)
+    if not v:
+        return False, "reset_git_repo_file: [%s]" % r
+    cached_files = r
+
+    if revert_file in cached_files:
+        v, r = git_lib.unstage(target_repo, [revert_file])
+        if not v:
+            return False, "reset_git_repo_file: [%s]" % r
+
     # check if the requested file is modified in the repo
     v, r = git_lib.get_modified_files(target_repo)
     if not v:
@@ -74,6 +85,11 @@ def reset_git_repo_entire(target_repo, backup_obj):
 
     report = []
     has_any_failed = False
+
+    # unstage everything
+    v, r = git_lib.unstage(target_repo)
+    if not v:
+        return False, ["reset_git_repo_entire: [%s]" % r]
 
     # get modified files
     v, r = git_lib.get_modified_files(target_repo)
