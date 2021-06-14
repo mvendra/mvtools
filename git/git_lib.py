@@ -251,6 +251,14 @@ def get_unstaged_files(repo):
             ret.append(fp)
     return True, ret
 
+def get_unversioned_files(repo):
+
+    v, r = git_wrapper.ls_files(repo)
+    if not v:
+        return False, r
+    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
+    return True, unversioned_files
+
 def get_stash_list(repo):
 
     v, r = git_wrapper.stash_list(repo)
@@ -266,14 +274,6 @@ def get_previous_hash_list(repo, num_previous):
         return False, r
     prev_list = [get_prev_hash(x) for x in r.split(os.linesep) if x != ""]
     return True, prev_list
-
-def get_list_unversioned_files(repo):
-
-    v, r = git_wrapper.ls_files(repo)
-    if not v:
-        return False, r
-    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
-    return True, unversioned_files
 
 def is_repo_working_tree(repo):
 

@@ -429,14 +429,14 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(first_file3, "dummy contents"))
         self.assertTrue(os.path.exists(first_file3))
 
-        v, r = git_lib.get_list_unversioned_files(self.first_repo)
+        v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_lib.get_list_unversioned_files(self.first_repo)
+        v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -461,7 +461,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_patch_file1))
         self.assertFalse(os.path.exists(test_patch_file3))
 
-        v, r = git_lib.get_list_unversioned_files(self.first_repo)
+        v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         #self.assertTrue(first_file3 in r) # mvtodo...
@@ -715,7 +715,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(first_file3, "dummy contents"))
         self.assertTrue(os.path.exists(first_file3))
 
-        v, r = git_lib.get_list_unversioned_files(self.first_repo)
+        v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -726,7 +726,7 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_lib.get_list_unversioned_files(self.first_repo)
+        v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -743,7 +743,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = git_lib.get_list_unversioned_files(self.first_repo)
+        v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 

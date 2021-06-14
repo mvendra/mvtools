@@ -48,7 +48,7 @@ def collect_git_patch_staged(repo, storage_path):
 
 def collect_git_patch_unversioned(repo, storage_path):
 
-    v, r = git_lib.get_list_unversioned_files(repo)
+    v, r = git_lib.get_unversioned_files(repo)
     if not v:
         return False, "Failed calling git command for unversioned: [%s]. Repository: [%s]." % (r, repo)
     unversioned_files = r
