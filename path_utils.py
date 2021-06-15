@@ -55,7 +55,7 @@ def backpedal_path(path):
 
 def arraytopath(ar):
 
-    result=os.sep
+    result=""
     for args in ar:
         result+=args+os.sep
     return result
@@ -277,6 +277,34 @@ def copy_folder_to(source, target):
     shutil.copytree(source, target_folder_final_path, symlinks=True)
     return True
 
+def based_path_find_outstanding_path(source_basepath, source_fullpath):
+
+    # given:
+    # source_basepath = "/home/user/folder" and source_fullpath = "/home/user/folder/more/stuff"
+    # returns "more/stuff"
+
+    if source_basepath == "" or source_basepath is None:
+        return False, "Invalid source_basepath"
+    if source_fullpath == "" or source_fullpath is None:
+        return False, "Invalid source_fullpath"
+
+    source_basepath_pieces = splitpath(source_basepath)
+    source_fullpath_pieces = splitpath(source_fullpath)
+
+    if len(source_basepath_pieces) < 1:
+        return False, "Invalid source_basepath"
+    if len(source_fullpath_pieces) < 1:
+        return False, "Invalid source_fullpath"
+    if len(source_fullpath_pieces) <= len(source_basepath_pieces):
+        return False, "Invalid parameters"
+
+    for i in range(len(source_basepath_pieces)):
+        if source_basepath_pieces[i] != source_fullpath_pieces[i]:
+            return False, "Invalid parameters"
+
+    outstanding_path = source_fullpath_pieces[len(source_basepath_pieces):]
+    return True, arraytopath(outstanding_path)
+
 def based_copy_to(source_basepath, source_fullpath, target):
 
     # a mixture of POSIX's "cp -R" and "mkdir -p"
@@ -288,24 +316,12 @@ def based_copy_to(source_basepath, source_fullpath, target):
     if target == "" or target is None or not os.path.exists(target):
         return False
 
-    source_basepath_pieces = splitpath(source_basepath)
-    source_fullpath_pieces = splitpath(source_fullpath)
-    target_pieces = splitpath(target)
-
-    if len(source_basepath_pieces) < 1:
+    v, r = based_path_find_outstanding_path(source_basepath, source_fullpath)
+    if not v:
         return False
-    if len(source_fullpath_pieces) < 1:
-        return False
-    if len(source_fullpath_pieces) < len(source_basepath_pieces):
-        return False
+    outstanding_path_pieces = splitpath(r)
 
-    for i in range(len(source_basepath_pieces)):
-        if source_basepath_pieces[i] != source_fullpath_pieces[i]:
-            return False
-
-    outstanding_path_pieces = source_fullpath_pieces[len(source_basepath_pieces):]
     current_assembled_path = target
-
     for i in range(len(outstanding_path_pieces)):
         if i == len(outstanding_path_pieces)-1:
             return copy_to(source_fullpath, current_assembled_path)

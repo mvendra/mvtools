@@ -81,14 +81,12 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual("/tmp/folder", path_utils.backpedal_path("/tmp/folder/next"))
 
     def testArrayToPath(self):
-        expected = "/home/user/nuke/"
         result = path_utils.arraytopath(["home", "user", "nuke"])
-        self.assertEqual(expected, result)
+        self.assertEqual(result, "home/user/nuke/")
 
     def testExplodePath(self):
-        expected = "home user"
         result = path_utils.explodepath("/home/user")
-        self.assertEqual(expected, result)
+        self.assertEqual(result, "home user")
 
     def testScratchFolder1(self):
 
@@ -287,6 +285,42 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(path_utils.copy_to(folder1_sub, self.folder2))
         self.assertTrue(os.path.exists(folder2_sub))
         self.assertTrue(os.path.exists(folder2_sub_file1))
+
+    def testBasedPathFindOutstandingPathFail1(self):
+
+        v, r = path_utils.based_path_find_outstanding_path(None, None)
+        self.assertFalse(v)
+
+        v, r = path_utils.based_path_find_outstanding_path(None, "")
+        self.assertFalse(v)
+
+        v, r = path_utils.based_path_find_outstanding_path("", None)
+        self.assertFalse(v)
+
+        v, r = path_utils.based_path_find_outstanding_path("", "")
+        self.assertFalse(v)
+
+        v, r = path_utils.based_path_find_outstanding_path("/some/path", "/some/path")
+        self.assertFalse(v)
+
+        v, r = path_utils.based_path_find_outstanding_path("/some/path", "/some")
+        self.assertFalse(v)
+
+        v, r = path_utils.based_path_find_outstanding_path("/some/path/more", "/some/else/more")
+        self.assertFalse(v)
+
+        v, r = path_utils.based_path_find_outstanding_path("/some/path/more", "/some/else/more/almost")
+        self.assertFalse(v)
+
+    def testBasedPathFindOutstandingPath1(self):
+
+        v, r = path_utils.based_path_find_outstanding_path("/some/path/more", "/some/path/more/stuff")
+        self.assertTrue(v)
+        self.assertEqual(r, "stuff/")
+
+        v, r = path_utils.based_path_find_outstanding_path("/some/path/more/yet/more", "/some/path/more/yet/more/sub/folder/file.txt")
+        self.assertTrue(v)
+        self.assertEqual(r, "sub/folder/file.txt/")
 
     def testBasedCopyToFail1(self):
 
