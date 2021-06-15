@@ -464,7 +464,7 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
-        #self.assertTrue(first_file3 in r) # mvtodo...
+        self.assertTrue(first_file3 in r)
 
         v, r = git_lib.get_modified_files(self.first_repo)
         self.assertTrue(v)

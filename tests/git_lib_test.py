@@ -324,10 +324,10 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 4)
-        self.assertTrue(path_utils.basename_filtered(first_more1) in r) # mvtodo
-        self.assertTrue(path_utils.basename_filtered(first_more2) in r) # mvtodo
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
         #self.assertTrue(first_more3 in r) # mvtodo: might require extra system config or ...
-        #self.assertTrue(first_sub_more4 in r) # mvtodo
+        self.assertTrue(first_sub_more4 in r)
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
