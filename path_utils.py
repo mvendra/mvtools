@@ -53,11 +53,16 @@ def backpedal_path(path):
         return None
     return parent
 
-def arraytopath(ar):
+def arraytopath(the_path_array):
 
-    result=""
-    for args in ar:
-        result+=args+os.sep
+    result = ""
+    c = 0 
+    for args in the_path_array:
+        c += 1
+        if c == len(the_path_array):
+            result += args
+        else:
+            result += args + os.sep
     return result
 
 def explodepath(apath):

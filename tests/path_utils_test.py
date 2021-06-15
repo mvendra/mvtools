@@ -81,8 +81,9 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual("/tmp/folder", path_utils.backpedal_path("/tmp/folder/next"))
 
     def testArrayToPath(self):
-        result = path_utils.arraytopath(["home", "user", "nuke"])
-        self.assertEqual(result, "home/user/nuke/")
+        self.assertEqual(path_utils.arraytopath([]), "")
+        self.assertEqual(path_utils.arraytopath(["home"]), "home")
+        self.assertEqual(path_utils.arraytopath(["home", "user", "nuke"]), "home/user/nuke")
 
     def testExplodePath(self):
         result = path_utils.explodepath("/home/user")
@@ -316,11 +317,11 @@ class PathUtilsTest(unittest.TestCase):
 
         v, r = path_utils.based_path_find_outstanding_path("/some/path/more", "/some/path/more/stuff")
         self.assertTrue(v)
-        self.assertEqual(r, "stuff/")
+        self.assertEqual(r, "stuff")
 
         v, r = path_utils.based_path_find_outstanding_path("/some/path/more/yet/more", "/some/path/more/yet/more/sub/folder/file.txt")
         self.assertTrue(v)
-        self.assertEqual(r, "sub/folder/file.txt/")
+        self.assertEqual(r, "sub/folder/file.txt")
 
     def testBasedCopyToFail1(self):
 
