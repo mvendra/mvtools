@@ -45,7 +45,7 @@ def collect_svn_patch_unversioned(repo, storage_path):
     v, r = svn_lib.get_list_unversioned(repo)
     if not v:
         return False, "Failed calling svn command for unversioned: [%s]. Repository: [%s]." % (r, repo)
-    unversioned_files = r
+    unversioned_items = r
     written_file_list = []
 
     target_base = path_utils.concat_path(storage_path, repo, "unversioned")
@@ -57,15 +57,20 @@ def collect_svn_patch_unversioned(repo, storage_path):
     except path_utils.PathUtilsException as puex:
         return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % target_base
 
-    for uf in unversioned_files:
-        target_path = path_utils.concat_path(target_base, uf)
-        source_path = path_utils.concat_path(repo, uf)
+    for uf in unversioned_items:
 
-        if os.path.exists( target_path ):
-            return False, "Can't collect patch for unversioned: [%s] already exists." % target_path
-        if not path_utils.based_copy_to( repo, source_path, target_base ):
-            return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]." % (source_path, target_base)
-        written_file_list.append(target_path)
+        v, r = path_utils.based_path_find_outstanding_path(repo, uf)
+        if not v:
+            return False, "Can't collect patch for unversioned: Failed separating [%s]'s path from its base path [%s]" % (repo, uf)
+        item_remaining_path = r
+
+        target_final_path = path_utils.concat_path(target_base, item_remaining_path)
+
+        if os.path.exists(target_final_path):
+            return False, "Can't collect patch for unversioned: [%s] already exists" % target_final_path
+        if not path_utils.based_copy_to( repo, uf, target_base ):
+            return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]" % (uf, target_base)
+        written_file_list.append(target_final_path)
 
     return True, written_file_list
 

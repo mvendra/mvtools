@@ -54,6 +54,15 @@ def collect_git_patch_unversioned(repo, storage_path):
     unversioned_files = r
     written_file_list = []
 
+    target_base = path_utils.concat_path(storage_path, repo, "unversioned")
+    if os.path.exists(target_base):
+        return False, "Can't collect patch for unversioned: [%s] already exists." % target_base
+
+    try:
+        path_utils.guaranteefolder(target_base)
+    except path_utils.PathUtilsException as puex:
+        return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % target_base
+
     for uf in unversioned_files:
 
         v, r = path_utils.based_path_find_outstanding_path(repo, uf)
@@ -61,17 +70,12 @@ def collect_git_patch_unversioned(repo, storage_path):
             return False, "Can't collect patch for unversioned: Failed separating [%s]'s path from its base path [%s]" % (repo, uf)
         item_remaining_path = r
 
-        target_base = path_utils.concat_path(storage_path, repo, "unversioned")
         target_final_path = path_utils.concat_path(target_base, item_remaining_path)
 
-        try:
-            path_utils.guaranteefolder( target_base )
-        except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for unversioned: Failed guaranteeing folder [%s]." % os.path.dirname(target_base)
         if os.path.exists(target_final_path):
             return False, "Can't collect patch for unversioned: [%s] already exists" % target_final_path
         if not path_utils.based_copy_to( repo, uf, target_base ):
-            return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]." % (uf, target_base)
+            return False, "Can't collect patch for unversioned: Cant copy [%s] to [%s]" % (uf, target_base)
         written_file_list.append(target_final_path)
 
     return True, written_file_list

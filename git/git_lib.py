@@ -256,11 +256,8 @@ def get_unversioned_files(repo):
     v, r = git_wrapper.ls_files(repo)
     if not v:
         return False, r
-    unversioned_files = [x for x in r.split(os.linesep) if x != ""]
-    unversioned_files_fullpath = []
-    for uf in unversioned_files:
-        unversioned_files_fullpath.append(path_utils.concat_path(repo, uf))
-    return True, unversioned_files_fullpath
+    unversioned_files = [path_utils.concat_path(repo, x) for x in r.split(os.linesep) if x != ""]
+    return True, unversioned_files
 
 def get_stash_list(repo):
 
