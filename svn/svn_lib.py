@@ -163,6 +163,28 @@ def get_modified_files(repo):
 
     return True, mod_list
 
+def get_added_files(repo):
+
+    v, r = svn_wrapper.status(repo)
+    if not v:
+        return False, r
+
+    add_list = []
+
+    for line in r.split(os.linesep):
+
+        if len(line.strip()) == 0:
+            break
+        item_status = line[0]
+
+        if item_status == "A":
+            add_file = extract_file_from_status_line(line)
+            if add_file is None:
+                return False, "Unable to detect file from status line: [%s]" % line
+            add_list.append(path_utils.concat_path(repo, add_file))
+
+    return True, add_list
+
 def get_head_revision(repo):
 
     v, r = svn_wrapper.info(repo)
