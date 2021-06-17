@@ -40,6 +40,18 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
     if not os.path.exists(revert_file):
         return False, "reset_svn_repo_file: File [%s] does not exist" % revert_file
 
+    # check if the requested file has been newly added in the repo
+    v, r = svn_lib.get_added_files(target_repo)
+    if not v:
+        return False, "reset_svn_repo_file: Unable to retrieve list of added files: [%s]" % r
+    added_files = r
+
+    if revert_file in added_files:
+        v, r = svn_wrapper.revert(target_repo, [revert_file])
+        if not v:
+            return False, "reset_svn_repo_file: Failed attempting to un-add files: [%s]" % r
+        return True, "File [%s] was un-added" % revert_file
+
     # check if the requested file is modified in the repo
     v, r = svn_lib.get_modified_files(target_repo)
     if not v:
@@ -101,16 +113,32 @@ def reset_svn_repo(target_repo, files):
     except mvtools_exception.mvtools_exception as mvtex:
         return False, [mvtex.message]
 
-    # reset entire repo
+    has_any_failed = False
+    report = []
+
+    # get modified files
     if files is None:
+
         v, r = svn_lib.get_modified_files(target_repo)
         if not v:
             return False, [r]
         files = r
 
+        # get new+added files
+        v, r = svn_lib.get_added_files(target_repo)
+        if not v:
+            return False, ["Unable to retrieve list of added files: [%s]" % r]
+        added_files = r
+
+        # un-add new+added files (will be left as unversioned in the repo)
+        if len(added_files) > 0:
+            v, r = svn_wrapper.revert(target_repo, added_files)
+            if not v:
+                return False, ["Failed attempting to un-add files: [%s]" % r]
+            for af in added_files:
+                report.append("File [%s] was un-added" % af)
+
     # reset file by file
-    has_any_failed = False
-    report = []
     c = 0
     for i in files:
         c += 1
