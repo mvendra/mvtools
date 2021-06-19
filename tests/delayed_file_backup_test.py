@@ -4,8 +4,6 @@ import sys
 import os
 import shutil
 import unittest
-from unittest import mock
-from unittest.mock import patch
 
 import mvtools_test_fixture
 import create_and_write_file
