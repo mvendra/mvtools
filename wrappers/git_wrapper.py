@@ -85,7 +85,7 @@ def diff(repo, file_list=None):
     if file_list is not None:
         if not isinstance(file_list, list):
             return False, "git_wrapper.diff: file_list must be a list"
-        for f in file_list: # mvtodo: test when file_list is None
+        for f in file_list:
             cmd.append(f)
     return git_wrapper_standard_command(cmd, "diff")
 
@@ -94,7 +94,7 @@ def diff_cached(repo, file_list=None):
     if file_list is not None:
         if not isinstance(file_list, list):
             return False, "git_wrapper.diff_cached: file_list must be a list"
-        for f in file_list: # mvtodo: test when file_list is None
+        for f in file_list:
             cmd.append(f)
     return git_wrapper_standard_command(cmd, "diff-cached")
 
@@ -209,10 +209,11 @@ def fetch_all(repo):
     return git_wrapper_standard_command(cmd, "fetch-all")
 
 def fetch_multiple(repo, remotes):
-    if remotes is not None:
-        if not isinstance(remotes, list):
-            return False, "git_wrapper.fetch_multiple: remotes must be a list"
-    cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes # mvtodo: test when remotes is None
+    if remotes is None:
+        return False, "git_wrapper.fetch_multiple: remotes can't be None"
+    if not isinstance(remotes, list):
+        return False, "git_wrapper.fetch_multiple: remotes must be a list"
+    cmd = ["git", "-C", repo, "fetch", "--multiple"] + remotes
     return git_wrapper_standard_command(cmd, "fetch-multiple")
 
 def merge(repo, remotename, branchname):

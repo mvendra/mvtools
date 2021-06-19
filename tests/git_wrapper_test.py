@@ -1030,11 +1030,17 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue( os.path.exists( test_file2_fourthrepo ) )
         self.assertTrue( os.path.exists( test_file3_fourthrepo ) )
 
-    def testFetchMultipleFail(self):
+    def testFetchMultipleFail1(self):
 
         v, r = git_wrapper.fetch_multiple(self.second_repo, "a-string")
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.fetch_multiple: remotes must be a list")
+
+    def testFetchMultipleFail2(self):
+
+        v, r = git_wrapper.fetch_multiple(self.second_repo, None)
+        self.assertFalse(v)
+        self.assertEqual(r, "git_wrapper.fetch_multiple: remotes can't be None")
 
     def testFetchMultiple_and_Merge(self):
 
