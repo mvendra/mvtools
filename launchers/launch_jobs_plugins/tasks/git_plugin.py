@@ -20,6 +20,7 @@ class CustomTask(launch_jobs.BaseTask):
         operation = None
         source_url = None
         remote_name = None
+        branch_name = None
         source_path = None
         port_repo_head = False
         port_repo_staged = False
@@ -54,6 +55,12 @@ class CustomTask(launch_jobs.BaseTask):
         # remote_name
         try:
             remote_name = self.params["remote_name"]
+        except KeyError:
+            pass # optional
+
+        # branch_name
+        try:
+            branch_name = self.params["branch_name"]
         except KeyError:
             pass # optional
 
@@ -133,20 +140,20 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, remote_name, source_path, port_repo_head, port_repo_staged, port_repo_stash, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file)
+        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, remote_name, source_path, port_repo_head, port_repo_staged, port_repo_stash, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files = r
+        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files = r
 
         # delegate
         if operation == "clone_repo":
             return self.task_clone_repo(feedback_object, source_url, target_path, remote_name)
         elif operation == "pull_repo":
-            return self.task_pull_repo(feedback_object, target_path)
+            return self.task_pull_repo(feedback_object, target_path, remote_name, branch_name)
         elif operation == "port_repo":
             return self.task_port_repo(feedback_object, source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash, port_repo_unversioned, port_repo_previous_count)
         elif operation == "reset_repo":
@@ -172,14 +179,28 @@ class CustomTask(launch_jobs.BaseTask):
 
         return True, None
 
-    def task_pull_repo(self, feedback_object, target_path):
+    def task_pull_repo(self, feedback_object, target_path, remote_name, branch_name):
 
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
-        v, r = git_wrapper.pull_default(target_path)
-        if not v:
-            return False, r
+        if remote_name is None and branch_name is None:
+
+            v, r = git_wrapper.pull_default(target_path)
+            if not v:
+                return False, r
+
+        else:
+
+            if remote_name is None:
+                return False, "Branch name was specified, but remote name was not"
+
+            if branch_name is None:
+                return False, "Remote name was specified, but branch name was not"
+
+            v, r = git_wrapper.pull(target_path, remote_name, branch_name)
+            if not v:
+                return False, r
 
         return True, None
 
