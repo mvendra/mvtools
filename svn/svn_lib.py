@@ -44,6 +44,7 @@ def extract_file_from_status_line(the_line):
     return None
 
 def status_filter_function_unversioned(the_line):
+
     if the_line is None:
         return None
     if len(the_line) == 0:
@@ -55,6 +56,8 @@ def status_filter_function_unversioned(the_line):
     for i in range(len(the_line)):
         if is_nonspaceortabs(the_line[i]):
             return the_line[i:]
+
+    return None
 
 def rev_single_entry_filter(log_entry):
 
@@ -114,6 +117,8 @@ def detect_separator(the_string):
         if is_non_generic(the_string[i], [rep_char]):
             rep_line = the_string[0:i]
             return rep_line
+
+    return None
 
 def get_list_unversioned(repo):
 
@@ -399,6 +404,8 @@ def checkout_autoretry(feedback_object, remote_link, local_repo):
         feedback_object("Iteration number [%d] has failed. Will sleep for [%d] minutes before retrying." % (iterations, SLEEP_TIME))
         time.sleep(SLEEP_TIME * 60)
         feedback_object("Iteration number [%d] will resume now." % iterations)
+
+    return True, warnings
 
 def patch_as_head(repo, patch_file, override_head_check):
 
