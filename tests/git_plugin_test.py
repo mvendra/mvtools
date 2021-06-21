@@ -253,11 +253,6 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskCloneRepo1(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("git_wrapper.clone", return_value=(True, None)):
@@ -265,11 +260,6 @@ class GitPluginTest(unittest.TestCase):
             self.assertFalse(v)
 
     def testGitPluginTaskCloneRepo2(self):
-
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
 
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
@@ -280,11 +270,6 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPullRepo1(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
         with mock.patch("git_wrapper.pull_default", return_value=(True, None)):
@@ -293,14 +278,7 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPullRepo2(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        local_params["remote_name"] = "dummy_value3"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
-
         valid_branch_name = "master"
 
         with mock.patch("git_wrapper.pull", return_value=(True, None)):
@@ -309,14 +287,7 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPullRepo3(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        local_params["remote_name"] = "dummy_value3"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
-
         valid_remote_name = "origin"
 
         with mock.patch("git_wrapper.pull", return_value=(True, None)):
@@ -324,11 +295,6 @@ class GitPluginTest(unittest.TestCase):
             self.assertFalse(v)
 
     def testGitPluginTaskPullRepo4(self):
-
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
@@ -339,13 +305,7 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPullRepo5(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
-
         valid_remote_name = "origin"
         valid_branch_name = "master"
 
@@ -356,13 +316,7 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPortRepo1(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
-
         prev_count = "0"
 
         with mock.patch("port_git_repo.port_git_repo", return_value=(True, None)) as dummy:
@@ -371,14 +325,8 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPortRepo2(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertFalse(os.path.exists(self.nonexistent_path1))
         self.assertTrue(os.path.exists(self.existent_path1))
-
         prev_count = "0"
 
         with mock.patch("port_git_repo.port_git_repo", return_value=(True, None)) as dummy:
@@ -387,14 +335,8 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPortRepo3(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertFalse(os.path.exists(self.nonexistent_path1))
         self.assertTrue(os.path.exists(self.existent_path1))
-
         prev_count = "0"
 
         with mock.patch("port_git_repo.port_git_repo", return_value=(True, None)) as dummy:
@@ -403,14 +345,8 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPortRepo4(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))
-
         prev_count = "a"
 
         with mock.patch("port_git_repo.port_git_repo", return_value=(True, None)) as dummy:
@@ -418,11 +354,6 @@ class GitPluginTest(unittest.TestCase):
             self.assertFalse(v)
 
     def testGitPluginTaskPortRepo5(self):
-
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
 
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))
@@ -440,11 +371,6 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPortRepo6(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))
 
@@ -461,11 +387,6 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskResetRepo1(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
@@ -473,11 +394,6 @@ class GitPluginTest(unittest.TestCase):
             self.assertFalse(v)
 
     def testGitPluginTaskResetRepo2(self):
-
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
@@ -488,13 +404,7 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskResetFile1(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertFalse(os.path.exists(self.nonexistent_path1))
-
         valid_file = path_utils.concat_path(self.existent_path1, "file1.txt")
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
@@ -502,11 +412,6 @@ class GitPluginTest(unittest.TestCase):
             self.assertFalse(v)
 
     def testGitPluginTaskResetFile2(self):
-
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
@@ -516,13 +421,7 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskResetFile3(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
-
         valid_file = path_utils.concat_path(self.existent_path1, "file1.txt")
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
@@ -532,13 +431,7 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskResetFile4(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
-
         valid_file = path_utils.concat_path(self.existent_path1, "file1.txt")
         valid_file = [valid_file]
 
@@ -549,11 +442,6 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPatchRepo1(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
         with mock.patch("apply_git_patch.apply_git_patch", return_value=(True, None)) as dummy:
@@ -561,11 +449,6 @@ class GitPluginTest(unittest.TestCase):
             self.assertFalse(v)
 
     def testGitPluginTaskPatchRepo2(self):
-
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
 
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertFalse(os.path.exists(self.nonexistent_path1))
@@ -576,11 +459,6 @@ class GitPluginTest(unittest.TestCase):
 
     def testGitPluginTaskPatchRepo3(self):
 
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
-
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("apply_git_patch.apply_git_patch", return_value=(True, None)) as dummy:
@@ -589,11 +467,6 @@ class GitPluginTest(unittest.TestCase):
             dummy.assert_called_with(self.existent_path1, [], [], [], [])
 
     def testGitPluginTaskPatchRepo4(self):
-
-        local_params = {}
-        local_params["target_path"] = "dummy_value1"
-        local_params["operation"] = "dummy_value2"
-        self.git_task.params = local_params
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
