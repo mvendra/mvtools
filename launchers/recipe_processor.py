@@ -33,6 +33,14 @@ import mvtools_envvars
 # by default, task scripts are searched inside MVTOOLS/launchers/launch_jobs_plugins/tasks
 # this can be changed by adding the following freestanding (i.e. outside any context) variable:
 # * recipe_namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
+# it operates in two modes: exclusive mode (which is the default) and inclusive mode.
+# in exclusive mode, scripts will only be searched inside the specified path. in inclusive
+# mode, scripts will first be searched inside the built-in plugins
+# folder (MVTOOLS/launchers/launch_jobs_plugins/tasks), and if its not found there, then, and
+# only then, the custom path will be searched. example:
+# * recipe_namespace {inclusive} = "/home/user/custom_mvtools_launch_jobs_plugins"
+# it is not necessary to explicitly set "exclusive" to activate the exclusive mode, because
+# it is the default.
 #
 # it is possible to define launch_jobs's execution options using freestanding variables
 # inside the recipe:
@@ -107,6 +115,19 @@ def _get_plugins_path(namespace=None):
 
 def _get_task_instance(task_script, namespace=None):
 
+    if namespace is None:
+        return _get_task_instance_delegate(task_script, None)
+
+    if namespace[1]: # exclusive mode - only the custom namespace is tried
+        return _get_task_instance_delegate(task_script, namespace[0])
+    else: # inclusive mode - first the built-in namespace is tried, and if that fails, then the custom namespace is tried
+        v, r = _get_task_instance_delegate(task_script, None)
+        if not v:
+            return _get_task_instance_delegate(task_script, namespace[0])
+        return v, r
+
+def _get_task_instance_delegate(task_script, namespace):
+
     v, r = _get_plugins_path(namespace)
     if not v:
         return False, r
@@ -131,6 +152,19 @@ def _get_task_instance(task_script, namespace=None):
     return True, mod.CustomTask
 
 def _get_job_instance(job_params, namespace=None):
+
+    if namespace is None:
+        return _get_job_instance_delegate(job_params, None)
+
+    if namespace[1]: # exclusive mode - only the custom namespace is tried
+        return _get_job_instance_delegate(job_params, namespace[0])
+    else: # inclusive mode - first the built-in namespace is tried, and if that fails, then the custom namespace is tried
+        v, r = _get_job_instance_delegate(job_params, None)
+        if not v:
+            return _get_job_instance_delegate(job_params, namespace[0])
+        return v, r
+
+def _get_job_instance_delegate(job_params, namespace):
 
     if not "mvtools_recipe_processor_plugin_job" in job_params:
         return True, standard_job.StandardJob
@@ -251,7 +285,13 @@ class RecipeProcessor:
         if len(var_rn) > 1:
             return False, "Recipe's recipe_namespace has been specified multiple times."
         elif len(var_rn) == 1:
-            namespace = var_rn[0][1]
+            namespace_path = var_rn[0][1]
+            namespace_opt = var_rn[0][2]
+            namespace_opt_v = True # exclusive mode (default)
+            for opts in namespace_opt:
+                if opts[0] == "inclusive":
+                    namespace_opt_v = False # disable exclusive mode
+            namespace = (namespace_path, namespace_opt_v)
 
         # recipe includes
         for var_ir in dsl.get_vars("include_recipe"):
