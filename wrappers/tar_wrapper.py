@@ -10,7 +10,6 @@ def make_pack(file_to_create, incl_list):
 
     # file_to_create: tar file to create
     # incl_list: list of files or folders to include
-    # excl_list: list of files or folders to exclude
 
     file_to_create = path_utils.filter_remove_trailing_sep(file_to_create)
 
