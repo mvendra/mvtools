@@ -6,7 +6,7 @@ import os
 import generic_run
 import path_utils
 
-def make_pack(file_to_create, incl_list, excl_list=None):
+def make_pack(file_to_create, incl_list):
 
     # file_to_create: tar file to create
     # incl_list: list of files or folders to include
@@ -26,10 +26,6 @@ def make_pack(file_to_create, incl_list, excl_list=None):
         incl_list[fi] = path_utils.filter_remove_trailing_sep(incl_list[fi])
         if not os.path.exists( incl_list[fi] ):
             return False, "%s does not exist." % incl_list(fi)
-    if excl_list is not None:
-        for f in excl_list:
-            if not os.path.exists(f):
-                return False, "%s does not exist." % f
 
     # main option
     tar_cmd = ["tar", "-cf", file_to_create] + incl_list

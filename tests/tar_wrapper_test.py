@@ -141,7 +141,6 @@ class TarWrapperTest(unittest.TestCase):
         self.assertTrue(os.path.exists( self.ext_folder2_sub1_file1 ))
 
     def testMakeAndExtract2(self):
-        #v, r = tar_wrapper.make_pack(self.tar_file, [self.folder1, self.folder2, self.file1, self.file2], [self.folder2_sub1])
         v, r = tar_wrapper.make_pack(self.tar_file, [self.folder1, self.folder2, self.file1, self.file2])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.tar_file))
