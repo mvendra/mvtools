@@ -432,23 +432,36 @@ if __name__ == "__main__":
         puaq()
     params = sys.argv[1:]
 
-    next_run_recipe = False
-    next_test_recipe = False
+    operation = None
+    next_recipe = False
+    recipe_file = None
 
     for p in params:
 
-        if next_run_recipe:
-            next_run_recipe = False
-            menu_run_recipe(p)
-            continue
-        elif next_test_recipe:
-            next_test_recipe = False
-            menu_test_recipe(p)
+        if next_recipe:
+            next_recipe = False
+            recipe_file = p
             continue
 
         if p == "--run":
-            next_run_recipe = True
+            if operation is not None:
+                print("Operation should only be specified once (either --run or --test)")
+                sys.exit(1)
+            operation = "run"
+            next_recipe = True
         elif p == "--test":
-            next_test_recipe = True
+            if operation is not None:
+                print("Operation should only be specified once (either --run or --test)")
+                sys.exit(1)
+            operation = "test"
+            next_recipe = True
         else:
             print("Invalid commandline argument: [%s]" % p)
+
+    if operation == "run":
+        menu_run_recipe(recipe_file)
+    elif operation == "test":
+        menu_test_recipe(recipe_file)
+    else:
+        print("Invalid operation: [%s]" % operation)
+        sys.exit(1)
