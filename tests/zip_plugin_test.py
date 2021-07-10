@@ -214,13 +214,21 @@ class ZipPluginTest(unittest.TestCase):
     def testZipPluginTaskExtractPackage2(self):
 
         self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("zip_wrapper.extract", return_value=(True, None)) as dummy:
+            v, r = self.zip_task.task_extract_package(print, self.existent_path1, None)
+            self.assertFalse(v)
+
+    def testZipPluginTaskExtractPackage3(self):
+
+        self.assertTrue(os.path.exists(self.existent_path2))
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
         with mock.patch("zip_wrapper.extract", return_value=(True, None)) as dummy:
             v, r = self.zip_task.task_extract_package(print, self.existent_path1, self.nonexistent_path1)
             self.assertFalse(v)
 
-    def testZipPluginTaskExtractPackage3(self):
+    def testZipPluginTaskExtractPackage4(self):
 
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))

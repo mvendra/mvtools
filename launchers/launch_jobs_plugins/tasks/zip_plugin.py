@@ -91,6 +91,9 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(target_archive):
             return False, "Target archive [%s] does not exist" % target_archive
 
+        if target_path is None:
+            return False, "target_path is required for task_extract_package"
+
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
