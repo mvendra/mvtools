@@ -106,7 +106,7 @@ def get_signal(_sig_name, probe_only=False):
 
     v, r = _get_internal(_db_handle, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT, _sig_name)
     if not v:
-        return False, r
+        return True, None
 
     if not probe_only: # signal consumed
 

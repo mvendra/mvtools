@@ -87,7 +87,8 @@ def _retry_helper(wait_object, wait_object_name, function):
     return True, None
 
 def _handle_delayed_start_signal_delegate(signal_delay):
-    return toolbus.get_signal(signal_delay) # signal will be consumed
+    v, r = toolbus.get_signal(signal_delay) # signal will be consumed
+    return v, not (r == None)
 
 def _handle_delayed_start_execution_delegate(execution_delay):
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_delay, "status")

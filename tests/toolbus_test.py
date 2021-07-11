@@ -296,7 +296,8 @@ class ToolbusTest(unittest.TestCase):
         self.assertEqual(r, "val7")
 
         v, r = toolbus.get_signal("var8")
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
     def testGetSignal3(self):
 
@@ -314,7 +315,8 @@ class ToolbusTest(unittest.TestCase):
         self.assertEqual(r, "val14")
 
         v, r = toolbus.get_signal("var14")
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
     def testSetSignal1(self):
 
@@ -326,7 +328,8 @@ class ToolbusTest(unittest.TestCase):
     def testSetSignal2(self):
 
         v, r = toolbus.get_signal("var11")
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
         v, r = toolbus.set_signal("var11", "val11")
         self.assertTrue(v)
@@ -338,7 +341,8 @@ class ToolbusTest(unittest.TestCase):
     def testSetSignal3(self):
 
         v, r = toolbus.get_signal("var13")
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
         v, r = toolbus.set_signal("var13", "val13")
         self.assertTrue(v)
@@ -349,7 +353,8 @@ class ToolbusTest(unittest.TestCase):
     def testSetAndGetSignal1(self):
 
         v, r = toolbus.get_signal("var12")
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
         v, r = toolbus.set_signal("var12", "val12")
         self.assertTrue(v)
@@ -359,7 +364,8 @@ class ToolbusTest(unittest.TestCase):
         self.assertEqual(r, "val12")
 
         v, r = toolbus.get_signal("var12")
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
     def testRemoveField1(self):
 
