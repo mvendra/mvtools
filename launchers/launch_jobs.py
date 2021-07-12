@@ -160,7 +160,7 @@ def _handle_delayed_start(execution_name, time_delay, signal_delay, execution_de
 
     return True, None
 
-def _wait_if_paused(execution_name):
+def _wait_if_paused(feedback_object, execution_name):
 
     v, r = _is_status_paused_delegate(execution_name)
     if not v:
@@ -169,11 +169,11 @@ def _wait_if_paused(execution_name):
         return True, None
 
     # yes, execution has been paused
-    print("Execution [%s] has been paused." % execution_name)
+    feedback_object("Execution [%s] has been paused." % execution_name)
     v, r = _retry_helper(execution_name, "execution name", _is_status_running_delegate)
     if not v:
         return False, r
-    print("Execution [%s] will resume." % execution_name)
+    feedback_object("Execution [%s] will resume." % execution_name)
     return True, None
 
 class RunOptions:
@@ -225,7 +225,7 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
     for j in job_list:
 
         j_msg = ""
-        v, r = _wait_if_paused(execution_name)
+        v, r = _wait_if_paused(feedback_object, execution_name)
         if not v:
             j_msg = "Pausing failed: [%s]. Job: [%s]" % (r, j.name)
         else:
