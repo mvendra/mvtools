@@ -272,7 +272,10 @@ if __name__ == "__main__":
     if not get_signame is None:
         v, r = get_signal(get_signame)
         if v:
-            print(r)
+            if r is None:
+                print("Signal [%s] is not set." % get_signame)
+            else:
+                print(r)
         else:
             print("Toolbus get_signal failed: %s" % r)
             sys.exit(1)
