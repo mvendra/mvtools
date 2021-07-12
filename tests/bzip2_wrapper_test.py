@@ -8,8 +8,9 @@ import unittest
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
-
+import sha512_wrapper
 import tar_wrapper
+
 import bzip2_wrapper
 
 class Bzip2WrapperTest(unittest.TestCase):
@@ -62,7 +63,7 @@ class Bzip2WrapperTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testPrecheck(self):
+    def testCompressPrecheck(self):
         v, r = bzip2_wrapper.compress(self.file_nonexistant)
         self.assertFalse(v)
 
@@ -89,6 +90,90 @@ class Bzip2WrapperTest(unittest.TestCase):
         self.assertTrue(v)
         tar_bz_file_with_space = self.tar_file_with_space_3 + ".bz2"
         self.assertTrue(os.path.exists(tar_bz_file_with_space))
+
+    def testDecompress1(self):
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file)
+        self.assertTrue(v)
+        hash = r
+
+        v, r = bzip2_wrapper.compress(self.tar_file)
+        self.assertTrue(v)
+
+        tar_bz_file = self.tar_file + ".bz2"
+        self.assertTrue(os.path.exists(tar_bz_file))
+
+        self.assertFalse( os.path.exists(self.tar_file) )
+
+        v, r = bzip2_wrapper.decompress(tar_bz_file)
+        self.assertTrue(v)
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file)
+        self.assertTrue(v)
+        self.assertEqual(r, hash)
+
+    def testDecompress2(self):
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space_1)
+        self.assertTrue(v)
+        hash = r
+
+        v, r = bzip2_wrapper.compress(self.tar_file_with_space_1)
+        self.assertTrue(v)
+
+        tar_bz_file_with_space = self.tar_file_with_space_1 + ".bz2"
+        self.assertTrue(os.path.exists(tar_bz_file_with_space))
+
+        self.assertFalse( os.path.exists(self.tar_file_with_space_1) )
+
+        v, r = bzip2_wrapper.decompress(tar_bz_file_with_space)
+        self.assertTrue(v)
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space_1)
+        self.assertTrue(v)
+        self.assertEqual(r, hash)
+
+    def testDecompress3(self):
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space_2)
+        self.assertTrue(v)
+        hash = r
+
+        v, r = bzip2_wrapper.compress(self.tar_file_with_space_2)
+        self.assertTrue(v)
+
+        tar_bz_file_with_space = self.tar_file_with_space_2 + ".bz2"
+        self.assertTrue(os.path.exists(tar_bz_file_with_space))
+
+        self.assertFalse( os.path.exists(self.tar_file_with_space_2) )
+
+        v, r = bzip2_wrapper.decompress(tar_bz_file_with_space)
+        self.assertTrue(v)
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space_2)
+        self.assertTrue(v)
+        self.assertEqual(r, hash)
+
+    def testDecompress4(self):
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space_3)
+        self.assertTrue(v)
+        hash = r
+
+        v, r = bzip2_wrapper.compress(self.tar_file_with_space_3)
+        self.assertTrue(v)
+
+        tar_bz_file_with_space = self.tar_file_with_space_3 + ".bz2"
+        self.assertTrue(os.path.exists(tar_bz_file_with_space))
+
+        self.assertFalse( os.path.exists(self.tar_file_with_space_3) )
+
+        v, r = bzip2_wrapper.decompress(tar_bz_file_with_space)
+        self.assertTrue(v)
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(self.tar_file_with_space_3)
+        self.assertTrue(v)
+        self.assertEqual(r, hash)
 
 if __name__ == '__main__':
     unittest.main()
