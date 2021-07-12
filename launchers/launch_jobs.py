@@ -224,6 +224,8 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
     report = []
     for j in job_list:
 
+        feedback_object("Job [%s][%s] started." % (j.name, j.get_desc()))
+
         j_msg = ""
         v, r = _wait_if_paused(feedback_object, execution_name)
         if not v:
