@@ -210,7 +210,7 @@ class RecipeProcessor:
         self.depth_counter = 0
         self.circular_tracker = []
 
-    def test(self):
+    def test(self, requested_execution_name=None):
 
         self._clear()
 
@@ -239,13 +239,18 @@ class RecipeProcessor:
             return False, r
         exec_name = r
 
+        v, r = self._resolve_exec_name(requested_execution_name, exec_name)
+        if not v:
+            return False, r
+        exec_name = r
+
         return True, (jobs, options, exec_name)
 
-    def run(self):
+    def run(self, requested_execution_name=None):
 
         self._clear()
 
-        v, r = self.test()
+        v, r = self.test(requested_execution_name)
         if not v:
             return False, r
 
@@ -420,19 +425,19 @@ class RecipeProcessor:
 
         local_options.early_abort = _conditional_write(local_options.early_abort, options.early_abort)
         if options.early_abort is not None and self.requested_options.early_abort is not None:
-            print("%sWarning: the [early_abort] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.early_abort, terminal_colors.TTY_WHITE))
+            print("%sWarning: the [early-abort] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.early_abort, terminal_colors.TTY_WHITE))
 
         local_options.time_delay = _conditional_write(local_options.time_delay, options.time_delay)
         if options.time_delay is not None and self.requested_options.time_delay is not None:
-            print("%sWarning: the [time_delay] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.time_delay, terminal_colors.TTY_WHITE))
+            print("%sWarning: the [time-delay] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.time_delay, terminal_colors.TTY_WHITE))
 
         local_options.signal_delay = _conditional_write(local_options.signal_delay, options.signal_delay)
         if options.signal_delay is not None and self.requested_options.signal_delay is not None:
-            print("%sWarning: the [signal_delay] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.signal_delay, terminal_colors.TTY_WHITE))
+            print("%sWarning: the [signal-delay] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.signal_delay, terminal_colors.TTY_WHITE))
 
         local_options.execution_delay = _conditional_write(local_options.execution_delay, options.execution_delay)
         if options.execution_delay is not None and self.requested_options.execution_delay is not None:
-            print("%sWarning: the [execution_delay] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.execution_delay, terminal_colors.TTY_WHITE))
+            print("%sWarning: the [execution-delay] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.execution_delay, terminal_colors.TTY_WHITE))
 
         return True, local_options
 
@@ -445,32 +450,44 @@ class RecipeProcessor:
             return True, (var_rn[0][1])
         return True, None
 
-def test_jobs_from_recipe_file(recipe_file, requested_options=None):
-    recipe_processor = RecipeProcessor(recipe_file, requested_options)
-    return recipe_processor.test()
+    def _resolve_exec_name(self, requested_execution_name, recipe_execution_name):
 
-def run_jobs_from_recipe_file(recipe_file, requested_options=None):
+        local_exec_name = None
+
+        local_exec_name = _conditional_write(local_exec_name, requested_execution_name)
+        local_exec_name = _conditional_write(local_exec_name, recipe_execution_name)
+
+        if requested_execution_name is not None and recipe_execution_name is not None:
+            print("%sWarning: the [execution-name] has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_exec_name, terminal_colors.TTY_WHITE))
+
+        return True, local_exec_name
+
+def run_jobs_from_recipe_file(recipe_file, execution_name=None, requested_options=None):
     recipe_processor = RecipeProcessor(recipe_file, requested_options)
-    return recipe_processor.run()
+    return recipe_processor.run(execution_name)
+
+def test_jobs_from_recipe_file(recipe_file, execution_name=None, requested_options=None):
+    recipe_processor = RecipeProcessor(recipe_file, requested_options)
+    return recipe_processor.test(execution_name)
 
 def assemble_requested_options(_early_abort, _time_delay, _signal_delay, _execution_delay):
     return launch_jobs.RunOptions(early_abort=_early_abort, time_delay=_time_delay, signal_delay=_signal_delay, execution_delay=_execution_delay)
 
-def menu_test_recipe(recipe_file, requested_options):
+def menu_run_recipe(recipe_file, execution_name, requested_options):
 
-    v, r = test_jobs_from_recipe_file(recipe_file, requested_options)
-    if not v:
-        print("%sTesting of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
-    else:
-        print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
-
-def menu_run_recipe(recipe_file, requested_options):
-
-    v, r = run_jobs_from_recipe_file(recipe_file, requested_options)
+    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
     if not v:
         print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
     else:
         print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
+
+def menu_test_recipe(recipe_file, execution_name, requested_options):
+
+    v, r = test_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
+    if not v:
+        print("%sTesting of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
+    else:
+        print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
 def puaq():
     print("Usage: %s [--run recipe.t20 | --test recipe.t20] --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % os.path.basename(__file__))
@@ -487,6 +504,8 @@ if __name__ == "__main__":
     recipe_file = None
 
     # launch_jobs options
+    execution_name = None
+    execution_name_next = False
     early_abort = None
     early_abort_next = False
     time_delay = None
@@ -501,6 +520,11 @@ if __name__ == "__main__":
         if recipe_next:
             recipe_next = False
             recipe_file = p
+            continue
+
+        if execution_name_next:
+            execution_name_next = False
+            execution_name = p
             continue
 
         if early_abort_next:
@@ -541,6 +565,8 @@ if __name__ == "__main__":
                 sys.exit(1)
             operation = "test"
             recipe_next = True
+        elif p == "--execution-name":
+            execution_name_next = True
         elif p == "--early-abort":
             early_abort_next = True
         elif p == "--time-delay":
@@ -551,13 +577,14 @@ if __name__ == "__main__":
             execution_delay_next = True
         else:
             print("Invalid commandline argument: [%s]" % p)
+            sys.exit(1)
 
     req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
     if operation == "run":
-        menu_run_recipe(recipe_file, req_opts)
+        menu_run_recipe(recipe_file, execution_name, req_opts)
     elif operation == "test":
-        menu_test_recipe(recipe_file, req_opts)
+        menu_test_recipe(recipe_file, execution_name, req_opts)
     else:
         print("Invalid operation: [%s]" % operation)
         sys.exit(1)
