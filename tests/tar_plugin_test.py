@@ -81,7 +81,7 @@ class TarPluginTest(unittest.TestCase):
 
         v, r = self.tar_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False) )
 
     def testTarPluginReadParams4(self):
 
@@ -93,7 +93,7 @@ class TarPluginTest(unittest.TestCase):
 
         v, r = self.tar_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, False) )
 
     def testTarPluginReadParams5(self):
 
@@ -106,7 +106,21 @@ class TarPluginTest(unittest.TestCase):
 
         v, r = self.tar_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4") )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", False) )
+
+    def testTarPluginReadParams6(self):
+
+        local_params = {}
+        local_params["operation"] = "dummy_value1"
+        local_params["target_archive"] = "dummy_value2"
+        local_params["source_path"] = "dummy_value3"
+        local_params["target_path"] = "dummy_value4"
+        local_params["compress"] = "dummy_value5"
+        self.tar_task.params = local_params
+
+        v, r = self.tar_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True) )
 
     def testTarPluginRunTask1(self):
 
@@ -129,7 +143,21 @@ class TarPluginTest(unittest.TestCase):
         with mock.patch("tar_plugin.CustomTask.task_create_package", return_value=(True, None)) as dummy:
             v, r = self.tar_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(print, "dummy_value1", "dummy_value2")
+            dummy.assert_called_with(print, "dummy_value1", "dummy_value2", False)
+
+    def testTarPluginRunTask_CreatePackage2(self):
+
+        local_params = {}
+        local_params["operation"] = "create"
+        local_params["target_archive"] = "dummy_value1"
+        local_params["source_path"] = "dummy_value2"
+        local_params["compress"] = "dummy_value3"
+        self.tar_task.params = local_params
+
+        with mock.patch("tar_plugin.CustomTask.task_create_package", return_value=(True, None)) as dummy:
+            v, r = self.tar_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, "dummy_value1", "dummy_value2", True)
 
     def testTarPluginRunTask_ExtractPackage1(self):
 
@@ -161,7 +189,7 @@ class TarPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("tar_wrapper.make_pack", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_create_package(print, None, self.existent_path1)
+            v, r = self.tar_task.task_create_package(print, None, self.existent_path1, False)
             self.assertFalse(v)
 
     def testTarPluginTaskCreatePackage2(self):
@@ -170,7 +198,7 @@ class TarPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("tar_wrapper.make_pack", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_create_package(print, self.existent_archive1, self.existent_path1)
+            v, r = self.tar_task.task_create_package(print, self.existent_archive1, self.existent_path1, False)
             self.assertFalse(v)
 
     def testTarPluginTaskCreatePackage3(self):
@@ -178,7 +206,7 @@ class TarPluginTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.nonexistent_archive1))
 
         with mock.patch("tar_wrapper.make_pack", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, None)
+            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, None, False)
             self.assertFalse(v)
 
     def testTarPluginTaskCreatePackage4(self):
@@ -187,7 +215,7 @@ class TarPluginTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
         with mock.patch("tar_wrapper.make_pack", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, self.nonexistent_path1)
+            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, self.nonexistent_path1, False)
             self.assertFalse(v)
 
     def testTarPluginTaskCreatePackage5(self):
@@ -196,7 +224,7 @@ class TarPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("tar_wrapper.make_pack", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, [self.existent_path1])
+            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, [self.existent_path1], False)
             self.assertTrue(v)
             dummy.assert_called_with(self.nonexistent_archive1, [self.existent_path1])
 
@@ -206,62 +234,74 @@ class TarPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("tar_wrapper.make_pack", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, self.existent_path1)
+            v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, self.existent_path1, False)
             self.assertTrue(v)
             dummy.assert_called_with(self.nonexistent_archive1, [self.existent_path1])
 
+    def testTarPluginTaskCreatePackage7(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent_archive1))
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("tar_wrapper.make_pack", return_value=(True, None)) as dummy1:
+            with mock.patch("bzip2_wrapper.compress", return_value=(True, None)) as dummy2:
+                v, r = self.tar_task.task_create_package(print, self.nonexistent_archive1, self.existent_path1, True)
+                self.assertTrue(v)
+                dummy1.assert_called_with(self.nonexistent_archive1, [self.existent_path1])
+                dummy2.assert_called_with(self.nonexistent_archive1)
+
     def testTarPluginTaskExtractPackage1(self):
 
-        self.assertFalse(os.path.exists(self.nonexistent_path1))
-        self.assertTrue(os.path.exists(self.existent_path2))
+        self.assertFalse(os.path.exists(self.nonexistent_archive1))
+        self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("tar_wrapper.extract", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_extract_package(print, self.nonexistent_path1, self.existent_path2)
+            v, r = self.tar_task.task_extract_package(print, self.nonexistent_archive1, self.existent_path1)
             self.assertFalse(v)
 
     def testTarPluginTaskExtractPackage2(self):
 
-        self.assertTrue(os.path.exists(self.existent_path2))
+        self.assertTrue(os.path.exists(self.existent_archive1))
 
         with mock.patch("tar_wrapper.extract", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_extract_package(print, self.existent_path1, None)
+            v, r = self.tar_task.task_extract_package(print, self.existent_archive1, None)
             self.assertFalse(v)
 
     def testTarPluginTaskExtractPackage3(self):
 
-        self.assertTrue(os.path.exists(self.existent_path2))
+        self.assertTrue(os.path.exists(self.existent_archive1))
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
         with mock.patch("tar_wrapper.extract", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_extract_package(print, self.existent_path1, self.nonexistent_path1)
+            v, r = self.tar_task.task_extract_package(print, self.existent_archive1, self.nonexistent_path1)
             self.assertFalse(v)
 
     def testTarPluginTaskExtractPackage4(self):
 
+        self.assertTrue(os.path.exists(self.existent_archive1))
         self.assertTrue(os.path.exists(self.existent_path1))
-        self.assertTrue(os.path.exists(self.existent_path2))
 
         with mock.patch("tar_wrapper.extract", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_extract_package(print, self.existent_path1, self.existent_path2)
+            v, r = self.tar_task.task_extract_package(print, self.existent_archive1, self.existent_path1)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, self.existent_path2)
+            dummy.assert_called_with(self.existent_archive1, self.existent_path1)
 
     def testTarPluginTaskCompressPackage1(self):
 
-        self.assertFalse(os.path.exists(self.nonexistent_path1))
+        self.assertFalse(os.path.exists(self.nonexistent_archive1))
 
         with mock.patch("bzip2_wrapper.compress", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_compress_package(print, self.nonexistent_path1)
+            v, r = self.tar_task.task_compress_package(print, self.nonexistent_archive1)
             self.assertFalse(v)
 
     def testTarPluginTaskCompressPackage2(self):
 
-        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_archive1))
 
         with mock.patch("bzip2_wrapper.compress", return_value=(True, None)) as dummy:
-            v, r = self.tar_task.task_compress_package(print, self.existent_path1)
+            v, r = self.tar_task.task_compress_package(print, self.existent_archive1)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1)
+            dummy.assert_called_with(self.existent_archive1)
 
 if __name__ == '__main__':
     unittest.main()

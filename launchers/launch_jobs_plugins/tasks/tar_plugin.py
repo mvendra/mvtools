@@ -18,6 +18,7 @@ class CustomTask(launch_jobs.BaseTask):
         target_archive = None
         source_path = None
         target_path = None
+        compress = None
 
         # operation
         try:
@@ -43,18 +44,21 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (operation, target_archive, source_path, target_path)
+        # compress
+        compress = "compress" in self.params
+
+        return True, (operation, target_archive, source_path, target_path, compress)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        operation, target_archive, source_path, target_path = r
+        operation, target_archive, source_path, target_path, compress = r
 
         # delegate
         if operation == "create":
-            return self.task_create_package(feedback_object, target_archive, source_path)
+            return self.task_create_package(feedback_object, target_archive, source_path, compress)
         elif operation == "extract":
             return self.task_extract_package(feedback_object, target_archive, target_path)
         elif operation == "compress":
@@ -62,7 +66,7 @@ class CustomTask(launch_jobs.BaseTask):
         else:
             return False, "Operation [%s] is invalid" % operation
 
-    def task_create_package(self, feedback_object, target_archive, source_path):
+    def task_create_package(self, feedback_object, target_archive, source_path, compress):
 
         if target_archive is None:
             return False, "Target archive is required for task_create_package"
@@ -86,6 +90,11 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = tar_wrapper.make_pack(target_archive, item_list)
         if not v:
             return False, r
+
+        if compress:
+            v, r = bzip2_wrapper.compress(target_archive)
+            if not v:
+                return False, r
 
         return True, None
 
