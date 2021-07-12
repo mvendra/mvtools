@@ -90,10 +90,10 @@ def _get_internal(_dh_handle, _db_name, _context, _var):
 
     vars = _dh_handle.get_vars(_var, _context)
     if vars is None:
-        return False, "Variable [%s] is not present (database: [%s], context: [%s])" % (_var, _db_name, _context)
+        return True, None
 
-    if len(vars) != 1:
-        return False, "Variable [%s] is not present (database: [%s], context: [%s])" % (_var, _db_name, _context)
+    if len(vars) == 0:
+        return True, None
 
     return True, vars[0]
 
@@ -106,6 +106,8 @@ def get_signal(_sig_name, probe_only=False):
 
     v, r = _get_internal(_db_handle, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT, _sig_name)
     if not v:
+        return False, r
+    if r is None:
         return True, None
 
     if not probe_only: # signal consumed

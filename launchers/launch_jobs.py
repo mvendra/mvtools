@@ -69,7 +69,9 @@ def _setup_toolbus(execution_name):
 
     # if the following field already exists, then this execution has already been registered on toolbus. fail.
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status")
-    if v:
+    if not v:
+        return False, "Unable to start execution: [%s]." % r
+    if r is not None:
         return False, "Unable to start execution: execution name [%s] already exists inside launch_jobs's toolbus database." % execution_name
 
     return True, None
@@ -92,7 +94,7 @@ def _handle_delayed_start_signal_delegate(signal_delay):
 
 def _handle_delayed_start_execution_delegate(execution_delay):
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_delay, "status")
-    return not v, r
+    return v, (r == None)
 
 def _is_status_paused_delegate(execution_name):
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status")
