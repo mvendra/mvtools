@@ -5,6 +5,7 @@ import os
 import launch_jobs
 import path_utils
 import tar_wrapper
+import bzip2_wrapper
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -56,6 +57,8 @@ class CustomTask(launch_jobs.BaseTask):
             return self.task_create_package(feedback_object, target_archive, source_path)
         elif operation == "extract":
             return self.task_extract_package(feedback_object, target_archive, target_path)
+        elif operation == "compress":
+            return self.task_compress_package(feedback_object, target_archive)
         else:
             return False, "Operation [%s] is invalid" % operation
 
@@ -98,6 +101,17 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "Target path [%s] does not exist" % target_path
 
         v, r = tar_wrapper.extract(target_archive, target_path)
+        if not v:
+            return False, r
+
+        return True, None
+
+    def task_compress_package(self, feedback_object, target_archive):
+
+        if not os.path.exists(target_archive):
+            return False, "Target archive [%s] does not exist" % target_archive
+
+        v, r = bzip2_wrapper.compress(target_archive)
         if not v:
             return False, r
 

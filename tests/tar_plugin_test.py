@@ -120,8 +120,6 @@ class TarPluginTest(unittest.TestCase):
 
     def testTarPluginRunTask_CreatePackage1(self):
 
-        self.assertTrue(os.path.exists(self.existent_path1))
-
         local_params = {}
         local_params["operation"] = "create"
         local_params["target_archive"] = "dummy_value1"
@@ -135,8 +133,6 @@ class TarPluginTest(unittest.TestCase):
 
     def testTarPluginRunTask_ExtractPackage1(self):
 
-        self.assertTrue(os.path.exists(self.existent_path1))
-
         local_params = {}
         local_params["operation"] = "extract"
         local_params["target_archive"] = "dummy_value1"
@@ -147,6 +143,18 @@ class TarPluginTest(unittest.TestCase):
             v, r = self.tar_task.run_task(print, "exe_name")
             self.assertTrue(v)
             dummy.assert_called_with(print, "dummy_value1", "dummy_value2")
+
+    def testTarPluginRunTask_CompressPackage1(self):
+
+        local_params = {}
+        local_params["operation"] = "compress"
+        local_params["target_archive"] = "dummy_value1"
+        self.tar_task.params = local_params
+
+        with mock.patch("tar_plugin.CustomTask.task_compress_package", return_value=(True, None)) as dummy:
+            v, r = self.tar_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, "dummy_value1")
 
     def testTarPluginTaskCreatePackage1(self):
 
@@ -237,6 +245,23 @@ class TarPluginTest(unittest.TestCase):
             v, r = self.tar_task.task_extract_package(print, self.existent_path1, self.existent_path2)
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2)
+
+    def testTarPluginTaskCompressPackage1(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+
+        with mock.patch("bzip2_wrapper.compress", return_value=(True, None)) as dummy:
+            v, r = self.tar_task.task_compress_package(print, self.nonexistent_path1)
+            self.assertFalse(v)
+
+    def testTarPluginTaskCompressPackage2(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("bzip2_wrapper.compress", return_value=(True, None)) as dummy:
+            v, r = self.tar_task.task_compress_package(print, self.existent_path1)
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1)
 
 if __name__ == '__main__':
     unittest.main()
