@@ -114,7 +114,13 @@ def _is_status_running_delegate(execution_name):
         return False, r
     return v, (not r)
 
-def _handle_delayed_start_time(time_delay):
+def _get_delay_report_msg(execution_name):
+
+    delay_timestamp = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
+    base_delay_report_message = "Execution context [%s] will be delayed at [%s]." % (execution_name, delay_timestamp)
+    return base_delay_report_message
+
+def _handle_delayed_start_time(feedback_object, message_report_function, execution_name, time_delay):
 
     if time_delay is None:
         return True, None
@@ -122,18 +128,26 @@ def _handle_delayed_start_time(time_delay):
     wait_duration = minicron.convert_time_string(time_delay)
     if wait_duration is None:
         return False, "Requested delay of [%s] couldn't be parsed." % (time_delay)
+
+    feedback_object("%s Reason: time delay of [%s]." % (message_report_function(execution_name), time_delay))
     if not minicron.busy_wait(wait_duration):
         return False, "Requested delay of [%s] failed to be performed." % (time_delay)
 
     return True, None
 
-def _handle_delayed_start_signal(signal_delay):
+def _handle_delayed_start_signal(feedback_object, message_report_function, execution_name, signal_delay):
+    if signal_delay is None:
+        return True, None
+    feedback_object("%s Reason: signal delay [%s]." % (message_report_function(execution_name), signal_delay))
     return _retry_helper(signal_delay, "signal", _handle_delayed_start_signal_delegate)
 
-def _handle_delayed_start_execution(execution_delay):
+def _handle_delayed_start_execution(feedback_object, message_report_function, execution_name, execution_delay):
+    if execution_delay is None:
+        return True, None
+    feedback_object("%s Reason: execution delay [%s]." % (message_report_function(execution_name), execution_delay))
     return _retry_helper(execution_delay, "execution", _handle_delayed_start_execution_delegate)
 
-def _handle_delayed_start(execution_name, time_delay, signal_delay, execution_delay):
+def _handle_delayed_start(feedback_object, execution_name, time_delay, signal_delay, execution_delay):
 
     if time_delay is None and signal_delay is None and execution_delay is None: # no delay applicable
         return True, None
@@ -144,17 +158,17 @@ def _handle_delayed_start(execution_name, time_delay, signal_delay, execution_de
         return False, "Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
     # time delay
-    v, r = _handle_delayed_start_time(time_delay)
+    v, r = _handle_delayed_start_time(feedback_object, _get_delay_report_msg, execution_name, time_delay)
     if not v:
         return False, "Unable to start execution [%s]: %s." % (execution_name, r)
 
     # signal delay
-    v, r = _handle_delayed_start_signal(signal_delay)
+    v, r = _handle_delayed_start_signal(feedback_object, _get_delay_report_msg, execution_name, signal_delay)
     if not v:
         return False, "Unable to start execution [%s]: %s." % (execution_name, r)
 
     # execution delay
-    v, r = _handle_delayed_start_execution(execution_delay)
+    v, r = _handle_delayed_start_execution(feedback_object, _get_delay_report_msg, execution_name, execution_delay)
     if not v:
         return False, "Unable to start execution [%s]: %s." % (execution_name, r)
 
@@ -203,7 +217,7 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
         return False, [r]
 
     # delayed start if configured
-    v, r = _handle_delayed_start(execution_name, options.time_delay, options.signal_delay, options.execution_delay)
+    v, r = _handle_delayed_start(feedback_object, execution_name, options.time_delay, options.signal_delay, options.execution_delay)
     if not v:
         return False, [r]
 
