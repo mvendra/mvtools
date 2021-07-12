@@ -462,27 +462,16 @@ class RecipeProcessor:
 
         return True, local_exec_name
 
-def run_jobs_from_recipe_file(recipe_file, execution_name=None, requested_options=None):
-    recipe_processor = RecipeProcessor(recipe_file, requested_options)
-    return recipe_processor.run(execution_name)
-
 def test_jobs_from_recipe_file(recipe_file, execution_name=None, requested_options=None):
     recipe_processor = RecipeProcessor(recipe_file, requested_options)
     return recipe_processor.test(execution_name)
 
+def run_jobs_from_recipe_file(recipe_file, execution_name=None, requested_options=None):
+    recipe_processor = RecipeProcessor(recipe_file, requested_options)
+    return recipe_processor.run(execution_name)
+
 def assemble_requested_options(_early_abort, _time_delay, _signal_delay, _execution_delay):
     return launch_jobs.RunOptions(early_abort=_early_abort, time_delay=_time_delay, signal_delay=_signal_delay, execution_delay=_execution_delay)
-
-def menu_run_recipe(recipe_file, execution_name, requested_options):
-
-    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
-    if not v:
-        err_msg = r
-        if len(err_msg) == 1:
-            err_msg = err_msg[0]
-        print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, err_msg, terminal_colors.TTY_WHITE))
-    else:
-        print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
 def menu_test_recipe(recipe_file, execution_name, requested_options):
 
@@ -495,8 +484,19 @@ def menu_test_recipe(recipe_file, execution_name, requested_options):
     else:
         print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
+def menu_run_recipe(recipe_file, execution_name, requested_options):
+
+    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
+    if not v:
+        err_msg = r
+        if len(err_msg) == 1:
+            err_msg = err_msg[0]
+        print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, err_msg, terminal_colors.TTY_WHITE))
+    else:
+        print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
+
 def puaq():
-    print("Usage: %s [--run recipe.t20 | --test recipe.t20] --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % os.path.basename(__file__))
+    print("Usage: %s [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % os.path.basename(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -559,17 +559,17 @@ if __name__ == "__main__":
             execution_delay = p
             continue
 
-        if p == "--run":
+        if p == "--test":
             if operation is not None:
-                print("Operation should only be specified once (either --run or --test)")
-                sys.exit(1)
-            operation = "run"
-            recipe_next = True
-        elif p == "--test":
-            if operation is not None:
-                print("Operation should only be specified once (either --run or --test)")
+                print("Operation should only be specified once (either --test or --run)")
                 sys.exit(1)
             operation = "test"
+            recipe_next = True
+        elif p == "--run":
+            if operation is not None:
+                print("Operation should only be specified once (either --test or --run)")
+                sys.exit(1)
+            operation = "run"
             recipe_next = True
         elif p == "--execution-name":
             execution_name_next = True
@@ -587,10 +587,10 @@ if __name__ == "__main__":
 
     req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
-    if operation == "run":
-        menu_run_recipe(recipe_file, execution_name, req_opts)
-    elif operation == "test":
+    if operation == "test":
         menu_test_recipe(recipe_file, execution_name, req_opts)
+    elif operation == "run":
+        menu_run_recipe(recipe_file, execution_name, req_opts)
     else:
         print("Invalid operation: [%s]" % operation)
         sys.exit(1)
