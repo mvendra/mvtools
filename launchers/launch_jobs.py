@@ -236,6 +236,7 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
                 j_msg = "Job [%s][%s] failed: [%s]." % (j.name, j.get_desc(), r)
 
         report.append((v, j_msg))
+        feedback_object(j_msg)
 
         if not v and options.early_abort:
             break

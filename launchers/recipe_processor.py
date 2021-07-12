@@ -477,7 +477,10 @@ def menu_run_recipe(recipe_file, execution_name, requested_options):
 
     v, r = run_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
     if not v:
-        print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
+        err_msg = r
+        if len(err_msg) == 1:
+            err_msg = err_msg[0]
+        print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, err_msg, terminal_colors.TTY_WHITE))
     else:
         print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
@@ -485,7 +488,10 @@ def menu_test_recipe(recipe_file, execution_name, requested_options):
 
     v, r = test_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
     if not v:
-        print("%sTesting of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
+        err_msg = r
+        if len(err_msg) == 1:
+            err_msg = err_msg[0]
+        print("%sTesting of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, err_msg, terminal_colors.TTY_WHITE))
     else:
         print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
