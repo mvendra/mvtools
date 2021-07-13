@@ -242,6 +242,76 @@ def dirname_filtered(path):
         return ""
     return os.path.dirname( filter_remove_trailing_sep ( path ) )
 
+def copy_to_and_rename(source_path, target_path, new_name):
+
+    if source_path is None:
+        return False
+
+    if os.path.isdir(source_path):
+        return copy_folder_to_and_rename(source_path, target_path, new_name)
+    else:
+        return copy_file_to_and_rename(source_path, target_path, new_name)
+
+def copy_file_to_and_rename(source_path, target_path, new_name):
+
+    if source_path is None:
+        return False
+    if target_path is None:
+        return False
+    if new_name is None:
+        return False
+
+    if not os.path.exists(source_path):
+        return False
+    if os.path.isdir(source_path):
+        return False
+    if not os.path.exists(target_path):
+        return False
+    if not os.path.isdir(target_path):
+        return False
+    if source_path == target_path:
+        return False
+
+    if len(splitpath(new_name)) != 1:
+        return False
+
+    final_target_path = concat_path(target_path, new_name)
+    if os.path.exists(final_target_path):
+        return False
+
+    shutil.copy(source_path, final_target_path)
+    return True
+
+def copy_folder_to_and_rename(source_path, target_path, new_name):
+
+    if source_path is None:
+        return False
+    if target_path is None:
+        return False
+    if new_name is None:
+        return False
+
+    if not os.path.exists(source_path):
+        return False
+    if not os.path.isdir(source_path):
+        return False
+    if not os.path.exists(target_path):
+        return False
+    if not os.path.isdir(target_path):
+        return False
+    if source_path == target_path:
+        return False
+
+    if len(splitpath(new_name)) != 1:
+        return False
+
+    final_target_path = concat_path(target_path, new_name)
+    if os.path.exists(final_target_path):
+        return False
+
+    shutil.copytree(source_path, final_target_path, symlinks=True)
+    return True
+
 def copy_to(source, target):
 
     # works just like the POSIX "cp" app but does not require the "-r" for copying folders

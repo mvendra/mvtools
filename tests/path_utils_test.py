@@ -30,6 +30,9 @@ class PathUtilsTest(unittest.TestCase):
         os.mkdir(self.folder2)
         self.nonexistent = os.path.join(self.test_dir, "nonexistent")
 
+        self.test_file = path_utils.concat_path(self.test_dir, "test_file.txt")
+        create_and_write_file.create_file_contents(self.test_file, "test-file")
+
         return True, ""
 
     def tearDown(self):
@@ -457,8 +460,8 @@ class PathUtilsTest(unittest.TestCase):
 
     def testSplitPath(self):
         self.assertEqual(path_utils.splitpath(os.sep), [])
-        self.assertEqual(path_utils.splitpath("/"), [])
-        self.assertEqual(path_utils.splitpath("/tmp"), ["tmp"])
+        self.assertEqual(path_utils.splitpath("%stmp" % os.sep), ["tmp"])
+        self.assertEqual(path_utils.splitpath("tmp"), ["tmp"])
         self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep) ), ["first", "second"])
         self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep) ), ["first", "second"])
 
@@ -504,6 +507,102 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder"), "")
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/path"), "folder")
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/another/path"), "folder%sanother" % os.sep)
+
+    def testCopyToAndRename1(self):
+        source_path = path_utils.concat_path(self.folder1, "source.txt")
+        final_path = path_utils.concat_path(self.folder1, "target.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path, "source"))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_to_and_rename(source_path, self.folder1, "target.txt"))
+        self.assertTrue(os.path.exists(final_path))
+
+    def testCopyToAndRename2(self):
+        source_path = path_utils.concat_path(self.folder1, "source")
+        final_path = path_utils.concat_path(self.folder1, "target")
+        os.mkdir(source_path)
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_to_and_rename(source_path, self.folder1, "target"))
+        self.assertTrue(os.path.exists(final_path))
+
+    def testCopyFileToAndRename1(self):
+        source_path = path_utils.concat_path(self.folder1, "source.txt")
+        final_path = path_utils.concat_path(self.folder1, "target.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path, "source"))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_file_to_and_rename(source_path, self.folder1, "target.txt"))
+        self.assertTrue(os.path.exists(final_path))
+
+    def testCopyFileToAndRename2(self):
+        source_path = path_utils.concat_path(self.folder1, "source.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path, "source"))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder1, "source.txt"))
+
+    def testCopyFileToAndRename3(self):
+        source_path = path_utils.concat_path(self.folder1, "source.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path, "source"))
+
+        self.assertFalse(path_utils.copy_file_to_and_rename(None, self.folder1, "source.txt"))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, None, "source.txt"))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder1, None))
+
+        self.assertFalse(path_utils.copy_file_to_and_rename(self.nonexistent, self.folder1, "target.txt"))
+        self.assertFalse(path_utils.copy_file_to_and_rename(self.folder2, self.folder1, "target.txt"))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.nonexistent, "target.txt"))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.test_file, "target.txt"))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, source_path, "target.txt"))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder1, "sub%starget.txt" % os.sep))
+
+        target_path = path_utils.concat_path(self.folder2, "target.txt")
+        self.assertFalse(os.path.exists(target_path))
+        self.assertTrue(create_and_write_file.create_file_contents(target_path, "target"))
+        self.assertTrue(os.path.exists(target_path))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder2, "target.txt"))
+
+    def testCopyFolderToAndRename1(self):
+        source_path = path_utils.concat_path(self.folder1, "source")
+        final_path = path_utils.concat_path(self.folder1, "target")
+        os.mkdir(source_path)
+        source_path_file = path_utils.concat_path(source_path, "file1.txt")
+        final_path_file = path_utils.concat_path(self.folder1, "target", "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path_file, "test contents"))
+        self.assertTrue(os.path.exists(source_path_file))
+        self.assertFalse(os.path.exists(final_path_file))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_folder_to_and_rename(source_path, self.folder1, "target"))
+        self.assertTrue(os.path.exists(final_path))
+        self.assertTrue(os.path.exists(final_path_file))
+
+    def testCopyFolderToAndRename2(self):
+        source_path = path_utils.concat_path(self.folder1, "source")
+        os.mkdir(source_path)
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder1, "source"))
+
+    def testCopyFolderToAndRename3(self):
+        source_path = path_utils.concat_path(self.folder1, "source")
+        os.mkdir(source_path)
+
+        self.assertFalse(path_utils.copy_folder_to_and_rename(None, self.folder1, "target"))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, None, "target"))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder1, None))
+
+        self.assertFalse(path_utils.copy_folder_to_and_rename(self.nonexistent, self.folder1, "target"))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(self.test_file, self.folder1, "target"))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.nonexistent, "target"))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.test_file, "target"))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, source_path, "target"))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder1, "sub%starget" % os.sep))
+
+        target_path = path_utils.concat_path(self.folder2, "target")
+        self.assertFalse(os.path.exists(target_path))
+        os.mkdir(target_path)
+        self.assertTrue(os.path.exists(target_path))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder2, "target"))
 
 if __name__ == '__main__':
     unittest.main()
