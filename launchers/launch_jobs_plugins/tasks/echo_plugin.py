@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+
+import launch_jobs
+
+import datetime
+import time
+
+class CustomTask(launch_jobs.BaseTask):
+
+    def get_desc(self):
+        return "echo"
+
+    def run_task(self, feedback_object, execution_name=None):
+
+        message = None
+
+        # message
+        try:
+            message = self.params["message"]
+        except KeyError:
+            return False, "message is a required parameter"
+
+        timestamp_now = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
+
+        print("[%s]: %s" % (timestamp_now, message))
+
+        return True, None
