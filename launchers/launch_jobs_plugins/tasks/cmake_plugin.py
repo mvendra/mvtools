@@ -12,15 +12,21 @@ class CustomTask(launch_jobs.BaseTask):
 
     def run_task(self, feedback_object, execution_name=None):
 
-        # cmake_path
         cmake_path = None
+        install_prefix = None
+        source_path = None
+        output_path = None
+        gen_type = None
+        toolchain = None
+        build_type = None
+
+        # cmake_path
         try:
             cmake_path = self.params["cmake_path"]
         except KeyError:
             pass # optional
 
         # install_prefix
-        install_prefix = None
         try:
             install_prefix = self.params["install_prefix"]
         except KeyError:
@@ -45,9 +51,14 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "cmake failed - gen_type is a required parameter"
 
         # toolchain
-        toolchain = None
         try:
             toolchain = self.params["toolchain"]
+        except KeyError:
+            pass # optional
+
+        # build_type
+        try:
+            build_type = self.params["build_type"]
         except KeyError:
             pass # optional
 
@@ -57,6 +68,7 @@ class CustomTask(launch_jobs.BaseTask):
             suppress_cmake_output = True
 
         # custom options
+        # sample usage (inside the dsltype20 file): {option: "COPY_WX_LIBS:STRING=1"}
         custom_options = []
         try:
             custom_options_read = self.params["option"]
@@ -82,6 +94,10 @@ class CustomTask(launch_jobs.BaseTask):
         # install_prefix
         if install_prefix is not None:
             options = cmake_lib.set_option_install_prefix(options, install_prefix)
+
+        # build_type
+        if build_type is not None:
+            options = cmake_lib.set_option_build_type(options, build_type)
 
         # generic options
         for opt in custom_options:
