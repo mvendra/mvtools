@@ -12,6 +12,11 @@ DB_EXTENSION = "t20"
 INTERNAL_DB_FILENAME = "toolbus_internal"
 TOOLBUS_SIGNAL_CONTEXT = "toolbus_internal_signals_context"
 
+TOOLBUS_RET_OK = 0
+TOOLBUS_RET_SIG_NOT_SET = 1
+TOOLBUS_RET_USER_ERROR = 2
+TOOLBUS_RET_SYSTEM_ERROR = 3
+
 def bootstrap_custom_toolbus_db(db_name):
 
     v, r = mvtools_envvars.mvtools_envvar_read_toolbus_base()
@@ -228,9 +233,13 @@ def set_field(_db_name, _context, _var, _val, _opts):
 
     return _set_internal(r, _db_name, ext, _context, _var, _val, _opts, True)
 
+def error_only_one_op_allowed():
+    print("Only one operation is allowed (either --get-signal or --set-signal)")
+    sys.exit(TOOLBUS_RET_USER_ERROR)
+
 def puaq():
-    print("Usage: %s [--get-signal signame] [--set-signal signame sigvalue]" % os.path.basename(__file__))
-    sys.exit(1)
+    print("Usage: %s [--get-signal signame | --set-signal signame sigvalue]" % os.path.basename(__file__))
+    sys.exit(TOOLBUS_RET_USER_ERROR)
 
 if __name__ == "__main__":
 
@@ -238,6 +247,9 @@ if __name__ == "__main__":
         puaq()
 
     params = sys.argv[1:]
+
+    operation = None
+
     get_signal_signame_next = False
     set_signal_signame_next = False
     set_signal_sigval_next = False
@@ -265,28 +277,39 @@ if __name__ == "__main__":
             continue
 
         if p == "--get-signal":
+            if operation is not None:
+                error_only_one_op_allowed()
+            operation = "get-signal"
             get_signal_signame_next = True
         elif p == "--set-signal":
+            if operation is not None:
+                error_only_one_op_allowed()
+            operation = "set-signal"
             set_signal_signame_next = True
 
-    if not get_signame is None:
+    if operation == "get-signal":
         v, r = get_signal(get_signame)
         if v:
             if r is None:
                 print("Signal [%s] is not set." % get_signame)
+                sys.exit(TOOLBUS_RET_SIG_NOT_SET)
             else:
                 print(r)
         else:
             print("Toolbus get_signal failed: %s" % r)
-            sys.exit(1)
+            sys.exit(TOOLBUS_RET_SYSTEM_ERROR)
 
-    if not set_signame is None:
+    elif operation == "set-signal":
         if set_sigval is None:
             print("--set-signal was specified. It requires two parameters but only one was provided. Aborting.")
-            sys.exit(1)
+            sys.exit(TOOLBUS_RET_USER_ERROR)
         v, r = set_signal(set_signame, set_sigval)
         if v:
             print("Signal [%s] set." % set_signame)
         else:
             print("Toolbus set_signal failed: %s" % r)
-            sys.exit(1)
+            sys.exit(TOOLBUS_RET_SYSTEM_ERROR)
+
+    else:
+        print("No operation specified")
+        sys.exit(TOOLBUS_RET_USER_ERROR)
