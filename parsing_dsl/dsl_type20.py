@@ -232,10 +232,22 @@ class DSLType20:
         if r[1] != "":
             return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context, r[1])
 
+        expanded_context_options = []
+        for co in context_options:
+
+            if co[1] is None:
+                expanded_context_options.append( co )
+                continue
+
+            v, r = self._expand(co[1])
+            if not v:
+                return False, "unable to expand context's option value: [%s : %s]" % (co[0], co[1])
+            expanded_context_options.append( (co[0], r) )
+
         if context in self.data:
             return False, "Failed adding new context: [%s] already exists" % context
 
-        self.data[context] = [context_options, []]
+        self.data[context] = [expanded_context_options, []]
         return True, None
 
     def parse(self, contents):

@@ -22,6 +22,11 @@ def getcontents(filename):
 class DSLType20Test(unittest.TestCase):
 
     def setUp(self):
+        self.mvtools_envvars_inst = mvtools_envvars.Mvtools_Envvars()
+        v, r = self.mvtools_envvars_inst.make_copy_environ()
+        if not v:
+            self.tearDown()
+            self.fail(r)
         v, r = self.delegate_setUp()
         if not v:
             self.tearDown()
@@ -104,6 +109,9 @@ class DSLType20Test(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
+        v, r = self.mvtools_envvars_inst.restore_copy_environ()
+        if not v:
+            self.fail(r)
 
     def parse_test_aux(self, filename, _dsl_t20_opts):
         contents = getcontents(filename)
@@ -199,20 +207,15 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.get_all_vars(), [("var1", "val1", []), ("var2", "val2", [])])
 
     def testDslType20_GetVars4(self):
-        #credit: https://stackoverflow.com/questions/2059482/python-temporarily-modify-the-current-processs-environment/34333710
-        _environ = os.environ.copy()
-        try:
-            os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
-            os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-            dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(True, True))
-            v, r = dsl.parse(self.contents_cfg_test_ok_4)
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+        os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-            self.assertTrue(v)
-            self.assertEqual(dsl.get_all_vars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")]), ("var3", path_utils.concat_path(os.path.expanduser("/tmp/folder")), [])])
-        finally:
-            os.environ.clear()
-            os.environ.update(_environ)
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(True, True))
+        v, r = dsl.parse(self.contents_cfg_test_ok_4)
+
+        self.assertTrue(v)
+        self.assertEqual(dsl.get_all_vars(), [("var1", "test-value-1", []), ("var2", "val1", [("opt1","test-value-2")]), ("var3", path_utils.concat_path(os.path.expanduser("/tmp/folder")), [])])
 
     def testDslType20_GetVars5(self):
 
@@ -555,6 +558,26 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("[\n@ctx1 {opt1: \"val1\"}\nvar1 {opt1: \"val3\"} = \"val2\"\n]")
         self.assertTrue(v)
         self.assertEqual(dsl.get_vars("var1", "ctx1"), [("var1", "val2", [("opt1", "val3")])])
+
+    def testDslType20_TestNewContextWithOptions6(self):
+
+        test_envvar_value = "dsltype20-test-value"
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = test_envvar_value
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(vars_auto_ctx_options=True, expand_envvars=True))
+        v, r = dsl.parse("[\n@ctx1 {opt1: \"%s\"}\nvar1 = \"val2\"\n]" % self.reserved_test_env_var_1)
+        self.assertEqual(dsl.get_vars("var1", "ctx1"), [("var1", "val2", [("opt1", test_envvar_value)])])
+        self.assertTrue(v)
+
+    def testDslType20_TestNewContextWithOptions7(self):
+
+        test_envvar_value = "dsltype20-test-value"
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = test_envvar_value
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(vars_auto_ctx_options=True, expand_envvars=False))
+        v, r = dsl.parse("[\n@ctx1 {opt1: \"%s\"}\nvar1 = \"val2\"\n]" % self.reserved_test_env_var_1)
+        self.assertEqual(dsl.get_vars("var1", "ctx1"), [("var1", "val2", [("opt1", self.reserved_test_env_var_1)])])
+        self.assertTrue(v)
 
     def testDslType20_TestNewContextFail1(self):
 
