@@ -119,6 +119,8 @@ class CustomTask(launch_jobs.BaseTask):
             return self.task_reset_file(feedback_object, target_path, reset_files)
         elif operation == "patch_repo":
             return self.task_patch_repo(feedback_object, target_path, patch_head_files, patch_unversioned_base, patch_unversioned_files)
+        elif operation == "check_repo":
+            return self.task_check_repo(feedback_object, target_path)
         else:
             return False, "Operation [%s] is invalid" % operation
 
@@ -259,5 +261,19 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = apply_svn_patch.apply_svn_patch(target_path, patch_head_files, unversioned_patches)
         if not v:
             return False, r
+
+        return True, None
+
+    def task_check_repo(self, feedback_object, target_path):
+
+        if not os.path.exists(target_path):
+            return False, "Target path [%s] does not exist" % target_path
+
+        v, r = svn_lib.is_head_clear(target_path)
+        if not v:
+            return False, "svn_lib failed: [%s]" % r
+
+        if not r:
+            return False, "Target path's [%s] head is not clear" % target_path
 
         return True, None

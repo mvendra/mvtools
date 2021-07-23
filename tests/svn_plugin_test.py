@@ -387,6 +387,40 @@ class SvnPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, [valid_file], [(uv_base, path_utils.concat_path(uv_base, uv_file))])
 
+    def testSvnPluginTaskCheckRepo1(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+
+        with mock.patch("svn_lib.is_head_clear", return_value=(True, True)) as dummy:
+            v, r = self.svn_task.task_check_repo(print, self.nonexistent_path1)
+            self.assertFalse(v)
+
+    def testSvnPluginTaskCheckRepo2(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("svn_lib.is_head_clear", return_value=(False, "the-err-msg")) as dummy:
+            v, r = self.svn_task.task_check_repo(print, self.existent_path1)
+            self.assertFalse(v)
+            self.assertTrue("the-err-msg" in r)
+
+    def testSvnPluginTaskCheckRepo3(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("svn_lib.is_head_clear", return_value=(True, False)) as dummy:
+            v, r = self.svn_task.task_check_repo(print, self.existent_path1)
+            self.assertFalse(v)
+
+    def testSvnPluginTaskCheckRepo4(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("svn_lib.is_head_clear", return_value=(True, True)) as dummy:
+            v, r = self.svn_task.task_check_repo(print, self.existent_path1)
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1)
+
     def testSvnPluginRunTask1(self):
 
         local_params = {}
@@ -568,6 +602,21 @@ class SvnPluginTest(unittest.TestCase):
             v, r = self.svn_task.run_task(print, "exe_name")
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, None, None, None)
+
+    def testSvnPluginRunTask_CheckRepo1(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "check_repo"
+
+        self.svn_task.params = local_params
+
+        with mock.patch("svn_plugin.CustomTask.task_check_repo", return_value=(True, None)) as dummy:
+            v, r = self.svn_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1)
 
 if __name__ == '__main__':
     unittest.main()
