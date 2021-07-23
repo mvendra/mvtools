@@ -501,7 +501,7 @@ class ResetGitRepoTest(unittest.TestCase):
         os.mkdir(final_patch_backup_folder)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertFalse(v)
 
@@ -518,7 +518,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 0)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertTrue(v)
 
@@ -542,7 +542,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertTrue(v)
 
@@ -576,7 +576,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertTrue(v)
 
@@ -609,7 +609,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1])
                 self.assertTrue(v)
 
@@ -643,7 +643,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
 
@@ -682,7 +682,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
 
@@ -735,7 +735,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("reset_git_repo._get_timestamp", return_value=fixed_timestamp):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertTrue(v)
 

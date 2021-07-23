@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 
 import os
-import time
-import datetime
 import shutil
 
-import terminal_colors
 import path_utils
 import generic_run
 import pakgen
@@ -13,6 +10,8 @@ import encrypt
 import dirsize
 import sha256_wrapper
 import shred_wrapper
+import terminal_colors
+import maketimestamp
 import create_and_write_file
 
 SCRIPT_FOLDER = os.path.dirname(os.path.realpath(__file__))
@@ -27,9 +26,6 @@ class BackupEngine:
         _self.BKTEMP = bktmp
         _self.BKWARNINGS = bkwarns
         _self.PASSPHRASE = pphrase
-
-    def gettimestamp(_self):
-        return datetime.datetime.fromtimestamp(time.time()).strftime('%H:%M:%S %d-%m-%Y')
 
     def run(_self):
 
@@ -50,7 +46,7 @@ class BackupEngine:
             print("%s[%s] already exists. For safety reasons, this script is aborted.%s" % (terminal_colors.TTY_RED, _self.BKTEMP, terminal_colors.TTY_WHITE))
             return False
 
-        print("%sBeginning backup operations at %s.%s" % (terminal_colors.TTY_GREEN, _self.gettimestamp(), terminal_colors.TTY_WHITE))
+        print("%sBeginning backup operations at %s.%s" % (terminal_colors.TTY_GREEN, maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
 
         for it in _self.BKTARGETS_ROOT:
             if not os.path.isdir(it):
@@ -88,10 +84,10 @@ class BackupEngine:
             print("%sUnable to create temporary+base path [%s]. Aborting.%s" % (terminal_colors.TTY_RED, BKTEMP_AND_BASEDIR, terminal_colors.TTY_WHITE))
             return False
         with open(path_utils.concat_path(BKTEMP_AND_BASEDIR, "bk_date.txt"), "w+") as f:
-            f.write(_self.gettimestamp() + "\n")
+            f.write(maketimestamp.get_timestamp_now() + "\n")
 
         for it in _self.BKARTIFACTS:
-            print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], _self.gettimestamp(), terminal_colors.TTY_WHITE))
+            print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
             BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(os.path.dirname(it[0])))
             if path_utils.basename_filtered(BKTMP_PLUS_ARTBASE) == path_utils.basename_filtered(BKTEMP_AND_BASEDIR):
                 BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTMP_PLUS_ARTBASE, "(root)")
@@ -171,6 +167,6 @@ class BackupEngine:
             generic_run.run_cmd_simple(["umount", it])
 
         shutil.rmtree(_self.BKTEMP)
-        print("%sDone at %s%s" % (terminal_colors.TTY_GREEN, _self.gettimestamp(), terminal_colors.TTY_WHITE))
+        print("%sDone at %s%s" % (terminal_colors.TTY_GREEN, maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
 
         return True

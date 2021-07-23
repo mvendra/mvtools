@@ -2,9 +2,8 @@
 
 import sys
 import os
-import datetime
-import time
 
+import maketimestamp
 import toolbus
 import minicron
 import retry
@@ -12,32 +11,29 @@ import terminal_colors
 
 LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
 
-def _get_timestamp_now():
-    return datetime.datetime.fromtimestamp(time.time()).strftime("%d/%m/%Y - %H:%M:%S")
-
 def _format_job_info_msg_task(job, task):
-    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (job.name, job.get_desc(), _get_timestamp_now(), task.name, task.get_desc())
+    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (job.name, job.get_desc(), maketimestamp.get_timestamp_now(), task.name, task.get_desc())
 
 def _format_job_info_msg_started(job):
-    return "Job:  [%s][%s][%s]: started." % (job.name, job.get_desc(), _get_timestamp_now())
+    return "Job:  [%s][%s][%s]: started." % (job.name, job.get_desc(), maketimestamp.get_timestamp_now())
 
 def _format_job_info_msg_pause_failed(job, detail):
-    return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (job.name, job.get_desc(), _get_timestamp_now(), detail)
+    return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (job.name, job.get_desc(), maketimestamp.get_timestamp_now(), detail)
 
 def _format_job_info_msg_succeeded(job):
-    return "Job:  [%s][%s][%s]: succeeded." % (job.name, job.get_desc(), _get_timestamp_now())
+    return "Job:  [%s][%s][%s]: succeeded." % (job.name, job.get_desc(), maketimestamp.get_timestamp_now())
 
 def _format_job_info_msg_failed(job, detail):
-    return "Job:  [%s][%s][%s]: failed: [%s]." % (job.name, job.get_desc(), _get_timestamp_now(), detail)
+    return "Job:  [%s][%s][%s]: failed: [%s]." % (job.name, job.get_desc(), maketimestamp.get_timestamp_now(), detail)
 
 def _format_task_info_msg(task, detail):
-    return "Task: [%s][%s][%s]: succeeded." % (task.name, task.get_desc(), _get_timestamp_now())
+    return "Task: [%s][%s][%s]: succeeded." % (task.name, task.get_desc(), maketimestamp.get_timestamp_now())
 
 def _format_task_error_msg(task, detail):
-    return "Task: [%s][%s][%s]: failed: [%s]" % (task.name, task.get_desc(), _get_timestamp_now(), detail)
+    return "Task: [%s][%s][%s]: failed: [%s]" % (task.name, task.get_desc(), maketimestamp.get_timestamp_now(), detail)
 
 def _format_task_warning_msg(task, detail):
-    return "Task: [%s][%s][%s]: warns: [%s]" % (task.name, task.get_desc(), _get_timestamp_now(), detail)
+    return "Task: [%s][%s][%s]: warns: [%s]" % (task.name, task.get_desc(), maketimestamp.get_timestamp_now(), detail)
 
 def _format_task_warning_msg_console_output(task, detail):
     return "%s%s%s." % (terminal_colors.TTY_YELLOW, _format_task_warning_msg(task, detail), terminal_colors.get_standard_color())
@@ -137,7 +133,7 @@ def _is_status_running_delegate(execution_name):
     return v, (not r)
 
 def _get_delay_report_msg(execution_name):
-    delay_timestamp = _get_timestamp_now()
+    delay_timestamp = maketimestamp.get_timestamp_now()
     base_delay_report_message = "Execution context [%s] will be delayed at [%s]." % (execution_name, delay_timestamp)
     return base_delay_report_message
 
@@ -247,7 +243,7 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
     if not v:
         return False, ["Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
 
-    begin_timestamp = _get_timestamp_now()
+    begin_timestamp = maketimestamp.get_timestamp_now()
 
     # register timestamp in the execution context
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "begin-timestamp", begin_timestamp, [])

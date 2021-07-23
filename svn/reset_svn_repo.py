@@ -3,8 +3,6 @@
 import sys
 import os
 import shutil
-import datetime
-import time
 
 import mvtools_exception
 import mvtools_envvars
@@ -15,6 +13,7 @@ import svn_wrapper
 import svn_lib
 
 import delayed_file_backup
+import maketimestamp
 
 def make_patch_filename(path, index):
     return "%s_reset_svn_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
@@ -30,9 +29,6 @@ def _test_repo_path(path):
     if r is None:
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
-
-def _get_timestamp():
-    return datetime.datetime.fromtimestamp(time.time()).strftime("%d%m%Y_%H%M%S")
 
 def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
 
@@ -104,7 +100,7 @@ def reset_svn_repo(target_repo, files):
     if not os.path.exists(temp_path):
         return False, ["Can't reset svn repo. MVTOOLS_TEMP_PATH envvar is not defined or the path does not exist."]
 
-    timestamp_now = _get_timestamp()
+    timestamp_now = maketimestamp.get_timestamp_now_compact()
     backup_patches_folder = "%s_reset_svn_repo_backup_%s" % (path_utils.basename_filtered(target_repo), timestamp_now)
     backup_patches_folder_fullpath = path_utils.concat_path(temp_path, backup_patches_folder)
 

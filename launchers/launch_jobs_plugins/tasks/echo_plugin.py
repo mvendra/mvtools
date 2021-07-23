@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 import launch_jobs
-
-import datetime
-import time
+import maketimestamp
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -20,7 +18,7 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "message is a required parameter"
 
-        timestamp_now = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
+        timestamp_now = maketimestamp.get_timestamp_now()
 
         print("[%s]: %s" % (timestamp_now, message))
 

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
 import os
-import datetime
-import time
 
 import launch_jobs
+import maketimestamp
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -27,7 +26,7 @@ class CustomTask(launch_jobs.BaseTask):
         if os.path.exists(target_filename):
             return False, "timestamper failed - file [%s] already exists." % target_filename
 
-        timestamp_now = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
+        timestamp_now = maketimestamp.get_timestamp_now()
 
         full_contents = ""
         full_contents += timestamp_now + os.linesep
