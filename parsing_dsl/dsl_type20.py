@@ -429,8 +429,9 @@ class DSLType20:
         if var_value == "":
             return False, "Empty var value: [%s]" % str_input
 
-        if not self.add_var(var_name, var_value, parsed_opts, local_context):
-            return False, "Unable to add variable: [%s]" % var_name
+        v, r = self.add_var(var_name, var_value, parsed_opts, local_context)
+        if not v:
+            return False, "Unable to add variable [%s]: [%s]" % (var_name, r)
 
         return True, None
 
@@ -619,34 +620,34 @@ class DSLType20:
 
         # validate var_name
         if not isinstance(var_name, str):
-            return False
+            return False, "variable's name is not a string"
         v, r = miniparse.scan_and_slice_beginning(var_name, self.IDENTIFIER)
         if not v:
-            return False
+            return False, "malformed variable"
         if r[1] != "":
-            return False
+            return False, "malformed varialbe (invalid leftovers)"
 
         # validate var_val
         if not isinstance(var_val, str):
-            return False
+            return False, "variable's value is not a string"
 
         # validate var_opts
         if not isinstance(var_opts, list):
-            return False
+            return False, "variable's options are not a list"
         for i in var_opts:
             if not isinstance(i, tuple):
-                return False
+                return False, "variable's options are not tuples in a list"
             if not len(i) == 2:
-                return  False
+                return  False, "variable's options are not pair of tuples in a list"
             if not isinstance(i[0], str):
-                return False
+                return False, "variable's options's identifier is not a string"
             if not ( (isinstance(i[1], str)) or (i[1] is None) ):
-                return False
+                return False, "variable's options's value is invalid"
 
         # expand the variable's value
         v, r = self._expand(var_val)
         if not v:
-            return False
+            return False, "unable to expand variable's value: [%s]" % var_val
         var_val = r
 
         # expand the option's value
@@ -660,7 +661,7 @@ class DSLType20:
 
             v, r = self._expand(o[1])
             if not v:
-                return False
+                return False, "unable to expand variable's option value: [%s : %s]" % (o[0], o[1])
             var_opts.append( (o[0], r) )
 
         # check for duplicates, if checking is enabled
@@ -669,17 +670,17 @@ class DSLType20:
             # check for duplicated variable
             for v in self.data[local_context][1]:
                 if v[0] == var_name:
-                    return False
+                    return False, "variable [%s] is duplicated" % v[0]
 
             # check for duplicated option inside the provided options
             for o in var_opts:
                 if count_occurrence_first_of_pair(var_opts, o[0]) > 1:
-                    return False
+                    return False, "option [%s] is duplicated" % o[0]
 
         # add new variable to internal data
         self.data[local_context][1].append( (var_name, var_val, var_opts) )
 
-        return True
+        return True, None
 
     def rem_var(self, var_name, index=None, context=None):
 
