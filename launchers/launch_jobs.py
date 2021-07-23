@@ -8,8 +8,39 @@ import time
 import toolbus
 import minicron
 import retry
+import terminal_colors
 
 LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
+
+def _get_timestamp_now():
+    return datetime.datetime.fromtimestamp(time.time()).strftime("%d/%m/%Y - %H:%M:%S")
+
+def _format_job_info_msg_task(job, task):
+    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (job.name, job.get_desc(), _get_timestamp_now(), task.name, task.get_desc())
+
+def _format_job_info_msg_started(job):
+    return "Job:  [%s][%s][%s]: started." % (job.name, job.get_desc(), _get_timestamp_now())
+
+def _format_job_info_msg_pause_failed(job, detail):
+    return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (job.name, job.get_desc(), _get_timestamp_now(), detail)
+
+def _format_job_info_msg_succeeded(job):
+    return "Job:  [%s][%s][%s]: succeeded." % (job.name, job.get_desc(), _get_timestamp_now())
+
+def _format_job_info_msg_failed(job, detail):
+    return "Job:  [%s][%s][%s]: failed: [%s]." % (job.name, job.get_desc(), _get_timestamp_now(), detail)
+
+def _format_task_info_msg(task, detail):
+    return "Task: [%s][%s][%s]: succeeded." % (task.name, task.get_desc(), _get_timestamp_now())
+
+def _format_task_error_msg(task, detail):
+    return "Task: [%s][%s][%s]: failed: [%s]" % (task.name, task.get_desc(), _get_timestamp_now(), detail)
+
+def _format_task_warning_msg(task, detail):
+    return "Task: [%s][%s][%s]: warns: [%s]" % (task.name, task.get_desc(), _get_timestamp_now(), detail)
+
+def _format_task_warning_msg_console_output(task, detail):
+    return "%s%s%s." % (terminal_colors.TTY_YELLOW, _format_task_warning_msg(task, detail), terminal_colors.get_standard_color())
 
 def _merge_params_downwards(p_parent, p_child):
 
@@ -30,15 +61,6 @@ def _merge_params_downwards(p_parent, p_child):
         result[k] = p_child[k]
 
     return result
-
-def _format_job_info_msg(job, task):
-    return "Job: [%s][%s]: now running task: [%s][%s]" % (job.name, job.get_desc(), task.name, task.get_desc())
-
-def _format_task_error_msg(task, detail):
-    return "Task [%s][%s] failed: [%s]" % (task.name, task.get_desc(), detail)
-
-def _format_task_warning_msg(task, detail):
-    return "Task [%s][%s] warns: [%s]" % (task.name, task.get_desc(), detail)
 
 class BaseTask:
     def __init__(self, name=None, params=None):
@@ -115,8 +137,7 @@ def _is_status_running_delegate(execution_name):
     return v, (not r)
 
 def _get_delay_report_msg(execution_name):
-
-    delay_timestamp = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
+    delay_timestamp = _get_timestamp_now()
     base_delay_report_message = "Execution context [%s] will be delayed at [%s]." % (execution_name, delay_timestamp)
     return base_delay_report_message
 
@@ -226,7 +247,7 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
     if not v:
         return False, ["Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
 
-    begin_timestamp = datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M:%S - %d/%m/%Y")
+    begin_timestamp = _get_timestamp_now()
 
     # register timestamp in the execution context
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "begin-timestamp", begin_timestamp, [])
@@ -238,18 +259,18 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
     report = []
     for j in job_list:
 
-        feedback_object("Job [%s][%s] started." % (j.name, j.get_desc()))
+        feedback_object(_format_job_info_msg_started(j))
 
         j_msg = ""
         v, r = _wait_if_paused(feedback_object, execution_name)
         if not v:
-            j_msg = "Pausing failed: [%s]. Job: [%s]" % (r, j.name)
+            j_msg = _format_job_info_msg_pause_failed(j, r)
         else:
             v, r = j.run_job(feedback_object, execution_name)
             if v:
-                j_msg = "Job [%s][%s] succeeded." % (j.name, j.get_desc())
+                j_msg = _format_job_info_msg_succeeded(j)
             else:
-                j_msg = "Job [%s][%s] failed: [%s]." % (j.name, j.get_desc(), r)
+                j_msg = _format_job_info_msg_failed(j, r)
 
         report.append((v, j_msg))
         feedback_object(j_msg)

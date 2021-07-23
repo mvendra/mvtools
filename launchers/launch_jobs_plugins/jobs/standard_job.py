@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import terminal_colors
 import launch_jobs
 
 class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class named CustomJob
@@ -15,10 +14,13 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             v, r = launch_jobs._wait_if_paused(feedback_object, execution_name)
             if not v:
                 return False, r
-            feedback_object(launch_jobs._format_job_info_msg(self, t))
+            feedback_object(launch_jobs._format_job_info_msg_task(self, t))
             v, r = t.run_task(feedback_object, execution_name)
             if not v:
-                return False, launch_jobs._format_task_error_msg(t, r)
+                feedback_object(launch_jobs._format_task_error_msg(t, r))
+                return False, "Failed task"
             if r is not None:
-                feedback_object("%s%s%s." % (terminal_colors.TTY_YELLOW, launch_jobs._format_task_warning_msg(t, r), terminal_colors.get_standard_color()))
+                feedback_object(launch_jobs._format_task_warning_msg_console_output(t, r))
+            if v:
+                feedback_object(launch_jobs._format_task_info_msg(t, r))
         return True, None
