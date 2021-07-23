@@ -41,6 +41,35 @@ class RmdirPluginTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
+    def testRmPluginReadParams1(self):
+
+        local_params = {}
+        self.rmdir_task.params = local_params
+
+        v, r = self.rmdir_task._read_params()
+        self.assertFalse(v)
+
+    def testRmPluginReadParams2(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        self.rmdir_task.params = local_params
+
+        v, r = self.rmdir_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", False) )
+
+    def testRmPluginReadParams3(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["ignore_non_pre_existence"] = "dummy_value2"
+        self.rmdir_task.params = local_params
+
+        v, r = self.rmdir_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", True) )
+
     def testRmdirPluginFail1(self):
 
         local_params = {}
