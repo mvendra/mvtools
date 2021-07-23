@@ -419,7 +419,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("svn_lib.is_head_clear", return_value=(True, True)) as dummy:
             v, r = self.svn_task.task_check_repo(print, self.existent_path1)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1)
+            dummy.assert_called_with(self.existent_path1, True)
 
     def testSvnPluginRunTask1(self):
 

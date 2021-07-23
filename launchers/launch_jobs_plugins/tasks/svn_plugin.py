@@ -269,7 +269,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
-        v, r = svn_lib.is_head_clear(target_path)
+        v, r = svn_lib.is_head_clear(target_path, True)
         if not v:
             return False, "svn_lib failed: [%s]" % r
 

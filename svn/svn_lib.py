@@ -120,6 +120,29 @@ def detect_separator(the_string):
 
     return None
 
+def get_list_externals(repo):
+
+    v, r = svn_wrapper.status(repo)
+    if not v:
+        return False, r
+    output = r
+    lines = output.strip().split(os.linesep)
+
+    list_externals = []
+
+    for l in lines:
+        stripped_line = l.strip()
+        if len(stripped_line) == 0:
+            continue
+        if stripped_line[0] != "X":
+            continue
+        cropped_line = stripped_line[1:]
+        cropped_stripped_line = cropped_line.strip()
+        final_ext_path = path_utils.concat_path(repo, cropped_stripped_line)
+        list_externals.append(final_ext_path)
+
+    return True, list_externals
+
 def get_list_unversioned(repo):
 
     v, r = svn_wrapper.status(repo)
@@ -209,7 +232,26 @@ def is_svn_repo(repo):
         return True, "svn"
     return True, False
 
-def is_head_clear(repo):
+def is_head_clear(repo, include_externals):
+
+    all_repos = [repo]
+
+    if include_externals:
+        v, r = get_list_externals(repo)
+        if not v:
+            return False, r
+        all_repos += r
+
+    for cr in all_repos:
+        v, r = is_head_clear_delegate(cr)
+        if not v:
+            return False, r
+        if not r:
+            return True, False
+
+    return True, True
+
+def is_head_clear_delegate(repo):
 
     v, r = svn_wrapper.status(repo)
     if not v:
