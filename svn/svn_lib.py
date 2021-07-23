@@ -122,6 +122,9 @@ def detect_separator(the_string):
 
 def get_list_externals(repo):
 
+    # sample of actual output from svn status, as of m2021: "Performing status on external item at 'ext/Subversion':"
+    EXT_ST_MSG = "Performing status on external item at"
+
     v, r = svn_wrapper.status(repo)
     if not v:
         return False, r
@@ -134,12 +137,12 @@ def get_list_externals(repo):
         stripped_line = l.strip()
         if len(stripped_line) == 0:
             continue
-        if stripped_line[0] != "X":
-            continue
-        cropped_line = stripped_line[1:]
-        cropped_stripped_line = cropped_line.strip()
-        final_ext_path = path_utils.concat_path(repo, cropped_stripped_line)
-        list_externals.append(final_ext_path)
+        slf = stripped_line.find(EXT_ST_MSG)
+        if slf != -1:
+            cropped_line = stripped_line[len(EXT_ST_MSG)+2:] # crop left
+            cropped_line = cropped_line[:len(cropped_line)-2] # crop right
+            final_ext_path = path_utils.concat_path(repo, cropped_line)
+            list_externals.append(final_ext_path)
 
     return True, list_externals
 
