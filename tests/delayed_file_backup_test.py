@@ -59,7 +59,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(test_patch_file_full))
         os.mkdir(local_dfb_storage)
         self.assertTrue(create_and_write_file.create_file_contents(test_patch_file_full, "dummy contents"))
-        v, r = local_dfb.make_backup(test_fn, test_content)
+        v, r = local_dfb.make_backup(None, test_fn, test_content)
         self.assertFalse(v)
 
     def testDelayedFileBackup1(self):
@@ -85,9 +85,48 @@ class DelayedFileBackupTest(unittest.TestCase):
         test_patch_file_full = path_utils.concat_path(local_dfb_storage, test_fn)
 
         self.assertFalse(os.path.exists(test_patch_file_full))
-        v, r = local_dfb.make_backup(test_fn, test_content)
+        v, r = local_dfb.make_backup(None, test_fn, test_content)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file_full))
+
+    def testDelayedFileBackup3(self):
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_fn = "test.patch"
+        test_content = "patched contents"
+        subpath = "sub1/sub2/sub3"
+        test_patch_file_full = path_utils.concat_path(local_dfb_storage, subpath, test_fn)
+
+        self.assertFalse(os.path.exists(test_patch_file_full))
+        v, r = local_dfb.make_backup(subpath, test_fn, test_content)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(test_patch_file_full))
+
+    def testAscertainStorageFolder1(self):
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        local_dfb._ascertain_storage_folder(None)
+
+        self.assertTrue(os.path.exists(local_dfb_storage))
+
+    def testAscertainStorageFolder2(self):
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb_storage_sub1_sub2 = path_utils.concat_path(local_dfb_storage, "sub1", "sub2")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+        self.assertFalse(os.path.exists(local_dfb_storage_sub1_sub2))
+
+        local_dfb._ascertain_storage_folder("sub1/sub2")
+
+        self.assertTrue(os.path.exists(local_dfb_storage))
+        self.assertTrue(os.path.exists(local_dfb_storage_sub1_sub2))
 
 if __name__ == '__main__':
     unittest.main()

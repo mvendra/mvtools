@@ -65,8 +65,13 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_svn_repo_file: [%s]" % r
     backup_contents = r
 
+    subfolder = None
+    v, r = path_utils.based_path_find_outstanding_path(target_repo, path_utils.dirname_filtered(revert_file))
+    if v:
+        subfolder = r
+
     # make the backup patch
-    v, r = backup_obj.make_backup(backup_filename, backup_contents)
+    v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
     gen_patch = r
     if not v:
         return False, "reset_svn_repo_file: failed because [%s] already exists." % gen_patch

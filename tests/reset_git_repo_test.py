@@ -303,6 +303,48 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(self.first_file2 in r)
 
+    def testResetGitRepo_ResetGitRepoFile4(self):
+
+        sub1 = path_utils.concat_path(self.first_repo, "sub1")
+        os.mkdir(sub1)
+
+        sub2 = path_utils.concat_path(sub1, "sub2")
+        os.mkdir(sub2)
+
+        sub1_sub2_file3 = path_utils.concat_path(sub2, "file3.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(sub1_sub2_file3, "dummy contents"))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "more")
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(sub1_sub2_file3))
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(sub1_sub2_file3, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        patch_file_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(sub1_sub2_file3))
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "sub1", "sub2", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, sub1_sub2_file3, 1, self.rdb)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(test_patch_file))
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
     def testResetGitRepo_ResetGitRepoEntire_Fail1(self):
 
         v, r = reset_git_repo.reset_git_repo_entire(self.nonrepo, self.rdb)
@@ -465,6 +507,48 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         self.assertTrue(first_file3 in r)
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoEntire6(self):
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        sub1 = path_utils.concat_path(self.first_repo, "sub1")
+        os.mkdir(sub1)
+
+        sub2 = path_utils.concat_path(sub1, "sub2")
+        os.mkdir(sub2)
+
+        sub1_sub2_file3 = path_utils.concat_path(sub2, "file3.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(sub1_sub2_file3, "dummy contents"))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "more")
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(sub1_sub2_file3))
+
+        with open(sub1_sub2_file3, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        patch_file_filename = "1_reset_git_repo_%s.patch" % (path_utils.basename_filtered(sub1_sub2_file3))
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "sub1", "sub2", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rdb)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(test_patch_file))
 
         v, r = git_lib.get_modified_files(self.first_repo)
         self.assertTrue(v)
