@@ -2,21 +2,10 @@
 
 import sys
 import os
-import platform
-
 from subprocess import call
 
-def getplat():
-    ps = platform.system().lower()
-    if ps == "linux":
-        return "linux"
-    elif ps == "windows":
-        return "windows"
-    elif "cygwin_nt-10" in ps:
-        return "cygwin"
-    elif ps == "darwin":
-        return "macosx"
-    return ""
+import get_platform
+import mvtools_exception
 
 def checkmounted_linux(path):
 
@@ -40,10 +29,11 @@ def checkmounted(path):
     returns True if it is, False if it is not
     """
 
-    if getplat() == "linux":
+    if get_platform.getplat() == get_platform.PLAT_LINUX:
         return checkmounted_linux(path)
-    if getplat() == "cygwin":
+    if get_platform.getplat() == get_platform.PLAT_CYGWIN:
         return checkmounted_cygwin(path)
+    raise mvtools_exception.mvtools_exception("Unsupported platform")
 
 def puaq():
     print("Usage: %s /mnt/path" % os.path.basename(__file__))

@@ -2,8 +2,8 @@
 
 import sys
 import os
-import platform
 
+import get_platform
 import generic_run
 
 """
@@ -54,8 +54,8 @@ class Builder():
 
         _self.ldflags = []
 
-        _self.plat = _self.getplat()
-        _self.arch = _self.getarch()
+        _self.plat = get_platform.getplat()
+        _self.arch = get_platform.getarch()
         _self.mode = _self.options["mode"]
 
         _self.target = _self.plat + "_" + _self.arch + "_" + _self.mode
@@ -105,28 +105,6 @@ class Builder():
             opts["target"] = "all"
 
         return opts
-
-    def getplat(_self):
-        ps = platform.system().lower()
-        if ps == "linux":
-            return "linux"
-        elif ps == "windows":
-            return "windows"
-        elif ps == "darwin":
-            return "macosx"
-        else:
-            return "unknown_plat"
-
-    def getarch(_self):
-        pm = platform.machine().lower()
-        if pm == "x86_64":
-            return "x64"
-        elif pm == "amd64":
-            return "x64"
-        elif pm == "i686":
-            return "x32"
-        else:
-            return "unknown_arch"
 
     def run(_self):
 

@@ -2,41 +2,28 @@
 
 import sys
 import os
-
 from subprocess import call
 
-import platform
+import get_platform
 
 def puaq():
     print("Usage: %s contents" % os.path.basename(__file__))
     sys.exit(1)
 
-def getplat():
-    ps = platform.system().lower()
-    if ps == "linux":
-        return "linux"
-    elif ps == "windows":
-        return "windows"
-    elif "cygwin_nt-10" in ps:
-        return "cygwin"
-    elif ps == "darwin":
-        return "macosx"
-    return ""
-
 def sendtoclipboard(contents):
 
     clipboard_app = ""
-    plat = getplat()
+    plat = get_platform.getplat()
 
-    if plat == "cygwin":
+    if plat == get_platform.PLAT_CYGWIN:
         call("inline_echo.py '%s' > /dev/clipboard" % (contents), shell=True)
         return
 
-    if plat == "linux":
+    if plat == get_platform.PLAT_LINUX:
         clipboard_app = "xclip -sel clip" # for linux
-    elif plat == "windows":
+    elif plat == get_platform.PLAT_WINDOWS:
         clipboard_app = "clip"
-    elif plat == "macosx":
+    elif plat == get_platform.PLAT_MACOSX:
         clipboard_app = "pbcopy"
     else:
         print("Unsupported platform")

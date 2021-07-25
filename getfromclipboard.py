@@ -2,20 +2,9 @@
 
 import sys
 import os
-import platform
 from subprocess import check_output
 
-def getplat():
-    ps = platform.system().lower()
-    if ps == "linux":
-        return "linux"
-    elif ps == "windows":
-        return "windows"
-    elif "cygwin_nt-10" in ps:
-        return "cygwin"
-    elif ps == "darwin":
-        return "macosx"
-    return ""
+import get_platform
 
 def _call_cmd(cmd):
     ret = ""
@@ -44,11 +33,11 @@ def _get_for_cygwin():
 def getfromclipboard():
 
     contents = ""
-    plat = getplat()
+    plat = get_platform.getplat()
 
-    if plat == "linux":
+    if plat == get_platform.PLAT_LINUX:
         contents = _get_for_linux()
-    elif plat == "cygwin":
+    elif plat == get_platform.PLAT_CYGWIN:
         contents = _get_for_cygwin()
     else:
         print("Unsupported platform")
