@@ -164,6 +164,16 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.concat_path("/", "home", "user", "more", "stuff"), "/home/user/more/stuff")
         self.assertEqual(path_utils.concat_path("/", "home", "user", "more", "stuff", "/home/user/more/stuff"), "/home/user/more/stuff/home/user/more/stuff")
 
+    def testGetPathRoot(self):
+        self.assertEqual(path_utils.getpathroot(""), None)
+        self.assertEqual(path_utils.getpathroot(None), None)
+        self.assertEqual(path_utils.getpathroot("/"), "/")
+        self.assertEqual(path_utils.getpathroot("\\"), "\\")
+        self.assertEqual(path_utils.getpathroot("/cygdrive/c/mp1"), "/")
+        self.assertEqual(path_utils.getpathroot("/root/home"), "/")
+        self.assertEqual(path_utils.getpathroot("C:/folder/home"), "C:/")
+        self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:\\")
+
     def testBasenameFiltered(self):
         self.assertEqual(path_utils.basename_filtered(None), None)
         self.assertEqual(path_utils.basename_filtered(""), "")
@@ -182,10 +192,17 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.basename_filtered("/home\\user/more\\sub1\\sub2"), "sub2")
 
     def testDirnameFiltered(self):
+        self.assertEqual(path_utils.dirname_filtered(None), None)
         self.assertEqual(path_utils.dirname_filtered(""), "")
+        self.assertEqual(path_utils.dirname_filtered("/"), "")
+        self.assertEqual(path_utils.dirname_filtered("/home"), "")
+        self.assertEqual(path_utils.dirname_filtered("\\"), "")
+        self.assertEqual(path_utils.dirname_filtered("\\home"), "")
         self.assertEqual(path_utils.dirname_filtered("/home/user"), "/home")
         self.assertEqual(path_utils.dirname_filtered("/home/user/"), "/home")
-        self.assertEqual(path_utils.dirname_filtered("/"), "")
+        self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore"), "/home/user/more/sub1/sub2")
+        self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore/file.txt"), "/home/user/more/sub1/sub2/yetmore")
+        self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt"), "/home\\user/more/sub1\\sub2/yetmore")
 
     def testCopyToFail1(self):
 

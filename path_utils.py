@@ -222,6 +222,22 @@ def concat_path(*ps):
         result_path = os.path.join(result_path, filter_join_abs(p))
     return result_path
 
+def getpathroot(path):
+
+    if path is None:
+        return None
+    if path == "":
+        return None
+
+    sep_chars = [os.sep, "/", "\\"]
+    assembled_root = ""
+    for pc in path:
+        assembled_root += pc
+        if pc in sep_chars:
+            return assembled_root
+
+    return None
+
 def basename_filtered(path):
 
     if path is None:
@@ -246,13 +262,27 @@ def basename_filtered(path):
 
 def dirname_filtered(path):
 
-    # vanilla os.path.dirname does not work well with a path that ends
-    # in a separator character. this function removes the trailing
-    # separator when present before doing dirname.
-
+    if path is None:
+        return None
     if path == "":
         return ""
-    return os.path.dirname( filter_remove_trailing_sep ( path ) )
+
+    sep_chars = [os.sep, "/", "\\"]
+    path = filter_remove_trailing_sep(path)
+    assembled_dirname = ""
+
+    path_pieces = splitpath(path)
+    if len(path_pieces) < 2:
+        return ""
+
+    for i in range(len(path_pieces)):
+        ir = len(path_pieces) - i - 1
+        if ir == len(path_pieces) - 1:
+            continue
+        assembled_dirname = concat_path(path_pieces[ir], assembled_dirname)
+
+    assembled_dirname_with_root = concat_path(getpathroot(path), assembled_dirname)
+    return filter_remove_trailing_sep(assembled_dirname_with_root)
 
 def copy_to_and_rename(source_path, target_path, new_name):
 
