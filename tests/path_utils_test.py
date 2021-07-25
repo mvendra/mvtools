@@ -197,7 +197,6 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.dirname_filtered("/"), None)
         self.assertEqual(path_utils.dirname_filtered("/home"), "")
         self.assertEqual(path_utils.dirname_filtered("\\"), None)
-        self.assertEqual(path_utils.dirname_filtered("\\home"), None)
         self.assertEqual(path_utils.dirname_filtered("/home/user"), "/home")
         self.assertEqual(path_utils.dirname_filtered("/home/user/"), "/home")
         self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore"), "/home/user/more/sub1/sub2")
