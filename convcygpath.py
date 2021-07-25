@@ -97,8 +97,11 @@ def convert_cygwin_path_to_win_path(target_path):
     c = 0
     for tpp in target_path_pieces:
         c += 1
-        if tpp == "cygdrive" and c == 1: # first piece
-            continue
+        if c == 1: # first piece
+            if tpp == "cygdrive":
+                continue
+            else:
+                return None # not a cygwin path
         if c == 2: # second piece
             assembled_path_pieces.append("%s:" % tpp.upper())
             continue
