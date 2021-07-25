@@ -85,6 +85,28 @@ def convert_win_path_to_cygwin_path(target_path):
 
     return final_path
 
+def convert_cygwin_path_to_win_path(target_path):
+
+    if len(target_path) < 1:
+        return None
+    target_path_pieces = path_utils.splitpath(target_path)
+    if len(target_path_pieces) < 2:
+        return None
+
+    assembled_path_pieces = []
+    c = 0
+    for tpp in target_path_pieces:
+        c += 1
+        if tpp == "cygdrive" and c == 1: # first piece
+            continue
+        if c == 2: # second piece
+            assembled_path_pieces.append("%s:" % tpp.upper())
+            continue
+        assembled_path_pieces.append(tpp)
+
+    final_converted_path = path_utils.arraytopath(assembled_path_pieces)
+    return final_converted_path
+
 def merge_spaces(input):
     ret = ""
     for i in input:
