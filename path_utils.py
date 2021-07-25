@@ -224,13 +224,25 @@ def concat_path(*ps):
 
 def basename_filtered(path):
 
-    # vanilla os.path.basename returns empty string when given a path
-    # that ends with a path separator. this one first filters out the
-    # trailing path separator
-
+    if path is None:
+        return None
     if path == "":
         return ""
-    return os.path.basename( filter_remove_trailing_sep ( path ) )
+    if len(path) == 1:
+        return ""
+
+    sep_chars = [os.sep, "/", "\\"]
+    path = filter_remove_trailing_sep(path)
+    found_basename = ""
+
+    for i in range(len(path)):
+        ir = len(path) - i - 1
+        c = path[ir]
+        if c in sep_chars:
+            break
+        found_basename = c + found_basename
+
+    return found_basename
 
 def dirname_filtered(path):
 

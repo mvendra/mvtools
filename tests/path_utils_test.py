@@ -165,11 +165,21 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.concat_path("/", "home", "user", "more", "stuff", "/home/user/more/stuff"), "/home/user/more/stuff/home/user/more/stuff")
 
     def testBasenameFiltered(self):
+        self.assertEqual(path_utils.basename_filtered(None), None)
         self.assertEqual(path_utils.basename_filtered(""), "")
+        self.assertEqual(path_utils.basename_filtered("/"), "")
+        self.assertEqual(path_utils.basename_filtered("\\"), "")
         self.assertEqual(path_utils.basename_filtered("/home"), "home")
+        self.assertEqual(path_utils.basename_filtered("\\home"), "home")
         self.assertEqual(path_utils.basename_filtered("/home/"), "home")
+        self.assertEqual(path_utils.basename_filtered("/home\\"), "home")
         self.assertEqual(path_utils.basename_filtered("/home/user"), "user")
         self.assertEqual(path_utils.basename_filtered("/home/user/"), "user")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more"), "more")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more/sub1/sub2"), "sub2")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1/sub2"), "sub2")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1\\sub2"), "sub2")
+        self.assertEqual(path_utils.basename_filtered("/home\\user/more\\sub1\\sub2"), "sub2")
 
     def testDirnameFiltered(self):
         self.assertEqual(path_utils.dirname_filtered(""), "")
