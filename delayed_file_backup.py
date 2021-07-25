@@ -17,7 +17,7 @@ class delayed_file_backup:
             os.mkdir(self.storage_path)
         if subpath is None:
             return
-        subpath_split = path_utils.splitpath(subpath)
+        subpath_split = path_utils.splitpath(subpath, "auto")
         merged_path = self.storage_path
         for sp in subpath_split:
             merged_path = path_utils.concat_path(merged_path, sp)

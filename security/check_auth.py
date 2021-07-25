@@ -32,7 +32,7 @@ def check_auth_folder(path):
     filters = []
     filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
     for ei in exclude_list:
-        filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei)) )
+        filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
 
     items_filtered = fsquery_adv_filter.filter_path_list_and(files_probe, filters)
 

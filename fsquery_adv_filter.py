@@ -17,7 +17,7 @@ def filter_has_not_middle_pieces(path, params):
     return not filter_has_middle_pieces(path, params)
 
 def filter_has_middle_pieces(path, params):
-    path_pieces = path_utils.splitpath(path)
+    path_pieces = path_utils.splitpath(path, "auto")
     middle_pieces = params
 
     if (len(path_pieces) < 1) or (len(middle_pieces) < 1):
@@ -84,7 +84,7 @@ def filter_has_middle_pieces(path, params):
 
 def filter_has_middle_repos(path, params):
 
-    path_pieces = path_utils.splitpath(path)
+    path_pieces = path_utils.splitpath(path, "auto")
     if (len(path_pieces) < 1):
         return False
 

@@ -5,6 +5,8 @@ import os
 import shutil
 from subprocess import call
 
+import get_platform
+
 class PathUtilsException(RuntimeError):
     def __init__(self, msg):
         self._set_message(msg)
@@ -78,14 +80,48 @@ def explodepath(apath):
     result=result[:len(result)-1] # removes trailing blank space
     return result
 
-def splitpath(apath):
-    from pathlib import PurePath
-    path_parts = list(PurePath(apath).parts)
-    return_path_list = []
-    for pp in path_parts:
-        if pp != os.sep or pp != "/":
-            return_path_list.append(pp)
-    return return_path_list
+def splitpath(target_path, windows_path):
+
+    # {windows_path} valid values are {"yes" / "no" / "auto"}
+
+    if target_path is None:
+        return None
+    if target_path == "":
+        return None
+
+    sep_chars = [os.sep, "/"]
+
+    if windows_path == "yes":
+        sep_chars.append("\\")
+    elif windows_path == "no":
+        pass # nothing to do
+    elif windows_path == "auto":
+        pf = get_platform.getplat()
+        if pf == get_platform.PLAT_WINDOWS or pf == get_platform.PLAT_CYGWIN:
+            sep_chars.append("\\")
+    else:
+        return None
+
+    result_list = []
+
+    current_piece = ""
+
+    c = 0
+    for current_char in target_path:
+        c += 1
+        if c == 1 and current_char == "/":
+            result_list.append(os.sep)
+            continue
+        if current_char in sep_chars:
+            result_list.append(current_piece)
+            current_piece = ""
+            continue
+        current_piece += current_char
+
+    if current_piece != "":
+        result_list.append(current_piece)
+
+    return result_list
 
 def scratchfolder(path):
 
@@ -243,9 +279,9 @@ def basename_filtered(path):
     if path is None:
         return None
     if path == "":
-        return ""
+        return None
     if len(path) == 1:
-        return ""
+        return None
 
     sep_chars = [os.sep, "/", "\\"]
     path = filter_remove_trailing_sep(path)
@@ -265,15 +301,17 @@ def dirname_filtered(path):
     if path is None:
         return None
     if path == "":
-        return ""
+        return None
 
     sep_chars = [os.sep, "/", "\\"]
     path = filter_remove_trailing_sep(path)
     assembled_dirname = ""
 
-    path_pieces = splitpath(path)
+    path_pieces = splitpath(path, "auto")
+    if path_pieces is None:
+        return None
     if len(path_pieces) < 2:
-        return ""
+        return None
 
     for i in range(len(path_pieces)):
         ir = len(path_pieces) - i - 1
@@ -314,7 +352,7 @@ def copy_file_to_and_rename(source_path, target_path, new_name):
     if source_path == target_path:
         return False
 
-    if len(splitpath(new_name)) != 1:
+    if len(splitpath(new_name, "auto")) != 1:
         return False
 
     final_target_path = concat_path(target_path, new_name)
@@ -344,7 +382,7 @@ def copy_folder_to_and_rename(source_path, target_path, new_name):
     if source_path == target_path:
         return False
 
-    if len(splitpath(new_name)) != 1:
+    if len(splitpath(new_name, "auto")) != 1:
         return False
 
     final_target_path = concat_path(target_path, new_name)
@@ -405,8 +443,8 @@ def based_path_find_outstanding_path(source_basepath, source_fullpath):
     if source_fullpath == "" or source_fullpath is None:
         return False, "Invalid source_fullpath"
 
-    source_basepath_pieces = splitpath(source_basepath)
-    source_fullpath_pieces = splitpath(source_fullpath)
+    source_basepath_pieces = splitpath(source_basepath, "auto")
+    source_fullpath_pieces = splitpath(source_fullpath, "auto")
 
     if len(source_basepath_pieces) < 1:
         return False, "Invalid source_basepath"
@@ -436,7 +474,7 @@ def based_copy_to(source_basepath, source_fullpath, target):
     v, r = based_path_find_outstanding_path(source_basepath, source_fullpath)
     if not v:
         return False
-    outstanding_path_pieces = splitpath(r)
+    outstanding_path_pieces = splitpath(r, "auto")
 
     current_assembled_path = target
     for i in range(len(outstanding_path_pieces)):
@@ -477,8 +515,8 @@ def find_middle_path_parts(basepath, fullpath):
     if basepath is None or fullpath is None:
         return None
 
-    basepath_pieces = splitpath(basepath)
-    fullpath_pieces = splitpath(fullpath)
+    basepath_pieces = splitpath(basepath, "auto")
+    fullpath_pieces = splitpath(fullpath, "auto")
 
     if (len(basepath_pieces) < 1) or (len(fullpath_pieces) <= len(basepath_pieces)):
         return None

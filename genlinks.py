@@ -66,7 +66,7 @@ def apply_links_filters(items):
     filters = []
     filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
     for ei in exclude_list:
-        filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei)) )
+        filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
     filters.append( (fsquery_adv_filter.filter_extension_is_not, exclude_list_ext) )
 
     # filter out exceptions

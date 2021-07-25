@@ -80,13 +80,13 @@ def collect_patches_recursive(path, custom_path_navigator, storage_path, default
     if default_filter == "include":
         filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
         for ei in exclude_list:
-            filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei)) )
+            filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
         items_filtered = fsquery_adv_filter.filter_path_list_and(items, filters)
 
     elif default_filter == "exclude":
         filters.append( (fsquery_adv_filter.filter_all_negative, "not-used") )
         for ii in include_list:
-            filters.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii)) )
+            filters.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii, "auto")) )
         items_filtered = fsquery_adv_filter.filter_path_list_or(items, filters)
     else:
         return False, ["Invalid default filter: [%s]" % default_filter]

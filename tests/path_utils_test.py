@@ -176,9 +176,9 @@ class PathUtilsTest(unittest.TestCase):
 
     def testBasenameFiltered(self):
         self.assertEqual(path_utils.basename_filtered(None), None)
-        self.assertEqual(path_utils.basename_filtered(""), "")
-        self.assertEqual(path_utils.basename_filtered("/"), "")
-        self.assertEqual(path_utils.basename_filtered("\\"), "")
+        self.assertEqual(path_utils.basename_filtered(""), None)
+        self.assertEqual(path_utils.basename_filtered("/"), None)
+        self.assertEqual(path_utils.basename_filtered("\\"), None)
         self.assertEqual(path_utils.basename_filtered("/home"), "home")
         self.assertEqual(path_utils.basename_filtered("\\home"), "home")
         self.assertEqual(path_utils.basename_filtered("/home/"), "home")
@@ -193,11 +193,11 @@ class PathUtilsTest(unittest.TestCase):
 
     def testDirnameFiltered(self):
         self.assertEqual(path_utils.dirname_filtered(None), None)
-        self.assertEqual(path_utils.dirname_filtered(""), "")
-        self.assertEqual(path_utils.dirname_filtered("/"), "")
+        self.assertEqual(path_utils.dirname_filtered(""), None)
+        self.assertEqual(path_utils.dirname_filtered("/"), None)
         self.assertEqual(path_utils.dirname_filtered("/home"), "")
-        self.assertEqual(path_utils.dirname_filtered("\\"), "")
-        self.assertEqual(path_utils.dirname_filtered("\\home"), "")
+        self.assertEqual(path_utils.dirname_filtered("\\"), None)
+        self.assertEqual(path_utils.dirname_filtered("\\home"), None)
         self.assertEqual(path_utils.dirname_filtered("/home/user"), "/home")
         self.assertEqual(path_utils.dirname_filtered("/home/user/"), "/home")
         self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore"), "/home/user/more/sub1/sub2")
@@ -343,6 +343,9 @@ class PathUtilsTest(unittest.TestCase):
         v, r = path_utils.based_path_find_outstanding_path("/some/path/more", "/some/else/more/almost")
         self.assertFalse(v)
 
+        v, r = path_utils.based_path_find_outstanding_path("/", "some/else/more/almost/file1.txt")
+        self.assertFalse(v)
+
     def testBasedPathFindOutstandingPath1(self):
 
         v, r = path_utils.based_path_find_outstanding_path("/some/path/more", "/some/path/more/stuff")
@@ -352,6 +355,10 @@ class PathUtilsTest(unittest.TestCase):
         v, r = path_utils.based_path_find_outstanding_path("/some/path/more/yet/more", "/some/path/more/yet/more/sub/folder/file.txt")
         self.assertTrue(v)
         self.assertEqual(r, "sub/folder/file.txt")
+
+        v, r = path_utils.based_path_find_outstanding_path("/", "/some/else/more/almost/file1.txt")
+        self.assertTrue(v)
+        self.assertEqual(r, "some/else/more/almost/file1.txt")
 
     def testBasedCopyToFail1(self):
 
@@ -369,7 +376,7 @@ class PathUtilsTest(unittest.TestCase):
         good_fullpath = folder1_sub1_file1
         good_target = self.folder2
 
-        path_too_small1 = "/"
+        path_too_small1 = ""
 
         sample_base_1 = folder1_sub1
         sample_full_1 = path_utils.concat_path(good_base, "sub2", "file5.txt")
@@ -486,11 +493,16 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.exists(folder2_file1))
 
     def testSplitPath(self):
-        self.assertEqual(path_utils.splitpath(os.sep), [])
-        self.assertEqual(path_utils.splitpath("%stmp" % os.sep), ["tmp"])
-        self.assertEqual(path_utils.splitpath("tmp"), ["tmp"])
-        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep) ), ["first", "second"])
-        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep) ), ["first", "second"])
+        self.assertEqual(path_utils.splitpath(os.sep, "auto"), ["/"])
+        self.assertEqual(path_utils.splitpath("%stmp" % os.sep, "auto"), ["/", "tmp"])
+        self.assertEqual(path_utils.splitpath("%stmp%s" % (os.sep, os.sep), "auto"), ["/", "tmp"])
+        self.assertEqual(path_utils.splitpath("tmp", "auto"), ["tmp"])
+        self.assertEqual(path_utils.splitpath("/tmp", "no"), ["/", "tmp"])
+        self.assertEqual(path_utils.splitpath("C:\\tmp", "yes"), ["C:", "tmp"])
+        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep), "auto" ), ["/", "first", "second"])
+        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep), "auto" ), ["/", "first", "second"])
+        self.assertEqual(path_utils.splitpath("C:\\tmp\\first\\second\\yetmore", "yes"), ["C:", "tmp", "first", "second", "yetmore"])
+        self.assertEqual(path_utils.splitpath("/tmp\\first/second", "no"), ["/", "tmp\\first", "second"])
 
     def testGetExtension(self):
         self.assertEqual(path_utils.getextension(None), None)

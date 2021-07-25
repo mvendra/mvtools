@@ -89,7 +89,7 @@ def convert_cygwin_path_to_win_path(target_path):
 
     if len(target_path) < 1:
         return None
-    target_path_pieces = path_utils.splitpath(target_path)
+    target_path_pieces = path_utils.splitpath(target_path, "auto")
     if len(target_path_pieces) < 2:
         return None
 
