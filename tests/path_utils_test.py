@@ -171,7 +171,6 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.getpathroot(""), None)
         self.assertEqual(path_utils.getpathroot(None), None)
         self.assertEqual(path_utils.getpathroot("/"), "/")
-        self.assertEqual(path_utils.getpathroot("\\"), "\\")
         self.assertEqual(path_utils.getpathroot("/cygdrive/c/mp1"), "/")
         self.assertEqual(path_utils.getpathroot("/root/home"), "/")
         self.assertEqual(path_utils.getpathroot("C:/folder/home"), "C:")
