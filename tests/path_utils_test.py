@@ -174,8 +174,13 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.getpathroot("\\"), "\\")
         self.assertEqual(path_utils.getpathroot("/cygdrive/c/mp1"), "/")
         self.assertEqual(path_utils.getpathroot("/root/home"), "/")
-        self.assertEqual(path_utils.getpathroot("C:/folder/home"), "C:/")
-        self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:\\")
+        self.assertEqual(path_utils.getpathroot("C:/folder/home"), "C:")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_CYGWIN):
+            self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
+            self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:\\folder")
 
     def testBasenameFiltered(self):
         self.assertEqual(path_utils.basename_filtered(None), None)

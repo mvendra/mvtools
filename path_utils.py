@@ -265,14 +265,15 @@ def getpathroot(path):
     if path == "":
         return None
 
-    sep_chars = [os.sep, "/", "\\"]
-    assembled_root = ""
-    for pc in path:
-        assembled_root += pc
-        if pc in sep_chars:
-            return assembled_root
+    if len(path) > 1:
+        path = filter_remove_trailing_sep(path)
 
-    return None
+    path_pieces = splitpath(path, "auto")
+    if path_pieces is None:
+        return None
+    if len(path_pieces) == 0:
+        return None
+    return path_pieces[0]
 
 def basename_filtered(path):
 
