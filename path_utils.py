@@ -280,21 +280,16 @@ def basename_filtered(path):
         return None
     if path == "":
         return None
-    if len(path) == 1:
+
+    if len(path) > 1:
+        path = filter_remove_trailing_sep(path)
+
+    path_pieces = splitpath(path, "auto")
+    if path_pieces is None:
         return None
-
-    sep_chars = [os.sep, "/", "\\"]
-    path = filter_remove_trailing_sep(path)
-    found_basename = ""
-
-    for i in range(len(path)):
-        ir = len(path) - i - 1
-        c = path[ir]
-        if c in sep_chars:
-            break
-        found_basename = c + found_basename
-
-    return found_basename
+    if len(path_pieces) == 0:
+        return None
+    return path_pieces[len(path_pieces)-1]
 
 def dirname_filtered(path):
 
@@ -303,7 +298,6 @@ def dirname_filtered(path):
     if path == "":
         return None
 
-    sep_chars = [os.sep, "/", "\\"]
     path = filter_remove_trailing_sep(path)
     assembled_dirname = ""
 
