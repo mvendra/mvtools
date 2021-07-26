@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def create_file_contents(filename, contents):
 
     if os.path.exists(filename):
@@ -14,7 +16,7 @@ def create_file_contents(filename, contents):
     return True
 
 def puaq():
-    print("Usage: %s file contents" % os.path.basename(__file__))
+    print("Usage: %s file contents" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

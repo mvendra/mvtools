@@ -134,7 +134,7 @@ be cautious about when using, to avoid mismatches and misuse.
 """
 
 def puaq():
-    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % os.path.basename(__file__))
+    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

@@ -5,13 +5,14 @@ import os
 import fsquery
 
 import hash_check
+import path_utils
 
 """ test_mass_hash_check
 Tests if all files inside a given path, that match the given extension, have an accompanying valid hash file (filename + ".sha256")
 """
 
 def puaq(): # print usage and quit
-    print("Usage: %s path_to_operate files_extension" % os.path.basename(__file__))
+    print("Usage: %s path_to_operate files_extension" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def test_mass_hash_check(path_files, extension):

@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import maketimestamp
 import toolbus
 import minicron
@@ -330,7 +331,7 @@ def menu_list():
         print(l)
 
 def puaq():
-    print("Usage: %s [--list-executions | --pause-execution execution-name | --resume-execution execution-name]" % os.path.basename(__file__))
+    print("Usage: %s [--list-executions | --pause-execution execution-name | --resume-execution execution-name]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

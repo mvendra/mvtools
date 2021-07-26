@@ -221,7 +221,7 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X]" % os.path.basename(__file__))
+    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

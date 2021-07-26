@@ -4,7 +4,7 @@ import sys
 import os
 
 import getpass
-
+import path_utils
 import sha512_wrapper
 
 def check_hash(passphrase, pass_hash_file):
@@ -35,7 +35,7 @@ def get_checked_passphrase(passphrase_hash_file):
         return False, None
 
 def puaq():
-    print("Usage: %s passphrase_hash_file" % os.path.basename(__file__))
+    print("Usage: %s passphrase_hash_file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

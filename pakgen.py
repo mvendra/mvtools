@@ -62,7 +62,7 @@ def pakgen(filename, dohash, files):
     return True, report
 
 def puaq():
-    print("Usage: %s [--file pack_filename] [--hash] (files_and_folders)" % os.path.basename(__file__))
+    print("Usage: %s [--file pack_filename] [--hash] (files_and_folders)" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

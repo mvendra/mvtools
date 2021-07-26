@@ -3,8 +3,8 @@
 import sys
 import os
 
-import generic_run
 import path_utils
+import generic_run
 
 def configure_and_generate(cmake_path, suppress_cmake_output, source_path, output_path, generator_type, options):
 
@@ -28,7 +28,7 @@ def configure_and_generate(cmake_path, suppress_cmake_output, source_path, outpu
     return generic_run.run_cmd_simple(full_cmd, suppress_cmake_output, use_cwd=output_path)
 
 def puaq():
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

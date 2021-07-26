@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def sanitize_next(input_line):
 
     input_line_local = input_line
@@ -31,7 +33,7 @@ def sanitize_terminal_line(input_line):
     return input_line_local
 
 def puaq():
-    print("Usage: %s input_line" % os.path.basename(__file__))
+    print("Usage: %s input_line" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

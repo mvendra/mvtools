@@ -29,7 +29,7 @@ def prefix_checker(target_dir, prefix_size):
         return True
 
 def puaq():
-    print("Usage: %s prefix_size [target-dir]" % os.path.basename(__file__))
+    print("Usage: %s prefix_size [target-dir]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

@@ -393,4 +393,4 @@ def unstage(repo, file_list=None):
     return git_wrapper.reset_head(repo, file_list)
 
 if __name__ == "__main__":
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))

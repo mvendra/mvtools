@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def getcontents(filename):
     contents = ""
     with open(filename) as f:
@@ -52,7 +54,7 @@ def check_cpp_header_guards(filename):
     return True
 
 def puaq():
-    print("Usage: %s file.h" % os.path.basename(__file__))
+    print("Usage: %s file.h" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

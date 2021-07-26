@@ -6,8 +6,10 @@ import os
 import getpass
 from subprocess import call
 
+import path_utils
+
 def puaq():
-    print("Usage: %s infile [outfile] [passphrase]" % os.path.basename(__file__))
+    print("Usage: %s infile [outfile] [passphrase]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def symmetric_encrypt(infile, outfile, passphrase):

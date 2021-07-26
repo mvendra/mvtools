@@ -7,6 +7,8 @@ import subprocess
 import re
 from subprocess import call
 
+import path_utils
+
 """
 mousefix tool
 this tries to automatically do the equivalent of the following:
@@ -93,7 +95,7 @@ def detect_and_apply(opts):
             sensei_selected = (sc, countlistprops(sc))
 
     if len(sensei_selected) == 0:
-        print("%s: WARNING: mouse not detected." % os.path.basename(__file__))
+        print("%s: WARNING: mouse not detected." % path_utils.basename_filtered(__file__))
         return False
 
     mouse_id = sensei_selected[0]
@@ -102,7 +104,7 @@ def detect_and_apply(opts):
         applymousefix(mouse_id, dap)
     else:
         if not "--ignore-warnings" in opts:
-            print("%s: WARNING: detected mouse, but could not detect \"libinput Accel Speed\"!" % os.path.basename(__file__))
+            print("%s: WARNING: detected mouse, but could not detect \"libinput Accel Speed\"!" % path_utils.basename_filtered(__file__))
         return False
 
     return True

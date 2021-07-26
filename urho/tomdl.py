@@ -3,8 +3,10 @@
 import sys
 import os
 
+import path_utils
+
 def puaq():
-    print("Usage: %s file" % os.path.basename(__file__))
+    print("Usage: %s file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def to_urho_mdl(inputfile):

@@ -72,7 +72,7 @@ def checkout(remote_link, local_repo):
     base_path = path_utils.dirname_filtered(local_repo)
     if base_path == local_repo:
         return False, "Target path [%s] is invalid." % local_repo
-    local_target_name = os.path.basename(local_repo)
+    local_target_name = path_utils.basename_filtered(local_repo)
 
     v, r = generic_run.run_cmd_simple(["svn", "checkout", remote_link, local_target_name], use_cwd=base_path)
     if not v:
@@ -128,7 +128,7 @@ def patch(repo, source_file):
     return v, r
 
 def puaq():
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

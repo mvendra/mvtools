@@ -75,7 +75,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         for it in items_filtered_struct_pre:
             middle_path_parts = path_utils.find_middle_path_parts(src_path, it)
-            target_struct = path_utils.concat_path(dst_path, middle_path_parts, os.path.basename(it))
+            target_struct = path_utils.concat_path(dst_path, middle_path_parts, path_utils.basename_filtered(it))
             items_filtered_struct.append(target_struct)
 
         # check if any of the plain struct target folders already exist
@@ -101,7 +101,7 @@ class CustomTask(launch_jobs.BaseTask):
                 middle_path_parts = path_utils.find_middle_path_parts(src_path, it)
                 if middle_path_parts is None:
                     return False, "clone_repos failed - cannot find middle parts of path: [%s vs %s]" % (src_path, it)
-                target_repo = path_utils.concat_path( dst_path, middle_path_parts, os.path.basename(it) )
+                target_repo = path_utils.concat_path( dst_path, middle_path_parts, path_utils.basename_filtered(it) )
                 if os.path.exists(target_repo):
                     return False, "clone_repos failed - target repo [%s] already exists." % target_repo
                 items_tuple_final.append( (it, target_repo) )

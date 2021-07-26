@@ -2,9 +2,11 @@
 
 # Parse Device Accel Profile
 
-import re
 import sys
 import os
+
+import re
+import path_utils
 
 def parsed_accel_profile(STR):
 
@@ -19,7 +21,7 @@ def parsed_accel_profile(STR):
     return m.group(0) 
 
 def puaq():
-    print("Usage: %s search-string" % os.path.basename(__file__))
+    print("Usage: %s search-string" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

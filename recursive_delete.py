@@ -15,7 +15,7 @@ def recursive_delete(path, filename):
             os.unlink(f)
 
 def puaq():
-    print("Usage: %s file-to-delete" % os.path.basename(__file__))
+    print("Usage: %s file-to-delete" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

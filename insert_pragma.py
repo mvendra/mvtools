@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-import fsquery
-
 import sys
 import os
 
+import fsquery
+import path_utils
+
 def puaq():
-    print("Usage: %s folder" % os.path.basename(__file__))
+    print("Usage: %s folder" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def insert_pragma(path):

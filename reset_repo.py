@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import detect_repo_type
 import reset_git_repo
 import reset_svn_repo
@@ -42,7 +43,7 @@ def reset_repo(target_repo, files):
     return False, ["Resetting failed: Unsupported repo type: [%s]" % repotype]
 
 def puaq():
-    print("Usage: %s target_repo [--file filepath]" % os.path.basename(__file__))
+    print("Usage: %s target_repo [--file filepath]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

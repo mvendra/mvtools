@@ -6,9 +6,10 @@ import subprocess
 import getpass
 
 import sendtoclipboard
+import path_utils
 
 def puaq():
-    print("Usage: %s password_file" % os.path.basename(__file__))
+    print("Usage: %s password_file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def getpasswordfromcontents(contents):

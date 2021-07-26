@@ -5,6 +5,7 @@ import os
 
 from subprocess import call
 
+import path_utils
 import generic_run
 
 def git_wrapper_standard_command(cmd, cmd_name="git_wrapper_standard_command"):
@@ -234,7 +235,7 @@ def reset_head(repo, files=None):
     return git_wrapper_standard_command(cmd, "reset-head")
 
 def puaq():
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))
 
 if __name__ == "__main__":
     puaq()

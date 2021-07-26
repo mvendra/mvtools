@@ -3,8 +3,8 @@
 import sys
 import os
 
-import generic_run
 import path_utils
+import generic_run
 
 def make_tree(folder_to_tree):
 
@@ -20,7 +20,7 @@ def make_tree(folder_to_tree):
     return v, r
 
 def puaq():
-    print("Usage: %s folder" % os.path.basename(__file__))
+    print("Usage: %s folder" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

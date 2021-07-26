@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import generic_run
 
 def compress(file_to_compress):
@@ -32,7 +33,7 @@ def decompress(file_to_decompress):
     return v, r
 
 def puaq():
-    print("Usage: %s file_to_compress" % os.path.basename(__file__))
+    print("Usage: %s file_to_compress" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

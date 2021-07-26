@@ -3,10 +3,11 @@
 import sys
 import os
 
+import path_utils
 import fsquery
 
 def puaq():
-    print("Usage: %s target_path" % os.path.basename(__file__))
+    print("Usage: %s target_path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def get_content(file):

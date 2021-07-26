@@ -8,7 +8,7 @@ import path_utils
 import sendtoclipboard
 
 def puaq():
-    print("Usage: %s path" % os.path.basename(__file__))
+    print("Usage: %s path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def find_drive_letter(target_path):

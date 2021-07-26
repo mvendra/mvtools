@@ -4,6 +4,8 @@ import sys
 import os
 import subprocess
 
+import path_utils
+
 # reminder: importing anything here other than vanilla python modules is forbidden
 
 def _local_add2pythonpath(env_param, path):
@@ -38,7 +40,7 @@ def pre_generate_genlinks_links(mvtools_path, links_path):
         source_items.append("%s%s%s" % (mvtools_path, os.sep, sit))
 
     for si in source_items:
-        di = os.path.join(links_path, os.path.basename(si))
+        di = os.path.join(links_path, path_utils.basename_filtered(si))
         os.symlink(si, di)
 
 def run_genlinks(mvtools_path, links_path):

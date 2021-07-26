@@ -255,7 +255,7 @@ class GitWrapperTest(unittest.TestCase):
         third_cloned_from_bare = path_utils.concat_path(self.test_dir, "third_cloned_from_bare")
         v, r = git_wrapper.clone(bare_cloned_repo, third_cloned_from_bare)
         self.assertTrue(third_cloned_from_bare)
-        third_cloned_from_bare_test_file = path_utils.concat_path(third_cloned_from_bare, os.path.basename(test_file))
+        third_cloned_from_bare_test_file = path_utils.concat_path(third_cloned_from_bare, path_utils.basename_filtered(test_file))
         self.assertTrue(os.path.exists(third_cloned_from_bare_test_file))
 
     def testDiff1(self):

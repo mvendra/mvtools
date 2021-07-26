@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 class Mvtools_Envvars:
 
     def __init__(self):
@@ -132,6 +134,6 @@ def mvtools_envvar_write_test_bkproc_reserved_1(val):
 
 if __name__ == "__main__":
 
-    print("Hello from %s. Mvtool's envvars are:" % os.path.basename(__file__))
+    print("Hello from %s. Mvtool's envvars are:" % path_utils.basename_filtered(__file__))
     for e in Mvtools_Envvars().list_mvtools_envvar():
         print(e)

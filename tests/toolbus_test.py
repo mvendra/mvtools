@@ -79,10 +79,10 @@ class ToolbusTest(unittest.TestCase):
             self.fail(r)
 
     def testBootstrapCustomToolbusDb(self):
-        v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(os.path.basename(self.db_test_custom_database)))
+        v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(path_utils.basename_filtered(self.db_test_custom_database)))
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.db_test_custom_database))
-        v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(os.path.basename(self.db_test_custom_database)))
+        v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(path_utils.basename_filtered(self.db_test_custom_database)))
         self.assertFalse(v)
 
     def testGetDbHandle1(self):
@@ -92,7 +92,7 @@ class ToolbusTest(unittest.TestCase):
 
     def testGetDbHandle2(self):
 
-        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
+        v, r, ext = toolbus.get_db_handle( path_utils.basename_filtered(self.db_test_ok_1_full) )
         self.assertTrue(v)
 
     def testGetDbHandle3(self):
@@ -101,7 +101,7 @@ class ToolbusTest(unittest.TestCase):
         if not v:
             self.fail("Failed setting toolbus envvar with value: [%s]" % (self.nonexistent_folder))
 
-        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_ok_1_full) )
+        v, r, ext = toolbus.get_db_handle( path_utils.basename_filtered(self.db_test_ok_1_full) )
         self.assertFalse(v)
 
     def testGetDbHandle4(self):
@@ -122,7 +122,7 @@ class ToolbusTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.db_test_internal_database, contents_internal_db)
         self.assertTrue(os.path.exists( self.db_test_internal_database ))
 
-        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_internal_database), True )
+        v, r, ext = toolbus.get_db_handle( path_utils.basename_filtered(self.db_test_internal_database), True )
         self.assertTrue(v)
 
         read_contents = ""
@@ -132,17 +132,17 @@ class ToolbusTest(unittest.TestCase):
 
     def testGetDbHandle6(self):
 
-        v, r, ext = toolbus.get_db_handle( os.path.basename(self.nonexistent_file) )
+        v, r, ext = toolbus.get_db_handle( path_utils.basename_filtered(self.nonexistent_file) )
         self.assertFalse(v)
 
     def testGetDbHandle7(self):
 
-        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_fail_1) )
+        v, r, ext = toolbus.get_db_handle( path_utils.basename_filtered(self.db_test_fail_1) )
         self.assertFalse(v)
 
     def testGetDbHandle8(self):
 
-        v, r, ext = toolbus.get_db_handle( os.path.basename(self.db_test_fail_2) )
+        v, r, ext = toolbus.get_db_handle( path_utils.basename_filtered(self.db_test_fail_2) )
         self.assertFalse(v)
 
     def testGetHandleCustomDb1(self):

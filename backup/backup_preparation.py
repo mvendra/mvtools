@@ -385,7 +385,7 @@ def backup_preparation(config_file):
     return True
 
 def puaq():
-    print("Usage: %s config_file" % os.path.basename(__file__))
+    print("Usage: %s config_file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

@@ -52,10 +52,10 @@ def print_report(v, r):
                 print("[%s] failed." % i[1])
         sys.exit(1)
 
-    print("%s: All succeeded." % os.path.basename(__file__))
+    print("%s: All succeeded." % path_utils.basename_filtered(__file__))
 
 def puaq():
-    print("Usage: %s [--nocwd] [--adapter the_adapter] runnable_list" % os.path.basename(__file__))
+    print("Usage: %s [--nocwd] [--adapter the_adapter] runnable_list" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -89,7 +89,7 @@ if __name__ == "__main__":
             break
 
     if len(runnable_list) == 0:
-        print("%s: Nothing to run." % os.path.basename(__file__))
+        print("%s: Nothing to run." % path_utils.basename_filtered(__file__))
         sys.exit(0)
 
     # runs the list

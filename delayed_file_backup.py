@@ -37,4 +37,4 @@ class delayed_file_backup:
         return True, target_file_full_path
 
 if __name__ == "__main__":
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))

@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import git_lib
 
 def runcmd(cmd):
@@ -29,7 +30,7 @@ def git_banish_file(repo, fname):
     runcmd("git filter-branch --index-filter \ 'git rm --ignore-unmatch --cached %s' -- HEAD" % fname)
 
 def puaq():
-    print("Usage: %s file [repo, or I will assume the current working dir]" % os.path.basename(__file__))
+    print("Usage: %s file [repo, or I will assume the current working dir]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

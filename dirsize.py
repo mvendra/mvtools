@@ -5,6 +5,8 @@ import os
 
 from subprocess import run, PIPE
 
+import path_utils
+
 def get_dir_size(path, human):
 
     """ get_dir_size
@@ -47,7 +49,7 @@ def get_dir_size(path, human):
         return int(out)
 
 def puaq():
-    print("Usage: %s /path/to/folder" % os.path.basename(__file__))
+    print("Usage: %s /path/to/folder" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def escape_spaces(thepath):

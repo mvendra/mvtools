@@ -83,7 +83,7 @@ def makecontentlist(path, recursive, include_regular_files, include_regular_dirs
     return ret_list
 
 def puaq():
-    print("Usage: %s path [-R|-r] include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include [extensions]" % os.path.basename(__file__))
+    print("Usage: %s path [-R|-r] include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include [extensions]" % path_utils.basename_filtered(__file__))
     exit(1)
 
 if __name__ == "__main__":

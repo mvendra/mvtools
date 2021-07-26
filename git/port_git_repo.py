@@ -175,7 +175,7 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash] [--unversioned] [--previous]" % os.path.basename(__file__))
+    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash] [--unversioned] [--previous]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

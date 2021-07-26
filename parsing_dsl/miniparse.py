@@ -2,8 +2,9 @@
 
 import sys
 import os
-
 import re
+
+import path_utils
 
 def delete_indices_from_string(thestr, list_indices):
 
@@ -457,4 +458,4 @@ def escape(thestr, escape_char, target_chars):
     return True, result
 
 if __name__ == "__main__":
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))

@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import time
 
 def convert_time_string(time_string):
@@ -46,4 +47,4 @@ def busy_wait(duration):
     return True
 
 if __name__ == "__main__":
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))

@@ -239,7 +239,7 @@ def error_only_one_op_allowed():
     sys.exit(TOOLBUS_RET_USER_ERROR)
 
 def puaq():
-    print("Usage: %s [--get-signal signame | --set-signal signame sigvalue]" % os.path.basename(__file__))
+    print("Usage: %s [--get-signal signame | --set-signal signame sigvalue]" % path_utils.basename_filtered(__file__))
     sys.exit(TOOLBUS_RET_USER_ERROR)
 
 if __name__ == "__main__":

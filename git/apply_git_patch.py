@@ -102,7 +102,7 @@ def apply_git_patch(target_repo, head_patches, staged_patches, stash_patches, un
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s target_repo [--head patch-file] [--staged patch-file] [--stash patch-file] [--unversioned file-base patch-file]" % os.path.basename(__file__))
+    print("Usage: %s target_repo [--head patch-file] [--staged patch-file] [--stash patch-file] [--unversioned file-base patch-file]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

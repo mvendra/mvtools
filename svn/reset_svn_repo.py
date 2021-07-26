@@ -162,7 +162,7 @@ def reset_svn_repo(target_repo, files):
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s target_repo [--file filepath]" % os.path.basename(__file__))
+    print("Usage: %s target_repo [--file filepath]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

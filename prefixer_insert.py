@@ -53,7 +53,7 @@ def prefixer_insert(target_dir, prefix_to_reserve):
                 basic_refactor(d, new_full)
 
 def puaq():
-    print("Usage: %s prefix-to-reserve [target-dir]" % os.path.basename(__file__))
+    print("Usage: %s prefix-to-reserve [target-dir]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

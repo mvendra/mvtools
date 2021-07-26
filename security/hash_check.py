@@ -3,10 +3,11 @@
 import sys
 import os
 
+import path_utils
 import sha256_wrapper
 
 def puaq():
-    print("Usage: %s archive-to-check [hash-file]" % os.path.basename(__file__))
+    print("Usage: %s archive-to-check [hash-file]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def sha256sum_check(archive_file, hash_file):

@@ -110,7 +110,7 @@ exit 0 #SENTINEL\n"""
         call(["chmod", "+x", _self.outputfn])
 
 def puaq():
-    print("Usage: %s input_instructionsfile.sh input_packagefile.tar.gz output_filename.sh" % os.path.basename(__file__))
+    print("Usage: %s input_instructionsfile.sh input_packagefile.tar.gz output_filename.sh" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

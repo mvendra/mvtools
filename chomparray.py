@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def chomparray(option, inputs):
 
     # sample usage:
@@ -29,7 +31,7 @@ def chomparray(option, inputs):
     print(toline)
 
 def puaq():
-    print("Usage: %s {r1|l1} [string] ..." % os.path.basename(__file__))
+    print("Usage: %s {r1|l1} [string] ..." % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

@@ -181,7 +181,7 @@ def filter_path_list(path_list, filter_functions, predicate_adapter):
     return return_list
 
 def puaq():
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))
 
 if __name__ == "__main__":
     puaq()

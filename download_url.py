@@ -5,6 +5,8 @@ import os
 
 import urllib.request
 
+import path_utils
+
 # credit: https://stackoverflow.com/questions/22676/how-to-download-a-file-over-http
 def download_url(source_url, target_path):
 
@@ -24,7 +26,7 @@ def download_url(source_url, target_path):
     return True, None
 
 def puaq():
-    print("Usage: %s source_url target_path" % os.path.basename(__file__))
+    print("Usage: %s source_url target_path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

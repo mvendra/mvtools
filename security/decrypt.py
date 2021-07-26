@@ -9,7 +9,7 @@ import getpass
 from subprocess import call
 
 def puaq():
-    print("Usage: %s infile [outfile] [passphrase]" % os.path.basename(__file__))
+    print("Usage: %s infile [outfile] [passphrase]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def symmetric_decrypt(infile, outfile, passphrase):

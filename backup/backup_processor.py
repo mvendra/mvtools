@@ -216,7 +216,7 @@ def run_backup(config_file, pass_hash_file):
     return bkeng_ret
 
 def puaq():
-    print("Usage: %s config_file pass_hash_file" % os.path.basename(__file__))
+    print("Usage: %s config_file pass_hash_file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

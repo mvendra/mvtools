@@ -40,7 +40,7 @@ def is_any_repo_type(repo_type):
     return repo_type in REPO_TYPES
 
 def puaq():
-    print("Usage: %s path" % os.path.basename(__file__))
+    print("Usage: %s path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

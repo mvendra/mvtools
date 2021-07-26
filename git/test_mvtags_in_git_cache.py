@@ -5,9 +5,10 @@ import os
 
 import git_wrapper
 import git_lib
+import path_utils
 
 def puaq():
-    print("Usage: %s repo_path" % os.path.basename(__file__))
+    print("Usage: %s repo_path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def check_mvtags_in_file(repo, thefile):

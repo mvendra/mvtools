@@ -18,7 +18,7 @@ This is like a dry-run version of a would-be mass_decrypt operation/script. Inte
 """
 
 def puaq(): # print usage and quit
-    print("Usage: %s path_to_operate temporary_path files_extension passphrase_hash_file" % os.path.basename(__file__))
+    print("Usage: %s path_to_operate temporary_path files_extension passphrase_hash_file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 

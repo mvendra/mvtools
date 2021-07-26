@@ -5,9 +5,10 @@ import os
 from subprocess import call
 
 import get_platform
+import path_utils
 
 def puaq():
-    print("Usage: %s contents" % os.path.basename(__file__))
+    print("Usage: %s contents" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def sendtoclipboard(contents):

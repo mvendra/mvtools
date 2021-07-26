@@ -9,10 +9,11 @@ import getpass
 from subprocess import check_output
 from subprocess import call
 
+import path_utils
 import decrypt
 
 def puaq():
-    print("Usage: %s enc_password_file" % os.path.basename(__file__))
+    print("Usage: %s enc_password_file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

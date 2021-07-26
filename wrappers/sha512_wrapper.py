@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import generic_run
 
 def hash_sha_512_app_content(content):
@@ -20,7 +21,7 @@ def hash_sha_512_app_file(filename):
     return True, r[0:128]
 
 def puaq():
-    print("Usage: %s (--file|--contents) (file|contents)" % os.path.basename(__file__))
+    print("Usage: %s (--file|--contents) (file|contents)" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

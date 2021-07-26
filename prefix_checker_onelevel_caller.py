@@ -5,6 +5,7 @@ import os
 
 import fsquery
 import prefix_checker
+import path_utils
 
 def prefix_checker_onelevel_caller(path, prefix_size):
     r = True
@@ -14,7 +15,7 @@ def prefix_checker_onelevel_caller(path, prefix_size):
     return r
 
 def puaq():
-    print("Usage: %s prefix_size [target-dir]" % os.path.basename(__file__))
+    print("Usage: %s prefix_size [target-dir]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

@@ -3,8 +3,10 @@
 import sys
 import os
 
+import path_utils
+
 def puaq():
-    print("Usage: %s /path/that has/spaces" % os.path.basename(__file__))
+    print("Usage: %s /path/that has/spaces" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

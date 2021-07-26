@@ -6,6 +6,7 @@ import stat
 
 import getpass
 
+import path_utils
 import terminal_colors
 import encrypt
 import shred_wrapper
@@ -39,7 +40,7 @@ def secure_file(target_file, pass_hash_file):
     return True
 
 def puaq():
-    print("Usage: %s target_file pass_hash_file" % os.path.basename(__file__))
+    print("Usage: %s target_file pass_hash_file" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

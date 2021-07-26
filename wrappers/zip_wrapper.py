@@ -3,8 +3,8 @@
 import sys
 import os
 
-import generic_run
 import path_utils
+import generic_run
 
 def make_pack(file_to_create, incl_list):
 
@@ -50,7 +50,7 @@ def extract(file_to_extract, target_path):
     return v, r
 
 def puaq():
-    print("Usage: %s file_to_create.zip (inclusion_list)" % os.path.basename(__file__))
+    print("Usage: %s file_to_create.zip (inclusion_list)" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

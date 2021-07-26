@@ -120,7 +120,7 @@ def prjrename(target_dir, original_project_name, new_project_name):
     os.rename(full_original, full_new)
 
 def puaq():
-    print("Usage: %s proj-name new-proj-name [target-dir]" % os.path.basename(__file__))
+    print("Usage: %s proj-name new-proj-name [target-dir]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

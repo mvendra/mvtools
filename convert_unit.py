@@ -3,6 +3,8 @@
 import sys
 import os
 
+import path_utils
+
 def convert_to_bytes(size_string):
 
     try:
@@ -34,7 +36,7 @@ def convert_to_bytes(size_string):
         return (False, None)
 
 def puaq():
-    print("Usage: %s size_string" % os.path.basename(__file__))
+    print("Usage: %s size_string" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

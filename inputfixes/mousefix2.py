@@ -7,6 +7,8 @@ import subprocess
 import re
 from subprocess import call
 
+import path_utils
+
 """
 mousefix tool
 this tries to automatically do the equivalent of the following:
@@ -79,7 +81,7 @@ def detect_and_apply():
                 if dap is not None:
                     applymousefix(mouse_id, dap)
                 else:
-                    print("%s: WARNING: detected mouse, but could not detect \"libinput Accel Speed\"!" % os.path.basename(__file__))
+                    print("%s: WARNING: detected mouse, but could not detect \"libinput Accel Speed\"!" % path_utils.basename_filtered(__file__))
                     return False
 
     return True

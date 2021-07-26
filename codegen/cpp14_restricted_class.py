@@ -116,7 +116,7 @@ class cpp14_restricted_class:
             __self.indent = __self.indent[:len(__self.indent)-len(__self.INDENT_STEP)]
 
 def puaq(): # print usage and quit
-    print("Usage: %s filename [h=header_prefix] [n=namespace]*" % os.path.basename(__file__)) 
+    print("Usage: %s filename [h=header_prefix] [n=namespace]*" % path_utils.basename_filtered(__file__)) 
     sys.exit(1)
 
 if __name__ == "__main__":

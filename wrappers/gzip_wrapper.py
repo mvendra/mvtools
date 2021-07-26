@@ -36,7 +36,7 @@ def decompress(target_archive):
     return v, r
 
 def puaq():
-    print("Usage: %s target_archive.tar" % os.path.basename(__file__))
+    print("Usage: %s target_archive.tar" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

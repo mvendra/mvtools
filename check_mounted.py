@@ -6,6 +6,7 @@ from subprocess import call
 
 import get_platform
 import mvtools_exception
+import path_utils
 
 def checkmounted_linux(path):
 
@@ -36,7 +37,7 @@ def checkmounted(path):
     raise mvtools_exception.mvtools_exception("Unsupported platform")
 
 def puaq():
-    print("Usage: %s /mnt/path" % os.path.basename(__file__))
+    print("Usage: %s /mnt/path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

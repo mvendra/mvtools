@@ -3,6 +3,7 @@
 import sys
 import os
 
+import path_utils
 import trylock
 
 def sync_write_file(filename, contents):
@@ -21,4 +22,4 @@ def sync_write_file(filename, contents):
     return True
 
 if __name__ == "__main__":
-    print("Hello from %s" % os.path.basename(__file__))
+    print("Hello from %s" % path_utils.basename_filtered(__file__))

@@ -266,7 +266,7 @@ class RecipeProcessor:
 
     def _bootstrap_dsl_object(self, local_recipe):
 
-        if (os.path.basename(local_recipe)) in self.circular_tracker:
+        if (path_utils.basename_filtered(local_recipe)) in self.circular_tracker:
             return False, "Recipe file [%s]: circular inclusion detected while including [%s]." % (self.recipe, local_recipe)
 
         if not os.path.exists(local_recipe):
@@ -285,7 +285,7 @@ class RecipeProcessor:
         if not v:
             return False, r
 
-        self.circular_tracker.append(os.path.basename(local_recipe))
+        self.circular_tracker.append(path_utils.basename_filtered(local_recipe))
         return True, dsl
 
     def _translate_dsl_into_jobs(self, dsl):
@@ -496,7 +496,7 @@ def menu_run_recipe(recipe_file, execution_name, requested_options):
         print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
 def puaq():
-    print("Usage: %s [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % os.path.basename(__file__))
+    print("Usage: %s [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

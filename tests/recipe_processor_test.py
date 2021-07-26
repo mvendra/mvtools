@@ -158,7 +158,7 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.recipe_test_file3, recipe_test_contents3)
 
         recipe_test_contents4 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents4 += "[\n@test-job\n* task1 = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_script_file_namespace1)
+        recipe_test_contents4 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
         self.recipe_test_file4 = path_utils.concat_path(self.test_dir, "recipe_test4.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file4, recipe_test_contents4)
 
@@ -211,12 +211,12 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.recipe_test_file11, recipe_test_contents11)
 
         recipe_test_contents12 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents12 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_params_script_file_namespace1)
+        recipe_test_contents12 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
         self.recipe_test_file12 = path_utils.concat_path(self.test_dir, "recipe_test12.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file12, recipe_test_contents12)
 
         recipe_test_contents13 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents13 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_params_script_file_namespace1)
+        recipe_test_contents13 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
         self.recipe_test_file13 = path_utils.concat_path(self.test_dir, "recipe_test13.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file13, recipe_test_contents13)
 
@@ -240,23 +240,23 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents16 = "* recipe_namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents16 += "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents16 += "[\n@test-job\n* task1 = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_script_file_namespace1)
+        recipe_test_contents16 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
         self.recipe_test_file16 = path_utils.concat_path(self.test_dir, "recipe_test16.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file16, recipe_test_contents16)
 
         recipe_test_contents17 = "* recipe_namespace = \"%s\"\n" % self.namespace2
         recipe_test_contents17 += "* include_recipe = \"%s\"\n" % self.recipe_test_file4
-        recipe_test_contents17 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_params_script_file_namespace2)
+        recipe_test_contents17 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace2)
         self.recipe_test_file17 = path_utils.concat_path(self.test_dir, "recipe_test17.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file17, recipe_test_contents17)
 
         recipe_test_contents18 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents18 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n]" % (os.path.basename(self.sample_custom_job_script_file_namespace1), os.path.basename(self.sample_custom_echo_true_script_file_namespace1))
+        recipe_test_contents18 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1))
         self.recipe_test_file18 = path_utils.concat_path(self.test_dir, "recipe_test18.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file18, recipe_test_contents18)
 
         recipe_test_contents19 = "* recipe_namespace = \"%s\"\n" % self.namespace2
-        recipe_test_contents19 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (os.path.basename(self.sample_custom_job_script_file_namespace1), os.path.basename(self.sample_custom_echo_true_script_file_namespace2), os.path.basename(self.sample_custom_echo_true_script_file_namespace2))
+        recipe_test_contents19 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
         self.recipe_test_file19 = path_utils.concat_path(self.test_dir, "recipe_test19.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file19, recipe_test_contents19)
 
@@ -306,16 +306,16 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents28 = "* recipe_namespace = \"%s\"\n" % self.test_dir
         recipe_test_contents28 += "[\n@test-job-1\n"
-        recipe_test_contents28 += "* task1 = \"%s\"\n" % os.path.basename(self.sample_custom_exe_name_contents_file1)
+        recipe_test_contents28 += "* task1 = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_exe_name_contents_file1)
         recipe_test_contents28 += "]\n"
         recipe_test_contents28 += "[\n@test-job-2\n"
-        recipe_test_contents28 += "* task2 = \"%s\"\n" % os.path.basename(self.sample_custom_exe_name_contents_file2)
+        recipe_test_contents28 += "* task2 = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_exe_name_contents_file2)
         recipe_test_contents28 += "]"
         self.recipe_test_file28 = path_utils.concat_path(self.test_dir, "recipe_test28.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file28, recipe_test_contents28)
 
         recipe_test_contents29 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents29 += "[\n@test-job\n* task1 {test: \"val1\" / test: \"val2\"} = \"%s\"\n]" % os.path.basename(self.sample_custom_echo_true_repeated_params_script_file_namespace1)
+        recipe_test_contents29 += "[\n@test-job\n* task1 {test: \"val1\" / test: \"val2\"} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_repeated_params_script_file_namespace1)
         self.recipe_test_file29 = path_utils.concat_path(self.test_dir, "recipe_test29.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file29, recipe_test_contents29)
 

@@ -5,6 +5,7 @@ import os
 import shutil
 
 import fsquery
+import path_utils
 import generic_run
 
 def shred_target(path):
@@ -20,7 +21,7 @@ def shred_target(path):
         return generic_run.run_cmd_simple(["shred", "-z", "-u", path])
 
 def puaq():
-    print("Usage: %s target_to_shred" % os.path.basename(__file__))
+    print("Usage: %s target_to_shred" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":

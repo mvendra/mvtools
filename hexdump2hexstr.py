@@ -41,7 +41,7 @@ def hexdump_to_hexstring(hexdump):
     return result
 
 def puaq():
-    print("Usage: %s file_with_hexdump.txt" % os.path.basename(__file__))
+    print("Usage: %s file_with_hexdump.txt" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def make_output_filename(filename):

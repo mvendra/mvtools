@@ -5,6 +5,7 @@ import sys
 import fsquery
 from subprocess import check_output
 
+import path_utils
 import terminal_colors
 
 def filteredsearch(path, search, extensions):
@@ -23,7 +24,7 @@ def filteredsearch(path, search, extensions):
         print("%s%s" % (terminal_colors.TTY_WHITE, out))
 
 def puaq():
-    print("Usage: %s path search extensions " % os.path.basename(__file__))
+    print("Usage: %s path search extensions " % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
