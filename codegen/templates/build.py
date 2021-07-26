@@ -5,6 +5,7 @@ import os
 
 import get_platform
 import generic_run
+import path_utils
 
 """
 build.py
@@ -180,5 +181,5 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         opt = sys.argv[1:]
 
-    bd = Builder(os.path.abspath(os.path.dirname(sys.argv[0])), opt)
+    bd = Builder(os.path.abspath(path_utils.dirname_filtered(sys.argv[0])), opt)
     bd.run()

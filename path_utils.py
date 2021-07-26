@@ -197,7 +197,7 @@ def filter_path_list_no_same_branch(pathlist):
         for y in pathlist_sorted:
             if x == y: 
                 continue
-            if os.path.dirname(x) == os.path.dirname(y):
+            if dirname_filtered(x) == dirname_filtered(y):
                 continue
             if y.startswith(x):
                 # this was an immensely foolish solution.

@@ -31,7 +31,7 @@ def codelite_rename(base_prj_codelite_fn, new_project_name):
 
     opn = remove_ext(poplastmaybe(path_utils.basename_filtered(base_prj_codelite_fn)))
     npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
-    npn_full = path_utils.concat_path(os.path.dirname(base_prj_codelite_fn), "%s.project" % new_project_name)
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_codelite_fn), "%s.project" % new_project_name)
     os.rename(base_prj_codelite_fn, npn_full)
 
     contents = readcontents(npn_full)
@@ -45,7 +45,7 @@ def msvc15sln_rename(base_prj_msvc15_sln, new_project_name):
 
     opn = remove_ext(poplastmaybe(path_utils.basename_filtered(base_prj_msvc15_sln)))
     npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
-    npn_full = path_utils.concat_path(os.path.dirname(base_prj_msvc15_sln), "%s.sln" % new_project_name)
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc15_sln), "%s.sln" % new_project_name)
     os.rename(base_prj_msvc15_sln, npn_full)
 
     contents = readcontents(npn_full)
@@ -59,7 +59,7 @@ def msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name):
 
     opn = remove_ext(poplastmaybe(path_utils.basename_filtered(base_prj_msvc15_fn)))
     npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
-    npn_full = path_utils.concat_path(os.path.dirname(base_prj_msvc15_fn), "%s.vcxproj" % new_project_name)
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc15_fn), "%s.vcxproj" % new_project_name)
     os.rename(base_prj_msvc15_fn, npn_full)
 
     contents = readcontents(npn_full)
@@ -73,7 +73,7 @@ def makefile_rename(base_prj_makefile_fn, current_project_name, new_project_name
 
     opn = poplastmaybe(current_project_name)
     npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
-    npn_full = path_utils.concat_path(os.path.dirname(base_prj_makefile_fn), "Makefile")
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_makefile_fn), "Makefile")
 
     contents = readcontents(npn_full)
     str_cur = "APPNAME=%s" % opn

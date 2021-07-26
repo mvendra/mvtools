@@ -14,7 +14,7 @@ def prefix_checker(target_dir, prefix_size):
     r=0
     for d in dirs:
         c += 1
-        base = os.path.dirname(d)
+        base = path_utils.dirname_filtered(d)
         subject = path_utils.basename_filtered(d)
         pref = subject[0:prefix_size]
         if int(pref) != c:

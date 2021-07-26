@@ -14,7 +14,7 @@ def filter_sub_files(sub_candidates):
     ret = []
     for i in sub_candidates:
         if path_utils.basename_filtered(i) == ".git":
-            ret.append(os.path.dirname(i))
+            ret.append(path_utils.dirname_filtered(i))
 
     return ret
 

@@ -101,9 +101,9 @@ def collect_git_patch_stash(repo, storage_path):
         stash_current_file_name = path_utils.concat_path(storage_path, repo, "%s.patch" % si)
 
         try:
-            path_utils.guaranteefolder( os.path.dirname(stash_current_file_name) )
+            path_utils.guaranteefolder( path_utils.dirname_filtered(stash_current_file_name) )
         except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for stash: Failed guaranteeing folder [%s]." % os.path.dirname(stash_current_file_name)
+            return False, "Can't collect patch for stash: Failed guaranteeing folder [%s]." % path_utils.dirname_filtered(stash_current_file_name)
 
         if os.path.exists(stash_current_file_name):
             return False, "Can't collect patch for stash: [%s] already exists." % stash_current_file_name
@@ -136,9 +136,9 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
         previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
 
         try:
-            path_utils.guaranteefolder( os.path.dirname(previous_file_name) )
+            path_utils.guaranteefolder( path_utils.dirname_filtered(previous_file_name) )
         except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]." % os.path.dirname(previous_file_name)
+            return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]." % path_utils.dirname_filtered(previous_file_name)
 
         if os.path.exists(previous_file_name):
             return False, "Can't collect patch for previous: [%s] already exists." % previous_file_name

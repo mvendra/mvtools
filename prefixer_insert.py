@@ -25,7 +25,7 @@ def basic_refactor(original, new):
     os.rename(original, new)
 
 def autobooted_refactor(original, new):
-    td = os.path.dirname(original)
+    td = path_utils.dirname_filtered(original)
     po = path_utils.basename_filtered(original)
     pn = path_utils.basename_filtered(new)
     prjrenamer.prjrename(td, po, pn)
@@ -39,7 +39,7 @@ def prefixer_insert(target_dir, prefix_to_reserve):
     dirs = fsquery.makecontentlist(target_dir, False, False, True, False, False, True, None)
     dirs.sort()
     for d in dirs:
-        base = os.path.dirname(d)
+        base = path_utils.dirname_filtered(d)
         subject = path_utils.basename_filtered(d)
         pref = subject[0:PREFIX_SIZE]
         if int(pref) >= int(prefix_to_reserve):

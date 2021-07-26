@@ -97,9 +97,9 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
         previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
 
         try:
-            path_utils.guaranteefolder( os.path.dirname(previous_file_name) )
+            path_utils.guaranteefolder( path_utils.dirname_filtered(previous_file_name) )
         except path_utils.PathUtilsException as puex:
-            return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]." % os.path.dirname(previous_file_name)
+            return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]." % path_utils.dirname_filtered(previous_file_name)
 
         if os.path.exists(previous_file_name):
             return False, "Can't collect patch for previous: [%s] already exists." % previous_file_name

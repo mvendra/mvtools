@@ -69,7 +69,7 @@ def checkout(remote_link, local_repo):
     if os.path.exists(local_repo):
         return False, "%s already exists." % local_repo
 
-    base_path = os.path.dirname(local_repo)
+    base_path = path_utils.dirname_filtered(local_repo)
     if base_path == local_repo:
         return False, "Target path [%s] is invalid." % local_repo
     local_target_name = os.path.basename(local_repo)
