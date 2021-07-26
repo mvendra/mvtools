@@ -3,10 +3,13 @@
 import os
 import shutil
 import unittest
+from unittest import mock
+from unittest.mock import patch
 
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
+import get_platform
 
 class PathUtilsTest(unittest.TestCase):
 
@@ -201,7 +204,12 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.dirname_filtered("/home/user/"), "/home")
         self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore"), "/home/user/more/sub1/sub2")
         self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore/file.txt"), "/home/user/more/sub1/sub2/yetmore")
-        self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt"), "/home\\user/more/sub1\\sub2/yetmore")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt"), "/home\\user/more/sub1\\sub2/yetmore")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_CYGWIN):
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt"), "/home/user/more/sub1/sub2/yetmore")
 
     def testCopyToFail1(self):
 
