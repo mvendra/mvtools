@@ -7,10 +7,12 @@ import git_lib
 import git_wrapper
 import path_utils
 
+ERRMSG_EMPTY = "Empty contents"
+
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, content):
 
     if len(content) == 0:
-        return False, "Empty contents"
+        return False, ERRMSG_EMPTY
 
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)

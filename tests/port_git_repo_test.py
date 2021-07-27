@@ -321,23 +321,6 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-    def testPortGitRepoHeadFail(self):
-
-        v, r = git_lib.is_head_clear(self.first_repo)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
-        v, r = git_lib.is_head_clear(self.second_repo)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
-        v, r = port_git_repo.port_git_repo_staged(self.storage_path, self.first_repo, self.second_repo)
-        self.assertFalse(v)
-
-        v, r = git_lib.is_head_clear(self.second_repo)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
     def testPortGitRepoHead1(self):
 
         with open(self.first_file1, "a") as f:
@@ -372,6 +355,23 @@ class PortGitRepoTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.second_repo)
         self.assertTrue(v)
         self.assertFalse(r)
+
+    def testPortGitRepoHead3(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = port_git_repo.port_git_repo_head(self.storage_path, self.first_repo, self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
 
     def testPortGitRepoUnversionedFail(self):
 

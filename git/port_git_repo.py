@@ -67,6 +67,8 @@ def port_git_repo_head(temp_path, source_repo, target_repo):
     head_files = None
     v, r = collect_git_patch.collect_git_patch_head(source_repo, temp_path)
     if not v:
+        if r == collect_git_patch.ERRMSG_EMPTY:
+            return True, None # ignore if target head is unmodified
         return False, r
     head_files = [r]
 
