@@ -32,7 +32,10 @@ class delayed_file_backup:
         target_file_full_path = path_utils.concat_path(final_base_path, filename)
         if os.path.exists(target_file_full_path):
             return False, target_file_full_path
-        with open(target_file_full_path, "w") as f:
+        file_mode = "w"
+        if isinstance(contents, bytes):
+            file_mode = "wb"
+        with open(target_file_full_path, file_mode) as f:
             f.write(contents)
         return True, target_file_full_path
 
