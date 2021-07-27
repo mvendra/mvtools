@@ -58,7 +58,7 @@ def diff(repo, file_list=None, rev=None):
         for fl in file_list:
             cmd.append(fl)
 
-    v, r = generic_run.run_cmd_simple(cmd, use_cwd=repo)
+    v, r = generic_run.run_cmd_simple(cmd, use_cwd=repo, use_errors=None, use_encoding=None)
     if not v:
         return False, "Failed calling svn-diff command: %s." % r
 

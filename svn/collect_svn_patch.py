@@ -25,7 +25,7 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
     if os.path.exists(output_filename_full):
         return False, "Can't collect patch for [%s]: [%s] already exists." % (log_title, output_filename_full)
 
-    with open(output_filename_full, "w") as f:
+    with open(output_filename_full, "wb") as f:
         f.write(content)
 
     return True, output_filename_full
@@ -40,7 +40,7 @@ def collect_svn_patch_head_id(repo, storage_path):
     v, r = svn_lib.get_head_revision(repo)
     if not v:
         return False, "Failed calling svn command for head-id: [%s]. Repository: [%s]." % (r, repo)
-    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r.encode("utf8"))
 
 def collect_svn_patch_unversioned(repo, storage_path):
 
@@ -105,7 +105,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
 
         if os.path.exists(previous_file_name):
             return False, "Can't collect patch for previous: [%s] already exists." % previous_file_name
-        with open(previous_file_name, "w") as f:
+        with open(previous_file_name, "wb") as f:
             f.write(previous_file_content)
         written_file_list.append(previous_file_name)
 
