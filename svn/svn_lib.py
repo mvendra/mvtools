@@ -94,7 +94,7 @@ def generic_parse(str_line, separator):
 
 def revision_filter_function(the_output):
 
-    find_string = "Revision: "
+    find_string = "Last Changed Rev: "
     n = the_output.find(find_string)
     revision_left = the_output[n + len(find_string):]
     revision = ""
