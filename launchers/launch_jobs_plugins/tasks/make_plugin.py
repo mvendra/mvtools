@@ -2,6 +2,10 @@
 
 import os
 
+import path_utils
+import maketimestamp
+import mvtools_envvars
+
 import launch_jobs
 import make_wrapper
 
@@ -53,6 +57,21 @@ class CustomTask(launch_jobs.BaseTask):
             with open(save_output, "w") as f:
                 f.write(r)
             feedback_object("Make's output has been saved to: [%s]" % save_output)
+        if not v:
+
+            v2, r2 = mvtools_envvars.mvtools_envvar_read_temp_path()
+            if not v2:
+                return False, "make_plugin failed: [%s]" % r2
+
+            ts_now = maketimestamp.get_timestamp_now_compact()
+            make_output_dump_filename = path_utils.concat_path(r2, "make_plugin_output_backup_%s.txt" % ts_now)
+            if os.path.exists(make_output_dump_filename):
+                return False, "make_plugin failed - output dump file [%s] already exists" % make_output_dump_filename
+
+            with open(make_output_dump_filename, "w") as f:
+                f.write(r)
+            feedback_object("make failed - output was saved to [%s]" % make_output_dump_filename)
+
         if r is not None and suppress_make_output:
             r = "make's output was suppressed"
         return v, r
