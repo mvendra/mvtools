@@ -9,5 +9,5 @@ if [ -z $1 ]; then
   puaq
 fi
 
-java -jar $1 $@
+java -jar $1 "$@"
 
