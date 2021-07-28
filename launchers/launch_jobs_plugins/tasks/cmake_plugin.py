@@ -2,6 +2,10 @@
 
 import os
 
+import path_utils
+import maketimestamp
+import mvtools_envvars
+
 import launch_jobs
 import cmake_lib
 
@@ -19,6 +23,8 @@ class CustomTask(launch_jobs.BaseTask):
         gen_type = None
         toolchain = None
         build_type = None
+        save_output = None
+        suppress_cmake_output = False
 
         # cmake_path
         try:
@@ -62,8 +68,13 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # save_output
+        try:
+            save_output = self.params["save_output"]
+        except KeyError:
+            pass # optional
+
         # suppress_cmake_output
-        suppress_cmake_output = False
         if "suppress_cmake_output" in self.params:
             suppress_cmake_output = True
 
@@ -103,7 +114,31 @@ class CustomTask(launch_jobs.BaseTask):
         for opt in custom_options:
             options = cmake_lib.set_option_parse(options, opt)
 
+        # save_output
+        if save_output is not None:
+            if os.path.exists(save_output):
+                return False, "cmake_plugin: save_output [%s] points to a preexisting path" % save_output
+
         v, r = cmake_lib.configure_and_generate(cmake_path, suppress_cmake_output, source_path, output_path, gen_type, options)
+        if save_output is not None:
+            with open(save_output, "w") as f:
+                f.write(r)
+            feedback_object("Cmake's output has been saved to: [%s]" % save_output)
+        if not v:
+
+            v2, r2 = mvtools_envvars.mvtools_envvar_read_temp_path()
+            if not v2:
+                return False, "cmake_plugin failed: [%s]" % r2
+
+            ts_now = maketimestamp.get_timestamp_now_compact()
+            cmake_output_dump_filename = path_utils.concat_path(r2, "cmake_plugin_output_backup_%s.txt" % ts_now)
+            if os.path.exists(cmake_output_dump_filename):
+                return False, "cmake_plugin failed - output dump file [%s] already exists" % cmake_output_dump_filename
+
+            with open(cmake_output_dump_filename, "w") as f:
+                f.write(r)
+            feedback_object("cmake failed - output was saved to [%s]" % cmake_output_dump_filename)
+
         if r is not None and suppress_cmake_output:
             r = "cmake's output was suppressed"
         return v, r
