@@ -31,7 +31,7 @@ class CustomTask(launch_jobs.BaseTask):
         full_contents = ""
         full_contents += timestamp_now + os.linesep
         if message is not None:
-            full_contents += message
+            full_contents += message + os.linesep
 
         with open(target_filename, "w") as f:
             f.write(full_contents)
