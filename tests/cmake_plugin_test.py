@@ -300,28 +300,28 @@ class CmakePluginTest(unittest.TestCase):
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", True) )
 
     def testCmakePluginAssembleOptions1(self):
-        self.assertEqual(self.cmake_task._assemble_options(None, None, None, None), self.test_opts)
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None), self.test_opts)
 
     def testCmakePluginAssembleOptions2(self):
-        self.assertEqual(self.cmake_task._assemble_options("test1", None, None, None), None)
+        self.assertEqual(cmake_plugin._assemble_options("test1", None, None, None), None)
 
     def testCmakePluginAssembleOptions3(self):
-        self.assertEqual(self.cmake_task._assemble_options("release", None, None, None), {"CMAKE_BUILD_TYPE": ("STRING", "release")})
+        self.assertEqual(cmake_plugin._assemble_options("release", None, None, None), {"CMAKE_BUILD_TYPE": ("STRING", "release")})
 
     def testCmakePluginAssembleOptions4(self):
-        self.assertEqual(self.cmake_task._assemble_options(None, "test1", None, None), {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
+        self.assertEqual(cmake_plugin._assemble_options(None, "test1", None, None), {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions5(self):
-        self.assertEqual(self.cmake_task._assemble_options(None, None, "test1", None), {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
+        self.assertEqual(cmake_plugin._assemble_options(None, None, "test1", None), {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions6(self):
-        self.assertEqual(self.cmake_task._assemble_options(None, None, None, "test1"), None)
-        self.assertEqual(self.cmake_task._assemble_options(None, None, None, "test1:test2"), None)
-        self.assertEqual(self.cmake_task._assemble_options(None, None, None, ["test1:test2=test3"]), {"test1" : ("test2", "test3")})
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1"), None)
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1:test2"), None)
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, ["test1:test2=test3"]), {"test1" : ("test2", "test3")})
 
     def testCmakePluginDumpOutput(self):
         self.assertFalse(os.path.exists(self.nonexistent_file1))
-        self.cmake_task._dump_output(print, "test", self.nonexistent_file1, "test-contents")
+        cmake_plugin._dump_output(print, "test", self.nonexistent_file1, "test-contents")
         self.assertTrue(os.path.exists(self.nonexistent_file1))
         contents = ""
         with open(self.nonexistent_file1) as f:
@@ -338,7 +338,7 @@ class CmakePluginTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(False, "error msg")) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = self.cmake_task._dump_outputs_backup(print, "test-stdout", "test-stderr")
+                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
                 self.assertFalse(v)
 
     def testCmakePluginDumpOutputsBackup2(self):
@@ -356,7 +356,7 @@ class CmakePluginTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = self.cmake_task._dump_outputs_backup(print, "test-stdout", "test-stderr")
+                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
                 self.assertFalse(v)
 
     def testCmakePluginDumpOutputsBackup3(self):
@@ -374,7 +374,7 @@ class CmakePluginTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = self.cmake_task._dump_outputs_backup(print, "test-stdout", "test-stderr")
+                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
                 self.assertFalse(v)
 
     def testCmakePluginDumpOutputsBackup4(self):
@@ -387,7 +387,7 @@ class CmakePluginTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = self.cmake_task._dump_outputs_backup(print, "test-stdout", "test-stderr")
+                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
                 self.assertTrue(v)
 
         self.assertTrue(os.path.exists(test_stdout_fn))
@@ -413,8 +413,8 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(False, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin.CustomTask._dump_output") as dummy2:
-                with mock.patch("cmake_plugin.CustomTask._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("cmake_plugin._dump_output") as dummy2:
+                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertFalse(v)
@@ -432,8 +432,8 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin.CustomTask._dump_output") as dummy2:
-                with mock.patch("cmake_plugin.CustomTask._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("cmake_plugin._dump_output") as dummy2:
+                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
@@ -452,8 +452,8 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin.CustomTask._dump_output") as dummy2:
-                with mock.patch("cmake_plugin.CustomTask._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
+            with mock.patch("cmake_plugin._dump_output") as dummy2:
+                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
@@ -473,8 +473,8 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin.CustomTask._dump_output") as dummy2:
-                with mock.patch("cmake_plugin.CustomTask._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
+            with mock.patch("cmake_plugin._dump_output") as dummy2:
+                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
@@ -493,8 +493,8 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin.CustomTask._dump_output") as dummy2:
-                with mock.patch("cmake_plugin.CustomTask._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("cmake_plugin._dump_output") as dummy2:
+                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
@@ -514,8 +514,8 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin.CustomTask._dump_output") as dummy2:
-                with mock.patch("cmake_plugin.CustomTask._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("cmake_plugin._dump_output") as dummy2:
+                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
