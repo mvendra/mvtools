@@ -99,6 +99,9 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # suppress_stderr_warnings
+        suppress_stderr_warnings = "suppress_stderr_warnings" in self.params
+
         # pre-validate parameters
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
@@ -114,9 +117,6 @@ class CustomTask(launch_jobs.BaseTask):
         if save_error_output is not None:
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
-
-        # suppress_stderr_warnings
-        suppress_stderr_warnings = "suppress_stderr_warnings" in self.params
 
         return True, (cmake_path, source_path, output_path, gen_type, build_type, install_prefix, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings)
 
