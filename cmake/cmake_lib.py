@@ -47,10 +47,17 @@ def set_option_install_prefix(options, option_value):
     return set_option(options, "CMAKE_INSTALL_PREFIX", "STRING", option_value)
 
 def set_option_build_type(options, option_value):
-    # valid valeus are: Debug / Release / RelWithDebInfo / MinSizeRel
+
+    valid_values = ["debug", "release", "relwithdebinfo", "minsizerel"]
+
+    if option_value is None:
+        return None
+    if not option_value.lower() in valid_values:
+        return None
+
     return set_option(options, "CMAKE_BUILD_TYPE", "STRING", option_value)
 
-def configure_and_generate(cmake_path, suppress_cmake_output, source_path, output_path, generator_type, options):
+def configure_and_generate(cmake_path, source_path, output_path, generator_type, options):
 
     local_generator_type = generator_type
 
@@ -58,4 +65,4 @@ def configure_and_generate(cmake_path, suppress_cmake_output, source_path, outpu
     if local_generator_type == "makefile":
         local_generator_type = "Unix Makefiles"
 
-    return cmake_wrapper.configure_and_generate(cmake_path, suppress_cmake_output, source_path, output_path, local_generator_type, options)
+    return cmake_wrapper.configure_and_generate(cmake_path, source_path, output_path, local_generator_type, options)
