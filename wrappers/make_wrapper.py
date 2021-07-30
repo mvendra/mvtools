@@ -6,14 +6,17 @@ import os
 import path_utils
 import generic_run
 
-def make(work_dir, suppress_make_output, target):
+def make(work_dir, target):
 
     full_cmd = ["make"]
 
     if target is not None:
         full_cmd.append(target)
 
-    return generic_run.run_cmd_simple(full_cmd, suppress_make_output, use_cwd=work_dir)
+    v, r = generic_run.run_cmd(full_cmd, use_cwd=work_dir)
+    if not v:
+        return False, r
+    return True, (r.success, r.stdout, r.stderr)
 
 def puaq():
     print("Hello from %s" % path_utils.basename_filtered(__file__))
