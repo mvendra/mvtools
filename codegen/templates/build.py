@@ -162,18 +162,17 @@ class Builder():
         _self.do_link()
 
     def call_cmd(_self, cmd):
-        ret = generic_run.run_cmd(cmd)
+
         cmd_str = ""
         for c in cmd:
             cmd_str += "%s " % c
         cmd_str = cmd_str.rstrip()
-        if ret[0]:
-            if ret[2].success:
-                print("%s: Command succeeded." % cmd_str)
-            else:
-                print("%s: Failed." % cmd_str)
+
+        v, r = generic_run.run_cmd_simple(cmd)
+        if v:
+            print("%s: Command succeeded." % cmd_str)
         else:
-            print("%s: Failed." % cmd_str)
+            print("%s: Failed: [%s]" % (cmd_str, r))
 
 if __name__ == "__main__":
 

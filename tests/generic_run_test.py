@@ -198,25 +198,25 @@ class GenericRunTest(unittest.TestCase):
     def testSanity(self):
 
         ret = generic_run.run_cmd(None)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertFalse(ret[0])
 
         ret = generic_run.run_cmd("")
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertFalse(ret[0])
 
         ret = generic_run.run_cmd([])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertFalse(ret[0])
 
     def testBasic(self):
 
         ret = generic_run.run_cmd(["echo", "ohce"])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertTrue("ohce" in cmd_ret.stdout)
@@ -225,11 +225,11 @@ class GenericRunTest(unittest.TestCase):
     def testBasicScriptRet0(self):
 
         ret = generic_run.run_cmd([self.test_script_ret_0_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, "")
@@ -238,11 +238,11 @@ class GenericRunTest(unittest.TestCase):
     def testBasicScriptRet1(self):
 
         ret = generic_run.run_cmd([self.test_script_ret_1_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertFalse(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 1)
         self.assertEqual(cmd_ret.stdout, "")
@@ -251,11 +251,11 @@ class GenericRunTest(unittest.TestCase):
     def testBasicScriptFail(self):
 
         ret = generic_run.run_cmd([self.test_script_fail_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertFalse(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 1)
         self.assertEqual(cmd_ret.stdout, "")
@@ -264,11 +264,11 @@ class GenericRunTest(unittest.TestCase):
     def testPrintStdout(self):
 
         ret = generic_run.run_cmd([self.test_script_print_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, "the test output" + os.linesep)
@@ -277,11 +277,11 @@ class GenericRunTest(unittest.TestCase):
     def testPrintStderr(self):
 
         ret = generic_run.run_cmd([self.test_script_print_err_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, "")
@@ -292,11 +292,11 @@ class GenericRunTest(unittest.TestCase):
         test_input = "input to be passed"
 
         ret = generic_run.run_cmd([self.test_script_print_input_filename], test_input)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, ("asking for inputechoing back: {%s}" + os.linesep) % test_input)
@@ -307,11 +307,11 @@ class GenericRunTest(unittest.TestCase):
         test_input = "the cmdline argument"
 
         ret = generic_run.run_cmd([self.test_script_print_cmdlineargs_filename, test_input])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, test_input + os.linesep)
@@ -320,11 +320,11 @@ class GenericRunTest(unittest.TestCase):
     def testPrintUtf8(self):
 
         ret = generic_run.run_cmd([self.test_script_print_utf8_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, "おはようございます" + os.linesep)
@@ -336,11 +336,11 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
         ret = generic_run.run_cmd([self.test_print_file_cwd_filename], use_cwd=self.secondary_folder)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, self.file_test_content + os.linesep)
@@ -352,11 +352,11 @@ class GenericRunTest(unittest.TestCase):
             self.fail("create_and_write_file command failed. Can't proceed.")
 
         ret = generic_run.run_cmd([self.test_print_file_cwd_filename], use_cwd=self.secondary_folder)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertFalse(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 1)
         self.assertEqual(cmd_ret.stdout, "")
@@ -369,11 +369,11 @@ class GenericRunTest(unittest.TestCase):
         custom_env[self.reserved_test_env_var_1] = custom_env_content
 
         ret = generic_run.run_cmd([self.test_custom_env_filename], use_env=custom_env)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
 
@@ -413,18 +413,18 @@ class GenericRunTest(unittest.TestCase):
     def testPrintStdoutMalformedFail(self):
 
         ret = generic_run.run_cmd([self.test_malformed_output_filename], use_errors=None)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertFalse(ret[0])
         self.assertEqual(ret[1], "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte")
 
     def testPrintStdoutMalformed(self):
 
         ret = generic_run.run_cmd([self.test_malformed_output_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, "")
@@ -433,11 +433,11 @@ class GenericRunTest(unittest.TestCase):
     def testSleepyNoTimeout(self):
 
         ret = generic_run.run_cmd([self.test_sleepy_filename])
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, "")
@@ -446,18 +446,18 @@ class GenericRunTest(unittest.TestCase):
     def testSleepyTimeoutFail(self):
 
         ret = generic_run.run_cmd([self.test_sleepy_filename], use_timeout=1)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertFalse(ret[0])
         self.assertTrue("timed out after 1 second" in ret[1])
 
     def testSleepyTimeoutPass(self):
 
         ret = generic_run.run_cmd([self.test_sleepy_filename], use_timeout=3)
-        self.assertEqual(len(ret), 3)
+        self.assertEqual(len(ret), 2)
         self.assertTrue(ret[0])
         self.assertTrue(ret[1], "OK")
 
-        cmd_ret = ret[2]
+        cmd_ret = ret[1]
         self.assertTrue(cmd_ret.success)
         self.assertEqual(cmd_ret.returncode, 0)
         self.assertEqual(cmd_ret.stdout, "")

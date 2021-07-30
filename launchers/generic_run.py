@@ -13,22 +13,22 @@ class run_cmd_result:
 
 def run_cmd(cmd_list, use_input=None, use_shell=False, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore", use_timeout=None):
 
-    # return format: bool, string, run_cmd_result
+    # return format: bool, (string | run_cmd_result)
     # the first (bool) is the return of this API call only
-    # the second (string) is a message about the API call only
-    # the third (run_cmd_result) is the result of the called command itself
+    # if the API call failed (first bool == False), then the second parameter is an error message
+    # if the API call succeeded (first bool == True), then the second parameter is a run_cmd_result object with details about the process execution
 
     if not isinstance(cmd_list, list):
-        return False, "[%s] is not a list" % cmd_list, None
+        return False, "[%s] is not a list" % cmd_list
     if len(cmd_list) == 0:
-        return False, "Nothing to run", None
+        return False, "Nothing to run"
 
     try:
         process = subprocess.run(cmd_list, input=use_input, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=use_shell, cwd=use_cwd, check=False, encoding=use_encoding, errors=use_errors, env=use_env, timeout=use_timeout)
-        return True, "OK", run_cmd_result( (process.returncode==0), process.returncode, process.stdout, process.stderr )
+        return True, run_cmd_result( (process.returncode==0), process.returncode, process.stdout, process.stderr )
     except Exception as ex:
-        return False, str(ex), None
-    return False, "run_cmd NOTREACHED", None
+        return False, str(ex)
+    return False, "run_cmd NOTREACHED"
 
 def run_cmd_simple(cmd_list, suppress_stderr=False, use_input=None, use_shell=False, use_cwd=None, use_env=None, use_encoding="utf8", use_errors="ignore", use_timeout=None):
 
@@ -36,10 +36,10 @@ def run_cmd_simple(cmd_list, suppress_stderr=False, use_input=None, use_shell=Fa
     # the first (bool) returns true is everything ran fine, false if anything at all went wrong
     # the second (string) returns stdout if the command ran fine, or an error message if anything went wrong
 
-    b, m, r = run_cmd(cmd_list, use_input, use_shell, use_cwd, use_env, use_encoding, use_errors, use_timeout)
+    v, r = run_cmd(cmd_list, use_input, use_shell, use_cwd, use_env, use_encoding, use_errors, use_timeout)
 
-    if not b:
-        return False, "Failed running command: %s" % m
+    if not v:
+        return False, "Failed running command: %s" % r
 
     if not r.success:
         return False, "Failed running command: %s" % r.stderr
