@@ -216,6 +216,9 @@ class CustomTask(launch_jobs.BaseTask):
                 warnings = _add_to_warnings(warnings, r)
 
         # warnings
-        if len(proc_stderr) > 0 and not suppress_stderr_warnings:
-            warnings = _add_to_warnings(warnings, proc_stderr)
+        if len(proc_stderr) > 0:
+            if not suppress_stderr_warnings:
+                warnings = _add_to_warnings(warnings, proc_stderr)
+            else:
+                warnings = _add_to_warnings(warnings, "cmake's stderr has been suppressed")
         return True, warnings

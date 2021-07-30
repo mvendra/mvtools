@@ -300,7 +300,7 @@ class MakePluginTest(unittest.TestCase):
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    self.assertEqual(r, "test-warning-msg")
+                    self.assertEqual(r, "test-warning-msg%smake's stderr has been suppressed" % os.linesep)
                     dummy1.assert_called_with(self.existent_path1, None)
                     dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
                     dummy3.assert_called_with(print, "test1", "test2")

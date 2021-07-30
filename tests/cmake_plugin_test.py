@@ -478,7 +478,7 @@ class CmakePluginTest(unittest.TestCase):
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    self.assertEqual(r, "test-warning-msg")
+                    self.assertEqual(r, "test-warning-msg%scmake's stderr has been suppressed" % os.linesep)
                     dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
                     dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
                     dummy3.assert_called_with(print, "test1", "test2")
