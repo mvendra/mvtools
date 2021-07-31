@@ -403,6 +403,43 @@ class CmakePluginTest(unittest.TestCase):
             stderr_contents = f.read()
         self.assertEqual(stderr_contents, "test-stderr")
 
+    def testCmakePluginDumpOutputsBackup5(self):
+
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_output_backup_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_error_output_backup_test_timestamp.txt")
+
+        self.assertFalse(os.path.exists(test_stdout_fn))
+        self.assertFalse(os.path.exists(test_stderr_fn))
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
+                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
+                self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(test_stdout_fn))
+        self.assertTrue(os.path.exists(test_stderr_fn))
+
+        with open(test_stdout_fn, "a") as f:
+            f.write("-more stuff on stdout")
+
+        with open(test_stderr_fn, "a") as f:
+            f.write("-more stuff on stderr")
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
+                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
+                self.assertFalse(v)
+
+        stdout_contents = ""
+        with open(test_stdout_fn, "r") as f:
+            stdout_contents = f.read()
+        self.assertEqual(stdout_contents, "test-stdout-more stuff on stdout") # should not have been replaced
+
+        stderr_contents = ""
+        with open(test_stderr_fn, "r") as f:
+            stderr_contents = f.read()
+        self.assertEqual(stderr_contents, "test-stderr-more stuff on stderr") # should not have been replaced
+
     def testCmakePluginRunTask1(self):
 
         local_params = {}

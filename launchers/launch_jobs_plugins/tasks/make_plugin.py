@@ -35,23 +35,21 @@ def _dump_outputs_backup(feedback_object, stdout, stderr):
 
     # output
     make_output_dump_filename = path_utils.concat_path(r, "make_plugin_output_backup_%s.txt" % ts_now)
-    if os.path.exists(make_output_dump_filename):
+    if not os.path.exists(make_output_dump_filename):
+        with open(make_output_dump_filename, "w") as f:
+            f.write(stdout)
+        feedback_object("output was saved to [%s]" % make_output_dump_filename)
+    else:
         warnings = _add_to_warnings(warnings, "output dump file [%s] already exists" % make_output_dump_filename)
 
     # error output
     make_error_output_dump_filename = path_utils.concat_path(r, "make_plugin_error_output_backup_%s.txt" % ts_now)
-    if os.path.exists(make_error_output_dump_filename):
+    if not os.path.exists(make_error_output_dump_filename):
+        with open(make_error_output_dump_filename, "w") as f:
+            f.write(stderr)
+        feedback_object("error output was saved to [%s]" % make_error_output_dump_filename)
+    else:
         warnings = _add_to_warnings(warnings, "error output dump file [%s] already exists" % make_error_output_dump_filename)
-
-    # save output
-    with open(make_output_dump_filename, "w") as f:
-        f.write(stdout)
-    feedback_object("output was saved to [%s]" % make_output_dump_filename)
-
-    # save error output
-    with open(make_error_output_dump_filename, "w") as f:
-        f.write(stderr)
-    feedback_object("error output was saved to [%s]" % make_error_output_dump_filename)
 
     return (warnings is None), warnings
 
