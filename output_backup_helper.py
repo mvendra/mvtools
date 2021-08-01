@@ -11,14 +11,15 @@ import log_helper
 
 def dump_output(feedback_object, output_filename, output_contents, log_message):
 
-    if output_filename is not None:
+    if output_filename is None:
+        return
 
-        if os.path.exists(output_filename):
-            raise mvtools_exception.mvtools_exception("Output filename [%s] already exists." % output_filename)
+    if os.path.exists(output_filename):
+        raise mvtools_exception.mvtools_exception("Output filename [%s] already exists." % output_filename)
 
-        with open(output_filename, "w") as f:
-            f.write(output_contents)
-        feedback_object(log_message)
+    with open(output_filename, "w") as f:
+        f.write(output_contents)
+    feedback_object(log_message)
 
 def dump_single_autobackup(feedback_object, base_path, output_fn_prefix, output_contents, output_log):
 

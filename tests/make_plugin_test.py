@@ -11,6 +11,7 @@ from unittest.mock import call
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
+import output_backup_helper
 import make_wrapper
 
 import make_plugin
@@ -47,9 +48,6 @@ class MakePluginTest(unittest.TestCase):
 
         # nonexistent path 1
         self.nonexistent_path1 = path_utils.concat_path(self.test_dir, "nonexistent_path1")
-
-        # nonexistent file 1
-        self.nonexistent_file1 = path_utils.concat_path(self.test_dir, "non_pre_existent_file1.txt")
 
         return True, ""
 
@@ -153,128 +151,6 @@ class MakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", True))
 
-    def testMakePluginDumpOutput(self):
-        self.assertFalse(os.path.exists(self.nonexistent_file1))
-        make_plugin._dump_output(print, "test", self.nonexistent_file1, "test-contents")
-        self.assertTrue(os.path.exists(self.nonexistent_file1))
-        contents = ""
-        with open(self.nonexistent_file1) as f:
-            contents = f.read()
-        self.assertTrue(contents, "test-contents")
-
-    def testMakePluginDumpOutputsBackup1(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(False, "error msg")) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = make_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-    def testMakePluginDumpOutputsBackup2(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with open(test_stdout_fn, "w") as f:
-            f.write("contents")
-
-        self.assertTrue(os.path.exists(test_stdout_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = make_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-    def testMakePluginDumpOutputsBackup3(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with open(test_stderr_fn, "w") as f:
-            f.write("contents")
-
-        self.assertTrue(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = make_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-    def testMakePluginDumpOutputsBackup4(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = make_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertTrue(v)
-
-        self.assertTrue(os.path.exists(test_stdout_fn))
-        self.assertTrue(os.path.exists(test_stderr_fn))
-
-        stdout_contents = ""
-        with open(test_stdout_fn, "r") as f:
-            stdout_contents = f.read()
-        self.assertEqual(stdout_contents, "test-stdout")
-
-        stderr_contents = ""
-        with open(test_stderr_fn, "r") as f:
-            stderr_contents = f.read()
-        self.assertEqual(stderr_contents, "test-stderr")
-
-    def testMakePluginDumpOutputsBackup5(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "make_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = make_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertTrue(v)
-
-        self.assertTrue(os.path.exists(test_stdout_fn))
-        self.assertTrue(os.path.exists(test_stderr_fn))
-
-        with open(test_stdout_fn, "a") as f:
-            f.write("-more stuff on stdout")
-
-        with open(test_stderr_fn, "a") as f:
-            f.write("-more stuff on stderr")
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = make_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-        stdout_contents = ""
-        with open(test_stdout_fn, "r") as f:
-            stdout_contents = f.read()
-        self.assertEqual(stdout_contents, "test-stdout-more stuff on stdout") # should not have been replaced
-
-        stderr_contents = ""
-        with open(test_stderr_fn, "r") as f:
-            stderr_contents = f.read()
-        self.assertEqual(stderr_contents, "test-stderr-more stuff on stderr") # should not have been replaced
-
-
     def testMakePluginRunTask1(self):
 
         local_params = {}
@@ -282,8 +158,8 @@ class MakePluginTest(unittest.TestCase):
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(False, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("make_plugin._dump_output") as dummy2:
-                with mock.patch("make_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertFalse(v)
@@ -298,15 +174,15 @@ class MakePluginTest(unittest.TestCase):
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("make_plugin._dump_output") as dummy2:
-                with mock.patch("make_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test2")
                     dummy1.assert_called_with(self.existent_path1, None)
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_called_with(print, "test1", "test2")
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
     def testMakePluginRunTask3(self):
 
@@ -315,15 +191,15 @@ class MakePluginTest(unittest.TestCase):
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("make_plugin._dump_output") as dummy2:
-                with mock.patch("make_plugin._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="test-warning-msg") as dummy3:
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%stest2" % os.linesep)
                     dummy1.assert_called_with(self.existent_path1, None)
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_called_with(print, "test1", "test2")
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
     def testMakePluginRunTask4(self):
 
@@ -333,15 +209,15 @@ class MakePluginTest(unittest.TestCase):
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("make_plugin._dump_output") as dummy2:
-                with mock.patch("make_plugin._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="test-warning-msg") as dummy3:
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%smake's stderr has been suppressed" % os.linesep)
                     dummy1.assert_called_with(self.existent_path1, None)
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_called_with(print, "test1", "test2")
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
     def testMakePluginRunTask5(self):
 
@@ -350,14 +226,14 @@ class MakePluginTest(unittest.TestCase):
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(True, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("make_plugin._dump_output") as dummy2:
-                with mock.patch("make_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path1, None)
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_not_called()
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
     def testMakePluginRunTask6(self):
 
@@ -368,14 +244,14 @@ class MakePluginTest(unittest.TestCase):
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(True, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("make_plugin._dump_output") as dummy2:
-                with mock.patch("make_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path1, None)
-                    dummy2.assert_has_calls([call(print, "output", "dummy_value5", "test1"), call(print, "error output", "dummy_value6", "test2")])
-                    dummy3.assert_not_called()
+                    dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Make's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Make's stderr has been saved to: [dummy_value6]"))])
+                    dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
     def testMakePluginRunTask7(self):
 
@@ -385,14 +261,14 @@ class MakePluginTest(unittest.TestCase):
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(True, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("make_plugin._dump_output") as dummy2:
-                with mock.patch("make_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path1, "dummy_value2")
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_not_called()
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
 if __name__ == '__main__':
     unittest.main()

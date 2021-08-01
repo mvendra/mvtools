@@ -3,51 +3,11 @@
 import os
 
 import path_utils
-import maketimestamp
-import mvtools_envvars
 import log_helper
+import output_backup_helper
 
 import launch_jobs
 import make_wrapper
-
-def _dump_output(feedback_object, name_log, output_filename, output_contents):
-
-    if output_filename is not None:
-        with open(output_filename, "w") as f:
-            f.write(output_contents)
-        feedback_object("Make's %s has been saved to: [%s]" % (name_log, output_filename))
-
-def _dump_outputs_backup(feedback_object, stdout, stderr):
-
-    warnings = None
-
-    # get mvtools temp path
-    v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
-    if not v:
-        return False, r
-
-    # get ts
-    ts_now = maketimestamp.get_timestamp_now_compact()
-
-    # output
-    make_output_dump_filename = path_utils.concat_path(r, "make_plugin_output_backup_%s.txt" % ts_now)
-    if not os.path.exists(make_output_dump_filename):
-        with open(make_output_dump_filename, "w") as f:
-            f.write(stdout)
-        feedback_object("output was saved to [%s]" % make_output_dump_filename)
-    else:
-        warnings = log_helper.add_to_warnings(warnings, "output dump file [%s] already exists" % make_output_dump_filename)
-
-    # error output
-    make_error_output_dump_filename = path_utils.concat_path(r, "make_plugin_error_output_backup_%s.txt" % ts_now)
-    if not os.path.exists(make_error_output_dump_filename):
-        with open(make_error_output_dump_filename, "w") as f:
-            f.write(stderr)
-        feedback_object("error output was saved to [%s]" % make_error_output_dump_filename)
-    else:
-        warnings = log_helper.add_to_warnings(warnings, "error output dump file [%s] already exists" % make_error_output_dump_filename)
-
-    return (warnings is None), warnings
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -124,14 +84,12 @@ class CustomTask(launch_jobs.BaseTask):
         proc_stderr = r[2]
 
         # dump outputs
-        _dump_output(feedback_object, "output", save_output, proc_stdout)
-        _dump_output(feedback_object, "error output", save_error_output, proc_stderr)
+        output_backup_helper.dump_output(feedback_object, save_output, proc_stdout, ("Make's stdout has been saved to: [%s]" % save_output))
+        output_backup_helper.dump_output(feedback_object, save_error_output, proc_stderr, ("Make's stderr has been saved to: [%s]" % save_error_output))
 
-        # backup outputs
-        if not proc_result:
-            v, r = _dump_outputs_backup(feedback_object, proc_stdout, proc_stderr)
-            if not v:
-                warnings = log_helper.add_to_warnings(warnings, r)
+        # autobackup outputs
+        output_list = [("make_plugin_stdout", proc_stdout, "Make's stdout"), ("make_plugin_stderr", proc_stderr, "Make's stderr")]
+        warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(proc_result, feedback_object, output_list))
 
         # warnings
         if len(proc_stderr) > 0:
