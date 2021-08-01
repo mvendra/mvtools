@@ -3,51 +3,11 @@
 import os
 
 import path_utils
-import maketimestamp
-import mvtools_envvars
+import output_backup_helper
 import log_helper
 
 import launch_jobs
 import cmake_lib
-
-def _dump_output(feedback_object, name_log, output_filename, output_contents):
-
-    if output_filename is not None:
-        with open(output_filename, "w") as f:
-            f.write(output_contents)
-        feedback_object("Cmake's %s has been saved to: [%s]" % (name_log, output_filename))
-
-def _dump_outputs_backup(feedback_object, stdout, stderr):
-
-    warnings = None
-
-    # get mvtools temp path
-    v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
-    if not v:
-        return False, r
-
-    # get ts
-    ts_now = maketimestamp.get_timestamp_now_compact()
-
-    # output
-    cmake_output_dump_filename = path_utils.concat_path(r, "cmake_plugin_output_backup_%s.txt" % ts_now)
-    if not os.path.exists(cmake_output_dump_filename):
-        with open(cmake_output_dump_filename, "w") as f:
-            f.write(stdout)
-        feedback_object("output was saved to [%s]" % cmake_output_dump_filename)
-    else:
-        warnings = log_helper.add_to_warnings(warnings, "output dump file [%s] already exists" % cmake_output_dump_filename)
-
-    # error output
-    cmake_error_output_dump_filename = path_utils.concat_path(r, "cmake_plugin_error_output_backup_%s.txt" % ts_now)
-    if not os.path.exists(cmake_error_output_dump_filename):
-        with open(cmake_error_output_dump_filename, "w") as f:
-            f.write(stderr)
-        feedback_object("error output was saved to [%s]" % cmake_error_output_dump_filename)
-    else:
-        warnings = log_helper.add_to_warnings(warnings, "error output dump file [%s] already exists" % cmake_error_output_dump_filename)
-
-    return (warnings is None), warnings
 
 def _assemble_options(build_type, install_prefix, toolchain, custom_options):
 
@@ -200,14 +160,12 @@ class CustomTask(launch_jobs.BaseTask):
         proc_stderr = r[2]
 
         # dump outputs
-        _dump_output(feedback_object, "output", save_output, proc_stdout)
-        _dump_output(feedback_object, "error output", save_error_output, proc_stderr)
+        output_backup_helper.dump_output(feedback_object, save_output, proc_stdout, ("Cmake's stdout has been saved to: [%s]" % save_output))
+        output_backup_helper.dump_output(feedback_object, save_error_output, proc_stderr, ("Cmake's stderr has been saved to: [%s]" % save_error_output))
 
-        # backup outputs
-        if not proc_result:
-            v, r = _dump_outputs_backup(feedback_object, proc_stdout, proc_stderr)
-            if not v:
-                warnings = log_helper.add_to_warnings(warnings, r)
+        # autobackup outputs
+        output_list = [("cmake_plugin_stdout", proc_stdout, "Cmake's stdout"), ("cmake_plugin_stderr", proc_stderr, "Cmake's stderr")]
+        warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(proc_result, feedback_object, output_list))
 
         # warnings
         if len(proc_stderr) > 0:

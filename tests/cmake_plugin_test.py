@@ -11,6 +11,7 @@ from unittest.mock import call
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
+import output_backup_helper
 import cmake_lib
 
 import cmake_plugin
@@ -31,9 +32,6 @@ class CmakePluginTest(unittest.TestCase):
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
-        self.output_backup_storage = path_utils.concat_path(self.test_dir, "output_backup")
-        os.mkdir(self.output_backup_storage)
-
         # the test task
         self.cmake_task = cmake_plugin.CustomTask()
 
@@ -51,9 +49,6 @@ class CmakePluginTest(unittest.TestCase):
         # existent file 1
         self.existent_file1 = path_utils.concat_path(self.test_dir, "existent_file1.txt")
         create_and_write_file.create_file_contents(self.existent_file1, "test file 1")
-
-        # nonexistent file 1
-        self.nonexistent_file1 = path_utils.concat_path(self.test_dir, "non_pre_existent_file1.txt")
 
         self.test_opts = cmake_lib.boot_options()
 
@@ -319,127 +314,6 @@ class CmakePluginTest(unittest.TestCase):
         self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1:test2"), None)
         self.assertEqual(cmake_plugin._assemble_options(None, None, None, ["test1:test2=test3"]), {"test1" : ("test2", "test3")})
 
-    def testCmakePluginDumpOutput(self):
-        self.assertFalse(os.path.exists(self.nonexistent_file1))
-        cmake_plugin._dump_output(print, "test", self.nonexistent_file1, "test-contents")
-        self.assertTrue(os.path.exists(self.nonexistent_file1))
-        contents = ""
-        with open(self.nonexistent_file1) as f:
-            contents = f.read()
-        self.assertTrue(contents, "test-contents")
-
-    def testCmakePluginDumpOutputsBackup1(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(False, "error msg")) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-    def testCmakePluginDumpOutputsBackup2(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with open(test_stdout_fn, "w") as f:
-            f.write("contents")
-
-        self.assertTrue(os.path.exists(test_stdout_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-    def testCmakePluginDumpOutputsBackup3(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with open(test_stderr_fn, "w") as f:
-            f.write("contents")
-
-        self.assertTrue(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-    def testCmakePluginDumpOutputsBackup4(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertTrue(v)
-
-        self.assertTrue(os.path.exists(test_stdout_fn))
-        self.assertTrue(os.path.exists(test_stderr_fn))
-
-        stdout_contents = ""
-        with open(test_stdout_fn, "r") as f:
-            stdout_contents = f.read()
-        self.assertEqual(stdout_contents, "test-stdout")
-
-        stderr_contents = ""
-        with open(test_stderr_fn, "r") as f:
-            stderr_contents = f.read()
-        self.assertEqual(stderr_contents, "test-stderr")
-
-    def testCmakePluginDumpOutputsBackup5(self):
-
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_output_backup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "cmake_plugin_error_output_backup_test_timestamp.txt")
-
-        self.assertFalse(os.path.exists(test_stdout_fn))
-        self.assertFalse(os.path.exists(test_stderr_fn))
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertTrue(v)
-
-        self.assertTrue(os.path.exists(test_stdout_fn))
-        self.assertTrue(os.path.exists(test_stderr_fn))
-
-        with open(test_stdout_fn, "a") as f:
-            f.write("-more stuff on stdout")
-
-        with open(test_stderr_fn, "a") as f:
-            f.write("-more stuff on stderr")
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                v, r = cmake_plugin._dump_outputs_backup(print, "test-stdout", "test-stderr")
-                self.assertFalse(v)
-
-        stdout_contents = ""
-        with open(test_stdout_fn, "r") as f:
-            stdout_contents = f.read()
-        self.assertEqual(stdout_contents, "test-stdout-more stuff on stdout") # should not have been replaced
-
-        stderr_contents = ""
-        with open(test_stderr_fn, "r") as f:
-            stderr_contents = f.read()
-        self.assertEqual(stderr_contents, "test-stderr-more stuff on stderr") # should not have been replaced
-
     def testCmakePluginRunTask1(self):
 
         local_params = {}
@@ -450,8 +324,8 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(False, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin._dump_output") as dummy2:
-                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=(True, None)) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertFalse(v)
@@ -469,15 +343,15 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin._dump_output") as dummy2:
-                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test2")
                     dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_called_with(print, "test1", "test2")
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
     def testCmakePluginRunTask3(self):
 
@@ -489,15 +363,15 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin._dump_output") as dummy2:
-                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="test-warning-msg") as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%stest2" % os.linesep)
                     dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_called_with(print, "test1", "test2")
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
     def testCmakePluginRunTask4(self):
 
@@ -510,15 +384,15 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin._dump_output") as dummy2:
-                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(False, "test-warning-msg")) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="test-warning-msg") as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%scmake's stderr has been suppressed" % os.linesep)
                     dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_called_with(print, "test1", "test2")
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
     def testCmakePluginRunTask5(self):
 
@@ -530,14 +404,14 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin._dump_output") as dummy2:
-                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
-                    dummy2.assert_has_calls([call(print, "output", None, "test1"), call(print, "error output", None, "test2")])
-                    dummy3.assert_not_called()
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(True, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
     def testCmakePluginRunTask6(self):
 
@@ -551,14 +425,14 @@ class CmakePluginTest(unittest.TestCase):
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (True, "test1", "test2"))) as dummy1:
-            with mock.patch("cmake_plugin._dump_output") as dummy2:
-                with mock.patch("cmake_plugin._dump_outputs_backup", return_value=(True, None)) as dummy3:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
-                    dummy2.assert_has_calls([call(print, "output", "dummy_value5", "test1"), call(print, "error output", "dummy_value6", "test2")])
-                    dummy3.assert_not_called()
+                    dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Cmake's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Cmake's stderr has been saved to: [dummy_value6]"))])
+                    dummy3.assert_called_with(True, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
 if __name__ == '__main__':
     unittest.main()
