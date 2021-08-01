@@ -7,6 +7,8 @@ import time
 import path_utils
 import svn_wrapper
 
+import log_helper
+
 def is_non_generic(char_input, list_select):
     for c in list_select:
         if c == char_input:
@@ -18,11 +20,6 @@ def is_nonnumber(thechar):
 
 def is_nonspaceortabs(thechar):
     return is_non_generic(thechar, [" ", "\t"])
-
-def _add_to_warnings(warnings, latest_msg):
-    if warnings is None:
-        return latest_msg
-    return "%s%s%s" % (warnings, os.linesep, latest_msg)
 
 def has_string_in_list(the_list, the_str):
     for li in the_list:
@@ -378,7 +375,7 @@ def update_autorepair(local_repo, do_recursion):
             break # both cleanup and update worked. we're done.
 
         # failed but its possible to attempt to autorepair it.
-        warnings = _add_to_warnings(warnings, r[0])
+        warnings = log_helper.add_to_warnings(warnings, r[0])
         output_message = r[1]
 
         if not do_recursion:
@@ -400,7 +397,7 @@ def update_autorepair(local_repo, do_recursion):
                 if not v:
                     return False, r
                 if r is not None:
-                    warnings = _add_to_warnings(warnings, r)
+                    warnings = log_helper.add_to_warnings(warnings, r)
 
     return True, warnings
 
@@ -416,11 +413,11 @@ def checkout_with_update(remote_link, local_repo):
         if not _checkout_autorepair_check_return(r):
             return False, r
         else:
-            warnings = _add_to_warnings(warnings, "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo)
+            warnings = log_helper.add_to_warnings(warnings, "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo)
 
     v, r = update_autorepair(local_repo, True)
     if r is not None:
-        warnings = _add_to_warnings(warnings, r)
+        warnings = log_helper.add_to_warnings(warnings, r)
     return v, warnings
 
 def checkout_autoretry(feedback_object, remote_link, local_repo):
@@ -439,11 +436,11 @@ def checkout_autoretry(feedback_object, remote_link, local_repo):
         v, r = checkout_with_update(remote_link, local_repo)
         if v:
             # this iteration worked. its done
-            warnings = _add_to_warnings(warnings, r)
+            warnings = log_helper.add_to_warnings(warnings, r)
             return True, warnings
 
         # failed iteration. reset and start over
-        warnings = _add_to_warnings(warnings, "Iteration [%d] failed and was sleep-retried." % iterations)
+        warnings = log_helper.add_to_warnings(warnings, "Iteration [%d] failed and was sleep-retried." % iterations)
         path_utils.deletefolder_ignoreerrors(local_repo)
         SLEEP_TIME = 15 # minutes
         feedback_object("Iteration number [%d] has failed. Will sleep for [%d] minutes before retrying." % (iterations, SLEEP_TIME))

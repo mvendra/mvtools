@@ -5,14 +5,10 @@ import os
 import path_utils
 import maketimestamp
 import mvtools_envvars
+import log_helper
 
 import launch_jobs
 import cmake_lib
-
-def _add_to_warnings(warnings, latest_msg):
-    if warnings is None:
-        return latest_msg
-    return "%s%s%s" % (warnings, os.linesep, latest_msg)
 
 def _dump_output(feedback_object, name_log, output_filename, output_contents):
 
@@ -40,7 +36,7 @@ def _dump_outputs_backup(feedback_object, stdout, stderr):
             f.write(stdout)
         feedback_object("output was saved to [%s]" % cmake_output_dump_filename)
     else:
-        warnings = _add_to_warnings(warnings, "output dump file [%s] already exists" % cmake_output_dump_filename)
+        warnings = log_helper.add_to_warnings(warnings, "output dump file [%s] already exists" % cmake_output_dump_filename)
 
     # error output
     cmake_error_output_dump_filename = path_utils.concat_path(r, "cmake_plugin_error_output_backup_%s.txt" % ts_now)
@@ -49,7 +45,7 @@ def _dump_outputs_backup(feedback_object, stdout, stderr):
             f.write(stderr)
         feedback_object("error output was saved to [%s]" % cmake_error_output_dump_filename)
     else:
-        warnings = _add_to_warnings(warnings, "error output dump file [%s] already exists" % cmake_error_output_dump_filename)
+        warnings = log_helper.add_to_warnings(warnings, "error output dump file [%s] already exists" % cmake_error_output_dump_filename)
 
     return (warnings is None), warnings
 
@@ -211,12 +207,12 @@ class CustomTask(launch_jobs.BaseTask):
         if not proc_result:
             v, r = _dump_outputs_backup(feedback_object, proc_stdout, proc_stderr)
             if not v:
-                warnings = _add_to_warnings(warnings, r)
+                warnings = log_helper.add_to_warnings(warnings, r)
 
         # warnings
         if len(proc_stderr) > 0:
             if not suppress_stderr_warnings:
-                warnings = _add_to_warnings(warnings, proc_stderr)
+                warnings = log_helper.add_to_warnings(warnings, proc_stderr)
             else:
-                warnings = _add_to_warnings(warnings, "cmake's stderr has been suppressed")
+                warnings = log_helper.add_to_warnings(warnings, "cmake's stderr has been suppressed")
         return True, warnings
