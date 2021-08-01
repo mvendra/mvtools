@@ -325,7 +325,7 @@ class CmakePluginTest(unittest.TestCase):
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(False, (True, "test1", "test2"))) as dummy1:
             with mock.patch("output_backup_helper.dump_output") as dummy2:
-                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=(True, None)) as dummy3:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertFalse(v)
