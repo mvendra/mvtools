@@ -255,18 +255,35 @@ class GitPluginTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
-        with mock.patch("git_wrapper.clone", return_value=(True, None)):
-            v, r = self.git_task.task_clone_repo(print, None, self.existent_path1, "dummy_value4")
-            self.assertFalse(v)
+        with mock.patch("git_wrapper.clone_ext", return_value=(True, (True, "", ""))):
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy:
+                v, r = self.git_task.task_clone_repo(print, None, self.existent_path1, "dummy_value4")
+                self.assertFalse(v)
+                dummy.assert_not_called()
 
     def testGitPluginTaskCloneRepo2(self):
 
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
-        with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
-            v, r = self.git_task.task_clone_repo(print, "dummy_value3", self.nonexistent_path1, "dummy_value4")
-            self.assertTrue(v)
-            dummy.assert_called_with("dummy_value3", self.nonexistent_path1, "dummy_value4")
+        with mock.patch("git_wrapper.clone_ext", return_value=(True, (True, "", ""))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.git_task.task_clone_repo(print, "dummy_value3", self.nonexistent_path1, "dummy_value4")
+                self.assertTrue(v)
+                dummy1.assert_called_with("dummy_value3", self.nonexistent_path1, "dummy_value4")
+                out_list = [("git_plugin_stdout", "", "Git's stdout"), ("git_plugin_stderr", "", "Git's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
+    def testGitPluginTaskCloneRepo3(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+
+        with mock.patch("git_wrapper.clone_ext", return_value=(True, (False, "test-stdout", "test-stderr"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.git_task.task_clone_repo(print, "dummy_value3", self.nonexistent_path1, "dummy_value4")
+                self.assertFalse(v)
+                dummy1.assert_called_with("dummy_value3", self.nonexistent_path1, "dummy_value4")
+                out_list = [("git_plugin_stdout", "test-stdout", "Git's stdout"), ("git_plugin_stderr", "test-stderr", "Git's stderr")]
+                dummy2.assert_called_with(False, print, out_list)
 
     def testGitPluginTaskPullRepo1(self):
 

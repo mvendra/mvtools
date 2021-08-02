@@ -4,6 +4,9 @@ import os
 
 import launch_jobs
 import path_utils
+import log_helper
+import output_backup_helper
+
 import git_wrapper
 import port_git_repo
 import reset_git_repo
@@ -167,17 +170,29 @@ class CustomTask(launch_jobs.BaseTask):
 
     def task_clone_repo(self, feedback_object, source_url, target_path, remote_name):
 
+        warnings = None
+
         if source_url is None:
             return False, "Source URL is required port task_clone_repo"
 
         if os.path.exists(target_path):
             return False, "Target path [%s] already exists" % target_path
 
-        v, r = git_wrapper.clone(source_url, target_path, remote_name)
+        v, r = git_wrapper.clone_ext(source_url, target_path, remote_name)
         if not v:
             return False, r
+        proc_result = r[0]
+        proc_stdout = r[1]
+        proc_stderr = r[2]
 
-        return True, None
+        # autobackup outputs
+        output_list = [("git_plugin_stdout", proc_stdout, "Git's stdout"), ("git_plugin_stderr", proc_stderr, "Git's stderr")]
+        warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(proc_result, feedback_object, output_list))
+
+        if not proc_result:
+            return False, proc_stderr
+
+        return True, warnings
 
     def task_pull_repo(self, feedback_object, target_path, remote_name, branch_name):
 
