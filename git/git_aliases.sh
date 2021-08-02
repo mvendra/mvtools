@@ -100,6 +100,7 @@ alias gistash="git stash"
 alias giver="git version"
 alias gicle="git clean"
 alias gifsck="git fsck"
+alias gilsu="git ls-files --exclude-standard --others"
 
 alias gimv="git mv"
 alias girm="git rm"
