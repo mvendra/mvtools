@@ -133,7 +133,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "Target path [%s] already exists" % target_path
 
         warnings = None
-        v, r = svn_lib.checkout_autoretry(feedback_object, source_url, target_path)
+        v, r = svn_lib.checkout_autoretry(feedback_object, source_url, target_path, True)
         if not v:
             return False, r
         if r is not None:
@@ -151,7 +151,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         warnings = None
 
-        v, r = svn_lib.update_autorepair(target_path, True)
+        v, r = svn_lib.update_autorepair(target_path, True, True)
         if not v:
             return False, r
 

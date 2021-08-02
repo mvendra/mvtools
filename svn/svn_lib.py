@@ -8,6 +8,7 @@ import path_utils
 import svn_wrapper
 
 import log_helper
+import output_backup_helper
 
 def is_non_generic(char_input, list_select):
     for c in list_select:
@@ -318,44 +319,69 @@ def _parse_externals_update_message(output_message):
 
 def _check_valid_codes(output_message, valid_codes):
 
-    om_lines = [x for x in output_message.split(os.linesep) if len(x) > 0]
-    if len(om_lines) < 1:
-        return False
-    last_line = om_lines[len(om_lines)-1]
+    try:
 
-    if last_line == ".":
-        if len(om_lines) < 2:
+        om_lines = [x for x in output_message.split(os.linesep) if len(x) > 0]
+        if len(om_lines) < 1:
             return False
-        om_lines = om_lines[:len(om_lines)-1]
         last_line = om_lines[len(om_lines)-1]
 
-    for vc in valid_codes:
-        if vc in last_line:
-            return True
+        if last_line == ".":
+            if len(om_lines) < 2:
+                return False
+            om_lines = om_lines[:len(om_lines)-1]
+            last_line = om_lines[len(om_lines)-1]
+
+        for vc in valid_codes:
+            if vc in last_line:
+                return True
+
+    except:
+        pass
     return False
 
 def _update_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011", "W000104"])
 
-def _update_and_cleanup(local_repo):
+def _update_and_cleanup(feedback_object, local_repo, autobackups):
+
+    warnings = None
 
     # cleanup
     v, r = svn_wrapper.cleanup(local_repo)
     if not v:
         return False, r
+    proc_result = r[0]
+    proc_stdout = r[1]
+    proc_stderr = r[2]
+
+    output_list = [("svn_lib_cleanup_stdout", proc_stdout, "Svn's cleanup stdout"), ("svn_lib_cleanup_stderr", proc_stderr, "Svn's cleanup stderr")]
+    warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(((not autobackups) or proc_result), feedback_object, output_list))
+
+    if not proc_result:
+        return False, proc_stderr
 
     # update
     v, r = svn_wrapper.update(local_repo)
-    if v:
+    if not v:
+        return False, r
+    proc_result = r[0]
+    proc_stdout = r[1]
+    proc_stderr = r[2]
+    if proc_result:
         return True, None
 
+    output_list = [("svn_lib_update_stdout", proc_stdout, "Svn's update stdout"), ("svn_lib_update_stderr", proc_stderr, "Svn's update stderr")]
+    warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(((not autobackups) or proc_result), feedback_object, output_list))
+
     # check update's result
-    if not _update_autorepair_check_return(r):
-        return False, r # failed, irrecoverably. give up.
+    if not _update_autorepair_check_return(proc_stdout):
+        return False, "unable to parse svn's output for reattempts" # failed, irrecoverably. give up.
+    warnings = log_helper.add_to_warnings(warnings, "update_autorepair warning: update operation failed but was accepted for repairing (at %s)." % local_repo)
 
-    return True, ("update_autorepair warning: update operation failed but was accepted for repairing (at %s)." % local_repo, r)
+    return True, (warnings, proc_stdout)
 
-def update_autorepair(local_repo, do_recursion):
+def update_autorepair(feedback_object, local_repo, do_recursion, autobackups):
 
     warnings = None
     iterations = 0
@@ -368,7 +394,7 @@ def update_autorepair(local_repo, do_recursion):
         if iterations > MAX_ITERATIONS:
             return False, "update_autorepair: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo)
 
-        v, r = _update_and_cleanup(local_repo)
+        v, r = _update_and_cleanup(feedback_object, local_repo, autobackups)
         if not v:
             return False, r # failed, irrecoverably. give up.
         if r is None:
@@ -396,31 +422,40 @@ def update_autorepair(local_repo, do_recursion):
                 v, r = update_autorepair(externals_full_path, False)
                 if not v:
                     return False, r
-                if r is not None:
-                    warnings = log_helper.add_to_warnings(warnings, r)
+                warnings = log_helper.add_to_warnings(warnings, r)
 
     return True, warnings
 
 def _checkout_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011", "W000104"])
 
-def checkout_with_update(remote_link, local_repo):
+def checkout_with_update(feedback_object, remote_link, local_repo, autobackups):
 
     warnings = None
 
     v, r = svn_wrapper.checkout(remote_link, local_repo)
     if not v:
-        if not _checkout_autorepair_check_return(r):
-            return False, r
-        else:
-            warnings = log_helper.add_to_warnings(warnings, "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo)
+        return False, r
+    proc_result = r[0]
+    proc_stdout = r[1]
+    proc_stderr = r[2]
 
-    v, r = update_autorepair(local_repo, True)
-    if r is not None:
-        warnings = log_helper.add_to_warnings(warnings, r)
-    return v, warnings
+    output_list = [("svn_lib_checkout_stdout", proc_stdout, "Svn's checkout stdout"), ("svn_lib_checkout_stderr", proc_stderr, "Svn's checkout stderr")]
+    warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(((not autobackups) or proc_result), feedback_object, output_list))
 
-def checkout_autoretry(feedback_object, remote_link, local_repo):
+    if not proc_result:
+        if not _checkout_autorepair_check_return(proc_stdout):
+            return False, proc_stderr
+        warnings = log_helper.add_to_warnings(warnings, "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo)
+
+    v, r = update_autorepair(feedback_object, local_repo, True, autobackups)
+    if not v:
+        return False, r
+    warnings = log_helper.add_to_warnings(warnings, r)
+
+    return True, warnings
+
+def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
     warnings = None
     iterations = 0
@@ -433,14 +468,14 @@ def checkout_autoretry(feedback_object, remote_link, local_repo):
         if iterations > MAX_ITERATIONS:
             return False, "repeated_checkout: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo)
 
-        v, r = checkout_with_update(remote_link, local_repo)
+        v, r = checkout_with_update(feedback_object, remote_link, local_repo, autobackups)
         if v:
             # this iteration worked. its done
             warnings = log_helper.add_to_warnings(warnings, r)
             return True, warnings
 
         # failed iteration. reset and start over
-        warnings = log_helper.add_to_warnings(warnings, "Iteration [%d] failed and was sleep-retried." % iterations)
+        warnings = log_helper.add_to_warnings(warnings, "Iteration [%d] failed and was sleep-retried. Reason: [%s]" % (iterations, r))
         path_utils.deletefolder_ignoreerrors(local_repo)
         SLEEP_TIME = 15 # minutes
         feedback_object("Iteration number [%d] has failed. Will sleep for [%d] minutes before retrying." % (iterations, SLEEP_TIME))

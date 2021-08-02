@@ -74,33 +74,33 @@ def checkout(remote_link, local_repo):
         return False, "Target path [%s] is invalid." % local_repo
     local_target_name = path_utils.basename_filtered(local_repo)
 
-    v, r = generic_run.run_cmd_simple(["svn", "checkout", remote_link, local_target_name], use_cwd=base_path)
+    v, r = generic_run.run_cmd(["svn", "checkout", remote_link, local_target_name], use_cwd=base_path)
     if not v:
         return False, "Failed calling svn-checkout command: %s." % r
 
-    return v, r
+    return True, (r.success, r.stdout, r.stderr)
 
 def cleanup(local_repo):
 
     if not os.path.exists(local_repo):
         return False, "%s does not exist." % local_repo
 
-    v, r = generic_run.run_cmd_simple(["svn", "cleanup"], use_cwd=local_repo)
+    v, r = generic_run.run_cmd(["svn", "cleanup"], use_cwd=local_repo)
     if not v:
         return False, "Failed calling svn-cleanup command: %s." % r
 
-    return v, r
+    return True, (r.success, r.stdout, r.stderr)
 
 def update(local_repo):
 
     if not os.path.exists(local_repo):
         return False, "%s does not exist." % local_repo
 
-    v, r = generic_run.run_cmd_simple(["svn", "update"], use_cwd=local_repo)
+    v, r = generic_run.run_cmd(["svn", "update"], use_cwd=local_repo)
     if not v:
         return False, "Failed calling svn-update command: %s." % r
 
-    return v, r
+    return True, (r.success, r.stdout, r.stderr)
 
 def revert(local_repo, repo_items):
 

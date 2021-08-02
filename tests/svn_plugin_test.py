@@ -12,7 +12,7 @@ import path_utils
 
 import svn_plugin
 
-def _helper_task_checkout_svn_lib_checkout_autoretry(feedback_object, source_url, target_path):
+def _helper_task_checkout_svn_lib_checkout_autoretry(feedback_object, source_url, target_path, autobackups):
     os.mkdir(target_path)
     return True, None
 
@@ -215,7 +215,7 @@ class SvnPluginTest(unittest.TestCase):
             dummy.side_effect = _helper_task_checkout_svn_lib_checkout_autoretry
             v, r = self.svn_task.task_checkout_repo(print, source_url, self.nonexistent_path1)
             self.assertTrue(v)
-            dummy.assert_called_with(print, source_url, self.nonexistent_path1)
+            dummy.assert_called_with(print, source_url, self.nonexistent_path1, True)
 
     def testSvnPluginTaskUpdateRepo1(self):
 
@@ -232,7 +232,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("svn_lib.update_autorepair", return_value=(True, None)) as dummy:
             v, r = self.svn_task.task_update_repo(print, self.existent_path1)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, True)
+            dummy.assert_called_with(self.existent_path1, True, True)
 
     def testSvnPluginTaskPortRepo1(self):
 
