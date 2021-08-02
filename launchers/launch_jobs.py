@@ -119,6 +119,8 @@ def _is_status_paused_delegate(execution_name):
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status")
     if not v:
         return False, r
+    if r is None:
+        return False, "Unable to fetch execution [%s]'s status (for pausing)." % execution_name
     stat_val = (r[1].lower())
     if stat_val == "paused":
         return True, True
@@ -292,6 +294,8 @@ def get_current_executions():
         v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, exe_name, "status")
         if not v:
             return False, "Unable to fetch execution [%s]'s status: [%s]" % (exe_name, r)
+        if r is None:
+            return False, "Unable to fetch execution [%s]'s status." % (exe_name)
         report.append("%s: %s" % (exe_name, r[1]))
 
     return True, report
