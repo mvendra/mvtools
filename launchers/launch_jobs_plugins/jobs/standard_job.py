@@ -15,7 +15,10 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             if not v:
                 return False, r
             feedback_object(launch_jobs._format_job_info_msg_task(self, t))
-            v, r = t.run_task(feedback_object, execution_name)
+            try:
+                v, r = t.run_task(feedback_object, execution_name)
+            except:
+                return False, "Task [%s][%s] caused an exception." % (t.name, t.get_desc())
             if not v:
                 feedback_object(launch_jobs._format_task_error_msg(t, r))
                 return False, "Failed task"

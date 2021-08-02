@@ -5,9 +5,11 @@ import shutil
 import unittest
 
 import mvtools_test_fixture
+import mvtools_exception
 import mvtools_envvars
 
 import toolbus
+import standard_job
 import launch_jobs
 
 class CustomTaskTrue(launch_jobs.BaseTask):
@@ -31,6 +33,11 @@ class CustomTaskParams1And2(launch_jobs.BaseTask):
             return True, None
         else:
             return False, None
+
+class CustomTaskException(launch_jobs.BaseTask):
+    def run_task(self, feedback_object, execution_name=None):
+        raise mvtools_exception.mvtools_exception("test-showstopper")
+        return True, None
 
 class CustomJob(launch_jobs.BaseJob):
     def add_task(self, task):
@@ -143,6 +150,14 @@ class LaunchJobsTest(unittest.TestCase):
         job1.add_task(CustomTaskParams(params={"test": False}))
 
         v, r = launch_jobs.run_job_list([job1], print)
+        self.assertFalse(v)
+
+    def testLaunchJobsTaskException1(self):
+
+        job1 = standard_job.StandardJob("test job")
+        job1.add_task(CustomTaskException("test task"))
+
+        v, r = launch_jobs.run_job_list([job1], print, "test-exec")
         self.assertFalse(v)
 
     def testLaunchJobsRunOptions1(self):

@@ -265,7 +265,15 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
         if not v:
             j_msg = _format_job_info_msg_pause_failed(j, r)
         else:
-            v, r = j.run_job(feedback_object, execution_name)
+
+            try:
+                v, r = j.run_job(feedback_object, execution_name)
+            except:
+                v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
+                if not v:
+                    return False, ["Unable to remove execution named [%s] from toolbus database." % execution_name] + report
+                return False, ["Job [%s][%s] caused an exception. Aborting." % (j.name, j.get_desc())]
+
             if v:
                 j_msg = _format_job_info_msg_succeeded(j)
             else:
