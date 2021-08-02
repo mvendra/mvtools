@@ -56,6 +56,9 @@ class GitWrapperTest(unittest.TestCase):
         self.storage_path = path_utils.concat_path(self.test_dir, "storage_path")
         os.mkdir(self.storage_path)
 
+        # nonexistent_repo
+        self.nonexistent_repo = path_utils.concat_path(self.test_dir, "nonexistent")
+
         return True, ""
 
     def tearDown(self):
@@ -232,6 +235,81 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.remote_list(third_repo)
         self.assertTrue(v)
         self.assertTrue("not-origin" in r)
+
+    def testClone3(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.second_repo, [test_file])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone(self.nonexistent_repo, third_repo)
+        self.assertFalse(v)
+
+    def testCloneExt1(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.second_repo, [test_file])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone_ext(self.second_repo, third_repo)
+        self.assertTrue(v)
+        self.assertTrue(r[0])
+
+        v, r = git_wrapper.remote_list(third_repo)
+        self.assertTrue(v)
+        self.assertTrue("origin" in r)
+
+    def testCloneExt2(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.second_repo, [test_file])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone_ext(self.second_repo, third_repo, "not-origin")
+        self.assertTrue(v)
+        self.assertTrue(r[0])
+
+        v, r = git_wrapper.remote_list(third_repo)
+        self.assertTrue(v)
+        self.assertTrue("not-origin" in r)
+
+    def testCloneExt3(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.second_repo, [test_file])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone_ext(self.nonexistent_repo, third_repo)
+        self.assertTrue(v)
+        self.assertFalse(r[0])
 
     def testCloneBare1(self):
 

@@ -14,6 +14,12 @@ def git_wrapper_standard_command(cmd, cmd_name="git_wrapper_standard_command"):
         return False, "Failed calling %s: %s" % (cmd_name, r)
     return v, r
 
+def git_wrapper_extended_command(cmd, cmd_name="git_wrapper_extended_command"):
+    v, r = generic_run.run_cmd(cmd)
+    if not v:
+        return False, "Failed calling %s: %s" % (cmd_name, r)
+    return True, (r.success, r.stdout, r.stderr)
+
 def config(key, value, global_cfg=True):
 
     cmd = ["git", "config"]
@@ -58,6 +64,13 @@ def clone(repo_source, repo_target, remotename=None):
         cmd.append("-o")
         cmd.append(remotename)
     return git_wrapper_standard_command(cmd, "clone")
+
+def clone_ext(repo_source, repo_target, remotename=None):
+    cmd = ["git", "clone", repo_source, repo_target]
+    if remotename is not None:
+        cmd.append("-o")
+        cmd.append(remotename)
+    return git_wrapper_extended_command(cmd, "clone-ext")
 
 def clone_bare(repo_source, repo_target):
     cmd = ["git", "clone", "--bare", repo_source, repo_target]
