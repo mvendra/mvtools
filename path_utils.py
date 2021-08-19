@@ -354,7 +354,13 @@ def copy_file_to_and_rename(source_path, target_path, new_name):
     if os.path.exists(final_target_path):
         return False
 
-    shutil.copy(source_path, final_target_path)
+    contents = None
+    with open(source_path, "rb") as f:
+        contents = f.read()
+
+    with open(final_target_path, "wb") as f:
+        f.write(contents)
+
     return True
 
 def copy_folder_to_and_rename(source_path, target_path, new_name):
@@ -405,10 +411,17 @@ def copy_file_to(source, target):
         return False
     if not os.path.isdir(target):
         return False
-    if os.path.exists(concat_path(target, basename_filtered(source))):
+    final_filename = concat_path(target, basename_filtered(source))
+    if os.path.exists(final_filename):
         return False
 
-    shutil.copy(source, target)
+    contents = None
+    with open(source, "rb") as f:
+        contents = f.read()
+
+    with open(final_filename, "wb") as f:
+        f.write(contents)
+
     return True
 
 def copy_folder_to(source, target):
