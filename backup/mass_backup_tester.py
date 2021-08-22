@@ -60,6 +60,10 @@ def backups_mass_check(config_file, pass_hash_file):
 
     return True
 
+def puaq():
+    print("Usage: %s config-file passhash-file" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
