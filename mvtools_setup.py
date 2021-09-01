@@ -109,11 +109,15 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
         mvtools_path = input("Choose your mvtools instalation folder (must preexist - leave empty for automatic discovery):")
         print("")
     if mvtools_path == "":
-        mvtools_path = os.path.dirname(os.path.abspath(__file__))
+        mvtools_path = os.getcwd()
     mvtools_path_copy = mvtools_path
     mvtools_path = _resolve_path(mvtools_path)
     if not os.path.exists(mvtools_path):
         print("The chosen path for the mvtools main path [%s] is invalid. Aborting..." % mvtools_path)
+        return False
+    mvtools_path_sanity_test = os.path.join(mvtools_path, os.path.basename(__file__))
+    if not os.path.exists(mvtools_path_sanity_test):
+        print("The chosen path for the mvtools main path [%s] seems to be invalid. Aborting..." % mvtools_path)
         return False
 
     if temp_path is None:
