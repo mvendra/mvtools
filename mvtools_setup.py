@@ -167,13 +167,13 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     cygwin_install_path_read = ""
     if cygwin_install_path is None:
         print("Mvtools can be hooked with the local system's cygwin installation path, for correct cygwin-to-windows paths resolution. This is optional.")
-        cygwin_install_path_read = input("Choose your local path that points to this system's cygwin installation path (optional - can be left blank - must be a windows path, not a cygwin path):")
+        cygwin_install_path_read = input("Choose your local path that points to this system's cygwin installation path (optional - can be left blank - must be a windows path, not a cygwin path - can't contain environment variables or any other aliases of any kind):")
         print("")
     if cygwin_install_path_read == "":
         cygwin_install_path_copy = None
     else:
         cygwin_install_path_copy = cygwin_install_path_read
-        cygwin_install_path = _resolve_path(cygwin_install_path_read)
+        cygwin_install_path = cygwin_install_path_read
         if not os.path.exists(cygwin_install_path):
             print("The chosen path for this system's cygwin installation path [%s] is invalid. Aborting..." % cygwin_install_path)
             return False
@@ -236,7 +236,7 @@ def puaq():
     print("[--links-path] -> defines the MVTOOLS_LINKS_PATH envvar. If ommitted, it will be prompted from stdin.")
     print("[--toolbus-db-path] -> defines the MVTOOLS_TOOLBUS_BASE envvar. If ommitted, it will be prompted from stdin.")
     print("[--git-visitor-path] -> defines the MVTOOLS_GIT_VISITOR_BASE envvar. If ommitted, it will be prompted from stdin.")
-    print("[--cygwin-install-path] -> defines the MVTOOLS_CYGWIN_INSTALL_PATH envvar (must be a windows path, not a cygwin path). If ommitted, it will be prompted from stdin.")
+    print("[--cygwin-install-path] -> defines the MVTOOLS_CYGWIN_INSTALL_PATH envvar (must be a windows path, not a cygwin path, can't contain environment variables or any other aliases of any kind). If ommitted, it will be prompted from stdin.")
     print("[--run-uts] -> runs mvtools's unit tests after setup.")
     sys.exit(0)
 
