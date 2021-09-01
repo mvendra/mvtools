@@ -11,6 +11,10 @@ def puaq():
     print("Usage: %s path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
+def get_cygwin_installation_path():
+    # mvtodo: should be automatic / installation-configurable
+    return "C:/cygwin"
+
 def find_drive_letter(target_path):
     pos = target_path.find(":")
     if pos == -1:
@@ -106,7 +110,7 @@ def convert_cygwin_path_to_win_path(target_path):
             if tpp == "cygdrive":
                 continue
             else:
-                return None # not a cygwin path
+                return path_utils.concat_path(get_cygwin_installation_path(), target_path)
         if c == 3:
             assembled_path_pieces.append("%s:" % tpp.upper())
             continue

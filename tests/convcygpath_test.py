@@ -39,9 +39,9 @@ class ConvCygPathTest(unittest.TestCase):
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("\\"), None)
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("\\first"), None)
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("\\first\\second"), None)
-            self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cigdrive"), None)
-            self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cigdrive/c"), None)
-            self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cigdrive/mp1"), None)
+            self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cigdrive"), "C:/cygwin/cigdrive")
+            self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cigdrive/c"), "C:/cygwin/cigdrive/c")
+            self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cigdrive/mp1"), "C:/cygwin/cigdrive/mp1")
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c"), "C:")
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/mp1"), "MP1:")
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/mp1/"), "MP1:")
@@ -49,6 +49,9 @@ class ConvCygPathTest(unittest.TestCase):
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c/mp1"), "C:/mp1")
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c/mp1/first/second"), "C:/mp1/first/second")
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c/mp1/first/second/"), "C:/mp1/first/second")
+            self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c/mp1/first/second/"), "C:/mp1/first/second")
+            with mock.patch("convcygpath.get_cygwin_installation_path", return_value="D:/cygwin_custom_install_folder/cygwin"):
+                self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/home/user/folder"), "D:/cygwin_custom_install_folder/cygwin/home/user/folder")
 
 if __name__ == '__main__':
     unittest.main()
