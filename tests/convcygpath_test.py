@@ -50,7 +50,9 @@ class ConvCygPathTest(unittest.TestCase):
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c/mp1/first/second"), "C:/mp1/first/second")
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c/mp1/first/second/"), "C:/mp1/first/second")
             self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/cygdrive/c/mp1/first/second/"), "C:/mp1/first/second")
-            with mock.patch("convcygpath.get_cygwin_installation_path", return_value="D:/cygwin_custom_install_folder/cygwin"):
+            with mock.patch("mvtools_envvars.mvtools_envvar_read_cygwin_install_path", return_value=(False, "error-message")):
+                self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/home/user/folder"), "C:/cygwin/home/user/folder")
+            with mock.patch("mvtools_envvars.mvtools_envvar_read_cygwin_install_path", return_value=(True, "D:/cygwin_custom_install_folder/cygwin")):
                 self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/home/user/folder"), "D:/cygwin_custom_install_folder/cygwin/home/user/folder")
 
 if __name__ == '__main__':

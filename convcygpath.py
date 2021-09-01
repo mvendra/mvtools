@@ -6,14 +6,17 @@ import os
 import fsquery
 import path_utils
 import sendtoclipboard
+import mvtools_envvars
 
 def puaq():
     print("Usage: %s path" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 def get_cygwin_installation_path():
-    # mvtodo: should be automatic / installation-configurable
-    return "C:/cygwin"
+    v, r = mvtools_envvars.mvtools_envvar_read_cygwin_install_path()
+    if not v:
+        return "C:/cygwin"
+    return r
 
 def find_drive_letter(target_path):
     pos = target_path.find(":")
