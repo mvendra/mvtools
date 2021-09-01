@@ -168,6 +168,15 @@ def _handle_delayed_start_execution(feedback_object, message_report_function, ex
     return _retry_helper(execution_delay, "execution", _handle_delayed_start_execution_delegate)
 
 def _handle_delayed_start(feedback_object, execution_name, time_delay, signal_delay, execution_delay):
+    try:
+        v, r = _handle_delayed_start_delegate(feedback_object, execution_name, time_delay, signal_delay, execution_delay)
+        return v, r
+    except KeyboardInterrupt as kbi:
+        return False, "Delayed start failed - user aborted"
+    except:
+        return False, "Delayed start failed - unknown reason"
+
+def _handle_delayed_start_delegate(feedback_object, execution_name, time_delay, signal_delay, execution_delay):
 
     if time_delay is None and signal_delay is None and execution_delay is None: # no delay applicable
         return True, None
@@ -236,6 +245,16 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
     if not v:
         return False, [r]
 
+    job_v, job_r = run_job_list_delegate(job_list, feedback_object, execution_name, options)
+
+    v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
+    if not v:
+        return False, ["Unable to remove execution named [%s] from toolbus database." % execution_name] + job_r
+
+    return job_v, job_r
+
+def run_job_list_delegate(job_list, feedback_object, execution_name, options):
+
     # delayed start if configured
     v, r = _handle_delayed_start(feedback_object, execution_name, options.time_delay, options.signal_delay, options.execution_delay)
     if not v:
@@ -269,9 +288,6 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
             try:
                 v, r = j.run_job(feedback_object, execution_name)
             except:
-                v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
-                if not v:
-                    return False, ["Unable to remove execution named [%s] from toolbus database." % execution_name] + report
                 return False, ["Job [%s][%s] caused an exception. Aborting." % (j.name, j.get_desc())]
 
             if v:
@@ -284,10 +300,6 @@ def run_job_list(job_list, feedback_object, execution_name=None, options=None):
 
         if not v and options.early_abort:
             break
-
-    v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
-    if not v:
-        return False, ["Unable to remove execution named [%s] from toolbus database." % execution_name] + report
 
     return (not _has_any_job_failed(report)), report
 
