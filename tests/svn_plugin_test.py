@@ -232,7 +232,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("svn_lib.update_autorepair", return_value=(True, None)) as dummy:
             v, r = self.svn_task.task_update_repo(print, self.existent_path1)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, True, True)
+            dummy.assert_called_with(print, self.existent_path1, True, True)
 
     def testSvnPluginTaskPortRepo1(self):
 

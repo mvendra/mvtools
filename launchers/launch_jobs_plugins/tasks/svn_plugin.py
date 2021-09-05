@@ -151,7 +151,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         warnings = None
 
-        v, r = svn_lib.update_autorepair(target_path, True, True)
+        v, r = svn_lib.update_autorepair(feedback_object, target_path, True, True)
         if not v:
             return False, r
 
