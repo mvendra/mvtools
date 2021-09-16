@@ -41,6 +41,15 @@ class PathUtilsTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
+    def testReplaceExtension(self):
+
+        self.assertEqual(path_utils.replace_extension(None, ".nfo", ".dat"), None)
+        self.assertEqual(path_utils.replace_extension("", ".nfo", ".dat"), None)
+        self.assertEqual(path_utils.replace_extension("file.txt", ".nfo", ".dat"), None)
+        self.assertEqual(path_utils.replace_extension("file.txt.more", ".txt", ".dat"), None)
+        self.assertEqual(path_utils.replace_extension("file.txt", ".txt", ".dat"), "file.dat")
+        self.assertEqual(path_utils.replace_extension("file.txt.more", ".more", ".dat"), "file.txt.dat")
+
     def testPopLastExtension(self):
         expected = "file.txt"
         result = path_utils.poplastextension("file.txt.enc")

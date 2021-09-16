@@ -16,6 +16,20 @@ class PathUtilsException(RuntimeError):
         self._message = message
     message = property(_get_message, _set_message)
 
+def replace_extension(source_string, ext_to_find, ext_to_replace_with):
+
+    if source_string is None:
+        return None
+
+    n = source_string.rfind(ext_to_find)
+    if n == -1:
+        return None
+
+    if source_string[n:] != ext_to_find:
+        return None
+
+    return source_string[:n] + ext_to_replace_with
+
 def poplastextension(filename):
     result = "you_found_a_bug"
     idx = filename.rfind(".")
