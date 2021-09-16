@@ -16,6 +16,7 @@ ifeq ($(MODE),)
 endif
 
 ifeq ($(MODE),debug)
+LDFLAGS=-lasan
 INTFLAGS = \
 	-g \
 	-Wall \
@@ -56,6 +57,7 @@ CPPFLAGSS = $(INTFLAGS)
 endif
 
 INCLUDES=-I.
+LDFLAGS+=
 
 all: compile testapp
 
@@ -66,7 +68,7 @@ compile:
 
 testapp:
 	$(COMP) -c $(CPPFLAGS) $(INCLUDES) main.cpp
-	$(COMP) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME)
+	$(COMP) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME) $(LDFLAGS)
 
 clean:
 	rm -rf $(LIBNAME)
