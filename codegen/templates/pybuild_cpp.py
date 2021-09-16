@@ -65,7 +65,7 @@ class Builder():
         _self.run_full = _self.run_base + _self.target
 
         _self.app_full_name = _self.run_full + "/" + _self.appname
-        _self.all_objs = [x.replace("cpp", "o") for x in _self.src]
+        _self.all_objs = [path_utils.replace_extension(x, ".cpp", ".o") for x in _self.src]
 
         _self.cpp_flags_common = ["-Wall", "-Wextra", "-pedantic", "-Weffc++", "-Werror", "-fPIC", "-std=c++14"] 
         _self.cpp_flags_debug = ["-g", "-D_GLIBCXX_DEBUG"]
