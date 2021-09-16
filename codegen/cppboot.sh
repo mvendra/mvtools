@@ -12,4 +12,3 @@ fi
 
 touch ./$CPPBOOTFILE
 echo "\n#include <iostream>\n\nint main(int argc, char *argv[]){\n\n    (void)argc; (void)argv;\n    std::cout << \"test for echo\" << std::endl;\n\n    return 0;\n\n}" > ./$CPPBOOTFILE
-
