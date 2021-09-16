@@ -1,0 +1,77 @@
+
+.PHONY : all clean compile link testapp 
+
+LIBNAME= libdynamicsample.so
+LIBLINKFNAME = dynamicsample
+TESTAPPNAME= testlib
+SONAME=libdynamicsample-dev.1.so
+
+SRC= libraryfile.c
+OBJ=$(SRC:.c=.o)
+COMP=gcc
+
+ARCH := $(shell getconf LONG_BIT)
+
+ifeq ($(MODE),)
+	MODE=debug
+endif
+
+ifeq ($(MODE),debug)
+LDFLAGS=-lasan
+INTFLAGS = \
+	-g \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Werror \
+	-fPIC \
+	-fsanitize=address \
+	-pthread \
+	-D_GLIBCXX_DEBUG \
+	-std=c17
+POSTBUILD=
+#DEFINES= -D _DEBUG -D _LOG 
+endif
+
+ifeq ($(MODE),release)
+INTFLAGS = \
+ 	-O2 \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Werror \
+	-fPIC \
+	-pthread \
+	-std=c17
+POSTBUILD= strip $(LIBNAME)
+#DEFINES= -D _LOG 
+endif
+
+ifeq ($(ARCH),64)
+CFLAGS = $(INTFLAGS) -m64
+else 
+CFLAGSS = $(INTFLAGS)
+endif
+
+INCLUDES=-I.
+LDFLAGS+=
+
+all: compile link testapp
+
+compile:
+	$(COMP) -c $(SRC) $(CFLAGS)
+	$(POSTBUILD)
+
+link:
+	$(COMP) -o $(LIBNAME) -shared $(OBJ) -Wl,-soname,$(SONAME)
+
+testapp:
+	$(COMP) -c $(CFLAGS) $(INCLUDES) main.c
+	$(COMP) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME) -Wl,-rpath,"." $(LDFLAGS)
+
+clean:
+	rm -rf $(LIBNAME)
+	rm -rf $(TESTAPPNAME)
+	rm -rf $(OBJ)
+	rm -rf main.o
+

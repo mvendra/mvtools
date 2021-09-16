@@ -1,0 +1,76 @@
+
+.PHONY : all clean compile testapp 
+
+LIBNAME= libstaticsample.a 
+LIBLINKFNAME = staticsample
+TESTAPPNAME= testlib
+
+SRC= libraryfile.c
+OBJ=$(SRC:.c=.o)
+COMP=gcc
+
+ARCH := $(shell getconf LONG_BIT)
+
+ifeq ($(MODE),)
+	MODE=debug
+endif
+
+ifeq ($(MODE),debug)
+LDFLAGS=-lasan
+INTFLAGS = \
+	-g \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Werror \
+	-static \
+	-fPIC \
+	-fsanitize=address \
+	-pthread \
+	-D_GLIBCXX_DEBUG \
+	-std=c17
+POSTBUILD=
+#DEFINES= -D _DEBUG -D _LOG 
+endif
+
+ifeq ($(MODE),release)
+INTFLAGS = \
+ 	-O2 \
+	-Wall \
+	-Wextra \
+	-pedantic \
+	-Werror \
+	-static \
+	-fPIC \
+	-pthread \
+	-std=c17
+POSTBUILD= strip $(LIBNAME)
+#DEFINES= -D _LOG 
+endif
+
+ifeq ($(ARCH),64)
+CFLAGS = $(INTFLAGS) -m64
+else 
+CFLAGSS = $(INTFLAGS)
+endif
+
+INCLUDES=-I.
+LDFLAGS+=
+
+all: compile testapp
+
+compile:
+	$(COMP) -c $(SRC) $(CFLAGS)
+	ar -rcs $(LIBNAME) $(OBJ)
+	$(POSTBUILD)
+
+testapp:
+	$(COMP) -c $(CFLAGS) $(INCLUDES) main.c
+	$(COMP) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME) $(LDFLAGS)
+
+clean:
+	rm -rf $(LIBNAME)
+	rm -rf $(TESTAPPNAME)
+	rm -rf $(OBJ)
+	rm -rf main.o
+
