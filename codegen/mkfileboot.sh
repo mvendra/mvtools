@@ -10,7 +10,7 @@ if [ -e ./$MKFILEBOOTFILE ]; then
   exit 1
 fi
 
-MKFILE_TEMPLATE=$BUILDING/makefiletemplates/Makefile_singlefolder_apponly
+MKFILE_TEMPLATE=$MVTOOLS/codegen/templates/makefiles/c/Makefile_c_singlefolder_apponly
 if [ ! -e $MKFILE_TEMPLATE ]; then
   echo "The makefile template $MKFILE_TEMPLATE does not exist. This script has no hope to succeed."
   exit 1
