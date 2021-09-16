@@ -154,10 +154,10 @@ class Builder():
         _self.call_cmd(cmd)
 
     def do_rebuild(_self):
-        _self.do_clean()
         _self.do_all()
 
     def do_all(_self):
+        _self.do_clean()
         _self.do_compile()
         _self.do_link()
 
