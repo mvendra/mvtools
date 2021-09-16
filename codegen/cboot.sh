@@ -11,5 +11,4 @@ if [ -e ./$CBOOTFILE ]; then
 fi
 
 touch ./$CBOOTFILE
-echo "\n#include <stdio.h>\n\nint main(int argc, char *argv[]){\n\n    printf(\"test for echo\\\n\");\n\n    return 0;\n\n}" > ./$CBOOTFILE
-
+echo "\n#include <stdio.h>\n\nint main(int argc, char *argv[]){\n\n    (void)argc; (void)argv;\n    printf(\"test for echo\\\n\");\n\n    return 0;\n\n}" > ./$CBOOTFILE
