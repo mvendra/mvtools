@@ -3,6 +3,8 @@
 import sys
 import os
 
+from random import randrange
+
 def secondary_c_app():
     return "\nvoid func(){}\n"
 
@@ -113,7 +115,63 @@ def format_xml_tag_value_list(indent, tag_name, tag_attrib, list_source, value_f
 
     return local_contents
 
+def format_xml_tag_openclose(indent, tag_name, tag_internal_contents):
+    local_contents = ""
+    local_contents = "%s<%s>%s</%s>" % (indent, tag_name, tag_internal_contents, tag_name)
+    return local_contents
+
+def unroll_options_with_suffix(separator, suffix, list_source):
+    local_contents = ""
+    if len(list_source) == 0:
+        return suffix
+    for i in range(len(list_source)):
+        pref = ""
+        if i > 0:
+            pref = separator
+        local_contents += "%s%s" % (pref, list_source[i])
+    local_contents += "%s%s" % (separator, suffix)
+    return local_contents
+
 def deco_if_not_empty(decorators_left, source_string, decorators_right):
     if source_string == "":
         return ""
     return "%s%s%s" % (decorators_left, source_string, decorators_right)
+
+def gen_single_random_hex_digit():
+
+    n = randrange(16)
+    h = "%x" % n
+    h_u = h.upper()
+    return h_u
+
+def random_32_hex_string_dashed():
+
+    # example: "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE"
+
+    # first part
+    dword_firstpart = ""
+    for i in range(8):
+        dword_firstpart += gen_single_random_hex_digit()
+
+    # second part
+    word_secondpart = ""
+    for i in range(4):
+        word_secondpart += gen_single_random_hex_digit()
+
+    # third part
+    word_thirdpart = ""
+    for i in range(4):
+        word_thirdpart += gen_single_random_hex_digit()
+
+    # fourth part
+    word_fourthpart = ""
+    for i in range(4):
+        word_fourthpart += gen_single_random_hex_digit()
+
+    # fifth part
+    tword_fifthpart = ""
+    for i in range(12):
+        tword_fifthpart += gen_single_random_hex_digit()
+
+    full_string = "%s-%s-%s-%s-%s" % (dword_firstpart, word_secondpart, word_thirdpart, word_fourthpart, tword_fifthpart)
+    return full_string

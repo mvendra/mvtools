@@ -34,9 +34,7 @@ def get_cpp_compiler_flags_debug_gcc():
     contents.append("-Weffc++")
     contents.append("-fPIC")
     contents.append("-fsanitize=address")
-    contents.append("-pthread")
     contents.append("-D_GLIBCXX_DEBUG")
-    contents.append("-std=c++14")
 
     return contents
 
@@ -50,7 +48,6 @@ def get_cpp_compiler_flags_release_gcc():
     contents.append("-Werror")
     contents.append("-pedantic")
     contents.append("-fPIC")
-    contents.append("-std=c++14")
     contents.append("-DNDEBUG")
 
     return contents
@@ -59,17 +56,23 @@ def get_cpp_compiler_flags_linux_gcc():
 
     contents = []
 
+    contents.append("-std=c++14")
+
     return contents
 
 def get_cpp_compiler_flags_windows_gcc():
 
     contents = []
 
+    contents.append("-std=c++14")
+
     return contents
 
 def get_cpp_compiler_flags_macosx_gcc():
 
     contents = []
+
+    contents.append("-std=c++14")
 
     return contents
 
@@ -84,5 +87,25 @@ def get_cpp_linker_flags_debug_gcc():
 def get_cpp_linker_flags_release_gcc():
 
     contents = []
+
+    return contents
+
+def cpp_compiler_flags_debug_msvc():
+
+    contents = []
+
+    return contents
+
+def cpp_compiler_flags_release_msvc():
+
+    contents = []
+
+    return contents
+
+def cpp_compiler_flags_windows_msvc():
+
+    contents = []
+
+    contents.append("/std:c++14")
 
     return contents
