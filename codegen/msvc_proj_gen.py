@@ -226,7 +226,7 @@ def msvc15projfile_contents_cpp(project_name, project_hex_id):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_c_msvc_15(target_dir, project_name):
+def generate_msvc15_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
@@ -287,7 +287,7 @@ def generate_c_msvc_15(target_dir, project_name):
 
     return True, None
 
-def generate_cpp_msvc_15(target_dir, project_name):
+def generate_msvc15_cpp(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)

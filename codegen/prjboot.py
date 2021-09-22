@@ -15,10 +15,10 @@ PROJECT_TYPE_MAKEFILE_CPP = "makefile_cpp"
 PROJECT_TYPE_CODELITE15_C = "codelite15_c"
 PROJECT_TYPE_CODELITE13_CPP = "codelite13_cpp"
 
-PROJECT_TYPE_C_MSVC_15 = "c_msvc_15"
-PROJECT_TYPE_CPP_MSVC_15 = "cpp_msvc_15"
+PROJECT_TYPE_MSVC15_C = "msvc15_c"
+PROJECT_TYPE_MSVC15_CPP = "msvc15_cpp"
 
-PROJECT_TYPES = [PROJECT_TYPE_MAKEFILE_C, PROJECT_TYPE_MAKEFILE_CPP, PROJECT_TYPE_CODELITE15_C, PROJECT_TYPE_CODELITE13_CPP, PROJECT_TYPE_C_MSVC_15, PROJECT_TYPE_CPP_MSVC_15]
+PROJECT_TYPES = [PROJECT_TYPE_MAKEFILE_C, PROJECT_TYPE_MAKEFILE_CPP, PROJECT_TYPE_CODELITE15_C, PROJECT_TYPE_CODELITE13_CPP, PROJECT_TYPE_MSVC15_C, PROJECT_TYPE_MSVC15_CPP]
 PROJECT_TYPE_DEFAULT = PROJECT_TYPE_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):
@@ -33,10 +33,10 @@ def prjboot(target_dir, proj_name, proj_type):
         chosen_function = codelite_proj_gen.generate_codelite15_c
     elif proj_type == PROJECT_TYPE_CODELITE13_CPP:
         chosen_function = codelite_proj_gen.generate_codelite13_cpp
-    elif proj_type == PROJECT_TYPE_C_MSVC_15:
-        chosen_function = msvc_proj_gen.generate_c_msvc_15
-    elif proj_type == PROJECT_TYPE_CPP_MSVC_15:
-        chosen_function = msvc_proj_gen.generate_cpp_msvc_15
+    elif proj_type == PROJECT_TYPE_MSVC15_C:
+        chosen_function = msvc_proj_gen.generate_msvc15_c
+    elif proj_type == PROJECT_TYPE_MSVC15_CPP:
+        chosen_function = msvc_proj_gen.generate_msvc15_cpp
     else:
         print("Unknown project type: [%s]" % proj_type)
         sys.exit(1)
