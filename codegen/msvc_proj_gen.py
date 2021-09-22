@@ -283,6 +283,7 @@ def generate_msvc15_c(target_dir, project_name):
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_c/.vs")
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_c/%s.VC.db" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_c/%s.VC.VC.opendb" % project_name)
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_c/%s.vcxproj.user" % project_name)
 
     return True, None
@@ -344,6 +345,7 @@ def generate_msvc15_cpp(target_dir, project_name):
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_cpp/.vs")
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_cpp/%s.VC.db" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_cpp/%s.VC.VC.opendb" % project_name)
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/msvc15_cpp/%s.vcxproj.user" % project_name)
 
     return True, None
