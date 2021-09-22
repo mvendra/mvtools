@@ -5,545 +5,102 @@ import os
 
 import path_utils
 
-def writecontents(filename, contents):
-    with open(filename, "wb") as f:
-        f.write(contents)
+import makefile_proj_gen
+import codelite_proj_gen
+import msvc_proj_gen
 
-def prjboot_validate(target_dir, project_name):
+PROJECT_TYPE_C_MAKEFILE = "c_makefile"
+PROJECT_TYPE_CPP_MAKEFILE = "cpp_makefile"
 
-    if os.path.exists(path_utils.concat_path(target_dir, project_name)):
-        print("%s already exists. Specify another project name." % path_utils.concat_path(target_dir, project_name))
-        return False
+PROJECT_TYPE_C_CODELITE_15 = "c_codelite_15"
+PROJECT_TYPE_CPP_CODELITE_13 = "cpp_codelite_13"
 
-    if not os.path.exists(target_dir):
-        print("%s does not exist. Specify another target directory." % target_dir)
-        return False
+PROJECT_TYPE_C_MSVC_15 = "c_msvc_15"
+PROJECT_TYPE_CPP_MSVC_15 = "cpp_msvc_15"
 
-    return True
+PROJECT_TYPES = [PROJECT_TYPE_C_MAKEFILE, PROJECT_TYPE_CPP_MAKEFILE, PROJECT_TYPE_C_CODELITE_15, PROJECT_TYPE_CPP_CODELITE_13, PROJECT_TYPE_C_MSVC_15, PROJECT_TYPE_CPP_MSVC_15]
+PROJECT_TYPE_DEFAULT = PROJECT_TYPE_C_CODELITE_15
 
-def main_contents():
-    ba_r = bytearray()
-    r = "#include <iostream>\n\n"
-    r += "int main(int argc, char *argv[]){\n";
-    r += "    (void)argc; (void)argv;\n"
-    r += "    std::cout << \"echo\" << std::endl;\n"
-    r += "    return 0;\n"
-    r += "}\n"
-    ba_r.extend(map(ord, r))
-    return ba_r
+def prjboot(target_dir, proj_name, proj_type):
 
-def codelite_projfile_contents(project_name):
-    ba_r = bytearray()
-    r = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    r += "<CodeLite_Project Name=\"%s\" InternalType=\"Console\">\n" % project_name
-    r += "  <Plugins>\n"
-    r += "    <Plugin Name=\"qmake\">\n"
-    r += "      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>\n"
-    r += "    </Plugin>\n"
-    r += "    <Plugin Name=\"CMakePlugin\">\n"
-    r += "      <![CDATA[[{\n"
-    r += "  \"name\": \"Debug\",\n"
-    r += "  \"enabled\": false,\n"
-    r += "  \"buildDirectory\": \"build\",\n"
-    r += "  \"sourceDirectory\": \"$(ProjectPath)\",\n"
-    r += "  \"generator\": \"\",\n"
-    r += "  \"buildType\": \"\",\n"
-    r += "  \"arguments\": [],\n"
-    r += "  \"parentProject\": \"\"\n"
-    r += " }, {\n"
-    r += "  \"name\": \"Debug (LLVM)\",\n"
-    r += "  \"enabled\": false,\n"
-    r += "  \"buildDirectory\": \"build\",\n"
-    r += "  \"sourceDirectory\": \"$(ProjectPath)\",\n"
-    r += "  \"generator\": \"\",\n"
-    r += "  \"buildType\": \"\",\n"
-    r += "  \"arguments\": [],\n"
-    r += "  \"parentProject\": \"\"\n"
-    r += " }, {\n"
-    r += "  \"name\": \"Release\",\n"
-    r += "  \"enabled\": false,\n"
-    r += "  \"buildDirectory\": \"build\",\n"
-    r += "  \"sourceDirectory\": \"$(ProjectPath)\",\n"
-    r += "  \"generator\": \"\",\n"
-    r += "  \"buildType\": \"\",\n"
-    r += "  \"arguments\": [],\n"
-    r += "  \"parentProject\": \"\"\n"
-    r += " }, {\n"
-    r += "  \"name\": \"Release (LLVM)\",\n"
-    r += "  \"enabled\": false,\n"
-    r += "  \"buildDirectory\": \"build\",\n"
-    r += "  \"sourceDirectory\": \"$(ProjectPath)\",\n"
-    r += "  \"generator\": \"\",\n"
-    r += "  \"buildType\": \"\",\n"
-    r += "  \"arguments\": [],\n"
-    r += "  \"parentProject\": \"\"\n"
-    r += " }]]]>\n"
-    r += "    </Plugin>\n"
-    r += "  </Plugins>\n"
-    r += "  <Description/>\n"
-    r += "  <Dependencies/>\n"
-    r += "  <VirtualDirectory Name=\"src\">\n"
-    r += "    <File Name=\"../../src/main.cpp\"/>\n"
-    r += "  </VirtualDirectory>\n"
-    r += "  <Settings Type=\"Executable\">\n"
-    r += "    <GlobalSettings>\n"
-    r += "      <Compiler Options=\"\" C_Options=\"\" Assembler=\"\">\n"
-    r += "        <IncludePath Value=\".\"/>\n"
-    r += "      </Compiler>\n"
-    r += "      <Linker Options=\"\">\n"
-    r += "        <LibraryPath Value=\".\"/>\n"
-    r += "      </Linker>\n"
-    r += "      <ResourceCompiler Options=\"\"/>\n"
-    r += "    </GlobalSettings>\n"
+    chosen_function = None
 
-    r += "    <Configuration Name=\"Debug\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
-    r += "      <Compiler Options=\"-g;-O0;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-g;-O0;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
-    r += "        <IncludePath Value=\"../../src\"/>\n"
-    r += "      </Compiler>\n"
-    r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += "        <Library Value=\"\"/>\n"
-    r += "      </Linker>\n"
-    r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../run/linux_x64_debug/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_debug\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
-    r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
-    r += "        <![CDATA[]]>\n"
-    r += "      </Environment>\n"
-    r += "      <Debugger IsRemote=\"no\" RemoteHostName=\"\" RemoteHostPort=\"\" DebuggerPath=\"\" IsExtended=\"yes\">\n"
-    r += "        <DebuggerSearchPaths/>\n"
-    r += "        <PostConnectCommands/>\n"
-    r += "        <StartupCommands/>\n"
-    r += "      </Debugger>\n"
-    r += "      <PreBuild/>\n"
-    r += "      <PostBuild/>\n"
-    r += "      <CustomBuild Enabled=\"no\">\n"
-    r += "        <RebuildCommand/>\n"
-    r += "        <CleanCommand/>\n"
-    r += "        <BuildCommand/>\n"
-    r += "        <PreprocessFileCommand/>\n"
-    r += "        <SingleFileCommand/>\n"
-    r += "        <MakefileGenerationCommand/>\n"
-    r += "        <ThirdPartyToolName>None</ThirdPartyToolName>\n"
-    r += "        <WorkingDirectory/>\n"
-    r += "      </CustomBuild>\n"
-    r += "      <AdditionalRules>\n"
-    r += "        <CustomPostBuild/>\n"
-    r += "        <CustomPreBuild/>\n"
-    r += "      </AdditionalRules>\n"
-    r += "      <Completion EnableCpp11=\"no\" EnableCpp14=\"no\">\n"
-    r += "        <ClangCmpFlagsC/>\n"
-    r += "        <ClangCmpFlags/>\n"
-    r += "        <ClangPP/>\n"
-    r += "        <SearchPaths/>\n"
-    r += "      </Completion>\n"
-    r += "    </Configuration>\n"
-
-    r += "    <Configuration Name=\"Debug (LLVM)\" CompilerType=\"clang( tags/RELEASE_500/final )\" DebuggerType=\"LLDB Debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
-    r += "      <Compiler Options=\"-g;-O0;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-g;-O0;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
-    r += "        <IncludePath Value=\"../../src\"/>\n"
-    r += "      </Compiler>\n"
-    r += "      <Linker Options=\"\" Required=\"yes\"/>\n"
-    r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../run/linux_x64_debug/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_debug\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_debug\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
-    r += "      <BuildSystem Name=\"Default\"/>\n"
-    r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
-    r += "        <![CDATA[]]>\n"
-    r += "      </Environment>\n"
-    r += "      <Debugger IsRemote=\"no\" RemoteHostName=\"\" RemoteHostPort=\"\" DebuggerPath=\"\" IsExtended=\"yes\">\n"
-    r += "        <DebuggerSearchPaths/>\n"
-    r += "        <PostConnectCommands/>\n"
-    r += "        <StartupCommands/>\n"
-    r += "      </Debugger>\n"
-    r += "      <PreBuild/>\n"
-    r += "      <PostBuild/>\n"
-    r += "      <CustomBuild Enabled=\"no\">\n"
-    r += "        <RebuildCommand/>\n"
-    r += "        <CleanCommand/>\n"
-    r += "        <BuildCommand/>\n"
-    r += "        <PreprocessFileCommand/>\n"
-    r += "        <SingleFileCommand/>\n"
-    r += "        <MakefileGenerationCommand/>\n"
-    r += "        <ThirdPartyToolName>None</ThirdPartyToolName>\n"
-    r += "        <WorkingDirectory/>\n"
-    r += "      </CustomBuild>\n"
-    r += "      <AdditionalRules>\n"
-    r += "        <CustomPostBuild/>\n"
-    r += "        <CustomPreBuild/>\n"
-    r += "      </AdditionalRules>\n"
-    r += "      <Completion EnableCpp11=\"no\" EnableCpp14=\"no\">\n"
-    r += "        <ClangCmpFlagsC/>\n"
-    r += "        <ClangCmpFlags/>\n"
-    r += "        <ClangPP/>\n"
-    r += "        <SearchPaths/>\n"
-    r += "      </Completion>\n"
-    r += "    </Configuration>\n"
-
-    r += "    <Configuration Name=\"Release\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
-    r += "      <Compiler Options=\"-O2;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-O2;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
-    r += "        <IncludePath Value=\"../../src\"/>\n"
-    r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
-    r += "      </Compiler>\n"
-    r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += "        <Library Value=\"\"/>\n"
-    r += "      </Linker>\n"
-    r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
-    r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
-    r += "        <![CDATA[]]>\n"
-    r += "      </Environment>\n"
-    r += "      <Debugger IsRemote=\"no\" RemoteHostName=\"\" RemoteHostPort=\"\" DebuggerPath=\"\" IsExtended=\"yes\">\n"
-    r += "        <DebuggerSearchPaths/>\n"
-    r += "        <PostConnectCommands/>\n"
-    r += "        <StartupCommands/>\n"
-    r += "      </Debugger>\n"
-    r += "      <PreBuild/>\n"
-    r += "      <PostBuild>\n"
-    r += "        <Command Enabled=\"yes\">strip ../../run/linux_x64_release/$(ProjectName)</Command>\n"
-    r += "      </PostBuild>\n"
-    r += "      <CustomBuild Enabled=\"no\">\n"
-    r += "        <RebuildCommand/>\n"
-    r += "        <CleanCommand/>\n"
-    r += "        <BuildCommand/>\n"
-    r += "        <PreprocessFileCommand/>\n"
-    r += "        <SingleFileCommand/>\n"
-    r += "        <MakefileGenerationCommand/>\n"
-    r += "        <ThirdPartyToolName>None</ThirdPartyToolName>\n"
-    r += "        <WorkingDirectory/>\n"
-    r += "      </CustomBuild>\n"
-    r += "      <AdditionalRules>\n"
-    r += "        <CustomPostBuild/>\n"
-    r += "        <CustomPreBuild/>\n"
-    r += "      </AdditionalRules>\n"
-    r += "      <Completion EnableCpp11=\"no\" EnableCpp14=\"no\">\n"
-    r += "        <ClangCmpFlagsC/>\n"
-    r += "        <ClangCmpFlags/>\n"
-    r += "        <ClangPP/>\n"
-    r += "        <SearchPaths/>\n"
-    r += "      </Completion>\n"
-    r += "    </Configuration>\n"
-
-    r += "    <Configuration Name=\"Release (LLVM)\" CompilerType=\"clang( tags/RELEASE_500/final )\" DebuggerType=\"LLDB Debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
-    r += "      <Compiler Options=\"-O2;-pedantic;-W;-std=c++14;-Wall;-Wextra;-Weffc++;-Werror;-fPIC\" C_Options=\"-O2;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n"
-    r += "        <IncludePath Value=\"../../src\"/>\n"
-    r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
-    r += "      </Compiler>\n"
-    r += "      <Linker Options=\"\" Required=\"yes\"/>\n"
-    r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
-    r += "      <BuildSystem Name=\"Default\"/>\n"
-    r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
-    r += "        <![CDATA[]]>\n"
-    r += "      </Environment>\n"
-    r += "      <Debugger IsRemote=\"no\" RemoteHostName=\"\" RemoteHostPort=\"\" DebuggerPath=\"\" IsExtended=\"no\">\n"
-    r += "        <DebuggerSearchPaths/>\n"
-    r += "        <PostConnectCommands/>\n"
-    r += "        <StartupCommands/>\n"
-    r += "      </Debugger>\n"
-    r += "      <PreBuild/>\n"
-    r += "      <PostBuild/>\n"
-    r += "      <CustomBuild Enabled=\"no\">\n"
-    r += "        <RebuildCommand/>\n"
-    r += "        <CleanCommand/>\n"
-    r += "        <BuildCommand/>\n"
-    r += "        <PreprocessFileCommand/>\n"
-    r += "        <SingleFileCommand/>\n"
-    r += "        <MakefileGenerationCommand/>\n"
-    r += "        <ThirdPartyToolName>None</ThirdPartyToolName>\n"
-    r += "        <WorkingDirectory/>\n"
-    r += "      </CustomBuild>\n"
-    r += "      <AdditionalRules>\n"
-    r += "        <CustomPostBuild/>\n"
-    r += "        <CustomPreBuild/>\n"
-    r += "      </AdditionalRules>\n"
-    r += "      <Completion EnableCpp11=\"no\" EnableCpp14=\"no\">\n"
-    r += "        <ClangCmpFlagsC/>\n"
-    r += "        <ClangCmpFlags/>\n"
-    r += "        <ClangPP/>\n"
-    r += "        <SearchPaths/>\n"
-    r += "      </Completion>\n"
-    r += "    </Configuration>\n"
-
-    r += "  </Settings>\n"
-    r += "</CodeLite_Project>\n"
-    ba_r.extend(map(ord, r))
-    return ba_r
-
-def msvc15slnfile_contents(project_name):
-    ba_r = bytearray(b"\xEF\xBB\xBF")
-    r = "\nMicrosoft Visual Studio Solution File, Format Version 12.00\n"
-    r += "# Visual Studio 15\n"
-    r += "VisualStudioVersion = 15.0.26228.9\n"
-    r += "MinimumVisualStudioVersion = 10.0.40219.1\n"
-    r += "Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"%s\", \"%s.vcxproj\", \"{7C79831C-A822-47F3-B80A-66BEB3F427A1}\"\n" % (project_name, project_name)
-    r += "EndProject\n"
-    r += "Global\n"
-    r += "\tGlobalSection(SolutionConfigurationPlatforms) = preSolution\n"
-    r += "\t\tDebug|x64 = Debug|x64\n"
-    r += "\t\tRelease|x64 = Release|x64\n"
-    r += "\tEndGlobalSection\n"
-    r += "\tGlobalSection(ProjectConfigurationPlatforms) = postSolution\n"
-    r += "\t\t{7C79831C-A822-47F3-B80A-66BEB3F427A1}.Debug|x64.ActiveCfg = Debug|x64\n"
-    r += "\t\t{7C79831C-A822-47F3-B80A-66BEB3F427A1}.Debug|x64.Build.0 = Debug|x64\n"
-    r += "\t\t{7C79831C-A822-47F3-B80A-66BEB3F427A1}.Release|x64.ActiveCfg = Release|x64\n"
-    r += "\t\t{7C79831C-A822-47F3-B80A-66BEB3F427A1}.Release|x64.Build.0 = Release|x64\n"
-    r += "\tEndGlobalSection\n"
-    r += "\tGlobalSection(SolutionProperties) = preSolution\n"
-    r += "\t\tHideSolutionNode = FALSE\n"
-    r += "\tEndGlobalSection\n"
-    r += "EndGlobal\n"
-    ba_r.extend(map(ord, r))
-    return ba_r
-
-def msvc15projfile_contents(project_name):
-    ba_r = bytearray(b"\xEF\xBB\xBF")
-    r = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    r += "<Project DefaultTargets=\"Build\" ToolsVersion=\"15.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">\n"
-    r += "  <ItemGroup Label=\"ProjectConfigurations\">\n"
-    r += "    <ProjectConfiguration Include=\"Debug|x64\">\n"
-    r += "      <Configuration>Debug</Configuration>\n"
-    r += "      <Platform>x64</Platform>\n"
-    r += "    </ProjectConfiguration>\n"
-    r += "    <ProjectConfiguration Include=\"Release|x64\">\n"
-    r += "      <Configuration>Release</Configuration>\n"
-    r += "      <Platform>x64</Platform>\n"
-    r += "    </ProjectConfiguration>\n"
-    r += "  </ItemGroup>\n"
-    r += "  <PropertyGroup Label=\"Globals\">\n"
-    r += "    <VCProjectVersion>15.0</VCProjectVersion>\n"
-    r += "    <ProjectGuid>{7C79831C-A822-47F3-B80A-66BEB3F427A1}</ProjectGuid>\n"
-    r += "    <RootNamespace>%s</RootNamespace>\n" % project_name
-    r += "    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>\n"
-    r += "  </PropertyGroup>\n"
-    r += "  <Import Project=\"$(VCTargetsPath)\Microsoft.Cpp.Default.props\" />\n"
-    r += "  <PropertyGroup Condition=\"\'$(Configuration)|$(Platform)\'==\'Debug|x64\'\" Label=\"Configuration\">\n"
-    r += "    <ConfigurationType>Application</ConfigurationType>\n"
-    r += "    <UseDebugLibraries>true</UseDebugLibraries>\n"
-    r += "    <PlatformToolset>v141</PlatformToolset>\n"
-    r += "    <CharacterSet>MultiByte</CharacterSet>\n"
-    r += "  </PropertyGroup>\n"
-    r += "  <PropertyGroup Condition=\"\'$(Configuration)|$(Platform)\'==\'Release|x64\'\" Label=\"Configuration\">\n"
-    r += "    <ConfigurationType>Application</ConfigurationType>\n"
-    r += "    <UseDebugLibraries>false</UseDebugLibraries>\n"
-    r += "    <PlatformToolset>v141</PlatformToolset>\n"
-    r += "    <WholeProgramOptimization>true</WholeProgramOptimization>\n"
-    r += "    <CharacterSet>MultiByte</CharacterSet>\n"
-    r += "  </PropertyGroup>\n"
-    r += "  <Import Project=\"$(VCTargetsPath)\Microsoft.Cpp.props\" />\n"
-    r += "  <ImportGroup Label=\"ExtensionSettings\">\n"
-    r += "  </ImportGroup>\n"
-    r += "  <ImportGroup Label=\"Shared\">\n"
-    r += "  </ImportGroup>\n"
-    r += "  <ImportGroup Label=\"PropertySheets\" Condition=\"\'$(Configuration)|$(Platform)\'==\'Debug|x64\'\">\n"
-    r += "    <Import Project=\"$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\" Condition=\"exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')\" Label=\"LocalAppDataPlatform\" />\n"
-    r += "  </ImportGroup>\n"
-    r += "  <ImportGroup Label=\"PropertySheets\" Condition=\"\'$(Configuration)|$(Platform)\'==\'Release|x64\'\">\n"
-    r += "    <Import Project=\"$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\" Condition=\"exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')\" Label=\"LocalAppDataPlatform\" />\n"
-    r += "  </ImportGroup>\n"
-    r += "  <PropertyGroup Label=\"UserMacros\" />\n"
-    r += "  <PropertyGroup Condition=\"\'$(Configuration)|$(Platform)\'==\'Release|x64\'\">\n"
-    r += "    <OutDir>$(SolutionDir)..\\..\\run\windows_$(PlatformTarget)_$(Configuration)\\</OutDir>\n"
-    r += "    <IntDir>$(SolutionDir)..\\..\\build\windows_$(PlatformTarget)_$(Configuration)\\</IntDir>\n"
-    r += "  </PropertyGroup>\n"
-    r += "  <PropertyGroup Condition=\"\'$(Configuration)|$(Platform)\'==\'Debug|x64\'\">\n"
-    r += "    <OutDir>$(SolutionDir)..\\..\\run\\windows_$(PlatformTarget)_$(Configuration)\\</OutDir>\n"
-    r += "    <IntDir>$(SolutionDir)..\\..\\build\\windows_$(PlatformTarget)_$(Configuration)\\</IntDir>\n"
-    r += "  </PropertyGroup>\n"
-    r += "  <ItemDefinitionGroup Condition=\"\'$(Configuration)|$(Platform)\'==\'Debug|x64\'\">\n"
-    r += "    <ClCompile>\n"
-    r += "      <WarningLevel>Level3</WarningLevel>\n"
-    r += "      <Optimization>Disabled</Optimization>\n"
-    r += "      <SDLCheck>true</SDLCheck>\n"
-    r += "    </ClCompile>\n"
-    r += "  </ItemDefinitionGroup>\n"
-    r += "  <ItemDefinitionGroup Condition=\"\'$(Configuration)|$(Platform)\'==\'Release|x64\'\">\n"
-    r += "    <ClCompile>\n"
-    r += "      <WarningLevel>Level3</WarningLevel>\n"
-    r += "      <Optimization>MaxSpeed</Optimization>\n"
-    r += "      <FunctionLevelLinking>true</FunctionLevelLinking>\n"
-    r += "      <IntrinsicFunctions>true</IntrinsicFunctions>\n"
-    r += "      <SDLCheck>true</SDLCheck>\n"
-    r += "    </ClCompile>\n"
-    r += "    <Link>\n"
-    r += "      <EnableCOMDATFolding>true</EnableCOMDATFolding>\n"
-    r += "      <OptimizeReferences>true</OptimizeReferences>\n"
-    r += "    </Link>\n"
-    r += "  </ItemDefinitionGroup>\n"
-    #r += "  <ItemGroup>\n"
-    #r += "    <ClInclude Include=\"..\\..\\include\\example.h\" />\n"
-    #r += "  </ItemGroup>\n"
-    r += "  <ItemGroup>\n"
-    r += "    <ClCompile Include=\"..\\..\\src\\main.cpp\" />\n"
-    r += "  </ItemGroup>\n"
-    r += "  <Import Project=\"$(VCTargetsPath)\\Microsoft.Cpp.targets\" />\n"
-    r += "  <ImportGroup Label=\"ExtensionTargets\">\n"
-    r += "  </ImportGroup>\n"
-    r += "</Project>\n"
-    ba_r.extend(map(ord, r))
-    return ba_r
-
-def mkfile_contents(project_name):
-    ba_r = bytearray()
-    r = ".PHONY : all prepfolders clean compile link\n\n"
-    r += "APPNAME=%s\n\n" % project_name
-    r += "BASE=../..\n"
-    r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_OBJ=$(BASE)/build\n"
-    r += "RUN=$(BASE)/run\n\n"
-    r += "SRC=main.cpp\n\n"
-    r += "COMPILER=g++\n\n"
-    r += "ARCH := $(shell getconf LONG_BIT)\n"
-    r += "CPPFLAGS=\n"
-    r += "PLAT=generic\n\n"
-    r += "ifeq ($(MODE),)\n"
-    r += "\tMODE=debug\n"
-    r += "endif\n\n"
-    r += "UNAME_S := $(shell uname -s)\n"
-    r += "ifeq ($(UNAME_S),Linux)\n"
-    r += "\tCPPFLAGS += -D LINUX\n"
-    r += "\tPLAT=linux\n"
-    r += "endif\n"
-    r += "ifeq ($(UNAME_S),Darwin)\n"
-    r += "\tCPPFLAGS += -D OSX\n"
-    r += "\tPLAT=macosx\n"
-    r += "endif\n\n"
-    r += "ifeq ($(MODE),debug)\n"
-    r += "INTFLAGS = \\\n"
-    r += "\t-g \\\n"
-    r += "\t-Wall \\\n"
-    r += "\t-Wextra \\\n"
-    r += "\t-pedantic \\\n"
-    r += "\t-Weffc++ \\\n"
-    r += "\t-Werror \\\n"
-    r += "\t-fPIC \\\n"
-    r += "\t-D_GLIBCXX_DEBUG \\\n"
-    r += "\t-std=c++14\n"
-    r += "POSTBUILD=\n"
-    r += "endif\n\n"
-    r += "ifeq ($(MODE),release)\n"
-    r += "INTFLAGS = \\\n"
-    r += "\t-O2 \\\n"
-    r += "\t-Wall \\\n"
-    r += "\t-Wextra \\\n"
-    r += "\t-pedantic \\\n"
-    r += "\t-Weffc++ \\\n"
-    r += "\t-Werror \\\n"
-    r += "\t-fPIC \\\n"
-    r += "\t-std=c++14\n"
-    r += "POSTBUILD= strip $(FULL_APP_NAME)\n"
-    r += "endif\n\n"
-    r += "ifeq ($(ARCH),64)\n"
-    r += "\tCPPFLAGS += $(INTFLAGS) -m64\n"
-    r += "else\n"
-    r += "CPPFLAGS += $(INTFLAGS)\n"
-    r += "endif\n\n"
-    r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n\n"
-    r += "INCLUDES=-I$(BASE_SRC)\n"
-    r += "LDFLAGS=\n\n"
-    r += "BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)\n"
-    r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(notdir $(src:.cpp=.o)))\n"
-    r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n\n"
-    r += "all: prepfolders compile link\n\n"
-    r += "prepfolders:\n"
-    r += "\t@mkdir -p $(BASE_OBJ_FULL)\n"
-    r += "\t@mkdir -p $(RUN_FULL)\n\n"
-    r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(notdir $(src:.cpp=.o));)\n\n"
-    r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS)\n"
-    r += "\t$(POSTBUILD)\n\n"
-    r += "clean:\n"
-    r += "\t$(foreach objs,$(ALL_OBJS),rm -rf $(objs);)\n"
-    r += "\trm -rf $(FULL_APP_NAME)\n"
-    ba_r.extend(map(ord, r))
-    return ba_r
-
-def git_ign_contents(project_name):
-    ba_r = bytearray()
-    r = "*.swp\n"
-    r += "*.o\n\n"
-    r += "build\n"
-    r += "run\n\n"
-    r += "proj/codelite/%s.mk\n" % project_name
-    r += "proj/codelite/%s.txt\n\n" % project_name
-    r += "/proj/msvc15/.vs\n"
-    r += "/proj/msvc15/%s.VC.db\n" % project_name
-    r += "/proj/msvc15/%s.vcxproj.user\n\n" % project_name
-    ba_r.extend(map(ord, r))
-    return ba_r
-
-def prjboot(target_dir, project_name):
-
-    if not prjboot_validate(target_dir, project_name):
+    if proj_type == PROJECT_TYPE_C_MAKEFILE:
+        chosen_function = makefile_proj_gen.generate_c_makefile
+    elif proj_type == PROJECT_TYPE_CPP_MAKEFILE:
+        chosen_function = makefile_proj_gen.generate_cpp_makefile
+    elif proj_type == PROJECT_TYPE_C_CODELITE_15:
+        chosen_function = codelite_proj_gen.generate_c_codelite_15
+    elif proj_type == PROJECT_TYPE_CPP_CODELITE_13:
+        chosen_function = codelite_proj_gen.generate_cpp_codelite_13
+    elif proj_type == PROJECT_TYPE_C_MSVC_15:
+        chosen_function = msvc_proj_gen.generate_c_msvc_15
+    elif proj_type == PROJECT_TYPE_CPP_MSVC_15:
+        chosen_function = msvc_proj_gen.generate_cpp_msvc_15
+    else:
+        print("Unknown project type: [%s]" % proj_type)
         sys.exit(1)
 
-    prj_fullname_base = path_utils.concat_path(target_dir, project_name)
-    base_prj = path_utils.concat_path(prj_fullname_base, "proj")
+    v, r = chosen_function(target_dir, proj_name)
+    if not v:
+        print(r)
+        sys.exit(1)
 
-    base_build = path_utils.concat_path(prj_fullname_base, "build")
-    base_build_linux_x64_debug = path_utils.concat_path(base_build, "linux_x64_debug")
-    base_build_linux_x64_release = path_utils.concat_path(base_build, "linux_x64_release")
-    base_build_windows_x64_debug = path_utils.concat_path(base_build, "windows_x64_debug")
-    base_build_windows_x64_release = path_utils.concat_path(base_build, "windows_x64_release")
+def parse_proj_types(proj_types):
+    contents = "["
+    cut_last = False
+    for pt in proj_types:
+        cut_last = True
+        contents += pt + " | "
+    if cut_last:
+        contents = contents[:len(contents)-3]
+    return contents + "]"
 
-    base_run = path_utils.concat_path(prj_fullname_base, "run")
-    base_run_linux_x64_debug = path_utils.concat_path(base_run, "linux_x64_debug")
-    base_run_linux_x64_release = path_utils.concat_path(base_run, "linux_x64_release")
-    base_run_windows_x64_debug = path_utils.concat_path(base_run, "windows_x64_debug")
-    base_run_windows_x64_release = path_utils.concat_path(base_run, "windows_x64_release")
-
-    base_src = path_utils.concat_path(prj_fullname_base, "src")
-
-    base_git = path_utils.concat_path(prj_fullname_base, ".git")
-
-    # basic structure
-    os.mkdir(prj_fullname_base)
-    os.mkdir(base_prj)
-
-    os.mkdir(base_build)
-    os.mkdir(base_build_linux_x64_debug)
-    os.mkdir(base_build_linux_x64_release)
-    os.mkdir(base_build_windows_x64_debug)
-    os.mkdir(base_build_windows_x64_release)
-
-    os.mkdir(base_run)
-    os.mkdir(base_run_linux_x64_debug)
-    os.mkdir(base_run_linux_x64_release)
-    os.mkdir(base_run_windows_x64_debug)
-    os.mkdir(base_run_windows_x64_release)
-
-    os.mkdir(base_src)
-    base_src_main_fn = path_utils.concat_path(base_src, "main.cpp")
-    writecontents(base_src_main_fn, main_contents())
-
-    base_prj_codelite = path_utils.concat_path(base_prj, "codelite")
-    os.mkdir(base_prj_codelite)
-    base_prj_codelite_fn = path_utils.concat_path(base_prj_codelite, "%s.project" % project_name)
-    writecontents(base_prj_codelite_fn, codelite_projfile_contents(project_name))
-
-    base_prj_msvc15 = path_utils.concat_path(base_prj, "msvc15")
-    os.mkdir(base_prj_msvc15)
-    base_prj_msvc15_sln = path_utils.concat_path(base_prj_msvc15, "%s.sln" % project_name)
-    base_prj_msvc15_fn = path_utils.concat_path(base_prj_msvc15, "%s.vcxproj" % project_name)
-    writecontents(base_prj_msvc15_sln, msvc15slnfile_contents(project_name))
-    writecontents(base_prj_msvc15_fn, msvc15projfile_contents(project_name))
-
-    base_prj_makefile = path_utils.concat_path(base_prj, "makefile")
-    os.mkdir(base_prj_makefile)
-    base_prj_makefile_fn = path_utils.concat_path(base_prj_makefile, "Makefile")
-    writecontents(base_prj_makefile_fn, mkfile_contents(project_name))
-
-    base_git_ign_fn = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    writecontents(base_git_ign_fn, git_ign_contents(project_name))
+def puaq():
+    print("Usage: %s [--help] [--target-dir target_dir] [--project-name proj_name] [--project-type %s]" % (path_utils.basename_filtered(__file__), parse_proj_types(PROJECT_TYPES)))
+    sys.exit(1)
 
 if __name__ == "__main__":
 
-    td = os.getcwd()
-    pn = "newproject"
+    params = sys.argv[1:]
 
-    if len(sys.argv) == 2:
-        td = sys.argv[1]
-    if len(sys.argv) == 3:
-        td = sys.argv[1]
-        pn = sys.argv[2]
+    target_dir = os.getcwd()
+    target_dir_next = False
 
-    prjboot(td, pn)
+    proj_name = "newproject"
+    proj_name_next = False
+
+    proj_type = PROJECT_TYPE_DEFAULT
+    proj_type_next = False
+
+    for p in params:
+
+        if p == "--help":
+            puaq()
+
+        if target_dir_next:
+            target_dir_next = False
+            target_dir = p
+            continue
+
+        if proj_name_next:
+            proj_name_next = False
+            proj_name = p
+            continue
+
+        if proj_type_next:
+            proj_type_next = False
+            proj_type = p
+            continue
+
+        if p == "--target-dir":
+            target_dir_next = True
+            continue
+        elif p == "--project-name":
+            proj_name_next = True
+            continue
+        elif p == "--project-type":
+            proj_type_next = True
+            continue
+
+    prjboot(target_dir, proj_name, proj_type)
