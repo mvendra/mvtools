@@ -68,7 +68,7 @@ def mkfile_cpp_contents(project_name):
 
     # WINDOWS
     r += "\n# WINDOWS\n"
-    r += "ifneq (,$(findstring NT-5.1,$(UNAME_S)))\n"
+    r += "ifneq (,$(findstring CYGWIN,$(UNAME_S)))\n"
     r += "\tPLAT=windows\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_windows_gcc())), "\n")
     r += "endif\n"
