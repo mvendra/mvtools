@@ -7,7 +7,7 @@ BASE_SRC=$(BASE)/src
 BASE_OBJ=$(BASE)/build
 RUN=$(BASE)/run
 
-SRC=main.c another_folder/second.c
+SRC=main.c subfolder/second.c
 #SRC_FULL=$(addprefix $(BASE_SRC)/, $(SRC))
 #OBJ=$(SRC:.c=.o) 
 #OBJ_FULL=$(addprefix $(BASE_OBJ)/, $(OBJ))
@@ -33,7 +33,7 @@ endif
 ifeq ($(ARCH),64)
 	CFLAGS = $(INTFLAGS) -m64
 else 
-	CFLAGSS = $(INTFLAGS)
+	CFLAGS = $(INTFLAGS)
 endif
 
 ifeq ($(MODE),debug)

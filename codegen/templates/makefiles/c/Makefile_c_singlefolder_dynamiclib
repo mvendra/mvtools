@@ -50,7 +50,7 @@ endif
 ifeq ($(ARCH),64)
 CFLAGS = $(INTFLAGS) -m64
 else 
-CFLAGSS = $(INTFLAGS)
+CFLAGS = $(INTFLAGS)
 endif
 
 INCLUDES=-I.
@@ -74,4 +74,3 @@ clean:
 	rm -rf $(TESTAPPNAME)
 	rm -rf $(OBJ)
 	rm -rf main.o
-

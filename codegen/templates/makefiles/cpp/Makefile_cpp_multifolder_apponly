@@ -7,7 +7,7 @@ BASE_SRC=$(BASE)/src
 BASE_OBJ=$(BASE)/build
 RUN=$(BASE)/run
 
-SRC=main.cpp another_folder/second.cpp
+SRC=main.cpp subfolder/second.cpp
 #SRC_FULL=$(addprefix $(BASE_SRC)/, $(SRC))
 #OBJ=$(SRC:.cpp=.o) 
 #OBJ_FULL=$(addprefix $(BASE_OBJ)/, $(OBJ))
@@ -33,7 +33,7 @@ endif
 ifeq ($(ARCH),64)
 	CPPFLAGS = $(INTFLAGS) -m64
 else 
-	CPPFLAGSS = $(INTFLAGS)
+	CPPFLAGS = $(INTFLAGS)
 endif
 
 ifeq ($(MODE),debug)

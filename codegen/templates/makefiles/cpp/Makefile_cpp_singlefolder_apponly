@@ -49,7 +49,7 @@ endif
 ifeq ($(ARCH),64)
 CPPFLAGS = $(INTFLAGS) -m64
 else 
-CPPFLAGSS = $(INTFLAGS)
+CPPFLAGS = $(INTFLAGS)
 endif
 
 INCLUDES=-I.
@@ -67,4 +67,3 @@ link:
 clean:
 	rm -rf $(OBJ)
 	rm -rf $(TESTAPPNAME)
-
