@@ -5,7 +5,7 @@ TESTAPPNAME=tester
 
 SRC=main.cpp
 OBJ=$(SRC:.cpp=.o) 
-COMP=g++ # if you change this to gcc, make sure you also adjust the OBJ variable to use .c instead of .cpp or make clean will delete your sources !!
+COMPILER=g++ # if you change this to gcc, make sure you also adjust the OBJ variable to use .c instead of .cpp or make clean will delete your sources !!
 
 ARCH := $(shell getconf LONG_BIT)
 
@@ -13,9 +13,13 @@ ifeq ($(MODE),)
 	MODE=debug
 endif
 
+ifeq ($(ARCH),64)
+	CPPFLAGS += -m64
+endif
+
 ifeq ($(MODE),debug)
 LDFLAGS=-lasan
-INTFLAGS = \
+CPPFLAGS += \
 	-g \
 	-Wall \
 	-Wextra \
@@ -32,7 +36,7 @@ POSTBUILD=
 endif
 
 ifeq ($(MODE),release)
-INTFLAGS = \
+CPPFLAGS += \
  	-O2 \
 	-Wall \
 	-Wextra \
@@ -46,22 +50,16 @@ POSTBUILD= strip $(TESTAPPNAME)
 #DEFINES= -D _LOG 
 endif
 
-ifeq ($(ARCH),64)
-CPPFLAGS = $(INTFLAGS) -m64
-else 
-CPPFLAGS = $(INTFLAGS)
-endif
-
 INCLUDES=-I.
 LDFLAGS+=
 
 all: compile link 
 
 compile:
-	$(COMP) -c $(INCLUDES) $(SRC) $(CPPFLAGS)
+	$(COMPILER) -c $(INCLUDES) $(SRC) $(CPPFLAGS)
 
 link:
-	$(COMP) -o $(TESTAPPNAME) $(OBJ) $(LDFLAGS)
+	$(COMPILER) -o $(TESTAPPNAME) $(OBJ) $(LDFLAGS)
 	$(POSTBUILD)
 
 clean:

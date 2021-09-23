@@ -31,15 +31,13 @@ ifeq ($(UNAME_S),Darwin)
 endif
 
 ifeq ($(ARCH),64)
-	CPPFLAGS = $(INTFLAGS) -m64
-else 
-	CPPFLAGS = $(INTFLAGS)
+	CPPFLAGS += -m64
 endif
 
 ifeq ($(MODE),debug)
 LDFLAGS=-lasan
 BASE_OBJ_FULL=$(BASE_OBJ_FULL)_
-INTFLAGS = \
+CPPFLAGS += \
 	-g \
 	-Wall \
 	-Wextra \
@@ -56,7 +54,7 @@ POSTBUILD=
 endif
 
 ifeq ($(MODE),release)
-INTFLAGS = \
+CPPFLAGS += \
  	-O2 \
 	-Wall \
 	-Wextra \
