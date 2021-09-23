@@ -8,7 +8,7 @@ SONAME=libdynamicsample-dev.1.so
 
 SRC= libraryfile.c
 OBJ=$(SRC:.c=.o)
-COMP=gcc
+COMPILER=gcc
 
 ARCH := $(shell getconf LONG_BIT)
 
@@ -18,7 +18,7 @@ endif
 
 ifeq ($(MODE),debug)
 LDFLAGS=-lasan
-INTFLAGS = \
+CFLAGS += \
 	-g \
 	-Wall \
 	-Wextra \
@@ -34,7 +34,7 @@ POSTBUILD=
 endif
 
 ifeq ($(MODE),release)
-INTFLAGS = \
+CFLAGS += \
  	-O2 \
 	-Wall \
 	-Wextra \
@@ -48,9 +48,7 @@ POSTBUILD= strip $(LIBNAME)
 endif
 
 ifeq ($(ARCH),64)
-CFLAGS = $(INTFLAGS) -m64
-else 
-CFLAGS = $(INTFLAGS)
+	CFLAGS += -m64
 endif
 
 INCLUDES=-I.
@@ -59,15 +57,15 @@ LDFLAGS+=
 all: compile link testapp
 
 compile:
-	$(COMP) -c $(SRC) $(CFLAGS)
+	$(COMPILER) -c $(SRC) $(CFLAGS)
 	$(POSTBUILD)
 
 link:
-	$(COMP) -o $(LIBNAME) -shared $(OBJ) -Wl,-soname,$(SONAME)
+	$(COMPILER) -o $(LIBNAME) -shared $(OBJ) -Wl,-soname,$(SONAME)
 
 testapp:
-	$(COMP) -c $(CFLAGS) $(INCLUDES) main.c
-	$(COMP) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME) -Wl,-rpath,"." $(LDFLAGS)
+	$(COMPILER) -c $(CFLAGS) $(INCLUDES) main.c
+	$(COMPILER) -o $(TESTAPPNAME) main.o -L. -l$(LIBLINKFNAME) -Wl,-rpath,"." $(LDFLAGS)
 
 clean:
 	rm -rf $(LIBNAME)
