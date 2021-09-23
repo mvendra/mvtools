@@ -31,15 +31,13 @@ ifeq ($(UNAME_S),Darwin)
 endif
 
 ifeq ($(ARCH),64)
-	CFLAGS = $(INTFLAGS) -m64
-else 
-	CFLAGS = $(INTFLAGS)
+	CFLAGS += -m64
 endif
 
 ifeq ($(MODE),debug)
 LDFLAGS=-lasan
 BASE_OBJ_FULL=$(BASE_OBJ_FULL)_
-INTFLAGS = \
+CFLAGS += \
 	-g \
 	-Wall \
 	-Wextra \
@@ -55,7 +53,7 @@ POSTBUILD=
 endif
 
 ifeq ($(MODE),release)
-INTFLAGS = \
+CFLAGS += \
  	-O2 \
 	-Wall \
 	-Wextra \
