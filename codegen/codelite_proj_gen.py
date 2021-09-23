@@ -40,7 +40,7 @@ def codelite15_c_projfile_contents(project_name):
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_debug_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_debug/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_debug\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -81,7 +81,7 @@ def codelite15_c_projfile_contents(project_name):
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_debug_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_debug/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_debug\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -123,7 +123,7 @@ def codelite15_c_projfile_contents(project_name):
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -165,7 +165,7 @@ def codelite15_c_projfile_contents(project_name):
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -283,7 +283,7 @@ def codelite13_cpp_projfile_contents(project_name):
     r += "        <IncludePath Value=\"../../src\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_debug/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_debug\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -324,7 +324,7 @@ def codelite13_cpp_projfile_contents(project_name):
     r += "        <IncludePath Value=\"../../src\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_debug_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_debug/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_debug\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_debug\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -367,7 +367,7 @@ def codelite13_cpp_projfile_contents(project_name):
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -411,7 +411,7 @@ def codelite13_cpp_projfile_contents(project_name):
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l)
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_cpp.get_cpp_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../run/linux_x64_release/$(ProjectName)\" IntermediateDirectory=\"../../build/linux_x64_release\" Command=\"./$(ProjectName)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../run/linux_x64_release\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"

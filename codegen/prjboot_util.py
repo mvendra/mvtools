@@ -93,7 +93,9 @@ def inline_opts(separator, list_source):
 def filter_remove_dash_l(thestr):
     if len(thestr) < 3:
         return thestr
-    return thestr[2:]
+    if thestr[0:2] == "-l":
+        return thestr[2:]
+    return thestr
 
 def format_xml_tag(indent, tag_name, tag_attrib, tag_value, value_filter_func):
     local_contents = ""
