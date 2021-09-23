@@ -491,6 +491,14 @@ def generate_codelite15_c(target_dir, project_name):
     if not prjboot_util.writecontents(base_prj_codelite_fn, codelite15_c_projfile_contents(project_name)):
         return False, "Failed creating [%s]" % base_prj_codelite_fn
 
+    # gitignore
+    gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/codelite15_c/%s.mk" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/codelite15_c/%s.txt" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/codelite15_c/compile_flags.txt")
+
     # main C file
     base_src_main_c_fn = path_utils.concat_path(base_src, "main.c")
     if not prjboot_util.writecontents(base_src_main_c_fn, standard_c.get_main_c_app()):
@@ -502,14 +510,6 @@ def generate_codelite15_c(target_dir, project_name):
     base_src_subfolder_secondary_c_fn = path_utils.concat_path(base_src_subfolder, "second.c")
     if not prjboot_util.writecontents(base_src_subfolder_secondary_c_fn, prjboot_util.secondary_c_app()):
         return False, "Failed creating [%s]" % base_src_subfolder_secondary_c_fn
-
-    # gitignore
-    gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/codelite15_c/%s.mk" % project_name)
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/codelite15_c/%s.txt" % project_name)
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "proj/codelite15_c/compile_flags.txt")
 
     return True, None
 
@@ -549,6 +549,11 @@ def generate_codelite13_cpp(target_dir, project_name):
     if not prjboot_util.writecontents(base_prj_codelite_fn, codelite13_cpp_projfile_contents(project_name)):
         return False, "Failed creating [%s]" % base_prj_codelite_fn
 
+    # gitignore
+    gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
+
     # main C++ file
     base_src_main_cpp_fn = path_utils.concat_path(base_src, "main.cpp")
     if not prjboot_util.writecontents(base_src_main_cpp_fn, standard_cpp.get_main_cpp_app()):
@@ -560,10 +565,5 @@ def generate_codelite13_cpp(target_dir, project_name):
     base_src_subfolder_secondary_cpp_fn = path_utils.concat_path(base_src_subfolder, "second.cpp")
     if not prjboot_util.writecontents(base_src_subfolder_secondary_cpp_fn, prjboot_util.secondary_c_app()):
         return False, "Failed creating [%s]" % base_src_subfolder_secondary_cpp_fn
-
-    # gitignore
-    gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
 
     return True, None
