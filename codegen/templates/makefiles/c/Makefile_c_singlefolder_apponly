@@ -5,7 +5,7 @@ TESTAPPNAME=tester
 
 SRC=main.c
 OBJ=$(SRC:.c=.o) 
-COMP=gcc
+COMPILER=gcc
 
 ARCH := $(shell getconf LONG_BIT)
 
@@ -54,10 +54,10 @@ LDFLAGS+=
 all: compile link 
 
 compile:
-	$(COMP) -c $(INCLUDES) $(SRC) $(CFLAGS)
+	$(COMPILER) -c $(INCLUDES) $(SRC) $(CFLAGS)
 
 link:
-	$(COMP) -o $(TESTAPPNAME) $(OBJ) $(LDFLAGS)
+	$(COMPILER) -o $(TESTAPPNAME) $(OBJ) $(LDFLAGS)
 	$(POSTBUILD)
 
 clean:
