@@ -3,13 +3,16 @@
 import sys
 import os
 
+import mvtools_exception
+import terminal_colors
 import get_platform
 import generic_run
 import path_utils
+import standard_c
 
 """
 build.py
-A Python template for building C17 programs
+A Python template for building C programs
 
 This script is supposed to be integrated similar to
 the following structure:
@@ -17,7 +20,7 @@ the following structure:
 (project)/
 (project)/proj/                         (project files; codelite, codeblocks, visual studio, xcode, makefiles, etc)
 (project)/proj/pybuild
-(project)/proj/pybuild/build.py          (this script)
+(project)/proj/pybuild/pybuild_c.py     (this script)
 
 (project)/build/                        (intermediate/object files - by platform, arch and mode)
 (project)/build/linux_x64_debug
@@ -34,50 +37,97 @@ the following structure:
 ... and so on.
 """
 
+def makedir_if_needed(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+        return True
+    return False
+
 class Builder():
 
-    def __init__(_self, basepath, options):
+    def __init__(self, basepath, appname, sources, options):
 
-        _self.basepath = basepath
-        _self.options = _self.parseoptions(options)
+        self.basepath = basepath
+        self.options = self.parseoptions(options)
+        self.compiler = "gcc"
 
-        _self.appname = "testapp"
-        _self.compiler = "gcc"
+        self.appname = appname
+        self.src = sources
 
-        _self.src = ["main.c", "second.c"]
+        self.src_base = "../../src/"
+        self.obj_base = "../../build/"
+        self.run_base = "../../run/"
 
-        _self.src_base = "../../src/"
-        _self.obj_base = "../../build/"
-        _self.run_base = "../../run/"
+        self.include = []
+        self.include.append("-I%s" % self.src_base)
 
-        _self.include = []
-        _self.include.append("-I%s" % _self.src_base)
+        self.plat = get_platform.getplat()
+        self.arch = get_platform.getarch()
+        self.mode = self.options["mode"]
 
-        _self.ldflags = []
+        self.target = self.plat + "_" + self.arch + "_" + self.mode
 
-        _self.plat = get_platform.getplat()
-        _self.arch = get_platform.getarch()
-        _self.mode = _self.options["mode"]
+        self.obj_full = self.obj_base + self.target
+        self.run_full = self.run_base + self.target
 
-        _self.target = _self.plat + "_" + _self.arch + "_" + _self.mode
+        self.app_full_name = self.run_full + "/" + self.appname
+        self.all_objs = [path_utils.basename_filtered(path_utils.replace_extension(x, ".c", ".o")) for x in self.src]
 
-        _self.obj_full = _self.obj_base + _self.target
-        _self.run_full = _self.run_base + _self.target
+        # compiler / linker flags
+        self.compiler_flags_common = []
+        self.compiler_flags_debug = []
+        self.compiler_flags_release = []
+        self.linker_flags_common = []
+        self.linker_flags_debug = []
+        self.linker_flags_release = []
 
-        _self.app_full_name = _self.run_full + "/" + _self.appname
-        _self.all_objs = [path_utils.replace_extension(x, ".c", ".o") for x in _self.src]
+        # standard C hook - will add compiler / linker flags depending on the compiler, platform, mode, etc
+        self.standard_c_hook()
 
-        _self.cpp_flags_common = ["-Wall", "-Wextra", "-pedantic", "-Werror", "-fPIC", "-std=c17"] 
-        _self.cpp_flags_debug = ["-g", "-D_GLIBCXX_DEBUG"]
-        _self.cpp_flags_release = ["-O2"]
+        # select compiler flags to actually use
+        self.compiler_flags_to_use = self.compiler_flags_common
+        if self.mode == "debug":
+            self.compiler_flags_to_use += self.compiler_flags_debug
+        elif self.mode == "release":
+            self.compiler_flags_to_use += self.compiler_flags_release
 
-        _self.cpp_flags_use = _self.cpp_flags_common
-        if _self.mode == "debug":
-            _self.cpp_flags_use += _self.cpp_flags_debug
-        elif _self.mode == "release":
-            _self.cpp_flags_use += _self.cpp_flags_release
+        # select linker flags to actually use
+        self.linker_flags_to_use = self.linker_flags_common
+        if self.mode == "debug":
+            self.linker_flags_to_use += self.linker_flags_debug
+        elif self.mode == "release":
+            self.linker_flags_to_use += self.linker_flags_release
 
-    def parseoptions(_self, options):
+    def standard_c_hook(self):
+
+        # common compiler flags
+        if self.plat == get_platform.PLAT_LINUX and self.compiler == "gcc":
+            self.compiler_flags_common += standard_c.get_c_compiler_flags_linux_gcc()
+        if self.plat == get_platform.PLAT_WINDOWS and self.compiler == "gcc":
+            self.compiler_flags_common += standard_c.get_c_compiler_flags_windows_gcc()
+        if self.plat == get_platform.PLAT_MACOSX and self.compiler == "gcc":
+            self.compiler_flags_common += standard_c.get_c_compiler_flags_macosx_gcc()
+
+        # debug compiler flags
+        if self.mode == "debug" and self.compiler == "gcc":
+            self.compiler_flags_debug += standard_c.get_c_compiler_flags_debug_gcc()
+
+        # release compiler flags
+        if self.mode == "release" and self.compiler == "gcc":
+            self.compiler_flags_release += standard_c.get_c_compiler_flags_release_gcc()
+
+        # common linker flags
+        self.linker_flags_common += [] # currently NOP
+
+        # debug linker flags
+        if self.mode == "debug" and self.compiler == "gcc":
+            self.linker_flags_debug += standard_c.get_c_linker_flags_debug_gcc()
+
+        # release linker flags
+        if self.mode == "release" and self.compiler == "gcc":
+            self.linker_flags_release += standard_c.get_c_linker_flags_release_gcc()
+
+    def parseoptions(self, options):
 
         opts = {}
 
@@ -107,61 +157,70 @@ class Builder():
 
         return opts
 
-    def run(_self):
+    def run(self):
 
-        if _self.options["target"] == "clean":
-            _self.do_clean()
-        elif _self.options["target"] == "compile":
-            _self.do_compile()
-        elif _self.options["target"] == "link":
-            _self.do_link()
-        elif _self.options["target"] == "rebuild":
-            _self.do_rebuild()
-        elif _self.options["target"] == "all":
-            _self.do_all()
+        if self.options["target"] == "clean":
+            self.do_clean()
+        elif self.options["target"] == "compile":
+            self.do_compile()
+        elif self.options["target"] == "link":
+            self.do_link()
+        elif self.options["target"] == "rebuild":
+            self.do_rebuild()
+        elif self.options["target"] == "all":
+            self.do_all()
 
-    def do_clean(_self):
+    def do_structure(self):
 
-        for o in _self.all_objs:
+        makedir_if_needed(self.obj_base)
+        makedir_if_needed(self.run_base)
+
+        makedir_if_needed(self.obj_full)
+        makedir_if_needed(self.run_full)
+
+    def do_clean(self):
+
+        for o in self.all_objs:
             cmd = ["rm"]
-            full_obj = _self.obj_full + "/" + o
+            full_obj = self.obj_full + "/" + o
             cmd.append(full_obj)
-            _self.call_cmd(cmd)
+            self.call_cmd(cmd)
 
-        cmd = ["rm", _self.app_full_name]
-        _self.call_cmd(cmd)
+        cmd = ["rm", self.app_full_name]
+        self.call_cmd(cmd)
 
-    def do_compile(_self):
+    def do_compile(self):
 
-        for s in _self.src:
-            cmd = [_self.compiler]
-            if len(_self.include) > 0:
-                for i in _self.include:
+        for s in self.src:
+            cmd = [self.compiler]
+            if len(self.include) > 0:
+                for i in self.include:
                     cmd.append(i)
-            cmd += _self.cpp_flags_use
-            cmd += ["-c", _self.src_base + s, "-o", _self.obj_full + "/" +  path_utils.replace_extension(s, ".c", ".o")]
-            _self.call_cmd(cmd)
+            cmd += self.compiler_flags_to_use
+            cmd += ["-c", self.src_base + s, "-o", self.obj_full + "/" +  path_utils.basename_filtered(path_utils.replace_extension(s, ".c", ".o"))]
+            self.call_cmd(cmd)
 
-    def do_link(_self):
+    def do_link(self):
 
-        cmd = [_self.compiler, "-o", _self.app_full_name]
-        cmd += [_self.obj_full + "/" + x for x in _self.all_objs]
+        cmd = [self.compiler, "-o", self.app_full_name]
+        cmd += [self.obj_full + "/" + x for x in self.all_objs]
 
-        if len(_self.ldflags) > 0:
-            for l in _self.ldflags:
-                cmd.append(_self.ldflags)
+        if len(self.linker_flags_to_use) > 0:
+            for l in self.linker_flags_to_use:
+                cmd.append(l)
 
-        _self.call_cmd(cmd)
+        self.call_cmd(cmd)
 
-    def do_rebuild(_self):
-        _self.do_all()
+    def do_rebuild(self):
+        self.do_clean()
+        self.do_all()
 
-    def do_all(_self):
-        _self.do_clean()
-        _self.do_compile()
-        _self.do_link()
+    def do_all(self):
+        self.do_structure()
+        self.do_compile()
+        self.do_link()
 
-    def call_cmd(_self, cmd):
+    def call_cmd(self, cmd):
 
         cmd_str = ""
         for c in cmd:
@@ -169,16 +228,28 @@ class Builder():
         cmd_str = cmd_str.rstrip()
 
         v, r = generic_run.run_cmd_simple(cmd)
-        if v:
-            print("%s: Command succeeded." % cmd_str)
-        else:
-            print("%s: Failed: [%s]" % (cmd_str, r))
+        if not v:
+            raise mvtools_exception.mvtools_exception("%s: Failed: [%s]" % (cmd_str, r.rstrip()))
+
+        print("%s: Command succeeded." % cmd_str)
 
 if __name__ == "__main__":
+
+    appname = "testapp"
+    src = ["main.c", "subfolder/second.c"]
+
+    basepath = os.path.abspath(path_utils.dirname_filtered(sys.argv[0]))
 
     opt = None
     if len(sys.argv) > 1:
         opt = sys.argv[1:]
 
-    bd = Builder(os.path.abspath(path_utils.dirname_filtered(sys.argv[0])), opt)
-    bd.run()
+    bd = Builder(basepath, appname, src, opt)
+
+    try:
+        bd.run()
+    except mvtools_exception.mvtools_exception as mvtex:
+        print("%s%s%s" % (terminal_colors.TTY_RED, mvtex, terminal_colors.TTY_WHITE))
+        sys.exit(1)
+
+    print("%s%s%s" % (terminal_colors.TTY_GREEN, "All succeeded.", terminal_colors.TTY_WHITE))
