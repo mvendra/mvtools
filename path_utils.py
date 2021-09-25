@@ -94,49 +94,6 @@ def explodepath(apath):
     result=result[:len(result)-1] # removes trailing blank space
     return result
 
-def splitpath(target_path, windows_path):
-
-    # {windows_path} valid values are {"yes" / "no" / "auto"}
-
-    if target_path is None:
-        return None
-    if target_path == "":
-        return None
-
-    sep_chars = [os.sep, "/"]
-
-    if windows_path == "yes":
-        sep_chars.append("\\")
-    elif windows_path == "no":
-        pass # nothing to do
-    elif windows_path == "auto":
-        pf = get_platform.getplat()
-        if pf == get_platform.PLAT_WINDOWS or pf == get_platform.PLAT_CYGWIN:
-            sep_chars.append("\\")
-    else:
-        return None
-
-    result_list = []
-
-    current_piece = ""
-
-    c = 0
-    for current_char in target_path:
-        c += 1
-        if c == 1 and current_char == "/":
-            result_list.append(os.sep)
-            continue
-        if current_char in sep_chars:
-            result_list.append(current_piece)
-            current_piece = ""
-            continue
-        current_piece += current_char
-
-    if current_piece != "":
-        result_list.append(current_piece)
-
-    return result_list
-
 def scratchfolder(path):
 
     """ scratch_folder
@@ -289,47 +246,94 @@ def getpathroot(path):
         return None
     return path_pieces[0]
 
-def basename_filtered(path):
+def splitpath(target_path, windows_path):
+
+    # {windows_path} valid values are {"yes" / "no" / "auto"}
+
+    if target_path is None:
+        return None
+    if target_path == "":
+        return None
+
+    sep_chars = ["/"]
+    treat_as_windows_path = (windows_path == "yes") or ((windows_path == "auto") and (get_platform.getplat() == get_platform.PLAT_WINDOWS))
+    if treat_as_windows_path:
+        sep_chars.append("\\")
+
+    result_list = []
+    current_piece = ""
+    c = 0
+    for current_char in target_path:
+        c += 1
+
+        if (c == 1) and (current_char == "/") and (not treat_as_windows_path):
+            result_list.append("/")
+            continue
+        if (current_char in sep_chars):
+            if current_piece != "":
+                result_list.append(current_piece)
+                current_piece = ""
+            continue
+        current_piece += current_char
+
+    if current_piece != "":
+        result_list.append(current_piece)
+
+    if len(result_list) == 0:
+        return None
+    return result_list
+
+def basename_filtered(path, windows_path = "auto"):
+
+    # {windows_path} valid values are {"yes" / "no" / "auto"}
 
     if path is None:
         return None
     if path == "":
         return None
 
-    if len(path) > 1:
-        path = filter_remove_trailing_sep(path)
+    path_pieces = splitpath(path, windows_path)
+    if path_pieces is None:
+        return None
 
-    path_pieces = splitpath(path, "auto")
+    # just return the last node / leaf
+    return path_pieces[len(path_pieces)-1]
+
+def dirname_filtered(path, windows_path = "auto"):
+
+    # {windows_path} valid values are {"yes" / "no" / "auto"}
+
+    if path is None:
+        return None
+    if path == "":
+        return None
+
+    path_pieces = splitpath(path, windows_path)
     if path_pieces is None:
         return None
     if len(path_pieces) == 0:
         return None
-    return path_pieces[len(path_pieces)-1]
+    if len(path_pieces) == 1:
+        return path_pieces[0]
 
-def dirname_filtered(path):
+    assembled_path = ""
 
-    if path is None:
-        return None
-    if path == "":
-        return None
+    treat_as_windows_path = (windows_path == "yes") or ((windows_path == "auto") and (get_platform.getplat() == get_platform.PLAT_WINDOWS))
 
-    path = filter_remove_trailing_sep(path)
-    assembled_dirname = ""
+    # just return every node except last node / leaf
+    for i in range(len(path_pieces)-1):
+        if i == 0:
+            assembled_path += path_pieces[i]
+        else:
+            if (not treat_as_windows_path) and (assembled_path == "/"):
+                assembled_path += path_pieces[i]
+                continue
+            assembled_path += ("%s%s" % (os.sep, path_pieces[i]))
 
-    path_pieces = splitpath(path, "auto")
-    if path_pieces is None:
-        return None
-    if len(path_pieces) < 2:
-        return None
+    if treat_as_windows_path and path[0] == "/": # path_pieces was produced without the leftmost slash. artificially re-introduce it.
+        assembled_path = "%s%s" % (os.sep, assembled_path)
 
-    for i in range(len(path_pieces)):
-        ir = len(path_pieces) - i - 1
-        if ir == len(path_pieces) - 1:
-            continue
-        assembled_dirname = concat_path(path_pieces[ir], assembled_dirname)
-
-    assembled_dirname_with_root = concat_path(getpathroot(path), assembled_dirname)
-    return filter_remove_trailing_sep(assembled_dirname_with_root)
+    return assembled_path
 
 def copy_to_and_rename(source_path, target_path, new_name):
 

@@ -184,49 +184,108 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.getpathroot("/root/home"), "/")
         self.assertEqual(path_utils.getpathroot("C:/folder/home"), "C:")
 
-        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_CYGWIN):
-            self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:")
-
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:\\folder")
 
-    def testBasenameFiltered(self):
-        self.assertEqual(path_utils.basename_filtered(None), None)
-        self.assertEqual(path_utils.basename_filtered(""), None)
-        self.assertEqual(path_utils.basename_filtered("/"), "/")
-        self.assertEqual(path_utils.basename_filtered("/home"), "home")
-        self.assertEqual(path_utils.basename_filtered("/home/"), "home")
-        self.assertEqual(path_utils.basename_filtered("/home\\"), "home")
-        self.assertEqual(path_utils.basename_filtered("/home/user"), "user")
-        self.assertEqual(path_utils.basename_filtered("/home/user/"), "user")
-        self.assertEqual(path_utils.basename_filtered("/home/user/more"), "more")
-        self.assertEqual(path_utils.basename_filtered("/home/user/more/sub1/sub2"), "sub2")
-        self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1/sub2"), "sub2")
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
+            self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:")
 
-        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_CYGWIN):
-            self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1\\sub2"), "sub2")
-            self.assertEqual(path_utils.basename_filtered("/home\\user/more\\sub1\\sub2"), "sub2")
+    def testSplitPath(self):
+
+        self.assertEqual(path_utils.splitpath("/tmp", "no"), ["/", "tmp"])
+        self.assertEqual(path_utils.splitpath("C:\\tmp", "no"), ["C:\\tmp"])
+        self.assertEqual(path_utils.splitpath("/tmp\\first/second", "no"), ["/", "tmp\\first", "second"])
+        self.assertEqual(path_utils.splitpath("tmp/subfolder", "no"), ["tmp", "subfolder"])
+        self.assertEqual(path_utils.splitpath("tmp/subfolder/", "no"), ["tmp", "subfolder"])
+        self.assertEqual(path_utils.splitpath("tmp\\subfolder", "no"), ["tmp\\subfolder"])
+        self.assertEqual(path_utils.splitpath("/", "no"), ["/"])
+        self.assertEqual(path_utils.splitpath("C:\\tmp", "yes"), ["C:", "tmp"])
+        self.assertEqual(path_utils.splitpath("C:\\tmp\\first\\second\\yetmore", "yes"), ["C:", "tmp", "first", "second", "yetmore"])
+        self.assertEqual(path_utils.splitpath("/tmp", "yes"), ["tmp"])
+        self.assertEqual(path_utils.splitpath("tmp\\subfolder", "yes"), ["tmp", "subfolder"])
+        self.assertEqual(path_utils.splitpath("/tmp", "yes"), ["tmp"])
+        self.assertEqual(path_utils.splitpath("/", "yes"), None)
+        self.assertEqual(path_utils.splitpath("\\", "yes"), None)
+        self.assertEqual(path_utils.splitpath("F:", "yes"), ["F:"])
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
-            self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1\\sub2"), "more\\sub1\\sub2")
-            self.assertEqual(path_utils.basename_filtered("/home\\user/more\\sub1\\sub2"), "more\\sub1\\sub2")
+            self.assertEqual(path_utils.splitpath("%stmp" % os.sep, "auto"), ["/", "tmp"])
+            self.assertEqual(path_utils.splitpath("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), ["/", "home\\user", "more", "sub1\\sub2", "yetmore", "file.txt"])
+            self.assertEqual(path_utils.splitpath("%stmp%s" % (os.sep, os.sep), "auto"), ["/", "tmp"])
+            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep), "auto" ), ["/", "first", "second"])
+            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep), "auto" ), ["/", "first", "second"])
+            self.assertEqual(path_utils.splitpath("F:", "auto"), ["F:"])
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
+            self.assertEqual(path_utils.splitpath(os.sep, "auto"), None)
+            self.assertEqual(path_utils.splitpath("%stmp" % os.sep, "auto"), ["tmp"])
+            self.assertEqual(path_utils.splitpath("%stmp%s" % (os.sep, os.sep), "auto"), ["tmp"])
+            self.assertEqual(path_utils.splitpath("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), ["home", "user", "more", "sub1", "sub2", "yetmore", "file.txt"])
+            self.assertEqual(path_utils.splitpath("tmp", "auto"), ["tmp"])
+            self.assertEqual(path_utils.splitpath("tmp\\sub\\folder\\another", "auto"), ["tmp", "sub", "folder", "another"])
+            self.assertEqual(path_utils.splitpath("tmp\\sub\\folder\\another\\", "auto"), ["tmp", "sub", "folder", "another"])
+            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep), "auto" ), ["first", "second"])
+            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep), "auto" ), ["first", "second"])
+            self.assertEqual(path_utils.splitpath("F:", "auto"), ["F:"])
+
+    def testBasenameFiltered(self):
+        self.assertEqual(path_utils.basename_filtered(None, "no"), None)
+        self.assertEqual(path_utils.basename_filtered("", "no"), None)
+        self.assertEqual(path_utils.basename_filtered("/", "no"), "/")
+        self.assertEqual(path_utils.basename_filtered("/home", "no"), "home")
+        self.assertEqual(path_utils.basename_filtered("/home/", "no"), "home")
+        self.assertEqual(path_utils.basename_filtered("/home/user", "no"), "user")
+        self.assertEqual(path_utils.basename_filtered("/home/user/", "no"), "user")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more", "no"), "more")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more/", "no"), "more")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more/sub1/sub2", "no"), "sub2")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1/sub2", "no"), "sub2")
+        self.assertEqual(path_utils.basename_filtered(None, "yes"), None)
+        self.assertEqual(path_utils.basename_filtered("", "yes"), None)
+        self.assertEqual(path_utils.basename_filtered("/", "yes"), None)
+        self.assertEqual(path_utils.basename_filtered("/home", "yes"), "home")
+        self.assertEqual(path_utils.basename_filtered("/home/", "yes"), "home")
+        self.assertEqual(path_utils.basename_filtered("/home/user", "yes"), "user")
+        self.assertEqual(path_utils.basename_filtered("/home/user/", "yes"), "user")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more", "yes"), "more")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more/sub1/sub2", "yes"), "sub2")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more/sub1/sub2/", "yes"), "sub2")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1/sub2", "yes"), "sub2")
+        self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1/sub2", "yes"), "sub2")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
+            self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1\\sub2", "auto"), "more\\sub1\\sub2")
+            self.assertEqual(path_utils.basename_filtered("/home\\user/more\\sub1\\sub2", "auto"), "more\\sub1\\sub2")
+            self.assertEqual(path_utils.basename_filtered("/home\\", "auto"), "home\\")
+            self.assertEqual(path_utils.basename_filtered("/home\\more/", "auto"), "home\\more")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
+            self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1\\sub2", "auto"), "sub2")
+            self.assertEqual(path_utils.basename_filtered("/home\\user/more\\sub1\\sub2", "auto"), "sub2")
+            self.assertEqual(path_utils.basename_filtered("/home\\more\\", "auto"), "more")
 
     def testDirnameFiltered(self):
-        self.assertEqual(path_utils.dirname_filtered(None), None)
-        self.assertEqual(path_utils.dirname_filtered(""), None)
-        self.assertEqual(path_utils.dirname_filtered("/"), None)
-        self.assertEqual(path_utils.dirname_filtered("/home"), "")
-        self.assertEqual(path_utils.dirname_filtered("\\"), None)
-        self.assertEqual(path_utils.dirname_filtered("/home/user"), "/home")
-        self.assertEqual(path_utils.dirname_filtered("/home/user/"), "/home")
-        self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore"), "/home/user/more/sub1/sub2")
-        self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore/file.txt"), "/home/user/more/sub1/sub2/yetmore")
+        self.assertEqual(path_utils.dirname_filtered(None, "no"), None)
+        self.assertEqual(path_utils.dirname_filtered("", "no"), None)
+        self.assertEqual(path_utils.dirname_filtered("/", "no"), "/")
+        self.assertEqual(path_utils.dirname_filtered("/home", "no"), "/")
+        self.assertEqual(path_utils.dirname_filtered("\\", "no"), "\\")
+        self.assertEqual(path_utils.dirname_filtered("/home/user/", "no"), "/home")
+        self.assertEqual(path_utils.dirname_filtered("/home/user", "no"), "/home")
+        self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore", "no"), "/home/user/more/sub1/sub2")
+        self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore/", "no"), "/home/user/more/sub1/sub2")
+        self.assertEqual(path_utils.dirname_filtered("/home/user/more/sub1/sub2/yetmore/file.txt", "no"), "/home/user/more/sub1/sub2/yetmore")
+        self.assertEqual(path_utils.dirname_filtered("another/second.c", "no"), "another")
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
-            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt"), "/home\\user/more/sub1\\sub2/yetmore")
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), "/home\\user/more/sub1\\sub2/yetmore")
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt/", "auto"), "/home\\user/more/sub1\\sub2/yetmore")
+            self.assertEqual(path_utils.dirname_filtered("home\\user/more/sub1\\sub2/yetmore/file.txt/", "auto"), "home\\user/more/sub1\\sub2/yetmore")
 
-        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_CYGWIN):
-            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt"), "/home/user/more/sub1/sub2/yetmore")
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), "/home/user/more/sub1/sub2/yetmore")
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt\\", "auto"), "/home/user/more/sub1/sub2/yetmore")
+            self.assertEqual(path_utils.dirname_filtered("home\\user/more/sub1\\sub2/yetmore/file.txt\\", "auto"), "home/user/more/sub1/sub2/yetmore")
 
     def testCopyToFail1(self):
 
@@ -515,18 +574,6 @@ class PathUtilsTest(unittest.TestCase):
 
         self.assertTrue(path_utils.based_copy_to(self.folder1, folder1_file1, self.folder2))
         self.assertTrue(os.path.exists(folder2_file1))
-
-    def testSplitPath(self):
-        self.assertEqual(path_utils.splitpath(os.sep, "auto"), ["/"])
-        self.assertEqual(path_utils.splitpath("%stmp" % os.sep, "auto"), ["/", "tmp"])
-        self.assertEqual(path_utils.splitpath("%stmp%s" % (os.sep, os.sep), "auto"), ["/", "tmp"])
-        self.assertEqual(path_utils.splitpath("tmp", "auto"), ["tmp"])
-        self.assertEqual(path_utils.splitpath("/tmp", "no"), ["/", "tmp"])
-        self.assertEqual(path_utils.splitpath("C:\\tmp", "yes"), ["C:", "tmp"])
-        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep), "auto" ), ["/", "first", "second"])
-        self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep), "auto" ), ["/", "first", "second"])
-        self.assertEqual(path_utils.splitpath("C:\\tmp\\first\\second\\yetmore", "yes"), ["C:", "tmp", "first", "second", "yetmore"])
-        self.assertEqual(path_utils.splitpath("/tmp\\first/second", "no"), ["/", "tmp\\first", "second"])
 
     def testGetExtension(self):
         self.assertEqual(path_utils.getextension(None), None)
