@@ -31,3 +31,29 @@ def rfind_first_of(string_source, list_source):
             last_found_index = n
 
     return (last_found_index, last_found)
+
+def count_any_of(string_source, list_source):
+
+    # will string-count any of list_source. returns the biggest count of any.
+
+    if string_source is None:
+        return None
+    if list_source is None:
+        return None
+    if len(string_source) == 0:
+        return None
+    if len(list_source) == 0:
+        return None
+    if not isinstance(list_source, list):
+        return None
+
+    last_count = None
+    for ls in list_source:
+        n = string_source.count(ls)
+        if last_count is None:
+            last_count = n
+            continue
+        if n > last_count:
+            last_count = n
+
+    return last_count
