@@ -128,27 +128,27 @@ if __name__ == "__main__":
 
         if head_parse_next:
             head_parse_next = False
-            head.append(p)
+            head.append(os.path.abspath(p))
             continue
 
         if staged_parse_next:
             staged_parse_next = False
-            staged.append(p)
+            staged.append(os.path.abspath(p))
             continue
 
         if stash_parse_next:
             stash_parse_next = False
-            stash.append(p)
+            stash.append(os.path.abspath(p))
             continue
 
         if unversioned_parse_next == 1:
             unversioned_parse_next = 2
-            unversioned_base_buffer = p
+            unversioned_base_buffer = os.path.abspath(p)
             continue
 
         if unversioned_parse_next == 2:
             unversioned_parse_next = 0
-            unversioned.append( (unversioned_base_buffer, p) )
+            unversioned.append( (unversioned_base_buffer, os.path.abspath(p)) )
             unversioned_base_buffer = None
             continue
 
