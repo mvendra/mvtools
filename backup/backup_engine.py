@@ -14,7 +14,11 @@ import terminal_colors
 import maketimestamp
 import create_and_write_file
 
-SCRIPT_FOLDER = path_utils.dirname_filtered(os.path.realpath(__file__))
+def _get_dirname_helper(path):
+    dn = path_utils.dirname_filtered(path)
+    if dn is None:
+        return "(root)"
+    return dn
 
 class BackupEngine:
 
@@ -88,7 +92,7 @@ class BackupEngine:
 
         for it in _self.BKARTIFACTS:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
-            BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(path_utils.dirname_filtered(it[0])))
+            BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(_get_dirname_helper(it[0])))
             if path_utils.basename_filtered(BKTMP_PLUS_ARTBASE) == path_utils.basename_filtered(BKTEMP_AND_BASEDIR):
                 BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTMP_PLUS_ARTBASE, "(root)")
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
