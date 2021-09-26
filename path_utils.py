@@ -140,6 +140,9 @@ def guaranteefolder(path):
     If path does not exist, create it as a folder
     """
 
+    if path is None or path == "":
+        raise PathUtilsException("%s guaranteefolder: path [%s] is invalid. This is an exception." % (basename_filtered(__file__), path))
+
     if os.path.isdir(path):
         return # OK ! thats what we wanted
 

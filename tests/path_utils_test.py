@@ -131,6 +131,22 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_folder_full))
         shutil.rmtree(test_folder_full)
 
+    def testGuaranteeFolderFail1(self):
+        ex_raised = False
+        try:
+            path_utils.guaranteefolder(None)
+        except path_utils.PathUtilsException as pue:
+            ex_raised = True
+        self.assertTrue(ex_raised)
+
+    def testGuaranteeFolderFail2(self):
+        ex_raised = False
+        try:
+            path_utils.guaranteefolder("")
+        except path_utils.PathUtilsException as pue:
+            ex_raised = True
+        self.assertTrue(ex_raised)
+
     def testGuaranteeFolder(self):
 
         test_folder_first = path_utils.concat_path(self.test_dir, "first")
