@@ -75,7 +75,10 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
     backup_contents = r
 
     subfolder = None
-    v, r = path_utils.based_path_find_outstanding_path(target_repo, path_utils.dirname_filtered(revert_file))
+    dn = path_utils.dirname_filtered(revert_file)
+    if dn is None:
+        return False, "reset_svn_repo_file: unable to resolve [%s]'s dirname." % revert_file
+    v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
     if v:
         subfolder = r
 
@@ -102,14 +105,14 @@ def reset_svn_repo(target_repo, files):
 
     v, r = _test_repo_path(target_repo)
     if not v:
-        return False, r
+        return False, [r]
     detected_repo_type = r
     if detected_repo_type != detect_repo_type.REPO_TYPE_SVN:
         return False, ["Unsupported repository type: [%s] and [%s]." % (target_repo, detected_repo_type)]
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
     if not v:
-        return False, r
+        return False, [r]
     temp_path = r
     if not os.path.exists(temp_path):
         return False, ["Can't reset svn repo. MVTOOLS_TEMP_PATH envvar is not defined or the path does not exist."]
@@ -179,7 +182,7 @@ if __name__ == "__main__":
     for p in params:
 
         if files_parse_next:
-            files.append(p)
+            files.append(os.path.abspath(p))
             files_parse_next = False
             continue
 
