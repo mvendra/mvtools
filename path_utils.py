@@ -287,6 +287,10 @@ def basename_filtered(path, windows_path = "auto"):
 
     # {windows_path} valid values are {"yes" / "no" / "auto"}
 
+    # basename_filtered: will discard traling path separators, and return the last node. if there is only one node, that first node
+    # will be returned alone. on linux-like platforms, if the first character is a "/", then it is considered to be a valid node (root).
+    # for example: basename_filtered("/", "no") -> must return "/". on windows, None is returned on such case.
+
     if path is None:
         return None
     if path == "":
@@ -303,10 +307,17 @@ def dirname_filtered(path, windows_path = "auto"):
 
     # {windows_path} valid values are {"yes" / "no" / "auto"}
 
+    # dirname_filtered: will discard trailing path separators, and return every node except the last one. if there is only one node,
+    # then None is returned. on linux-like platforms, if the first character is a "/", then it is considered to be a valid node (root).
+    # partial/middle paths (without the filesystem's root, regardless of the platform) are supported. for example, the following:
+    # dirname_filtered("home/user/folder", "no") -> must return "home/user".
+
     if path is None:
         return None
     if path == "":
         return None
+
+    treat_as_windows_path = (windows_path == "yes") or ((windows_path == "auto") and (get_platform.getplat() == get_platform.PLAT_WINDOWS))
 
     path_pieces = splitpath(path, windows_path)
     if path_pieces is None:
@@ -314,11 +325,12 @@ def dirname_filtered(path, windows_path = "auto"):
     if len(path_pieces) == 0:
         return None
     if len(path_pieces) == 1:
-        return path_pieces[0]
+        if (not treat_as_windows_path) and (path_pieces[0] == "/"):
+            return path_pieces[0]
+        else:
+            return None
 
     assembled_path = ""
-
-    treat_as_windows_path = (windows_path == "yes") or ((windows_path == "auto") and (get_platform.getplat() == get_platform.PLAT_WINDOWS))
 
     # just return every node except last node / leaf
     for i in range(len(path_pieces)-1):
