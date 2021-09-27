@@ -35,6 +35,8 @@ class BackupEngine:
 
     def run(_self):
 
+        dirname_sentinel = {}
+
         # validations
         art_filtered = []
         for it in _self.BKARTIFACTS:
@@ -94,14 +96,23 @@ class BackupEngine:
 
         for it in _self.BKARTIFACTS:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
-            BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(_get_dirname_helper(it[0])))
+
+            dn = _get_dirname_helper(it[0])
+            bn_of_dn = path_utils.basename_filtered(dn)
+
+            # check if this basename-of-dirname has already been used for another (albeit similar) full dirname
+            if bn_of_dn in dirname_sentinel:
+                if dirname_sentinel[bn_of_dn] != dn: # same basename-of-dirname but different dirname overall. issue a warning about risk of overwrites.
+                    _msg = "WARNING! Path [%s] has a common dirname with another artifact (%s). Both artifacts will be placed inside the same folder in the target backup base folder!" % (it[0], dirname_sentinel[bn_of_dn])
+                    print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
+            else:
+                dirname_sentinel[bn_of_dn] = dn
+
+            BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, bn_of_dn)
             if path_utils.basename_filtered(BKTMP_PLUS_ARTBASE) == path_utils.basename_filtered(BKTEMP_AND_BASEDIR):
                 _msg = "WARNING! Path [%s] was deduced to be inside root. It will be placed inside the '(root)' folder!" % it[0]
                 print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
                 BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTMP_PLUS_ARTBASE, "(root)")
-            if os.path.exists(BKTMP_PLUS_ARTBASE):
-                _msg = "WARNING! Path [%s] has a common dirname with another artifact. Both artifacts will be placed inside the same folder in the target backup base folder!" % it[0]
-                print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
 
             CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, path_utils.basename_filtered(it[0]))
