@@ -17,6 +17,8 @@ import create_and_write_file
 def _get_dirname_helper(path):
     dn = path_utils.dirname_filtered(path)
     if dn is None:
+        _msg = "WARNING! Path [%s] was deduced to be inside root. It will be placed inside the '(root)' folder!" % path
+        print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
         return "(root)"
     return dn
 
@@ -94,16 +96,35 @@ class BackupEngine:
             print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
             BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, path_utils.basename_filtered(_get_dirname_helper(it[0])))
             if path_utils.basename_filtered(BKTMP_PLUS_ARTBASE) == path_utils.basename_filtered(BKTEMP_AND_BASEDIR):
+                _msg = "WARNING! Path [%s] was deduced to be inside root. It will be placed inside the '(root)' folder!" % it[0]
+                print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
                 BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTMP_PLUS_ARTBASE, "(root)")
+            if os.path.exists(BKTMP_PLUS_ARTBASE):
+                _msg = "WARNING! Path [%s] has a common dirname with another artifact. Both artifacts will be placed inside the same folder in the target backup base folder!" % it[0]
+                print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
             path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
 
             CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, path_utils.basename_filtered(it[0]))
-            CURPAK_TAR_BZ2 = CURPAK + ".tar.bz2"
+            CURPAK_TAR = CURPAK + ".tar"
+            CURPAK_TAR_BZ2 = CURPAK_TAR + ".bz2"
             CURPAK_TAR_BZ2_ENC = CURPAK_TAR_BZ2 + ".enc"
             CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"
 
-            if os.path.exists(CURPAK) or os.path.exists(CURPAK_TAR_BZ2) or os.path.exists(CURPAK_TAR_BZ2_ENC) or os.path.exists(CURPAK_TAR_BZ2_ENC_HASH):
+            # check if there are any preexisting artifacts
+            if os.path.exists(CURPAK):
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK, terminal_colors.TTY_WHITE))
+                return False
+            if os.path.exists(CURPAK_TAR):
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR, terminal_colors.TTY_WHITE))
+                return False
+            if os.path.exists(CURPAK_TAR_BZ2):
                 print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.TTY_WHITE))
+                return False
+            if os.path.exists(CURPAK_TAR_BZ2_ENC):
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.TTY_WHITE))
+                return False
+            if os.path.exists(CURPAK_TAR_BZ2_ENC_HASH):
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC_HASH, terminal_colors.TTY_WHITE))
                 return False
 
             # create the package
