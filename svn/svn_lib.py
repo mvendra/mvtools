@@ -19,6 +19,14 @@ def fix_cyg_path(path):
         return convcygpath.convert_cygwin_path_to_win_path(path)
     return path
 
+def sanitize_windows_path(path):
+
+    local_path = path
+    pf = get_platform.getplat()
+    if pf in [get_platform.PLAT_CYGWIN, get_platform.PLAT_WINDOWS]:
+        local_path = local_path.replace("\\", "/")
+    return local_path
+
 def is_non_generic(char_input, list_select):
     for c in list_select:
         if c == char_input:
@@ -155,11 +163,11 @@ def get_list_externals(repo):
 
 def get_list_unversioned(repo):
 
-    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
+    v, r = svn_wrapper.status(repo)
     if not v:
         return False, r
     unversioned_files = [status_filter_function_unversioned(x) for x in r.split(os.linesep) if x != ""]
-    unversioned_files = [path_utils.concat_path(repo, x) for x in unversioned_files if x is not None]
+    unversioned_files = [path_utils.concat_path(repo, sanitize_windows_path(x)) for x in unversioned_files if x is not None]
     return True, unversioned_files
 
 def get_previous_list(repo, previous_number):
@@ -307,7 +315,7 @@ def diff(repo, file_list=None, rev=None):
         for fi in file_list:
             file_list_final.append(fix_cyg_path(fi))
 
-    return svn_wrapper.diff(repo, file_list_final)
+    return svn_wrapper.diff(repo, file_list_final, rev)
 
 def _parse_externals_update_message(output_message):
 
