@@ -28,6 +28,8 @@ class CustomTask(launch_jobs.BaseTask):
         patch_head_file = None
         patch_unversioned_base = None
         patch_unversioned_file = None
+        check_head_include_externals = False
+        check_head_ignore_unversioned = False
 
         # target_path
         try:
@@ -97,14 +99,28 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_file, patch_unversioned_base, patch_unversioned_file)
+        # check_head_include_externals
+        try:
+            check_head_include_externals = self.params["check_head_include_externals"]
+            check_head_include_externals = True
+        except KeyError:
+            pass # optional
+
+        # check_head_ignore_unversioned
+        try:
+            check_head_ignore_unversioned = self.params["check_head_ignore_unversioned"]
+            check_head_ignore_unversioned = True
+        except KeyError:
+            pass # optional
+
+        return True, (target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_file, patch_unversioned_base, patch_unversioned_file, check_head_include_externals, check_head_ignore_unversioned)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_files, patch_unversioned_base, patch_unversioned_files = r
+        target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_files, patch_unversioned_base, patch_unversioned_files, check_head_include_externals, check_head_ignore_unversioned = r
 
         # delegate
         if operation == "checkout_repo":
@@ -120,7 +136,7 @@ class CustomTask(launch_jobs.BaseTask):
         elif operation == "patch_repo":
             return self.task_patch_repo(feedback_object, target_path, patch_head_files, patch_unversioned_base, patch_unversioned_files)
         elif operation == "check_repo":
-            return self.task_check_repo(feedback_object, target_path)
+            return self.task_check_repo(feedback_object, target_path, check_head_include_externals, check_head_ignore_unversioned)
         else:
             return False, "Operation [%s] is invalid" % operation
 
@@ -264,12 +280,12 @@ class CustomTask(launch_jobs.BaseTask):
 
         return True, None
 
-    def task_check_repo(self, feedback_object, target_path):
+    def task_check_repo(self, feedback_object, target_path, include_externals, ignore_unversioned):
 
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
-        v, r = svn_lib.is_head_clear(target_path, True)
+        v, r = svn_lib.is_head_clear(target_path, include_externals, ignore_unversioned)
         if not v:
             return False, "svn_lib failed: [%s]" % r
 

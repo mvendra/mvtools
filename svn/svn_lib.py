@@ -137,10 +137,10 @@ def detect_separator(the_string):
 
 def get_list_externals(repo):
 
-    # sample of actual output from svn status, as of m2021: "Performing status on external item at 'ext/Subversion':"
+    # sample of actual output from svn status, as of m2021 (on Linux): "Performing status on external item at 'ext/Subversion':"
     EXT_ST_MSG = "Performing status on external item at"
 
-    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
+    v, r = svn_wrapper.status(repo)
     if not v:
         return False, r
     output = r
@@ -157,7 +157,7 @@ def get_list_externals(repo):
             cropped_line = stripped_line[len(EXT_ST_MSG)+2:] # crop left
             cropped_line = cropped_line[:len(cropped_line)-2] # crop right
             final_ext_path = path_utils.concat_path(repo, cropped_line)
-            list_externals.append(final_ext_path)
+            list_externals.append(sanitize_windows_path(final_ext_path))
 
     return True, list_externals
 
@@ -250,7 +250,7 @@ def is_svn_repo(repo):
         return True, "svn"
     return True, False
 
-def is_head_clear(repo, include_externals):
+def is_head_clear(repo, include_externals, ignore_unversioned):
 
     all_repos = [repo]
 
@@ -261,7 +261,7 @@ def is_head_clear(repo, include_externals):
         all_repos += r
 
     for cr in all_repos:
-        v, r = is_head_clear_delegate(cr)
+        v, r = is_head_clear_delegate(cr, ignore_unversioned)
         if not v:
             return False, r
         if not r:
@@ -269,7 +269,7 @@ def is_head_clear(repo, include_externals):
 
     return True, True
 
-def is_head_clear_delegate(repo):
+def is_head_clear_delegate(repo, ignore_unversioned):
 
     v, r = svn_wrapper.status(repo)
     if not v:
@@ -277,6 +277,8 @@ def is_head_clear_delegate(repo):
     st_items = r.split(os.linesep)
 
     clear_st = ["X", "I"]
+    if ignore_unversioned:
+        clear_st.append("?")
     for i in st_items:
         if i == "":
             break
@@ -534,7 +536,7 @@ def patch_as_head(repo, patch_file, override_head_check):
     patch_file_final = fix_cyg_path(patch_file)
 
     if not override_head_check:
-        v, r = is_head_clear(repo)
+        v, r = is_head_clear(repo, False, False)
         if not v:
             return False, r
         if not r:
