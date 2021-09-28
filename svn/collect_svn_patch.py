@@ -4,7 +4,6 @@ import sys
 import os
 
 import path_utils
-import svn_wrapper
 import svn_lib
 
 ERRMSG_EMPTY = "Empty contents"
@@ -31,7 +30,7 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
     return True, output_filename_full
 
 def collect_svn_patch_head(repo, storage_path):
-    v, r = svn_wrapper.diff(repo)
+    v, r = svn_lib.diff(repo) # mvtodo: carefully retest
     if not v:
         return False, "Failed calling svn command for head: [%s]. Repository: [%s]." % (r, repo)
     return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
@@ -91,7 +90,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
         return False, "Can't collect patch for previous: requested [%d] commits, but there are only [%d] in total." % (previous_number, len(prev_list))
 
     for i in range(previous_number):
-        v, r = svn_wrapper.diff(repo, None, prev_list[i])
+        v, r = svn_lib.diff(repo, None, prev_list[i]) # mvtodo: carefully retest
         if not v:
             return False, "Failed calling svn command for previous: [%s]. Repository: [%s]. Revision: [%s]." % (r, repo, prev_list[i])
 
