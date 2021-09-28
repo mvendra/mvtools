@@ -107,6 +107,9 @@ def revert(local_repo, repo_items):
     if not os.path.exists(local_repo):
         return False, "Base repo [%s] does not exist." % local_repo
 
+    if not isinstance(repo_items, list):
+        return False, "repo_items must be a list"
+
     the_cmd = ["svn", "revert"]
     the_cmd += repo_items
 

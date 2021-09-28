@@ -8,7 +8,16 @@ import path_utils
 import svn_wrapper
 
 import log_helper
+import get_platform
+import convcygpath
 import output_backup_helper
+
+def fix_cyg_path(path):
+
+    pf = get_platform.getplat()
+    if pf == get_platform.PLAT_CYGWIN:
+        return convcygpath.convert_cygwin_path_to_win_path(path)
+    return path
 
 def is_non_generic(char_input, list_select):
     for c in list_select:
@@ -123,7 +132,7 @@ def get_list_externals(repo):
     # sample of actual output from svn status, as of m2021: "Performing status on external item at 'ext/Subversion':"
     EXT_ST_MSG = "Performing status on external item at"
 
-    v, r = svn_wrapper.status(repo)
+    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
     if not v:
         return False, r
     output = r
@@ -146,11 +155,11 @@ def get_list_externals(repo):
 
 def get_list_unversioned(repo):
 
-    v, r = svn_wrapper.status(repo)
+    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
     if not v:
         return False, r
     unversioned_files = [status_filter_function_unversioned(x) for x in r.split(os.linesep) if x != ""]
-    unversioned_files = [path_utils.concat_path(repo, x) for x in unversioned_files if x is not None] # mvtodo: there has to be a better way to do this
+    unversioned_files = [path_utils.concat_path(repo, x) for x in unversioned_files if x is not None]
     return True, unversioned_files
 
 def get_previous_list(repo, previous_number):
@@ -172,7 +181,7 @@ def get_previous_list(repo, previous_number):
 
 def get_modified_files(repo):
 
-    v, r = svn_wrapper.status(repo)
+    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
     if not v:
         return False, r
 
@@ -194,7 +203,7 @@ def get_modified_files(repo):
 
 def get_added_files(repo):
 
-    v, r = svn_wrapper.status(repo)
+    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
     if not v:
         return False, r
 
@@ -269,8 +278,36 @@ def is_head_clear_delegate(repo):
 
     return True, True
 
-def revert(local_repo, repo_item):
-    return svn_wrapper.revert(local_repo, repo_item)
+def revert(local_repo, repo_items):
+
+    if not os.path.exists(local_repo):
+        return False, "Base repo [%s] does not exist." % local_repo
+
+    if not isinstance(repo_items, list):
+        return False, "repo_items must be a list"
+
+    repo_items_final = []
+    for ri in repo_items:
+        repo_items_final.append(fix_cyg_path(ri))
+
+    return svn_wrapper.revert(local_repo, repo_items_final)
+
+def diff(repo, file_list=None, rev=None):
+
+    if not os.path.exists(repo):
+        return False, "%s does not exist." % repo
+
+    file_list_final = None
+    if file_list is not None:
+
+        if not isinstance(file_list, list):
+            return False, "file_list must be a list"
+        file_list_final = []
+
+        for fi in file_list:
+            file_list_final.append(fix_cyg_path(fi))
+
+    return svn_wrapper.diff(repo, file_list_final)
 
 def _parse_externals_update_message(output_message):
 
@@ -486,6 +523,8 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
 def patch_as_head(repo, patch_file, override_head_check):
 
+    patch_file_final = fix_cyg_path(patch_file)
+
     if not override_head_check:
         v, r = is_head_clear(repo)
         if not v:
@@ -493,7 +532,7 @@ def patch_as_head(repo, patch_file, override_head_check):
         if not r:
             return False, "Cannot patch - head is not clear"
 
-    v, r = svn_wrapper.patch(repo, patch_file)
+    v, r = svn_wrapper.patch(repo, patch_file_final)
     if not v:
         return False, r
 
