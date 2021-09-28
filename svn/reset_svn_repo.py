@@ -43,7 +43,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
     added_files = r
 
     if revert_file in added_files:
-        v, r = svn_lib.revert(target_repo, revert_file) # mvtodo: carefully test
+        v, r = svn_lib.revert(target_repo, [revert_file])
         if not v:
             return False, "reset_svn_repo_file: Failed attempting to un-add files: [%s]" % r
         return True, "File [%s] was un-added" % revert_file
@@ -60,7 +60,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
     # generate the backup patch
     backup_filename = make_patch_filename(revert_file, patch_index)
     backup_contents = ""
-    v, r = svn_lib.diff(target_repo, [revert_file]) # mvtodo: carefully retest
+    v, r = svn_lib.diff(target_repo, [revert_file])
     if not v:
         return False, "reset_svn_repo_file: [%s]" % r
     backup_contents = r
@@ -80,7 +80,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_svn_repo_file: failed because [%s] already exists." % gen_patch
 
     # revert file changes
-    v, r = svn_lib.revert(target_repo, [revert_file]) # mvtodo: carefully retest
+    v, r = svn_lib.revert(target_repo, [revert_file])
     if not v:
         return False, "reset_svn_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
 
@@ -136,7 +136,7 @@ def reset_svn_repo(target_repo, files):
 
         # un-add new+added files (will be left as unversioned in the repo)
         if len(added_files) > 0:
-            v, r = svn_lib.revert(target_repo, added_files) # mvtodo: carefully retest
+            v, r = svn_lib.revert(target_repo, added_files)
             if not v:
                 return False, ["Failed attempting to un-add files: [%s]" % r]
             for af in added_files:

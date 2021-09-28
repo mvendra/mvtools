@@ -189,7 +189,7 @@ def get_previous_list(repo, previous_number):
 
 def get_modified_files(repo):
 
-    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
+    v, r = svn_wrapper.status(repo)
     if not v:
         return False, r
 
@@ -205,13 +205,13 @@ def get_modified_files(repo):
             mod_file = extract_file_from_status_line(line)
             if mod_file is None:
                 return False, "Unable to detect file from status line: [%s]" % line
-            mod_list.append(path_utils.concat_path(repo, mod_file))
+            mod_list.append(path_utils.concat_path(repo, sanitize_windows_path(mod_file)))
 
     return True, mod_list
 
 def get_added_files(repo):
 
-    v, r = svn_wrapper.status(repo) # mvtodo: sanitize path
+    v, r = svn_wrapper.status(repo)
     if not v:
         return False, r
 
@@ -227,7 +227,7 @@ def get_added_files(repo):
             add_file = extract_file_from_status_line(line)
             if add_file is None:
                 return False, "Unable to detect file from status line: [%s]" % line
-            add_list.append(path_utils.concat_path(repo, add_file))
+            add_list.append(path_utils.concat_path(repo, sanitize_windows_path(add_file)))
 
     return True, add_list
 
