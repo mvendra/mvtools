@@ -9,13 +9,11 @@ import mvtools_envvars
 import path_utils
 
 import detect_repo_type
-import svn_wrapper
 import svn_lib
 
 import delayed_file_backup
 import maketimestamp
 import get_platform
-import convcygpath
 
 def make_patch_filename(path, index):
     return "%s_reset_svn_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
@@ -32,13 +30,6 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
 
-def _fix_cyg_path(path):
-
-    pf = get_platform.getplat()
-    if pf == get_platform.PLAT_CYGWIN:
-        return convcygpath.convert_cygwin_path_to_win_path(path)
-    return path
-
 def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
 
     # check if the requested file exists
@@ -52,7 +43,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
     added_files = r
 
     if revert_file in added_files:
-        v, r = svn_wrapper.revert(target_repo, [_fix_cyg_path(revert_file)])
+        v, r = svn_lib.revert(target_repo, revert_file) # mvtodo: carefully test
         if not v:
             return False, "reset_svn_repo_file: Failed attempting to un-add files: [%s]" % r
         return True, "File [%s] was un-added" % revert_file
@@ -69,7 +60,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
     # generate the backup patch
     backup_filename = make_patch_filename(revert_file, patch_index)
     backup_contents = ""
-    v, r = svn_wrapper.diff(target_repo, [_fix_cyg_path(revert_file)])
+    v, r = svn_lib.diff(target_repo, [revert_file]) # mvtodo: carefully retest
     if not v:
         return False, "reset_svn_repo_file: [%s]" % r
     backup_contents = r
@@ -89,7 +80,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_svn_repo_file: failed because [%s] already exists." % gen_patch
 
     # revert file changes
-    v, r = svn_wrapper.revert(target_repo, [_fix_cyg_path(revert_file)])
+    v, r = svn_lib.revert(target_repo, [revert_file]) # mvtodo: carefully retest
     if not v:
         return False, "reset_svn_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
 
@@ -141,15 +132,11 @@ def reset_svn_repo(target_repo, files):
         v, r = svn_lib.get_added_files(target_repo)
         if not v:
             return False, ["Unable to retrieve list of added files: [%s]" % r]
-        added_files_raw = r
-        added_files = []
-
-        for afr in added_files_raw:
-            added_files.append(_fix_cyg_path(afr))
+        added_files = r
 
         # un-add new+added files (will be left as unversioned in the repo)
         if len(added_files) > 0:
-            v, r = svn_wrapper.revert(target_repo, added_files)
+            v, r = svn_lib.revert(target_repo, added_files) # mvtodo: carefully retest
             if not v:
                 return False, ["Failed attempting to un-add files: [%s]" % r]
             for af in added_files:
