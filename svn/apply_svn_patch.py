@@ -7,7 +7,6 @@ import shutil
 import path_utils
 import detect_repo_type
 import get_platform
-import convcygpath
 import svn_lib
 
 def _test_repo_path(path):
@@ -19,20 +18,12 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, None
 
-def _fix_cyg_path(path):
-
-    pf = get_platform.getplat()
-    if pf == get_platform.PLAT_CYGWIN:
-        return convcygpath.convert_cygwin_path_to_win_path(path)
-    return path
-
 def apply_svn_patch_head(target_repo, source_files):
 
-    local_source_files_final = []
-    for lsf in source_files:
-        local_source_files_final.append(_fix_cyg_path(lsf))
+    if not isinstance(source_files, list):
+        return False, "source_files must be a list"
 
-    for sf in local_source_files_final:
+    for sf in source_files:
         v, r = svn_lib.patch_as_head(target_repo, sf, True)
         if not v:
             return False, r
@@ -40,6 +31,9 @@ def apply_svn_patch_head(target_repo, source_files):
     return True, None
 
 def apply_svn_patch_unversioned(target_repo, source_files):
+
+    if not isinstance(source_files, list):
+        return False, "source_files must be a list"
 
     for sf in source_files:
 
@@ -52,6 +46,9 @@ def apply_svn_patch_unversioned(target_repo, source_files):
     return True, None
 
 def apply_svn_patch(target_repo, head_patches, unversioned_patches):
+
+    if not isinstance(unversioned_patches, list):
+        return False, "source_files must be a list"
 
     target_repo = path_utils.filter_remove_trailing_sep(target_repo)
     target_repo = os.path.abspath(target_repo)
