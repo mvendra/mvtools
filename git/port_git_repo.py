@@ -101,7 +101,7 @@ def port_git_repo(source_repo, target_repo, head, staged, stash, unversioned, pr
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
     if not v:
-        return False, r
+        return False, [r]
     temp_path = r
     if not os.path.exists(temp_path):
         return False, ["Can't apply patches. MVTOOLS_TEMP_PATH envvar is not defined or the path does not exist."]
@@ -130,11 +130,11 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
 
     v, r = _test_repo_path(source_repo)
     if not v:
-        return False, r
+        return False, [r]
 
     v, r = _test_repo_path(target_repo)
     if not v:
-        return False, r
+        return False, [r]
 
     report = []
     has_any_failed = False

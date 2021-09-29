@@ -66,7 +66,7 @@ def apply_git_patch(target_repo, head_patches, staged_patches, stash_patches, un
 
     v, r = _test_repo_path(target_repo)
     if not v:
-        return False, r
+        return False, [r]
 
     report = []
     has_any_failed = False

@@ -48,7 +48,7 @@ def apply_svn_patch_unversioned(target_repo, source_files):
 def apply_svn_patch(target_repo, head_patches, unversioned_patches):
 
     if not isinstance(unversioned_patches, list):
-        return False, "source_files must be a list"
+        return False, ["source_files must be a list"]
 
     target_repo = path_utils.filter_remove_trailing_sep(target_repo)
     target_repo = os.path.abspath(target_repo)
@@ -58,7 +58,7 @@ def apply_svn_patch(target_repo, head_patches, unversioned_patches):
 
     v, r = _test_repo_path(target_repo)
     if not v:
-        return False, r
+        return False, [r]
 
     report = []
     has_any_failed = False
