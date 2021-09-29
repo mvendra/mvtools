@@ -8,6 +8,7 @@ import path_utils
 import detect_repo_type
 import get_platform
 import svn_lib
+import fsquery
 
 def _test_repo_path(path):
 
@@ -79,8 +80,26 @@ def apply_svn_patch(target_repo, head_patches, unversioned_patches):
 
     return (not has_any_failed), report
 
+def _assemble_unversioned_all(unversioned_all):
+
+    all_assembled_pairs = []
+
+    for ua in unversioned_all:
+
+        if not os.path.exists(ua):
+            return False, "Path [%s] does not exist" % ua
+
+        latest_assembled_pairs = []
+        found_files = fsquery.makecontentlist(ua, True, True, False, True, False, True, None)
+        for ff in found_files:
+            latest_assembled_pairs.append((ua, os.path.abspath(ff)))
+
+        all_assembled_pairs += latest_assembled_pairs
+
+    return True, all_assembled_pairs
+
 def puaq():
-    print("Usage: %s target_repo [--head patch-file] [--unversioned file-base patch-file]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--head patch-file] [--unversioned file-base patch-file] [--unversioned-all file-base]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -93,10 +112,12 @@ if __name__ == "__main__":
 
     head = []
     unversioned = []
+    unversioned_all = []
 
     head_parse_next = False
     unversioned_parse_next = 0
     unversioned_base_buffer = None
+    unversioned_all_parse_next = False
 
     for p in params:
 
@@ -116,10 +137,36 @@ if __name__ == "__main__":
             unversioned_base_buffer = None
             continue
 
+        if unversioned_all_parse_next:
+            unversioned_all_parse_next = False
+            unversioned_all.append(os.path.abspath(p))
+            continue
+
         if p == "--head":
             head_parse_next = True
         elif p == "--unversioned":
             unversioned_parse_next = 1
+        elif p == "--unversioned-all":
+            unversioned_all_parse_next = True
+
+    v, r = _assemble_unversioned_all(unversioned_all)
+    if not v:
+        print(r)
+        sys.exit(1)
+    unversioned += r
+
+    # pre-filter for dupes
+    all_unv_files_sentinel = []
+    for uv in unversioned:
+        v, r = path_utils.based_path_find_outstanding_path(uv[0], uv[1])
+        if not v:
+            print(r)
+            sys.exit(1)
+        file_based_target = r
+        if file_based_target in all_unv_files_sentinel:
+            print("Duplicated target for unversioned patching detected: [%s]" % file_based_target)
+            sys.exit(1)
+        all_unv_files_sentinel.append(file_based_target)
 
     v, r = apply_svn_patch(target_repo, head, unversioned)
     if not v:
