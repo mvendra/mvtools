@@ -768,5 +768,17 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.exists(target_path))
         self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder2, "target"))
 
+    def testCompatWindowsPath(self):
+        self.assertEqual(path_utils.compat_windows_path(None), None)
+        self.assertEqual(path_utils.compat_windows_path([]), None)
+        self.assertEqual(path_utils.compat_windows_path(""), None)
+        self.assertEqual(path_utils.compat_windows_path("nothing"), "nothing")
+        self.assertEqual(path_utils.compat_windows_path("C:\\windows\\data"), "C:/windows/data")
+        self.assertEqual(path_utils.compat_windows_path("windows\\data\\more"), "windows/data/more")
+        self.assertEqual(path_utils.compat_windows_path("windows\\data\\another\\"), "windows/data/another/")
+        self.assertEqual(path_utils.compat_windows_path("some/folders"), "some/folders")
+        self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders"), "/usr/local/more/folders")
+        self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders/yetmore/"), "/usr/local/more/folders/yetmore/")
+
 if __name__ == '__main__':
     unittest.main()

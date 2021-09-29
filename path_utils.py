@@ -589,5 +589,23 @@ def find_middle_path_parts(basepath, fullpath):
 
     return assembled_middle_string
 
+def compat_windows_path(path):
+
+    # substitute the blackwards-slash in the given path to forward slashes,
+    # in order to make it compatible with linux/cygwin
+
+    if path is None:
+        return None
+
+    if not isinstance(path, str):
+        return None
+
+    if path == "":
+        return None
+
+    local_path = path
+    local_path = local_path.replace("\\", "/")
+    return local_path
+
 if __name__ == "__main__":
     print("Hello from %s" % basename_filtered(__file__))
