@@ -12,7 +12,16 @@ import get_platform
 import convcygpath
 import output_backup_helper
 
-def fix_cyg_path(path):
+def fix_cygwin_path(path):
+
+    if path is None:
+        return None
+
+    if not isinstance(path, str):
+        return None
+
+    if path == "":
+        return None
 
     pf = get_platform.getplat()
     if pf == get_platform.PLAT_CYGWIN:
@@ -21,10 +30,19 @@ def fix_cyg_path(path):
 
 def sanitize_windows_path(path):
 
+    if path is None:
+        return None
+
+    if not isinstance(path, str):
+        return None
+
+    if path == "":
+        return None
+
     local_path = path
     pf = get_platform.getplat()
     if pf in [get_platform.PLAT_CYGWIN, get_platform.PLAT_WINDOWS]:
-        local_path = local_path.replace("\\", "/")
+        local_path = path_utils.compat_windows_path(local_path)
     return local_path
 
 def is_non_generic(char_input, list_select):
@@ -298,7 +316,7 @@ def revert(local_repo, repo_items):
 
     repo_items_final = []
     for ri in repo_items:
-        repo_items_final.append(fix_cyg_path(ri))
+        repo_items_final.append(fix_cygwin_path(ri))
 
     return svn_wrapper.revert(local_repo, repo_items_final)
 
@@ -315,7 +333,7 @@ def diff(repo, file_list=None, rev=None):
         file_list_final = []
 
         for fi in file_list:
-            file_list_final.append(fix_cyg_path(fi))
+            file_list_final.append(fix_cygwin_path(fi))
 
     return svn_wrapper.diff(repo, file_list_final, rev)
 
@@ -533,7 +551,7 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
 def patch_as_head(repo, patch_file, override_head_check):
 
-    patch_file_final = fix_cyg_path(patch_file)
+    patch_file_final = fix_cygwin_path(patch_file)
 
     if not override_head_check:
         v, r = is_head_clear(repo, False, False)
