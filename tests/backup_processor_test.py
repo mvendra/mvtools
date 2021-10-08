@@ -40,6 +40,11 @@ def escape(thestr):
 class BackupProcessorTest(unittest.TestCase):
 
     def setUp(self):
+        self.mvtools_envvars_inst = mvtools_envvars.Mvtools_Envvars()
+        v, r = self.mvtools_envvars_inst.make_copy_environ()
+        if not v:
+            self.tearDown()
+            self.fail(r)
         v, r = self.delegate_setUp()
         if not v:
             self.tearDown()
@@ -513,6 +518,9 @@ class BackupProcessorTest(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
+        v, r = self.mvtools_envvars_inst.restore_copy_environ()
+        if not v:
+            self.fail(r)
 
     def testArtifactBase1(self):
         artbase = backup_processor.ArtifactBase(self.test_source_folder, [path_utils.basename_filtered(self.folder2)], True, False, 7, True)
@@ -585,25 +593,15 @@ class BackupProcessorTest(unittest.TestCase):
 
     def testReadConfigPrepParamEnvVar(self):
 
-        envvars_inst = mvtools_envvars.Mvtools_Envvars()
-        v, r = envvars_inst.make_copy_environ()
-        if not v:
-            self.fail("Failed making copy of envvars")
-
-        try:
-            os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
-            v, r = backup_processor.read_config(self.test_config_file_prep_param)
-            self.assertTrue(v)
-            self.assertEqual(r[0][0], self.prep_param_filename)
-            self.assertEqual(r[0][1], [self.prep_generated_param_test_filename, self.prep_generated_param_test_content])
-            self.assertEqual(r[2], [self.test_target_1_folder])
-            self.assertEqual(r[3], self.bk_base_folder_test)
-            self.assertEqual(r[4], self.bk_test_temp_folder)
-            self.assertEqual( r[5], ( (convert_unit.convert_to_bytes(self.warn_each_2)[1],True) , (convert_unit.convert_to_bytes(self.warn_final_2)[1],True) ) )
-        finally:
-            v, r = envvars_inst.restore_copy_environ()
-            if not v:
-                self.fail("Failed restoring copy of envvars")
+        os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
+        v, r = backup_processor.read_config(self.test_config_file_prep_param)
+        self.assertTrue(v)
+        self.assertEqual(r[0][0], self.prep_param_filename)
+        self.assertEqual(r[0][1], [self.prep_generated_param_test_filename, self.prep_generated_param_test_content])
+        self.assertEqual(r[2], [self.test_target_1_folder])
+        self.assertEqual(r[3], self.bk_base_folder_test)
+        self.assertEqual(r[4], self.bk_test_temp_folder)
+        self.assertEqual( r[5], ( (convert_unit.convert_to_bytes(self.warn_each_2)[1],True) , (convert_unit.convert_to_bytes(self.warn_final_2)[1],True) ) )
 
     def testInvalidConfig1(self):
         v, r = backup_processor.read_config(self.test_malformed_config_file1)
@@ -660,25 +658,15 @@ class BackupProcessorTest(unittest.TestCase):
 
     def testPrepParams(self):
 
-        envvars_inst = mvtools_envvars.Mvtools_Envvars()
-        v, r = envvars_inst.make_copy_environ()
-        if not v:
-            self.fail("Failed making copy of envvars")
-
-        try:
-            os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
-            with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
-                r = backup_processor.run_backup(self.test_config_file_prep_param, self.hash_file)
-            self.assertTrue(r)
-            self.assertTrue( os.path.exists( self.prep_generated_param_test_filename ))
-            test_content = ""
-            with open(self.prep_generated_param_test_filename) as f:
-                test_content = f.read()
-            self.assertEqual(test_content, self.prep_generated_param_test_content)
-        finally:
-            v, r = envvars_inst.restore_copy_environ()
-            if not v:
-                self.fail("Failed restoring copy of envvars")
+        os.environ[ (self.reserved_test_env_var[1:]) ] = self.prep_generated_param_test_filename
+        with mock.patch("input_checked_passphrase.get_checked_passphrase", return_value=(True, self.passphrase)):
+            r = backup_processor.run_backup(self.test_config_file_prep_param, self.hash_file)
+        self.assertTrue(r)
+        self.assertTrue( os.path.exists( self.prep_generated_param_test_filename ))
+        test_content = ""
+        with open(self.prep_generated_param_test_filename) as f:
+            test_content = f.read()
+        self.assertEqual(test_content, self.prep_generated_param_test_content)
 
     def testAbortNonexistentBktemp(self):
         v, r = backup_processor.read_config(self.test_config_bktemp_nonexistent_file)
