@@ -12,7 +12,7 @@ import get_platform
 import convcygpath
 import output_backup_helper
 
-def fix_cygwin_path(path): # mvtodo
+def fix_cygwin_path(path):
 
     if path is None:
         return None
@@ -28,7 +28,7 @@ def fix_cygwin_path(path): # mvtodo
         return convcygpath.convert_cygwin_path_to_win_path(path)
     return path
 
-def sanitize_windows_path(path): # mvtodo
+def sanitize_windows_path(path):
 
     if path is None:
         return None
@@ -153,12 +153,18 @@ def detect_separator(the_string):
 
     return None
 
-def get_list_externals(repo): # mvtodo
+def get_list_externals(local_repo):
+
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
 
     # sample of actual output from svn status, as of m2021 (on Linux): "Performing status on external item at 'ext/Subversion':"
     EXT_ST_MSG = "Performing status on external item at"
 
-    v, r = svn_wrapper.status(repo)
+    v, r = svn_wrapper.status(local_repo_final)
     if not v:
         return False, r
     output = r
@@ -174,23 +180,35 @@ def get_list_externals(repo): # mvtodo
         if slf != -1:
             cropped_line = stripped_line[len(EXT_ST_MSG)+2:] # crop left
             cropped_line = cropped_line[:len(cropped_line)-2] # crop right
-            final_ext_path = path_utils.concat_path(repo, cropped_line)
+            final_ext_path = path_utils.concat_path(local_repo_final, cropped_line)
             list_externals.append(sanitize_windows_path(final_ext_path))
 
     return True, list_externals
 
-def get_list_unversioned(repo): # mvtodo
+def get_list_unversioned(local_repo):
 
-    v, r = svn_wrapper.status(repo)
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    v, r = svn_wrapper.status(local_repo_final)
     if not v:
         return False, r
     unversioned_files = [status_filter_function_unversioned(x) for x in r.split(os.linesep) if x != ""]
-    unversioned_files = [path_utils.concat_path(repo, sanitize_windows_path(x)) for x in unversioned_files if x is not None]
+    unversioned_files = [path_utils.concat_path(local_repo_final, sanitize_windows_path(x)) for x in unversioned_files if x is not None]
     return True, unversioned_files
 
-def get_previous_list(repo, previous_number): # mvtodo
+def get_previous_list(local_repo, previous_number):
 
-    v, r = svn_wrapper.log(repo, str(previous_number))
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    v, r = svn_wrapper.log(local_repo_final, str(previous_number))
     if not v:
         return False, r
     log_out = r
@@ -205,9 +223,15 @@ def get_previous_list(repo, previous_number): # mvtodo
     prev_list = rev_entries_filter(log_entries)
     return True, prev_list
 
-def get_modified_files(repo): # mvtodo
+def get_modified_files(local_repo):
 
-    v, r = svn_wrapper.status(repo)
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    v, r = svn_wrapper.status(local_repo_final)
     if not v:
         return False, r
 
@@ -223,13 +247,19 @@ def get_modified_files(repo): # mvtodo
             mod_file = extract_file_from_status_line(line)
             if mod_file is None:
                 return False, "Unable to detect file from status line: [%s]" % line
-            mod_list.append(path_utils.concat_path(repo, sanitize_windows_path(mod_file)))
+            mod_list.append(path_utils.concat_path(local_repo_final, sanitize_windows_path(mod_file)))
 
     return True, mod_list
 
-def get_added_files(repo): # mvtodo
+def get_added_files(local_repo):
 
-    v, r = svn_wrapper.status(repo)
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    v, r = svn_wrapper.status(local_repo_final)
     if not v:
         return False, r
 
@@ -245,35 +275,50 @@ def get_added_files(repo): # mvtodo
             add_file = extract_file_from_status_line(line)
             if add_file is None:
                 return False, "Unable to detect file from status line: [%s]" % line
-            add_list.append(path_utils.concat_path(repo, sanitize_windows_path(add_file)))
+            add_list.append(path_utils.concat_path(local_repo_final, sanitize_windows_path(add_file)))
 
     return True, add_list
 
-def get_head_revision(repo): # mvtodo
+def get_head_revision(local_repo):
 
-    v, r = svn_wrapper.info(repo)
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    v, r = svn_wrapper.info(local_repo_final)
     if not v:
         return False, r
     head_rev = revision_filter_function(r)
     return True, head_rev
 
-def is_svn_repo(repo): # mvtodo
+def is_svn_repo(local_repo):
 
-    if not os.path.exists(repo):
-        return False, "svn_lib.is_svn_repo failed: %s does not exist." % repo
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
 
     # should ideally use "svnlook info the_path" but that wouldn't work with some repositories
-    the_svn_obj = path_utils.concat_path(repo, ".svn")
+    the_svn_obj = path_utils.concat_path(local_repo_final, ".svn")
     if os.path.exists(the_svn_obj) and os.path.isdir(the_svn_obj):
         return True, "svn"
     return True, False
 
-def is_head_clear(repo, include_externals, ignore_unversioned): # mvtodo
+def is_head_clear(local_repo, include_externals, ignore_unversioned):
 
-    all_repos = [repo]
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    all_repos = [local_repo_final]
 
     if include_externals:
-        v, r = get_list_externals(repo)
+        v, r = get_list_externals(local_repo_final)
         if not v:
             return False, r
         all_repos += r
@@ -287,9 +332,15 @@ def is_head_clear(repo, include_externals, ignore_unversioned): # mvtodo
 
     return True, True
 
-def is_head_clear_delegate(repo, ignore_unversioned): # mvtodo
+def is_head_clear_delegate(local_repo, ignore_unversioned):
 
-    v, r = svn_wrapper.status(repo)
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    v, r = svn_wrapper.status(local_repo_final)
     if not v:
         return False, r
     st_items = r.split(os.linesep)
@@ -306,10 +357,13 @@ def is_head_clear_delegate(repo, ignore_unversioned): # mvtodo
 
     return True, True
 
-def revert(local_repo, repo_items): # mvtodo
+def revert(local_repo, repo_items):
 
-    if not os.path.exists(local_repo):
-        return False, "Base repo [%s] does not exist." % local_repo
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
 
     if not isinstance(repo_items, list):
         return False, "repo_items must be a list"
@@ -318,12 +372,15 @@ def revert(local_repo, repo_items): # mvtodo
     for ri in repo_items:
         repo_items_final.append(fix_cygwin_path(ri))
 
-    return svn_wrapper.revert(local_repo, repo_items_final)
+    return svn_wrapper.revert(local_repo_final, repo_items_final)
 
-def diff(repo, file_list=None, rev=None): # mvtodo
+def diff(local_repo, file_list=None, rev=None):
 
-    if not os.path.exists(repo):
-        return False, "%s does not exist." % repo
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
 
     file_list_final = None
     if file_list is not None:
@@ -335,7 +392,7 @@ def diff(repo, file_list=None, rev=None): # mvtodo
         for fi in file_list:
             file_list_final.append(fix_cygwin_path(fi))
 
-    return svn_wrapper.diff(repo, file_list_final, rev)
+    return svn_wrapper.diff(local_repo_final, file_list_final, rev)
 
 def _parse_externals_update_message(output_message):
 
@@ -408,12 +465,18 @@ def _check_valid_codes(output_message, valid_codes):
 def _update_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011", "W000104"])
 
-def _update_and_cleanup(feedback_object, local_repo, autobackups): # mvtodo
+def _update_and_cleanup(feedback_object, local_repo, autobackups):
+
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
 
     warnings = None
 
     # cleanup
-    v, r = svn_wrapper.cleanup(local_repo)
+    v, r = svn_wrapper.cleanup(local_repo_final)
     if not v:
         return False, r
     proc_result = r[0]
@@ -427,7 +490,7 @@ def _update_and_cleanup(feedback_object, local_repo, autobackups): # mvtodo
         return False, proc_stderr
 
     # update
-    v, r = svn_wrapper.update(local_repo)
+    v, r = svn_wrapper.update(local_repo_final)
     if not v:
         return False, r
     proc_result = r[0]
@@ -442,11 +505,17 @@ def _update_and_cleanup(feedback_object, local_repo, autobackups): # mvtodo
     # check update's result
     if not _update_autorepair_check_return(proc_stdout):
         return False, "unable to parse svn's output for reattempts" # failed, irrecoverably. give up.
-    warnings = log_helper.add_to_warnings(warnings, "update_autorepair warning: update operation failed but was accepted for repairing (at %s)." % local_repo)
+    warnings = log_helper.add_to_warnings(warnings, "update_autorepair warning: update operation failed but was accepted for repairing (at %s)." % local_repo_final)
 
     return True, (warnings, proc_stdout)
 
-def update_autorepair(feedback_object, local_repo, do_recursion, autobackups): # mvtodo
+def update_autorepair(feedback_object, local_repo, do_recursion, autobackups):
+
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
 
     warnings = None
     iterations = 0
@@ -457,9 +526,9 @@ def update_autorepair(feedback_object, local_repo, do_recursion, autobackups): #
         # loop sentinel
         iterations += 1
         if iterations > MAX_ITERATIONS:
-            return False, "update_autorepair: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo)
+            return False, "update_autorepair: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo_final)
 
-        v, r = _update_and_cleanup(feedback_object, local_repo, autobackups)
+        v, r = _update_and_cleanup(feedback_object, local_repo_final, autobackups)
         if not v:
             return False, r # failed, irrecoverably. give up.
         if r is None:
@@ -483,7 +552,7 @@ def update_autorepair(feedback_object, local_repo, do_recursion, autobackups): #
             external_messages = er[1]
 
             if has_string_in_list(external_messages, "W155004"):
-                externals_full_path = path_utils.concat_path(local_repo, external_path)
+                externals_full_path = path_utils.concat_path(local_repo_final, external_path)
                 v, r = update_autorepair(externals_full_path, False)
                 if not v:
                     return False, r
@@ -494,11 +563,17 @@ def update_autorepair(feedback_object, local_repo, do_recursion, autobackups): #
 def _checkout_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011", "W000104"])
 
-def checkout_with_update(feedback_object, remote_link, local_repo, autobackups): # mvtodo
+def checkout_with_update(feedback_object, remote_link, local_repo, autobackups):
+
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(path_utils.dirname_filtered(local_repo_final)):
+        return False, "Path (dirname) [%s] does not exist." % path_utils.dirname_filtered(local_repo_final)
 
     warnings = None
 
-    v, r = svn_wrapper.checkout(remote_link, local_repo)
+    v, r = svn_wrapper.checkout(remote_link, local_repo_final)
     if not v:
         return False, r
     proc_result = r[0]
@@ -511,9 +586,9 @@ def checkout_with_update(feedback_object, remote_link, local_repo, autobackups):
     if not proc_result:
         if not _checkout_autorepair_check_return(proc_stdout):
             return False, proc_stderr
-        warnings = log_helper.add_to_warnings(warnings, "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo)
+        warnings = log_helper.add_to_warnings(warnings, "checkout_autorepair warning: checkout operation failed but was accepted for repairing (at %s)." % local_repo_final)
 
-    v, r = update_autorepair(feedback_object, local_repo, True, autobackups)
+    v, r = update_autorepair(feedback_object, local_repo_final, True, autobackups)
     if not v:
         return False, r
     warnings = log_helper.add_to_warnings(warnings, r)
