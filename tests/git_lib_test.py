@@ -260,42 +260,202 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
-    def testGetModifiedFiles(self):
+    def testGetHeadFiles(self):
 
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v and r)
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        if not create_and_write_file.create_file_contents(first_more2, "more2-contents"):
-            self.fail("Failed creating file %s" % first_more2)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+
+        first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
+        self.assertTrue(v)
+
+        first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more4), "file4-content4", "commit_msg_file4")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        self.assertTrue(v)
+
+        with open(first_more3, "a") as f:
+            f.write("actual modification, again")
+
+        self.assertTrue(os.path.exists(first_more4))
+        os.unlink(first_more4)
+        self.assertFalse(os.path.exists(first_more4))
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(first_more3 in r)
+        self.assertTrue(first_more4 in r)
+        self.assertFalse(first_more2 in r)
+
+    def testGetHeadFilesRelativePath(self):
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.mkdir(sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        with open(testrepo_file1, "a") as f:
+            f.write("additional content f1")
+
+        with open(testrepo_file3, "a") as f:
+            f.write("additional content f3")
+
+        os.unlink(sub1_testrepo_sub3_file4)
+        self.assertFalse(os.path.exists(sub1_testrepo_sub3_file4))
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_head_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertTrue(testrepo_file1 in r)
+            self.assertFalse(testrepo_file2 in r)
+            self.assertTrue(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2_file4 in r)
+            self.assertFalse(sub1_testrepo_sub3_file4 in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetHeadFilesRelativePathSymlinkRepo(self):
+
+        sub2 = path_utils.concat_path(self.test_dir, "sub2")
+        self.assertFalse(os.path.exists(sub2))
+        os.mkdir(sub2)
+        self.assertTrue(os.path.exists(sub2))
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.symlink(sub2, sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        with open(testrepo_file1, "a") as f:
+            f.write("additional content f1")
+
+        with open(testrepo_file3, "a") as f:
+            f.write("additional content f3")
+
+        os.unlink(sub1_testrepo_sub3_file4)
+        self.assertFalse(os.path.exists(sub1_testrepo_sub3_file4))
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_head_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertTrue(testrepo_file1 in r)
+            self.assertFalse(testrepo_file2 in r)
+            self.assertTrue(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2_file4 in r)
+            self.assertFalse(sub1_testrepo_sub3_file4 in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetHeadModifiedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
         self.assertTrue(v)
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         with open(self.first_file1, "a") as f:
             f.write("actual modification")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         with open(first_more3, "a") as f:
             f.write("actual modification, again")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(r, [first_more3])
 
-    def testGetModifiedFilesRelativePath(self):
+    def testGetHeadModifiedFilesRelativePath(self):
 
         sub1 = path_utils.concat_path(self.test_dir, "sub1")
         self.assertFalse(os.path.exists(sub1))
@@ -344,7 +504,7 @@ class GitLibTest(unittest.TestCase):
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
-            v, r = git_lib.get_modified_files("./sub1/testrepo")
+            v, r = git_lib.get_head_modified_files("./sub1/testrepo")
             self.assertTrue(v)
             self.assertTrue(testrepo_file1 in r)
             self.assertFalse(testrepo_file2 in r)
@@ -354,7 +514,7 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
-    def testGetModifiedFilesRelativePathSymlinkRepo(self):
+    def testGetHeadModifiedFilesRelativePathSymlinkRepo(self):
 
         sub2 = path_utils.concat_path(self.test_dir, "sub2")
         self.assertFalse(os.path.exists(sub2))
@@ -408,7 +568,151 @@ class GitLibTest(unittest.TestCase):
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
-            v, r = git_lib.get_modified_files("./sub1/testrepo")
+            v, r = git_lib.get_head_modified_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertTrue(testrepo_file1 in r)
+            self.assertFalse(testrepo_file2 in r)
+            self.assertTrue(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2_file4 in r)
+            self.assertFalse(sub1_testrepo_sub3_file4 in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetHeadDeletedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+
+        first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
+        self.assertTrue(v)
+
+        os.unlink(first_more1)
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
+        self.assertTrue(v)
+
+        os.unlink(first_more2)
+        self.assertFalse(os.path.exists(first_more2))
+
+        v, r = git_lib.get_head_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [first_more2])
+
+    def testGetHeadDeletedFilesRelativePath(self):
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.mkdir(sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        os.unlink(testrepo_file1)
+        self.assertFalse(os.path.exists(testrepo_file1))
+        os.unlink(sub1_testrepo_sub3_file4)
+        self.assertFalse(os.path.exists(sub1_testrepo_sub3_file4))
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_head_deleted_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertTrue(testrepo_file1 in r)
+            self.assertFalse(testrepo_file2 in r)
+            self.assertFalse(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2_file4 in r)
+            self.assertFalse(sub1_testrepo_sub3_file4 in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetHeadDeletedFilesRelativePathSymlinkRepo(self):
+
+        sub2 = path_utils.concat_path(self.test_dir, "sub2")
+        self.assertFalse(os.path.exists(sub2))
+        os.mkdir(sub2)
+        self.assertTrue(os.path.exists(sub2))
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.symlink(sub2, sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        os.unlink(testrepo_file1)
+        os.unlink(testrepo_file3)
+        os.unlink(sub1_testrepo_sub3_file4)
+
+        self.assertFalse(os.path.exists(testrepo_file1))
+        self.assertFalse(os.path.exists(testrepo_file3))
+        self.assertFalse(os.path.exists(sub1_testrepo_sub3_file4))
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_head_deleted_files("./sub1/testrepo")
             self.assertTrue(v)
             self.assertTrue(testrepo_file1 in r)
             self.assertFalse(testrepo_file2 in r)
@@ -428,24 +732,19 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        if not create_and_write_file.create_file_contents(first_more2, "more2-contents"):
-            self.fail("Failed creating file %s" % first_more2)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
-        if not create_and_write_file.create_file_contents(first_more3, "more3-contents"):
-            self.fail("Failed creating file %s" % first_more3)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
 
         first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
-        if not create_and_write_file.create_file_contents(first_more4, "more4-contents"):
-            self.fail("Failed creating file %s" % first_more4)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
 
         first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        if not create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"):
-            self.fail("Failed creating file %s" % first_more5)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
         self.assertTrue(v)
@@ -758,8 +1057,7 @@ class GitLibTest(unittest.TestCase):
 
         self.first_file = path_utils.concat_path(self.first_repo, "file.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(self.first_file), "file1-content", "commit_msg_file")
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         v, r = git_wrapper.log(self.first_repo, 1)
         self.assertTrue(v)
@@ -795,8 +1093,7 @@ class GitLibTest(unittest.TestCase):
 
         self.first_folder1_file2 = path_utils.concat_path(folder1, "file2.txt")
         v, r = git_test_fixture.git_createAndCommit(folder1, path_utils.basename_filtered(self.first_folder1_file2), "file2-content", "commit_msg_file-2")
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         folder2 = path_utils.concat_path(folder1, "folder2")
         os.mkdir(folder2)
@@ -817,8 +1114,7 @@ class GitLibTest(unittest.TestCase):
 
         self.first_folder1_file2 = path_utils.concat_path(folder1, "file2.txt")
         v, r = git_test_fixture.git_createAndCommit(folder1, path_utils.basename_filtered(self.first_folder1_file2), "file2-content", "commit_msg_file-2")
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         folder2 = path_utils.concat_path(folder1, "folder2")
         os.mkdir(folder2)
@@ -1171,11 +1467,11 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
-        v, r = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_head_modified_files(first_mirror)
         self.assertTrue(v)
         mod_first_mirror = r
 
@@ -1218,11 +1514,11 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
-        v, r = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_head_modified_files(first_mirror)
         self.assertTrue(v)
         mod_first_mirror = r
 
@@ -1252,13 +1548,12 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
 
-        v, r = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_head_modified_files(first_mirror)
         self.assertTrue(v)
         self.assertEqual(r, [])
 
@@ -1290,8 +1585,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -1299,7 +1593,7 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
 
-        v, r = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_head_modified_files(first_mirror)
         self.assertTrue(v)
         self.assertEqual(r, [])
 
@@ -1331,8 +1625,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, True)
         self.assertTrue(v)
@@ -1341,11 +1634,11 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
-        v, r = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_head_modified_files(first_mirror)
         self.assertTrue(v)
         mod_first_mirror = r
 
@@ -1375,8 +1668,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -1384,11 +1676,11 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, True)
         self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
-        v, r = git_lib.get_modified_files(first_mirror)
+        v, r = git_lib.get_head_modified_files(first_mirror)
         self.assertTrue(v)
         mod_first_mirror = r
 
@@ -1424,7 +1716,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
@@ -1473,7 +1765,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
@@ -1507,8 +1799,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_lib.patch_as_staged(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
@@ -1545,8 +1836,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -1587,8 +1877,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_lib.patch_as_staged(first_mirror, generated_patch_file, True)
         self.assertTrue(v)
@@ -1597,7 +1886,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
@@ -1631,8 +1920,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -1644,7 +1932,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         mod_first = r
 
@@ -1755,8 +2043,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file, False, False)
         self.assertFalse(v)
@@ -1868,8 +2155,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        if not create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"):
-            self.fail("Failed creating file %s" % first_mirror_more1)
+        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
 
         v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file, True, True)
         self.assertTrue(v)

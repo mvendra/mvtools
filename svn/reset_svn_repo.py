@@ -49,7 +49,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return True, "File [%s] was un-added" % revert_file
 
     # check if the requested file is modified in the repo
-    v, r = svn_lib.get_modified_files(target_repo)
+    v, r = svn_lib.get_head_modified_files(target_repo)
     if not v:
         return False, "reset_svn_repo_file: [%s]" % r
     mod_files = r
@@ -123,7 +123,7 @@ def reset_svn_repo(target_repo, files):
     # get modified files
     if files is None:
 
-        v, r = svn_lib.get_modified_files(target_repo)
+        v, r = svn_lib.get_head_modified_files(target_repo)
         if not v:
             return False, [r]
         files = r

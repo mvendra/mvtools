@@ -76,14 +76,14 @@ class ResetGitRepoTest(unittest.TestCase):
 
     def testResetGitRepo_ResetGitRepoFile_Fail3(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         with open(self.first_file1, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -97,7 +97,7 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
         self.assertFalse(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -111,14 +111,14 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.second_repo, "file1.txt", "second-file1-content", "second-file1-msg")
         self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         with open(self.first_file1, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -132,13 +132,13 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.second_file1, 1, self.rdb)
         self.assertFalse(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
     def testResetGitRepo_ResetGitRepoFile_Fail5(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -149,7 +149,7 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo, [first_file3])
         self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -160,13 +160,13 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, first_file3, 1, self.rdb)
         self.assertFalse(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoFile_Fail6(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -181,7 +181,7 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -198,7 +198,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertFalse(os.path.exists(test_patch_file3))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -211,14 +211,14 @@ class ResetGitRepoTest(unittest.TestCase):
 
     def testResetGitRepo_ResetGitRepoFile1(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         with open(self.first_file1, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -230,13 +230,13 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoFile2(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -246,7 +246,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(self.first_file2, "w") as f:
             f.write("extra stuff file2")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
@@ -258,13 +258,13 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
     def testResetGitRepo_ResetGitRepoFile3(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -277,7 +277,7 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -294,7 +294,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_patch_file1))
         self.assertFalse(os.path.exists(patch_file_filename2))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -322,14 +322,14 @@ class ResetGitRepoTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sub1_sub2_file3))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         with open(sub1_sub2_file3, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -341,7 +341,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -352,14 +352,14 @@ class ResetGitRepoTest(unittest.TestCase):
 
     def testResetGitRepo_ResetGitRepoEntire1(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         with open(self.first_file1, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -371,13 +371,13 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoEntire2(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -387,7 +387,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(self.first_file2, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
@@ -404,26 +404,26 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_patch_file1))
         self.assertTrue(os.path.exists(test_patch_file2))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoEntire3(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         v, r = reset_git_repo.reset_git_repo_entire(self.first_repo, self.rdb)
         self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoEntire4(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -436,7 +436,7 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo, [self.first_file2])
         self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -453,13 +453,13 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_patch_file1))
         self.assertTrue(os.path.exists(test_patch_file2))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoEntire5(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -482,7 +482,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -508,13 +508,13 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(first_file3 in r)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepoEntire6(self):
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -538,7 +538,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(sub1_sub2_file3, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -550,7 +550,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -597,7 +597,7 @@ class ResetGitRepoTest(unittest.TestCase):
         dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
         final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -614,14 +614,14 @@ class ResetGitRepoTest(unittest.TestCase):
         dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
         final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         with open(self.first_file1, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -630,7 +630,7 @@ class ResetGitRepoTest(unittest.TestCase):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -645,7 +645,7 @@ class ResetGitRepoTest(unittest.TestCase):
         dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
         final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -655,7 +655,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(self.first_file2, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
@@ -664,7 +664,7 @@ class ResetGitRepoTest(unittest.TestCase):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -681,14 +681,14 @@ class ResetGitRepoTest(unittest.TestCase):
         dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
         final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
         with open(self.first_file1, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -697,7 +697,7 @@ class ResetGitRepoTest(unittest.TestCase):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1])
                 self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -712,7 +712,7 @@ class ResetGitRepoTest(unittest.TestCase):
         dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
         final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -722,7 +722,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(self.first_file2, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
@@ -731,7 +731,7 @@ class ResetGitRepoTest(unittest.TestCase):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -748,7 +748,7 @@ class ResetGitRepoTest(unittest.TestCase):
         dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
         final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -761,7 +761,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(self.first_file2, "w") as f:
             f.write("extra stuff")
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -770,7 +770,7 @@ class ResetGitRepoTest(unittest.TestCase):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -787,7 +787,7 @@ class ResetGitRepoTest(unittest.TestCase):
         dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
         final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
@@ -803,7 +803,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
@@ -823,7 +823,7 @@ class ResetGitRepoTest(unittest.TestCase):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, None)
                 self.assertTrue(v)
 
-        v, r = git_lib.get_modified_files(self.first_repo)
+        v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 

@@ -202,7 +202,28 @@ def get_current_branch(repo):
         return True, None
     return True, current_branch[0]
 
-def get_modified_files(repo):
+def get_head_files(repo):
+
+    total_entries = []
+
+    v, r = get_head_modified_files(repo)
+    if not v:
+        return False, r
+    total_entries += r
+    v, r = get_head_deleted_files(repo)
+    if not v:
+        return False, r
+    total_entries += r
+
+    return True, total_entries
+
+def get_head_modified_files(repo):
+    return get_head_files_delegate(repo, " M", "modified")
+
+def get_head_deleted_files(repo):
+    return get_head_files_delegate(repo, " D", "deleted")
+
+def get_head_files_delegate(repo, status_detect, info_variation):
 
     if repo is None:
         return False, "No repo specified"
@@ -217,7 +238,7 @@ def get_modified_files(repo):
 
     v, r = git_wrapper.status(repo)
     if not v:
-        return False, "get_modified_files failed: %s" % r
+        return False, "get_head_%s_files failed: %s" % (info_variation, r)
     out = r.rstrip() # removes the trailing newline
     if len(out) == 0:
         return True, []
@@ -227,13 +248,13 @@ def get_modified_files(repo):
         cl = l.rstrip()
         if len(cl) < 2:
             continue
-        if cl[0:2] == " M":
+        if cl[0:2] == status_detect:
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(os.path.abspath(fp))
     return True, ret
 
-def get_staged_files(repo):
+def get_staged_files(repo): # mvtodo: review
 
     if repo is None:
         return False, "No repo specified"

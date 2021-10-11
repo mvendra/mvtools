@@ -223,7 +223,7 @@ def get_previous_list(local_repo, previous_number):
     prev_list = rev_entries_filter(log_entries)
     return True, prev_list
 
-def get_modified_files(local_repo):
+def get_head_modified_files(local_repo):
 
     if local_repo is None:
         return False, "repo is unspecified"
