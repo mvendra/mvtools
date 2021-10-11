@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import terminal_colors
-import git_wrapper
+import git_lib
 
 def do_fetch(repo, remotes):
 
@@ -12,7 +12,7 @@ def do_fetch(repo, remotes):
 
     print("\n* Fetching on %s ..." % repo)
     hasanyfailed = False
-    v, r = git_wrapper.fetch_multiple(repo, remotes_list)
+    v, r = git_lib.fetch_multiple(repo, remotes_list)
     if v:
         out = "OK."
         color = terminal_colors.TTY_GREEN

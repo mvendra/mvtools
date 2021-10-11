@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import terminal_colors
-import git_wrapper
+import git_lib
 
 def do_pull(repo, remotes, branches):
 
@@ -15,7 +15,7 @@ def do_pull(repo, remotes, branches):
     for rm in remotes_list:
         for bn in branches:
 
-            v, r = git_wrapper.pull(repo, rm, bn)
+            v, r = git_lib.pull(repo, rm, bn)
             if v:
                 out = "OK."
                 color = terminal_colors.TTY_GREEN

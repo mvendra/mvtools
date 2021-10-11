@@ -4,7 +4,7 @@ import sys
 import os
 
 import path_utils
-import git_wrapper
+import git_lib
 
 def puaq(): # print usage and quit
     print("Usage: %s repo_path." % path_utils.basename_filtered(__file__))
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     repo_path = sys.argv[1]
     print("Fetching %s..." % repo_path)
 
-    v, r = git_wrapper.fetch_all(repo_path)
+    v, r = git_lib.fetch_all(repo_path)
     if v:
         out = "Done with success."
     else:

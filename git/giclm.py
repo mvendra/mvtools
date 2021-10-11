@@ -9,13 +9,12 @@ without the decorations.
 import os
 import sys
 
-import git_wrapper
 import git_lib
 import sendtoclipboard
 
 def copy_last_commit_message(repo):
 
-    v, r = git_wrapper.log(repo)
+    v, r = git_lib.log(repo)
     if not v:
         print("copy_last_commit_message failed: %s" % r)
         sys.exit(1)

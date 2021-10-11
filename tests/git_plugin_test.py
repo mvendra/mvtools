@@ -17,6 +17,12 @@ import port_git_repo
 import reset_git_repo
 import apply_git_patch
 
+class AnyStringWith:
+    def __init__(self, the_str):
+        self.the_str = the_str
+    def __eq__(self, other):
+        return self.the_str in other
+
 class GitPluginTest(unittest.TestCase):
 
     def setUp(self):
@@ -269,7 +275,7 @@ class GitPluginTest(unittest.TestCase):
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
                 v, r = self.git_task.task_clone_repo(print, "dummy_value3", self.nonexistent_path1, "dummy_value4")
                 self.assertTrue(v)
-                dummy1.assert_called_with("dummy_value3", self.nonexistent_path1, "dummy_value4")
+                dummy1.assert_called_with(AnyStringWith("dummy_value3"), self.nonexistent_path1, "dummy_value4")
                 out_list = [("git_plugin_stdout", "", "Git's stdout"), ("git_plugin_stderr", "", "Git's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
 
@@ -281,7 +287,7 @@ class GitPluginTest(unittest.TestCase):
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
                 v, r = self.git_task.task_clone_repo(print, "dummy_value3", self.nonexistent_path1, "dummy_value4")
                 self.assertFalse(v)
-                dummy1.assert_called_with("dummy_value3", self.nonexistent_path1, "dummy_value4")
+                dummy1.assert_called_with(AnyStringWith("dummy_value3"), self.nonexistent_path1, "dummy_value4")
                 out_list = [("git_plugin_stdout", "test-stdout", "Git's stdout"), ("git_plugin_stderr", "test-stderr", "Git's stderr")]
                 dummy2.assert_called_with(False, print, out_list)
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import sys
-import git_wrapper
+import git_lib
 
 def call_and_assemble_report(report, cfg_key, cfg_val):
-    v, r = git_wrapper.config(cfg_key, cfg_val, True)
+    v, r = git_lib.config(cfg_key, cfg_val, True)
     if not v:
         report.append(r)
     return report

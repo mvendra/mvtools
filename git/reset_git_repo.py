@@ -9,7 +9,6 @@ import mvtools_envvars
 import path_utils
 
 import detect_repo_type
-import git_wrapper
 import git_lib
 
 import delayed_file_backup
@@ -59,7 +58,7 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
     # generate the backup patch
     backup_filename = make_patch_filename(revert_file, patch_index)
     backup_contents = ""
-    v, r = git_wrapper.diff(target_repo, [revert_file])
+    v, r = git_lib.diff(target_repo, [revert_file])
     if not v:
         return False, "reset_git_repo_file: [%s]" % r
     backup_contents = r
@@ -79,7 +78,7 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_git_repo_file: failed because [%s] already exists." % gen_patch
 
     # revert file changes
-    v, r = git_wrapper.checkout(target_repo, [revert_file])
+    v, r = git_lib.checkout(target_repo, [revert_file])
     if not v:
         return False, "reset_git_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
 
@@ -108,7 +107,7 @@ def reset_git_repo_entire(target_repo, backup_obj):
         # generate the backup patch
         backup_filename = make_patch_filename(mf, c)
         backup_contents = ""
-        v, r = git_wrapper.diff(target_repo, [mf])
+        v, r = git_lib.diff(target_repo, [mf])
         if not v:
             return False, ["reset_git_repo_entire: [%s]" % r]
         backup_contents = r
@@ -129,7 +128,7 @@ def reset_git_repo_entire(target_repo, backup_obj):
         report.append(_report_patch(gen_patch))
 
     # revert all changes
-    v, r = git_wrapper.checkout(target_repo)
+    v, r = git_lib.checkout(target_repo)
     if not v:
         return False, ["reset_git_repo_entire: [%s]" % r]
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import terminal_colors
-import git_wrapper
+import git_lib
 
 def remote_change_url(repo, remote, operation, newpath):
 
@@ -11,7 +11,7 @@ def remote_change_url(repo, remote, operation, newpath):
 
     print("\n* Changing %s's %s remote (%s) ..." % (repo, operation, remote))
 
-    v, r = git_wrapper.remote_change_url(repo, remote, newpath)
+    v, r = git_lib.remote_change_url(repo, remote, newpath)
     if v:
         out = "OK."
         color = terminal_colors.TTY_GREEN

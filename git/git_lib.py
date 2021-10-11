@@ -475,5 +475,163 @@ def unstage(repo, file_list=None):
 
     return git_wrapper.reset_head(repo, file_list_final)
 
+def clone_bare(repo_source, repo_target):
+    if repo_source is None:
+        return False, "No source repo specified"
+    if repo_target is None:
+        return False, "No target repo specified"
+    repo_source = os.path.abspath(repo_source)
+    repo_target = os.path.abspath(repo_target)
+    return git_wrapper.clone_bare(repo_source, repo_target)
+
+def clone(repo_source, repo_target, remotename=None):
+    if repo_source is None:
+        return False, "No source repo specified"
+    if repo_target is None:
+        return False, "No target repo specified"
+    repo_source = os.path.abspath(repo_source)
+    repo_target = os.path.abspath(repo_target)
+    return git_wrapper.clone(repo_source, repo_target, remotename)
+
+def clone_ext(repo_source, repo_target, remotename=None):
+    if repo_source is None:
+        return False, "No source repo specified"
+    if repo_target is None:
+        return False, "No target repo specified"
+    repo_source = os.path.abspath(repo_source)
+    repo_target = os.path.abspath(repo_target)
+    return git_wrapper.clone_ext(repo_source, repo_target, remotename)
+
+def pull_default(repo):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.pull_default(repo)
+
+def pull(repo, remote, branch):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.pull(repo, remote, branch)
+
+def push(repo, remote, branch):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.push(repo, remote, branch)
+
+def log(repo, limit=None):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.log(repo, limit)
+
+def fetch_multiple(repo, remotes):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.fetch_multiple(repo, remotes)
+
+def fetch_all(repo):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.fetch_all(repo)
+
+def diff(repo, file_list=None):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    final_file_list = []
+    if file_list is None:
+        final_file_list = None
+    elif isinstance(file_list, str):
+        final_file_list.append(os.path.abspath(file_list))
+    elif isinstance(file_list, list):
+        for fl in file_list:
+            final_file_list.append(os.path.abspath(fl))
+    else:
+        return False, "file_list is invalid: [%s]" % file_list
+    return git_wrapper.diff(repo, final_file_list)
+
+def diff_cached(repo, file_list=None):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    final_file_list = []
+    if file_list is None:
+        final_file_list = None
+    elif isinstance(file_list, str):
+        final_file_list.append(os.path.abspath(file_list))
+    elif isinstance(file_list, list):
+        for fl in file_list:
+            final_file_list.append(os.path.abspath(fl))
+    else:
+        return False, "file_list is invalid: [%s]" % file_list
+    return git_wrapper.diff_cached(repo, final_file_list)
+
+def rev_parse_head(repo):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.rev_parse_head(repo)
+
+def stash_show(repo, stash_name):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.stash_show(repo, stash_name)
+
+def show(repo, commit_id):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.show(repo, commit_id)
+
+def checkout(repo, file_list=None):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    final_file_list = []
+    if file_list is None:
+        final_file_list = None
+    elif isinstance(file_list, str):
+        final_file_list.append(os.path.abspath(file_list))
+    elif isinstance(file_list, list):
+        for fl in file_list:
+            final_file_list.append(os.path.abspath(fl))
+    else:
+        return False, "file_list is invalid: [%s]" % file_list
+    return git_wrapper.checkout(repo, final_file_list)
+
+def config(key, value, global_cfg=True):
+    if key is None:
+        return False, "key unspecified"
+    return git_wrapper.config(key, value, global_cfg)
+
+def commit_editor(repo):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.commit_editor(repo)
+
+def commit_direct(repo, params):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.commit_direct(repo, params)
+
+def remote_change_url(repo, remote, new_url):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.remote_change_url(repo, remote, new_url)
+
+def status_simple(repo):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.status_simple(repo)
+
 if __name__ == "__main__":
     print("Hello from %s" % path_utils.basename_filtered(__file__))

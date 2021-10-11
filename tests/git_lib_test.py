@@ -4,6 +4,8 @@ import sys
 import os
 import shutil
 import unittest
+from unittest import mock
+from unittest.mock import patch
 
 import mvtools_test_fixture
 import git_test_fixture
@@ -2123,6 +2125,682 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertFalse(self.first_file1 in r)
         self.assertTrue(first_file2 in r)
+
+    def testCloneBareRepo(self):
+
+        with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone_bare(self.first_repo, self.nonexistent_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, self.nonexistent_repo)
+
+        with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone_bare(None, self.nonexistent_repo)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone_bare(self.first_repo, None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone_bare(first_rel_path, self.nonexistent_repo)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, self.nonexistent_repo)
+
+            nonexistent_rel_path = path_utils.concat_path("./", os.path.basename(self.nonexistent_repo))
+            with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone_bare(self.first_repo, nonexistent_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, self.nonexistent_repo)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testCloneRepo(self):
+
+        with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone(self.first_repo, self.nonexistent_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
+
+        with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone(self.first_repo, self.nonexistent_repo, "remotename")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, self.nonexistent_repo, "remotename")
+
+        with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone(None, self.nonexistent_repo)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone(self.first_repo, None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone(first_rel_path, self.nonexistent_repo)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
+
+            nonexistent_rel_path = path_utils.concat_path("./", os.path.basename(self.nonexistent_repo))
+            with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone(self.first_repo, nonexistent_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testCloneRepoExt(self):
+
+        with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone_ext(self.first_repo, self.nonexistent_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
+
+        with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone_ext(self.first_repo, self.nonexistent_repo, "remotename")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, self.nonexistent_repo, "remotename")
+
+        with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone_ext(None, self.nonexistent_repo)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
+            v, r = git_lib.clone_ext(self.first_repo, None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone_ext(first_rel_path, self.nonexistent_repo)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
+
+            nonexistent_rel_path = path_utils.concat_path("./", os.path.basename(self.nonexistent_repo))
+            with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone_ext(self.first_repo, nonexistent_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testPullDefault(self):
+
+        with mock.patch("git_wrapper.pull_default", return_value=(True, None)) as dummy:
+            v, r = git_lib.pull_default(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo)
+
+        with mock.patch("git_wrapper.pull_default", return_value=(True, None)) as dummy:
+            v, r = git_lib.pull_default(None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.pull_default", return_value=(True, None)) as dummy:
+                v, r = git_lib.pull_default(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testPull(self):
+
+        with mock.patch("git_wrapper.pull", return_value=(True, None)) as dummy:
+            v, r = git_lib.pull(self.first_repo, "remotename", "branchname")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, "remotename", "branchname")
+
+        with mock.patch("git_wrapper.pull", return_value=(True, None)) as dummy:
+            v, r = git_lib.pull(None, "remotename", "branchname")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.pull", return_value=(True, None)) as dummy:
+                v, r = git_lib.pull(first_rel_path, "remotename", "branchname")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, "remotename", "branchname")
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testPush(self):
+
+        with mock.patch("git_wrapper.push", return_value=(True, None)) as dummy:
+            v, r = git_lib.push(self.first_repo, "remotename", "branchname")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, "remotename", "branchname")
+
+        with mock.patch("git_wrapper.push", return_value=(True, None)) as dummy:
+            v, r = git_lib.push(None, "remotename", "branchname")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.push", return_value=(True, None)) as dummy:
+                v, r = git_lib.push(first_rel_path, "remotename", "branchname")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, "remotename", "branchname")
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testLog(self):
+
+        with mock.patch("git_wrapper.log", return_value=(True, None)) as dummy:
+            v, r = git_lib.log(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, None)
+
+        with mock.patch("git_wrapper.log", return_value=(True, None)) as dummy:
+            v, r = git_lib.log(self.first_repo, 2112)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, 2112)
+
+        with mock.patch("git_wrapper.log", return_value=(True, None)) as dummy:
+            v, r = git_lib.log(None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.log", return_value=(True, None)) as dummy:
+                v, r = git_lib.log(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, None)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testFetchMultiple(self):
+
+        with mock.patch("git_wrapper.fetch_multiple", return_value=(True, None)) as dummy:
+            v, r = git_lib.fetch_multiple(self.first_repo, ["remotes"])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, ["remotes"])
+
+        with mock.patch("git_wrapper.fetch_multiple", return_value=(True, None)) as dummy:
+            v, r = git_lib.fetch_multiple(None, ["remotes"])
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.fetch_multiple", return_value=(True, None)) as dummy:
+                v, r = git_lib.fetch_multiple(first_rel_path, ["remotes"])
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, ["remotes"])
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testFetchAll(self):
+
+        with mock.patch("git_wrapper.fetch_all", return_value=(True, None)) as dummy:
+            v, r = git_lib.fetch_all(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo)
+
+        with mock.patch("git_wrapper.fetch_all", return_value=(True, None)) as dummy:
+            v, r = git_lib.fetch_all(None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.fetch_all", return_value=(True, None)) as dummy:
+                v, r = git_lib.fetch_all(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testRevParseHead(self):
+
+        with mock.patch("git_wrapper.rev_parse_head", return_value=(True, None)) as dummy:
+            v, r = git_lib.rev_parse_head(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo)
+
+        with mock.patch("git_wrapper.rev_parse_head", return_value=(True, None)) as dummy:
+            v, r = git_lib.rev_parse_head(None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.rev_parse_head", return_value=(True, None)) as dummy:
+                v, r = git_lib.rev_parse_head(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testCommitEditor(self):
+
+        with mock.patch("git_wrapper.commit_editor", return_value=(True, None)) as dummy:
+            v, r = git_lib.commit_editor(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo)
+
+        with mock.patch("git_wrapper.commit_editor", return_value=(True, None)) as dummy:
+            v, r = git_lib.commit_editor(None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.commit_editor", return_value=(True, None)) as dummy:
+                v, r = git_lib.commit_editor(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testCommitDirect(self):
+
+        with mock.patch("git_wrapper.commit_direct", return_value=(True, None)) as dummy:
+            v, r = git_lib.commit_direct(self.first_repo, "the-params")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, "the-params")
+
+        with mock.patch("git_wrapper.commit_direct", return_value=(True, None)) as dummy:
+            v, r = git_lib.commit_direct(None, "the-params")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.commit_direct", return_value=(True, None)) as dummy:
+                v, r = git_lib.commit_direct(first_rel_path, "the-params")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, "the-params")
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testStatusSimple(self):
+
+        with mock.patch("git_wrapper.status_simple", return_value=(True, None)) as dummy:
+            v, r = git_lib.status_simple(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo)
+
+        with mock.patch("git_wrapper.status_simple", return_value=(True, None)) as dummy:
+            v, r = git_lib.status_simple(None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.status_simple", return_value=(True, None)) as dummy:
+                v, r = git_lib.status_simple(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo)
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testShow(self):
+
+        with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
+            v, r = git_lib.show(self.first_repo, "the-commit-id")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, "the-commit-id")
+
+        with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
+            v, r = git_lib.show(None, "the-commit-id")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
+                v, r = git_lib.show(first_rel_path, "the-commit-id")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, "the-commit-id")
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testStashShow(self):
+
+        with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:
+            v, r = git_lib.stash_show(self.first_repo, "the-stash-name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, "the-stash-name")
+
+        with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:
+            v, r = git_lib.stash_show(None, "the-stash-name")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:
+                v, r = git_lib.stash_show(first_rel_path, "the-stash-name")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, "the-stash-name")
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testRemoteChangeUrl(self):
+
+        with mock.patch("git_wrapper.remote_change_url", return_value=(True, None)) as dummy:
+            v, r = git_lib.remote_change_url(self.first_repo, "remotename", "new-url")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, "remotename", "new-url")
+
+        with mock.patch("git_wrapper.remote_change_url", return_value=(True, None)) as dummy:
+            v, r = git_lib.remote_change_url(None, "remotename", "new-url")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.remote_change_url", return_value=(True, None)) as dummy:
+                v, r = git_lib.remote_change_url(first_rel_path, "remotename", "new-url")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, "remotename", "new-url")
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testConfig(self):
+
+        with mock.patch("git_wrapper.config", return_value=(True, None)) as dummy:
+            v, r = git_lib.config("the-key", "the-value")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("the-key", "the-value", True)
+
+        with mock.patch("git_wrapper.config", return_value=(True, None)) as dummy:
+            v, r = git_lib.config("the-key", "the-value", False)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("the-key", "the-value", False)
+
+        with mock.patch("git_wrapper.config", return_value=(True, None)) as dummy:
+            v, r = git_lib.config(None, "the-value")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+    def testCheckout(self):
+
+        with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+            v, r = git_lib.checkout(self.first_repo, [self.first_file1])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+            v, r = git_lib.checkout(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, None)
+
+        with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+            v, r = git_lib.checkout(None, [self.first_file1])
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+            v, r = git_lib.checkout(None, 123)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+            v, r = git_lib.checkout(self.first_repo, self.first_file1)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+
+            with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+                v, r = git_lib.checkout(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, None)
+
+            with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+                v, r = git_lib.checkout(self.first_repo, [first_file1_rel_path])
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+            with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
+                v, r = git_lib.checkout(self.first_repo, first_file1_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testDiff(self):
+
+        with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff(self.first_repo, [self.first_file1])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, None)
+
+        with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff(None, [self.first_file1])
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff(None, 123)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff(self.first_repo, self.first_file1)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+
+            with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+                v, r = git_lib.diff(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, None)
+
+            with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+                v, r = git_lib.diff(self.first_repo, [first_file1_rel_path])
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+            with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
+                v, r = git_lib.diff(self.first_repo, first_file1_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testDiffCached(self):
+
+        with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff_cached(self.first_repo, [self.first_file1])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff_cached(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, None)
+
+        with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff_cached(None, [self.first_file1])
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff_cached(None, 123)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+            v, r = git_lib.diff_cached(self.first_repo, self.first_file1)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+
+            with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+                v, r = git_lib.diff_cached(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, None)
+
+            with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+                v, r = git_lib.diff_cached(self.first_repo, [first_file1_rel_path])
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+            with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
+                v, r = git_lib.diff_cached(self.first_repo, first_file1_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, [self.first_file1])
+
+        finally:
+            os.chdir(saved_wd)
 
 if __name__ == '__main__':
     unittest.main()

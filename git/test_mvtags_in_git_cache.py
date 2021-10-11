@@ -3,7 +3,6 @@
 import sys
 import os
 
-import git_wrapper
 import git_lib
 import path_utils
 
@@ -22,7 +21,7 @@ def check_mvtags_in_file(repo, thefile):
     if not os.path.exists(thefile):
         return None
 
-    v, r = git_wrapper.diff_cached(repo, [thefile])
+    v, r = git_lib.diff_cached(repo, [thefile])
     if not v:
         print("Check mvtags failed: %s" % r)
         return None

@@ -4,7 +4,6 @@ import sys
 import os
 
 import git_lib
-import git_wrapper
 import path_utils
 
 ERRMSG_EMPTY = "Empty contents"
@@ -31,19 +30,19 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
     return True, output_filename_full
 
 def collect_git_patch_head(repo, storage_path):
-    v, r = git_wrapper.diff(repo)
+    v, r = git_lib.diff(repo)
     if not v:
         return False, "Failed calling git command for head: [%s]. Repository: [%s]." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
 
 def collect_git_patch_head_id(repo, storage_path):
-    v, r = git_wrapper.rev_parse_head(repo)
+    v, r = git_lib.rev_parse_head(repo)
     if not v:
         return False, "Failed calling git command for head-id: [%s]. Repository: [%s]." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)
 
 def collect_git_patch_staged(repo, storage_path):
-    v, r = git_wrapper.diff_cached(repo)
+    v, r = git_lib.diff_cached(repo)
     if not v:
         return False, "Failed calling git command for staged: [%s]. Repository: [%s]." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "staged.patch", "staged", r)
@@ -95,7 +94,7 @@ def collect_git_patch_stash(repo, storage_path):
 
     for si in stash_list:
 
-        v, r = git_wrapper.stash_show(repo, si)
+        v, r = git_lib.stash_show(repo, si)
         if not v:
             return False, "Failed calling git command for stash: [%s]. Repository: [%s]. Stash name: [%s]." % (r, repo, si)
 
@@ -130,7 +129,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
         return False, "Can't collect patch for previous: requested [%d] commits, but there are only [%d] in total." % (previous_number, len(prev_list))
 
     for i in range(previous_number):
-        v, r = git_wrapper.show(repo, prev_list[i])
+        v, r = git_lib.show(repo, prev_list[i])
         if not v:
             return False, "Failed calling git command for previous: [%s]. Repository: [%s]. Commit id: [%s]." % (r, repo, prev_list[i])
 

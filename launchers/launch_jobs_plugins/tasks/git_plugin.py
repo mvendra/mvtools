@@ -7,7 +7,7 @@ import path_utils
 import log_helper
 import output_backup_helper
 
-import git_wrapper
+import git_lib
 import port_git_repo
 import reset_git_repo
 import apply_git_patch
@@ -178,7 +178,7 @@ class CustomTask(launch_jobs.BaseTask):
         if os.path.exists(target_path):
             return False, "Target path [%s] already exists" % target_path
 
-        v, r = git_wrapper.clone_ext(source_url, target_path, remote_name)
+        v, r = git_lib.clone_ext(source_url, target_path, remote_name)
         if not v:
             return False, r
         proc_result = r[0]
@@ -201,7 +201,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         if remote_name is None and branch_name is None:
 
-            v, r = git_wrapper.pull_default(target_path)
+            v, r = git_lib.pull_default(target_path)
             if not v:
                 return False, r
 
@@ -213,7 +213,7 @@ class CustomTask(launch_jobs.BaseTask):
             if branch_name is None:
                 return False, "Remote name was specified, but branch name was not"
 
-            v, r = git_wrapper.pull(target_path, remote_name, branch_name)
+            v, r = git_lib.pull(target_path, remote_name, branch_name)
             if not v:
                 return False, r
 

@@ -3,13 +3,13 @@
 import sys
 import os
 import git_visitor_base
-import git_wrapper
+import git_lib
 
 def visitor_status(repos, options):
 
     for repo in repos:
 
-        v, r = git_wrapper.status_simple(repo)
+        v, r = git_lib.status_simple(repo)
         if not v:
             print("visitor-status failed: %s" % r)
             return False

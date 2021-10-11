@@ -193,12 +193,12 @@ def branch_create_and_switch(repo, branchname):
     cmd = ["git", "-C", repo, "checkout", "-B", branchname]
     return git_wrapper_standard_command(cmd, "branch-create-and-switch")
 
-def checkout(repo, filelist=None):
+def checkout(repo, file_list=None):
     cmd = ["git", "-C", repo, "checkout"]
-    if filelist is None:
+    if file_list is None:
         cmd.append(repo)
     else:
-        for fl in filelist:
+        for fl in file_list:
             cmd.append(fl)
     return git_wrapper_standard_command(cmd, "checkout")
 

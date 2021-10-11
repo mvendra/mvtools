@@ -3,7 +3,6 @@
 import sys
 import os
 
-import git_wrapper
 import git_lib
 import test_mvtags_in_git_cache
 import inline_echo
@@ -14,9 +13,9 @@ def gicom(repo, params):
         # special case. we will call git differently
         # because here we want the $EDITOR to be able to more easily
         # integrate with the calling terminal
-        v, r = git_wrapper.commit_editor(repo)
+        v, r = git_lib.commit_editor(repo)
     else:
-        v, r = git_wrapper.commit_direct(repo, params)
+        v, r = git_lib.commit_direct(repo, params)
 
     if not v:
         print("gicom failed: %s" % r)

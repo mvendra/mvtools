@@ -7,7 +7,7 @@ import fsquery
 import fsquery_adv_filter
 import path_utils
 import detect_repo_type
-import git_wrapper
+import git_lib
 
 class CustomTask(launch_jobs.BaseTask):
     def get_desc(self):
@@ -111,11 +111,11 @@ class CustomTask(launch_jobs.BaseTask):
             final_src = item_pair[0]
             final_target = item_pair[1]
             if bare_clone:
-                v, r = git_wrapper.clone_bare(final_src, final_target)
+                v, r = git_lib.clone_bare(final_src, final_target)
                 if not v:
                     return False, "clone_repos failed - unable to bare-clone [%s] into [%s]." % (final_src, final_target)
             else:
-                v, r = git_wrapper.clone(final_src, final_target, remote_name)
+                v, r = git_lib.clone(final_src, final_target, remote_name)
                 if not v:
                     return False, "clone_repos failed - unable to clone [%s] into [%s]." % (final_src, final_target)
 
