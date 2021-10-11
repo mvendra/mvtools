@@ -12,7 +12,7 @@ import get_platform
 import convcygpath
 import output_backup_helper
 
-def fix_cygwin_path(path):
+def fix_cygwin_path(path): # mvtodo
 
     if path is None:
         return None
@@ -28,7 +28,7 @@ def fix_cygwin_path(path):
         return convcygpath.convert_cygwin_path_to_win_path(path)
     return path
 
-def sanitize_windows_path(path):
+def sanitize_windows_path(path): # mvtodo
 
     if path is None:
         return None
@@ -153,7 +153,7 @@ def detect_separator(the_string):
 
     return None
 
-def get_list_externals(repo):
+def get_list_externals(repo): # mvtodo
 
     # sample of actual output from svn status, as of m2021 (on Linux): "Performing status on external item at 'ext/Subversion':"
     EXT_ST_MSG = "Performing status on external item at"
@@ -179,7 +179,7 @@ def get_list_externals(repo):
 
     return True, list_externals
 
-def get_list_unversioned(repo):
+def get_list_unversioned(repo): # mvtodo
 
     v, r = svn_wrapper.status(repo)
     if not v:
@@ -188,7 +188,7 @@ def get_list_unversioned(repo):
     unversioned_files = [path_utils.concat_path(repo, sanitize_windows_path(x)) for x in unversioned_files if x is not None]
     return True, unversioned_files
 
-def get_previous_list(repo, previous_number):
+def get_previous_list(repo, previous_number): # mvtodo
 
     v, r = svn_wrapper.log(repo, str(previous_number))
     if not v:
@@ -205,7 +205,7 @@ def get_previous_list(repo, previous_number):
     prev_list = rev_entries_filter(log_entries)
     return True, prev_list
 
-def get_modified_files(repo):
+def get_modified_files(repo): # mvtodo
 
     v, r = svn_wrapper.status(repo)
     if not v:
@@ -227,7 +227,7 @@ def get_modified_files(repo):
 
     return True, mod_list
 
-def get_added_files(repo):
+def get_added_files(repo): # mvtodo
 
     v, r = svn_wrapper.status(repo)
     if not v:
@@ -249,7 +249,7 @@ def get_added_files(repo):
 
     return True, add_list
 
-def get_head_revision(repo):
+def get_head_revision(repo): # mvtodo
 
     v, r = svn_wrapper.info(repo)
     if not v:
@@ -257,7 +257,7 @@ def get_head_revision(repo):
     head_rev = revision_filter_function(r)
     return True, head_rev
 
-def is_svn_repo(repo):
+def is_svn_repo(repo): # mvtodo
 
     if not os.path.exists(repo):
         return False, "svn_lib.is_svn_repo failed: %s does not exist." % repo
@@ -268,7 +268,7 @@ def is_svn_repo(repo):
         return True, "svn"
     return True, False
 
-def is_head_clear(repo, include_externals, ignore_unversioned):
+def is_head_clear(repo, include_externals, ignore_unversioned): # mvtodo
 
     all_repos = [repo]
 
@@ -287,7 +287,7 @@ def is_head_clear(repo, include_externals, ignore_unversioned):
 
     return True, True
 
-def is_head_clear_delegate(repo, ignore_unversioned):
+def is_head_clear_delegate(repo, ignore_unversioned): # mvtodo
 
     v, r = svn_wrapper.status(repo)
     if not v:
@@ -306,7 +306,7 @@ def is_head_clear_delegate(repo, ignore_unversioned):
 
     return True, True
 
-def revert(local_repo, repo_items):
+def revert(local_repo, repo_items): # mvtodo
 
     if not os.path.exists(local_repo):
         return False, "Base repo [%s] does not exist." % local_repo
@@ -320,7 +320,7 @@ def revert(local_repo, repo_items):
 
     return svn_wrapper.revert(local_repo, repo_items_final)
 
-def diff(repo, file_list=None, rev=None):
+def diff(repo, file_list=None, rev=None): # mvtodo
 
     if not os.path.exists(repo):
         return False, "%s does not exist." % repo
@@ -408,7 +408,7 @@ def _check_valid_codes(output_message, valid_codes):
 def _update_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011", "W000104"])
 
-def _update_and_cleanup(feedback_object, local_repo, autobackups):
+def _update_and_cleanup(feedback_object, local_repo, autobackups): # mvtodo
 
     warnings = None
 
@@ -446,7 +446,7 @@ def _update_and_cleanup(feedback_object, local_repo, autobackups):
 
     return True, (warnings, proc_stdout)
 
-def update_autorepair(feedback_object, local_repo, do_recursion, autobackups):
+def update_autorepair(feedback_object, local_repo, do_recursion, autobackups): # mvtodo
 
     warnings = None
     iterations = 0
@@ -494,7 +494,7 @@ def update_autorepair(feedback_object, local_repo, do_recursion, autobackups):
 def _checkout_autorepair_check_return(output_message):
     return _check_valid_codes(output_message, ["E205011", "W000104"])
 
-def checkout_with_update(feedback_object, remote_link, local_repo, autobackups):
+def checkout_with_update(feedback_object, remote_link, local_repo, autobackups): # mvtodo
 
     warnings = None
 
@@ -522,6 +522,10 @@ def checkout_with_update(feedback_object, remote_link, local_repo, autobackups):
 
 def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(fix_cygwin_path(local_repo))
+
     warnings = None
     iterations = 0
     MAX_ITERATIONS = 6
@@ -531,9 +535,9 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
         # loop sentinel
         iterations += 1
         if iterations > MAX_ITERATIONS:
-            return False, "repeated_checkout: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo)
+            return False, "repeated_checkout: max iterations [%s] exceeded (at %s)" % (MAX_ITERATIONS, local_repo_final)
 
-        v, r = checkout_with_update(feedback_object, remote_link, local_repo, autobackups)
+        v, r = checkout_with_update(feedback_object, remote_link, local_repo_final, autobackups)
         if v:
             # this iteration worked. its done
             warnings = log_helper.add_to_warnings(warnings, r)
@@ -541,7 +545,7 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
         # failed iteration. reset and start over
         warnings = log_helper.add_to_warnings(warnings, "Iteration [%d] failed and was sleep-retried. Reason: [%s]" % (iterations, r))
-        path_utils.deletefolder_ignoreerrors(local_repo)
+        path_utils.deletefolder_ignoreerrors(local_repo_final)
         SLEEP_TIME = 15 # minutes
         feedback_object("Iteration number [%d] has failed. Will sleep for [%d] minutes before retrying." % (iterations, SLEEP_TIME))
         time.sleep(SLEEP_TIME * 60)
@@ -551,16 +555,22 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
 def patch_as_head(repo, patch_file, override_head_check):
 
-    patch_file_final = fix_cygwin_path(patch_file)
+    if repo is None:
+        return False, "repo is unspecified"
+    repo_final = os.path.abspath(fix_cygwin_path(repo))
+
+    if patch_file is None:
+        return False, "patch_file is unspecified"
+    patch_file_final = os.path.abspath(fix_cygwin_path(patch_file))
 
     if not override_head_check:
-        v, r = is_head_clear(repo, False, False)
+        v, r = is_head_clear(repo_final, False, False)
         if not v:
             return False, r
         if not r:
             return False, "Cannot patch - head is not clear"
 
-    v, r = svn_wrapper.patch(repo, patch_file_final)
+    v, r = svn_wrapper.patch(repo_final, patch_file_final)
     if not v:
         return False, r
 
