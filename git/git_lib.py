@@ -21,7 +21,7 @@ def get_prev_hash(str_line):
     return generic_parse(str_line, " ")
 
 def is_char_status_staged(the_char):
-    return the_char in ["A", "M", "R", "C", "U"]
+    return the_char in ["M", "A", "D", "R", "C", "U"]
 
 def remove_gitlog_decorations(commitmsg):
 
@@ -254,7 +254,7 @@ def get_head_files_delegate(repo, status_detect, info_variation):
             ret.append(os.path.abspath(fp))
     return True, ret
 
-def get_staged_files(repo): # mvtodo: review
+def get_staged_files(repo):
 
     if repo is None:
         return False, "No repo specified"

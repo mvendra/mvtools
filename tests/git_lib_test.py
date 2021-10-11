@@ -584,7 +584,8 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v and r)
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
         self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
@@ -594,15 +595,14 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         os.unlink(first_more1)
-        v, r = git_wrapper.stage(self.first_repo, [first_more1])
-        self.assertTrue(v)
+        self.assertFalse(os.path.exists(first_more1))
 
         os.unlink(first_more2)
         self.assertFalse(os.path.exists(first_more2))
 
         v, r = git_lib.get_head_deleted_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(r, [first_more2])
+        self.assertEqual(r, [first_more1])
 
     def testGetHeadDeletedFilesRelativePath(self):
 
@@ -746,6 +746,21 @@ class GitLibTest(unittest.TestCase):
         first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
         self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
 
+        first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more6), "more6-content6", "commit_msg_more6")
+        self.assertTrue(v)
+
+        first_more7 = path_utils.concat_path(self.first_repo, "more7.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more7), "more7-content7", "commit_msg_more7")
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(first_more6))
+        self.assertTrue(os.path.exists(first_more7))
+        os.unlink(first_more6)
+        os.unlink(first_more7)
+        self.assertFalse(os.path.exists(first_more6))
+        self.assertFalse(os.path.exists(first_more7))
+
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
         self.assertTrue(v)
 
@@ -753,15 +768,17 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, [first_more1])
 
-        v, r = git_wrapper.stage(self.first_repo, [first_more2, first_more3])
+        v, r = git_wrapper.stage(self.first_repo, [first_more2, first_more3, first_more6])
         self.assertTrue(v)
 
         v, r = git_lib.get_staged_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 3)
+        self.assertEqual(len(r), 4)
         self.assertTrue(first_more1 in r)
         self.assertTrue(first_more2 in r)
         self.assertTrue(first_more3 in r)
+        self.assertTrue(first_more6 in r)
+        self.assertFalse(first_more7 in r)
 
         with open(self.first_file1, "a") as f:
             f.write("additional contents")
@@ -772,12 +789,14 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_staged_files(self.first_repo)
         self.assertTrue(v)
 
-        self.assertEqual(len(r), 6)
+        self.assertEqual(len(r), 8)
         self.assertTrue(self.first_file1 in r)
         self.assertTrue(first_more1 in r)
         self.assertTrue(first_more2 in r)
         self.assertTrue(first_more3 in r)
         self.assertTrue(first_more4 in r)
+        self.assertTrue(first_more6 in r)
+        self.assertTrue(first_more7 in r)
         #self.assertTrue(first_more5 in r) # mvtodo: might require extra system config or ...
 
     def testGetStagedFilesRelativePath(self):
