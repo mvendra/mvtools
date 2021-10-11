@@ -525,6 +525,8 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
     if local_repo is None:
         return False, "repo is unspecified"
     local_repo_final = os.path.abspath(fix_cygwin_path(local_repo))
+    if not os.path.exists(path_utils.dirname_filtered(local_repo_final)):
+        return False, "Path (dirname) [%s] does not exist." % path_utils.dirname_filtered(local_repo_final)
 
     warnings = None
     iterations = 0
