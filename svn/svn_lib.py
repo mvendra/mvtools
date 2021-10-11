@@ -524,7 +524,7 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
     if local_repo is None:
         return False, "repo is unspecified"
-    local_repo_final = os.path.abspath(fix_cygwin_path(local_repo))
+    local_repo_final = os.path.abspath(local_repo)
     if not os.path.exists(path_utils.dirname_filtered(local_repo_final)):
         return False, "Path (dirname) [%s] does not exist." % path_utils.dirname_filtered(local_repo_final)
 
@@ -559,11 +559,10 @@ def patch_as_head(repo, patch_file, override_head_check):
 
     if repo is None:
         return False, "repo is unspecified"
-    repo_final = os.path.abspath(fix_cygwin_path(repo))
-
+    repo_final = os.path.abspath(repo)
     if patch_file is None:
         return False, "patch_file is unspecified"
-    patch_file_final = os.path.abspath(fix_cygwin_path(patch_file))
+    patch_file_final = fix_cygwin_path(patch_file)
 
     if not override_head_check:
         v, r = is_head_clear(repo_final, False, False)
