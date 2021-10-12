@@ -106,7 +106,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         cfg_file_contents4 = ""
         cfg_file_contents4 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
-        cfg_file_contents4 += ("COPY_PATH = \"%s%s\"" + os.linesep) % (self.test_source_folder3, os.sep)
+        cfg_file_contents4 += ("COPY_PATH = \"%s%s\"" + os.linesep) % (self.test_source_folder3, "/")
         self.test_config_file4 = path_utils.concat_path(self.test_dir, "test_config_file4.t20")
         create_and_write_file.create_file_contents(self.test_config_file4, cfg_file_contents4)
 
@@ -219,7 +219,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation(self.test_config_file4)
         bkprep.read_config(bkprep.config_file)
         bkprep.setup_configuration()
-        self.assertEqual( (self.test_source_folder3 + os.sep), bkprep.instructions[0][1])
+        self.assertEqual( (self.test_source_folder3 + "/"), bkprep.instructions[0][1])
 
     def testReadConfig5(self):
         bkprep = backup_preparation.BackupPreparation(self.test_config_file5)
