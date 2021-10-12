@@ -1,0 +1,12 @@
+
+[
+@mvtools-toplevel-policy-constraints
+* usage of "os.sep" and "os.path.sep" is forbidden -> use hardcoded "/" instead (except on mvtools_setup) -> the rationale
+    is that Unix paths are "lingua franca" of mvtools. other variants must be treated as exceptions, with extra
+    precautions. should there ever be a need to support paths of a system where the forward slash is not a valid
+    separator, then that would warrant the custom implementation of a mvtools specific os.sep that is platform-dependent.
+* usage of "os.path.dirname" and "os.path.basename" is forbidden -> use
+    path_utils.dirname_filtered and path_utils.basename_filtered instead, respectively (except on mvtools_setup)
+* usage of "os.path.join" is forbidden -> use path_utils.concat_path instead (except on mvtools_setup)
+* usage of anything mvtools inside mvtools_setup itself is forbidden - no exceptions. only vanilla python modules allowed.
+]
