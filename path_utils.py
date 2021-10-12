@@ -78,7 +78,7 @@ def arraytopath(the_path_array):
         if c == len(the_path_array):
             result += args
         else:
-            result += args + os.sep
+            result += args + "/"
     return result
 
 def explodepath(apath):
@@ -370,10 +370,10 @@ def dirname_filtered(path, windows_path = "auto"):
             if (not treat_as_windows_path) and (assembled_path == "/"):
                 assembled_path += path_pieces[i]
                 continue
-            assembled_path += ("%s%s" % (os.sep, path_pieces[i]))
+            assembled_path += ("%s%s" % ("/", path_pieces[i]))
 
     if treat_as_windows_path and path[0] == "/": # path_pieces was produced without the leftmost slash. artificially re-introduce it.
-        assembled_path = "%s%s" % (os.sep, assembled_path)
+        assembled_path = "%s%s" % ("/", assembled_path)
 
     return assembled_path
 
@@ -610,7 +610,7 @@ def find_middle_path_parts(basepath, fullpath):
     assembled_middle_string = ""
     for i in range(len(assembled_middle)):
         if i < len(assembled_middle) - 1:
-            assembled_middle_string += assembled_middle[i] + os.sep
+            assembled_middle_string += assembled_middle[i] + "/"
         else:
             assembled_middle_string += assembled_middle[i]
 

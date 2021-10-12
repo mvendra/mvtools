@@ -263,23 +263,23 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.splitpath("F:", "yes"), ["F:"])
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
-            self.assertEqual(path_utils.splitpath("%stmp" % os.sep, "auto"), ["/", "tmp"])
+            self.assertEqual(path_utils.splitpath("/tmp", "auto"), ["/", "tmp"])
             self.assertEqual(path_utils.splitpath("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), ["/", "home\\user", "more", "sub1\\sub2", "yetmore", "file.txt"])
-            self.assertEqual(path_utils.splitpath("%stmp%s" % (os.sep, os.sep), "auto"), ["/", "tmp"])
-            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep), "auto" ), ["/", "first", "second"])
-            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep), "auto" ), ["/", "first", "second"])
+            self.assertEqual(path_utils.splitpath("/tmp/", "auto"), ["/", "tmp"])
+            self.assertEqual(path_utils.splitpath( "/first/second", "auto" ), ["/", "first", "second"])
+            self.assertEqual(path_utils.splitpath( "/first/second/", "auto" ), ["/", "first", "second"])
             self.assertEqual(path_utils.splitpath("F:", "auto"), ["F:"])
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
-            self.assertEqual(path_utils.splitpath(os.sep, "auto"), None)
-            self.assertEqual(path_utils.splitpath("%stmp" % os.sep, "auto"), ["tmp"])
-            self.assertEqual(path_utils.splitpath("%stmp%s" % (os.sep, os.sep), "auto"), ["tmp"])
+            self.assertEqual(path_utils.splitpath("/", "auto"), None)
+            self.assertEqual(path_utils.splitpath("/tmp", "auto"), ["tmp"])
+            self.assertEqual(path_utils.splitpath("/tmp/", "auto"), ["tmp"])
             self.assertEqual(path_utils.splitpath("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), ["home", "user", "more", "sub1", "sub2", "yetmore", "file.txt"])
             self.assertEqual(path_utils.splitpath("tmp", "auto"), ["tmp"])
             self.assertEqual(path_utils.splitpath("tmp\\sub\\folder\\another", "auto"), ["tmp", "sub", "folder", "another"])
             self.assertEqual(path_utils.splitpath("tmp\\sub\\folder\\another\\", "auto"), ["tmp", "sub", "folder", "another"])
-            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond" % (os.sep, os.sep), "auto" ), ["first", "second"])
-            self.assertEqual(path_utils.splitpath( "%sfirst%ssecond%s" % (os.sep, os.sep, os.sep), "auto" ), ["first", "second"])
+            self.assertEqual(path_utils.splitpath( "/first/second", "auto" ), ["first", "second"])
+            self.assertEqual(path_utils.splitpath( "/first/second/", "auto" ), ["first", "second"])
             self.assertEqual(path_utils.splitpath("F:", "auto"), ["F:"])
 
     def testBasenameFiltered(self):
@@ -703,7 +703,7 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user"), None)
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder"), "")
         self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/path"), "folder")
-        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/another/path"), "folder%sanother" % os.sep)
+        self.assertEqual(path_utils.find_middle_path_parts("/home/user", "/home/user/folder/another/path"), "folder/another")
 
     def testCopyToAndRename1(self):
         source_path = path_utils.concat_path(self.folder1, "source.txt")
@@ -751,7 +751,7 @@ class PathUtilsTest(unittest.TestCase):
         self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.nonexistent, "target.txt"))
         self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.test_file, "target.txt"))
         self.assertFalse(path_utils.copy_file_to_and_rename(source_path, source_path, "target.txt"))
-        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder1, "sub%starget.txt" % os.sep))
+        self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder1, "sub/target.txt"))
 
         target_path = path_utils.concat_path(self.folder2, "target.txt")
         self.assertFalse(os.path.exists(target_path))
@@ -793,7 +793,7 @@ class PathUtilsTest(unittest.TestCase):
         self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.nonexistent, "target"))
         self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.test_file, "target"))
         self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, source_path, "target"))
-        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder1, "sub%starget" % os.sep))
+        self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder1, "sub/target"))
 
         target_path = path_utils.concat_path(self.folder2, "target")
         self.assertFalse(os.path.exists(target_path))
