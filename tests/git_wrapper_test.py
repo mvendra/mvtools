@@ -568,7 +568,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(self.first_repo, r)
 
-        first_objects = os.path.join(self.first_repo, "objects")
+        first_objects = path_utils.concat_path(self.first_repo, "objects")
         self.assertTrue(os.path.exists(first_objects))
         v, r = git_wrapper.rev_parse_absolute_git_dir(first_objects)
         self.assertTrue(v)

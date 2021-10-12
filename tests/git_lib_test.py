@@ -1225,7 +1225,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
-        second_repo_objects = os.path.join(self.second_repo, "objects")
+        second_repo_objects = path_utils.concat_path(self.second_repo, "objects")
         v, r = git_lib.is_repo_bare(second_repo_objects)
         self.assertTrue(v)
         self.assertFalse(r)
@@ -1247,7 +1247,7 @@ class GitLibTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertTrue(r)
 
-            second_repo_objects = os.path.join("./second", "objects")
+            second_repo_objects = path_utils.concat_path("./second", "objects")
             v, r = git_lib.is_repo_bare(second_repo_objects)
             self.assertTrue(v)
             self.assertFalse(r)

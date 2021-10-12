@@ -27,11 +27,11 @@ class PathUtilsTest(unittest.TestCase):
         self.test_base_dir = r[0]
         self.test_dir = r[1]
 
-        self.folder1 = os.path.join(self.test_dir, "folder1")
+        self.folder1 = path_utils.concat_path(self.test_dir, "folder1")
         os.mkdir(self.folder1)
-        self.folder2 = os.path.join(self.test_dir, "folder2")
+        self.folder2 = path_utils.concat_path(self.test_dir, "folder2")
         os.mkdir(self.folder2)
-        self.nonexistent = os.path.join(self.test_dir, "nonexistent")
+        self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistent")
 
         self.test_file = path_utils.concat_path(self.test_dir, "test_file.txt")
         create_and_write_file.create_file_contents(self.test_file, "test-file")

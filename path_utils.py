@@ -63,7 +63,7 @@ def deletefolder_ignoreerrors(folderpath):
 def backpedal_path(path):
     if path is None:
         return None
-    partial = os.path.join(path, os.pardir)
+    partial = concat_path(path, os.pardir)
     parent = os.path.abspath(partial)
     if parent == path:
         return None
