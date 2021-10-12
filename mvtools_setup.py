@@ -29,13 +29,13 @@ def pre_generate_genlinks_links(mvtools_path, links_path):
     os.mkdir(links_path)
 
     source_items_templ  = ["path_utils.py", "fsquery.py", "fsquery_adv_filter.py", "detect_repo_type.py", "mvtools_envvars.py"]
-    source_items_templ += ["git%sgit_lib.py" % os.sep, "wrappers%sgit_wrapper.py" % os.sep]
-    source_items_templ += ["svn%ssvn_lib.py" % os.sep, "wrappers%ssvn_wrapper.py" % os.sep]
-    source_items_templ += ["launchers%sgeneric_run.py" % os.sep]
+    source_items_templ += ["git/git_lib.py", "wrappers/git_wrapper.py"]
+    source_items_templ += ["svn/svn_lib.py", "wrappers/svn_wrapper.py"]
+    source_items_templ += ["launchers/generic_run.py"]
 
     source_items = []
     for sit in source_items_templ:
-        source_items.append("%s%s%s" % (mvtools_path, os.sep, sit))
+        source_items.append("%s%s%s" % (mvtools_path, "/", sit))
 
     for si in source_items:
         di = os.path.join(links_path, os.path.basename(si))
@@ -48,7 +48,7 @@ def run_genlinks(mvtools_path, links_path):
     use_env["MVTOOLS_LINKS_PATH"] = links_path
     use_env = _local_add2pythonpath(use_env, links_path)
 
-    genlinks_path = "%s%s%s" % (mvtools_path, os.sep, "genlinks.py")
+    genlinks_path = "%s%s%s" % (mvtools_path, "/", "genlinks.py")
 
     try:
         process = subprocess.run([genlinks_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False, env=use_env)
@@ -81,7 +81,7 @@ def run_uts(mvtools_path, links_path):
     use_env["MVTOOLS_LINKS_PATH"] = links_path
     use_env = _local_add2pythonpath(use_env, links_path)
 
-    uts_script_path = "%s%s%s%s%s" % (mvtools_path, os.sep, "tests", os.sep, "run_all_mvtools_tests.py")
+    uts_script_path = "%s%s%s%s%s" % (mvtools_path, "/", "tests", "/", "run_all_mvtools_tests.py")
 
     try:
         process = subprocess.run([uts_script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False, env=use_env)
