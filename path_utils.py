@@ -186,8 +186,22 @@ def filter_path_list_no_same_branch(pathlist):
 
     return result
 
-def filter_remove_trailing_sep(target): # mvtodo: review, this cant be right
-    if target[len(target)-1] == "/" or target[len(target)-1] == "\\":
+def filter_remove_trailing_sep(target, windows_path = "auto"):
+
+    # {windows_path} valid values are {"yes" / "no" / "auto"}
+
+    sep_chars = ["/"]
+    treat_as_windows_path = (windows_path == "yes") or ((windows_path == "auto") and (get_platform.getplat() == get_platform.PLAT_WINDOWS))
+    if treat_as_windows_path:
+        sep_chars.append("\\")
+
+    if target is None:
+        return None
+    if target == "":
+        return None
+
+    last_char = target[len(target)-1]
+    if last_char in sep_chars:
         if len(target) > 1:
             return target[:len(target)-1]
         else:

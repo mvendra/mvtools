@@ -168,12 +168,24 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual( expected, result )
 
     def testFilterRemoveTrailingSep(self):
-        path1 = "/path/folder"
-        path2 = "/path/folder/"
-        path3 = "/path/folder\\"
-        self.assertEqual( path_utils.filter_remove_trailing_sep(path1), path1 )
-        self.assertEqual( path_utils.filter_remove_trailing_sep(path2), path1 )
-        self.assertEqual( path_utils.filter_remove_trailing_sep(path3), path1 )
+
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "no"), "/path/folder" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "no"), "/path/folder" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "no"), "/path/folder\\" )
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "auto"), "/path/folder" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "auto"), "/path/folder" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "auto"), "/path/folder\\" )
+
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "yes"), "/path/folder" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "yes"), "/path/folder" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "yes"), "/path/folder" )
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "auto"), "/path/folder" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "auto"), "/path/folder" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "auto"), "/path/folder" )
 
     def testFilterJoinAbsLeft(self):
         self.assertEqual(path_utils.filter_join_abs_left(None), None)
