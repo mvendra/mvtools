@@ -27,7 +27,7 @@ def filter_git_only(path_list):
 
     ret = []
     for d in path_list:
-        if d.endswith(".git") or d.endswith(".git" + os.sep):
+        if path_utils.filter_remove_trailing_sep(d).endswith(".git"):
             ret.append(d)
     return ret
 
@@ -43,9 +43,7 @@ def pluck_dotgit(path_list):
 
     ret_list = []
     for it in path_list:
-        local_it = it
-        if it.endswith(os.sep): # plucks out the trailing "/" on unices
-            local_it = it[:len(it)-1]
+        local_it = path_utils.filter_remove_trailing_sep(it)
         if local_it.endswith(".git"):
             local_it = path_utils.backpedal_path(local_it)
         ret_list.append(local_it)
