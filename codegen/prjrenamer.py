@@ -29,8 +29,8 @@ def remove_ext(path):
 
 def codelite_rename(base_prj_codelite_fn, new_project_name):
 
-    opn = remove_ext(poplastmaybe(path_utils.basename_filtered(base_prj_codelite_fn)))
-    npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
+    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_codelite_fn)))
+    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_codelite_fn), "%s.project" % new_project_name)
     os.rename(base_prj_codelite_fn, npn_full)
 
@@ -43,8 +43,8 @@ def codelite_rename(base_prj_codelite_fn, new_project_name):
 
 def msvc15sln_rename(base_prj_msvc15_sln, new_project_name):
 
-    opn = remove_ext(poplastmaybe(path_utils.basename_filtered(base_prj_msvc15_sln)))
-    npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
+    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_msvc15_sln)))
+    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc15_sln), "%s.sln" % new_project_name)
     os.rename(base_prj_msvc15_sln, npn_full)
 
@@ -57,8 +57,8 @@ def msvc15sln_rename(base_prj_msvc15_sln, new_project_name):
 
 def msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name):
 
-    opn = remove_ext(poplastmaybe(path_utils.basename_filtered(base_prj_msvc15_fn)))
-    npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
+    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_msvc15_fn)))
+    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc15_fn), "%s.vcxproj" % new_project_name)
     os.rename(base_prj_msvc15_fn, npn_full)
 
@@ -71,8 +71,8 @@ def msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name):
 
 def makefile_rename(base_prj_makefile_fn, current_project_name, new_project_name):
 
-    opn = poplastmaybe(current_project_name)
-    npn = remove_ext(poplastmaybe(path_utils.basename_filtered(new_project_name)))
+    opn = path_utils.filter_remove_trailing_sep(current_project_name)
+    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_makefile_fn), "Makefile")
 
     contents = readcontents(npn_full)
@@ -82,15 +82,10 @@ def makefile_rename(base_prj_makefile_fn, current_project_name, new_project_name
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
 
-def poplastmaybe(pathname):
-    if pathname[len(pathname)-1] == os.sep:
-        return pathname[:len(pathname)-1]
-    return pathname
-
 def prjrename(target_dir, original_project_name, new_project_name):
 
-    original_project_name = poplastmaybe(original_project_name)
-    new_project_name = poplastmaybe(new_project_name)
+    original_project_name = path_utils.filter_remove_trailing_sep(original_project_name)
+    new_project_name = path_utils.filter_remove_trailing_sep(new_project_name)
 
     full_original = path_utils.concat_path(target_dir, original_project_name)
     full_new = path_utils.concat_path(target_dir, new_project_name)
