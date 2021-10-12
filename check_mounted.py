@@ -53,8 +53,8 @@ if __name__ == "__main__":
         puaq()
 
     path_to_find = sys.argv[1]
-    if path_to_find[len(path_to_find)-1] == os.sep: # allows the input path to come with a trailing separator
-        path_to_find = path_to_find[:len(path_to_find)-1]
+    path_to_find = path_utils.filter_remove_trailing_sep(path_to_find, "no")
+    path_to_find = os.path.abspath(path_to_find)
 
     if checkmounted(path_to_find):
         print("[%s] is mounted." % path_to_find)
