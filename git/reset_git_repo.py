@@ -31,10 +31,6 @@ def _test_repo_path(path):
 
 def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
 
-    # check if the requested file exists
-    if not os.path.exists(revert_file):
-        return False, "reset_git_repo_file: File [%s] does not exist" % revert_file
-
     # check if the requested file is staged in the repo - and if so, unstage it
     v, r = git_lib.get_staged_files(target_repo)
     if not v:
@@ -45,6 +41,22 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
         v, r = git_lib.unstage(target_repo, [revert_file])
         if not v:
             return False, "reset_git_repo_file: [%s]" % r
+
+    v, r = git_lib.get_head_deleted_files(target_repo)
+    if not v:
+        return False, "reset_git_repo_file: [%s]" % r
+    deleted_files = r
+
+    if revert_file in deleted_files:
+        # simpler case - just undelete and bail out
+        v, r = git_lib.checkout(target_repo, [revert_file])
+        if not v:
+            return False, "reset_git_repo_file: unable to undelete [%s]: [%s]" % (revert_file, r)
+        return True, "file [%s] was undeleted" % revert_file
+
+    # check if the requested file exists
+    if not os.path.exists(revert_file):
+        return False, "reset_git_repo_file: File [%s] does not exist" % revert_file
 
     # check if the requested file is modified in the repo
     v, r = git_lib.get_head_modified_files(target_repo)
@@ -100,6 +112,12 @@ def reset_git_repo_entire(target_repo, backup_obj):
         return False, ["reset_git_repo_entire: [%s]" % r]
     mod_files = r
 
+    # get deleted files
+    v, r = git_lib.get_head_deleted_files(target_repo)
+    if not v:
+        return False, "reset_git_repo_file: [%s]" % r
+    deleted_files = r
+
     c = 0
     for mf in mod_files:
         c += 1
@@ -126,6 +144,10 @@ def reset_git_repo_entire(target_repo, backup_obj):
         if not v:
             return False, ["reset_git_repo_entire: failed because [%s] already exists." % gen_patch]
         report.append(_report_patch(gen_patch))
+
+    # log undeleted files
+    for df in deleted_files:
+        report.append("file [%s] is going to be undeleted" % df)
 
     # revert all changes
     v, r = git_lib.checkout(target_repo)
