@@ -175,22 +175,43 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual( path_utils.filter_remove_trailing_sep(path2), path1 )
         self.assertEqual( path_utils.filter_remove_trailing_sep(path3), path1 )
 
-    def testJoinpathAbsolute(self):
-        self.assertEqual(path_utils.filter_join_abs(None), None)
-        self.assertEqual(path_utils.filter_join_abs("/home/user"), "home/user")
-        self.assertEqual(path_utils.filter_join_abs("home/user"), "home/user")
-        self.assertEqual(path_utils.filter_join_abs(""), "")
+    def testFilterJoinAbsLeft(self):
+        self.assertEqual(path_utils.filter_join_abs_left(None), None)
+        self.assertEqual(path_utils.filter_join_abs_left("/home/user"), "home/user")
+        self.assertEqual(path_utils.filter_join_abs_left("home/user"), "home/user")
+        self.assertEqual(path_utils.filter_join_abs_left(""), "")
+
+    def testFilterJoinAbsFirstRight(self):
+        self.assertEqual(path_utils.filter_join_abs_first_right(None), None)
+        self.assertEqual(path_utils.filter_join_abs_first_right(""), "")
+        self.assertEqual(path_utils.filter_join_abs_first_right("/"), "/")
+        self.assertEqual(path_utils.filter_join_abs_first_right("/home"), "/home")
+        self.assertEqual(path_utils.filter_join_abs_first_right("/home/"), "/home")
+        self.assertEqual(path_utils.filter_join_abs_first_right("home/"), "home")
 
     def testConcatPath(self):
+        self.assertEqual(path_utils.concat_path(), None)
         self.assertEqual(path_utils.concat_path(None), None)
         self.assertEqual(path_utils.concat_path(None, None), None)
         self.assertEqual(path_utils.concat_path("/home"), "/home")
         self.assertEqual(path_utils.concat_path("/home/user", "home/user"), "/home/user/home/user")
+        self.assertEqual(path_utils.concat_path("/home/user", "home/user/"), "/home/user/home/user")
         self.assertEqual(path_utils.concat_path("/home/user", "home"), "/home/user/home")
         self.assertEqual(path_utils.concat_path("/home/", "/home"), "/home/home")
+        self.assertEqual(path_utils.concat_path("/", None), None)
+        self.assertEqual(path_utils.concat_path(None, "/home"), None)
+        self.assertEqual(path_utils.concat_path("/", ""), "/")
+        self.assertEqual(path_utils.concat_path("/", "/"), "/")
+        self.assertEqual(path_utils.concat_path("/", "home", "/"), "/home")
+        self.assertEqual(path_utils.concat_path("/", "home", "/sub/"), "/home/sub")
         self.assertEqual(path_utils.concat_path("/", "home"), "/home")
         self.assertEqual(path_utils.concat_path("/", "home", "user", "more", "stuff"), "/home/user/more/stuff")
         self.assertEqual(path_utils.concat_path("/", "home", "user", "more", "stuff", "/home/user/more/stuff"), "/home/user/more/stuff/home/user/more/stuff")
+        self.assertEqual(path_utils.concat_path("http://home.org", "server/subervice"), "http://home.org/server/subervice")
+        self.assertEqual(path_utils.concat_path("http://home.org/", "server/subervice"), "http://home.org/server/subervice")
+        self.assertEqual(path_utils.concat_path("http://home.org", "/server/subervice"), "http://home.org/server/subervice")
+        self.assertEqual(path_utils.concat_path("http://home.org/", "/server/subervice"), "http://home.org/server/subervice")
+        self.assertEqual(path_utils.concat_path("http://home.org/", "/", "/server/subervice/"), "http://home.org/server/subervice")
 
     def testGetPathRoot(self):
         self.assertEqual(path_utils.getpathroot(""), None)

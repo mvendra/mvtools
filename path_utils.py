@@ -186,7 +186,7 @@ def filter_path_list_no_same_branch(pathlist):
 
     return result
 
-def filter_remove_trailing_sep(target):
+def filter_remove_trailing_sep(target): # mvtodo: review, this cant be right
     if target[len(target)-1] == "/" or target[len(target)-1] == "\\":
         if len(target) > 1:
             return target[:len(target)-1]
@@ -194,22 +194,24 @@ def filter_remove_trailing_sep(target):
             return ""
     return target
 
-def filter_join_abs(path):
-
-    # because os.path.join does not allow for joining
-    # absolute paths ("/tmp/some/path", "/some/other/path"),
-    # this little crutch cleans up paths after the first
-    # position to alow for adding them all in absolute terms
-
+def filter_join_abs_left(path):
     if path is None:
         return None
-
     if len(path) == 0:
         return ""
-
-    if path[0] == os.path.sep:
+    if path[0] == "/":
         return path[1:]
+    return path
 
+def filter_join_abs_first_right(path):
+    if path is None:
+        return None
+    if len(path) == 0:
+        return ""
+    if len(path) == 1:
+        return path
+    if path[len(path)-1] == "/":
+        return path[:len(path)-1]
     return path
 
 def concat_path(*ps):
@@ -220,16 +222,27 @@ def concat_path(*ps):
     # so this function is a complement to os.path.join that actually adds absolute paths
 
     if len(ps) < 1:
-        return ""
+        return None
     result_path = ps[0]
     if result_path is None:
         return None
     if len(ps) < 2:
         return result_path
+    result_path = filter_join_abs_first_right(result_path)
     for p in ps[1:]:
         if p is None:
             return None
-        result_path = os.path.join(result_path, filter_join_abs(p))
+        next_piece_filtered = filter_join_abs_left(p)
+        if next_piece_filtered is None:
+            return None
+        if next_piece_filtered == "":
+            continue
+        prefix = ""
+        if result_path[len(result_path)-1] != "/":
+            prefix = "/"
+        result_path += ("%s%s" % (prefix, next_piece_filtered))
+    if len(result_path) > 1:
+        result_path = filter_join_abs_first_right(result_path) # post-pre-filtering
     return result_path
 
 def getpathroot(path):

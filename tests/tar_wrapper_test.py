@@ -186,8 +186,9 @@ class TarWrapperTest(unittest.TestCase):
         v, r = tar_wrapper.extract(self.tar_file, self.extracted_folder)
         self.assertTrue(v)
 
-        self.ext_file_with_sep = path_utils.concat_path(self.extracted_folder, self.file_with_sep)
-        self.ext_folder_with_sep = path_utils.concat_path(self.extracted_folder, self.folder_with_sep)
+        # see below: concat_path removes the trailing "/" (as of l21)
+        self.ext_file_with_sep = "%s/" % (path_utils.concat_path(self.extracted_folder, self.file_with_sep))
+        self.ext_folder_with_sep = "%s/" % (path_utils.concat_path(self.extracted_folder, self.folder_with_sep))
         self.ext_folder_with_sep_filler = path_utils.concat_path(self.extracted_folder, self.folder_with_sep_filler)
 
         self.assertTrue(os.path.exists( self.ext_file_with_sep[:len(self.ext_file_with_sep)-1] ))
