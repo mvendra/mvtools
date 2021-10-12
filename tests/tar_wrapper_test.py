@@ -39,7 +39,7 @@ class TarWrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.file_with_space, "abc")
         self.file_with_sep = path_utils.concat_path(self.test_dir, "file_with_sep.txt")
         create_and_write_file.create_file_contents(self.file_with_sep, "abc")
-        self.file_with_sep += os.sep
+        self.file_with_sep += "/"
 
         self.folder_with_space = path_utils.concat_path(self.test_dir, "fol der")
         os.mkdir(self.folder_with_space)
@@ -50,7 +50,7 @@ class TarWrapperTest(unittest.TestCase):
         os.mkdir(self.folder_with_sep)
         self.folder_with_sep_filler = path_utils.concat_path(self.folder_with_sep, "filler.txt")
         create_and_write_file.create_file_contents(self.folder_with_sep_filler, "abc")
-        self.folder_with_sep += os.sep
+        self.folder_with_sep += "/"
 
         # base, files
         self.file1 = path_utils.concat_path(self.test_dir, "file1.txt")
