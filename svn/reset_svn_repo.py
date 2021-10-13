@@ -30,11 +30,23 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
 
-def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
+def reset_svn_repo_file(target_repo, reset_file, patch_index, backup_obj):
+
+    # check if the requested file has been deleted in the repo
+    v, r = svn_lib.get_head_deleted_files(target_repo)
+    if not v:
+        return False, "reset_svn_repo_file: Unable to retrieve list of deleted files: [%s]" % r
+    deleted_files = r
+    if reset_file in deleted_files:
+        # simpler case - just restore this file and return
+        v, r = svn_lib.restore_subpath(target_repo, reset_file)
+        if not v:
+            return False, "reset_svn_repo_file: Failed attempting to restore file [%s]: [%s]" % (reset_file, r)
+        return True, "file [%s] has been restored" % reset_file
 
     # check if the requested file exists
-    if not os.path.exists(revert_file):
-        return False, "reset_svn_repo_file: File [%s] does not exist" % revert_file
+    if not os.path.exists(reset_file):
+        return False, "reset_svn_repo_file: File [%s] does not exist" % reset_file
 
     # check if the requested file has been newly added in the repo
     v, r = svn_lib.get_added_files(target_repo)
@@ -42,11 +54,11 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_svn_repo_file: Unable to retrieve list of added files: [%s]" % r
     added_files = r
 
-    if revert_file in added_files:
-        v, r = svn_lib.revert(target_repo, [revert_file])
+    if reset_file in added_files:
+        v, r = svn_lib.revert(target_repo, [reset_file])
         if not v:
             return False, "reset_svn_repo_file: Failed attempting to un-add files: [%s]" % r
-        return True, "File [%s] was un-added" % revert_file
+        return True, "File [%s] was un-added" % reset_file
 
     # check if the requested file is modified in the repo
     v, r = svn_lib.get_head_modified_files(target_repo)
@@ -54,21 +66,21 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_svn_repo_file: [%s]" % r
     mod_files = r
 
-    if not revert_file in mod_files:
-        return False, "reset_svn_repo_file: File [%s] is not modified in the repo" % revert_file
+    if not reset_file in mod_files:
+        return False, "reset_svn_repo_file: File [%s] is not modified in the repo" % reset_file
 
     # generate the backup patch
-    backup_filename = make_patch_filename(revert_file, patch_index)
+    backup_filename = make_patch_filename(reset_file, patch_index)
     backup_contents = ""
-    v, r = svn_lib.diff(target_repo, [revert_file])
+    v, r = svn_lib.diff(target_repo, [reset_file])
     if not v:
         return False, "reset_svn_repo_file: [%s]" % r
     backup_contents = r
 
     subfolder = None
-    dn = path_utils.dirname_filtered(revert_file)
+    dn = path_utils.dirname_filtered(reset_file)
     if dn is None:
-        return False, "reset_svn_repo_file: unable to resolve [%s]'s dirname." % revert_file
+        return False, "reset_svn_repo_file: unable to resolve [%s]'s dirname." % reset_file
     v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
     if v:
         subfolder = r
@@ -80,7 +92,7 @@ def reset_svn_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_svn_repo_file: failed because [%s] already exists." % gen_patch
 
     # revert file changes
-    v, r = svn_lib.revert(target_repo, [revert_file])
+    v, r = svn_lib.revert(target_repo, [reset_file])
     if not v:
         return False, "reset_svn_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
 
@@ -123,7 +135,7 @@ def reset_svn_repo(target_repo, files):
     # get modified files
     if files is None:
 
-        v, r = svn_lib.get_head_modified_files(target_repo)
+        v, r = svn_lib.get_head_files(target_repo)
         if not v:
             return False, [r]
         files = r
