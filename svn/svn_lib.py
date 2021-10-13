@@ -4,12 +4,15 @@ import sys
 import os
 import time
 
+import mvtools_envvars
 import path_utils
+import string_utils
 import svn_wrapper
 
 import log_helper
 import get_platform
 import convcygpath
+import maketimestamp
 import output_backup_helper
 
 def fix_cygwin_path(path):
@@ -117,14 +120,6 @@ def rev_entries_filter(log_entries_list):
 
     return rev_list
 
-def generic_parse(str_line, separator):
-    if str_line is None:
-        return None
-    n = str_line.find(separator)
-    if n == -1:
-        return None
-    return str_line[:n]
-
 def revision_filter_function(the_output):
 
     find_string = "Last Changed Rev: "
@@ -136,6 +131,21 @@ def revision_filter_function(the_output):
             revision = revision_left[0:i]
             break
     return revision
+
+def remote_link_filter_function(the_output):
+
+    find_string = "URL: "
+
+    the_output_filtered = string_utils.convert_dos_to_unix(the_output)
+    the_output_filtered_split = the_output_filtered.split("\n")
+
+    for l in the_output_filtered_split:
+        if len(l) < len(find_string)+1:
+            continue
+        n = l.find(find_string)
+        if n != 0:
+            continue
+        return l[len(find_string):]
 
 def detect_separator(the_string):
 
@@ -223,7 +233,28 @@ def get_previous_list(local_repo, previous_number):
     prev_list = rev_entries_filter(log_entries)
     return True, prev_list
 
+def get_head_files(local_repo):
+
+    total_entries = []
+
+    v, r = get_head_modified_files(local_repo)
+    if not v:
+        return False, r
+    total_entries += r
+    v, r = get_head_deleted_files(local_repo)
+    if not v:
+        return False, r
+    total_entries += r
+
+    return True, total_entries
+
 def get_head_modified_files(local_repo):
+    return get_head_files_delegate(local_repo, "M")
+
+def get_head_deleted_files(local_repo):
+    return get_head_files_delegate(local_repo, "!")
+
+def get_head_files_delegate(local_repo, status_detect):
 
     if local_repo is None:
         return False, "repo is unspecified"
@@ -243,7 +274,7 @@ def get_head_modified_files(local_repo):
             break
         item_status = line[0]
 
-        if item_status == "M":
+        if item_status == status_detect:
             mod_file = extract_file_from_status_line(line)
             if mod_file is None:
                 return False, "Unable to detect file from status line: [%s]" % line
@@ -280,6 +311,12 @@ def get_added_files(local_repo):
     return True, add_list
 
 def get_head_revision(local_repo):
+    return svn_info_delegate(local_repo, revision_filter_function)
+
+def get_remote_link(local_repo):
+    return svn_info_delegate(local_repo, remote_link_filter_function)
+
+def svn_info_delegate(local_repo, output_filter_function):
 
     if local_repo is None:
         return False, "repo is unspecified"
@@ -290,8 +327,8 @@ def get_head_revision(local_repo):
     v, r = svn_wrapper.info(local_repo_final)
     if not v:
         return False, r
-    head_rev = revision_filter_function(r)
-    return True, head_rev
+    filtered_output = output_filter_function(r)
+    return True, filtered_output
 
 def is_svn_repo(local_repo):
 
@@ -629,6 +666,71 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
         feedback_object("Iteration number [%d] will resume now." % iterations)
 
     return True, warnings
+
+def restore_subpath(repo, repo_subpath):
+
+    if os.path.exists(repo_subpath):
+        return False, "Unable to restore [%s]'s subpath [%s]: This subpath still exists." % (repo, repo_subpath)
+
+    v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
+    if not v:
+        return False, r
+    temp_path_base = r
+
+    # sanity checking
+    if not os.path.exists(temp_path_base):
+        return False, "Unable to restore [%s]'s subpath [%s]: Mvtools's temp path [%s] does not exist." % (repo, repo_subpath, temp_path_base)
+
+    # get ts
+    ts_now = maketimestamp.get_timestamp_now_compact()
+
+    temp_path_leaf = "svn_lib_restore_path_%s_%s" % (path_utils.basename_filtered(repo), ts_now)
+    temp_path_full = path_utils.concat_path(temp_path_base, temp_path_leaf)
+
+    if os.path.exists(temp_path_full):
+        return False, "Unable to restore [%s]'s subpath [%s]: The temporary final path [%s] already exists." % (repo, repo_subpath, temp_path_full)
+
+    os.mkdir(temp_path_full)
+    v, r = restore_subpath_delegate(repo, repo_subpath, temp_path_full)
+    path_utils.deletefolder_ignoreerrors(temp_path_full)
+    return v, r
+
+def restore_subpath_delegate(repo, repo_subpath, temp_path_full):
+
+    # get remote link
+    v, r = get_remote_link(repo)
+    if not v:
+        return False, "Unable to restore [%s]'s subpath [%s]: Unable to fetch remote link: [%s]" % (repo, repo_subpath, r)
+    remote_link = r
+
+    # fetch head revision
+    v, r = get_head_revision(repo)
+    if not v:
+        return False, "Unable to restore [%s]'s subpath [%s]: Unable to fetch head revision: [%s]" % (repo, repo_subpath, r)
+    head_revision = r
+
+    v, r = path_utils.based_path_find_outstanding_path(repo, repo_subpath)
+    if not v:
+        return False, "Unable to restore [%s]'s subpath [%s]: Unable to extract subpath from fullpath: [%s]" % (repo, repo_subpath, r)
+    subpath_leftover = r
+
+    # export to temp folder
+    v, r = svn_wrapper.export(remote_link, subpath_leftover, temp_path_full, head_revision)
+    if not v:
+        return False, "Unable to restore [%s]'s subpath [%s]: Unable to export to local temp folder: [%s]" % (repo, repo_subpath, r)
+
+    local_exported_file = path_utils.concat_path(temp_path_full, path_utils.basename_filtered(subpath_leftover))
+    if not os.path.exists(local_exported_file):
+        # most likely this was just a deleted folder. just recreate it.
+        path_utils.guaranteefolder(repo_subpath)
+    else:
+        # manually copy the exported file back onto the repo
+        path_utils.guaranteefolder(path_utils.dirname_filtered(repo_subpath))
+        v = path_utils.copy_to(local_exported_file, path_utils.dirname_filtered(repo_subpath))
+        if not v:
+            return False, "Unable to restore [%s]'s subpath [%s]: Unable to copy exported file [%s] back to the local repository." % (repo, repo_subpath, local_exported_file)
+
+    return True, None
 
 def patch_as_head(repo, patch_file, override_head_check):
 
