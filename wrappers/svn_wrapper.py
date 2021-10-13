@@ -80,6 +80,22 @@ def checkout(remote_link, local_repo):
 
     return True, (r.success, r.stdout, r.stderr)
 
+def export(remote_link, remote_subpath, local_storage, revision):
+
+    if not os.path.exists(local_storage):
+        return False, "%s does not exist." % local_storage
+
+    full_remote_link = path_utils.concat_path(remote_link, remote_subpath)
+    full_remote_link = "%s@%s" % (full_remote_link, revision)
+
+    full_cmd = ["svn", "export", full_remote_link, local_storage]
+
+    v, r = generic_run.run_cmd(full_cmd)
+    if not v:
+        return False, "Failed calling svn-export command: %s." % r
+
+    return True, (r.success, r.stdout, r.stderr)
+
 def cleanup(local_repo):
 
     if not os.path.exists(local_repo):
