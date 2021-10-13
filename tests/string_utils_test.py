@@ -51,5 +51,21 @@ class StringUtilsTest(unittest.TestCase):
         self.assertEqual(string_utils.count_any_of("/aaa/bbb/ccc", ["/", "\\"]), 3)
         self.assertEqual(string_utils.count_any_of("C:\\Data\\Folder", ["/", "\\"]), 2)
 
+    def testConvertDosToUnix(self):
+
+        self.assertEqual(string_utils.convert_dos_to_unix(None), None)
+        self.assertEqual(string_utils.convert_dos_to_unix(""), "")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\r\ndef"), "abc\ndef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\r\rdef"), "abc\r\rdef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\rdef"), "abc\rdef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\ndef"), "abc\ndef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\n\ndef"), "abc\n\ndef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\n\rdef"), "abc\n\rdef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\n\rdef"), "abc\n\rdef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\r\n\rdef"), "abc\n\rdef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\r\n\r\ndef"), "abc\n\ndef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\x0D\x0Adef"), "abc\ndef")
+        self.assertEqual(string_utils.convert_dos_to_unix("abc\x0Adef"), "abc\ndef")
+
 if __name__ == '__main__':
     unittest.main()

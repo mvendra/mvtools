@@ -57,3 +57,14 @@ def count_any_of(string_source, list_source):
             last_count = n
 
     return last_count
+
+def convert_dos_to_unix(string_source):
+
+    if string_source is None:
+        return None
+
+    output_string = ""
+
+    output_string = string_source.replace("\r\n", "\n")
+
+    return output_string
