@@ -634,5 +634,11 @@ def compat_windows_path(path):
     local_path = local_path.replace("\\", "/")
     return local_path
 
+def is_path_broken_symlink(path):
+
+    is_link = os.path.islink(path)
+    is_broken = not os.path.exists(path)
+    return (is_link and is_broken)
+
 if __name__ == "__main__":
     print("Hello from %s" % basename_filtered(__file__))

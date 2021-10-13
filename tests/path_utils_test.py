@@ -813,5 +813,23 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders"), "/usr/local/more/folders")
         self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders/yetmore/"), "/usr/local/more/folders/yetmore/")
 
+    def testIsPathBrokenSymlink(self):
+
+        folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
+        folder1_file2 = path_utils.concat_path(self.folder1, "file2.txt")
+
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_file1, "file1"))
+        os.symlink(folder1_file1, folder1_file2)
+        self.assertFalse(path_utils.is_path_broken_symlink(folder1_file1))
+        self.assertFalse(path_utils.is_path_broken_symlink(folder1_file2))
+        self.assertTrue(os.path.exists(folder1_file1))
+        self.assertTrue(os.path.exists(folder1_file2))
+        os.unlink(folder1_file1)
+        self.assertFalse(os.path.exists(folder1_file1))
+        self.assertFalse(os.path.exists(folder1_file2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_file2))
+        self.assertFalse(path_utils.is_path_broken_symlink(self.folder1))
+        self.assertFalse(path_utils.is_path_broken_symlink(self.nonexistent))
+
 if __name__ == '__main__':
     unittest.main()
