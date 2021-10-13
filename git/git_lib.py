@@ -5,20 +5,13 @@ import os
 
 import git_wrapper
 import path_utils
-
-def generic_parse(str_line, separator):
-    if str_line is None:
-        return None
-    n = str_line.find(separator)
-    if n == -1:
-        return None
-    return str_line[:n]
+import string_utils
 
 def get_stash_name(str_line):
-    return generic_parse(str_line, ":")
+    return string_utils.generic_parse(str_line, ":")
 
 def get_prev_hash(str_line):
-    return generic_parse(str_line, " ")
+    return string_utils.generic_parse(str_line, " ")
 
 def is_char_status_staged(the_char):
     return the_char in ["M", "A", "D", "R", "C", "U"]

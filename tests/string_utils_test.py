@@ -14,6 +14,13 @@ class StringUtilsTest(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def testGenericParse(self):
+
+        self.assertEqual(string_utils.generic_parse(None, None), None)
+        self.assertEqual(string_utils.generic_parse("", None), None)
+        self.assertEqual(string_utils.generic_parse("", ""), "")
+        self.assertEqual(string_utils.generic_parse("abc:def", ":"), "abc")
+
     def testRfindFirstOf_Fail(self):
 
         self.assertEqual(string_utils.rfind_first_of("", ["e"]), None)

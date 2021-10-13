@@ -3,6 +3,16 @@
 import sys
 import os
 
+def generic_parse(str_line, separator):
+    if str_line is None:
+        return None
+    if separator is None:
+        return None
+    n = str_line.find(separator)
+    if n == -1:
+        return None
+    return str_line[:n]
+
 def rfind_first_of(string_source, list_source):
 
     if string_source is None:
