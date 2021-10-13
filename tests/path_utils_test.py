@@ -813,7 +813,7 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders"), "/usr/local/more/folders")
         self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders/yetmore/"), "/usr/local/more/folders/yetmore/")
 
-    def testIsPathBrokenSymlink(self):
+    def testIsPathBrokenSymlinkFiles(self):
 
         folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
         folder1_file2 = path_utils.concat_path(self.folder1, "file2.txt")
@@ -828,6 +828,25 @@ class PathUtilsTest(unittest.TestCase):
         self.assertFalse(os.path.exists(folder1_file1))
         self.assertFalse(os.path.exists(folder1_file2))
         self.assertTrue(path_utils.is_path_broken_symlink(folder1_file2))
+        self.assertFalse(path_utils.is_path_broken_symlink(self.folder1))
+        self.assertFalse(path_utils.is_path_broken_symlink(self.nonexistent))
+
+    def testIsPathBrokenSymlinkFolders(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        folder1_sub2 = path_utils.concat_path(self.folder1, "sub2")
+
+        os.mkdir(folder1_sub1)
+        self.assertTrue(os.path.exists(folder1_sub1))
+        os.symlink(folder1_sub1, folder1_sub2)
+        self.assertFalse(path_utils.is_path_broken_symlink(folder1_sub1))
+        self.assertFalse(path_utils.is_path_broken_symlink(folder1_sub2))
+        self.assertTrue(os.path.exists(folder1_sub1))
+        self.assertTrue(os.path.exists(folder1_sub2))
+        shutil.rmtree(folder1_sub1)
+        self.assertFalse(os.path.exists(folder1_sub1))
+        self.assertFalse(os.path.exists(folder1_sub2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_sub2))
         self.assertFalse(path_utils.is_path_broken_symlink(self.folder1))
         self.assertFalse(path_utils.is_path_broken_symlink(self.nonexistent))
 
