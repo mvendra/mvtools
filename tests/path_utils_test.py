@@ -469,6 +469,18 @@ class PathUtilsTest(unittest.TestCase):
         folder2_file1 = path_utils.concat_path(self.folder2, "file1.txt")
         self.assertTrue(os.path.exists(folder2_file1))
 
+    def testCopyToFileBinary(self):
+
+        folder1_file1 = path_utils.concat_path(self.folder1, "file1.bin")
+        self.assertFalse(os.path.exists(folder1_file1))
+        with open(folder1_file1, "wb") as f:
+            f.write(b"\xff\xff\xff")
+        self.assertTrue(os.path.exists(folder1_file1))
+
+        self.assertTrue(path_utils.copy_to(folder1_file1, self.folder2))
+        folder2_file1 = path_utils.concat_path(self.folder2, "file1.bin")
+        self.assertTrue(os.path.exists(folder2_file1))
+
     def testCopyToFolder(self):
 
         folder1_sub = path_utils.concat_path(self.folder1, "sub")
@@ -688,6 +700,29 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.exists(folder2_sub1_sub2))
         self.assertTrue(path_utils.is_path_broken_symlink(folder2_sub1_sub2_file2))
 
+    def testBasedCopyToBinary(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        os.mkdir(folder1_sub1)
+        folder1_sub1_sub2 = path_utils.concat_path(folder1_sub1, "sub2")
+        os.mkdir(folder1_sub1_sub2)
+        folder1_sub1_sub2_file1 = path_utils.concat_path(folder1_sub1_sub2, "file1.bin")
+
+        self.assertFalse(os.path.exists(folder1_sub1_sub2_file1))
+        with open(folder1_sub1_sub2_file1, "wb") as f:
+            f.write(b"\xff\xff\xff")
+        self.assertTrue(os.path.exists(folder1_sub1_sub2_file1))
+
+        folder2_sub1 = path_utils.concat_path(self.folder2, "sub1")
+        os.mkdir(folder2_sub1)
+        folder2_sub1_sub2 = path_utils.concat_path(folder2_sub1, "sub2")
+        folder2_sub1_sub2_file1 = path_utils.concat_path(folder2_sub1_sub2, "file1.bin")
+        self.assertFalse(os.path.exists(folder2_sub1_sub2))
+
+        self.assertTrue(path_utils.based_copy_to(folder1_sub1, folder1_sub1_sub2_file1, folder2_sub1))
+        self.assertTrue(os.path.exists(folder2_sub1_sub2))
+        self.assertTrue(os.path.exists(folder2_sub1_sub2_file1))
+
     def testGetExtension(self):
         self.assertEqual(path_utils.getextension(None), None)
         self.assertEqual(path_utils.getextension("file.txt"), "txt")
@@ -784,6 +819,20 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(target_path, "target"))
         self.assertTrue(os.path.exists(target_path))
         self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder2, "target.txt"))
+
+    def testCopyFileToAndRenameBinary(self):
+        source_path = path_utils.concat_path(self.folder1, "source.bin")
+        final_path = path_utils.concat_path(self.folder1, "target.bin")
+
+        self.assertFalse(os.path.exists(source_path))
+        with open(source_path, "wb") as f:
+            f.write(b"\xff\xff\xff")
+        self.assertTrue(os.path.exists(source_path))
+
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_file_to_and_rename(source_path, self.folder1, "target.bin"))
+        self.assertTrue(os.path.exists(final_path))
 
     def testCopyFolderToAndRename1(self):
         source_path = path_utils.concat_path(self.folder1, "source")
