@@ -1118,7 +1118,7 @@ class GitLibTest(unittest.TestCase):
         os.mkdir(folder2)
 
         folder3 = path_utils.concat_path(self.first_repo, "one", "two", "three")
-        path_utils.guaranteefolder(folder3)
+        self.assertTrue(path_utils.guaranteefolder(folder3))
 
         self.assertEqual(git_lib.discover_repo_root(self.first_repo), self.first_repo)
         self.assertEqual(git_lib.discover_repo_root(self.nonexistent_repo), None)
@@ -1139,7 +1139,7 @@ class GitLibTest(unittest.TestCase):
         os.mkdir(folder2)
 
         folder3 = path_utils.concat_path(self.first_repo, "one", "two", "three")
-        path_utils.guaranteefolder(folder3)
+        self.assertTrue(path_utils.guaranteefolder(folder3))
 
         saved_wd = os.getcwd()
         try:
@@ -1165,7 +1165,7 @@ class GitLibTest(unittest.TestCase):
         self.assertFalse(r)
 
         folder = path_utils.concat_path(self.first_repo, "one", "two", "three")
-        path_utils.guaranteefolder(folder)
+        self.assertTrue(path_utils.guaranteefolder(folder))
 
         v, r = git_lib.is_repo_working_tree(folder)
         self.assertTrue(v)
@@ -1198,7 +1198,7 @@ class GitLibTest(unittest.TestCase):
             self.assertFalse(r)
 
             folder = path_utils.concat_path("./first", "one", "two", "three")
-            path_utils.guaranteefolder(folder)
+            self.assertTrue(path_utils.guaranteefolder(folder))
 
             v, r = git_lib.is_repo_working_tree(folder)
             self.assertTrue(v)

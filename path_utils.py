@@ -3,18 +3,8 @@
 import sys
 import os
 import shutil
-from subprocess import call
 
 import get_platform
-
-class PathUtilsException(RuntimeError):
-    def __init__(self, msg):
-        self._set_message(msg)
-    def _get_message(self): 
-        return self._message
-    def _set_message(self, message): 
-        self._message = message
-    message = property(_get_message, _set_message)
 
 def replace_extension(source_string, ext_to_find, ext_to_replace_with):
 
@@ -102,22 +92,6 @@ def scratchfolder(path):
     Returns true/false depending on whether the operation succeeded or not.
     """
 
-    """
-    # old version
-    try:
-        if os.path.exists(path):
-            if os.path.isfile(path):
-                os.unlink(path)
-            else:
-                shutil.rmtree(path)
-        ret = call(["mkdir", path])
-        if ret != 0:
-            return False
-    except:
-        return False
-    return True
-    """
-
     # newer, more compatible version
     try:
         if os.path.exists(path):
@@ -132,26 +106,35 @@ def scratchfolder(path):
 
 def guaranteefolder(path):
 
-    """ guaranteefolder
-    Makes sure the given path is a folder.
-
-    If path already exists and is not a folder, throws exception
-    if it already exists and is a folder, does nothing.
-    If path does not exist, create it as a folder
-    """
+    # Ensures the given path is a folder (if possible) - the equivalent of "mkdir -p"
 
     if path is None or path == "":
-        raise PathUtilsException("%s guaranteefolder: path [%s] is invalid. This is an exception." % (basename_filtered(__file__), path))
-
+        return False
+    if is_path_broken_symlink(path):
+        return False
     if os.path.isdir(path):
-        return # OK ! thats what we wanted
-
+        return True # OK !
     if os.path.exists(path):
-        # exists and is not a folder. raise hell.
-        raise PathUtilsException("%s guaranteefolder: %s exists and is not a folder. This is an exception." % (basename_filtered(__file__), path))
-    else:
-        # just create the new folder
-        call(["mkdir", "-p", path])
+        return False
+
+    path_pieces = splitpath(path, "auto")
+    if path_pieces is None:
+        return False
+    if len(path_pieces) < 1:
+        return False
+    assembled_path = path_pieces[0]
+
+    for pp in path_pieces[1:]:
+        assembled_path = concat_path(assembled_path, pp)
+        if is_path_broken_symlink(assembled_path):
+            return False
+        if os.path.exists(assembled_path):
+            if not os.path.isdir(assembled_path):
+                return False
+        else:
+            os.mkdir(assembled_path)
+
+    return True
 
 def filter_path_list_no_same_branch(pathlist):
 

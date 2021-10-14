@@ -16,9 +16,7 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
     fullbasepath = path_utils.concat_path(storage_path, repo)
     output_filename_full = path_utils.concat_path(fullbasepath, output_filename)
 
-    try:
-        path_utils.guaranteefolder(fullbasepath)
-    except path_utils.PathUtilsException as puex:
+    if not path_utils.guaranteefolder(fullbasepath):
         return False, "Can't collect patch for [%s]: Failed guaranteeing folder [%s]." % (log_title, fullbasepath)
 
     if os.path.exists(output_filename_full):
@@ -59,9 +57,7 @@ def collect_git_patch_unversioned(repo, storage_path):
     if os.path.exists(target_base):
         return False, "Can't collect patch for unversioned: [%s] already exists." % target_base
 
-    try:
-        path_utils.guaranteefolder(target_base)
-    except path_utils.PathUtilsException as puex:
+    if not path_utils.guaranteefolder(target_base):
         return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % target_base
 
     for uf in unversioned_files:
@@ -101,9 +97,7 @@ def collect_git_patch_stash(repo, storage_path):
         stash_current_contents = r
         stash_current_file_name = path_utils.concat_path(storage_path, repo, "%s.patch" % si)
 
-        try:
-            path_utils.guaranteefolder( path_utils.dirname_filtered(stash_current_file_name) )
-        except path_utils.PathUtilsException as puex:
+        if not path_utils.guaranteefolder( path_utils.dirname_filtered(stash_current_file_name) ):
             return False, "Can't collect patch for stash: Failed guaranteeing folder [%s]." % path_utils.dirname_filtered(stash_current_file_name)
 
         if os.path.exists(stash_current_file_name):
@@ -136,9 +130,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
         previous_file_content = r
         previous_file_name = path_utils.concat_path(storage_path, repo, "previous_%d_%s.patch" % ((i+1), prev_list[i]))
 
-        try:
-            path_utils.guaranteefolder( path_utils.dirname_filtered(previous_file_name) )
-        except path_utils.PathUtilsException as puex:
+        if not path_utils.guaranteefolder( path_utils.dirname_filtered(previous_file_name) ):
             return False, "Can't collect patch for previous: Failed guaranteeing folder [%s]." % path_utils.dirname_filtered(previous_file_name)
 
         if os.path.exists(previous_file_name):

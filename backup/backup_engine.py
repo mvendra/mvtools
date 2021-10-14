@@ -113,7 +113,9 @@ class BackupEngine:
                 _msg = "WARNING! Path [%s] was deduced to be inside root. It will be placed inside the '(root)' folder!" % it[0]
                 print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
                 BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTMP_PLUS_ARTBASE, "(root)")
-            path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE)
+            if not path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE):
+                print("%sFailed attempting to guarantee [%s].%s" % (terminal_colors.TTY_RED, BKTMP_PLUS_ARTBASE, terminal_colors.TTY_WHITE))
+                return False
 
             CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, path_utils.basename_filtered(it[0]))
             CURPAK_TAR = CURPAK + ".tar"

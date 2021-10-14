@@ -365,7 +365,8 @@ class BackupPreparation:
 
         # guarantee the storage folder
         final_storage_path_patch_collector = path_utils.concat_path(self.storage_path, storage_base)
-        path_utils.guaranteefolder(final_storage_path_patch_collector)
+        if not path_utils.guaranteefolder(final_storage_path_patch_collector):
+            raise BackupPreparationException("Unable to guarantee folder [%s]." % (final_storage_path_patch_collector))
 
         # run the actual patch collector
         v, r = collect_patches.collect_patches(source_path, custom_path_navigator_script, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, staged, unversioned, stash, previous, repo_type)

@@ -131,36 +131,136 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_folder_full))
         shutil.rmtree(test_folder_full)
 
-    def testGuaranteeFolderFail1(self):
-        ex_raised = False
-        try:
-            path_utils.guaranteefolder(None)
-        except path_utils.PathUtilsException as pue:
-            ex_raised = True
-        self.assertTrue(ex_raised)
+    def testGuaranteeFolderFail(self):
+        self.assertFalse(path_utils.guaranteefolder(None))
+        self.assertFalse(path_utils.guaranteefolder(""))
+        self.assertFalse(path_utils.guaranteefolder(self.test_file))
+        test_file_link = path_utils.concat_path(self.test_dir, "test_file_link.txt")
+        self.assertFalse(os.path.exists(test_file_link))
+        self.assertFalse(path_utils.is_path_broken_symlink(test_file_link))
+        os.symlink(self.test_file, test_file_link)
+        os.unlink(self.test_file)
+        self.assertTrue(path_utils.is_path_broken_symlink(test_file_link))
+        self.assertFalse(path_utils.guaranteefolder(test_file_link))
 
-    def testGuaranteeFolderFail2(self):
-        ex_raised = False
-        try:
-            path_utils.guaranteefolder("")
-        except path_utils.PathUtilsException as pue:
-            ex_raised = True
-        self.assertTrue(ex_raised)
-
-    def testGuaranteeFolder(self):
+    def testGuaranteeFolderFailFileInTheMiddle(self):
 
         test_folder_first = path_utils.concat_path(self.test_dir, "first")
         test_folder_second = path_utils.concat_path(test_folder_first, "second")
+        test_folder_third = path_utils.concat_path(test_folder_second, "third")
+        test_folder_fourth = path_utils.concat_path(test_folder_third, "fourth")
 
-        # safety first
-        if os.path.exists(test_folder_first):
-            self.fail("[%s] already exists." % test_folder_first)
-        if os.path.exists(test_folder_second):
-            self.fail("[%s] already exists." % test_folder_second)
+        self.assertFalse(os.path.exists(test_folder_first))
+        self.assertFalse(os.path.exists(test_folder_second))
+        self.assertFalse(os.path.exists(test_folder_third))
+        self.assertFalse(os.path.exists(test_folder_fourth))
 
-        path_utils.guaranteefolder(test_folder_second)
+        os.mkdir(test_folder_first)
+        self.assertTrue(create_and_write_file.create_file_contents(test_folder_second, "fake second folder"))
+        self.assertFalse(path_utils.guaranteefolder(test_folder_fourth))
+
+        self.assertTrue(os.path.isdir(test_folder_first))
         self.assertTrue(os.path.exists(test_folder_second))
+        self.assertFalse(os.path.exists(test_folder_third))
+        self.assertFalse(os.path.exists(test_folder_fourth))
+
+    def testGuaranteeFolderFailBrokenFolderSymlinkInTheMiddle(self):
+
+        test_folder_first = path_utils.concat_path(self.test_dir, "first")
+        test_folder_second = path_utils.concat_path(self.test_dir, "second")
+        test_folder_third = path_utils.concat_path(test_folder_second, "third")
+        test_folder_fourth = path_utils.concat_path(test_folder_third, "fourth")
+
+        os.mkdir(test_folder_first)
+        os.symlink(test_folder_first, test_folder_second)
         shutil.rmtree(test_folder_first)
+
+        self.assertFalse(os.path.exists(test_folder_first))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_folder_second))
+        self.assertFalse(os.path.exists(test_folder_third))
+        self.assertFalse(os.path.exists(test_folder_fourth))
+
+        self.assertFalse(path_utils.guaranteefolder(test_folder_fourth))
+
+        self.assertFalse(os.path.exists(test_folder_first))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_folder_second))
+        self.assertFalse(os.path.exists(test_folder_third))
+        self.assertFalse(os.path.exists(test_folder_fourth))
+
+    def testGuaranteeFolderVanilla(self):
+        test_folder_first = path_utils.concat_path(self.test_dir, "first")
+        self.assertFalse(os.path.exists(test_folder_first))
+        self.assertTrue(path_utils.guaranteefolder(test_folder_first))
+        self.assertTrue(os.path.isdir(test_folder_first))
+
+    def testGuaranteeFolderExtended1(self):
+
+        test_folder_first = path_utils.concat_path(self.test_dir, "first")
+        test_folder_second = path_utils.concat_path(test_folder_first, "second")
+        test_folder_third = path_utils.concat_path(test_folder_second, "third")
+        test_folder_fourth = path_utils.concat_path(test_folder_third, "fourth")
+
+        self.assertFalse(os.path.exists(test_folder_first))
+        self.assertFalse(os.path.exists(test_folder_second))
+        self.assertFalse(os.path.exists(test_folder_third))
+        self.assertFalse(os.path.exists(test_folder_fourth))
+
+        self.assertTrue(path_utils.guaranteefolder(test_folder_fourth))
+
+        self.assertTrue(os.path.isdir(test_folder_first))
+        self.assertTrue(os.path.isdir(test_folder_second))
+        self.assertTrue(os.path.isdir(test_folder_third))
+        self.assertTrue(os.path.isdir(test_folder_fourth))
+
+    def testGuaranteeFolderExtended2(self):
+
+        test_folder_first = path_utils.concat_path(self.test_dir, "first")
+        test_folder_second = path_utils.concat_path(test_folder_first, "second")
+        test_folder_third = path_utils.concat_path(test_folder_second, "third")
+        test_folder_fourth = path_utils.concat_path(test_folder_third, "fourth")
+
+        os.mkdir(test_folder_first)
+        os.mkdir(test_folder_second)
+
+        self.assertTrue(os.path.isdir(test_folder_first))
+        self.assertTrue(os.path.isdir(test_folder_second))
+        self.assertFalse(os.path.exists(test_folder_third))
+        self.assertFalse(os.path.exists(test_folder_fourth))
+
+        self.assertTrue(path_utils.guaranteefolder(test_folder_fourth))
+
+        self.assertTrue(os.path.isdir(test_folder_first))
+        self.assertTrue(os.path.isdir(test_folder_second))
+        self.assertTrue(os.path.isdir(test_folder_third))
+        self.assertTrue(os.path.isdir(test_folder_fourth))
+
+    def testGuaranteeFolderExtended3(self):
+
+        test_folder_first = path_utils.concat_path(self.test_dir, "first")
+        test_folder_second = path_utils.concat_path(test_folder_first, "second")
+        test_folder_third = path_utils.concat_path(test_folder_second, "third")
+        test_folder_third_abs = path_utils.concat_path(test_folder_first, "third")
+        test_folder_fourth = path_utils.concat_path(test_folder_third, "fourth")
+        test_folder_fourth_abs = path_utils.concat_path(test_folder_third_abs, "fourth")
+
+        os.mkdir(test_folder_first)
+        os.symlink(test_folder_first, test_folder_second)
+
+        self.assertTrue(os.path.isdir(test_folder_first))
+        self.assertTrue(os.path.exists(test_folder_second))
+        self.assertFalse(os.path.exists(test_folder_third))
+        self.assertFalse(os.path.exists(test_folder_third_abs))
+        self.assertFalse(os.path.exists(test_folder_fourth))
+        self.assertFalse(os.path.exists(test_folder_fourth_abs))
+
+        self.assertTrue(path_utils.guaranteefolder(test_folder_fourth))
+
+        self.assertTrue(os.path.isdir(test_folder_first))
+        self.assertTrue(os.path.isdir(test_folder_second))
+        self.assertTrue(os.path.isdir(test_folder_third))
+        self.assertTrue(os.path.isdir(test_folder_third_abs))
+        self.assertTrue(os.path.isdir(test_folder_fourth))
+        self.assertTrue(os.path.isdir(test_folder_fourth_abs))
 
     def testFilterPathListNoSameBranch(self):
         expected = ["/bug", "/home", "/shome"]
