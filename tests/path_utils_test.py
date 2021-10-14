@@ -1071,6 +1071,58 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(path_utils.copy_to(folder1_sub2, self.folder2))
         self.assertTrue(path_utils.is_path_broken_symlink(folder2_sub2))
 
+    def testCopyToFolderContainingBrokenSymLinkFile(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        folder1_sub1_file1 = path_utils.concat_path(folder1_sub1, "file1.txt")
+        folder1_sub1_file2 = path_utils.concat_path(folder1_sub1, "file2.txt")
+        folder1_sub1_file3 = path_utils.concat_path(folder1_sub1, "file3.txt")
+        folder2_sub1 = path_utils.concat_path(self.folder2, "sub1")
+        folder2_sub1_file1 = path_utils.concat_path(folder2_sub1, "file1.txt")
+        folder2_sub1_file2 = path_utils.concat_path(folder2_sub1, "file2.txt")
+        folder2_sub1_file3 = path_utils.concat_path(folder2_sub1, "file3.txt")
+
+        os.mkdir(folder1_sub1)
+        self.assertTrue(os.path.isdir(folder1_sub1))
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_sub1_file1, "file1 contents"))
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_sub1_file2, "file2 contents"))
+        os.symlink(folder1_sub1_file2, folder1_sub1_file3)
+        os.unlink(folder1_sub1_file2)
+        self.assertFalse(os.path.exists(folder1_sub1_file2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_sub1_file3))
+
+        self.assertTrue(path_utils.copy_to(folder1_sub1, self.folder2))
+        self.assertTrue(os.path.isdir(folder2_sub1))
+        self.assertTrue(os.path.exists(folder2_sub1_file1))
+        self.assertFalse(os.path.exists(folder2_sub1_file2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder2_sub1_file3))
+
+    def testCopyToFolderContainingBrokenSymLinkFolder(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        folder1_sub1_subfolder1 = path_utils.concat_path(folder1_sub1, "subfolder1")
+        folder1_sub1_subfolder2 = path_utils.concat_path(folder1_sub1, "subfolder2")
+        folder1_sub1_subfolder3 = path_utils.concat_path(folder1_sub1, "subfolder3")
+        folder2_sub1 = path_utils.concat_path(self.folder2, "sub1")
+        folder2_sub1_subfolder1 = path_utils.concat_path(folder2_sub1, "subfolder1")
+        folder2_sub1_subfolder2 = path_utils.concat_path(folder2_sub1, "subfolder2")
+        folder2_sub1_subfolder3 = path_utils.concat_path(folder2_sub1, "subfolder3")
+
+        os.mkdir(folder1_sub1)
+        self.assertTrue(os.path.isdir(folder1_sub1))
+        os.mkdir(folder1_sub1_subfolder1)
+        os.mkdir(folder1_sub1_subfolder2)
+        os.symlink(folder1_sub1_subfolder2, folder1_sub1_subfolder3)
+        shutil.rmtree(folder1_sub1_subfolder2)
+        self.assertFalse(os.path.exists(folder1_sub1_subfolder2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_sub1_subfolder3))
+
+        self.assertTrue(path_utils.copy_to(folder1_sub1, self.folder2))
+        self.assertTrue(os.path.isdir(folder2_sub1))
+        self.assertTrue(os.path.isdir(folder2_sub1_subfolder1))
+        self.assertFalse(os.path.exists(folder2_sub1_subfolder2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder2_sub1_subfolder3))
+
     def testCopyToAndRenameBrokenSymLinkFile(self):
 
         folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
