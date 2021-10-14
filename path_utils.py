@@ -458,7 +458,9 @@ def copy_to(source, target):
     # works just like the POSIX "cp" app but does not require the "-r" for copying folders
     # does not allow simultaneous renaming/overwriting of any kind
 
-    if os.path.isdir(source):
+    if is_path_broken_symlink(source):
+        return copy_broken_symlink_to(source, target)
+    elif os.path.isdir(source):
         return copy_folder_to(source, target)
     else:
         return copy_file_to(source, target)
@@ -498,6 +500,26 @@ def copy_folder_to(source, target):
         return False
 
     shutil.copytree(source, target_folder_final_path, symlinks=True)
+    return True
+
+def copy_broken_symlink_to(source, target):
+
+    if source is None:
+        return False
+    if target is None:
+        return False
+    if is_path_broken_symlink(target):
+        return False
+    if not os.path.isdir(target):
+        return False
+
+    if not is_path_broken_symlink(source):
+        return False
+
+    final_target = concat_path(target, basename_filtered(source))
+    symlink_target = os.readlink(source)
+    os.symlink(symlink_target, final_target)
+
     return True
 
 def based_path_find_outstanding_path(source_basepath, source_fullpath):

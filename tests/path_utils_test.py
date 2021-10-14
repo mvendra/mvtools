@@ -813,7 +813,7 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders"), "/usr/local/more/folders")
         self.assertEqual(path_utils.compat_windows_path("/usr/local/more/folders/yetmore/"), "/usr/local/more/folders/yetmore/")
 
-    def testIsPathBrokenSymlinkFiles(self):
+    def testIsPathBrokenSymlinkFile(self):
 
         folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
         folder1_file2 = path_utils.concat_path(self.folder1, "file2.txt")
@@ -831,7 +831,7 @@ class PathUtilsTest(unittest.TestCase):
         self.assertFalse(path_utils.is_path_broken_symlink(self.folder1))
         self.assertFalse(path_utils.is_path_broken_symlink(self.nonexistent))
 
-    def testIsPathBrokenSymlinkFolders(self):
+    def testIsPathBrokenSymlinkFolder(self):
 
         folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
         folder1_sub2 = path_utils.concat_path(self.folder1, "sub2")
@@ -849,6 +849,37 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(path_utils.is_path_broken_symlink(folder1_sub2))
         self.assertFalse(path_utils.is_path_broken_symlink(self.folder1))
         self.assertFalse(path_utils.is_path_broken_symlink(self.nonexistent))
+
+    def testCopyBrokenSymLinkFile(self):
+
+        folder1_file1 = path_utils.concat_path(self.folder1, "file1.txt")
+        folder1_file2 = path_utils.concat_path(self.folder1, "file2.txt")
+        folder2_file2 = path_utils.concat_path(self.folder2, "file2.txt")
+
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_file1, "file1"))
+        os.symlink(folder1_file1, folder1_file2)
+        self.assertTrue(os.path.exists(folder1_file2))
+        os.unlink(folder1_file1)
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_file2))
+
+        self.assertTrue(path_utils.copy_to(folder1_file2, self.folder2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder2_file2))
+
+    def testCopyBrokenSymLinkFolder(self):
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        folder1_sub2 = path_utils.concat_path(self.folder1, "sub2")
+        folder2_sub2 = path_utils.concat_path(self.folder2, "sub2")
+
+        os.mkdir(folder1_sub1)
+        self.assertTrue(os.path.exists(folder1_sub1))
+        os.symlink(folder1_sub1, folder1_sub2)
+        self.assertTrue(os.path.exists(folder1_sub2))
+        shutil.rmtree(folder1_sub1)
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_sub2))
+
+        self.assertTrue(path_utils.copy_to(folder1_sub2, self.folder2))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder2_sub2))
 
 if __name__ == '__main__':
     unittest.main()
