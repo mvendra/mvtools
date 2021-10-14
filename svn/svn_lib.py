@@ -720,8 +720,9 @@ def restore_subpath_delegate(repo, repo_subpath, temp_path_full):
         return False, "Unable to restore [%s]'s subpath [%s]: Unable to export to local temp folder: [%s]" % (repo, repo_subpath, r)
 
     local_exported_file = path_utils.concat_path(temp_path_full, path_utils.basename_filtered(subpath_leftover))
-    if not os.path.exists(local_exported_file):
+    if not os.path.exists(local_exported_file) and not path_utils.is_path_broken_symlink(local_exported_file):
         # most likely this was just a deleted folder. just recreate it.
+        # this happens because svn export does not export one of the repository's folder to a locally pre-existing folder. (E155000 as of L21)
         path_utils.guaranteefolder(repo_subpath)
     else:
         # manually copy the exported file back onto the repo

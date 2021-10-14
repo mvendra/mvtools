@@ -87,7 +87,6 @@ def export(remote_link, remote_subpath, local_storage, revision):
 
     full_remote_link = path_utils.concat_path(remote_link, remote_subpath)
     full_remote_link = "%s@%s" % (full_remote_link, revision)
-
     full_cmd = ["svn", "export", full_remote_link, local_storage]
 
     v, r = generic_run.run_cmd(full_cmd)
