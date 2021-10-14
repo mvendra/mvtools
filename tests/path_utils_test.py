@@ -481,6 +481,11 @@ class PathUtilsTest(unittest.TestCase):
         folder2_file1 = path_utils.concat_path(self.folder2, "file1.bin")
         self.assertTrue(os.path.exists(folder2_file1))
 
+        contents = bytearray()
+        with open(folder2_file1, "rb") as f:
+            contents = f.read()
+        self.assertEqual(contents, b"\xff\xff\xff")
+
     def testCopyToFolder(self):
 
         folder1_sub = path_utils.concat_path(self.folder1, "sub")
@@ -723,6 +728,11 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.exists(folder2_sub1_sub2))
         self.assertTrue(os.path.exists(folder2_sub1_sub2_file1))
 
+        contents = bytearray()
+        with open(folder2_sub1_sub2_file1, "rb") as f:
+            contents = f.read()
+        self.assertEqual(contents, b"\xff\xff\xff")
+
     def testGetExtension(self):
         self.assertEqual(path_utils.getextension(None), None)
         self.assertEqual(path_utils.getextension("file.txt"), "txt")
@@ -833,6 +843,11 @@ class PathUtilsTest(unittest.TestCase):
         self.assertFalse(os.path.exists(final_path))
         self.assertTrue(path_utils.copy_file_to_and_rename(source_path, self.folder1, "target.bin"))
         self.assertTrue(os.path.exists(final_path))
+
+        contents = bytearray()
+        with open(final_path, "rb") as f:
+            contents = f.read()
+        self.assertEqual(contents, b"\xff\xff\xff")
 
     def testCopyFolderToAndRename1(self):
         source_path = path_utils.concat_path(self.folder1, "source")
