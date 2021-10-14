@@ -382,7 +382,9 @@ def copy_to_and_rename(source_path, target_path, new_name):
     if source_path is None:
         return False
 
-    if os.path.isdir(source_path):
+    if is_path_broken_symlink(source_path):
+        return copy_broken_symlink_to_and_rename(source_path, target_path, new_name)
+    elif os.path.isdir(source_path):
         return copy_folder_to_and_rename(source_path, target_path, new_name)
     else:
         return copy_file_to_and_rename(source_path, target_path, new_name)
@@ -453,6 +455,31 @@ def copy_folder_to_and_rename(source_path, target_path, new_name):
     shutil.copytree(source_path, final_target_path, symlinks=True)
     return True
 
+def copy_broken_symlink_to_and_rename(source_path, target_path, new_name):
+
+    if source_path is None:
+        return False
+    if target_path is None:
+        return False
+    if is_path_broken_symlink(target_path):
+        return False
+    if not os.path.isdir(target_path):
+        return False
+    if not is_path_broken_symlink(source_path):
+        return False
+
+    final_target = concat_path(target_path, new_name)
+
+    if os.path.exists(final_target):
+        return False
+    if is_path_broken_symlink(final_target):
+        return False
+
+    symlink_target = os.readlink(source_path)
+    os.symlink(symlink_target, final_target)
+
+    return True
+
 def copy_to(source, target):
 
     # works just like the POSIX "cp" app but does not require the "-r" for copying folders
@@ -512,7 +539,6 @@ def copy_broken_symlink_to(source, target):
         return False
     if not os.path.isdir(target):
         return False
-
     if not is_path_broken_symlink(source):
         return False
 
@@ -556,7 +582,7 @@ def based_copy_to(source_basepath, source_fullpath, target):
 
     if source_basepath == "" or source_basepath is None or not os.path.exists(source_basepath):
         return False
-    if source_fullpath == "" or source_fullpath is None or not os.path.exists(source_fullpath):
+    if source_fullpath == "" or source_fullpath is None or ((not os.path.exists(source_fullpath)) and (not is_path_broken_symlink(source_fullpath))):
         return False
     if target == "" or target is None or not os.path.exists(target):
         return False
