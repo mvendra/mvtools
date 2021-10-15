@@ -13,9 +13,6 @@ def get_stash_name(str_line):
 def get_prev_hash(str_line):
     return string_utils.generic_parse(str_line, " ")
 
-def is_char_status_staged(the_char):
-    return the_char in ["M", "A", "D", "R", "C", "U"]
-
 def remove_gitlog_decorations(commitmsg):
 
     res = commitmsg
@@ -248,6 +245,12 @@ def get_head_files_delegate(repo, status_detect, info_variation):
     return True, ret
 
 def get_staged_files(repo):
+    return get_staged_delegate(repo, ["M", "A", "D", "R", "C", "U"])
+
+def get_staged_deleted_files(repo):
+    return get_staged_delegate(repo, ["D"])
+
+def get_staged_delegate(repo, check_chars):
 
     if repo is None:
         return False, "No repo specified"
@@ -272,7 +275,7 @@ def get_staged_files(repo):
         cl = l.rstrip()
         if len(cl) < 2:
             continue
-        if is_char_status_staged(cl[0]):
+        if cl[0] in check_chars:
             lf = cl[3:]
             fp = path_utils.concat_path(repo, lf)
             ret.append(os.path.abspath(fp))
