@@ -262,7 +262,21 @@ def get_head_files_delegate(repo, status_detect, info_variation):
     return True, ret
 
 def get_staged_files(repo):
-    return get_staged_delegate(repo, ["M", "A", "D", "R", "C", "U"])
+
+    all_staged_files = []
+
+    v, r = get_staged_delegate(repo, ["M", "A", "D", "C", "U"])
+    if not v:
+        return False, r
+    all_staged_files += r
+
+    v, r = get_staged_renamed_files(repo)
+    if not v:
+        return False, r
+    for x in r:
+        all_staged_files.append(x[1])
+
+    return True, all_staged_files
 
 def get_staged_deleted_files(repo):
     return get_staged_delegate(repo, ["D"])
