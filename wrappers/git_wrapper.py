@@ -147,6 +147,10 @@ def stash_show(repo, stash_name):
     cmd = ["git", "-C", repo, "stash", "show", "-p", "--no-ext-diff", stash_name]
     return git_wrapper_standard_command(cmd, "stash-show")
 
+def stash_clear(repo):
+    cmd = ["git", "-C", repo, "stash", "clear"]
+    return git_wrapper_standard_command(cmd, "stash-clear")
+
 def log_oneline(repo, limit=None):
     cmd = ["git", "-C", repo, "log", "--oneline"]
     if limit is not None:
