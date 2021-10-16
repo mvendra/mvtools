@@ -14,8 +14,8 @@ import git_lib
 import delayed_file_backup
 import maketimestamp
 
-def make_patch_filename(path, index):
-    return "%s_reset_git_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
+def make_patch_filename(path, operation, index):
+    return "%s_reset_git_repo_%s_%s.patch" % (str(index), operation, path_utils.basename_filtered(path))
 
 def _report_patch(patch_filename):
     return "generated backup patch: [%s]" % patch_filename
@@ -29,6 +29,14 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
 
+def _has_in_second_pos_of_list(the_list, find_obj):
+    for li in the_list:
+        if li[1] == find_obj:
+            return True
+    return False
+
+# mvtodo: disabled
+"""
 def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
 
     # check if the requested file is staged in the repo - and if so, unstage it
@@ -68,7 +76,7 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_git_repo_file: File [%s] is not modified in the repo" % revert_file
 
     # generate the backup patch
-    backup_filename = make_patch_filename(revert_file, patch_index)
+    backup_filename = make_patch_filename(revert_file, "file", patch_index)
     backup_contents = ""
     v, r = git_lib.diff(target_repo, [revert_file])
     if not v:
@@ -95,45 +103,56 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
         return False, "reset_git_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
 
     return True, _report_patch(gen_patch)
+"""
 
-def reset_git_repo_entire(target_repo, backup_obj):
+def reset_git_repo_staged(target_repo, backup_obj):
 
     report = []
     has_any_failed = False
 
-    # unstage everything
-    v, r = git_lib.unstage(target_repo)
+    # get staged files
+    v, r = git_lib.get_staged_files(target_repo)
     if not v:
-        return False, ["reset_git_repo_entire: [%s]" % r]
+        return False, ["reset_git_repo_staged: [%s]" % r]
+    staged_files = r
 
-    # get modified files
-    v, r = git_lib.get_head_modified_files(target_repo)
+    # get staged deleted files
+    v, r = git_lib.get_staged_deleted_files(target_repo)
     if not v:
-        return False, ["reset_git_repo_entire: [%s]" % r]
-    mod_files = r
+        return False, ["reset_git_repo_staged: [%s]" % r]
+    staged_deleted_files = r
 
-    # get deleted files
-    v, r = git_lib.get_head_deleted_files(target_repo)
+    # get staged renamed files
+    v, r = git_lib.get_staged_renamed_files(target_repo)
     if not v:
-        return False, "reset_git_repo_file: [%s]" % r
-    deleted_files = r
+        return False, ["reset_git_repo_staged: [%s]" % r]
+    staged_renamed_files = r
 
     c = 0
-    for mf in mod_files:
+    for sf in staged_files:
+
+        if sf in staged_deleted_files:
+            report.append("file [%s] is going to be unstaged (was deleted)" % sf) # just unstage - cant run diff --cached
+            continue
+
+        if _has_in_second_pos_of_list(staged_renamed_files, sf):
+            report.append("file [%s] is going to be unstaged (was renamed)" % sf) # just unstage - cant run diff --cached
+            continue
+
         c += 1
 
         # generate the backup patch
-        backup_filename = make_patch_filename(mf, c)
+        backup_filename = make_patch_filename(sf, "staged", c)
         backup_contents = ""
-        v, r = git_lib.diff(target_repo, [mf])
+        v, r = git_lib.diff_cached(target_repo, [sf])
         if not v:
-            return False, ["reset_git_repo_entire: [%s]" % r]
+            return False, ["reset_git_repo_staged: [%s]" % r]
         backup_contents = r
 
         subfolder = None
-        dn = path_utils.dirname_filtered(mf)
+        dn = path_utils.dirname_filtered(sf)
         if dn is None:
-            return False, ["reset_git_repo_entire: failed because [%s]'s dirname can't be resolved." % mf]
+            return False, ["reset_git_repo_staged: failed because [%s]'s dirname can't be resolved." % sf]
         v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
         if v:
             subfolder = r
@@ -142,7 +161,58 @@ def reset_git_repo_entire(target_repo, backup_obj):
         v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
         gen_patch = r
         if not v:
-            return False, ["reset_git_repo_entire: failed because [%s] already exists." % gen_patch]
+            return False, ["reset_git_repo_staged: failed because [%s] already exists." % gen_patch]
+        report.append(_report_patch(gen_patch))
+
+    # unstage everything
+    v, r = git_lib.unstage(target_repo)
+    if not v:
+        return False, ["reset_git_repo_staged: [%s]" % r]
+
+    return (not has_any_failed), report
+
+def reset_git_repo_head(target_repo, backup_obj):
+
+    report = []
+    has_any_failed = False
+
+    # get modified files
+    v, r = git_lib.get_head_modified_files(target_repo)
+    if not v:
+        return False, ["reset_git_repo_head: [%s]" % r]
+    mod_files = r
+
+    # get deleted files
+    v, r = git_lib.get_head_deleted_files(target_repo)
+    if not v:
+        return False, "reset_git_repo_head: [%s]" % r
+    deleted_files = r
+
+    c = 0
+    for mf in mod_files:
+        c += 1
+
+        # generate the backup patch
+        backup_filename = make_patch_filename(mf, "head", c)
+        backup_contents = ""
+        v, r = git_lib.diff(target_repo, [mf])
+        if not v:
+            return False, ["reset_git_repo_head: [%s]" % r]
+        backup_contents = r
+
+        subfolder = None
+        dn = path_utils.dirname_filtered(mf)
+        if dn is None:
+            return False, ["reset_git_repo_head: failed because [%s]'s dirname can't be resolved." % mf]
+        v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
+        if v:
+            subfolder = r
+
+        # make the backup patch
+        v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
+        gen_patch = r
+        if not v:
+            return False, ["reset_git_repo_head: failed because [%s] already exists." % gen_patch]
         report.append(_report_patch(gen_patch))
 
     # log undeleted files
@@ -152,11 +222,11 @@ def reset_git_repo_entire(target_repo, backup_obj):
     # revert all changes
     v, r = git_lib.checkout(target_repo)
     if not v:
-        return False, ["reset_git_repo_entire: [%s]" % r]
+        return False, ["reset_git_repo_head: [%s]" % r]
 
     return (not has_any_failed), report
 
-def reset_git_repo(target_repo, files):
+def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
 
     target_repo = path_utils.filter_remove_trailing_sep(target_repo)
     target_repo = os.path.abspath(target_repo)
@@ -187,10 +257,29 @@ def reset_git_repo(target_repo, files):
     except mvtools_exception.mvtools_exception as mvtex:
         return False, [mvtex.message]
 
-    # reset entire repo
-    if files is None:
-        return reset_git_repo_entire(target_repo, backup_obj)
+    has_any_failed = False
+    report = []
 
+    # staged
+    if staged:
+        v, r = reset_git_repo_staged(target_repo, backup_obj)
+        if not v:
+            has_any_failed = True
+            report.append("reset_git_repo_staged: [%s]." % r)
+        else:
+            report += r
+
+    # head
+    if head:
+        v, r = reset_git_repo_head(target_repo, backup_obj)
+        if not v:
+            has_any_failed = True
+            report.append("reset_git_repo_head: [%s]." % r)
+        else:
+            report += r
+
+    # mvtodo: disabled
+    """
     # reset file by file
     has_any_failed = False
     report = []
@@ -200,10 +289,18 @@ def reset_git_repo(target_repo, files):
         v, r = reset_git_repo_file(target_repo, i, c, backup_obj)
         has_any_failed |= (not v)
         report.append(r)
+    """
+
+    # mvtodo: stash
+
+    # mvtodo: unversioned
+
+    # mvtodo: previous
+
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s target_repo [--file filepath]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--head] [--staged] [--stash] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -214,22 +311,32 @@ if __name__ == "__main__":
     target_repo = sys.argv[1]
     params = sys.argv[2:]
 
-    files = []
-    files_parse_next = False
+    head = False
+    staged = False
+    stash = False
+    unversioned = False
+    previous = 0
+    previous_parse_next = False
 
     for p in params:
 
-        if files_parse_next:
-            files.append(os.path.abspath(p))
-            files_parse_next = False
+        if previous_parse_next:
+            previous = int(p)
+            previous_parse_next = False
             continue
 
-        if p == "--file":
-            files_parse_next = True
+        if p == "--head":
+            head = True
+        elif p == "--staged":
+            staged = True
+        elif p == "--stash":
+            stash = True
+        elif p == "--unversioned":
+            unversioned = True
+        elif p == "--previous":
+            previous_parse_next = True
 
-    if len(files) == 0:
-        files = None
-    v, r = reset_git_repo(target_repo, files)
+    v, r = reset_git_repo(target_repo, head, staged, stash, unversioned, previous)
     for i in r:
         print(i)
     if not v:
