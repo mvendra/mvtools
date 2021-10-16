@@ -85,6 +85,7 @@ class GitLibTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testHelperFunctions(self):
+
         self.assertEqual(git_lib.get_stash_name("stash@{0}: WIP on master: a44cc87 upd"), "stash@{0}")
         self.assertEqual(git_lib.get_stash_name(""), None)
         self.assertEqual(git_lib.get_stash_name(None), None)
@@ -92,6 +93,12 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(git_lib.get_prev_hash("a44cc87 (HEAD -> master) upd"), "a44cc87")
         self.assertEqual(git_lib.get_prev_hash(""), None)
         self.assertEqual(git_lib.get_prev_hash(None), None)
+
+        self.assertEqual(None, None)
+        self.assertEqual(git_lib.get_renamed_details(""), None)
+        self.assertEqual(git_lib.get_renamed_details("->"), None)
+        self.assertEqual(git_lib.get_renamed_details("/home/user/nuke/mvtools_tests/git_lib_test/first/more6.txt -+ more6_renamed.txt"), None)
+        self.assertEqual(git_lib.get_renamed_details("/home/user/nuke/mvtools_tests/git_lib_test/first/more6.txt -> more6_renamed.txt"), ("/home/user/nuke/mvtools_tests/git_lib_test/first/more6.txt", "more6_renamed.txt"))
 
     def testGetRemotes(self):
 
@@ -1106,6 +1113,217 @@ class GitLibTest(unittest.TestCase):
             self.assertTrue(testrepo_file3 in r)
             self.assertTrue(sub1_testrepo_sub2_file4 in r)
             self.assertFalse(sub1_testrepo_sub3_file4 in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetStagedRenamedFiles(self):
+
+        v, r = git_lib.get_staged_renamed_files(self.fourth_notrepo)
+        self.assertFalse(v)
+
+        v, r = git_lib.get_staged_renamed_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+
+        first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+
+        first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+
+        first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
+
+        first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
+        first_more6_renamed = path_utils.concat_path(self.first_repo, "more6_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more6), "more6-content6", "commit_msg_more6")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(first_more6_renamed))
+
+        first_more7 = path_utils.concat_path(self.first_repo, "more7.txt")
+        first_more7_renamed = path_utils.concat_path(self.first_repo, "more7_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more7), "more7-content7", "commit_msg_more7")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(first_more7_renamed))
+
+        self.assertTrue(os.path.exists(first_more6))
+        self.assertTrue(os.path.exists(first_more7))
+        self.assertTrue(path_utils.copy_to_and_rename(first_more6, self.first_repo, path_utils.basename_filtered(first_more6_renamed)))
+        self.assertTrue(path_utils.copy_to_and_rename(first_more7, self.first_repo, path_utils.basename_filtered(first_more7_renamed)))
+        os.unlink(first_more6)
+        os.unlink(first_more7)
+        self.assertFalse(os.path.exists(first_more6))
+        self.assertFalse(os.path.exists(first_more7))
+        self.assertTrue(os.path.exists(first_more6_renamed))
+        self.assertTrue(os.path.exists(first_more7_renamed))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_renamed_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(any(first_more6 in s for s in r))
+        self.assertTrue(any(first_more6_renamed in s for s in r))
+        self.assertTrue(any(first_more7 in s for s in r))
+        self.assertTrue(any(first_more7_renamed in s for s in r))
+        for x in r:
+            self.assertTrue(os.path.exists(x[1]))
+
+    def testGetStagedRenamedFilesRelativePath(self):
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.mkdir(sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        testrepo_file1_renamed = path_utils.concat_path(sub1_testrepo, "file1_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(testrepo_file1_renamed))
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        testrepo_file3_renamed = path_utils.concat_path(sub1_testrepo, "file3_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(testrepo_file3_renamed))
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        sub1_testrepo_sub2_file4_renamed = path_utils.concat_path(sub1_testrepo_sub2, "file4_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(sub1_testrepo_sub2_file4_renamed))
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+        sub1_testrepo_sub3_file4_renamed = path_utils.concat_path(sub1_testrepo_sub3, "file4_renamed.txt")
+        self.assertFalse(os.path.exists(sub1_testrepo_sub3_file4_renamed))
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        self.assertTrue(path_utils.copy_to_and_rename(testrepo_file1, path_utils.dirname_filtered(testrepo_file1), path_utils.basename_filtered(testrepo_file1_renamed)))
+        self.assertTrue(path_utils.copy_to_and_rename(testrepo_file3, path_utils.dirname_filtered(testrepo_file3), path_utils.basename_filtered(testrepo_file3_renamed)))
+        self.assertTrue(path_utils.copy_to_and_rename(sub1_testrepo_sub2_file4, path_utils.dirname_filtered(sub1_testrepo_sub2_file4), path_utils.basename_filtered(sub1_testrepo_sub2_file4_renamed)))
+
+        os.unlink(testrepo_file1)
+        os.unlink(testrepo_file3)
+        os.unlink(sub1_testrepo_sub2_file4)
+
+        v, r = git_wrapper.stage(sub1_testrepo)
+        self.assertTrue(v)
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_staged_renamed_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertTrue(any(testrepo_file1 in s for s in r))
+            self.assertTrue(any(testrepo_file1_renamed in s for s in r))
+            self.assertTrue(any(testrepo_file3 in s for s in r))
+            self.assertTrue(any(testrepo_file3_renamed in s for s in r))
+            self.assertTrue(any(sub1_testrepo_sub2_file4 in s for s in r))
+            self.assertTrue(any(sub1_testrepo_sub2_file4_renamed in s for s in r))
+            self.assertFalse(any(testrepo_file2 in s for s in r))
+            for x in r:
+                self.assertTrue(os.path.exists(x[1]))
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetStagedRenamedFilesRelativePathSymlinkRepo(self):
+
+        sub2 = path_utils.concat_path(self.test_dir, "sub2")
+        self.assertFalse(os.path.exists(sub2))
+        os.mkdir(sub2)
+        self.assertTrue(os.path.exists(sub2))
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.symlink(sub2, sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        testrepo_file1_renamed = path_utils.concat_path(sub1_testrepo, "file1_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(testrepo_file1_renamed))
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        testrepo_file3_renamed = path_utils.concat_path(sub1_testrepo, "file3_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(testrepo_file3_renamed))
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        sub1_testrepo_sub2_file4_renamed = path_utils.concat_path(sub1_testrepo_sub2, "file4_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(sub1_testrepo_sub2_file4_renamed))
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+        sub1_testrepo_sub3_file4_renamed = path_utils.concat_path(sub1_testrepo_sub3, "file4_renamed.txt")
+        self.assertFalse(os.path.exists(sub1_testrepo_sub3_file4_renamed))
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        self.assertTrue(path_utils.copy_to_and_rename(testrepo_file1, path_utils.dirname_filtered(testrepo_file1), path_utils.basename_filtered(testrepo_file1_renamed)))
+        self.assertTrue(path_utils.copy_to_and_rename(testrepo_file3, path_utils.dirname_filtered(testrepo_file3), path_utils.basename_filtered(testrepo_file3_renamed)))
+        self.assertTrue(path_utils.copy_to_and_rename(sub1_testrepo_sub2_file4, path_utils.dirname_filtered(sub1_testrepo_sub2_file4), path_utils.basename_filtered(sub1_testrepo_sub2_file4_renamed)))
+
+        os.unlink(testrepo_file1)
+        os.unlink(testrepo_file3)
+        os.unlink(sub1_testrepo_sub3_file4)
+
+        v, r = git_wrapper.stage(sub1_testrepo)
+        self.assertTrue(v)
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_staged_renamed_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertTrue(any(testrepo_file1 in s for s in r))
+            self.assertTrue(any(testrepo_file1_renamed in s for s in r))
+            self.assertTrue(any(testrepo_file3 in s for s in r))
+            self.assertTrue(any(testrepo_file3_renamed in s for s in r))
+            self.assertTrue(any(sub1_testrepo_sub2_file4 in s for s in r))
+            self.assertTrue(any(sub1_testrepo_sub2_file4_renamed in s for s in r))
+            self.assertFalse(any(testrepo_file2 in s for s in r))
+            for x in r:
+                self.assertTrue(os.path.exists(x[1]))
         finally:
             os.chdir(saved_wd)
 

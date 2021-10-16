@@ -13,6 +13,23 @@ def get_stash_name(str_line):
 def get_prev_hash(str_line):
     return string_utils.generic_parse(str_line, " ")
 
+def get_renamed_details(renamed_msg):
+
+    if renamed_msg is None:
+        return None
+
+    filename_original = None
+    filename_renamed = None
+
+    n = renamed_msg.find("->")
+    if n == -1 or n == 0:
+        return None
+
+    filename_original = renamed_msg[:n-1]
+    filename_renamed = (renamed_msg[n+2:]).lstrip()
+
+    return (filename_original, filename_renamed)
+
 def remove_gitlog_decorations(commitmsg):
 
     res = commitmsg
@@ -249,6 +266,28 @@ def get_staged_files(repo):
 
 def get_staged_deleted_files(repo):
     return get_staged_delegate(repo, ["D"])
+
+def get_staged_renamed_files(repo):
+
+    v, r = get_staged_delegate(repo, ["R"])
+    if not v:
+        return False, r
+    renamed_list = r
+
+    repo_local = os.path.abspath(repo)
+
+    renamed_list_filtered = []
+    for rl in renamed_list:
+
+        r = get_renamed_details(rl)
+        if r is None:
+            return False, "Unable to read out and parse staged, renamed files from repo [%s]" % repo_local
+        original_fn = r[0]
+        renamed_fn  = r[1]
+
+        renamed_list_filtered.append( (original_fn, path_utils.concat_path(repo_local, renamed_fn)) )
+
+    return True, renamed_list_filtered
 
 def get_staged_delegate(repo, check_chars):
 
