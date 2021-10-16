@@ -658,6 +658,12 @@ def stash_clear(repo):
     repo = os.path.abspath(repo)
     return git_wrapper.stash_clear(repo)
 
+def stash_drop(repo):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.stash_drop(repo)
+
 def show(repo, commit_id):
     if repo is None:
         return False, "No repo specified"
