@@ -3302,6 +3302,33 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testStashClear(self):
+
+        with mock.patch("git_wrapper.stash_clear", return_value=(True, None)) as dummy:
+            v, r = git_lib.stash_clear(self.first_repo)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo)
+
+        with mock.patch("git_wrapper.stash_clear", return_value=(True, None)) as dummy:
+            v, r = git_lib.stash_clear(None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.stash_clear", return_value=(True, None)) as dummy:
+                v, r = git_lib.stash_clear(first_rel_path)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo)
+
+        finally:
+            os.chdir(saved_wd)
+
     def testRemoteChangeUrl(self):
 
         with mock.patch("git_wrapper.remote_change_url", return_value=(True, None)) as dummy:
