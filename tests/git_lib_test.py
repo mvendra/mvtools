@@ -86,6 +86,16 @@ class GitLibTest(unittest.TestCase):
 
     def testHelperFunctions(self):
 
+        self.assertEqual(git_lib.change_stash_index(None, None), None)
+        self.assertEqual(git_lib.change_stash_index("stash@{0}", None), None)
+        self.assertEqual(git_lib.change_stash_index("stash@[0}", 1), None)
+        self.assertEqual(git_lib.change_stash_index("stash@{0]", 1), None)
+        self.assertEqual(git_lib.change_stash_index("{stash@0}", 1), None)
+        self.assertEqual(git_lib.change_stash_index("}stash@{0", 1), None)
+        self.assertEqual(git_lib.change_stash_index("stash@}{0", 1), None)
+        self.assertEqual(git_lib.change_stash_index("stash@{0}", 1), "stash@{1}")
+        self.assertEqual(git_lib.change_stash_index("stash@{0}", 25), "stash@{25}")
+
         self.assertEqual(git_lib.get_stash_name("stash@{0}: WIP on master: a44cc87 upd"), "stash@{0}")
         self.assertEqual(git_lib.get_stash_name(""), None)
         self.assertEqual(git_lib.get_stash_name(None), None)

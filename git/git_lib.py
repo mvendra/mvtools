@@ -7,6 +7,20 @@ import git_wrapper
 import path_utils
 import string_utils
 
+def change_stash_index(stash_name, index):
+    if stash_name is None or index is None:
+        return None
+    idx_begin = stash_name.rfind("{")
+    idx_end = stash_name.rfind("}")
+    if idx_begin == -1 or idx_end == -1:
+        return None
+    if idx_begin == 0 or idx_end == 0:
+        return None
+    if idx_begin > idx_end:
+        return None
+    new_stash_name = "%s%d%s" % (stash_name[:idx_begin+1], index, stash_name[idx_end:])
+    return new_stash_name
+
 def get_stash_name(str_line):
     return string_utils.generic_parse(str_line, ":")
 
