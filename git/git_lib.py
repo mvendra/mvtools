@@ -729,5 +729,13 @@ def status_simple(repo):
     repo = os.path.abspath(repo)
     return git_wrapper.status_simple(repo)
 
+def kill_previous(repo, num_previous):
+    if repo is None:
+        return False, "No repo specified"
+    if num_previous is None:
+        return False, "previous quantity unspecified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.reset_hard_head(repo, num_previous)
+
 if __name__ == "__main__":
     print("Hello from %s" % path_utils.basename_filtered(__file__))

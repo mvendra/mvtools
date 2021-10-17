@@ -3583,5 +3583,37 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testKillPrevious(self):
+
+        with mock.patch("git_wrapper.reset_hard_head", return_value=(True, None)) as dummy:
+            v, r = git_lib.kill_previous(self.first_repo, 1)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, 1)
+
+        with mock.patch("git_wrapper.reset_hard_head", return_value=(True, None)) as dummy:
+            v, r = git_lib.kill_previous(None, 1)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        with mock.patch("git_wrapper.reset_hard_head", return_value=(True, None)) as dummy:
+            v, r = git_lib.kill_previous(self.first_repo, None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.reset_hard_head", return_value=(True, None)) as dummy:
+                v, r = git_lib.kill_previous(first_rel_path, 1)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, 1)
+
+        finally:
+            os.chdir(saved_wd)
+
 if __name__ == '__main__':
     unittest.main()
