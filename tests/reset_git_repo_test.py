@@ -1708,7 +1708,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 0)
 
     def testResetGitRepo_ResetGitRepo2(self):
 
@@ -1729,17 +1729,19 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 1)
+                self.assertTrue(file1_patch_filename in r[0])
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
 
     def testResetGitRepo_ResetGitRepo3(self):
@@ -1764,18 +1766,23 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+        self.assertFalse(os.path.exists(file2_patch_filename))
+
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 2)
+                self.assertTrue(file1_patch_filename in r[0])
+                self.assertTrue(file2_patch_filename in r[1])
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
 
@@ -1967,7 +1974,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 0)
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -2004,17 +2011,19 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 1)
+                self.assertTrue(file1_patch_filename in r[0])
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
 
     def testResetGitRepo_ResetGitRepo10(self):
@@ -2042,18 +2051,23 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "2_reset_git_repo_staged_file2.txt.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+        self.assertFalse(os.path.exists(file2_patch_filename))
+
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 2)
+                self.assertTrue(file1_patch_filename in r[0])
+                self.assertTrue(file2_patch_filename in r[1])
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "2_reset_git_repo_staged_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
 
@@ -2208,11 +2222,18 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
+        file3_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "2_reset_git_repo_staged_file3.txt.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+        self.assertFalse(os.path.exists(file3_patch_filename))
+
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 2)
+                self.assertTrue(file1_patch_filename in r[0])
+                self.assertTrue(file3_patch_filename in r[1])
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -2222,8 +2243,6 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
-        file3_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "2_reset_git_repo_staged_file3.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file3_patch_filename))
 
@@ -2345,17 +2364,20 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "1_reset_git_repo_stash@{0}.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 1, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 1)
+                self.assertTrue(file1_patch_filename in r[0])
 
         v, r = git_lib.get_stash_list(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "1_reset_git_repo_stash@{0}.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         with open(file1_patch_filename, "r") as f:
             self.assertTrue("extra stuff" in f.read())
@@ -2390,7 +2412,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 0)
 
         v, r = git_lib.get_stash_list(self.first_repo)
         self.assertTrue(v)
@@ -2435,23 +2457,28 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "1_reset_git_repo_stash@{0}.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "2_reset_git_repo_stash@{1}.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+        self.assertFalse(os.path.exists(file2_patch_filename))
+
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, -1, False, 0)
                 self.assertTrue(v)
-                # mvtodo: check r too
+                self.assertEqual(len(r), 2)
+                self.assertTrue(file1_patch_filename in r[0])
+                self.assertTrue(file2_patch_filename in r[1])
 
         v, r = git_lib.get_stash_list(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "1_reset_git_repo_stash@{0}.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
+        self.assertTrue(os.path.exists(file2_patch_filename))
+
         with open(file1_patch_filename, "r") as f:
             self.assertTrue("extra stuff2" in f.read())
-
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "2_reset_git_repo_stash@{1}.patch")
-        self.assertTrue(os.path.exists(file2_patch_filename))
         with open(file2_patch_filename, "r") as f:
             self.assertTrue("extra stuff1" in f.read())
 
