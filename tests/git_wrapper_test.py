@@ -921,7 +921,13 @@ class GitWrapperTest(unittest.TestCase):
 
         v, r = git_wrapper.show(self.second_repo, commit_id)
         self.assertTrue(v)
-        self.assertTrue("test-show, test contents" in r)
+        contents_first_call = r
+        self.assertTrue("test-show, test contents" in contents_first_call)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        contents_second_call = r
+        self.assertEqual(contents_first_call, contents_second_call)
 
     def testStatus(self):
 
