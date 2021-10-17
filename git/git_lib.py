@@ -374,14 +374,14 @@ def get_stash_list(repo):
     stash_list = [get_stash_name(x) for x in r.split(os.linesep) if x != ""]
     return True, stash_list
 
-def get_previous_hash_list(repo, num_previous):
+def get_previous_hash_list(repo, num_previous = None):
 
     if repo is None:
         return False, "No repo specified"
 
     repo = os.path.abspath(repo)
 
-    v, r = git_wrapper.log_oneline(repo)
+    v, r = git_wrapper.log_oneline(repo, num_previous)
     if not v:
         return False, r
     prev_list = [get_prev_hash(x) for x in r.split(os.linesep) if x != ""]

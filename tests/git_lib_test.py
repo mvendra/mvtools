@@ -2853,6 +2853,128 @@ class GitLibTest(unittest.TestCase):
         self.assertFalse(self.first_file1 in r)
         self.assertTrue(first_file2 in r)
 
+    def testGetPreviousHashListFail1(self):
+
+        v, r = git_lib.get_previous_hash_list(None, 1)
+        self.assertFalse(v)
+
+    def testGetPreviousHashList1(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file3")
+        self.assertTrue(v)
+
+        with open(first_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file4")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+    def testGetPreviousHashList2(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file3")
+        self.assertTrue(v)
+
+        with open(first_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file4")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 4)
+
+    def testGetPreviousHashList3(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file3")
+        self.assertTrue(v)
+
+        with open(first_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file4")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 8)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 4)
+
+    def testGetPreviousHashListRelativePath1(self):
+
+        first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file3")
+        self.assertTrue(v)
+
+        with open(first_file2, "a") as f:
+            f.write("smore")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit_msg_file4")
+        self.assertTrue(v)
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_previous_hash_list("./first")
+            self.assertTrue(v)
+            self.assertEqual(len(r), 4)
+        finally:
+            os.chdir(saved_wd)
+
     def testCloneBareRepo(self):
 
         with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
