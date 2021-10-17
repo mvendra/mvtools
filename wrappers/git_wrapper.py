@@ -257,6 +257,10 @@ def reset_head(repo, files=None):
             cmd.append(f)
     return git_wrapper_standard_command(cmd, "reset-head")
 
+def reset_hard_head(repo, reset_range):
+    cmd = ["git", "-C", repo, "reset", "--hard", ("HEAD~%d" % reset_range)]
+    return git_wrapper_standard_command(cmd, "reset-hard-head")
+
 def puaq():
     print("Hello from %s" % path_utils.basename_filtered(__file__))
 
