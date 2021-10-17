@@ -90,7 +90,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         os.mkdir(self.rdb_storage)
@@ -125,8 +125,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-
-        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         os.mkdir(self.rdb_storage)
@@ -157,7 +156,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 0)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_file3))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, first_file3, 1, self.rdb)
@@ -194,7 +193,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(first_file3 in r)
 
         patch_file_filename3 = "3_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_file3))
-        test_patch_file3 = path_utils.concat_path(self.rdb_storage, patch_file_filename3)
+        test_patch_file3 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename3)
         self.assertFalse(os.path.exists(test_patch_file3))
 
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, first_file3, 3, self.rdb)
@@ -226,7 +225,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
@@ -254,7 +253,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
@@ -285,11 +284,11 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 0)
 
         patch_file_filename1 = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file_filename1)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename1)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file_filename2 = "2_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file2))
-        test_patch_file2 = path_utils.concat_path(self.rdb_storage, patch_file_filename2)
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename2)
         self.assertFalse(os.path.exists(test_patch_file2))
 
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
@@ -337,7 +336,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(sub1_sub2_file3))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "sub1", "sub2", patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", "sub1", "sub2", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_file(self.first_repo, sub1_sub2_file3, 1, self.rdb)
@@ -457,7 +456,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
@@ -485,11 +484,11 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         patch_file1_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file1_filename)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head",patch_file1_filename)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file2_filename = "2_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file2))
-        test_patch_file2 = path_utils.concat_path(self.rdb_storage, patch_file2_filename)
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file2_filename)
         self.assertFalse(os.path.exists(test_patch_file2))
 
         v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
@@ -534,11 +533,11 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file1_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file1_filename)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head", patch_file1_filename)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file2_filename = "2_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file2))
-        test_patch_file2 = path_utils.concat_path(self.rdb_storage, patch_file2_filename)
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file2_filename)
         self.assertFalse(os.path.exists(test_patch_file2))
 
         v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
@@ -584,11 +583,11 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         patch_file1_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file1_filename)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head", patch_file1_filename)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file3_filename = "2_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_file3))
-        test_patch_file3 = path_utils.concat_path(self.rdb_storage, patch_file3_filename)
+        test_patch_file3 = path_utils.concat_path(self.rdb_storage, "head", patch_file3_filename)
         self.assertFalse(os.path.exists(test_patch_file3))
 
         v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
@@ -635,7 +634,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(sub1_sub2_file3))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "sub1", "sub2", patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", "sub1", "sub2", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
@@ -703,7 +702,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         self.assertFalse(os.path.exists(self.first_file1))
 
-    def testResetGitRepo_ResetGitRepoHead_Fail1(self):
+    def testResetGitRepo_ResetGitRepoStaged_Fail1(self):
 
         v, r = reset_git_repo.reset_git_repo_staged(self.nonrepo, self.rdb)
         self.assertFalse(v)
@@ -725,7 +724,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_staged_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "staged", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_staged(self.first_repo, self.rdb)
@@ -756,11 +755,11 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         patch_file1_filename = "1_reset_git_repo_staged_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file1_filename)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "staged", patch_file1_filename)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file2_filename = "2_reset_git_repo_staged_%s.patch" % (path_utils.basename_filtered(self.first_file2))
-        test_patch_file2 = path_utils.concat_path(self.rdb_storage, patch_file2_filename)
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "staged", patch_file2_filename)
         self.assertFalse(os.path.exists(test_patch_file2))
 
         v, r = reset_git_repo.reset_git_repo_staged(self.first_repo, self.rdb)
@@ -805,11 +804,11 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file1_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file1_filename)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head", patch_file1_filename)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file2_filename = "1_reset_git_repo_staged_%s.patch" % (path_utils.basename_filtered(self.first_file2))
-        test_patch_file2 = path_utils.concat_path(self.rdb_storage, patch_file2_filename)
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "staged", patch_file2_filename)
         self.assertFalse(os.path.exists(test_patch_file2))
 
         v, r = reset_git_repo.reset_git_repo_staged(self.first_repo, self.rdb)
@@ -855,11 +854,11 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 2)
 
         patch_file1_filename = "1_reset_git_repo_staged_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, patch_file1_filename)
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "staged", patch_file1_filename)
         self.assertFalse(os.path.exists(test_patch_file1))
 
         patch_file3_filename = "2_reset_git_repo_staged_%s.patch" % (path_utils.basename_filtered(first_file3))
-        test_patch_file3 = path_utils.concat_path(self.rdb_storage, patch_file3_filename)
+        test_patch_file3 = path_utils.concat_path(self.rdb_storage, "staged", patch_file3_filename)
         self.assertFalse(os.path.exists(test_patch_file3))
 
         v, r = reset_git_repo.reset_git_repo_staged(self.first_repo, self.rdb)
@@ -909,7 +908,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
 
         patch_file_filename = "1_reset_git_repo_staged_%s.patch" % (path_utils.basename_filtered(sub1_sub2_file3))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "sub1", "sub2", patch_file_filename)
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "staged", "sub1", "sub2", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
         v, r = reset_git_repo.reset_git_repo_staged(self.first_repo, self.rdb)
@@ -1000,7 +999,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
 
         patch_second_fn = "1_reset_git_repo_staged_%s.patch" % path_utils.basename_filtered(self.first_file2)
-        patch_file_second = path_utils.concat_path(self.rdb_storage, patch_second_fn)
+        patch_file_second = path_utils.concat_path(self.rdb_storage, "staged", patch_second_fn)
         self.assertFalse(os.path.exists(patch_file_second))
 
         v, r = reset_git_repo.reset_git_repo_staged(self.first_repo, self.rdb)
@@ -1049,9 +1048,482 @@ class ResetGitRepoTest(unittest.TestCase):
 
         self.assertFalse(os.path.exists(self.first_file1))
 
+    def testResetGitRepo_ResetGitRepoStash_Fail1(self):
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.nonrepo, self.rdb, -1)
+        self.assertFalse(v)
+
+    def testResetGitRepo_ResetGitRepoStash_Fail2(self):
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, None)
+        self.assertFalse(v)
+
+    def testResetGitRepo_ResetGitRepoStash1(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(patch_file_filename in r[0])
+        self.assertTrue(os.path.exists(test_patch_file))
+        with open(test_patch_file, "r") as f:
+            self.assertTrue("extra stuff" in f.read())
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash2(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 0)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash3(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 5)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(patch_file_filename in r[0])
+        self.assertTrue(os.path.exists(test_patch_file))
+        with open(test_patch_file, "r") as f:
+            self.assertTrue("extra stuff" in f.read())
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash4(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 2)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(patch_file_filename in r[0])
+        self.assertTrue(os.path.exists(test_patch_file))
+        with open(test_patch_file, "r") as f:
+            self.assertTrue("extra stuff" in f.read())
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash5(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, -1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(patch_file_filename in r[0])
+        self.assertTrue(os.path.exists(test_patch_file))
+        with open(test_patch_file, "r") as f:
+            self.assertTrue("extra stuff" in f.read())
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash6(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file2, "w") as f:
+            f.write("extra stuff2")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename1 = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+
+        patch_file_filename2 = "2_reset_git_repo_stash@{1}.patch"
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename2)
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 2)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(patch_file_filename1 in r[0])
+        self.assertTrue(patch_file_filename2 in r[1])
+        self.assertTrue(os.path.exists(test_patch_file1))
+        self.assertTrue(os.path.exists(test_patch_file2))
+        with open(test_patch_file1, "r") as f:
+            self.assertTrue("extra stuff2" in f.read())
+        with open(test_patch_file2, "r") as f:
+            self.assertTrue("extra stuff1" in f.read())
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash7(self):
+
+        first_file3 = path_utils.concat_path(self.first_repo, "file3.txt")
+        self.assertFalse(os.path.exists(first_file3))
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file3.txt", "first-file3-content", "first-file3-msg")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_file3))
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file2, "w") as f:
+            f.write("extra stuff2")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file3, "w") as f:
+            f.write("extra stuff3")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename1 = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+
+        patch_file_filename2 = "2_reset_git_repo_stash@{1}.patch"
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename2)
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 2)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(patch_file_filename1 in r[0])
+        self.assertTrue(patch_file_filename2 in r[1])
+        self.assertTrue(os.path.exists(test_patch_file1))
+        self.assertTrue(os.path.exists(test_patch_file2))
+        with open(test_patch_file1, "r") as f:
+            self.assertTrue("extra stuff3" in f.read())
+        with open(test_patch_file2, "r") as f:
+            self.assertTrue("extra stuff2" in f.read())
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 2)
+        self.assertFalse(v) # patch_file_filename1's pre-existence should prevent the operation from finishing successfully
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+    def testResetGitRepo_ResetGitRepoStash8(self):
+
+        first_file3 = path_utils.concat_path(self.first_repo, "file3.txt")
+        self.assertFalse(os.path.exists(first_file3))
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file3.txt", "first-file3-content", "first-file3-msg")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_file3))
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file2, "w") as f:
+            f.write("extra stuff2")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file3, "w") as f:
+            f.write("extra stuff3")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename1 = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+
+        patch_file_filename2 = "2_reset_git_repo_stash@{1}.patch"
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename2)
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 2)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(patch_file_filename1 in r[0])
+        self.assertTrue(patch_file_filename2 in r[1])
+        self.assertTrue(os.path.exists(test_patch_file1))
+        self.assertTrue(os.path.exists(test_patch_file2))
+        with open(test_patch_file1, "r") as f:
+            self.assertTrue("extra stuff3" in f.read())
+        with open(test_patch_file2, "r") as f:
+            self.assertTrue("extra stuff2" in f.read())
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        os.unlink(test_patch_file1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, 2)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(patch_file_filename1 in r[0]) # has been recreated with the same name
+        self.assertTrue(os.path.exists(test_patch_file1))
+        with open(test_patch_file1, "r") as f:
+            self.assertTrue("extra stuff1" in f.read())
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash9(self):
+
+        first_file3 = path_utils.concat_path(self.first_repo, "file3.txt")
+        self.assertFalse(os.path.exists(first_file3))
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file3.txt", "first-file3-content", "first-file3-msg")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_file3))
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file2, "w") as f:
+            f.write("extra stuff2")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file3, "w") as f:
+            f.write("extra stuff3")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        patch_file_filename1 = "1_reset_git_repo_stash@{0}.patch"
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+
+        patch_file_filename2 = "2_reset_git_repo_stash@{1}.patch"
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename2)
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+        patch_file_filename3 = "3_reset_git_repo_stash@{2}.patch"
+        test_patch_file3 = path_utils.concat_path(self.rdb_storage, "stash", patch_file_filename3)
+        self.assertFalse(os.path.exists(test_patch_file3))
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, -1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+        self.assertTrue(patch_file_filename1 in r[0])
+        self.assertTrue(patch_file_filename2 in r[1])
+        self.assertTrue(patch_file_filename3 in r[2])
+        self.assertTrue(os.path.exists(test_patch_file1))
+        self.assertTrue(os.path.exists(test_patch_file2))
+        self.assertTrue(os.path.exists(test_patch_file3))
+        with open(test_patch_file1, "r") as f:
+            self.assertTrue("extra stuff3" in f.read())
+        with open(test_patch_file2, "r") as f:
+            self.assertTrue("extra stuff2" in f.read())
+        with open(test_patch_file3, "r") as f:
+            self.assertTrue("extra stuff1" in f.read())
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoStash10(self):
+
+        first_file3 = path_utils.concat_path(self.first_repo, "file3.txt")
+        self.assertFalse(os.path.exists(first_file3))
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file3.txt", "first-file3-content", "first-file3-msg")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_file3))
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        with open(self.first_file2, "w") as f:
+            f.write("extra stuff2")
+
+        with open(first_file3, "w") as f:
+            f.write("extra stuff3")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+
+        v, r = reset_git_repo.reset_git_repo_stash(self.first_repo, self.rdb, -1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+
     def testResetGitRepo_ResetGitRepo_Fail1(self):
 
-        v, r = reset_git_repo.reset_git_repo(self.nonrepo, None, False, False, False, 0)
+        v, r = reset_git_repo.reset_git_repo(self.nonrepo, None, False, 0, False, 0)
         self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepo_Fail2(self):
@@ -1060,14 +1532,14 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = git_wrapper.init(self.test_dir, "test_bare", True)
         self.assertTrue(v)
 
-        v, r = reset_git_repo.reset_git_repo(test_bare_repo, None, False, False, False, 0)
+        v, r = reset_git_repo.reset_git_repo(test_bare_repo, None, False, 0, False, 0)
         self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepo_Fail3(self):
 
         base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, False, False, 0)
+            v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
             self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepo_Fail4(self):
@@ -1081,7 +1553,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
                 self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepo1(self):
@@ -1098,7 +1570,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
                 self.assertTrue(v)
 
     def testResetGitRepo_ResetGitRepo2(self):
@@ -1122,14 +1594,14 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
 
     def testResetGitRepo_ResetGitRepo3(self):
@@ -1156,15 +1628,15 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_head_file2.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
 
@@ -1190,7 +1662,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
                 self.assertTrue(any(self.first_file1 in s for s in r))
 
@@ -1198,7 +1670,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
         self.assertFalse(os.path.exists(file1_patch_filename))
 
     # mvtodo: disabled
@@ -1231,7 +1703,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
 
     def testResetGitRepo_ResetGitRepo6(self):
@@ -1265,8 +1737,8 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_head_file2.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
 
@@ -1304,8 +1776,8 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_head_file2.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
     """
@@ -1351,7 +1823,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
 
         v, r = git_lib.get_head_files(self.first_repo)
@@ -1362,8 +1834,8 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
-        file3_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_head_file3.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        file3_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file3.txt.patch")
         self.assertFalse(os.path.exists(file1_patch_filename))
         self.assertFalse(os.path.exists(file3_patch_filename))
 
@@ -1391,14 +1863,14 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_staged_file1.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
 
     def testResetGitRepo_ResetGitRepo10(self):
@@ -1428,15 +1900,15 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_staged_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_staged_file2.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "2_reset_git_repo_staged_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
 
@@ -1470,7 +1942,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
 
     def testResetGitRepo_ResetGitRepo12(self):
@@ -1504,8 +1976,8 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_head_file2.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
 
@@ -1543,8 +2015,8 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_head_file2.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
     """
@@ -1590,7 +2062,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
 
         v, r = git_lib.get_head_files(self.first_repo)
@@ -1601,8 +2073,8 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_staged_file1.txt.patch")
-        file3_patch_filename = path_utils.concat_path(final_patch_backup_folder, "2_reset_git_repo_staged_file3.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
+        file3_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "2_reset_git_repo_staged_file3.txt.patch")
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file3_patch_filename))
 
@@ -1631,7 +2103,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
                 self.assertEqual(len(r), 1)
                 self.assertTrue(self.first_file1 in r[0])
@@ -1644,7 +2116,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_staged_file1.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
         self.assertFalse(os.path.exists(file1_patch_filename))
 
     def testResetGitRepo_ResetGitRepo16(self):
@@ -1677,7 +2149,7 @@ class ResetGitRepoTest(unittest.TestCase):
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, False, False, 0)
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
                 self.assertEqual(len(r), 1)
                 self.assertTrue(first_file1_renamed in r[0])
@@ -1695,8 +2167,141 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(self.first_file1 in r)
 
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "1_reset_git_repo_staged_file1.txt.patch")
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "staged", "1_reset_git_repo_staged_file1.txt.patch")
         self.assertFalse(os.path.exists(file1_patch_filename))
+
+    def testResetGitRepo_ResetGitRepo17(self):
+
+        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
+        os.mkdir(base_patch_backup_folder)
+        fixed_timestamp = "fixed_timestamp"
+        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
+        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 1, False, 0)
+                self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "1_reset_git_repo_stash@{0}.patch")
+        self.assertTrue(os.path.exists(file1_patch_filename))
+        with open(file1_patch_filename, "r") as f:
+            self.assertTrue("extra stuff" in f.read())
+
+    def testResetGitRepo_ResetGitRepo18(self):
+
+        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
+        os.mkdir(base_patch_backup_folder)
+        fixed_timestamp = "fixed_timestamp"
+        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
+        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
+                self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "1_reset_git_repo_stash@{0}.patch")
+        self.assertFalse(os.path.exists(file1_patch_filename))
+
+    def testResetGitRepo_ResetGitRepo19(self):
+
+        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
+        os.mkdir(base_patch_backup_folder)
+        fixed_timestamp = "fixed_timestamp"
+        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
+        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file2, "w") as f:
+            f.write("extra stuff2")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, -1, False, 0)
+                self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "1_reset_git_repo_stash@{0}.patch")
+        self.assertTrue(os.path.exists(file1_patch_filename))
+        with open(file1_patch_filename, "r") as f:
+            self.assertTrue("extra stuff2" in f.read())
+
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "stash", "2_reset_git_repo_stash@{1}.patch")
+        self.assertTrue(os.path.exists(file2_patch_filename))
+        with open(file2_patch_filename, "r") as f:
+            self.assertTrue("extra stuff1" in f.read())
 
 if __name__ == '__main__':
     unittest.main()

@@ -15,7 +15,10 @@ import delayed_file_backup
 import maketimestamp
 
 def make_patch_filename(path, operation, index):
-    return "%s_reset_git_repo_%s_%s.patch" % (str(index), operation, path_utils.basename_filtered(path))
+    if operation is None:
+        return "%s_reset_git_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
+    else:
+        return "%s_reset_git_repo_%s_%s.patch" % (str(index), operation, path_utils.basename_filtered(path))
 
 def _report_patch(patch_filename):
     return "generated backup patch: [%s]" % patch_filename
@@ -105,6 +108,68 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
     return True, _report_patch(gen_patch)
 """
 
+def reset_git_repo_stash(target_repo, backup_obj, stash):
+
+    report = []
+    has_any_failed = False
+
+    if stash is None:
+        return False, ["reset_git_repo_stash: stash is unspecified"]
+
+    c = 0
+    while True:
+        c += 1
+
+        if stash != -1: # "-1" means "reset whole stash"
+            if c > stash: # done
+                break
+
+        v, r = git_lib.get_stash_list(target_repo)
+        if not v:
+            return False, ["reset_git_repo_stash: [%s]" % r]
+        stash_list = r
+
+        if stash == -1:
+            if c > len(stash_list):
+                break
+            si = stash_list[c-1]
+        else:
+            if len(stash_list) == 0:
+                if stash >= c:
+                    report.append("Warning: more indices were requested to be reset than there were stash entries (repo: [%s], requested stash reset counts: [%d], total stash entries reset: [%d])" % (target_repo, stash, (c-1)))
+                break
+            si = stash_list[0]
+
+        # generate the backup patch
+        stash_name_to_use = si
+        if stash != -1: # artificially adjust the stash name's index when doing a ranged / partial stash reset (otherwise all backup patches would have the index 0)
+            stash_name_to_use = git_lib.change_stash_index(si, c-1)
+        backup_filename = make_patch_filename(stash_name_to_use, None, c)
+        backup_contents = ""
+        v, r = git_lib.stash_show(target_repo, si)
+        if not v:
+            return False, ["reset_git_repo_stash: [%s]" % r]
+        backup_contents = r
+
+        # make the backup patch
+        v, r = backup_obj.make_backup("stash", backup_filename, backup_contents)
+        gen_patch = r
+        if not v:
+            return False, ["reset_git_repo_stash: failed because [%s] already exists." % gen_patch]
+        report.append(_report_patch(gen_patch))
+
+        if stash != -1:
+            v, r = git_lib.stash_drop(target_repo)
+            if not v:
+                return False, ["reset_git_repo_stash: [%s]" % r]
+
+    if stash == -1:
+        v, r = git_lib.stash_clear(target_repo)
+        if not v:
+            return False, ["reset_git_repo_stash: [%s]" % r]
+
+    return (not has_any_failed), report
+
 def reset_git_repo_staged(target_repo, backup_obj):
 
     report = []
@@ -149,13 +214,13 @@ def reset_git_repo_staged(target_repo, backup_obj):
             return False, ["reset_git_repo_staged: [%s]" % r]
         backup_contents = r
 
-        subfolder = None
+        subfolder = "staged"
         dn = path_utils.dirname_filtered(sf)
         if dn is None:
             return False, ["reset_git_repo_staged: failed because [%s]'s dirname can't be resolved." % sf]
         v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
         if v:
-            subfolder = r
+            subfolder = path_utils.concat_path(subfolder, r)
 
         # make the backup patch
         v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
@@ -200,13 +265,13 @@ def reset_git_repo_head(target_repo, backup_obj):
             return False, ["reset_git_repo_head: [%s]" % r]
         backup_contents = r
 
-        subfolder = None
+        subfolder = "head"
         dn = path_utils.dirname_filtered(mf)
         if dn is None:
             return False, ["reset_git_repo_head: failed because [%s]'s dirname can't be resolved." % mf]
         v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
         if v:
-            subfolder = r
+            subfolder = path_utils.concat_path(subfolder, r)
 
         # make the backup patch
         v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
@@ -291,16 +356,23 @@ def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
         report.append(r)
     """
 
-    # mvtodo: stash
-
-    # mvtodo: unversioned
+    # stash
+    if stash != 0:
+        v, r = reset_git_repo_stash(target_repo, backup_obj, stash)
+        if not v:
+            has_any_failed = True
+            report.append("reset_git_repo_stash: [%s]." % r)
+        else:
+            report += r
 
     # mvtodo: previous
+
+    # mvtodo: unversioned
 
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s target_repo [--head] [--staged] [--stash] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--head] [--staged] [--stash X (use \"-1\" to reset the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -313,12 +385,18 @@ if __name__ == "__main__":
 
     head = False
     staged = False
-    stash = False
+    stash = 0
+    stash_parse_next = False
     unversioned = False
     previous = 0
     previous_parse_next = False
 
     for p in params:
+
+        if stash_parse_next:
+            stash = int(p)
+            stash_parse_next = False
+            continue
 
         if previous_parse_next:
             previous = int(p)
@@ -330,7 +408,7 @@ if __name__ == "__main__":
         elif p == "--staged":
             staged = True
         elif p == "--stash":
-            stash = True
+            stash_parse_next = True
         elif p == "--unversioned":
             unversioned = True
         elif p == "--previous":
