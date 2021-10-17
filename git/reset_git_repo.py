@@ -108,6 +108,50 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
     return True, _report_patch(gen_patch)
 """
 
+def reset_git_repo_previous(target_repo, backup_obj, previous):
+
+    report = []
+    has_any_failed = False
+
+    if previous is None:
+        return False, ["reset_git_repo_previous: previous is unspecified"]
+
+    v, r = git_lib.get_previous_hash_list(target_repo, previous)
+    if not v:
+        return False, ["reset_git_repo_previous: [%s]" % r]
+    previous_hash_list = r
+
+    c = 0
+    for phi in previous_hash_list:
+        c += 1
+
+        if c > previous:
+            break
+
+        # generate the backup patch
+        backup_filename = make_patch_filename(phi, "previous", c)
+        backup_contents = ""
+        v, r = git_lib.show(target_repo, phi)
+        if not v:
+            return False, ["reset_git_repo_previous: [%s]" % r]
+        backup_contents = r
+
+        # make the backup patch
+        v, r = backup_obj.make_backup("previous", backup_filename, backup_contents)
+        gen_patch = r
+        if not v:
+            return False, ["reset_git_repo_previous: failed because [%s] already exists." % gen_patch]
+        report.append(_report_patch(gen_patch))
+
+    if previous > c:
+        report.append("reset_git_repo_previous: Warning: more indices were requested to be reset than there were previous commits (repo: [%s], requested previous reset counts: [%d], total previous entries reset: [%d])" % (target_repo, previous, (c)))
+
+    v, r = git_lib.kill_previous(target_repo, previous)
+    if not v:
+        return False, ["reset_git_repo_previous: [%s]" % r]
+
+    return (not has_any_failed), report
+
 def reset_git_repo_stash(target_repo, backup_obj, stash):
 
     report = []
@@ -136,7 +180,7 @@ def reset_git_repo_stash(target_repo, backup_obj, stash):
         else:
             if len(stash_list) == 0:
                 if stash >= c:
-                    report.append("Warning: more indices were requested to be reset than there were stash entries (repo: [%s], requested stash reset counts: [%d], total stash entries reset: [%d])" % (target_repo, stash, (c-1)))
+                    report.append("reset_git_repo_stash: Warning: more indices were requested to be reset than there were stash entries (repo: [%s], requested stash reset counts: [%d], total stash entries reset: [%d])" % (target_repo, stash, (c-1)))
                 break
             si = stash_list[0]
 
@@ -365,7 +409,14 @@ def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
         else:
             report += r
 
-    # mvtodo: previous
+    # previous
+    if previous > 0:
+        v, r = reset_git_repo_previous(target_repo, backup_obj, previous)
+        if not v:
+            has_any_failed = True
+            report.append("reset_git_repo_previous: [%s]." % r)
+        else:
+            report += r
 
     # mvtodo: unversioned
 

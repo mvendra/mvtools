@@ -1521,6 +1521,142 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 3)
 
+    def testResetGitRepo_ResetGitRepoPrevious_Fail1(self):
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.nonrepo, self.rdb, 1)
+        self.assertFalse(v)
+
+    def testResetGitRepo_ResetGitRepoPrevious_Fail2(self):
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, None)
+        self.assertFalse(v)
+
+    def testResetGitRepo_ResetGitRepoPrevious1(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        hash_list = r
+
+        patch_file_filename = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(patch_file_filename in r[0])
+        self.assertTrue(os.path.exists(test_patch_file))
+        with open(test_patch_file, "r") as f:
+            self.assertTrue("extra stuff1" in f.read())
+
+    def testResetGitRepo_ResetGitRepoPrevious2(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        with open(self.first_file2, "w") as f:
+            f.write("extra stuff2")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-3")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 2)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        hash_list = r
+
+        patch_file_filename1 = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+
+        patch_file_filename2 = "2_reset_git_repo_previous_%s.patch" % hash_list[1]
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename2)
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 2)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(patch_file_filename1 in r[0])
+        self.assertTrue(os.path.exists(test_patch_file1))
+        with open(test_patch_file1, "r") as f:
+            self.assertTrue("extra stuff2" in f.read())
+        self.assertTrue(patch_file_filename2 in r[1])
+        self.assertTrue(os.path.exists(test_patch_file2))
+        with open(test_patch_file2, "r") as f:
+            self.assertTrue("extra stuff1" in f.read())
+
+    def testResetGitRepo_ResetGitRepoPrevious3(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        hash_list = r
+
+        patch_file_filename = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(patch_file_filename in r[0])
+        self.assertTrue(os.path.exists(test_patch_file))
+        with open(test_patch_file, "r") as f:
+            self.assertTrue("first-file2-content" in f.read())
+
+    def testResetGitRepo_ResetGitRepoPrevious4(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        hash_list = r
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 2)
+        self.assertFalse(v)
+
     def testResetGitRepo_ResetGitRepo_Fail1(self):
 
         v, r = reset_git_repo.reset_git_repo(self.nonrepo, None, False, 0, False, 0)
@@ -1572,6 +1708,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
     def testResetGitRepo_ResetGitRepo2(self):
 
@@ -1596,6 +1733,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1630,6 +1768,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1698,6 +1837,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1])
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1732,6 +1872,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1771,6 +1912,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1825,6 +1967,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, True, False, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1865,6 +2008,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1902,6 +2046,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1937,6 +2082,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1])
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -1971,6 +2117,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -2010,6 +2157,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -2064,6 +2212,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, True, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
@@ -2200,6 +2349,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 1, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_stash_list(self.first_repo)
         self.assertTrue(v)
@@ -2240,6 +2390,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_stash_list(self.first_repo)
         self.assertTrue(v)
@@ -2288,6 +2439,7 @@ class ResetGitRepoTest(unittest.TestCase):
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
                 v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, -1, False, 0)
                 self.assertTrue(v)
+                # mvtodo: check r too
 
         v, r = git_lib.get_stash_list(self.first_repo)
         self.assertTrue(v)
@@ -2302,6 +2454,105 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(os.path.exists(file2_patch_filename))
         with open(file2_patch_filename, "r") as f:
             self.assertTrue("extra stuff1" in f.read())
+
+    def testResetGitRepo_ResetGitRepo20(self):
+
+        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
+        os.mkdir(base_patch_backup_folder)
+        fixed_timestamp = "fixed_timestamp"
+        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
+        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 0)
+                self.assertTrue(v)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+
+    def testResetGitRepo_ResetGitRepo21(self):
+
+        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
+        os.mkdir(base_patch_backup_folder)
+        fixed_timestamp = "fixed_timestamp"
+        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
+        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        hash_list = r
+
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "previous", "1_reset_git_repo_previous_%s.patch" % hash_list[0])
+        self.assertFalse(os.path.exists(file1_patch_filename))
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 1)
+                self.assertTrue(v)
+                self.assertEqual(len(r), 1)
+                self.assertTrue(file1_patch_filename in r[0])
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        self.assertTrue(os.path.exists(file1_patch_filename))
+        with open(file1_patch_filename, "r") as f:
+            self.assertTrue("first-file2-content" in f.read())
+
+    def testResetGitRepo_ResetGitRepo22(self):
+
+        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
+        os.mkdir(base_patch_backup_folder)
+        fixed_timestamp = "fixed_timestamp"
+        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
+        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
+
+        with open(self.first_file1, "w") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+        hash_list = r
+
+        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "previous", "1_reset_git_repo_previous_%s.patch" % hash_list[0])
+        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "previous", "2_reset_git_repo_previous_%s.patch" % hash_list[1])
+        self.assertFalse(os.path.exists(file1_patch_filename))
+        self.assertFalse(os.path.exists(file2_patch_filename))
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
+                v, r = reset_git_repo.reset_git_repo(self.first_repo, False, False, 0, False, 2)
+                self.assertTrue(v)
+                self.assertEqual(len(r), 2)
+                self.assertTrue(file1_patch_filename in r[0])
+                self.assertTrue(file2_patch_filename in r[1])
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        self.assertTrue(os.path.exists(file1_patch_filename))
+        with open(file1_patch_filename, "r") as f:
+            self.assertTrue("extra stuff1" in f.read())
+
+        self.assertTrue(os.path.exists(file2_patch_filename))
+        with open(file2_patch_filename, "r") as f:
+            self.assertTrue("first-file2-content" in f.read())
 
 if __name__ == '__main__':
     unittest.main()
