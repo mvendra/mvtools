@@ -11,6 +11,7 @@ import mvtools_test_fixture
 import git_test_fixture
 import create_and_write_file
 import path_utils
+import string_utils
 
 import git_wrapper
 import collect_git_patch
@@ -2885,6 +2886,8 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
+        self.assertTrue(string_utils.is_hex_string(r[0]))
+        self.assertEqual(len(r[0]), 7)
 
     def testGetPreviousHashList2(self):
 
@@ -2913,6 +2916,9 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_previous_hash_list(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 4)
+        for x in r:
+            self.assertTrue(string_utils.is_hex_string(x))
+            self.assertEqual(len(x), 7)
 
     def testGetPreviousHashList3(self):
 
@@ -2941,6 +2947,9 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_previous_hash_list(self.first_repo, 8)
         self.assertTrue(v)
         self.assertEqual(len(r), 4)
+        for x in r:
+            self.assertTrue(string_utils.is_hex_string(x))
+            self.assertEqual(len(x), 7)
 
     def testGetPreviousHashListRelativePath1(self):
 
@@ -2972,6 +2981,9 @@ class GitLibTest(unittest.TestCase):
             v, r = git_lib.get_previous_hash_list("./first")
             self.assertTrue(v)
             self.assertEqual(len(r), 4)
+            for x in r:
+                self.assertTrue(string_utils.is_hex_string(x))
+                self.assertEqual(len(x), 7)
         finally:
             os.chdir(saved_wd)
 
