@@ -87,6 +87,16 @@ class GitLibTest(unittest.TestCase):
 
     def testHelperFunctions(self):
 
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations(None), None)
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("?? anothersub/"), "anothersub/")
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("?? file5.txt"), "file5.txt")
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("?? f"), "f")
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("A  subfolder/more4.txt"), "subfolder/more4.txt")
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("A   subfolder/more4.txt"), " subfolder/more4.txt")
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("A       subfolder/more4.txt"), "     subfolder/more4.txt")
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("? file5.txt"), None)
+        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("??? file5.txt"), None)
+
         self.assertEqual(git_lib.change_stash_index(None, None), None)
         self.assertEqual(git_lib.change_stash_index("stash@{0}", None), None)
         self.assertEqual(git_lib.change_stash_index("stash@[0}", 1), None)
@@ -1360,6 +1370,8 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, [])
 
+        first_zero1 = path_utils.concat_path(self.first_repo, " ") # filename consisting of a single char (space)
+        self.assertTrue(create_and_write_file.create_file_contents(first_zero1, "zero1-contents"))
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
@@ -1375,7 +1387,8 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 4)
+        self.assertEqual(len(r), 5)
+        self.assertTrue(first_zero1 in r)
         self.assertTrue(first_more1 in r)
         self.assertTrue(first_more2 in r)
         #self.assertTrue(first_more3 in r) # mvtodo: might require extra system config or ...
@@ -1491,6 +1504,154 @@ class GitLibTest(unittest.TestCase):
             self.assertTrue(testrepo_file2 in r)
             self.assertTrue(testrepo_file3 in r)
             self.assertTrue(sub1_testrepo_sub2_file4 in r)
+            self.assertTrue(path_utils.dirname_filtered(sub1_testrepo_sub3_file4) in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetUnversionedFilesAndFolders(self):
+
+        v, r = git_lib.get_unversioned_files_and_folders(self.fourth_notrepo)
+        self.assertFalse(v)
+
+        v, r = git_lib.get_unversioned_files_and_folders(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+
+        first_zero1 = path_utils.concat_path(self.first_repo, " ") # filename consisting of a single char (space)
+        self.assertTrue(create_and_write_file.create_file_contents(first_zero1, "zero1-contents"))
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        first_more3 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+
+        first_sub = path_utils.concat_path(self.first_repo, "subfolder")
+        os.mkdir(first_sub)
+        self.assertTrue(os.path.exists(first_sub))
+        first_sub_more4 = path_utils.concat_path(first_sub, "more4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_sub_more4, "more4-contents"))
+
+        v, r = git_lib.get_unversioned_files_and_folders(self.first_repo)
+
+        self.assertTrue(v)
+        self.assertEqual(len(r), 5)
+        self.assertTrue(first_zero1 in r)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
+        #self.assertTrue(first_more3 in r) # mvtodo: might require extra system config or ...
+        self.assertTrue(first_sub in r)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_unversioned_files_and_folders(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testGetUnversionedFilesAndFoldersRelativePath(self):
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.mkdir(sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stage(sub1_testrepo)
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file2, "file2-content1"))
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file3, "file3-content1"))
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1"))
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_unversioned_files_and_folders("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertFalse(testrepo_file1 in r)
+            self.assertTrue(testrepo_file2 in r)
+            self.assertTrue(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2 in r)
+            self.assertTrue(path_utils.dirname_filtered(sub1_testrepo_sub3_file4) in r) # git will return a single entry for a symlink that points to a folder
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetUnversionedFilesAndFoldersRelativePathSymlinkRepo(self):
+
+        sub2 = path_utils.concat_path(self.test_dir, "sub2")
+        self.assertFalse(os.path.exists(sub2))
+        os.mkdir(sub2)
+        self.assertTrue(os.path.exists(sub2))
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.symlink(sub2, sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stage(sub1_testrepo)
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file2, "file2-content1"))
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file3, "file3-content1"))
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1"))
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_unversioned_files_and_folders("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertFalse(testrepo_file1 in r)
+            self.assertTrue(testrepo_file2 in r)
+            self.assertTrue(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2 in r)
             self.assertTrue(path_utils.dirname_filtered(sub1_testrepo_sub3_file4) in r) # git resolves symlinks
         finally:
             os.chdir(saved_wd)

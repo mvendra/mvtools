@@ -77,6 +77,15 @@ def remove_gitlog_decorations(commitmsg):
 
     return res
 
+def remove_gitstatus_simple_decorations(statusmsg_singleline):
+    if statusmsg_singleline is None:
+        return None
+    if len(statusmsg_singleline) < 4:
+        return None
+    if statusmsg_singleline[2] != " ":
+        return None
+    return statusmsg_singleline[3:]
+
 def is_repo_root(path):
     if path is None:
         return None
@@ -359,6 +368,33 @@ def get_unversioned_files(repo):
     if not v:
         return False, r
     unversioned_files = [path_utils.concat_path(repo, x) for x in r.split(os.linesep) if x != ""]
+    return True, unversioned_files
+
+def get_unversioned_files_and_folders(repo):
+
+    # this version of "get_unversioned_files" will return a folder, if that entire folder
+    # contains unversioned files only. empty folders, alone, will not be returned (as per Git's design).
+
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+
+    v, r = git_wrapper.status_simple(repo)
+    if not v:
+        return False, r
+    saved_st_msg = r
+    status_items = [x for x in r.split(os.linesep) if x != ""]
+
+    unversioned_files = []
+    for si in status_items:
+        if len(si) < 4:
+            return False, "Invalid status message returned. Repo: [%s]. Status msg: [%s]" % (repo, saved_st_msg)
+        if si[0:2] == "??":
+            si_filtered = remove_gitstatus_simple_decorations(si)
+            if si_filtered is None:
+                return False, "Invalid status message returned (detected while filtering). Repo: [%s]. Status msg: [%s]" % (repo, saved_st_msg)
+            unversioned_files.append(path_utils.concat_path(repo, si_filtered))
+
     return True, unversioned_files
 
 def get_stash_list(repo):
