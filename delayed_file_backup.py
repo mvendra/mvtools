@@ -18,13 +18,9 @@ class delayed_file_backup:
             os.mkdir(self.storage_path)
         if subpath is None:
             return
-
-        subpath_split = path_utils.splitpath(subpath, "auto")
-        merged_path = self.storage_path
-        for sp in subpath_split:
-            merged_path = path_utils.concat_path(merged_path, sp)
-            if not os.path.exists(merged_path):
-                os.mkdir(merged_path)
+        final_path = path_utils.concat_path(self.storage_path, subpath)
+        if not path_utils.guaranteefolder(final_path):
+            raise mvtools_exception.mvtools_exception("Unable to guarantee final path [%s]." % final_path)
 
     def make_backup(self, subpath, filename, contents):
 

@@ -131,6 +131,31 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_patch_file_full))
         self.assertEqual(r, test_patch_file_full)
 
+    def testDelayedFileBackupFromPathFail1(self):
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_fn = "file1.txt"
+        test_content = "source file contents"
+        test_source_file_full = path_utils.concat_path(self.test_dir, test_fn)
+        test_backup_file_full = path_utils.concat_path(local_dfb_storage, test_fn)
+        self.assertFalse(os.path.exists(test_source_file_full))
+        self.assertFalse(os.path.exists(test_backup_file_full))
+        with open(test_source_file_full, "w") as f:
+            f.write(test_content)
+        self.assertTrue(os.path.exists(test_source_file_full))
+
+        os.mkdir(local_dfb_storage)
+        with open(test_backup_file_full, "w") as f:
+            f.write("sabotage")
+        self.assertTrue(os.path.exists(test_backup_file_full))
+
+        v, r = local_dfb.make_backup_frompath(None, test_fn, test_source_file_full)
+        self.assertFalse(v)
+        self.assertEqual(r, test_backup_file_full)
+
     def testDelayedFileBackupFromPath1(self):
 
         # single file source, root bk folder, no renaming
@@ -178,7 +203,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_backup_file_full))
         self.assertEqual(r, test_backup_file_full)
 
-    def testDelayedFileBackupFromPath3(self):
+    def testDelayedFileBackupFromPath3_1(self):
 
         # single file source, subfoldered bk, no renaming
 
@@ -201,7 +226,30 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_backup_file_full))
         self.assertEqual(r, test_backup_file_full)
 
-    def testDelayedFileBackupFromPath4(self):
+    def testDelayedFileBackupFromPath3_2(self):
+
+        # single file source, subfoldered bk (multilevel), no renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_fn = "file1.txt"
+        test_content = "source file contents"
+        test_source_file_full = path_utils.concat_path(self.test_dir, test_fn)
+        test_backup_file_full = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn)
+        self.assertFalse(os.path.exists(test_source_file_full))
+        self.assertFalse(os.path.exists(test_backup_file_full))
+        with open(test_source_file_full, "w") as f:
+            f.write(test_content)
+        self.assertTrue(os.path.exists(test_source_file_full))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn, test_source_file_full)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(test_backup_file_full))
+        self.assertEqual(r, test_backup_file_full)
+
+    def testDelayedFileBackupFromPath4_1(self):
 
         # single file source, subfoldered bk, renaming
 
@@ -221,6 +269,30 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_source_file_full))
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", test_fn_renamed, test_source_file_full)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(test_backup_file_full))
+        self.assertEqual(r, test_backup_file_full)
+
+    def testDelayedFileBackupFromPath4_2(self):
+
+        # single file source, subfoldered bk (multilevel), renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_fn_source = "file1.txt"
+        test_fn_renamed = "file1_renamed.txt"
+        test_content = "source file contents"
+        test_source_file_full = path_utils.concat_path(self.test_dir, test_fn_source)
+        test_backup_file_full = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn_renamed)
+        self.assertFalse(os.path.exists(test_source_file_full))
+        self.assertFalse(os.path.exists(test_backup_file_full))
+        with open(test_source_file_full, "w") as f:
+            f.write(test_content)
+        self.assertTrue(os.path.exists(test_source_file_full))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn_renamed, test_source_file_full)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_backup_file_full))
         self.assertEqual(r, test_backup_file_full)
@@ -339,7 +411,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3_backup))
 
-    def testDelayedFileBackupFromPath7(self):
+    def testDelayedFileBackupFromPath7_1(self):
 
         # folder source, subfoldered bk, no renaming
 
@@ -396,7 +468,64 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3_backup))
 
-    def testDelayedFileBackupFromPath8(self):
+    def testDelayedFileBackupFromPath7_2(self):
+
+        # folder source, subfoldered bk (multilevel), no renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_sourcefolder = path_utils.concat_path(self.test_dir, "sourcefolder")
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        os.mkdir(test_sourcefolder)
+        self.assertTrue(os.path.exists(test_sourcefolder))
+
+        test_sourcefolder_file1 = path_utils.concat_path(test_sourcefolder, "file1.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_file1))
+        with open(test_sourcefolder_file1, "w") as f:
+            f.write("file1 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_file1))
+
+        test_sourcefolder_subfolder = path_utils.concat_path(test_sourcefolder, "subfolder")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder))
+        os.mkdir(test_sourcefolder_subfolder)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder))
+
+        test_sourcefolder_subfolder_file2 = path_utils.concat_path(test_sourcefolder_subfolder, "file2.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2))
+        with open(test_sourcefolder_subfolder_file2, "w") as f:
+            f.write("file2 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2))
+
+        test_sourcefolder_subfolder_file3 = path_utils.concat_path(test_sourcefolder_subfolder, "file3.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3))
+        with open(test_sourcefolder_subfolder_file3, "w") as f:
+            f.write("file3 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3))
+
+        test_sourcefolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder))
+        test_sourcefolder_file1_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_file1))
+        test_sourcefolder_subfolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder))
+        test_sourcefolder_subfolder_file2_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file2))
+        test_sourcefolder_subfolder_file3_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file3))
+
+        self.assertFalse(os.path.exists(test_sourcefolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder), test_sourcefolder)
+        self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_backup)
+        self.assertTrue(os.path.exists(test_sourcefolder_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+
+    def testDelayedFileBackupFromPath8_1(self):
 
         # folder source, subfoldered bk, renaming
 
@@ -445,6 +574,63 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3_backup))
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", "renamed_sourcefolder", test_sourcefolder)
+        self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_backup)
+        self.assertTrue(os.path.exists(test_sourcefolder_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+
+    def testDelayedFileBackupFromPath8_2(self):
+
+        # folder source, subfoldered bk (multilevel), renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_sourcefolder = path_utils.concat_path(self.test_dir, "sourcefolder")
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        os.mkdir(test_sourcefolder)
+        self.assertTrue(os.path.exists(test_sourcefolder))
+
+        test_sourcefolder_file1 = path_utils.concat_path(test_sourcefolder, "file1.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_file1))
+        with open(test_sourcefolder_file1, "w") as f:
+            f.write("file1 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_file1))
+
+        test_sourcefolder_subfolder = path_utils.concat_path(test_sourcefolder, "subfolder")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder))
+        os.mkdir(test_sourcefolder_subfolder)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder))
+
+        test_sourcefolder_subfolder_file2 = path_utils.concat_path(test_sourcefolder_subfolder, "file2.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2))
+        with open(test_sourcefolder_subfolder_file2, "w") as f:
+            f.write("file2 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2))
+
+        test_sourcefolder_subfolder_file3 = path_utils.concat_path(test_sourcefolder_subfolder, "file3.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3))
+        with open(test_sourcefolder_subfolder_file3, "w") as f:
+            f.write("file3 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3))
+
+        test_sourcefolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "renamed_sourcefolder")
+        test_sourcefolder_file1_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "renamed_sourcefolder", path_utils.basename_filtered(test_sourcefolder_file1))
+        test_sourcefolder_subfolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "renamed_sourcefolder", path_utils.basename_filtered(test_sourcefolder_subfolder))
+        test_sourcefolder_subfolder_file2_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "renamed_sourcefolder", path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file2))
+        test_sourcefolder_subfolder_file3_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "renamed_sourcefolder", path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file3))
+
+        self.assertFalse(os.path.exists(test_sourcefolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "renamed_sourcefolder", test_sourcefolder)
         self.assertTrue(v)
         self.assertEqual(r, test_sourcefolder_backup)
         self.assertTrue(os.path.exists(test_sourcefolder_backup))
@@ -516,7 +702,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertEqual(r, test_backup_file_link_renamed_full)
         self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_renamed_full))
 
-    def testDelayedFileBackupFromPath11(self):
+    def testDelayedFileBackupFromPath11_1(self):
 
         # single file source (broken symlink), subfoldered bk, no renaming
 
@@ -547,7 +733,38 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertEqual(r, test_backup_file_link_full)
         self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_full))
 
-    def testDelayedFileBackupFromPath12(self):
+    def testDelayedFileBackupFromPath11_2(self):
+
+        # single file source (broken symlink), subfoldered bk (multilevel), no renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_fn = "file1.txt"
+        test_fn_link = "file1_link.txt"
+        test_content = "source file contents"
+        test_source_file_full = path_utils.concat_path(self.test_dir, test_fn)
+        test_source_file_link_full = path_utils.concat_path(self.test_dir, test_fn_link)
+        test_backup_file_link_full = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn_link)
+        self.assertFalse(os.path.exists(test_source_file_full))
+        self.assertFalse(os.path.exists(test_source_file_link_full))
+        self.assertFalse(os.path.exists(test_backup_file_link_full))
+        with open(test_source_file_full, "w") as f:
+            f.write(test_content)
+        self.assertTrue(os.path.exists(test_source_file_full))
+        os.symlink(test_source_file_full, test_source_file_link_full)
+        self.assertTrue(os.path.exists(test_source_file_link_full))
+        os.unlink(test_source_file_full)
+        self.assertFalse(os.path.exists(test_source_file_full))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_source_file_link_full))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn_link, test_source_file_link_full)
+        self.assertTrue(v)
+        self.assertEqual(r, test_backup_file_link_full)
+        self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_full))
+
+    def testDelayedFileBackupFromPath12_1(self):
 
         # single file source (broken symlink), subfoldered bk, renaming
 
@@ -575,6 +792,38 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(path_utils.is_path_broken_symlink(test_source_file_link_full))
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", test_fn_link_renamed, test_source_file_link_full)
+        self.assertTrue(v)
+        self.assertEqual(r, test_backup_file_link_renamed_full)
+        self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_renamed_full))
+
+    def testDelayedFileBackupFromPath12_2(self):
+
+        # single file source (broken symlink), subfoldered bk (multilevel), renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_fn = "file1.txt"
+        test_fn_link = "file1_link.txt"
+        test_fn_link_renamed = "file1_link_renamed.txt"
+        test_content = "source file contents"
+        test_source_file_full = path_utils.concat_path(self.test_dir, test_fn)
+        test_source_file_link_full = path_utils.concat_path(self.test_dir, test_fn_link)
+        test_backup_file_link_renamed_full = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn_link_renamed)
+        self.assertFalse(os.path.exists(test_source_file_full))
+        self.assertFalse(os.path.exists(test_source_file_link_full))
+        self.assertFalse(os.path.exists(test_backup_file_link_renamed_full))
+        with open(test_source_file_full, "w") as f:
+            f.write(test_content)
+        self.assertTrue(os.path.exists(test_source_file_full))
+        os.symlink(test_source_file_full, test_source_file_link_full)
+        self.assertTrue(os.path.exists(test_source_file_link_full))
+        os.unlink(test_source_file_full)
+        self.assertFalse(os.path.exists(test_source_file_full))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_source_file_link_full))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), test_fn_link_renamed, test_source_file_link_full)
         self.assertTrue(v)
         self.assertEqual(r, test_backup_file_link_renamed_full)
         self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_renamed_full))
@@ -683,7 +932,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertEqual(r, test_sourcefolder_link_backup)
         self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
 
-    def testDelayedFileBackupFromPath15(self):
+    def testDelayedFileBackupFromPath15_1(self):
 
         # folder source (broken symlink), subfoldered bk, no renaming
 
@@ -735,7 +984,59 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(r, test_sourcefolder_link_backup)
         self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
 
-    def testDelayedFileBackupFromPath16(self):
+    def testDelayedFileBackupFromPath15_2(self):
+
+        # folder source (broken symlink), subfoldered bk (multilevel), no renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_sourcefolder = path_utils.concat_path(self.test_dir, "sourcefolder")
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        os.mkdir(test_sourcefolder)
+        self.assertTrue(os.path.exists(test_sourcefolder))
+
+        test_sourcefolder_file1 = path_utils.concat_path(test_sourcefolder, "file1.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_file1))
+        with open(test_sourcefolder_file1, "w") as f:
+            f.write("file1 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_file1))
+
+        test_sourcefolder_subfolder = path_utils.concat_path(test_sourcefolder, "subfolder")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder))
+        os.mkdir(test_sourcefolder_subfolder)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder))
+
+        test_sourcefolder_subfolder_file2 = path_utils.concat_path(test_sourcefolder_subfolder, "file2.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2))
+        with open(test_sourcefolder_subfolder_file2, "w") as f:
+            f.write("file2 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2))
+
+        test_sourcefolder_subfolder_file3 = path_utils.concat_path(test_sourcefolder_subfolder, "file3.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3))
+        with open(test_sourcefolder_subfolder_file3, "w") as f:
+            f.write("file3 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3))
+
+        test_sourcefolder_link = path_utils.concat_path(self.test_dir, "sourcefolder_link")
+        self.assertFalse(os.path.exists(test_sourcefolder_link))
+        os.symlink(test_sourcefolder, test_sourcefolder_link)
+        self.assertTrue(os.path.exists(test_sourcefolder_link))
+        shutil.rmtree(test_sourcefolder)
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link))
+
+        test_sourcefolder_link_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder_link))
+        self.assertFalse(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), path_utils.basename_filtered(test_sourcefolder_link), test_sourcefolder_link)
+        self.assertTrue(v)
+        self.assertTrue(r, test_sourcefolder_link_backup)
+        self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
+
+    def testDelayedFileBackupFromPath16_1(self):
 
         # folder source (broken symlink), subfoldered bk, renaming
 
@@ -786,6 +1087,244 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, test_sourcefolder_link_backup)
         self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
+
+    def testDelayedFileBackupFromPath16_2(self):
+
+        # folder source (broken symlink), subfoldered bk (multilevel), renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_sourcefolder = path_utils.concat_path(self.test_dir, "sourcefolder")
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        os.mkdir(test_sourcefolder)
+        self.assertTrue(os.path.exists(test_sourcefolder))
+
+        test_sourcefolder_file1 = path_utils.concat_path(test_sourcefolder, "file1.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_file1))
+        with open(test_sourcefolder_file1, "w") as f:
+            f.write("file1 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_file1))
+
+        test_sourcefolder_subfolder = path_utils.concat_path(test_sourcefolder, "subfolder")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder))
+        os.mkdir(test_sourcefolder_subfolder)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder))
+
+        test_sourcefolder_subfolder_file2 = path_utils.concat_path(test_sourcefolder_subfolder, "file2.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2))
+        with open(test_sourcefolder_subfolder_file2, "w") as f:
+            f.write("file2 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2))
+
+        test_sourcefolder_subfolder_file3 = path_utils.concat_path(test_sourcefolder_subfolder, "file3.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3))
+        with open(test_sourcefolder_subfolder_file3, "w") as f:
+            f.write("file3 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3))
+
+        test_sourcefolder_link = path_utils.concat_path(self.test_dir, "sourcefolder_link")
+        self.assertFalse(os.path.exists(test_sourcefolder_link))
+        os.symlink(test_sourcefolder, test_sourcefolder_link)
+        self.assertTrue(os.path.exists(test_sourcefolder_link))
+        shutil.rmtree(test_sourcefolder)
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link))
+
+        test_sourcefolder_link_backup = path_utils.concat_path(local_dfb_storage, path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "sourcefolder_link_renamed")
+        self.assertFalse(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
+
+        v, r = local_dfb.make_backup_frompath(path_utils.concat_path("the-subfolder", "secondlvl", "thirdlvl"), "sourcefolder_link_renamed", test_sourcefolder_link)
+        self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_link_backup)
+        self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
+
+    def testDelayedFileBackupFromPath17(self):
+
+        # extended folder source + partial conflicts (vanilla - no conflicts), root bk folder, no renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_sourcefolder = path_utils.concat_path(self.test_dir, "sourcefolder")
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        os.mkdir(test_sourcefolder)
+        self.assertTrue(os.path.exists(test_sourcefolder))
+
+        test_sourcefolder_file1 = path_utils.concat_path(test_sourcefolder, "file1.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_file1))
+        with open(test_sourcefolder_file1, "w") as f:
+            f.write("file1 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_file1))
+
+        test_sourcefolder_subfolder = path_utils.concat_path(test_sourcefolder, "subfolder")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder))
+        os.mkdir(test_sourcefolder_subfolder)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder))
+
+        test_sourcefolder_subfolder_file2 = path_utils.concat_path(test_sourcefolder_subfolder, "file2.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2))
+        with open(test_sourcefolder_subfolder_file2, "w") as f:
+            f.write("file2 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2))
+
+        test_sourcefolder_subfolder_file3 = path_utils.concat_path(test_sourcefolder_subfolder, "file3.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3))
+        with open(test_sourcefolder_subfolder_file3, "w") as f:
+            f.write("file3 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3))
+
+        test_sourcefolder_subfolder_another = path_utils.concat_path(test_sourcefolder_subfolder, "another")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_another))
+        os.mkdir(test_sourcefolder_subfolder_another)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_another))
+
+        test_sourcefolder_subfolder_yetanother = path_utils.concat_path(test_sourcefolder_subfolder, "yetanother")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_yetanother))
+        os.mkdir(test_sourcefolder_subfolder_yetanother)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_yetanother))
+
+        test_sourcefolder_subfolder_insideanother = path_utils.concat_path(test_sourcefolder_subfolder_another, "insideanother")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother))
+        os.mkdir(test_sourcefolder_subfolder_insideanother)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother))
+
+        test_sourcefolder_subfolder_insideanother_file4 = path_utils.concat_path(test_sourcefolder_subfolder_insideanother, "file4.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_file4))
+        with open(test_sourcefolder_subfolder_insideanother_file4, "w") as f:
+            f.write("file4 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother_file4))
+
+        test_sourcefolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder))
+        test_sourcefolder_file1_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_file1))
+        test_sourcefolder_subfolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder))
+        test_sourcefolder_subfolder_file2_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file2))
+        test_sourcefolder_subfolder_file3_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file3))
+        test_sourcefolder_subfolder_another_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_another))
+        test_sourcefolder_subfolder_yetanother_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_yetanother))
+        test_sourcefolder_subfolder_insideanother_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_another), path_utils.basename_filtered(test_sourcefolder_subfolder_insideanother))
+        test_sourcefolder_subfolder_insideanother_file4_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_another), path_utils.basename_filtered(test_sourcefolder_subfolder_insideanother), path_utils.basename_filtered(test_sourcefolder_subfolder_insideanother_file4))
+
+        self.assertFalse(os.path.exists(test_sourcefolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_another_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_yetanother_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_file4_backup))
+
+        v, r = local_dfb.make_backup_frompath(None, path_utils.basename_filtered(test_sourcefolder), test_sourcefolder)
+        self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_backup)
+        self.assertTrue(os.path.exists(test_sourcefolder_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_another_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_yetanother_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother_file4_backup))
+
+    def testDelayedFileBackupFromPath18(self):
+
+        # extended folder source + partial conflicts (folder conflict), root bk folder, no renaming
+
+        local_dfb_storage = path_utils.concat_path(self.test_dir, "local_dfb_storage")
+        local_dfb = delayed_file_backup.delayed_file_backup(local_dfb_storage)
+        self.assertFalse(os.path.exists(local_dfb_storage))
+
+        test_sourcefolder = path_utils.concat_path(self.test_dir, "sourcefolder")
+        self.assertFalse(os.path.exists(test_sourcefolder))
+        os.mkdir(test_sourcefolder)
+        self.assertTrue(os.path.exists(test_sourcefolder))
+
+        test_sourcefolder_file1 = path_utils.concat_path(test_sourcefolder, "file1.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_file1))
+        with open(test_sourcefolder_file1, "w") as f:
+            f.write("file1 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_file1))
+
+        test_sourcefolder_subfolder = path_utils.concat_path(test_sourcefolder, "subfolder")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder))
+        os.mkdir(test_sourcefolder_subfolder)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder))
+
+        test_sourcefolder_subfolder_file2 = path_utils.concat_path(test_sourcefolder_subfolder, "file2.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2))
+        with open(test_sourcefolder_subfolder_file2, "w") as f:
+            f.write("file2 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file2))
+
+        test_sourcefolder_subfolder_file3 = path_utils.concat_path(test_sourcefolder_subfolder, "file3.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3))
+        with open(test_sourcefolder_subfolder_file3, "w") as f:
+            f.write("file3 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_file3))
+
+        test_sourcefolder_subfolder_another = path_utils.concat_path(test_sourcefolder_subfolder, "another")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_another))
+        os.mkdir(test_sourcefolder_subfolder_another)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_another))
+
+        test_sourcefolder_subfolder_yetanother = path_utils.concat_path(test_sourcefolder_subfolder, "yetanother")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_yetanother))
+        os.mkdir(test_sourcefolder_subfolder_yetanother)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_yetanother))
+
+        test_sourcefolder_subfolder_insideanother = path_utils.concat_path(test_sourcefolder_subfolder_another, "insideanother")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother))
+        os.mkdir(test_sourcefolder_subfolder_insideanother)
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother))
+
+        test_sourcefolder_subfolder_insideanother_file4 = path_utils.concat_path(test_sourcefolder_subfolder_insideanother, "file4.txt")
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_file4))
+        with open(test_sourcefolder_subfolder_insideanother_file4, "w") as f:
+            f.write("file4 contents")
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother_file4))
+
+        test_sourcefolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder))
+        test_sourcefolder_file1_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_file1))
+        test_sourcefolder_subfolder_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder))
+        test_sourcefolder_subfolder_file2_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file2))
+        test_sourcefolder_subfolder_file3_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_file3))
+        test_sourcefolder_subfolder_another_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_another))
+        test_sourcefolder_subfolder_yetanother_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_yetanother))
+        test_sourcefolder_subfolder_insideanother_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_another), path_utils.basename_filtered(test_sourcefolder_subfolder_insideanother))
+        test_sourcefolder_subfolder_insideanother_file4_backup = path_utils.concat_path(local_dfb_storage, path_utils.basename_filtered(test_sourcefolder), path_utils.basename_filtered(test_sourcefolder_subfolder), path_utils.basename_filtered(test_sourcefolder_subfolder_another), path_utils.basename_filtered(test_sourcefolder_subfolder_insideanother), path_utils.basename_filtered(test_sourcefolder_subfolder_insideanother_file4))
+
+        self.assertFalse(os.path.exists(test_sourcefolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_another_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_yetanother_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_file4_backup))
+
+        self.assertTrue(path_utils.guaranteefolder(test_sourcefolder_subfolder_insideanother_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_another_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_backup))
+
+        v, r = local_dfb.make_backup_frompath(None, path_utils.basename_filtered(test_sourcefolder), test_sourcefolder)
+        self.assertFalse(v)
+        self.assertEqual(r, test_sourcefolder_backup)
+        self.assertTrue(os.path.exists(test_sourcefolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_file1_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file2_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_file3_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_another_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_yetanother_backup))
+        self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother_backup))
+        self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_file4_backup))
 
 if __name__ == '__main__':
     unittest.main()
