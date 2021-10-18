@@ -108,6 +108,51 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
     return True, _report_patch(gen_patch)
 """
 
+def reset_git_repo_unversioned(target_repo, backup_obj):
+
+    report = []
+    has_any_failed = False
+
+    v, r = git_lib.get_unversioned_files(target_repo)
+    if not v:
+        return False, ["reset_git_repo_unversioned: [%s]" % r]
+    unversioned_list = r
+
+    v, r = git_lib.get_unversioned_files_and_folders(target_repo)
+    if not v:
+        return False, ["reset_git_repo_unversioned: [%s]" % r]
+    unversioned_plus_folders_list = r
+
+    # make backups first
+    c = 0
+    for ui in unversioned_list:
+        c += 1
+
+        final_target_path = "%s_%s_bk" % (c, path_utils.basename_filtered(ui))
+
+        subfolder = "unversioned"
+        dn = path_utils.dirname_filtered(ui)
+        if dn is None:
+            return False, ["reset_git_repo_previous: failed because [%s]'s dirname can't be resolved." % ui]
+        v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
+        if v:
+            subfolder = path_utils.concat_path(subfolder, r)
+
+        # make the backup patch
+        v, r = backup_obj.make_backup_frompath(subfolder, final_target_path, ui)
+        gen_patch = r
+        if not v:
+            return False, ["reset_git_repo_previous: failed because [%s] already exists." % gen_patch]
+        report.append(_report_patch(gen_patch))
+
+    # then delete all unversioned, files and folders (that contain unversioned files *only*)
+    for ui in unversioned_plus_folders_list:
+        if not path_utils.remove_path(ui):
+            has_any_failed = True
+            report.append("Failed deleting file [%s]" % ui)
+
+    return (not has_any_failed), report
+
 def reset_git_repo_previous(target_repo, backup_obj, previous):
 
     report = []
@@ -418,7 +463,14 @@ def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
         else:
             report += r
 
-    # mvtodo: unversioned
+    # unversioned
+    if unversioned:
+        v, r = reset_git_repo_unversioned(target_repo, backup_obj)
+        if not v:
+            has_any_failed = True
+            report.append("reset_git_repo_unversioned: [%s]." % r)
+        else:
+            report += r
 
     return (not has_any_failed), report
 
