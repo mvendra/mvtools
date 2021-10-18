@@ -10,13 +10,7 @@ import mvtools_test_fixture
 import path_utils
 import git_wrapper
 import collect_git_patch
-
-def is_hex_string(the_string):
-    try:
-        f = int(the_string, 16)
-        return True
-    except:
-        return False
+import string_utils
 
 class GitWrapperTest(unittest.TestCase):
 
@@ -541,7 +535,7 @@ class GitWrapperTest(unittest.TestCase):
 
         v, r = git_wrapper.rev_parse_head(self.second_repo)
         self.assertTrue(v)
-        self.assertTrue( (len(r) >= (40 + len(os.linesep))) and is_hex_string(r))
+        self.assertTrue( (len(r) >= (40 + len(os.linesep))) and string_utils.is_hex_string(r))
 
     def testRevParseIsBareRepo(self):
 

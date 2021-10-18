@@ -78,3 +78,10 @@ def convert_dos_to_unix(string_source):
     output_string = string_source.replace("\r\n", "\n")
 
     return output_string
+
+def is_hex_string(the_string):
+    try:
+        f = int(the_string, 16)
+        return True
+    except:
+        return False
