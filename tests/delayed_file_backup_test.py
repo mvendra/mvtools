@@ -84,6 +84,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(test_patch_file_full, "dummy contents"))
         v, r = local_dfb.make_backup(None, test_fn, test_content)
         self.assertFalse(v)
+        self.assertEqual(r, test_patch_file_full)
 
     def testDelayedFileBackup1(self):
 
@@ -111,6 +112,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         v, r = local_dfb.make_backup(None, test_fn, test_content)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file_full))
+        self.assertEqual(r, test_patch_file_full)
 
     def testDelayedFileBackup3(self):
 
@@ -127,6 +129,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         v, r = local_dfb.make_backup(subpath, test_fn, test_content)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file_full))
+        self.assertEqual(r, test_patch_file_full)
 
     def testDelayedFileBackupFromPath1(self):
 
@@ -149,6 +152,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         v, r = local_dfb.make_backup_frompath(None, test_fn, test_source_file_full)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_backup_file_full))
+        self.assertEqual(r, test_backup_file_full)
 
     def testDelayedFileBackupFromPath2(self):
 
@@ -172,6 +176,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         v, r = local_dfb.make_backup_frompath(None, test_fn_renamed, test_source_file_full)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_backup_file_full))
+        self.assertEqual(r, test_backup_file_full)
 
     def testDelayedFileBackupFromPath3(self):
 
@@ -194,6 +199,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         v, r = local_dfb.make_backup_frompath("the-subfolder", test_fn, test_source_file_full)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_backup_file_full))
+        self.assertEqual(r, test_backup_file_full)
 
     def testDelayedFileBackupFromPath4(self):
 
@@ -217,6 +223,7 @@ class DelayedFileBackupTest(unittest.TestCase):
         v, r = local_dfb.make_backup_frompath("the-subfolder", test_fn_renamed, test_source_file_full)
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_backup_file_full))
+        self.assertEqual(r, test_backup_file_full)
 
     def testDelayedFileBackupFromPath5(self):
 
@@ -268,6 +275,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath(None, path_utils.basename_filtered(test_sourcefolder), test_sourcefolder)
         self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_backup)
         self.assertTrue(os.path.exists(test_sourcefolder_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_file1_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
@@ -324,6 +332,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath(None, "renamed_sourcefolder", test_sourcefolder)
         self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_backup)
         self.assertTrue(os.path.exists(test_sourcefolder_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_file1_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
@@ -380,6 +389,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", path_utils.basename_filtered(test_sourcefolder), test_sourcefolder)
         self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_backup)
         self.assertTrue(os.path.exists(test_sourcefolder_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_file1_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
@@ -436,6 +446,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", "renamed_sourcefolder", test_sourcefolder)
         self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_backup)
         self.assertTrue(os.path.exists(test_sourcefolder_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_file1_backup))
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_backup))
@@ -470,6 +481,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath(None, test_fn_link, test_source_file_link_full)
         self.assertTrue(v)
+        self.assertEqual(r, test_backup_file_link_full)
         self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_full))
 
     def testDelayedFileBackupFromPath10(self):
@@ -501,6 +513,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath(None, test_fn_link_renamed, test_source_file_link_full)
         self.assertTrue(v)
+        self.assertEqual(r, test_backup_file_link_renamed_full)
         self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_renamed_full))
 
     def testDelayedFileBackupFromPath11(self):
@@ -531,6 +544,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", test_fn_link, test_source_file_link_full)
         self.assertTrue(v)
+        self.assertEqual(r, test_backup_file_link_full)
         self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_full))
 
     def testDelayedFileBackupFromPath12(self):
@@ -562,6 +576,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", test_fn_link_renamed, test_source_file_link_full)
         self.assertTrue(v)
+        self.assertEqual(r, test_backup_file_link_renamed_full)
         self.assertTrue(path_utils.is_path_broken_symlink(test_backup_file_link_renamed_full))
 
     def testDelayedFileBackupFromPath13(self):
@@ -613,6 +628,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath(None, path_utils.basename_filtered(test_sourcefolder_link), test_sourcefolder_link)
         self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_link_backup)
         self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
 
     def testDelayedFileBackupFromPath14(self):
@@ -664,6 +680,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath(None, "sourcefolder_link_renamed", test_sourcefolder_link)
         self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_link_backup)
         self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
 
     def testDelayedFileBackupFromPath15(self):
@@ -715,6 +732,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", path_utils.basename_filtered(test_sourcefolder_link), test_sourcefolder_link)
         self.assertTrue(v)
+        self.assertTrue(r, test_sourcefolder_link_backup)
         self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
 
     def testDelayedFileBackupFromPath16(self):
@@ -766,6 +784,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         v, r = local_dfb.make_backup_frompath("the-subfolder", "sourcefolder_link_renamed", test_sourcefolder_link)
         self.assertTrue(v)
+        self.assertEqual(r, test_sourcefolder_link_backup)
         self.assertTrue(path_utils.is_path_broken_symlink(test_sourcefolder_link_backup))
 
 if __name__ == '__main__':
