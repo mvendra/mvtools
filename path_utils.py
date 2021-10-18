@@ -671,5 +671,34 @@ def is_path_broken_symlink(path):
     is_broken = not os.path.exists(path)
     return (is_link and is_broken)
 
+def remove_path(path):
+
+    if path is None:
+        return False
+    if path == "":
+        return False
+
+    if is_path_broken_symlink(path):
+        os.unlink(path)
+        return True
+
+    if not os.path.exists(path):
+        return False
+
+    if os.path.isdir(path):
+        try:
+            shutil.rmtree(path)
+            return True
+        except:
+            return False
+
+    try:
+        os.unlink(path)
+        return True
+    except:
+        return False
+
+    return False # "not_reached"
+
 if __name__ == "__main__":
     print("Hello from %s" % basename_filtered(__file__))

@@ -1154,5 +1154,57 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(path_utils.copy_to_and_rename(folder1_sub2, self.folder2, "sub3"))
         self.assertTrue(path_utils.is_path_broken_symlink(folder2_sub3))
 
+    def testRemovePathFail(self):
+
+        self.assertFalse(path_utils.remove_path(None))
+        self.assertFalse(path_utils.remove_path(""))
+        self.assertFalse(path_utils.remove_path(self.nonexistent))
+
+    def testRemovePathFile(self):
+
+        self.assertTrue(os.path.exists(self.test_file))
+        self.assertTrue(path_utils.remove_path(self.test_file))
+        self.assertFalse(os.path.exists(self.test_file))
+
+    def testRemovePathFolder(self):
+
+        self.assertTrue(os.path.exists(self.folder1))
+        self.assertTrue(path_utils.remove_path(self.folder1))
+        self.assertFalse(os.path.exists(self.folder1))
+
+    def testRemovePathFileBrokenSymlink(self):
+
+        self.assertTrue(os.path.exists(self.test_file))
+        test_file_link = path_utils.concat_path(self.test_dir, "test_file_link.txt")
+        self.assertFalse(os.path.exists(test_file_link))
+
+        os.symlink(self.test_file, test_file_link)
+        self.assertTrue(os.path.exists(test_file_link))
+
+        os.unlink(self.test_file)
+        self.assertFalse(os.path.exists(test_file_link))
+        self.assertFalse(os.path.exists(self.test_file))
+
+        self.assertTrue(path_utils.is_path_broken_symlink(test_file_link))
+        self.assertTrue(path_utils.remove_path(test_file_link))
+        self.assertFalse(path_utils.is_path_broken_symlink(test_file_link))
+
+    def testRemovePathFolder(self):
+
+        self.assertTrue(os.path.exists(self.folder1))
+        folder1_link = path_utils.concat_path(self.test_dir, "folder1_link")
+        self.assertFalse(os.path.exists(folder1_link))
+
+        os.symlink(self.folder1, folder1_link)
+        self.assertTrue(os.path.exists(folder1_link))
+
+        shutil.rmtree(self.folder1)
+        self.assertFalse(os.path.exists(folder1_link))
+        self.assertFalse(os.path.exists(self.folder1))
+
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_link))
+        self.assertTrue(path_utils.remove_path(folder1_link))
+        self.assertFalse(path_utils.is_path_broken_symlink(folder1_link))
+
 if __name__ == '__main__':
     unittest.main()
