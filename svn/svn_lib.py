@@ -68,16 +68,11 @@ def has_string_in_list(the_list, the_str):
 
 def extract_file_from_status_line(the_line):
 
-    if len(the_line) < 2:
+    if len(the_line) < 9:
         return None
-
-    c = 0
-    while c < len(the_line):
-        c += 1
-        if is_nonspaceortabs(the_line[c]):
-            return the_line[c:]
-
-    return None
+    if the_line[0:8] == "        ":
+        return None
+    return the_line[8:]
 
 def status_filter_function_unversioned(the_line):
 
@@ -237,7 +232,7 @@ def get_head_files(local_repo):
 
     total_entries = []
 
-    funcs = [get_head_modified_files, get_head_missing_files, get_head_added_files, get_head_deleted_files]
+    funcs = [get_head_modified_files, get_head_missing_files, get_head_added_files, get_head_deleted_files, get_head_replaced_files]
 
     for f in funcs:
         v, r = f(local_repo)
@@ -258,6 +253,9 @@ def get_head_added_files(local_repo):
 
 def get_head_deleted_files(local_repo):
     return get_head_files_delegate(local_repo, "D")
+
+def get_head_replaced_files(local_repo):
+    return get_head_files_delegate(local_repo, "R")
 
 def get_head_files_delegate(local_repo, status_detect):
 

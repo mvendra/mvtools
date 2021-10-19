@@ -50,6 +50,12 @@ def reset_svn_repo_head(target_repo, backup_obj):
         return False, ["Unable to retrieve list of to-be-deleted files: [%s]" % r]
     to_be_deleted_files = r
 
+    # get versioned+replace-scheduled files
+    v, r = svn_lib.get_head_replaced_files(target_repo)
+    if not v:
+        return False, ["Unable to retrieve list of replaced files: [%s]" % r]
+    replaced_files = r
+
     # get missing files
     v, r = svn_lib.get_head_missing_files(target_repo)
     if not v:
@@ -77,6 +83,14 @@ def reset_svn_repo_head(target_repo, backup_obj):
             return False, ["Failed attempting to un-delete files: [%s]" % r]
         for af in to_be_deleted_files:
             report.append("File [%s] was un-deleted" % af)
+
+    # un-replace files
+    if len(replaced_files) > 0:
+        v, r = svn_lib.revert(target_repo, replaced_files)
+        if not v:
+            return False, ["Failed attempting to un-replace files: [%s]" % r]
+        for rf in replaced_files:
+            report.append("File [%s] was un-replaced" % rf)
 
     # restore missing
     for mf in missing_files:

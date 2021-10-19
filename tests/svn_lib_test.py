@@ -33,6 +33,14 @@ class SvnLibTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
+    def testExtractFileFromStatusLine(self):
+        self.assertEqual(svn_lib.extract_file_from_status_line("       "), None)
+        self.assertEqual(svn_lib.extract_file_from_status_line("        "), None)
+        self.assertEqual(svn_lib.extract_file_from_status_line("A        "), " ")
+        self.assertEqual(svn_lib.extract_file_from_status_line("D       a"), "a")
+        self.assertEqual(svn_lib.extract_file_from_status_line("        > moved from BUGS"), None)
+        self.assertEqual(svn_lib.extract_file_from_status_line("<       > moved from BUGS"), "> moved from BUGS")
+
     def testIsNonNumber(self):
 
         self.assertTrue(svn_lib.is_nonnumber("a"))
