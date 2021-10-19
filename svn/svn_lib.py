@@ -15,6 +15,14 @@ import convcygpath
 import maketimestamp
 import output_backup_helper
 
+def _detect_conflicts(output):
+    if output is None:
+        return False
+    n = output.find("Summary of conflicts:")
+    if n != -1:
+        return True
+    return False
+
 def fix_cygwin_path(path):
 
     if path is None:
@@ -505,12 +513,14 @@ def _update_and_cleanup(feedback_object, local_repo, autobackups):
         return False, proc_stderr
 
     # update
-    v, r = svn_wrapper.update(local_repo_final)
+    v, r = svn_wrapper.update_postpone(local_repo_final)
     if not v:
         return False, r
     proc_result = r[0]
     proc_stdout = r[1]
     proc_stderr = r[2]
+    if _detect_conflicts(proc_stdout):
+        feedback_object("   WARNING! Conflicts detected!   ")
     if proc_result:
         return True, None
 

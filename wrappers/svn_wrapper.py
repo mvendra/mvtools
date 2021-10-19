@@ -106,12 +106,12 @@ def cleanup(local_repo):
 
     return True, (r.success, r.stdout, r.stderr)
 
-def update(local_repo):
+def update_postpone(local_repo):
 
     if not os.path.exists(local_repo):
         return False, "%s does not exist." % local_repo
 
-    v, r = generic_run.run_cmd(["svn", "update"], use_cwd=local_repo)
+    v, r = generic_run.run_cmd(["svn", "update", "--accept", "postpone"], use_cwd=local_repo)
     if not v:
         return False, "Failed calling svn-update command: %s." % r
 
