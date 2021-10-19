@@ -450,21 +450,21 @@ def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
         else:
             report += r
 
-    # previous
-    if previous > 0:
-        v, r = reset_git_repo_previous(target_repo, backup_obj, previous)
-        if not v:
-            has_any_failed = True
-            report.append("reset_git_repo_previous: [%s]." % r)
-        else:
-            report += r
-
     # unversioned
     if unversioned:
         v, r = reset_git_repo_unversioned(target_repo, backup_obj)
         if not v:
             has_any_failed = True
             report.append("reset_git_repo_unversioned: [%s]." % r)
+        else:
+            report += r
+
+    # previous
+    if previous > 0:
+        v, r = reset_git_repo_previous(target_repo, backup_obj, previous)
+        if not v:
+            has_any_failed = True
+            report.append("reset_git_repo_previous: [%s]." % r)
         else:
             report += r
 
