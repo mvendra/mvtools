@@ -33,6 +33,42 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
 
+def reset_svn_repo_unversioned(target_repo, backup_obj):
+
+    report = []
+    has_any_failed = False
+
+    v, r = svn_lib.get_list_unversioned(target_repo)
+    if not v:
+        return False, ["reset_svn_repo_unversioned: [%s]" % r]
+    unversioned_list = r
+
+    # make backups first
+    for ui in unversioned_list:
+
+        subfolder = "unversioned"
+        dn = path_utils.dirname_filtered(ui)
+        if dn is None:
+            return False, ["reset_svn_repo_previous: failed because [%s]'s dirname can't be resolved." % ui]
+        v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
+        if v:
+            subfolder = path_utils.concat_path(subfolder, r)
+
+        # make the backup patch
+        v, r = backup_obj.make_backup_frompath(subfolder, path_utils.basename_filtered(ui), ui)
+        gen_patch = r
+        if not v:
+            return False, ["reset_svn_repo_previous: failed because [%s] already exists." % gen_patch]
+        report.append(_report_patch(gen_patch))
+
+    # then delete all unversioned, files and folders (that contain unversioned files *only*)
+    for ui in unversioned_list:
+        if not path_utils.remove_path(ui):
+            has_any_failed = True
+            report.append("Failed removing path [%s]" % ui)
+
+    return (not has_any_failed), report
+
 def reset_svn_repo_head(target_repo, backup_obj):
 
     report = []
@@ -187,7 +223,14 @@ def reset_svn_repo(target_repo, head, unversioned, previous):
         else:
             report += r
 
-    # mvtodo: unversioned
+    # unversioned
+    if unversioned:
+        v, r = reset_svn_repo_unversioned(target_repo, backup_obj)
+        if not v:
+            has_any_failed = True
+            report.append("reset_svn_repo_unversioned: [%s]." % r)
+        else:
+            report += r
 
     # mvtodo: previous
 
