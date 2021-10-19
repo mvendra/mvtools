@@ -33,6 +33,53 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
 
+def reset_svn_repo_previous(target_repo, backup_obj, previous):
+
+    report = []
+    has_any_failed = False
+
+    if previous is None:
+        return False, ["reset_svn_repo_previous: previous is unspecified"]
+
+    v, r = svn_lib.get_previous_list(target_repo, previous)
+    if not v:
+        return False, ["reset_svn_repo_previous: [%s]" % r]
+    prev_list = r
+
+    if previous > len(prev_list):
+        return False, ["reset_svn_repo_previous: [%s]" % r]
+
+    c = 0
+    for pl in prev_list:
+        c += 1
+
+        if c > previous:
+            break
+
+        # generate the backup patch
+        backup_filename = make_patch_filename(pl, "previous", c)
+        backup_contents = ""
+        v, r = svn_lib.diff(target_repo, None, pl)
+        if not v:
+            return False, ["reset_svn_repo_previous: [%s]" % r]
+        backup_contents = r
+
+        # make the backup patch
+        v, r = backup_obj.make_backup("previous", backup_filename, backup_contents)
+        gen_patch = r
+        if not v:
+            return False, ["reset_svn_repo_previous: failed because [%s] already exists." % gen_patch]
+        report.append(_report_patch(gen_patch))
+
+    if previous > c:
+        report.append("reset_svn_repo_previous: Warning: more indices were requested to be reset than there were previous commits (repo: [%s], requested previous reset counts: [%d], total previous entries reset: [%d])" % (target_repo, previous, (c)))
+
+    v, r = svn_lib.kill_previous(target_repo, previous)
+    if not v:
+        return False, ["reset_svn_repo_previous: [%s]" % r]
+
+    return (not has_any_failed), report
+
 def reset_svn_repo_unversioned(target_repo, backup_obj):
 
     report = []
@@ -232,7 +279,14 @@ def reset_svn_repo(target_repo, head, unversioned, previous):
         else:
             report += r
 
-    # mvtodo: previous
+    # previous
+    if previous > 0:
+        v, r = reset_svn_repo_previous(target_repo, backup_obj, previous)
+        if not v:
+            has_any_failed = True
+            report.append("reset_svn_repo_previous: [%s]." % r)
+        else:
+            report += r
 
     return (not has_any_failed), report
 

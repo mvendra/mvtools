@@ -723,6 +723,32 @@ def restore_subpath_delegate(repo, repo_subpath, temp_path_full):
 
     return True, None
 
+def kill_previous(target_repo, num_previous):
+
+    if target_repo is None:
+        return False, "repo is unspecified"
+    target_repo_final = os.path.abspath(target_repo)
+    if not os.path.exists(target_repo_final):
+        return False, "Repo path [%s] does not exist." % target_repo_final
+
+    v, r = get_previous_list(target_repo, num_previous+1)
+    if not v:
+        return False, "Unable to retrieve previous revision list, from repo [%s]: [%s]. Requested quantity: [%d]" % (target_repo, r, num_previous)
+    prev_revs = r
+
+    if len(prev_revs) < 2:
+        return False, "Unable to rewind to previous revision, on repo [%s]. Not enough previous revisions found (minimum is 2)." % (target_repo)
+
+    if num_previous >= len(prev_revs):
+        return False, "Unable to rewind to previous revision, on repo [%s]. More or equal rewinds requested than there are previous revisions available ([%d] vs. [%d])." % (target_repo, num_previous, len(prev_revs))
+
+    last_rev = prev_revs[len(prev_revs)-1]
+    v, r = svn_wrapper.update_revision(target_repo, last_rev)
+    if not v:
+        return False, "Unable to rewind to previous revision, on repo [%s]: [%s]. Attempted revision: [%d]" % (target_repo, r, last_rev)
+
+    return True, None
+
 def patch_as_head(repo, patch_file, override_head_check):
 
     if repo is None:

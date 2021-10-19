@@ -113,7 +113,18 @@ def update_postpone(local_repo):
 
     v, r = generic_run.run_cmd(["svn", "update", "--accept", "postpone"], use_cwd=local_repo)
     if not v:
-        return False, "Failed calling svn-update command: %s." % r
+        return False, "Failed calling svn-update-postpone command: %s." % r
+
+    return True, (r.success, r.stdout, r.stderr)
+
+def update_revision(local_repo, the_rev):
+
+    if not os.path.exists(local_repo):
+        return False, "%s does not exist." % local_repo
+
+    v, r = generic_run.run_cmd(["svn", "update", "-r", the_rev], use_cwd=local_repo)
+    if not v:
+        return False, "Failed calling svn-update-revision command: %s." % r
 
     return True, (r.success, r.stdout, r.stderr)
 
