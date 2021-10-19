@@ -237,22 +237,27 @@ def get_head_files(local_repo):
 
     total_entries = []
 
-    v, r = get_head_modified_files(local_repo)
-    if not v:
-        return False, r
-    total_entries += r
-    v, r = get_head_deleted_files(local_repo)
-    if not v:
-        return False, r
-    total_entries += r
+    funcs = [get_head_modified_files, get_head_missing_files, get_head_added_files, get_head_deleted_files]
+
+    for f in funcs:
+        v, r = f(local_repo)
+        if not v:
+            return False, r
+        total_entries += r
 
     return True, total_entries
 
 def get_head_modified_files(local_repo):
     return get_head_files_delegate(local_repo, "M")
 
-def get_head_deleted_files(local_repo):
+def get_head_missing_files(local_repo):
     return get_head_files_delegate(local_repo, "!")
+
+def get_head_added_files(local_repo):
+    return get_head_files_delegate(local_repo, "A")
+
+def get_head_deleted_files(local_repo):
+    return get_head_files_delegate(local_repo, "D")
 
 def get_head_files_delegate(local_repo, status_detect):
 
@@ -281,34 +286,6 @@ def get_head_files_delegate(local_repo, status_detect):
             mod_list.append(path_utils.concat_path(local_repo_final, sanitize_windows_path(mod_file)))
 
     return True, mod_list
-
-def get_added_files(local_repo):
-
-    if local_repo is None:
-        return False, "repo is unspecified"
-    local_repo_final = os.path.abspath(local_repo)
-    if not os.path.exists(local_repo_final):
-        return False, "Repo path [%s] does not exist." % local_repo_final
-
-    v, r = svn_wrapper.status(local_repo_final)
-    if not v:
-        return False, r
-
-    add_list = []
-
-    for line in r.split(os.linesep):
-
-        if len(line.strip()) == 0:
-            break
-        item_status = line[0]
-
-        if item_status == "A":
-            add_file = extract_file_from_status_line(line)
-            if add_file is None:
-                return False, "Unable to detect file from status line: [%s]" % line
-            add_list.append(path_utils.concat_path(local_repo_final, sanitize_windows_path(add_file)))
-
-    return True, add_list
 
 def get_head_revision(local_repo):
     return svn_info_delegate(local_repo, revision_filter_function)

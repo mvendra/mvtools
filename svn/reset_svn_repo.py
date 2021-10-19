@@ -15,8 +15,11 @@ import delayed_file_backup
 import maketimestamp
 import get_platform
 
-def make_patch_filename(path, index):
-    return "%s_reset_svn_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
+def make_patch_filename(path, operation, index):
+    if operation is None:
+        return "%s_reset_svn_repo_%s.patch" % (str(index), path_utils.basename_filtered(path))
+    else:
+        return "%s_reset_svn_repo_%s_%s.patch" % (str(index), operation, path_utils.basename_filtered(path))
 
 def _report_patch(patch_filename):
     return "generated backup patch: [%s]" % patch_filename
@@ -30,75 +33,94 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
 
-def reset_svn_repo_file(target_repo, reset_file, patch_index, backup_obj):
+def reset_svn_repo_head(target_repo, backup_obj):
 
-    # check if the requested file has been deleted in the repo
-    v, r = svn_lib.get_head_deleted_files(target_repo)
+    report = []
+    has_any_failed = False
+
+    # get new+added files
+    v, r = svn_lib.get_head_added_files(target_repo)
     if not v:
-        return False, "reset_svn_repo_file: Unable to retrieve list of deleted files: [%s]" % r
-    deleted_files = r
-    if reset_file in deleted_files:
-        # simpler case - just restore this file and return
-        v, r = svn_lib.restore_subpath(target_repo, reset_file)
-        if not v:
-            return False, "reset_svn_repo_file: Failed attempting to restore file [%s]: [%s]" % (reset_file, r)
-        return True, "file [%s] has been restored" % reset_file
-
-    # check if the requested file exists
-    if not os.path.exists(reset_file):
-        return False, "reset_svn_repo_file: File [%s] does not exist" % reset_file
-
-    # check if the requested file has been newly added in the repo
-    v, r = svn_lib.get_added_files(target_repo)
-    if not v:
-        return False, "reset_svn_repo_file: Unable to retrieve list of added files: [%s]" % r
+        return False, ["Unable to retrieve list of added files: [%s]" % r]
     added_files = r
 
-    if reset_file in added_files:
-        v, r = svn_lib.revert(target_repo, [reset_file])
-        if not v:
-            return False, "reset_svn_repo_file: Failed attempting to un-add files: [%s]" % r
-        return True, "File [%s] was un-added" % reset_file
+    # get versioned+delete-scheduled files
+    v, r = svn_lib.get_head_deleted_files(target_repo)
+    if not v:
+        return False, ["Unable to retrieve list of to-be-deleted files: [%s]" % r]
+    to_be_deleted_files = r
 
-    # check if the requested file is modified in the repo
+    # get missing files
+    v, r = svn_lib.get_head_missing_files(target_repo)
+    if not v:
+        return False, ["reset_svn_repo_file: Unable to retrieve list of missing files: [%s]" % r]
+    missing_files = r
+
+    # get modified files
     v, r = svn_lib.get_head_modified_files(target_repo)
     if not v:
-        return False, "reset_svn_repo_file: [%s]" % r
-    mod_files = r
+        return False, ["reset_svn_repo_file: Unable to retrieve list of modified files: [%s]" % r]
+    modified_files = r
 
-    if not reset_file in mod_files:
-        return False, "reset_svn_repo_file: File [%s] is not modified in the repo" % reset_file
+    # un-add new+added files (will be left as unversioned in the repo)
+    if len(added_files) > 0:
+        v, r = svn_lib.revert(target_repo, added_files)
+        if not v:
+            return False, ["Failed attempting to un-add files: [%s]" % r]
+        for af in added_files:
+            report.append("File [%s] was un-added" % af)
 
-    # generate the backup patch
-    backup_filename = make_patch_filename(reset_file, patch_index)
-    backup_contents = ""
-    v, r = svn_lib.diff(target_repo, [reset_file])
-    if not v:
-        return False, "reset_svn_repo_file: [%s]" % r
-    backup_contents = r
+    # un-delete files
+    if len(to_be_deleted_files) > 0:
+        v, r = svn_lib.revert(target_repo, to_be_deleted_files)
+        if not v:
+            return False, ["Failed attempting to un-delete files: [%s]" % r]
+        for af in to_be_deleted_files:
+            report.append("File [%s] was un-deleted" % af)
 
-    subfolder = None
-    dn = path_utils.dirname_filtered(reset_file)
-    if dn is None:
-        return False, "reset_svn_repo_file: unable to resolve [%s]'s dirname." % reset_file
-    v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
-    if v:
-        subfolder = r
+    # restore missing
+    for mf in missing_files:
+        v, r = svn_lib.restore_subpath(target_repo, mf)
+        if not v:
+            return False, ["Failed attempting to restore file [%s]: [%s]" % (mf, r)]
+        report.append("file [%s] has been restored" % mf)
 
-    # make the backup patch
-    v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
-    gen_patch = r
-    if not v:
-        return False, "reset_svn_repo_file: failed because [%s] already exists." % gen_patch
+    # revert modified files, backing them up first
+    c = 0
+    for mf in modified_files:
+        c += 1
 
-    # revert file changes
-    v, r = svn_lib.revert(target_repo, [reset_file])
-    if not v:
-        return False, "reset_svn_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
+        # generate the backup patch
+        backup_filename = make_patch_filename(mf, "head", c)
+        backup_contents = ""
+        v, r = svn_lib.diff(target_repo, [mf])
+        if not v:
+            return False, ["Failed retrieving diff for [%s]: [%s]" % (mf, r)]
+        backup_contents = r
 
-    return True, _report_patch(gen_patch)
+        subfolder = "head"
+        dn = path_utils.dirname_filtered(mf)
+        if dn is None:
+            return False, ["Unable to resolve [%s]'s dirname." % mf]
+        v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
+        if v:
+            subfolder = path_utils.concat_path(subfolder, r)
 
-def reset_svn_repo(target_repo, files):
+        # make the backup patch
+        v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
+        gen_patch = r
+        if not v:
+            return False, ["Failed because [%s] already exists." % gen_patch]
+
+        # revert file changes
+        v, r = svn_lib.revert(target_repo, [mf])
+        if not v:
+            return False, ["[%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)]
+        report.append(_report_patch(gen_patch))
+
+    return (not has_any_failed), report
+
+def reset_svn_repo(target_repo, head, unversioned, previous):
 
     target_repo = path_utils.filter_remove_trailing_sep(target_repo)
     target_repo = os.path.abspath(target_repo)
@@ -132,39 +154,23 @@ def reset_svn_repo(target_repo, files):
     has_any_failed = False
     report = []
 
-    # get modified files
-    if files is None:
-
-        v, r = svn_lib.get_head_files(target_repo)
+    # head
+    if head:
+        v, r = reset_svn_repo_head(target_repo, backup_obj)
         if not v:
-            return False, [r]
-        files = r
+            has_any_failed = True
+            report.append("reset_svn_repo_head: [%s]." % r)
+        else:
+            report += r
 
-        # get new+added files
-        v, r = svn_lib.get_added_files(target_repo)
-        if not v:
-            return False, ["Unable to retrieve list of added files: [%s]" % r]
-        added_files = r
+    # mvtodo: unversioned
 
-        # un-add new+added files (will be left as unversioned in the repo)
-        if len(added_files) > 0:
-            v, r = svn_lib.revert(target_repo, added_files)
-            if not v:
-                return False, ["Failed attempting to un-add files: [%s]" % r]
-            for af in added_files:
-                report.append("File [%s] was un-added" % af)
+    # mvtodo: previous
 
-    # reset file by file
-    c = 0
-    for i in files:
-        c += 1
-        v, r = reset_svn_repo_file(target_repo, i, c, backup_obj)
-        has_any_failed |= (not v)
-        report.append(r)
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s target_repo [--file filepath]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--head] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -175,22 +181,26 @@ if __name__ == "__main__":
     target_repo = sys.argv[1]
     params = sys.argv[2:]
 
-    files = []
-    files_parse_next = False
+    head = False
+    unversioned = False
+    previous = 0
+    previous_parse_next = False
 
     for p in params:
 
-        if files_parse_next:
-            files.append(os.path.abspath(p))
-            files_parse_next = False
+        if previous_parse_next:
+            previous = int(p)
+            previous_parse_next = False
             continue
 
-        if p == "--file":
-            files_parse_next = True
+        if p == "--head":
+            head = True
+        elif p == "--unversioned":
+            unversioned = True
+        elif p == "--previous":
+            previous_parse_next = True
 
-    if len(files) == 0:
-        files = None
-    v, r = reset_svn_repo(target_repo, files)
+    v, r = reset_svn_repo(target_repo, head, unversioned, previous)
     for i in r:
         print(i)
     if not v:
