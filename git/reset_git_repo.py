@@ -124,11 +124,7 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
     unversioned_plus_folders_list = r
 
     # make backups first
-    c = 0
     for ui in unversioned_list:
-        c += 1
-
-        final_target_path = "%s_%s_bk" % (c, path_utils.basename_filtered(ui))
 
         subfolder = "unversioned"
         dn = path_utils.dirname_filtered(ui)
@@ -139,7 +135,7 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
             subfolder = path_utils.concat_path(subfolder, r)
 
         # make the backup patch
-        v, r = backup_obj.make_backup_frompath(subfolder, final_target_path, ui)
+        v, r = backup_obj.make_backup_frompath(subfolder, path_utils.basename_filtered(ui), ui)
         gen_patch = r
         if not v:
             return False, ["reset_git_repo_previous: failed because [%s] already exists." % gen_patch]
@@ -149,7 +145,7 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
     for ui in unversioned_plus_folders_list:
         if not path_utils.remove_path(ui):
             has_any_failed = True
-            report.append("Failed deleting file [%s]" % ui)
+            report.append("Failed removing path [%s]" % ui)
 
     return (not has_any_failed), report
 
