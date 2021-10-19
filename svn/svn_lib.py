@@ -232,7 +232,7 @@ def get_head_files(local_repo):
 
     total_entries = []
 
-    funcs = [get_head_modified_files, get_head_missing_files, get_head_added_files, get_head_deleted_files, get_head_replaced_files]
+    funcs = [get_head_modified_files, get_head_missing_files, get_head_added_files, get_head_deleted_files, get_head_replaced_files, get_head_conflicted_files]
 
     for f in funcs:
         v, r = f(local_repo)
@@ -256,6 +256,9 @@ def get_head_deleted_files(local_repo):
 
 def get_head_replaced_files(local_repo):
     return get_head_files_delegate(local_repo, "R")
+
+def get_head_conflicted_files(local_repo):
+    return get_head_files_delegate(local_repo, "C")
 
 def get_head_files_delegate(local_repo, status_detect):
 

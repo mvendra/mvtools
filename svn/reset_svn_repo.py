@@ -68,6 +68,12 @@ def reset_svn_repo_head(target_repo, backup_obj):
         return False, ["reset_svn_repo_file: Unable to retrieve list of modified files: [%s]" % r]
     modified_files = r
 
+    # get conflicted files
+    v, r = svn_lib.get_head_conflicted_files(target_repo)
+    if not v:
+        return False, ["reset_svn_repo_file: Unable to retrieve list of conflicted files: [%s]" % r]
+    conflicted_files = r
+
     # un-add new+added files (will be left as unversioned in the repo)
     if len(added_files) > 0:
         v, r = svn_lib.revert(target_repo, added_files)
@@ -99,9 +105,13 @@ def reset_svn_repo_head(target_repo, backup_obj):
             return False, ["Failed attempting to restore file [%s]: [%s]" % (mf, r)]
         report.append("file [%s] has been restored" % mf)
 
-    # revert modified files, backing them up first
+    all_relevant_files_for_bk = []
+    all_relevant_files_for_bk += modified_files.copy()
+    all_relevant_files_for_bk += conflicted_files.copy()
+
+    # revert files, backing them up first
     c = 0
-    for mf in modified_files:
+    for mf in all_relevant_files_for_bk:
         c += 1
 
         # generate the backup patch
