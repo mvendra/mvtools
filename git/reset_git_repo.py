@@ -339,7 +339,7 @@ def reset_git_repo_head(target_repo, backup_obj):
     # get deleted files
     v, r = git_lib.get_head_deleted_files(target_repo)
     if not v:
-        return False, "reset_git_repo_head: [%s]" % r
+        return False, ["reset_git_repo_head: [%s]" % r]
     deleted_files = r
 
     c = 0
