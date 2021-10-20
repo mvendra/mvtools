@@ -145,7 +145,7 @@ def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
             has_any_failed = True
             report.append("collect_svn_patch_unversioned: [%s]." % r)
         else:
-            report.append(r)
+            report += r
 
     # previous
     if previous > 0:
@@ -154,7 +154,7 @@ def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
             has_any_failed = True
             report.append("collect_svn_patch_previous: [%s]." % r)
         else:
-            report.append(r)
+            report += r
 
     return (not has_any_failed), report
 
@@ -206,9 +206,9 @@ if __name__ == "__main__":
         storage_path = os.getcwd()
 
     v, r = collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous)
+    for i in r:
+        print(i)
     if not v:
-        for i in r:
-            print("Failed: [%s]." % i)
+        print("Not everything succeeded.")
         sys.exit(1)
-    else:
-        print("All succeeded.")
+    print("All succeeded.")
