@@ -191,7 +191,7 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
             has_any_failed = True
             report.append("collect_git_patch_unversioned: [%s]." % r)
         else:
-            report.append(r)
+            report += r
 
     # stash
     if stash:
@@ -200,7 +200,7 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
             has_any_failed = True
             report.append("collect_git_patch_stash: [%s]." % r)
         else:
-            report.append(r)
+            report += r
 
     # previous
     if previous > 0:
@@ -209,7 +209,7 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
             has_any_failed = True
             report.append("collect_git_patch_previous: [%s]." % r)
         else:
-            report.append(r)
+            report += r
 
     return (not has_any_failed), report
 
@@ -267,9 +267,9 @@ if __name__ == "__main__":
         storage_path = os.getcwd()
 
     v, r = collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, stash, previous)
+    for i in r:
+        print(i)
     if not v:
-        for i in r:
-            print("Failed: %s" % i)
+        print("Not everything succeeded.")
         sys.exit(1)
-    else:
-        print("All succeeded")
+    print("All succeeded.")
