@@ -26,13 +26,13 @@ def port_svn_repo_previous(temp_path, source_repo, target_repo, previous_count):
     previous_files = None
     v, r = collect_svn_patch.collect_svn_patch_previous(source_repo, temp_path, previous_count)
     if not v:
-        return False, ["Failed porting previous (during collect-previous) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)]
+        return False, "Failed porting previous (during collect-previous) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     previous_files = reversed(r)
 
     # previous commits will be stacked up ontop of head - no autocommitting is available (on purpose)
     v, r = apply_svn_patch.apply_svn_patch_head(target_repo, previous_files)
     if not v:
-        return False, ["Failed porting previous (during head-apply) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)]
+        return False, "Failed porting previous (during head-apply) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
 
     return True, report
 
@@ -45,12 +45,12 @@ def port_svn_repo_head(temp_path, source_repo, target_repo):
     if not v:
         if r == collect_svn_patch.ERRMSG_EMPTY:
             return True, [] # ignore if target head is unmodified
-        return False, ["Failed collecting head from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)]
+        return False, "Failed collecting head from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     head_files = [r]
 
     v, r = apply_svn_patch.apply_svn_patch_head(target_repo, head_files)
     if not v:
-        return False, ["Failed patching head from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)]
+        return False, "Failed patching head from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
 
     return True, report
 
@@ -61,7 +61,7 @@ def port_svn_repo_unversioned(temp_path, source_repo, target_repo):
     unversioned_files = None
     v, r = collect_svn_patch.collect_svn_patch_unversioned(source_repo, temp_path)
     if not v:
-        return False, ["Failed collecting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)]
+        return False, "Failed collecting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     unversioned_files = r
     combined_base = path_utils.concat_path(temp_path, source_repo, "unversioned")
 
@@ -71,7 +71,7 @@ def port_svn_repo_unversioned(temp_path, source_repo, target_repo):
 
     v, r = apply_svn_patch.apply_svn_patch_unversioned(target_repo, uvf_param)
     if not v:
-        return False, ["Failed porting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)]
+        return False, "Failed porting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
 
     return True, report
 
