@@ -5,6 +5,7 @@ import os
 import shutil
 
 import mvtools_envvars
+import maketimestamp
 import path_utils
 import detect_repo_type
 import collect_svn_patch
@@ -84,7 +85,8 @@ def port_svn_repo(source_repo, target_repo, head, unversioned, previous):
     if not os.path.exists(temp_path):
         return False, ["Can't apply patches. MVTOOLS_TEMP_PATH envvar is not defined or the path does not exist."]
 
-    temp_path_patches = path_utils.concat_path(temp_path, "temp_path_patches")
+    timestamp_now = maketimestamp.get_timestamp_now_compact()
+    temp_path_patches = path_utils.concat_path(temp_path, ("temp_path_patches_%s" % timestamp_now))
     if os.path.exists(temp_path_patches):
         return False, ["Can't apply patches. Temporary path [%s] already exists." % temp_path_patches]
     os.mkdir(temp_path_patches)
