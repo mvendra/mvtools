@@ -111,7 +111,6 @@ def reset_svn_repo_unversioned(target_repo, backup_obj):
     # then delete all unversioned, files and folders (that contain unversioned files *only*)
     for ui in unversioned_list:
         if not path_utils.remove_path(ui):
-            has_any_failed = True
             return False, ["Failed removing path [%s]" % ui]
 
     return (not has_any_failed), report
