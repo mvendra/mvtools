@@ -25,7 +25,7 @@ def apply_git_patch_stash(target_repo, source_files):
     for sf in source_files:
         v, r = git_lib.patch_as_stash(target_repo, sf, True, True)
         if not v:
-            return False, ["Failed patching stash of [%s]: [%s]" % (target_repo, r)]
+            return False, "Failed patching stash of [%s]: [%s]" % (target_repo, r)
 
     return True, report
 
@@ -36,7 +36,7 @@ def apply_git_patch_staged(target_repo, source_files):
     for sf in source_files:
         v, r = git_lib.patch_as_staged(target_repo, sf, True)
         if not v:
-            return False, ["Failed patching the staging area of [%s]: [%s]" % (target_repo, r)]
+            return False, "Failed patching the staging area of [%s]: [%s]" % (target_repo, r)
 
     return True, report
 
@@ -47,7 +47,7 @@ def apply_git_patch_head(target_repo, source_files):
     for sf in source_files:
         v, r = git_lib.patch_as_head(target_repo, sf, True)
         if not v:
-            return False, ["Failed patching head of [%s]: [%s]" % (target_repo, r)]
+            return False, "Failed patching head of [%s]: [%s]" % (target_repo, r)
 
     return True, report
 
@@ -61,7 +61,7 @@ def apply_git_patch_unversioned(target_repo, source_files):
         sf_file = sf[1]
 
         if not path_utils.based_copy_to(sf_base, sf_file, target_repo):
-            return False, ["Failed copying [%s] to [%s]" % (sf, target_repo)]
+            return False, "Failed copying [%s] to [%s]" % (sf, target_repo)
 
     return True, report
 
