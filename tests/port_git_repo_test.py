@@ -98,7 +98,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo_stash(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_stash(self.storage_path, self.first_repo, self.second_repo, -1)
         self.assertFalse(v)
 
         v, r = git_lib.get_stash_list(self.second_repo)
@@ -121,7 +121,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo_stash(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_stash(self.storage_path, self.first_repo, self.second_repo, -1)
         self.assertTrue(v)
 
         v, r = git_lib.get_stash_list(self.second_repo)
@@ -150,12 +150,41 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo_stash(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_stash(self.storage_path, self.first_repo, self.second_repo, -1)
         self.assertTrue(v)
 
         v, r = git_lib.get_stash_list(self.second_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
+
+    def testPortGitRepoStash3(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("latest1")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file2, "a") as f:
+            f.write("latest2")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+
+        v, r = git_lib.get_stash_list(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = port_git_repo.port_git_repo_stash(self.storage_path, self.first_repo, self.second_repo, 1)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
 
     def testPortGitRepoPreviousFail1(self):
 

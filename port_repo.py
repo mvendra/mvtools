@@ -57,7 +57,7 @@ def port_repo(source_repo, target_repo, head, staged, stash, unversioned, previo
     return False, "Porting failed: Unsupported repo type: [%s]" % repos_type
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash X (use \"-1\" to port the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -71,13 +71,19 @@ if __name__ == "__main__":
 
     head = False
     staged = False
-    stash = False
+    stash = 0
+    stash_parse_next = False
     unversioned = False
     previous = 0
 
     previous_parse_next = False
 
     for p in params:
+
+        if stash_parse_next:
+            stash = int(p)
+            stash_parse_next = False
+            continue
 
         if previous_parse_next:
             previous = int(p)
@@ -91,7 +97,7 @@ if __name__ == "__main__":
         elif p == "--staged":
             staged = True
         elif p == "--stash":
-            stash = True
+            stash_parse_next = True
         elif p == "--unversioned":
             unversioned = True
 

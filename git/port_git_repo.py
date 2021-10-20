@@ -20,12 +20,15 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, None
 
-def port_git_repo_stash(temp_path, source_repo, target_repo):
+def port_git_repo_stash(temp_path, source_repo, target_repo, stash):
 
     report = []
 
+    if stash is None:
+        return False, "Stash is unspecified"
+
     stash_files = None
-    v, r = collect_git_patch.collect_git_patch_stash(source_repo, temp_path, -1) # mvtodo
+    v, r = collect_git_patch.collect_git_patch_stash(source_repo, temp_path, stash)
     if not v:
         return False, "Failed collecting stash from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     stash_files = reversed(r)
@@ -152,8 +155,8 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
     has_any_failed = False
 
     # stash
-    if stash:
-        v, r = port_git_repo_stash(temp_path, source_repo, target_repo)
+    if stash != 0:
+        v, r = port_git_repo_stash(temp_path, source_repo, target_repo, stash)
         if not v:
             has_any_failed = True
             report.append("port_git_repo_stash: [%s]" % r)
@@ -199,7 +202,7 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash] [--unversioned] [--previous]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash X (use \"-1\" to port the entire stash)] [--unversioned] [--previous]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -213,12 +216,18 @@ if __name__ == "__main__":
 
     head = False
     staged = False
-    stash = False
+    stash = 0
+    stash_parse_next = False
     unversioned = False
     previous = 0
     previous_parse_next = False
 
     for p in params:
+
+        if stash_parse_next:
+            stash = int(p)
+            stash_parse_next = False
+            continue
 
         if previous_parse_next:
             previous = int(p)
@@ -230,7 +239,7 @@ if __name__ == "__main__":
         elif p == "--staged":
             staged = True
         elif p == "--stash":
-            stash = True
+            stash_parse_next = True
         elif p == "--unversioned":
             unversioned = True
         elif p == "--previous":
