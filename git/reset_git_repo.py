@@ -115,12 +115,12 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
 
     v, r = git_lib.get_unversioned_files(target_repo)
     if not v:
-        return False, ["Unable to retrieve unversioned (files only) on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve unversioned (files only) on repo [%s]: [%s]" % (target_repo, r)
     unversioned_list = r
 
     v, r = git_lib.get_unversioned_files_and_folders(target_repo)
     if not v:
-        return False, ["Unable to retrieve unversioned (files and folders) on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve unversioned (files and folders) on repo [%s]: [%s]" % (target_repo, r)
     unversioned_plus_folders_list = r
 
     # make backups first
@@ -129,7 +129,7 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
         subfolder = "unversioned"
         dn = path_utils.dirname_filtered(ui)
         if dn is None:
-            return False, ["Failed because [%s]'s dirname can't be resolved." % ui]
+            return False, "Failed because [%s]'s dirname can't be resolved." % ui
         v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
         if v:
             subfolder = path_utils.concat_path(subfolder, r)
@@ -138,13 +138,13 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
         v, r = backup_obj.make_backup_frompath(subfolder, path_utils.basename_filtered(ui), ui)
         gen_patch = r
         if not v:
-            return False, ["Failed because [%s] already exists." % gen_patch]
+            return False, "Failed because [%s] already exists." % gen_patch
         report.append(_report_patch(gen_patch))
 
     # then delete all unversioned, files and folders (that contain unversioned files *only*)
     for ui in unversioned_plus_folders_list:
         if not path_utils.remove_path(ui):
-            return False, ["Failed removing path [%s]" % ui]
+            return False, "Failed removing path [%s]" % ui
 
     return (not has_any_failed), report
 
@@ -154,11 +154,11 @@ def reset_git_repo_previous(target_repo, backup_obj, previous):
     has_any_failed = False
 
     if previous is None:
-        return False, ["Previous is unspecified"]
+        return False, "Previous is unspecified"
 
     v, r = git_lib.get_previous_hash_list(target_repo, previous)
     if not v:
-        return False, ["Unable to retrieve previous hash list on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve previous hash list on repo [%s]: [%s]" % (target_repo, r)
     previous_hash_list = r
 
     c = 0
@@ -173,14 +173,14 @@ def reset_git_repo_previous(target_repo, backup_obj, previous):
         backup_contents = ""
         v, r = git_lib.show(target_repo, phi)
         if not v:
-            return False, ["Unable to do git-show on repo [%s]: [%s]" % (target_repo, r)]
+            return False, "Unable to do git-show on repo [%s]: [%s]" % (target_repo, r)
         backup_contents = r
 
         # make the backup patch
         v, r = backup_obj.make_backup("previous", backup_filename, backup_contents)
         gen_patch = r
         if not v:
-            return False, ["Failed because [%s] already exists." % gen_patch]
+            return False, "Failed because [%s] already exists." % gen_patch
         report.append(_report_patch(gen_patch))
 
     if previous > c:
@@ -188,7 +188,7 @@ def reset_git_repo_previous(target_repo, backup_obj, previous):
 
     v, r = git_lib.kill_previous(target_repo, previous)
     if not v:
-        return False, ["Unable to rewind to previous commit on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to rewind to previous commit on repo [%s]: [%s]" % (target_repo, r)
 
     return (not has_any_failed), report
 
@@ -198,7 +198,7 @@ def reset_git_repo_stash(target_repo, backup_obj, stash):
     has_any_failed = False
 
     if stash is None:
-        return False, ["Stash is unspecified"]
+        return False, "Stash is unspecified"
 
     c = 0
     while True:
@@ -210,7 +210,7 @@ def reset_git_repo_stash(target_repo, backup_obj, stash):
 
         v, r = git_lib.get_stash_list(target_repo)
         if not v:
-            return False, ["Unable to retrieve the stash list on repo [%s]: [%s]" % (target_repo, r)]
+            return False, "Unable to retrieve the stash list on repo [%s]: [%s]" % (target_repo, r)
         stash_list = r
 
         if stash == -1:
@@ -232,25 +232,25 @@ def reset_git_repo_stash(target_repo, backup_obj, stash):
         backup_contents = ""
         v, r = git_lib.stash_show(target_repo, si)
         if not v:
-            return False, ["Unable to stash-show on repo [%s]: [%s]" % (target_repo, r)]
+            return False, "Unable to stash-show on repo [%s]: [%s]" % (target_repo, r)
         backup_contents = r
 
         # make the backup patch
         v, r = backup_obj.make_backup("stash", backup_filename, backup_contents)
         gen_patch = r
         if not v:
-            return False, ["Failed because [%s] already exists." % gen_patch]
+            return False, "Failed because [%s] already exists." % gen_patch
         report.append(_report_patch(gen_patch))
 
         if stash != -1:
             v, r = git_lib.stash_drop(target_repo)
             if not v:
-                return False, ["Unable to stash-drop on repo [%s]: [%s]" % (target_repo, r)]
+                return False, "Unable to stash-drop on repo [%s]: [%s]" % (target_repo, r)
 
     if stash == -1:
         v, r = git_lib.stash_clear(target_repo)
         if not v:
-            return False, ["Unable to clear the stash on repo [%s]: [%s]" % (target_repo, r)]
+            return False, "Unable to clear the stash on repo [%s]: [%s]" % (target_repo, r)
 
     return (not has_any_failed), report
 
@@ -262,19 +262,19 @@ def reset_git_repo_staged(target_repo, backup_obj):
     # get staged files
     v, r = git_lib.get_staged_files(target_repo)
     if not v:
-        return False, ["Unable to retrieve staged files on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve staged files on repo [%s]: [%s]" % (target_repo, r)
     staged_files = r
 
     # get staged deleted files
     v, r = git_lib.get_staged_deleted_files(target_repo)
     if not v:
-        return False, ["Unable to retrieve staged-deleted files on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve staged-deleted files on repo [%s]: [%s]" % (target_repo, r)
     staged_deleted_files = r
 
     # get staged renamed files
     v, r = git_lib.get_staged_renamed_files(target_repo)
     if not v:
-        return False, ["Unable to retrieve staged-renamed files on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve staged-renamed files on repo [%s]: [%s]" % (target_repo, r)
     staged_renamed_files = r
 
     c = 0
@@ -295,13 +295,13 @@ def reset_git_repo_staged(target_repo, backup_obj):
         backup_contents = ""
         v, r = git_lib.diff_cached(target_repo, [sf])
         if not v:
-            return False, ["Unable to retrieve cached diff on repo [%s]: [%s]" % (target_repo, r)]
+            return False, "Unable to retrieve cached diff on repo [%s]: [%s]" % (target_repo, r)
         backup_contents = r
 
         subfolder = "staged"
         dn = path_utils.dirname_filtered(sf)
         if dn is None:
-            return False, ["Failed because [%s]'s dirname can't be resolved." % sf]
+            return False, "Failed because [%s]'s dirname can't be resolved." % sf
         v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
         if v:
             subfolder = path_utils.concat_path(subfolder, r)
@@ -310,13 +310,13 @@ def reset_git_repo_staged(target_repo, backup_obj):
         v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
         gen_patch = r
         if not v:
-            return False, ["Failed because [%s] already exists." % gen_patch]
+            return False, "Failed because [%s] already exists." % gen_patch
         report.append(_report_patch(gen_patch))
 
     # unstage everything
     v, r = git_lib.unstage(target_repo)
     if not v:
-        return False, ["Unable to unstage files on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to unstage files on repo [%s]: [%s]" % (target_repo, r)
 
     return (not has_any_failed), report
 
@@ -328,13 +328,13 @@ def reset_git_repo_head(target_repo, backup_obj):
     # get modified files
     v, r = git_lib.get_head_modified_files(target_repo)
     if not v:
-        return False, ["Unable to retrieve head-modified files on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve head-modified files on repo [%s]: [%s]" % (target_repo, r)
     mod_files = r
 
     # get deleted files
     v, r = git_lib.get_head_deleted_files(target_repo)
     if not v:
-        return False, ["Unable to retrieve head-deleted files on repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to retrieve head-deleted files on repo [%s]: [%s]" % (target_repo, r)
     deleted_files = r
 
     c = 0
@@ -346,13 +346,13 @@ def reset_git_repo_head(target_repo, backup_obj):
         backup_contents = ""
         v, r = git_lib.diff(target_repo, [mf])
         if not v:
-            return False, ["Unable to retrieve diff on repo [%s]: [%s]" % (target_repo, r)]
+            return False, "Unable to retrieve diff on repo [%s]: [%s]" % (target_repo, r)
         backup_contents = r
 
         subfolder = "head"
         dn = path_utils.dirname_filtered(mf)
         if dn is None:
-            return False, ["Failed because [%s]'s dirname can't be resolved." % mf]
+            return False, "Failed because [%s]'s dirname can't be resolved." % mf
         v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
         if v:
             subfolder = path_utils.concat_path(subfolder, r)
@@ -361,7 +361,7 @@ def reset_git_repo_head(target_repo, backup_obj):
         v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
         gen_patch = r
         if not v:
-            return False, ["Failed because [%s] already exists." % gen_patch]
+            return False, "Failed because [%s] already exists." % gen_patch
         report.append(_report_patch(gen_patch))
 
     # log undeleted files
@@ -371,7 +371,7 @@ def reset_git_repo_head(target_repo, backup_obj):
     # revert all changes
     v, r = git_lib.checkout(target_repo)
     if not v:
-        return False, ["Unable to checkout repo [%s]: [%s]" % (target_repo, r)]
+        return False, "Unable to checkout repo [%s]: [%s]" % (target_repo, r)
 
     return (not has_any_failed), report
 
