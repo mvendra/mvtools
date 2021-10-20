@@ -44,7 +44,7 @@ def port_svn_repo_head(temp_path, source_repo, target_repo):
     v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path)
     if not v:
         if r == collect_svn_patch.ERRMSG_EMPTY:
-            return True, None # ignore if target head is unmodified
+            return True, [] # ignore if target head is unmodified
         return False, ["Failed collecting head from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)]
     head_files = [r]
 
