@@ -1524,7 +1524,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash(fourth_repo)
         self.assertTrue(v)
 
-        v, r = collect_git_patch.collect_git_patch_stash(fourth_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_stash(fourth_repo, self.storage_path, -1)
         self.assertTrue(v)
         generated_patch_file = r[0]
         self.assertTrue( os.path.exists(generated_patch_file) )

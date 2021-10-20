@@ -25,7 +25,7 @@ def port_git_repo_stash(temp_path, source_repo, target_repo):
     report = []
 
     stash_files = None
-    v, r = collect_git_patch.collect_git_patch_stash(source_repo, temp_path)
+    v, r = collect_git_patch.collect_git_patch_stash(source_repo, temp_path, -1) # mvtodo
     if not v:
         return False, "Failed collecting stash from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     stash_files = reversed(r)

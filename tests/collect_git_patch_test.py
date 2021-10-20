@@ -108,25 +108,25 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testGeneral(self):
 
-        v, r = collect_git_patch.collect_git_patch(self.nonexistent, self.storage_path, False, False, False, False, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.nonexistent, self.storage_path, False, False, False, False, 0, 0)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.nonexistent, False, False, False, False, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.nonexistent, False, False, False, False, 0, 0)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, False, False, False, False, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, False, False, False, False, 0, 0)
         self.assertTrue(v)
 
     def testGeneralBestEffort(self):
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, False, False, False, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, False, False, False, 0, 0)
         self.assertFalse(v)
         first_head_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         first_head_id_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
         self.assertFalse( os.path.exists( first_head_patch_filename ) )
         self.assertFalse( os.path.exists( first_head_id_patch_filename ) )
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, True, False, False, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, True, True, False, False, 0, 0)
         second_head_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         second_head_id_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
         self.assertFalse(v)
@@ -467,14 +467,14 @@ class CollectGitPatchTest(unittest.TestCase):
 
         git_wrapper.stash(self.first_repo)
 
-        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path, -1)
         self.assertTrue(v)
 
         stash1_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{0}.patch")
         self.assertTrue(os.path.exists(stash1_storage))
         self.assertEqual(r[0], stash1_storage)
 
-        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path, -1)
         self.assertFalse(v)
 
 
@@ -482,13 +482,13 @@ class CollectGitPatchTest(unittest.TestCase):
         # no stash to collect
         git_wrapper.stash(self.first_repo)
 
-        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path, -1)
         self.assertFalse(v)
 
         patches = fsquery.makecontentlist(self.storage_path, False, True, False, False, False, True, None)
         self.assertEqual(len(patches), 0)
 
-    def testPatchStash(self):
+    def testPatchStash1(self):
 
         with open(self.first_file1, "a") as f:
             f.write("stashcontent1")
@@ -500,7 +500,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         git_wrapper.stash(self.first_repo)
 
-        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path, -1)
         self.assertTrue(v)
 
         stash1_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{0}.patch")
@@ -521,6 +521,34 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertTrue("stashcontent1" in contents_read)
 
+    def testPatchStash2(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("stashcontent1")
+
+        git_wrapper.stash(self.first_repo)
+
+        with open(self.first_file2, "a") as f:
+            f.write("stashcontent2")
+
+        git_wrapper.stash(self.first_repo)
+
+        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path, 1)
+        self.assertTrue(v)
+
+        stash1_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{0}.patch")
+        self.assertTrue(os.path.exists(stash1_storage))
+        self.assertEqual(r[0], stash1_storage)
+
+        contents_read = ""
+        with open(stash1_storage) as f:
+            contents_read = f.read()
+        self.assertTrue("stashcontent2" in contents_read)
+
+        stash2_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{1}.patch")
+        self.assertFalse(os.path.exists(stash2_storage))
+        self.assertEqual(len(r), 1)
+
     def testPatchStashSub(self):
 
         with open(self.second_sub_file1, "a") as f:
@@ -528,7 +556,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         git_wrapper.stash(self.second_sub)
 
-        v, r = collect_git_patch.collect_git_patch_stash(self.second_sub, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_stash(self.second_sub, self.storage_path, -1)
         self.assertTrue(v)
 
         stash1_storage = path_utils.concat_path(self.storage_path, self.second_sub, "stash@{0}.patch")

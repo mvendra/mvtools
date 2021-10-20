@@ -213,7 +213,7 @@ class ApplyGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path, -1)
         self.assertTrue(v)
         generated_patches = r
 

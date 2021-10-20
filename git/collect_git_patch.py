@@ -77,7 +77,10 @@ def collect_git_patch_unversioned(repo, storage_path):
 
     return True, written_file_list
 
-def collect_git_patch_stash(repo, storage_path):
+def collect_git_patch_stash(repo, storage_path, stash):
+
+    if stash is None:
+        return False, "Stash is unspecified"
 
     v, r = git_lib.get_stash_list(repo)
     if not v:
@@ -88,7 +91,13 @@ def collect_git_patch_stash(repo, storage_path):
     if len(stash_list) == 0:
         return False, "Can't collect patch for stash: stash is empty. Repository: [%s]" % repo
 
+    c = 0
     for si in stash_list:
+        c += 1
+
+        if stash != -1:
+            if c > stash:
+                break
 
         v, r = git_lib.stash_show(repo, si)
         if not v:
@@ -194,8 +203,8 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
             report += r
 
     # stash
-    if stash:
-        v, r = collect_git_patch_stash(repo, storage_path)
+    if stash != 0:
+        v, r = collect_git_patch_stash(repo, storage_path, stash)
         if not v:
             has_any_failed = True
             report.append("collect_git_patch_stash: [%s]." % r)
@@ -214,7 +223,7 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -232,7 +241,8 @@ if __name__ == "__main__":
     head_id = False
     staged = False
     unversioned = False
-    stash = False
+    stash = 0
+    stash_parse_next = False
     previous = 0
     previous_parse_next = False
 
@@ -241,6 +251,11 @@ if __name__ == "__main__":
         if storage_path_parse_next:
             storage_path = p
             storage_path_parse_next = False
+            continue
+
+        if stash_parse_next:
+            stash = int(p)
+            stash_parse_next = False
             continue
 
         if previous_parse_next:
@@ -259,7 +274,7 @@ if __name__ == "__main__":
         elif p == "--unversioned":
             unversioned = True
         elif p == "--stash":
-            stash = True
+            stash_parse_next = True
         elif p == "--previous":
             previous_parse_next = True
 

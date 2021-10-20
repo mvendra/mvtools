@@ -134,7 +134,7 @@ be cautious about when using, to avoid mismatches and misuse.
 """
 
 def puaq():
-    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash] [--previous X] [--repo-type git|svn|all]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X] [--repo-type git|svn|all]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -159,7 +159,8 @@ if __name__ == "__main__":
     head_id = False
     staged = False
     unversioned = False
-    stash = False
+    stash = 0
+    stash_parse_next = False
     previous = 0
     previous_parse_next = False
     repotype = "all"
@@ -175,6 +176,11 @@ if __name__ == "__main__":
         if storage_path_parse_next:
             storage_path = p
             storage_path_parse_next = False
+            continue
+
+        if stash_parse_next:
+            stash = int(p)
+            stash_parse_next = False
             continue
 
         if previous_parse_next:
@@ -214,7 +220,7 @@ if __name__ == "__main__":
         elif p == "--unversioned":
             unversioned = True
         elif p == "--stash":
-            stash = True
+            stash_parse_next = True
         elif p == "--previous":
             previous_parse_next = True
         elif p == "--repo-type":
