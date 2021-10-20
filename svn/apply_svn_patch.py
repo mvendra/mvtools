@@ -21,20 +21,24 @@ def _test_repo_path(path):
 
 def apply_svn_patch_head(target_repo, source_files):
 
+    report = []
+
     if not isinstance(source_files, list):
-        return False, "source_files must be a list"
+        return False, ["source_files must be a list"]
 
     for sf in source_files:
         v, r = svn_lib.patch_as_head(target_repo, sf, True)
         if not v:
-            return False, r
+            return False, ["Failed patching [%s] into repo [%s]: [%s]" % (sf, target_repo, r)]
 
-    return True, None
+    return True, report
 
 def apply_svn_patch_unversioned(target_repo, source_files):
 
+    report = []
+
     if not isinstance(source_files, list):
-        return False, "source_files must be a list"
+        return False, ["source_files must be a list"]
 
     for sf in source_files:
 
@@ -42,9 +46,9 @@ def apply_svn_patch_unversioned(target_repo, source_files):
         sf_file = sf[1]
 
         if not path_utils.based_copy_to(sf_base, sf_file, target_repo):
-            return False, "Failed copying [%s] to [%s]" % (sf, target_repo)
+            return False, ["Failed copying [%s] to [%s]" % (sf, target_repo)]
 
-    return True, None
+    return True, report
 
 def apply_svn_patch(target_repo, head_patches, unversioned_patches):
 
@@ -70,6 +74,8 @@ def apply_svn_patch(target_repo, head_patches, unversioned_patches):
         if not v:
             has_any_failed = True
             report.append("apply_svn_patch_head: [%s]" % r)
+        else:
+            report += r
 
     # unversioned
     if len(unversioned_patches) > 0:
@@ -77,6 +83,8 @@ def apply_svn_patch(target_repo, head_patches, unversioned_patches):
         if not v:
             has_any_failed = True
             report.append("apply_svn_patch_unversioned: [%s]" % r)
+        else:
+            report += r
 
     return (not has_any_failed), report
 
@@ -169,9 +177,9 @@ if __name__ == "__main__":
         all_unv_files_sentinel.append(file_based_target)
 
     v, r = apply_svn_patch(target_repo, head, unversioned)
+    for i in r:
+        print(i)
     if not v:
-        for i in r:
-            print("Failed: %s" % i)
+        print("Not everything succeeded.")
         sys.exit(1)
-    else:
-        print("All succeeded")
+    print("All succeeded.")
