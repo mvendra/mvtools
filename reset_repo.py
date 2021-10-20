@@ -25,7 +25,7 @@ def check_repo_type(target_repo):
 
     return True, detected_target_type
 
-def reset_repo(target_repo, files):
+def reset_repo(target_repo, head, staged, stash, unversioned, previous):
 
     if not os.path.exists(target_repo):
         return False, ["Target repo [%s] does not exist."  % target_repo]
@@ -36,14 +36,14 @@ def reset_repo(target_repo, files):
     detected_repo_type = r
 
     if detected_repo_type == detect_repo_type.REPO_TYPE_GIT_STD:
-        return reset_git_repo.reset_git_repo(target_repo, files)
+        return reset_git_repo.reset_git_repo(target_repo, head, staged, stash, unversioned, previous)
     elif detected_repo_type == detect_repo_type.REPO_TYPE_SVN:
-        return reset_svn_repo.reset_svn_repo(target_repo, files)
+        return reset_svn_repo.reset_svn_repo(target_repo, head, unversioned, previous)
 
     return False, ["Resetting failed: Unsupported repo type: [%s]" % repotype]
 
 def puaq():
-    print("Usage: %s target_repo [--file filepath]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--head] [--staged] [--stash X (use \"-1\" to reset the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -54,22 +54,38 @@ if __name__ == "__main__":
     target_repo = sys.argv[1]
     params = sys.argv[2:]
 
-    files = []
-    files_parse_next = False
+    head = False
+    staged = False
+    stash = 0
+    stash_parse_next = False
+    unversioned = False
+    previous = 0
+    previous_parse_next = False
 
     for p in params:
 
-        if files_parse_next:
-            files.append(p)
-            files_parse_next = False
+        if stash_parse_next:
+            stash = int(p)
+            stash_parse_next = False
             continue
 
-        if p == "--file":
-            files_parse_next = True
+        if previous_parse_next:
+            previous = int(p)
+            previous_parse_next = False
+            continue
 
-    if len(files) == 0:
-        files = None
-    v, r = reset_repo(target_repo, files)
+        if p == "--head":
+            head = True
+        elif p == "--staged":
+            staged = True
+        elif p == "--stash":
+            stash_parse_next = True
+        elif p == "--unversioned":
+            unversioned = True
+        elif p == "--previous":
+            previous_parse_next = True
+
+    v, r = reset_repo(target_repo, head, staged, stash, unversioned, previous)
     for i in r:
         print(i)
     if not v:
