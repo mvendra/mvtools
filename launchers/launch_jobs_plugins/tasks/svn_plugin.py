@@ -233,7 +233,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         warning_msg = None
         if len(backed_up_patches) > 0:
-            warning_msg = "Backups were made"
+            warning_msg = "reset_svn_repo has produced output"
 
         return True, warning_msg
 
