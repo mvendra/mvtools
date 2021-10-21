@@ -41,6 +41,13 @@ def reset_svn_repo_previous(target_repo, backup_obj, previous):
     if previous is None:
         return False, "Previous is unspecified"
 
+    v, r = svn_lib.is_head_clear(target_repo, False, False)
+    if not v:
+        return False, "Unable to reset to previous on repo [%s]: unable to probe for head clearance: [%s]" % (target_repo, r)
+
+    if not r:
+        return False, "Unable to reset to previous on repo [%s]: head is not clear." % target_repo
+
     v, r = svn_lib.get_previous_list(target_repo, previous)
     if not v:
         return False, "Unable to retrieve list of previous for repo [%s]: [%s]" % (target_repo, r)
