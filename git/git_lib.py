@@ -427,6 +427,19 @@ def get_previous_hash_list(repo, num_previous = None):
     prev_list = [get_prev_hash(x) for x in r.split(os.linesep) if x != ""]
     return True, prev_list
 
+def get_head_hash(repo):
+
+    if repo is None:
+        return False, "No repo specified"
+
+    repo = os.path.abspath(repo)
+
+    v, r = get_previous_hash_list(repo, 1)
+    if not v:
+        return False, "git_lib.get_head_hash failed: [%s]" % r
+
+    return True, r[0]
+
 def is_repo_working_tree(repo):
 
     if repo is None:

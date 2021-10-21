@@ -3330,6 +3330,27 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testGetHeadHash(self):
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_lib.get_head_hash(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(string_utils.is_hex_string(r))
+
+    def testGetHeadHashRelativePath(self):
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_head_hash("./first")
+            self.assertTrue(v)
+            self.assertTrue(string_utils.is_hex_string(r))
+        finally:
+            os.chdir(saved_wd)
+
     def testCloneBareRepo(self):
 
         with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
