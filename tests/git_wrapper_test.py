@@ -817,6 +817,50 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( len(r), 0)
 
+    def testStash_and_StashPop(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file, "test-contents"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "stash test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_list(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r), 0)
+
+        with open(test_file, "r") as f:
+            self.assertFalse("stuff-for-the-stash" in f.read())
+
+        with open(test_file, "a") as f:
+            f.write("stuff-for-the-stash")
+
+        with open(test_file, "r") as f:
+            self.assertTrue("stuff-for-the-stash" in f.read())
+
+        v, r = git_wrapper.stash(self.second_repo)
+        self.assertTrue(v)
+
+        with open(test_file, "r") as f:
+            self.assertFalse("stuff-for-the-stash" in f.read())
+
+        v, r = git_wrapper.stash_list(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 1 )
+
+        v, r = git_wrapper.stash_pop(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_list(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r), 0)
+
+        with open(test_file, "r") as f:
+            self.assertTrue("stuff-for-the-stash" in f.read())
+
     def testLogOneline(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")

@@ -155,6 +155,10 @@ def stash_drop(repo):
     cmd = ["git", "-C", repo, "stash", "drop"]
     return git_wrapper_standard_command(cmd, "stash-drop")
 
+def stash_pop(repo):
+    cmd = ["git", "-C", repo, "stash", "pop"]
+    return git_wrapper_standard_command(cmd, "stash-pop")
+
 def log_oneline(repo, limit=None):
     cmd = ["git", "-C", repo, "log", "--oneline"]
     if limit is not None:
