@@ -1531,6 +1531,196 @@ class ResetGitRepoTest(unittest.TestCase):
         v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, None)
         self.assertFalse(v)
 
+    def testResetGitRepo_ResetGitRepoPrevious_Fail3(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        hash_list = r
+
+        patch_file_filename = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        extra_file = path_utils.concat_path(self.first_repo, "extra_file.txt")
+        self.assertFalse(os.path.exists(extra_file))
+        self.assertTrue(create_and_write_file.create_file_contents(extra_file, "dummy contents"))
+        self.assertTrue(os.path.exists(extra_file))
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 1)
+        self.assertFalse(v)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+    def testResetGitRepo_ResetGitRepoPrevious_Fail4(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        hash_list = r
+
+        patch_file_filename = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        extra_file = path_utils.concat_path(self.first_repo, "extra_file.txt")
+        self.assertFalse(os.path.exists(extra_file))
+        self.assertTrue(create_and_write_file.create_file_contents(extra_file, "dummy contents"))
+        self.assertTrue(os.path.exists(extra_file))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 1)
+        self.assertFalse(v)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+    def testResetGitRepo_ResetGitRepoPrevious_Fail5(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        hash_list = r
+
+        patch_file_filename = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        with open(self.first_file1, "a") as f:
+            f.write("yet more extra stuff")
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 1)
+        self.assertFalse(v)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+    def testResetGitRepo_ResetGitRepoPrevious_Fail6(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        hash_list = r
+
+        patch_file_filename = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 1)
+        self.assertFalse(v)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+    def testResetGitRepo_ResetGitRepoPrevious_Fail7(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff1")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit-msg-2")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_previous_hash_list(self.first_repo, 1)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        hash_list = r
+
+        patch_file_filename = "1_reset_git_repo_previous_%s.patch" % hash_list[0]
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "previous", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        file1_renamed = path_utils.concat_path(self.first_repo, "file1_renamed.txt")
+        self.assertFalse(os.path.exists(file1_renamed))
+        self.assertTrue(os.path.exists(self.first_file1))
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(file1_renamed)))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+        self.assertTrue(os.path.exists(file1_renamed))
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = reset_git_repo.reset_git_repo_previous(self.first_repo, self.rdb, 1)
+        self.assertFalse(v)
+        self.assertFalse(os.path.exists(test_patch_file))
+
     def testResetGitRepo_ResetGitRepoPrevious1(self):
 
         v, r = git_lib.get_head_files(self.first_repo)

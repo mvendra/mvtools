@@ -156,6 +156,13 @@ def reset_git_repo_previous(target_repo, backup_obj, previous):
     if previous is None:
         return False, "Previous is unspecified"
 
+    v, r = git_lib.is_head_clear(target_repo)
+    if not v:
+        return False, "Unable to reset to previous on repo [%s]: unable to probe for head clearance: [%s]" % (target_repo, r)
+
+    if not r:
+        return False, "Unable to reset to previous on repo [%s]: head is not clear." % target_repo
+
     v, r = git_lib.get_previous_hash_list(target_repo, previous)
     if not v:
         return False, "Unable to retrieve previous hash list on repo [%s]: [%s]" % (target_repo, r)
