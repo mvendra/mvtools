@@ -288,7 +288,7 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
-    def testGetHeadFiles(self):
+    def testGetHeadFiles1(self):
 
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v and r)
@@ -328,6 +328,34 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(first_more3 in r)
         self.assertTrue(first_more4 in r)
         self.assertFalse(first_more2 in r)
+
+    def testGetHeadFiles2(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("morestuff")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("differentmodif")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "modif-commit-msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # failure because of conflict
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_repo in r[0])
 
     def testGetHeadFilesRelativePath(self):
 
@@ -482,6 +510,34 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(r, [first_more3])
+
+    def testGetHeadUpdatedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification, first")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification, second")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "conflict commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # should fail because of conflict
+
+        v, r = git_lib.get_head_updated_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_file1 in r[0])
 
     def testGetHeadModifiedFilesRelativePath(self):
 
@@ -1964,7 +2020,7 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
-    def testIsHeadClear(self):
+    def testIsHeadClearSimpleMod(self):
 
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v)
@@ -1972,6 +2028,132 @@ class GitLibTest(unittest.TestCase):
 
         with open(self.first_file1, "a") as f:
             f.write("extra content")
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearStaged(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra content")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearUnversioned(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        unv_file = path_utils.concat_path(self.first_repo, "unvfile")
+        self.assertFalse(os.path.exists(unv_file))
+        self.assertTrue(create_and_write_file.create_file_contents(unv_file, "more1-contents"))
+        self.assertTrue(os.path.exists(unv_file))
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearHeadDeleted(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearStagedDeleted(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearStagedRenamed(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        renamed_file = path_utils.concat_path(self.first_repo, "file1_renamed.txt")
+        self.assertFalse(os.path.exists(renamed_file))
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(renamed_file)))
+        self.assertTrue(os.path.exists(renamed_file))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearUpdated(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra content")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("different-extra")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "latest commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # failure because of conflict
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testIsHeadClearUnversionedStaged(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        unv_file = path_utils.concat_path(self.first_repo, "unvfile")
+        self.assertFalse(os.path.exists(unv_file))
+        self.assertTrue(create_and_write_file.create_file_contents(unv_file, "more1-contents"))
+        self.assertTrue(os.path.exists(unv_file))
+
+        v, r = git_wrapper.stage(self.first_repo, [unv_file])
+        self.assertTrue(v)
 
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v)

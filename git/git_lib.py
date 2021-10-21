@@ -114,6 +114,8 @@ def discover_repo_root(repo):
 
 def is_head_clear(repo):
 
+    # is_head_clear is a misnomer, because this will also take into consideration staged, unversioned, etc.
+
     if repo is None:
         return False, "No repo specified"
 
@@ -236,14 +238,13 @@ def get_head_files(repo):
 
     total_entries = []
 
-    v, r = get_head_modified_files(repo)
-    if not v:
-        return False, r
-    total_entries += r
-    v, r = get_head_deleted_files(repo)
-    if not v:
-        return False, r
-    total_entries += r
+    funcs = [get_head_modified_files, get_head_deleted_files, get_head_updated_files]
+
+    for f in funcs:
+        v, r = f(repo)
+        if not v:
+            return False, r
+        total_entries += r
 
     return True, total_entries
 
@@ -252,6 +253,9 @@ def get_head_modified_files(repo):
 
 def get_head_deleted_files(repo):
     return get_head_files_delegate(repo, " D", "deleted")
+
+def get_head_updated_files(repo):
+    return get_head_files_delegate(repo, "UU", "updated")
 
 def get_head_files_delegate(repo, status_detect, info_variation):
 
