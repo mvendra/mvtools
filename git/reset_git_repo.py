@@ -332,6 +332,12 @@ def reset_git_repo_head(target_repo, backup_obj):
     report = []
     has_any_failed = False
 
+    # get updated files
+    v, r = git_lib.get_head_updated_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve head-updated files on repo [%s]: [%s]" % (target_repo, r)
+    upd_files = r
+
     # get modified files
     v, r = git_lib.get_head_modified_files(target_repo)
     if not v:
@@ -344,8 +350,12 @@ def reset_git_repo_head(target_repo, backup_obj):
         return False, "Unable to retrieve head-deleted files on repo [%s]: [%s]" % (target_repo, r)
     deleted_files = r
 
+    files_to_backup = []
+    files_to_backup += mod_files.copy()
+    files_to_backup += upd_files.copy()
+
     c = 0
-    for mf in mod_files:
+    for mf in files_to_backup:
         c += 1
 
         # generate the backup patch
@@ -374,6 +384,13 @@ def reset_git_repo_head(target_repo, backup_obj):
     # log undeleted files
     for df in deleted_files:
         report.append("file [%s] is going to be undeleted" % df)
+
+    # log un-updated files
+    for uf in upd_files:
+        v, r = git_lib.unstage(target_repo, [uf])
+        if not v:
+            return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (uf, target_repo, r)
+        report.append("file [%s] was un-updated" % uf)
 
     # revert all changes
     v, r = git_lib.checkout(target_repo)

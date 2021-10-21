@@ -702,6 +702,44 @@ class ResetGitRepoTest(unittest.TestCase):
 
         self.assertFalse(os.path.exists(self.first_file1))
 
+    def testResetGitRepo_ResetGitRepoHead9(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("stuff of extra")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit msg latest")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # fails because of conflict
+
+        v, r = git_lib.get_head_updated_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(os.path.exists(test_patch_file))
+
     def testResetGitRepo_ResetGitRepoStaged_Fail1(self):
 
         v, r = reset_git_repo.reset_git_repo_staged(self.nonrepo, self.rdb)
