@@ -75,7 +75,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams3(self):
 
@@ -87,7 +87,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, None, None, False, False, None, False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams4(self):
 
@@ -99,7 +99,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, "dummy_value3", None, None, False, False, None, False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, "dummy_value3", None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams5(self):
 
@@ -111,7 +111,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, "dummy_value3", None, False, False, None, False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, "dummy_value3", None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams6(self):
 
@@ -123,7 +123,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, "dummy_value3", False, False, None, False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, "dummy_value3", False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams7(self):
 
@@ -135,7 +135,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, True, False, None, False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, True, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams8(self):
 
@@ -147,7 +147,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, True, None, False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, True, None, False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams9(self):
 
@@ -159,7 +159,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, "dummy_value3", False, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, "dummy_value3", False, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams10(self):
 
@@ -171,7 +171,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, True, None, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, True, None, False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams11(self):
 
@@ -183,21 +183,69 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, "dummy_value3", None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, "dummy_value3", False, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams12(self):
 
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["reset_file"] = "dummy_value3"
+        local_params["reset_head"] = "dummy_value3"
         self.git_task.params = local_params
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, "dummy_value3", None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, True, False, None, False, None, None, None, None, None, None) )
 
     def testGitPluginReadParams13(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["reset_staged"] = "dummy_value3"
+        self.git_task.params = local_params
+
+        v, r = self.git_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, True, None, False, None, None, None, None, None, None) )
+
+    def testGitPluginReadParams14(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["reset_stash_count"] = "dummy_value3"
+        self.git_task.params = local_params
+
+        v, r = self.git_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, "dummy_value3", False, None, None, None, None, None, None) )
+
+    def testGitPluginReadParams15(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["reset_unversioned"] = "dummy_value3"
+        self.git_task.params = local_params
+
+        v, r = self.git_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, True, None, None, None, None, None, None) )
+
+    def testGitPluginReadParams16(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["reset_previous_count"] = "dummy_value3"
+        self.git_task.params = local_params
+
+        v, r = self.git_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, "dummy_value3", None, None, None, None, None) )
+
+    def testGitPluginReadParams17(self):
 
         local_params = {}
         local_params["target_path"] = "dummy_value1"
@@ -207,9 +255,9 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, None, "dummy_value3", None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, "dummy_value3", None, None, None, None) )
 
-    def testGitPluginReadParams14(self):
+    def testGitPluginReadParams18(self):
 
         local_params = {}
         local_params["target_path"] = "dummy_value1"
@@ -219,9 +267,9 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, None, None, "dummy_value3", None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, "dummy_value3", None, None, None) )
 
-    def testGitPluginReadParams15(self):
+    def testGitPluginReadParams19(self):
 
         local_params = {}
         local_params["target_path"] = "dummy_value1"
@@ -231,9 +279,9 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, None, None, None, "dummy_value3", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, "dummy_value3", None, None) )
 
-    def testGitPluginReadParams16(self):
+    def testGitPluginReadParams20(self):
 
         local_params = {}
         local_params["target_path"] = "dummy_value1"
@@ -243,9 +291,9 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, None, None, None, None, "dummy_value3", None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, "dummy_value3", None) )
 
-    def testGitPluginReadParams17(self):
+    def testGitPluginReadParams21(self):
 
         local_params = {}
         local_params["target_path"] = "dummy_value1"
@@ -255,7 +303,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, None, None, None, None, None, "dummy_value3") )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, "dummy_value3") )
 
     def testGitPluginTaskCloneRepo1(self):
 
@@ -439,7 +487,7 @@ class GitPluginTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.nonexistent_path1))
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
-            v, r = self.git_task.task_reset_repo(print, self.nonexistent_path1)
+            v, r = self.git_task.task_reset_repo(print, self.nonexistent_path1, False, False, None, False, None)
             self.assertFalse(v)
 
     def testGitPluginTaskResetRepo2(self):
@@ -447,47 +495,63 @@ class GitPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
-            v, r = self.git_task.task_reset_repo(print, self.existent_path1)
+            v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, None, False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, None)
+            dummy.assert_called_with(self.existent_path1, False, False, 0, False, 0)
 
-    def testGitPluginTaskResetFile1(self):
-
-        self.assertFalse(os.path.exists(self.nonexistent_path1))
-        valid_file = path_utils.concat_path(self.existent_path1, "file1.txt")
-
-        with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
-            v, r = self.git_task.task_reset_file(print, self.nonexistent_path1, valid_file)
-            self.assertFalse(v)
-
-    def testGitPluginTaskResetFile2(self):
+    def testGitPluginTaskResetRepo3(self):
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
-            v, r = self.git_task.task_reset_file(print, self.existent_path1, None)
-            self.assertFalse(v)
+            v, r = self.git_task.task_reset_repo(print, self.existent_path1, True, False, None, False, None)
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1, True, False, 0, False, 0)
 
-    def testGitPluginTaskResetFile3(self):
+    def testGitPluginTaskResetRepo4(self):
 
         self.assertTrue(os.path.exists(self.existent_path1))
-        valid_file = path_utils.concat_path(self.existent_path1, "file1.txt")
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
-            v, r = self.git_task.task_reset_file(print, self.existent_path1, valid_file)
+            v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, True, None, False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, [valid_file])
+            dummy.assert_called_with(self.existent_path1, False, True, 0, False, 0)
 
-    def testGitPluginTaskResetFile4(self):
+    def testGitPluginTaskResetRepo5(self):
 
         self.assertTrue(os.path.exists(self.existent_path1))
-        valid_file = path_utils.concat_path(self.existent_path1, "file1.txt")
-        valid_file = [valid_file]
 
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
-            v, r = self.git_task.task_reset_file(print, self.existent_path1, valid_file)
+            v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, "5", False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, valid_file)
+            dummy.assert_called_with(self.existent_path1, False, False, 5, False, 0)
+
+    def testGitPluginTaskResetRepo6(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
+            v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, "-1", False, None)
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1, False, False, -1, False, 0)
+
+    def testGitPluginTaskResetRepo7(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
+            v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, None, True, None)
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1, False, False, 0, True, 0)
+
+    def testGitPluginTaskResetRepo8(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
+            v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, None, False, "9")
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1, False, False, 0, False, 9)
 
     def testGitPluginTaskPatchRepo1(self):
 
@@ -679,51 +743,82 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("git_plugin.CustomTask.task_reset_repo", return_value=(True, None)) as dummy:
             v, r = self.git_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1)
+            dummy.assert_called_with(print, self.existent_path1, False, False, None, False, None)
 
-    def testGitPluginRunTask_ResetFile1(self):
-
-        self.assertTrue(os.path.exists(self.existent_path1))
-
-        local_params = {}
-        local_params["target_path"] = self.existent_path1
-        local_params["operation"] = "reset_file"
-        local_params["reset_file"] = "dummy_value1"
-        self.git_task.params = local_params
-
-        with mock.patch("git_plugin.CustomTask.task_reset_file", return_value=(True, None)) as dummy:
-            v, r = self.git_task.run_task(print, "exe_name")
-            self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, "dummy_value1")
-
-    def testGitPluginRunTask_ResetFile2(self):
+    def testGitPluginRunTask_ResetRepo2(self):
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
         local_params = {}
         local_params["target_path"] = self.existent_path1
-        local_params["operation"] = "reset_file"
-        local_params["reset_file"] = ["dummy_value1", "dummy_value2"]
+        local_params["operation"] = "reset_repo"
+        local_params["reset_head"] = "dummy_value1"
         self.git_task.params = local_params
 
-        with mock.patch("git_plugin.CustomTask.task_reset_file", return_value=(True, None)) as dummy:
+        with mock.patch("git_plugin.CustomTask.task_reset_repo", return_value=(True, None)) as dummy:
             v, r = self.git_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, ["dummy_value1", "dummy_value2"])
+            dummy.assert_called_with(print, self.existent_path1, True, False, None, False, None)
 
-    def testGitPluginRunTask_ResetFile3(self):
+    def testGitPluginRunTask_ResetRepo3(self):
 
         self.assertTrue(os.path.exists(self.existent_path1))
 
         local_params = {}
         local_params["target_path"] = self.existent_path1
-        local_params["operation"] = "reset_file"
+        local_params["operation"] = "reset_repo"
+        local_params["reset_staged"] = "dummy_value1"
         self.git_task.params = local_params
 
-        with mock.patch("git_plugin.CustomTask.task_reset_file", return_value=(True, None)) as dummy:
+        with mock.patch("git_plugin.CustomTask.task_reset_repo", return_value=(True, None)) as dummy:
             v, r = self.git_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, None)
+            dummy.assert_called_with(print, self.existent_path1, False, True, None, False, None)
+
+    def testGitPluginRunTask_ResetRepo4(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "reset_repo"
+        local_params["reset_stash_count"] = "dummy_value1"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_reset_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, False, False, "dummy_value1", False, None)
+
+    def testGitPluginRunTask_ResetRepo5(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "reset_repo"
+        local_params["reset_unversioned"] = "dummy_value1"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_reset_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, False, False, None, True, None)
+
+    def testGitPluginRunTask_ResetRepo6(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "reset_repo"
+        local_params["reset_previous_count"] = "dummy_value1"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_reset_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, False, False, None, False, "dummy_value1")
 
     def testGitPluginRunTask_PatchRepo1(self):
 

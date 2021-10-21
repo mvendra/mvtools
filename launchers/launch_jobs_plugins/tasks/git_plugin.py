@@ -30,7 +30,11 @@ class CustomTask(launch_jobs.BaseTask):
         port_repo_stash_count = None
         port_repo_unversioned = False
         port_repo_previous_count = None
-        reset_files = None
+        reset_head = False
+        reset_staged = False
+        reset_stash_count = None
+        reset_unversioned = False
+        reset_previous_count = None
         patch_head_file = None
         patch_staged_file = None
         patch_stash_file = None
@@ -106,9 +110,36 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        # reset_file
+        # reset_head
         try:
-            reset_files = self.params["reset_file"]
+            reset_head = self.params["reset_head"]
+            reset_head = True
+        except KeyError:
+            pass # optional
+
+        # reset_staged
+        try:
+            reset_staged = self.params["reset_staged"]
+            reset_staged = True
+        except KeyError:
+            pass # optional
+
+        # reset_stash_count
+        try:
+            reset_stash_count = self.params["reset_stash_count"]
+        except KeyError:
+            pass # optional
+
+        # reset_unversioned
+        try:
+            reset_unversioned = self.params["reset_unversioned"]
+            reset_unversioned = True
+        except KeyError:
+            pass # optional
+
+        # reset_previous_count
+        try:
+            reset_previous_count = self.params["reset_previous_count"]
         except KeyError:
             pass # optional
 
@@ -142,14 +173,14 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file)
+        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_files, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files = r
+        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files = r
 
         # delegate
         if operation == "clone_repo":
@@ -159,9 +190,7 @@ class CustomTask(launch_jobs.BaseTask):
         elif operation == "port_repo":
             return self.task_port_repo(feedback_object, source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
         elif operation == "reset_repo":
-            return self.task_reset_repo(feedback_object, target_path)
-        elif operation == "reset_file":
-            return self.task_reset_file(feedback_object, target_path, reset_files)
+            return self.task_reset_repo(feedback_object, target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
         elif operation == "patch_repo":
             return self.task_patch_repo(feedback_object, target_path, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files)
         else:
@@ -247,40 +276,25 @@ class CustomTask(launch_jobs.BaseTask):
 
         return True, None
 
-    def task_reset_repo(self, feedback_object, target_path):
+    def task_reset_repo(self, feedback_object, target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count):
 
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
-        v, r = reset_git_repo.reset_git_repo(target_path, None)
-        if not v:
-            return False, r
-        backed_up_patches = r
+        if reset_stash_count is None:
+            reset_stash_count = "0"
+        if not reset_stash_count.lstrip("-").isnumeric():
+            return False, "Invalid stash_count - expected numeric string: [%s]" % reset_stash_count
 
-        for w in backed_up_patches:
-            feedback_object(w)
+        if reset_previous_count is None:
+            reset_previous_count = "0"
+        if not reset_previous_count.isnumeric():
+            return False, "Invalid previous_count - expected numeric string: [%s]" % reset_previous_count
 
-        warning_msg = None
-        if len(backed_up_patches) > 0:
-            warning_msg = "Backups were made"
+        reset_stash_count = int(reset_stash_count)
+        reset_previous_count = int(reset_previous_count)
 
-        return True, warning_msg
-
-    def task_reset_file(self, feedback_object, target_path, reset_files):
-
-        if not os.path.exists(target_path):
-            return False, "Target path [%s] does not exist" % target_path
-
-        if not isinstance(reset_files, list) and reset_files is not None:
-            reset_files = [reset_files]
-
-        if reset_files is None:
-            return False, "No files were specified for resetting"
-
-        if not isinstance(reset_files, list):
-            return False, "reset_files must be a list"
-
-        v, r = reset_git_repo.reset_git_repo(target_path, reset_files)
+        v, r = reset_git_repo.reset_git_repo(target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
         if not v:
             return False, r
         backed_up_patches = r
