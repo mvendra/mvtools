@@ -325,7 +325,7 @@ class GitPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["rewind_like_other"] = "dummy_value3"
+        local_params["rewind_like_source"] = "dummy_value3"
         self.git_task.params = local_params
 
         v, r = self.git_task._read_params()
@@ -1499,7 +1499,7 @@ class GitPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = self.existent_path1
         local_params["operation"] = "rewind_repo"
-        local_params["rewind_like_other"] = "dummy_value1"
+        local_params["rewind_like_source"] = "dummy_value1"
         self.git_task.params = local_params
 
         with mock.patch("git_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:

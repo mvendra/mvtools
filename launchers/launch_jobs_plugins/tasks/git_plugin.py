@@ -41,7 +41,7 @@ class CustomTask(launch_jobs.BaseTask):
         patch_unversioned_base = None
         patch_unversioned_file = None
         rewind_to_hash = None
-        rewind_like_other = False
+        rewind_like_source = False
 
         # target_path
         try:
@@ -181,21 +181,21 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        # rewind_like_other
+        # rewind_like_source
         try:
-            rewind_like_other = self.params["rewind_like_other"]
-            rewind_like_other = True
+            rewind_like_source = self.params["rewind_like_source"]
+            rewind_like_source = True
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file, rewind_to_hash, rewind_like_other)
+        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file, rewind_to_hash, rewind_like_source)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files, rewind_to_hash, rewind_like_other = r
+        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files, rewind_to_hash, rewind_like_source = r
 
         # delegate
         if operation == "clone_repo":
@@ -207,7 +207,7 @@ class CustomTask(launch_jobs.BaseTask):
         elif operation == "reset_repo":
             return self.task_reset_repo(feedback_object, target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
         elif operation == "rewind_repo":
-            return self.task_rewind_repo(feedback_object, target_path, source_path, rewind_to_hash, rewind_like_other)
+            return self.task_rewind_repo(feedback_object, target_path, source_path, rewind_to_hash, rewind_like_source)
         elif operation == "patch_repo":
             return self.task_patch_repo(feedback_object, target_path, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files)
         else:
@@ -325,18 +325,18 @@ class CustomTask(launch_jobs.BaseTask):
 
         return True, warning_msg
 
-    def task_rewind_repo(self, feedback_object, target_path, source_path, rewind_to_hash, rewind_like_other):
+    def task_rewind_repo(self, feedback_object, target_path, source_path, rewind_to_hash, rewind_like_source):
 
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
-        if (rewind_to_hash is not None) and rewind_like_other:
-            return False, "rewind_repo should receive either rewind_to_hash xor rewind_like_other - never both at the same time."
+        if (rewind_to_hash is not None) and rewind_like_source:
+            return False, "rewind_repo should receive either rewind_to_hash xor rewind_like_source - never both at the same time."
 
-        if rewind_like_other:
+        if rewind_like_source:
 
             if source_path is None:
-                return False, "Source path (source_path) is required for task_rewind_repo (when passed rewind_like_other)"
+                return False, "Source path (source_path) is required for task_rewind_repo (when passed rewind_like_source)"
             if not os.path.exists(source_path):
                 return False, "Source path [%s] does not exist" % source_path
 
