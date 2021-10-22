@@ -32,6 +32,8 @@ class CustomTask(launch_jobs.BaseTask):
         patch_unversioned_file = None
         check_head_include_externals = False
         check_head_ignore_unversioned = False
+        rewind_to_rev = None
+        rewind_like_other = False
 
         # target_path
         try:
@@ -129,14 +131,27 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_head, reset_unversioned, reset_previous_count, patch_head_file, patch_unversioned_base, patch_unversioned_file, check_head_include_externals, check_head_ignore_unversioned)
+        # rewind_to_rev
+        try:
+            rewind_to_rev = self.params["rewind_to_rev"]
+        except KeyError:
+            pass # optional
+
+        # rewind_like_other
+        try:
+            rewind_like_other = self.params["rewind_like_other"]
+            rewind_like_other = True
+        except KeyError:
+            pass # optional
+
+        return True, (target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_head, reset_unversioned, reset_previous_count, patch_head_file, patch_unversioned_base, patch_unversioned_file, check_head_include_externals, check_head_ignore_unversioned, rewind_to_rev, rewind_like_other)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_head, reset_unversioned, reset_previous_count, patch_head_files, patch_unversioned_base, patch_unversioned_files, check_head_include_externals, check_head_ignore_unversioned = r
+        target_path, operation, source_url, source_path, port_repo_head, port_repo_unversioned, port_repo_previous_count, reset_head, reset_unversioned, reset_previous_count, patch_head_files, patch_unversioned_base, patch_unversioned_files, check_head_include_externals, check_head_ignore_unversioned, rewind_to_rev, rewind_like_other = r
 
         # delegate
         if operation == "checkout_repo":
@@ -147,6 +162,8 @@ class CustomTask(launch_jobs.BaseTask):
             return self.task_port_repo(feedback_object, source_path, target_path, port_repo_head, port_repo_unversioned, port_repo_previous_count)
         elif operation == "reset_repo":
             return self.task_reset_repo(feedback_object, target_path, reset_head, reset_unversioned, reset_previous_count)
+        elif operation == "rewind_repo":
+            return self.task_rewind_repo(feedback_object, target_path, source_path, rewind_to_rev, rewind_like_other)
         elif operation == "patch_repo":
             return self.task_patch_repo(feedback_object, target_path, patch_head_files, patch_unversioned_base, patch_unversioned_files)
         elif operation == "check_repo":
@@ -224,6 +241,61 @@ class CustomTask(launch_jobs.BaseTask):
         reset_previous_count = int(reset_previous_count)
 
         v, r = reset_svn_repo.reset_svn_repo(target_path, reset_head, reset_unversioned, reset_previous_count)
+        if not v:
+            return False, r
+        backed_up_patches = r
+
+        for w in backed_up_patches:
+            feedback_object(w)
+
+        warning_msg = None
+        if len(backed_up_patches) > 0:
+            warning_msg = "reset_svn_repo has produced output"
+
+        return True, warning_msg
+
+    def task_rewind_repo(self, feedback_object, target_path, source_path, rewind_to_rev, rewind_like_other):
+
+        if not os.path.exists(target_path):
+            return False, "Target path [%s] does not exist" % target_path
+
+        if (rewind_to_rev is not None) and rewind_like_other:
+            return False, "rewind_repo should receive either rewind_to_rev xor rewind_like_other - never both at the same time."
+
+        if rewind_like_other:
+
+            if source_path is None:
+                return False, "Source path (source_path) is required for task_rewind_repo (when passed rewind_like_other)"
+            if not os.path.exists(source_path):
+                return False, "Source path [%s] does not exist" % source_path
+
+            v, r = svn_lib.get_head_revision(source_path)
+            if not v:
+                return False, "Unable to retrieve head revision of source path [%s]: [%s]" % (source_path, r)
+            rewind_to_rev = r
+
+        if rewind_to_rev is None:
+            return False, "No revision to rewind to (target_path: [%s])" % target_path
+
+        v, r = svn_lib.get_previous_list(target_path)
+        if not v:
+            return False, "Unable to retrieve previous revision list of source path [%s]: [%s]" % (source_path, r)
+        prev_revs = r
+
+        c = 0
+        found = False
+        for pri in prev_revs:
+
+            if rewind_to_rev == pri:
+                found = True
+                break
+
+            c += 1
+
+        if not found:
+            return False, "Failed attempting to rewind repo [%s]: Revision [%s] was not found (hint: revision numbers must be prefixed with 'r' - example: 'r355')" % (source_path, rewind_to_rev)
+
+        v, r = reset_svn_repo.reset_svn_repo(target_path, False, False, c)
         if not v:
             return False, r
         backed_up_patches = r

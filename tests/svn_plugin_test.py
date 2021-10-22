@@ -68,7 +68,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams3(self):
 
@@ -80,7 +80,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, False, False, None, False, False, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, False, False, None, False, False, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams4(self):
 
@@ -92,7 +92,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, "dummy_value3", False, False, None, False, False, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, "dummy_value3", False, False, None, False, False, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams5(self):
 
@@ -104,7 +104,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, True, False, None, False, False, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, True, False, None, False, False, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams6(self):
 
@@ -116,7 +116,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, True, None, False, False, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, True, None, False, False, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams7(self):
 
@@ -128,7 +128,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, "dummy_value3", False, False, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, "dummy_value3", False, False, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams8(self):
 
@@ -140,7 +140,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, True, False, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, True, False, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams9(self):
 
@@ -152,7 +152,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, True, None, None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, True, None, None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams10(self):
 
@@ -164,7 +164,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, "dummy_value3", None, None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, "dummy_value3", None, None, None, False, False, None, False) )
 
     def testSvnPluginReadParams11(self):
 
@@ -176,7 +176,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, "dummy_value3", None, None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, "dummy_value3", None, None, False, False, None, False) )
 
     def testSvnPluginReadParams12(self):
 
@@ -188,7 +188,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, "dummy_value3", None, False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, "dummy_value3", None, False, False, None, False) )
 
     def testSvnPluginReadParams13(self):
 
@@ -200,7 +200,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, "dummy_value3", False, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, "dummy_value3", False, False, None, False) )
 
     def testSvnPluginReadParams14(self):
 
@@ -212,7 +212,7 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, True, False) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, True, False, None, False) )
 
     def testSvnPluginReadParams15(self):
 
@@ -224,7 +224,31 @@ class SvnPluginTest(unittest.TestCase):
 
         v, r = self.svn_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, False, True) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, False, True, None, False) )
+
+    def testSvnPluginReadParams16(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["rewind_to_rev"] = "dummy_value3"
+        self.svn_task.params = local_params
+
+        v, r = self.svn_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, False, False, "dummy_value3", False) )
+
+    def testSvnPluginReadParams17(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["rewind_like_other"] = "dummy_value3"
+        self.svn_task.params = local_params
+
+        v, r = self.svn_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, False, False, None, False, False, None, None, None, None, False, False, None, True) )
 
     def testSvnPluginTaskCheckoutRepo1(self):
 
@@ -380,6 +404,146 @@ class SvnPluginTest(unittest.TestCase):
             v, r = self.svn_task.task_reset_repo(print, self.existent_path1, False, False, "1")
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, False, False, 1)
+
+    def testSvnPluginTaskRewindRepo1(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.nonexistent_path1, self.existent_path2, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testSvnPluginTaskRewindRepo2(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, "mock-head-rev", True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testSvnPluginTaskRewindRepo3(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.nonexistent_path1, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testSvnPluginTaskRewindRepo4(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, None, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testSvnPluginTaskRewindRepo5(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, False)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testSvnPluginTaskRewindRepo6(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["wrong-rev", "yet-more-in-front", "and-even-more", "mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_not_called()
+
+    def testSvnPluginTaskRewindRepo7(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["wrong-rev", "yet-more-in-front", "and-even-more", "mock-herd-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_not_called()
+
+    def testSvnPluginTaskRewindRepo8(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["wrong-rev", "yet-more-in-front", "and-even-more", "mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_called_with(self.existent_path1, False, False, 3)
+
+    def testSvnPluginTaskRewindRepo9(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["wrong-rev", "mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_called_with(self.existent_path1, False, False, 1)
+
+    def testSvnPluginTaskRewindRepo10(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("svn_lib.get_head_revision", return_value=(True, "mock-head-rev")) as dummy1:
+            with mock.patch("svn_lib.get_previous_list", return_value=(True, ["mock-head-rev", "another-rev"])) as dummy2:
+                with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.svn_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_called_with(self.existent_path1, False, False, 0)
 
     def testSvnPluginTaskPatchRepo1(self):
 
@@ -607,6 +771,65 @@ class SvnPluginTest(unittest.TestCase):
             v, r = self.svn_task.run_task(print, "exe_name")
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, False, False, "dummy_value3")
+
+    def testSvnPluginRunTask_RewindRepo1(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        self.svn_task.params = local_params
+
+        with mock.patch("svn_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.svn_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, None, False)
+
+    def testSvnPluginRunTask_RewindRepo2(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        local_params["source_path"] = "dummy_value1"
+        self.svn_task.params = local_params
+
+        with mock.patch("svn_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.svn_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, "dummy_value1", None, False)
+
+    def testSvnPluginRunTask_RewindRepo3(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        local_params["rewind_to_rev"] = "dummy_value1"
+        self.svn_task.params = local_params
+
+        with mock.patch("svn_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.svn_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, "dummy_value1", False)
+
+    def testSvnPluginRunTask_RewindRepo4(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        local_params["rewind_like_other"] = "dummy_value1"
+        self.svn_task.params = local_params
+
+        with mock.patch("svn_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.svn_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, None, True)
 
     def testSvnPluginRunTask_PatchRepo1(self):
 
