@@ -279,7 +279,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         v, r = svn_lib.get_previous_list(target_path)
         if not v:
-            return False, "Unable to retrieve previous revision list of source path [%s]: [%s]" % (source_path, r)
+            return False, "Unable to retrieve previous revision list of target path [%s]: [%s]" % (target_path, r)
         prev_revs = r
 
         c = 0

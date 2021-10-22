@@ -350,7 +350,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         v, r = git_lib.get_previous_hash_list(target_path)
         if not v:
-            return False, "Unable to retrieve previous hash list of source path [%s]: [%s]" % (source_path, r)
+            return False, "Unable to retrieve previous hash list of target path [%s]: [%s]" % (target_path, r)
         prev_hashes = r
 
         c = 0
