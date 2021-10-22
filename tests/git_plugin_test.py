@@ -720,7 +720,7 @@ class GitPluginTest(unittest.TestCase):
                     dummy2.assert_called_with(self.existent_path1)
                     dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 1)
 
-    def testGitPluginTaskRewindRepo12(self):
+    def testGitPluginTaskRewindRepo11(self):
 
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))
@@ -734,7 +734,7 @@ class GitPluginTest(unittest.TestCase):
                     dummy2.assert_called_with(self.existent_path1)
                     dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 0)
 
-    def testGitPluginTaskRewindRepo13(self):
+    def testGitPluginTaskRewindRepo12(self):
 
         first_repo = path_utils.concat_path(self.test_dir, "first")
         second_repo = path_utils.concat_path(self.test_dir, "second")
@@ -780,7 +780,7 @@ class GitPluginTest(unittest.TestCase):
         v, r = self.git_task.task_rewind_repo(print, second_repo, third_repo, None, False)
         self.assertFalse(v)
 
-    def testGitPluginTaskRewindRepo14(self):
+    def testGitPluginTaskRewindRepo13(self):
 
         first_repo = path_utils.concat_path(self.test_dir, "first")
         second_repo = path_utils.concat_path(self.test_dir, "second")
@@ -864,7 +864,7 @@ class GitPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_backup_full))
         self.assertFalse(os.path.exists(second_file3))
 
-    def testGitPluginTaskRewindRepo15(self):
+    def testGitPluginTaskRewindRepo14(self):
 
         first_repo = path_utils.concat_path(self.test_dir, "first")
         second_repo = path_utils.concat_path(self.test_dir, "second")
@@ -924,7 +924,7 @@ class GitPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_backup_full))
         self.assertFalse(os.path.exists(second_file3))
 
-    def testGitPluginTaskRewindRepo16(self):
+    def testGitPluginTaskRewindRepo15(self):
 
         first_repo = path_utils.concat_path(self.test_dir, "first")
         second_repo = path_utils.concat_path(self.test_dir, "second")
@@ -984,7 +984,7 @@ class GitPluginTest(unittest.TestCase):
         self.assertFalse(os.path.exists(patch_backup_full))
         self.assertTrue(os.path.exists(second_file3))
 
-    def testGitPluginTaskRewindRepo17(self):
+    def testGitPluginTaskRewindRepo16(self):
 
         first_repo = path_utils.concat_path(self.test_dir, "first")
         second_repo = path_utils.concat_path(self.test_dir, "second")
@@ -1098,7 +1098,7 @@ class GitPluginTest(unittest.TestCase):
         self.assertFalse(os.path.exists(second_file4))
         self.assertFalse(os.path.exists(second_file5))
 
-    def testGitPluginTaskRewindRepo18(self):
+    def testGitPluginTaskRewindRepo17(self):
 
         first_repo = path_utils.concat_path(self.test_dir, "first")
         second_repo = path_utils.concat_path(self.test_dir, "second")
