@@ -213,7 +213,7 @@ def get_list_unversioned(local_repo):
     unversioned_files = [path_utils.concat_path(local_repo_final, sanitize_windows_path(x)) for x in unversioned_files if x is not None]
     return True, unversioned_files
 
-def get_previous_list(local_repo, previous_number):
+def get_previous_list(local_repo, previous_number=None):
 
     if local_repo is None:
         return False, "repo is unspecified"
@@ -221,7 +221,9 @@ def get_previous_list(local_repo, previous_number):
     if not os.path.exists(local_repo_final):
         return False, "Repo path [%s] does not exist." % local_repo_final
 
-    v, r = svn_wrapper.log(local_repo_final, str(previous_number))
+    if previous_number is not None:
+        previous_number = str(previous_number)
+    v, r = svn_wrapper.log(local_repo_final, previous_number)
     if not v:
         return False, r
     log_out = r
