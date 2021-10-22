@@ -8,11 +8,14 @@ from unittest import mock
 from unittest.mock import patch
 
 import mvtools_test_fixture
+import git_test_fixture
 import path_utils
 
 import git_plugin
 
 import git_wrapper
+import git_lib
+
 import port_git_repo
 import reset_git_repo
 import apply_git_patch
@@ -75,7 +78,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams3(self):
 
@@ -87,7 +90,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams4(self):
 
@@ -99,7 +102,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, "dummy_value3", None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, "dummy_value3", None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams5(self):
 
@@ -111,7 +114,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, "dummy_value3", None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, "dummy_value3", None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams6(self):
 
@@ -123,7 +126,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, "dummy_value3", False, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, "dummy_value3", False, False, None, False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams7(self):
 
@@ -135,7 +138,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, True, False, None, False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, True, False, None, False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams8(self):
 
@@ -147,7 +150,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, True, None, False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, True, None, False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams9(self):
 
@@ -159,7 +162,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, "dummy_value3", False, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, "dummy_value3", False, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams10(self):
 
@@ -171,7 +174,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, True, None, False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, True, None, False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams11(self):
 
@@ -183,7 +186,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, "dummy_value3", False, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, "dummy_value3", False, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams12(self):
 
@@ -195,7 +198,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, True, False, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, True, False, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams13(self):
 
@@ -207,7 +210,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, True, None, False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, True, None, False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams14(self):
 
@@ -219,7 +222,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, "dummy_value3", False, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, "dummy_value3", False, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams15(self):
 
@@ -231,7 +234,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, True, None, None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, True, None, None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams16(self):
 
@@ -243,7 +246,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, "dummy_value3", None, None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, "dummy_value3", None, None, None, None, None, None, False) )
 
     def testGitPluginReadParams17(self):
 
@@ -255,7 +258,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, "dummy_value3", None, None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, "dummy_value3", None, None, None, None, None, False) )
 
     def testGitPluginReadParams18(self):
 
@@ -267,7 +270,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, "dummy_value3", None, None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, "dummy_value3", None, None, None, None, False) )
 
     def testGitPluginReadParams19(self):
 
@@ -279,7 +282,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, "dummy_value3", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, "dummy_value3", None, None, None, False) )
 
     def testGitPluginReadParams20(self):
 
@@ -291,7 +294,7 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, "dummy_value3", None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, "dummy_value3", None, None, False) )
 
     def testGitPluginReadParams21(self):
 
@@ -303,7 +306,31 @@ class GitPluginTest(unittest.TestCase):
 
         v, r = self.git_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, "dummy_value3") )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, "dummy_value3", None, False) )
+
+    def testGitPluginReadParams22(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["rewind_to_hash"] = "dummy_value3"
+        self.git_task.params = local_params
+
+        v, r = self.git_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None, "dummy_value3", False) )
+
+    def testGitPluginReadParams23(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["rewind_like_other"] = "dummy_value3"
+        self.git_task.params = local_params
+
+        v, r = self.git_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, None, False, False, None, False, None, False, False, None, False, None, None, None, None, None, None, None, True) )
 
     def testGitPluginTaskCloneRepo1(self):
 
@@ -552,6 +579,607 @@ class GitPluginTest(unittest.TestCase):
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, None, False, "9")
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, False, False, 0, False, 9)
+
+    def testGitPluginTaskRewindRepo1(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.nonexistent_path1, self.existent_path2, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testGitPluginTaskRewindRepo2(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, "mock-head-hash", True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testGitPluginTaskRewindRepo3(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.nonexistent_path1, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testGitPluginTaskRewindRepo4(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, None, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testGitPluginTaskRewindRepo5(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, False)
+                    self.assertFalse(v)
+                    dummy1.assert_not_called()
+                    dummy2.assert_not_called()
+                    dummy3.assert_not_called()
+
+    def testGitPluginTaskRewindRepo6(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["wrong-hash", "yet-more-in-front", "and-even-more", "mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_not_called()
+
+    def testGitPluginTaskRewindRepo7(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["wrong-hash", "yet-more-in-front", "and-even-more", "mock-head", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 3)
+
+    def testGitPluginTaskRewindRepo8(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["wrong-hash", "yet-more-in-front", "and-even-more", "mock-herd-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertFalse(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_not_called()
+
+    def testGitPluginTaskRewindRepo9(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["wrong-hash", "yet-more-in-front", "and-even-more", "mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 3)
+
+    def testGitPluginTaskRewindRepo10(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["wrong-hash", "mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 1)
+
+    def testGitPluginTaskRewindRepo12(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+        self.assertTrue(os.path.exists(self.existent_path2))
+
+        with mock.patch("git_lib.get_head_hash", return_value=(True, "mock-head-hash")) as dummy1:
+            with mock.patch("git_lib.get_previous_hash_list", return_value=(True, ["mock-head-hash", "another-hash"])) as dummy2:
+                with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy3:
+                    v, r = self.git_task.task_rewind_repo(print, self.existent_path1, self.existent_path2, None, True)
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path2)
+                    dummy2.assert_called_with(self.existent_path1)
+                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 0)
+
+    def testGitPluginTaskRewindRepo13(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+
+        self.assertFalse(os.path.exists(first_repo))
+        self.assertFalse(os.path.exists(second_repo))
+        self.assertFalse(os.path.exists(third_repo))
+
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        self.assertTrue(v)
+        v, r = git_wrapper.clone(first_repo, second_repo)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file1), "file1-content1", "init")
+        self.assertTrue(v)
+
+        second_file2 = path_utils.concat_path(second_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file2), "file2-content1", "second commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.clone(first_repo, third_repo)
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(first_repo))
+        self.assertTrue(os.path.exists(second_repo))
+        self.assertTrue(os.path.exists(third_repo))
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        v, r = git_lib.get_head_hash(third_repo)
+        self.assertTrue(v)
+        head_hash_third = r
+
+        self.assertEqual(head_hash_second, head_hash_third)
+
+        v, r = self.git_task.task_rewind_repo(print, second_repo, third_repo, None, False)
+        self.assertFalse(v)
+
+    def testGitPluginTaskRewindRepo14(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+
+        self.assertFalse(os.path.exists(first_repo))
+        self.assertFalse(os.path.exists(second_repo))
+        self.assertFalse(os.path.exists(third_repo))
+
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        self.assertTrue(v)
+        v, r = git_wrapper.clone(first_repo, second_repo)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file1), "file1-content1", "init")
+        self.assertTrue(v)
+
+        second_file2 = path_utils.concat_path(second_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file2), "file2-content1", "second commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.clone(first_repo, third_repo)
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(first_repo))
+        self.assertTrue(os.path.exists(second_repo))
+        self.assertTrue(os.path.exists(third_repo))
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        v, r = git_lib.get_head_hash(third_repo)
+        self.assertTrue(v)
+        head_hash_third = r
+
+        self.assertEqual(head_hash_second, head_hash_third)
+
+        second_file3 = path_utils.concat_path(second_repo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file3), "file3-content1", "third commit")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(second_file3))
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        v, r = git_lib.get_head_hash(third_repo)
+        self.assertTrue(v)
+        head_hash_third = r
+
+        self.assertNotEqual(head_hash_second, head_hash_third)
+
+        fixed_ts = "fixed_timestamp"
+        temp_storage_base = path_utils.concat_path(self.test_dir, "patch_bk_storage")
+        self.assertTrue(path_utils.guaranteefolder(temp_storage_base))
+        patch_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "1_reset_git_repo_previous_%s.patch" % head_hash_second)
+
+        self.assertFalse(os.path.exists(patch_backup_full))
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_ts) as dummy1:
+            with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, temp_storage_base)) as dummy2:
+                v, r = self.git_task.task_rewind_repo(print, second_repo, third_repo, None, True)
+                self.assertTrue(v)
+                dummy1.assert_called()
+                dummy2.assert_called()
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        v, r = git_lib.get_head_hash(third_repo)
+        self.assertTrue(v)
+        head_hash_third = r
+
+        self.assertEqual(head_hash_second, head_hash_third)
+        self.assertTrue(os.path.exists(patch_backup_full))
+        self.assertFalse(os.path.exists(second_file3))
+
+    def testGitPluginTaskRewindRepo15(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+
+        self.assertFalse(os.path.exists(first_repo))
+        self.assertFalse(os.path.exists(second_repo))
+
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        self.assertTrue(v)
+        v, r = git_wrapper.clone(first_repo, second_repo)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file1), "file1-content1", "init")
+        self.assertTrue(v)
+
+        second_file2 = path_utils.concat_path(second_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file2), "file2-content1", "second commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second_2ndcommit = r
+
+        second_file3 = path_utils.concat_path(second_repo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file3), "file3-content1", "third commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(first_repo))
+        self.assertTrue(os.path.exists(second_repo))
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second_3rdcommit = r
+
+        fixed_ts = "fixed_timestamp"
+        temp_storage_base = path_utils.concat_path(self.test_dir, "patch_bk_storage")
+        self.assertTrue(path_utils.guaranteefolder(temp_storage_base))
+        patch_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "1_reset_git_repo_previous_%s.patch" % head_hash_second_3rdcommit)
+
+        self.assertFalse(os.path.exists(patch_backup_full))
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_ts) as dummy1:
+            with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, temp_storage_base)) as dummy2:
+                v, r = self.git_task.task_rewind_repo(print, second_repo, None, head_hash_second_2ndcommit, False)
+                self.assertTrue(v)
+                dummy1.assert_called()
+                dummy2.assert_called()
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        self.assertTrue(os.path.exists(patch_backup_full))
+        self.assertFalse(os.path.exists(second_file3))
+
+    def testGitPluginTaskRewindRepo16(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+
+        self.assertFalse(os.path.exists(first_repo))
+        self.assertFalse(os.path.exists(second_repo))
+
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        self.assertTrue(v)
+        v, r = git_wrapper.clone(first_repo, second_repo)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file1), "file1-content1", "init")
+        self.assertTrue(v)
+
+        second_file2 = path_utils.concat_path(second_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file2), "file2-content1", "second commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second_2ndcommit = r
+
+        second_file3 = path_utils.concat_path(second_repo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file3), "file3-content1", "third commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(first_repo))
+        self.assertTrue(os.path.exists(second_repo))
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second_3rdcommit = r
+
+        fixed_ts = "fixed_timestamp"
+        temp_storage_base = path_utils.concat_path(self.test_dir, "patch_bk_storage")
+        self.assertTrue(path_utils.guaranteefolder(temp_storage_base))
+        patch_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "1_reset_git_repo_previous_%s.patch" % head_hash_second_3rdcommit)
+
+        self.assertFalse(os.path.exists(patch_backup_full))
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_ts) as dummy1:
+            with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, temp_storage_base)) as dummy2:
+                v, r = self.git_task.task_rewind_repo(print, second_repo, None, "invalid-hash", False)
+                self.assertFalse(v)
+                dummy1.assert_not_called()
+                dummy2.assert_not_called()
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        self.assertFalse(os.path.exists(patch_backup_full))
+        self.assertTrue(os.path.exists(second_file3))
+
+    def testGitPluginTaskRewindRepo17(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+
+        self.assertFalse(os.path.exists(first_repo))
+        self.assertFalse(os.path.exists(second_repo))
+        self.assertFalse(os.path.exists(third_repo))
+
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        self.assertTrue(v)
+        v, r = git_wrapper.clone(first_repo, second_repo)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file1), "file1-content1", "init")
+        self.assertTrue(v)
+
+        second_file2 = path_utils.concat_path(second_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file2), "file2-content1", "second commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.clone(first_repo, third_repo)
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(first_repo))
+        self.assertTrue(os.path.exists(second_repo))
+        self.assertTrue(os.path.exists(third_repo))
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        v, r = git_lib.get_head_hash(third_repo)
+        self.assertTrue(v)
+        head_hash_third = r
+
+        self.assertEqual(head_hash_second, head_hash_third)
+
+        second_file3 = path_utils.concat_path(second_repo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file3), "file3-content1", "third commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_3rdcomm = r
+
+        second_file4 = path_utils.concat_path(second_repo, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file4), "file4-content1", "fourth commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_4thcomm = r
+
+        second_file5 = path_utils.concat_path(second_repo, "file5.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file5), "file5-content1", "fifth commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_5thcomm = r
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        v, r = git_lib.get_head_hash(third_repo)
+        self.assertTrue(v)
+        head_hash_third = r
+
+        self.assertNotEqual(head_hash_second, head_hash_third)
+
+        fixed_ts = "fixed_timestamp"
+        temp_storage_base = path_utils.concat_path(self.test_dir, "patch_bk_storage")
+        self.assertTrue(path_utils.guaranteefolder(temp_storage_base))
+        patch1_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "1_reset_git_repo_previous_%s.patch" % head_hash_5thcomm)
+        patch2_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "2_reset_git_repo_previous_%s.patch" % head_hash_4thcomm)
+        patch3_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "3_reset_git_repo_previous_%s.patch" % head_hash_3rdcomm)
+
+        self.assertFalse(os.path.exists(patch1_backup_full))
+        self.assertFalse(os.path.exists(patch2_backup_full))
+        self.assertFalse(os.path.exists(patch3_backup_full))
+        self.assertTrue(os.path.exists(second_file3))
+        self.assertTrue(os.path.exists(second_file4))
+        self.assertTrue(os.path.exists(second_file5))
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_ts) as dummy1:
+            with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, temp_storage_base)) as dummy2:
+                v, r = self.git_task.task_rewind_repo(print, second_repo, third_repo, None, True)
+                self.assertTrue(v)
+                dummy1.assert_called()
+                dummy2.assert_called()
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        v, r = git_lib.get_head_hash(third_repo)
+        self.assertTrue(v)
+        head_hash_third = r
+
+        self.assertEqual(head_hash_second, head_hash_third)
+        self.assertTrue(os.path.exists(patch1_backup_full))
+        self.assertTrue(os.path.exists(patch2_backup_full))
+        self.assertTrue(os.path.exists(patch3_backup_full))
+        self.assertFalse(os.path.exists(second_file3))
+        self.assertFalse(os.path.exists(second_file4))
+        self.assertFalse(os.path.exists(second_file5))
+
+    def testGitPluginTaskRewindRepo18(self):
+
+        first_repo = path_utils.concat_path(self.test_dir, "first")
+        second_repo = path_utils.concat_path(self.test_dir, "second")
+
+        self.assertFalse(os.path.exists(first_repo))
+        self.assertFalse(os.path.exists(second_repo))
+
+        v, r = git_wrapper.init(self.test_dir, "first", True)
+        self.assertTrue(v)
+        v, r = git_wrapper.clone(first_repo, second_repo)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(second_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file1), "file1-content1", "init")
+        self.assertTrue(v)
+
+        second_file2 = path_utils.concat_path(second_repo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file2), "file2-content1", "second commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.push(second_repo, "origin", "master")
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(first_repo))
+        self.assertTrue(os.path.exists(second_repo))
+
+        second_file3 = path_utils.concat_path(second_repo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file3), "file3-content1", "third commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_3rdcomm = r
+
+        second_file4 = path_utils.concat_path(second_repo, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file4), "file4-content1", "fourth commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_4thcomm = r
+
+        second_file5 = path_utils.concat_path(second_repo, "file5.txt")
+        v, r = git_test_fixture.git_createAndCommit(second_repo, path_utils.basename_filtered(second_file5), "file5-content1", "fifth commit")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_5thcomm = r
+
+        fixed_ts = "fixed_timestamp"
+        temp_storage_base = path_utils.concat_path(self.test_dir, "patch_bk_storage")
+        self.assertTrue(path_utils.guaranteefolder(temp_storage_base))
+        patch1_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "1_reset_git_repo_previous_%s.patch" % head_hash_5thcomm)
+        patch2_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "2_reset_git_repo_previous_%s.patch" % head_hash_4thcomm)
+        patch3_backup_full = path_utils.concat_path(temp_storage_base, ("second_reset_git_repo_backup_%s" % fixed_ts), "previous", "3_reset_git_repo_previous_%s.patch" % head_hash_3rdcomm)
+
+        self.assertFalse(os.path.exists(patch1_backup_full))
+        self.assertFalse(os.path.exists(patch2_backup_full))
+        self.assertFalse(os.path.exists(patch3_backup_full))
+        self.assertTrue(os.path.exists(second_file3))
+        self.assertTrue(os.path.exists(second_file4))
+        self.assertTrue(os.path.exists(second_file5))
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_ts) as dummy1:
+            with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, temp_storage_base)) as dummy2:
+                v, r = self.git_task.task_rewind_repo(print, second_repo, None, head_hash_3rdcomm, False)
+                self.assertTrue(v)
+                dummy1.assert_called()
+                dummy2.assert_called()
+
+        v, r = git_lib.get_head_hash(second_repo)
+        self.assertTrue(v)
+        head_hash_second = r
+
+        self.assertTrue(os.path.exists(patch1_backup_full))
+        self.assertTrue(os.path.exists(patch2_backup_full))
+        self.assertFalse(os.path.exists(patch3_backup_full))
+        self.assertTrue(os.path.exists(second_file3))
+        self.assertFalse(os.path.exists(second_file4))
+        self.assertFalse(os.path.exists(second_file5))
 
     def testGitPluginTaskPatchRepo1(self):
 
@@ -819,6 +1447,65 @@ class GitPluginTest(unittest.TestCase):
             v, r = self.git_task.run_task(print, "exe_name")
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, False, False, None, False, "dummy_value1")
+
+    def testGitPluginRunTask_RewindRepo1(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, None, False)
+
+    def testGitPluginRunTask_RewindRepo2(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        local_params["source_path"] = "dummy_value1"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, "dummy_value1", None, False)
+
+    def testGitPluginRunTask_RewindRepo3(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        local_params["rewind_to_hash"] = "dummy_value1"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, "dummy_value1", False)
+
+    def testGitPluginRunTask_RewindRepo4(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "rewind_repo"
+        local_params["rewind_like_other"] = "dummy_value1"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_rewind_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, None, True)
 
     def testGitPluginRunTask_PatchRepo1(self):
 

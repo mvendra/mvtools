@@ -40,6 +40,8 @@ class CustomTask(launch_jobs.BaseTask):
         patch_stash_file = None
         patch_unversioned_base = None
         patch_unversioned_file = None
+        rewind_to_hash = None
+        rewind_like_other = False
 
         # target_path
         try:
@@ -173,14 +175,27 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file)
+        # rewind_to_hash
+        try:
+            rewind_to_hash = self.params["rewind_to_hash"]
+        except KeyError:
+            pass # optional
+
+        # rewind_like_other
+        try:
+            rewind_like_other = self.params["rewind_like_other"]
+            rewind_like_other = True
+        except KeyError:
+            pass # optional
+
+        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file, rewind_to_hash, rewind_like_other)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files = r
+        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files, rewind_to_hash, rewind_like_other = r
 
         # delegate
         if operation == "clone_repo":
@@ -191,6 +206,8 @@ class CustomTask(launch_jobs.BaseTask):
             return self.task_port_repo(feedback_object, source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
         elif operation == "reset_repo":
             return self.task_reset_repo(feedback_object, target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
+        elif operation == "rewind_repo":
+            return self.task_rewind_repo(feedback_object, target_path, source_path, rewind_to_hash, rewind_like_other)
         elif operation == "patch_repo":
             return self.task_patch_repo(feedback_object, target_path, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files)
         else:
@@ -201,7 +218,7 @@ class CustomTask(launch_jobs.BaseTask):
         warnings = None
 
         if source_url is None:
-            return False, "Source URL is required port task_clone_repo"
+            return False, "Source URL is required for task_clone_repo"
 
         if os.path.exists(target_path):
             return False, "Target path [%s] already exists" % target_path
@@ -250,7 +267,7 @@ class CustomTask(launch_jobs.BaseTask):
     def task_port_repo(self, feedback_object, source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count):
 
         if source_path is None:
-            return False, "Source path (source_path) is required port task_port_repo"
+            return False, "Source path (source_path) is required for task_port_repo"
         if not os.path.exists(source_path):
             return False, "Source path [%s] does not exist" % source_path
 
@@ -295,6 +312,65 @@ class CustomTask(launch_jobs.BaseTask):
         reset_previous_count = int(reset_previous_count)
 
         v, r = reset_git_repo.reset_git_repo(target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
+        if not v:
+            return False, r
+        backed_up_patches = r
+
+        for w in backed_up_patches:
+            feedback_object(w)
+
+        warning_msg = None
+        if len(backed_up_patches) > 0:
+            warning_msg = "reset_git_repo has produced output"
+
+        return True, warning_msg
+
+    def task_rewind_repo(self, feedback_object, target_path, source_path, rewind_to_hash, rewind_like_other):
+
+        if not os.path.exists(target_path):
+            return False, "Target path [%s] does not exist" % target_path
+
+        if (rewind_to_hash is not None) and rewind_like_other:
+            return False, "rewind_repo should receive either rewind_to_hash xor rewind_like_other - never both at the same time."
+
+        if rewind_like_other:
+
+            if source_path is None:
+                return False, "Source path (source_path) is required for task_rewind_repo (when passed rewind_like_other)"
+            if not os.path.exists(source_path):
+                return False, "Source path [%s] does not exist" % source_path
+
+            v, r = git_lib.get_head_hash(source_path)
+            if not v:
+                return False, "Unable to retrieve head hash of source path [%s]: [%s]" % (source_path, r)
+            rewind_to_hash = r
+
+        if rewind_to_hash is None:
+            return False, "No hash to rewind to (target_path: [%s])" % target_path
+
+        v, r = git_lib.get_previous_hash_list(target_path)
+        if not v:
+            return False, "Unable to retrieve previous hash list of source path [%s]: [%s]" % (source_path, r)
+        prev_hashes = r
+
+        c = 0
+        found = False
+        for phi in prev_hashes:
+
+            local_rewind_to_hash = rewind_to_hash
+            if len(local_rewind_to_hash) > len(phi):
+                local_rewind_to_hash = local_rewind_to_hash[:len(phi)]
+
+            if local_rewind_to_hash == phi:
+                found = True
+                break
+
+            c += 1
+
+        if not found:
+            return False, "Failed attempting to rewind repo [%s]: Hash [%s] was not found" % (source_path, rewind_to_hash)
+
+        v, r = reset_git_repo.reset_git_repo(target_path, False, False, 0, False, c)
         if not v:
             return False, r
         backed_up_patches = r
