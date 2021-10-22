@@ -133,6 +133,9 @@ def revision_filter_function(the_output):
         if is_nonnumber(revision_left[i]):
             revision = revision_left[0:i]
             break
+    if len(revision) > 1:
+        if revision[0] != "r":
+            revision = "r%s" % revision
     return revision
 
 def remote_link_filter_function(the_output):
