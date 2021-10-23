@@ -272,26 +272,24 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "no"), "/path/folder" )
         self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "no"), "/path/folder" )
         self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "no"), "/path/folder\\" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/", "no"), "/" )
+
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "yes"), "/path/folder" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "yes"), "/path/folder" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "yes"), "/path/folder" )
+        self.assertEqual( path_utils.filter_remove_trailing_sep("/", "yes"), "" )
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "auto"), "/path/folder" )
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "auto"), "/path/folder" )
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "auto"), "/path/folder\\" )
-
-        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "yes"), "/path/folder" )
-        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "yes"), "/path/folder" )
-        self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "yes"), "/path/folder" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/", "auto"), "/" )
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "auto"), "/path/folder" )
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "auto"), "/path/folder" )
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "auto"), "/path/folder" )
-
-    def testFilterJoinAbsLeft(self):
-        self.assertEqual(path_utils.filter_join_abs_left(None), None)
-        self.assertEqual(path_utils.filter_join_abs_left("/home/user"), "home/user")
-        self.assertEqual(path_utils.filter_join_abs_left("home/user"), "home/user")
-        self.assertEqual(path_utils.filter_join_abs_left(""), "")
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/", "auto"), "" )
 
     def testFilterJoinAbsFirstRight(self):
         self.assertEqual(path_utils.filter_join_abs_first_right(None), None)

@@ -183,6 +183,9 @@ def filter_remove_trailing_sep(target, windows_path = "auto"):
     if target == "":
         return None
 
+    if not treat_as_windows_path and target == "/":
+        return "/"
+
     last_char = target[len(target)-1]
     if last_char in sep_chars:
         if len(target) > 1:
