@@ -4,6 +4,7 @@ import sys
 import os
 import shutil
 
+import fsquery
 import get_platform
 
 def replace_extension(source_string, ext_to_find, ext_to_replace_with):
@@ -749,6 +750,18 @@ def is_parentpath(parent_candidate, subpath, resolve_links):
 
 def is_subpath(subpath_to_check, parent_candidate, resolve_links):
     return is_parentpath(parent_candidate, subpath_to_check, resolve_links)
+
+def is_folder_empty(path):
+
+    if path is None:
+        return None
+
+    if path == "":
+        return None
+
+    items = fsquery.makecontentlist(path, True, True, True, True, True, True, None)
+
+    return (len(items) == 0)
 
 if __name__ == "__main__":
     print("Hello from %s" % basename_filtered(__file__))
