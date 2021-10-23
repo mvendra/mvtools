@@ -1216,6 +1216,9 @@ class PathUtilsTest(unittest.TestCase):
         self.assertFalse(path_utils.is_parentpath("/home/user/", "/home/user", True))
         self.assertFalse(path_utils.is_parentpath("/home/user/", "/home/user/", True))
 
+        self.assertTrue(path_utils.is_parentpath("/home", "/home/user/folder", True))
+        self.assertTrue(path_utils.is_parentpath("/", "/home/user/folder", True))
+        self.assertTrue(path_utils.is_parentpath("/", "/file.txt", True))
         self.assertTrue(path_utils.is_parentpath("/home/user", "/home/user/folder", True))
         self.assertTrue(path_utils.is_parentpath("/home/user", "/home/user/folder/sub/level/another", True))
         self.assertFalse(path_utils.is_parentpath("/home/client", "/home/user/folder/sub/level/another", True))
@@ -1253,6 +1256,16 @@ class PathUtilsTest(unittest.TestCase):
 
         self.assertTrue(path_utils.is_parentpath(folder1_sub2_another, folder2_sub1, True))
         self.assertFalse(path_utils.is_parentpath(folder1_sub2_another, folder2_sub1, False))
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            self.assertTrue(path_utils.is_parentpath("/home/user/sub/../..", "/home/file.txt", True))
+            self.assertTrue(path_utils.is_parentpath("/home/user/sub/../../", "/home/file.txt", True))
+            self.assertTrue(path_utils.is_parentpath("/home/user/sub/../../..", "/home/file.txt", True))
+            self.assertTrue(path_utils.is_parentpath("/home/user/sub/../../..", "/clients/another/morefolders/file.txt", True))
+        finally:
+            os.chdir(saved_wd)
 
     def testIsSubPath(self):
 
