@@ -1206,5 +1206,70 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(path_utils.remove_path(folder1_link))
         self.assertFalse(path_utils.is_path_broken_symlink(folder1_link))
 
+    def testIsParentPath(self):
+
+        self.assertEqual(path_utils.is_parentpath(None, "/home/user", True), None)
+        self.assertEqual(path_utils.is_parentpath("/home/user", None, True), None)
+        self.assertEqual(path_utils.is_parentpath("", "/home/user", True), None)
+        self.assertEqual(path_utils.is_parentpath("/home/user", "", True), None)
+
+        self.assertFalse(path_utils.is_parentpath("/home/user", "/home/user/", True))
+        self.assertFalse(path_utils.is_parentpath("/home/user", "/home/user/", True))
+        self.assertFalse(path_utils.is_parentpath("/home/user/", "/home/user", True))
+        self.assertFalse(path_utils.is_parentpath("/home/user/", "/home/user/", True))
+
+        self.assertTrue(path_utils.is_parentpath("/home/user", "/home/user/folder", True))
+        self.assertTrue(path_utils.is_parentpath("/home/user", "/home/user/folder/sub/level/another", True))
+        self.assertFalse(path_utils.is_parentpath("/home/client", "/home/user/folder/sub/level/another", True))
+        self.assertTrue(path_utils.is_parentpath("/home/user/folder/sub", "/home/user/folder/sub/level/another", True))
+        self.assertFalse(path_utils.is_parentpath("/base/user/folder/sub", "/home/user/folder/sub/level/another", True))
+        self.assertFalse(path_utils.is_parentpath("/home/user/folder/sub/level/another", "/home/user/folder/sub/level/anothers", True))
+        self.assertFalse(path_utils.is_parentpath("/base/user/folder/sub", "/home/user", True))
+        self.assertFalse(path_utils.is_parentpath("/home/user/folder/sub", "/home/user", True))
+        self.assertTrue(path_utils.is_parentpath("/home/user/folder", "/home/user/folder/somefile.txt", True))
+        self.assertTrue(path_utils.is_parentpath("/home/user/folder/ /base", "/home/user/folder/ /base/file.bin", True))
+        self.assertTrue(path_utils.is_parentpath("/home/user/folder/ /base", "/home/user/folder/ /base/ ", True))
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        self.assertFalse(os.path.exists(folder1_sub1))
+        self.assertTrue(path_utils.is_parentpath(self.folder1, folder1_sub1, True))
+        os.symlink(self.folder2, folder1_sub1)
+        self.assertTrue(os.path.exists(folder1_sub1))
+        self.assertFalse(path_utils.is_parentpath(self.folder1, folder1_sub1, True))
+        self.assertTrue(path_utils.is_parentpath(self.folder1, folder1_sub1, False))
+
+        folder1_sub2 = path_utils.concat_path(self.folder1, "sub2")
+        self.assertFalse(os.path.exists(folder1_sub2))
+        os.mkdir(folder1_sub2)
+        self.assertTrue(os.path.exists(folder1_sub2))
+
+        folder1_sub2_another = path_utils.concat_path(folder1_sub2, "another")
+        self.assertFalse(os.path.exists(folder1_sub2_another))
+        os.symlink(self.folder2, folder1_sub2_another)
+        self.assertTrue(os.path.exists(folder1_sub2_another))
+
+        folder2_sub1 = path_utils.concat_path(self.folder2, "sub1")
+        self.assertFalse(os.path.exists(folder2_sub1))
+        os.mkdir(folder2_sub1)
+        self.assertTrue(os.path.exists(folder2_sub1))
+
+        self.assertTrue(path_utils.is_parentpath(folder1_sub2_another, folder2_sub1, True))
+        self.assertFalse(path_utils.is_parentpath(folder1_sub2_another, folder2_sub1, False))
+
+    def testIsSubPath(self):
+
+        self.assertEqual(path_utils.is_subpath(None, "/home/user", True), None)
+        self.assertEqual(path_utils.is_subpath("/home/user", None, True), None)
+        self.assertEqual(path_utils.is_subpath("", "/home/user", True), None)
+        self.assertEqual(path_utils.is_subpath("/home/user", "", True), None)
+
+        self.assertFalse(path_utils.is_subpath("/home/user", "/home/user/", True))
+        self.assertFalse(path_utils.is_subpath("/home/user", "/home/user/", True))
+        self.assertFalse(path_utils.is_subpath("/home/user/", "/home/user", True))
+        self.assertFalse(path_utils.is_subpath("/home/user/", "/home/user/", True))
+
+        self.assertTrue(path_utils.is_subpath("/home/user/folder", "/home/user", True))
+        self.assertFalse(path_utils.is_subpath("/home/user", "/home/user/folder", True))
+
 if __name__ == '__main__':
     unittest.main()

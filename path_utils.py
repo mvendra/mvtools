@@ -700,5 +700,52 @@ def remove_path(path):
 
     return False # "not_reached"
 
+def is_parentpath(parent_candidate, subpath, resolve_links):
+
+    if parent_candidate is None or subpath is None:
+        return None
+
+    if parent_candidate == "" or subpath == "":
+        return None
+
+    parent_candidate_local = os.path.abspath(parent_candidate)
+    subpath_local = os.path.abspath(subpath)
+
+    parent_candidate_local = filter_remove_trailing_sep(parent_candidate_local, "auto")
+    if parent_candidate_local is None:
+        return None
+    subpath_local = filter_remove_trailing_sep(subpath_local, "auto")
+    if subpath_local is None:
+        return None
+
+    if resolve_links:
+        parent_candidate_local = os.path.realpath(parent_candidate_local)
+        subpath_local = os.path.realpath(subpath_local)
+
+    if parent_candidate_local == subpath_local:
+        return False
+
+    parent_candidate_local_pieces = splitpath(parent_candidate_local, "auto")
+    if parent_candidate_local_pieces is None:
+        return None
+    subpath_local_pieces = splitpath(subpath_local, "auto")
+    if subpath_local_pieces is None:
+        return None
+
+    if len(parent_candidate_local_pieces) >= len(subpath_local_pieces):
+        return False
+
+    c = -1
+    for pcp in parent_candidate_local_pieces:
+        c += 1
+
+        if pcp != subpath_local_pieces[c]:
+            return False
+
+    return True
+
+def is_subpath(subpath_to_check, parent_candidate, resolve_links):
+    return is_parentpath(parent_candidate, subpath_to_check, resolve_links)
+
 if __name__ == "__main__":
     print("Hello from %s" % basename_filtered(__file__))
