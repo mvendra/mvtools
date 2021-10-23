@@ -1286,6 +1286,31 @@ class PathUtilsTest(unittest.TestCase):
 
         self.assertEqual(path_utils.is_folder_empty(None), None)
         self.assertEqual(path_utils.is_folder_empty(""), None)
+        self.assertFalse(path_utils.is_folder_empty(self.nonexistent))
+        self.assertFalse(path_utils.is_folder_empty(self.test_file))
+
+        folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
+        folder1_sub2 = path_utils.concat_path(self.folder1, "sub2")
+        self.assertFalse(os.path.exists(folder1_sub1))
+        self.assertFalse(os.path.exists(folder1_sub2))
+        os.mkdir(folder1_sub1)
+        os.symlink(folder1_sub1, folder1_sub2)
+        self.assertTrue(os.path.exists(folder1_sub1))
+        self.assertTrue(os.path.exists(folder1_sub2))
+
+        folder1_sub1_file1 = path_utils.concat_path(folder1_sub1, "file1.txt")
+        self.assertFalse(os.path.exists(folder1_sub1_file1))
+        create_and_write_file.create_file_contents(folder1_sub1_file1, "test-sub-file")
+        self.assertTrue(os.path.exists(folder1_sub1_file1))
+
+        self.assertFalse(path_utils.is_folder_empty(folder1_sub1))
+        self.assertFalse(path_utils.is_folder_empty(folder1_sub2))
+
+        shutil.rmtree(folder1_sub1)
+        self.assertFalse(os.path.exists(folder1_sub1))
+        self.assertTrue(path_utils.is_path_broken_symlink(folder1_sub2))
+
+        self.assertFalse(path_utils.is_folder_empty(folder1_sub2))
 
     def testIsFolderEmpty1(self):
 

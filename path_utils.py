@@ -759,6 +759,12 @@ def is_folder_empty(path):
     if path == "":
         return None
 
+    if not os.path.exists(path):
+        return False
+
+    if not os.path.isdir(path):
+        return False
+
     items = fsquery.makecontentlist(path, True, True, True, True, True, True, None)
 
     return (len(items) == 0)
