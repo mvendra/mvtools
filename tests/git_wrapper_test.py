@@ -663,6 +663,33 @@ class GitWrapperTest(unittest.TestCase):
 
     def testStash_and_StashShow(self):
 
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.second_repo, "stash test commit msg1")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.second_repo, "stash test commit msg2")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("latest content, stash show 1")
+        with open(test_file2, "a") as f:
+            f.write("latest content, stash show 2")
+        v, r = git_wrapper.stash(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        self.assertTrue(v)
+        self.assertEqual(len((r.rstrip()).split(os.linesep)), 3)
+
+    def testStash_and_StashShowDiff(self):
+
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
             self.fail("Failed creating test file %s" % test_file)
