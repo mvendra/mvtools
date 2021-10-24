@@ -524,7 +524,7 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, None, False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, False, 0, False, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, False, 0, False, 0) # mvtodo: wirings
 
     def testGitPluginTaskResetRepo3(self):
 
@@ -533,7 +533,7 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, True, False, None, False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, True, False, 0, False, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], True, False, 0, False, 0) # mvtodo: wirings
 
     def testGitPluginTaskResetRepo4(self):
 
@@ -542,7 +542,7 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, True, None, False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, True, 0, False, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, True, 0, False, 0) # mvtodo: wirings
 
     def testGitPluginTaskResetRepo5(self):
 
@@ -551,7 +551,7 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, "5", False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, False, 5, False, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, False, 5, False, 0) # mvtodo: wirings
 
     def testGitPluginTaskResetRepo6(self):
 
@@ -560,7 +560,7 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, "-1", False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, False, -1, False, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, False, -1, False, 0) # mvtodo: wirings
 
     def testGitPluginTaskResetRepo7(self):
 
@@ -569,7 +569,7 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, None, True, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, False, 0, True, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, False, 0, True, 0) # mvtodo: wirings
 
     def testGitPluginTaskResetRepo8(self):
 
@@ -578,7 +578,7 @@ class GitPluginTest(unittest.TestCase):
         with mock.patch("reset_git_repo.reset_git_repo", return_value=(True, [])) as dummy:
             v, r = self.git_task.task_reset_repo(print, self.existent_path1, False, False, None, False, "9")
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, False, 0, False, 9)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, False, 0, False, 9) # mvtodo: wirings
 
     def testGitPluginTaskRewindRepo1(self):
 
@@ -676,7 +676,7 @@ class GitPluginTest(unittest.TestCase):
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path2)
                     dummy2.assert_called_with(self.existent_path1)
-                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 3)
+                    dummy3.assert_called_with(self.existent_path1, "include", [], [], False, False, 0, False, 3) # mvtodo: wirings
 
     def testGitPluginTaskRewindRepo8(self):
 
@@ -704,7 +704,7 @@ class GitPluginTest(unittest.TestCase):
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path2)
                     dummy2.assert_called_with(self.existent_path1)
-                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 3)
+                    dummy3.assert_called_with(self.existent_path1, "include", [], [], False, False, 0, False, 3) # mvtodo: wirings
 
     def testGitPluginTaskRewindRepo10(self):
 
@@ -718,7 +718,7 @@ class GitPluginTest(unittest.TestCase):
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path2)
                     dummy2.assert_called_with(self.existent_path1)
-                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 1)
+                    dummy3.assert_called_with(self.existent_path1, "include", [], [], False, False, 0, False, 1) # mvtodo: wirings
 
     def testGitPluginTaskRewindRepo11(self):
 
@@ -732,7 +732,7 @@ class GitPluginTest(unittest.TestCase):
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path2)
                     dummy2.assert_called_with(self.existent_path1)
-                    dummy3.assert_called_with(self.existent_path1, False, False, 0, False, 0)
+                    dummy3.assert_called_with(self.existent_path1, "include", [], [], False, False, 0, False, 0) # mvtodo: wirings
 
     def testGitPluginTaskRewindRepo12(self):
 

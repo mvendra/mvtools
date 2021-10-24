@@ -13,6 +13,7 @@ import git_lib
 
 import delayed_file_backup
 import maketimestamp
+import fsquery_adv_filter
 
 def make_patch_filename(path, operation, index):
     if operation is None:
@@ -37,6 +38,31 @@ def _has_in_second_pos_of_list(the_list, find_obj):
         if li[1] == find_obj:
             return True
     return False
+
+def _apply_filters(items_input, default_filter, include_list, exclude_list):
+
+    filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or ((default_filter == "exclude") and (len(include_list) > 0)))
+
+    if not filtering_required:
+        return items_input
+
+    filters = []
+    items_filtered = []
+    if default_filter == "include":
+        filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
+        for ei in exclude_list:
+            filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_and(items_input, filters)
+
+    elif default_filter == "exclude":
+        filters.append( (fsquery_adv_filter.filter_all_negative, "not-used") )
+        for ii in include_list:
+            filters.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_or(items_input, filters)
+    else:
+        return None
+
+    return items_filtered
 
 # mvtodo: disabled
 """
@@ -108,7 +134,7 @@ def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
     return True, _report_patch(gen_patch)
 """
 
-def reset_git_repo_unversioned(target_repo, backup_obj):
+def reset_git_repo_unversioned(target_repo, backup_obj, default_filter, include_list, exclude_list):
 
     report = []
     has_any_failed = False
@@ -118,13 +144,13 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
         return False, "Unable to retrieve unversioned (files only) on repo [%s]: [%s]" % (target_repo, r)
     unversioned_list = r
 
-    v, r = git_lib.get_unversioned_files_and_folders(target_repo)
-    if not v:
-        return False, "Unable to retrieve unversioned (files and folders) on repo [%s]: [%s]" % (target_repo, r)
-    unversioned_plus_folders_list = r
+    unversioned_list_filtered = _apply_filters(unversioned_list.copy(), default_filter, include_list, exclude_list)
+    if unversioned_list_filtered is None:
+        return False, "Unable to apply filters. Target repo: [%s]" % target_repo
+    unversioned_list_final = unversioned_list_filtered.copy()
 
-    # make backups first
-    for ui in unversioned_list:
+    # remove unversioned files while backing them up first
+    for ui in unversioned_list_final:
 
         subfolder = "unversioned"
         dn = path_utils.dirname_filtered(ui)
@@ -141,10 +167,8 @@ def reset_git_repo_unversioned(target_repo, backup_obj):
             return False, "Failed because [%s] already exists." % gen_patch
         report.append(_report_patch(gen_patch))
 
-    # then delete all unversioned, files and folders (that contain unversioned files *only*)
-    for ui in unversioned_plus_folders_list:
         if not path_utils.remove_path(ui):
-            return False, "Failed removing path [%s]" % ui
+            return False, "Unable to remove path [%s] from repo [%s]" % (ui, target_repo)
 
     return (not has_any_failed), report
 
@@ -399,7 +423,7 @@ def reset_git_repo_head(target_repo, backup_obj):
 
     return (not has_any_failed), report
 
-def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
+def reset_git_repo(target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous):
 
     target_repo = path_utils.filter_remove_trailing_sep(target_repo)
     target_repo = os.path.abspath(target_repo)
@@ -475,7 +499,7 @@ def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
 
     # unversioned
     if unversioned:
-        v, r = reset_git_repo_unversioned(target_repo, backup_obj)
+        v, r = reset_git_repo_unversioned(target_repo, backup_obj, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("reset_git_repo_unversioned: [%s]." % r)
@@ -494,7 +518,7 @@ def reset_git_repo(target_repo, head, staged, stash, unversioned, previous):
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s target_repo [--head] [--staged] [--stash X (use \"-1\" to reset the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--staged] [--stash X (use \"-1\" to reset the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -505,6 +529,11 @@ if __name__ == "__main__":
     target_repo = sys.argv[1]
     params = sys.argv[2:]
 
+    default_filter = "include"
+    include_list = []
+    exclude_list = []
+    include_parse_next = False
+    exclude_parse_next = False
     head = False
     staged = False
     stash = 0
@@ -525,8 +554,26 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
+        if include_parse_next:
+            include_list.append(p)
+            include_parse_next = False
+            continue
+
+        if exclude_parse_next:
+            exclude_list.append(p)
+            exclude_parse_next = False
+            continue
+
         if p == "--head":
             head = True
+        elif p == "--default-filter-include":
+            default_filter = "include"
+        elif p == "--default-filter-exclude":
+            default_filter = "exclude"
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
         elif p == "--staged":
             staged = True
         elif p == "--stash":
@@ -536,7 +583,7 @@ if __name__ == "__main__":
         elif p == "--previous":
             previous_parse_next = True
 
-    v, r = reset_git_repo(target_repo, head, staged, stash, unversioned, previous)
+    v, r = reset_git_repo(target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous)
     for i in r:
         print(i)
     if not v:

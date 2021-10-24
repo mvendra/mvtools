@@ -311,7 +311,7 @@ class CustomTask(launch_jobs.BaseTask):
         reset_stash_count = int(reset_stash_count)
         reset_previous_count = int(reset_previous_count)
 
-        v, r = reset_git_repo.reset_git_repo(target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
+        v, r = reset_git_repo.reset_git_repo(target_path, "include", [], [], reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count) # mvtodo: wirings
         if not v:
             return False, r
         backed_up_patches = r
@@ -370,7 +370,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not found:
             return False, "Failed attempting to rewind repo [%s]: Hash [%s] was not found" % (source_path, rewind_to_hash)
 
-        v, r = reset_git_repo.reset_git_repo(target_path, False, False, 0, False, c)
+        v, r = reset_git_repo.reset_git_repo(target_path, "include", [], [], False, False, 0, False, c) # mvtodo: wirings
         if not v:
             return False, r
         backed_up_patches = r
