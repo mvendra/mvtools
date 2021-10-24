@@ -539,6 +539,35 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(self.first_file1 in r[0])
 
+    def testGetHeadUpdatedDeletedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification, second")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "conflict commit")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # should fail because of conflict
+
+        v, r = git_lib.get_head_updated_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_file1 in r[0])
+
     def testGetHeadModifiedFilesRelativePath(self):
 
         sub1 = path_utils.concat_path(self.test_dir, "sub1")

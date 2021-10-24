@@ -257,6 +257,9 @@ def get_head_deleted_files(repo):
 def get_head_updated_files(repo):
     return get_head_files_delegate(repo, "UU", "updated")
 
+def get_head_updated_deleted_files(repo):
+    return get_head_files_delegate(repo, "UD", "updated_deleted")
+
 def get_head_files_delegate(repo, status_detect, info_variation):
 
     if repo is None:
