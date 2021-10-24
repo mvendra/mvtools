@@ -754,7 +754,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-    def testStash_and_StashDrop(self):
+    def testStash_and_StashDrop1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
         if not create_and_write_file.create_file_contents(test_file, "test-contents"):
@@ -816,6 +816,67 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash_list(self.second_repo)
         self.assertTrue(v)
         self.assertEqual( len(r), 0)
+
+    def testStash_and_StashDrop2(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.second_repo, "stash test commit msg1")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.second_repo, "stash test commit msg2")
+        self.assertTrue(v)
+
+        test_file3 = path_utils.concat_path(self.second_repo, "test_file3.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file3, "test-contents3"))
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.second_repo, "stash test commit msg3")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("latest content, stash show 1")
+        v, r = git_wrapper.stash(self.second_repo)
+        self.assertTrue(v)
+
+        with open(test_file2, "a") as f:
+            f.write("latest content, stash show 2")
+        v, r = git_wrapper.stash(self.second_repo)
+        self.assertTrue(v)
+
+        with open(test_file3, "a") as f:
+            f.write("latest content, stash show 3")
+        v, r = git_wrapper.stash(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_list(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r.strip().split(os.linesep)), 3 )
+
+        v, r = git_wrapper.stash_drop(self.second_repo, "stash@{1}")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_list(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual( len(r), 0)
+
+        v, r = git_wrapper.diff(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("latest content, stash show 1" in r)
+        self.assertFalse("latest content, stash show 2" in r)
+        self.assertTrue("latest content, stash show 3" in r)
 
     def testStash_and_StashPop(self):
 

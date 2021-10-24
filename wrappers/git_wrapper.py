@@ -151,8 +151,10 @@ def stash_clear(repo):
     cmd = ["git", "-C", repo, "stash", "clear"]
     return git_wrapper_standard_command(cmd, "stash-clear")
 
-def stash_drop(repo):
+def stash_drop(repo, stash_name = None):
     cmd = ["git", "-C", repo, "stash", "drop"]
+    if stash_name is not None:
+        cmd.append(stash_name)
     return git_wrapper_standard_command(cmd, "stash-drop")
 
 def stash_pop(repo):
