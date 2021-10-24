@@ -716,6 +716,12 @@ def rev_parse_head(repo):
     repo = os.path.abspath(repo)
     return git_wrapper.rev_parse_head(repo)
 
+def stash_show(repo, stash_name):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.stash_show(repo, stash_name)
+
 def stash_show_diff(repo, stash_name):
     if repo is None:
         return False, "No repo specified"

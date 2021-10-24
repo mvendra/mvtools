@@ -3814,6 +3814,33 @@ class GitLibTest(unittest.TestCase):
 
     def testStashShow(self):
 
+        with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:
+            v, r = git_lib.stash_show(self.first_repo, "the-stash-name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, "the-stash-name")
+
+        with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:
+            v, r = git_lib.stash_show(None, "the-stash-name")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:
+                v, r = git_lib.stash_show(first_rel_path, "the-stash-name")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, "the-stash-name")
+
+        finally:
+            os.chdir(saved_wd)
+
+    def testStashShowDiff(self):
+
         with mock.patch("git_wrapper.stash_show_diff", return_value=(True, None)) as dummy:
             v, r = git_lib.stash_show_diff(self.first_repo, "the-stash-name")
             self.assertTrue(v)
