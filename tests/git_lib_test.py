@@ -85,7 +85,7 @@ class GitLibTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testHelperFunctions(self):
+    def testRemoveGitstatusSimpleDecorations(self):
 
         self.assertEqual(git_lib.remove_gitstatus_simple_decorations(None), None)
         self.assertEqual(git_lib.remove_gitstatus_simple_decorations("?? anothersub/"), "anothersub/")
@@ -97,6 +97,8 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(git_lib.remove_gitstatus_simple_decorations("? file5.txt"), None)
         self.assertEqual(git_lib.remove_gitstatus_simple_decorations("??? file5.txt"), None)
 
+    def testChangeStashIndex(self):
+
         self.assertEqual(git_lib.change_stash_index(None, None), None)
         self.assertEqual(git_lib.change_stash_index("stash@{0}", None), None)
         self.assertEqual(git_lib.change_stash_index("stash@[0}", 1), None)
@@ -107,13 +109,19 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(git_lib.change_stash_index("stash@{0}", 1), "stash@{1}")
         self.assertEqual(git_lib.change_stash_index("stash@{0}", 25), "stash@{25}")
 
+    def testGetStashName(self):
+
         self.assertEqual(git_lib.get_stash_name("stash@{0}: WIP on master: a44cc87 upd"), "stash@{0}")
         self.assertEqual(git_lib.get_stash_name(""), None)
         self.assertEqual(git_lib.get_stash_name(None), None)
 
+    def testGetPrevHash(self):
+
         self.assertEqual(git_lib.get_prev_hash("a44cc87 (HEAD -> master) upd"), "a44cc87")
         self.assertEqual(git_lib.get_prev_hash(""), None)
         self.assertEqual(git_lib.get_prev_hash(None), None)
+
+    def testGetRenamedDetails(self):
 
         self.assertEqual(None, None)
         self.assertEqual(git_lib.get_renamed_details(""), None)
