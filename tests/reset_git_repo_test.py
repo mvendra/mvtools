@@ -64,382 +64,9 @@ class ResetGitRepoTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    # mvtodo: disabled
-    """
-    def testResetGitRepo_ResetGitRepoFile_Fail1(self):
-
-        v, r = reset_git_repo.reset_git_repo_file(self.nonrepo, self.first_file1, 1, self.rdb)
-        self.assertFalse(v)
-
-    def testResetGitRepo_ResetGitRepoFile_Fail2(self):
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
-        self.assertFalse(v)
-
-    def testResetGitRepo_ResetGitRepoFile_Fail3(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
-        self.assertFalse(os.path.exists(test_patch_file))
-
-        os.mkdir(self.rdb_storage)
-        self.assertTrue(create_and_write_file.create_file_contents(test_patch_file, "dummy contents"))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
-        self.assertFalse(v)
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-    def testResetGitRepo_ResetGitRepoFile_Fail4(self):
-
-        self.second_repo = path_utils.concat_path(self.test_dir, "second")
-        v, r = git_wrapper.init(self.test_dir, "second", False)
-        self.assertTrue(v)
-
-        self.second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
-        v, r = git_test_fixture.git_createAndCommit(self.second_repo, "file1.txt", "second-file1-content", "second-file1-msg")
-        self.assertTrue(v)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
-        self.assertFalse(os.path.exists(test_patch_file))
-
-        os.mkdir(self.rdb_storage)
-        self.assertTrue(create_and_write_file.create_file_contents(test_patch_file, "dummy contents"))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.second_file1, 1, self.rdb)
-        self.assertFalse(v)
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-    def testResetGitRepo_ResetGitRepoFile_Fail5(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        first_file3 = path_utils.concat_path(self.first_repo, "file3.txt")
-        self.assertFalse(os.path.exists(first_file3))
-        self.assertTrue(create_and_write_file.create_file_contents(first_file3, "first-file3-content"))
-
-        v, r = git_wrapper.stage(self.first_repo, [first_file3])
-        self.assertTrue(v)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_file3))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
-        self.assertFalse(os.path.exists(test_patch_file))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, first_file3, 1, self.rdb)
-        self.assertFalse(v)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-    def testResetGitRepo_ResetGitRepoFile_Fail6(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff file1")
-
-        first_file3 = path_utils.concat_path(self.first_repo, "file3.txt")
-        self.assertFalse(os.path.exists(first_file3))
-        self.assertTrue(create_and_write_file.create_file_contents(first_file3, "dummy contents"))
-        self.assertTrue(os.path.exists(first_file3))
-
-        v, r = git_wrapper.stage(self.first_repo)
-        self.assertTrue(v)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        v, r = git_lib.get_staged_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 2)
-        self.assertTrue(first_file3 in r)
-
-        patch_file_filename3 = "3_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_file3))
-        test_patch_file3 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename3)
-        self.assertFalse(os.path.exists(test_patch_file3))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, first_file3, 3, self.rdb)
-        self.assertFalse(v)
-        self.assertFalse(os.path.exists(test_patch_file3))
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        v, r = git_lib.get_staged_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(self.first_file1 in r)
-        self.assertFalse(first_file3 in r)
-        self.assertTrue(os.path.exists(first_file3))
-
-    def testResetGitRepo_ResetGitRepoFile1(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
-        self.assertFalse(os.path.exists(test_patch_file))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
-        self.assertTrue(v)
-        self.assertTrue(os.path.exists(test_patch_file))
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-    def testResetGitRepo_ResetGitRepoFile2(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff file1")
-
-        with open(self.first_file2, "w") as f:
-            f.write("extra stuff file2")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 2)
-
-        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
-        self.assertFalse(os.path.exists(test_patch_file))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
-        self.assertTrue(v)
-        self.assertTrue(os.path.exists(test_patch_file))
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-    def testResetGitRepo_ResetGitRepoFile3(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff file1")
-
-        with open(self.first_file2, "w") as f:
-            f.write("extra stuff file2")
-
-        v, r = git_wrapper.stage(self.first_repo)
-        self.assertTrue(v)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        patch_file_filename1 = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
-        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename1)
-        self.assertFalse(os.path.exists(test_patch_file1))
-
-        patch_file_filename2 = "2_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file2))
-        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename2)
-        self.assertFalse(os.path.exists(test_patch_file2))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
-        self.assertTrue(v)
-        self.assertTrue(os.path.exists(test_patch_file1))
-        self.assertFalse(os.path.exists(patch_file_filename2))
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        v, r = git_lib.get_staged_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(self.first_file2 in r)
-
-    def testResetGitRepo_ResetGitRepoFile4(self):
-
-        sub1 = path_utils.concat_path(self.first_repo, "sub1")
-        os.mkdir(sub1)
-
-        sub2 = path_utils.concat_path(sub1, "sub2")
-        os.mkdir(sub2)
-
-        sub1_sub2_file3 = path_utils.concat_path(sub2, "file3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_sub2_file3, "dummy contents"))
-
-        v, r = git_wrapper.stage(self.first_repo)
-        self.assertTrue(v)
-
-        v, r = git_wrapper.commit(self.first_repo, "more")
-        self.assertTrue(v)
-
-        self.assertTrue(os.path.exists(sub1_sub2_file3))
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(sub1_sub2_file3, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(sub1_sub2_file3))
-        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", "sub1", "sub2", patch_file_filename)
-        self.assertFalse(os.path.exists(test_patch_file))
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, sub1_sub2_file3, 1, self.rdb)
-        self.assertTrue(v)
-        self.assertTrue(os.path.exists(test_patch_file))
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-    def testResetGitRepo_ResetGitRepoFile5(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        os.unlink(self.first_file1)
-        self.assertFalse(os.path.exists(self.first_file1))
-
-        v, r = git_lib.get_head_deleted_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
-        self.assertTrue(v)
-        self.assertTrue(self.first_file1 in r)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-    def testResetGitRepo_ResetGitRepoFile6(self):
-
-        sub1 = path_utils.concat_path(self.first_repo, "sub1")
-        os.mkdir(sub1)
-
-        sub2 = path_utils.concat_path(sub1, "sub2")
-        os.mkdir(sub2)
-
-        sub1_sub2_file3 = path_utils.concat_path(sub2, "file3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_sub2_file3, "dummy contents"))
-
-        v, r = git_wrapper.stage(self.first_repo)
-        self.assertTrue(v)
-
-        v, r = git_wrapper.commit(self.first_repo, "more")
-        self.assertTrue(v)
-
-        self.assertTrue(os.path.exists(sub1_sub2_file3))
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        os.unlink(sub1_sub2_file3)
-        self.assertFalse(os.path.exists(sub1_sub2_file3))
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, sub1_sub2_file3, 1, self.rdb)
-        self.assertTrue(v)
-        self.assertTrue(sub1_sub2_file3 in r)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-    def testResetGitRepo_ResetGitRepoFile7(self):
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        os.unlink(self.first_file1)
-        self.assertFalse(os.path.exists(self.first_file1))
-
-        v, r = git_lib.get_head_deleted_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        v, r = git_wrapper.stage(self.first_repo)
-        self.assertTrue(v)
-
-        v, r = git_lib.get_head_deleted_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        v, r = reset_git_repo.reset_git_repo_file(self.first_repo, self.first_file1, 1, self.rdb)
-        self.assertTrue(v)
-        self.assertTrue(self.first_file1 in r)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        self.assertTrue(os.path.exists(self.first_file1))
-    """
-
     def testResetGitRepo_ResetGitRepoHead_Fail1(self):
 
-        v, r = reset_git_repo.reset_git_repo_head(self.nonrepo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.nonrepo, self.rdb, "include", [], [])
         self.assertFalse(v)
 
     def testResetGitRepo_ResetGitRepoHead1(self):
@@ -459,7 +86,7 @@ class ResetGitRepoTest(unittest.TestCase):
         test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
@@ -491,7 +118,7 @@ class ResetGitRepoTest(unittest.TestCase):
         test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file2_filename)
         self.assertFalse(os.path.exists(test_patch_file2))
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file1))
         self.assertTrue(os.path.exists(test_patch_file2))
@@ -506,7 +133,7 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
 
         v, r = git_lib.get_head_files(self.first_repo)
@@ -540,7 +167,7 @@ class ResetGitRepoTest(unittest.TestCase):
         test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file2_filename)
         self.assertFalse(os.path.exists(test_patch_file2))
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file1))
         self.assertFalse(os.path.exists(test_patch_file2))
@@ -590,7 +217,7 @@ class ResetGitRepoTest(unittest.TestCase):
         test_patch_file3 = path_utils.concat_path(self.rdb_storage, "head", patch_file3_filename)
         self.assertFalse(os.path.exists(test_patch_file3))
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertFalse(os.path.exists(test_patch_file1))
         self.assertFalse(os.path.exists(test_patch_file3))
@@ -637,7 +264,7 @@ class ResetGitRepoTest(unittest.TestCase):
         test_patch_file = path_utils.concat_path(self.rdb_storage, "head", "sub1", "sub2", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertTrue(os.path.exists(test_patch_file))
 
@@ -661,7 +288,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(self.first_file2, "w") as f:
             f.write("extra stuff")
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
         self.assertTrue(any(self.first_file1 in s for s in r))
@@ -691,7 +318,7 @@ class ResetGitRepoTest(unittest.TestCase):
         with open(self.first_file2, "w") as f:
             f.write("extra stuff")
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         self.assertFalse(any(self.first_file1 in s for s in r))
@@ -734,11 +361,746 @@ class ResetGitRepoTest(unittest.TestCase):
         test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
         self.assertFalse(os.path.exists(test_patch_file))
 
-        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb)
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
         self.assertTrue(v)
         self.assertEqual(len(r), 2)
         self.assertTrue(any(self.first_file1 in s for s in r))
         self.assertTrue(os.path.exists(test_patch_file))
+
+    def testResetGitRepo_ResetGitRepoHead10(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("stuff of extra")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit msg latest")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # fails because of conflict
+
+        v, r = git_lib.get_head_updated_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(os.path.exists(self.first_file1))
+
+        v, r = git_lib.get_head_updated_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering1(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("stuff of extra")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit msg latest")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # fails because of conflict
+
+        v, r = git_lib.get_head_updated_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/file1.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_head_updated_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering2(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff")
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("stuff of extra")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "commit msg latest")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # fails because of conflict
+
+        v, r = git_lib.get_head_updated_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/file1.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_head_updated_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering3(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("extra stuff")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/file1.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering4(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_lib.get_head_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/file1.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_head_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering5(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        self.assertTrue(os.path.exists(first_repo_unvfile73))
+
+        first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
+        self.assertFalse(os.path.exists(first_repo_sub))
+        os.mkdir(first_repo_sub)
+        self.assertTrue(os.path.exists(first_repo_sub))
+
+        first_repo_sub_committed_file = path_utils.concat_path(first_repo_sub, "committed_file.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.concat_path(path_utils.basename_filtered(first_repo_sub), path_utils.basename_filtered(first_repo_sub_committed_file)), "committed-file-content", "commit msg, keep subfolder")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_repo_sub_committed_file))
+
+        first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        self.assertTrue(os.path.exists(first_repo_sub_unvfile715))
+
+        first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
+        self.assertFalse(os.path.exists(first_repo_anothersub))
+        os.mkdir(first_repo_anothersub)
+        self.assertTrue(os.path.exists(first_repo_anothersub))
+
+        first_repo_anothersub_onemorelvl = path_utils.concat_path(first_repo_anothersub, "onemorelvl")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl))
+        os.mkdir(first_repo_anothersub_onemorelvl)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl))
+
+        first_repo_anothersub_onemorelvl_evenmore = path_utils.concat_path(first_repo_anothersub_onemorelvl, "evenmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "andyetmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "leafmaybe")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile330))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile333))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308))
+
+        first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile99))
+
+        first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile47))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "the-big-commit")
+        self.assertTrue(v)
+
+        with open(first_repo_unvfile73, "a") as f:
+            f.write("more content, 1")
+        with open(first_repo_sub_unvfile715, "a") as f:
+            f.write("more content, 2")
+        with open(first_repo_anothersub_unvfile47, "a") as f:
+            f.write("more content, 3")
+        with open(first_repo_anothersub_unvfile99, "a") as f:
+            f.write("more content, 4")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "a") as f:
+            f.write("more content, 5")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "a") as f:
+            f.write("more content, 6")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "a") as f:
+            f.write("more content, 7")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "a") as f:
+            f.write("more content, 8")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 8)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/unvfile73.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 7)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_repo_unvfile73 in r)
+        self.assertFalse(first_repo_sub_unvfile715 in r)
+        self.assertFalse(first_repo_anothersub_unvfile47 in r)
+        self.assertFalse(first_repo_anothersub_unvfile99 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_unvfile330 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_unvfile333 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 in r)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering6(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        self.assertTrue(os.path.exists(first_repo_unvfile73))
+
+        first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
+        self.assertFalse(os.path.exists(first_repo_sub))
+        os.mkdir(first_repo_sub)
+        self.assertTrue(os.path.exists(first_repo_sub))
+
+        first_repo_sub_committed_file = path_utils.concat_path(first_repo_sub, "committed_file.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.concat_path(path_utils.basename_filtered(first_repo_sub), path_utils.basename_filtered(first_repo_sub_committed_file)), "committed-file-content", "commit msg, keep subfolder")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_repo_sub_committed_file))
+
+        first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        self.assertTrue(os.path.exists(first_repo_sub_unvfile715))
+
+        first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
+        self.assertFalse(os.path.exists(first_repo_anothersub))
+        os.mkdir(first_repo_anothersub)
+        self.assertTrue(os.path.exists(first_repo_anothersub))
+
+        first_repo_anothersub_onemorelvl = path_utils.concat_path(first_repo_anothersub, "onemorelvl")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl))
+        os.mkdir(first_repo_anothersub_onemorelvl)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl))
+
+        first_repo_anothersub_onemorelvl_evenmore = path_utils.concat_path(first_repo_anothersub_onemorelvl, "evenmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "andyetmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "leafmaybe")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile330))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile333))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308))
+
+        first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile99))
+
+        first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile47))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "the-big-commit")
+        self.assertTrue(v)
+
+        with open(first_repo_unvfile73, "a") as f:
+            f.write("more content, 1")
+        with open(first_repo_sub_unvfile715, "a") as f:
+            f.write("more content, 2")
+        with open(first_repo_anothersub_unvfile47, "a") as f:
+            f.write("more content, 3")
+        with open(first_repo_anothersub_unvfile99, "a") as f:
+            f.write("more content, 4")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "a") as f:
+            f.write("more content, 5")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "a") as f:
+            f.write("more content, 6")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "a") as f:
+            f.write("more content, 7")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "a") as f:
+            f.write("more content, 8")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 8)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/leafmaybe/*"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 7)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertFalse(first_repo_unvfile73 in r)
+        self.assertFalse(first_repo_sub_unvfile715 in r)
+        self.assertFalse(first_repo_anothersub_unvfile47 in r)
+        self.assertFalse(first_repo_anothersub_unvfile99 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_unvfile330 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_unvfile333 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 in r)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering7(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        self.assertTrue(os.path.exists(first_repo_unvfile73))
+
+        first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
+        self.assertFalse(os.path.exists(first_repo_sub))
+        os.mkdir(first_repo_sub)
+        self.assertTrue(os.path.exists(first_repo_sub))
+
+        first_repo_sub_committed_file = path_utils.concat_path(first_repo_sub, "committed_file.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.concat_path(path_utils.basename_filtered(first_repo_sub), path_utils.basename_filtered(first_repo_sub_committed_file)), "committed-file-content", "commit msg, keep subfolder")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_repo_sub_committed_file))
+
+        first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        self.assertTrue(os.path.exists(first_repo_sub_unvfile715))
+
+        first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
+        self.assertFalse(os.path.exists(first_repo_anothersub))
+        os.mkdir(first_repo_anothersub)
+        self.assertTrue(os.path.exists(first_repo_anothersub))
+
+        first_repo_anothersub_onemorelvl = path_utils.concat_path(first_repo_anothersub, "onemorelvl")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl))
+        os.mkdir(first_repo_anothersub_onemorelvl)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl))
+
+        first_repo_anothersub_onemorelvl_evenmore = path_utils.concat_path(first_repo_anothersub_onemorelvl, "evenmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "andyetmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "leafmaybe")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile330))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile333))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308))
+
+        first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile99))
+
+        first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile47))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "the-big-commit")
+        self.assertTrue(v)
+
+        with open(first_repo_unvfile73, "a") as f:
+            f.write("more content, 1")
+        with open(first_repo_sub_unvfile715, "a") as f:
+            f.write("more content, 2")
+        with open(first_repo_anothersub_unvfile47, "a") as f:
+            f.write("more content, 3")
+        with open(first_repo_anothersub_unvfile99, "a") as f:
+            f.write("more content, 4")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "a") as f:
+            f.write("more content, 5")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "a") as f:
+            f.write("more content, 6")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "a") as f:
+            f.write("more content, 7")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "a") as f:
+            f.write("more content, 8")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 8)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "exclude", ["*/unvfile333.txt"], [])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 7)
+        self.assertTrue(first_repo_unvfile73 in r)
+        self.assertTrue(first_repo_sub_unvfile715 in r)
+        self.assertTrue(first_repo_anothersub_unvfile47 in r)
+        self.assertTrue(first_repo_anothersub_unvfile99 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_unvfile330 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_unvfile333 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 in r)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering8(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        self.assertTrue(os.path.exists(first_repo_unvfile73))
+
+        first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
+        self.assertFalse(os.path.exists(first_repo_sub))
+        os.mkdir(first_repo_sub)
+        self.assertTrue(os.path.exists(first_repo_sub))
+
+        first_repo_sub_committed_file = path_utils.concat_path(first_repo_sub, "committed_file.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.concat_path(path_utils.basename_filtered(first_repo_sub), path_utils.basename_filtered(first_repo_sub_committed_file)), "committed-file-content", "commit msg, keep subfolder")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_repo_sub_committed_file))
+
+        first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        self.assertTrue(os.path.exists(first_repo_sub_unvfile715))
+
+        first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
+        self.assertFalse(os.path.exists(first_repo_anothersub))
+        os.mkdir(first_repo_anothersub)
+        self.assertTrue(os.path.exists(first_repo_anothersub))
+
+        first_repo_anothersub_onemorelvl = path_utils.concat_path(first_repo_anothersub, "onemorelvl")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl))
+        os.mkdir(first_repo_anothersub_onemorelvl)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl))
+
+        first_repo_anothersub_onemorelvl_evenmore = path_utils.concat_path(first_repo_anothersub_onemorelvl, "evenmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "andyetmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "leafmaybe")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile330))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile333))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308))
+
+        first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile99))
+
+        first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile47))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "the-big-commit")
+        self.assertTrue(v)
+
+        with open(first_repo_unvfile73, "a") as f:
+            f.write("more content, 1")
+        with open(first_repo_sub_unvfile715, "a") as f:
+            f.write("more content, 2")
+        with open(first_repo_anothersub_unvfile47, "a") as f:
+            f.write("more content, 3")
+        with open(first_repo_anothersub_unvfile99, "a") as f:
+            f.write("more content, 4")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "a") as f:
+            f.write("more content, 5")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "a") as f:
+            f.write("more content, 6")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "a") as f:
+            f.write("more content, 7")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "a") as f:
+            f.write("more content, 8")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 8)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "exclude", [], [])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 8)
+        self.assertTrue(first_repo_unvfile73 in r)
+        self.assertTrue(first_repo_sub_unvfile715 in r)
+        self.assertTrue(first_repo_anothersub_unvfile47 in r)
+        self.assertTrue(first_repo_anothersub_unvfile99 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_unvfile330 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_unvfile333 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 in r)
+        self.assertTrue(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 in r)
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering9(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        self.assertTrue(os.path.exists(first_repo_unvfile73))
+
+        first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
+        self.assertFalse(os.path.exists(first_repo_sub))
+        os.mkdir(first_repo_sub)
+        self.assertTrue(os.path.exists(first_repo_sub))
+
+        first_repo_sub_committed_file = path_utils.concat_path(first_repo_sub, "committed_file.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.concat_path(path_utils.basename_filtered(first_repo_sub), path_utils.basename_filtered(first_repo_sub_committed_file)), "committed-file-content", "commit msg, keep subfolder")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(first_repo_sub_committed_file))
+
+        first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        self.assertTrue(os.path.exists(first_repo_sub_unvfile715))
+
+        first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
+        self.assertFalse(os.path.exists(first_repo_anothersub))
+        os.mkdir(first_repo_anothersub)
+        self.assertTrue(os.path.exists(first_repo_anothersub))
+
+        first_repo_anothersub_onemorelvl = path_utils.concat_path(first_repo_anothersub, "onemorelvl")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl))
+        os.mkdir(first_repo_anothersub_onemorelvl)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl))
+
+        first_repo_anothersub_onemorelvl_evenmore = path_utils.concat_path(first_repo_anothersub_onemorelvl, "evenmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "andyetmore")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "leafmaybe")
+        self.assertFalse(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+        os.mkdir(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe)
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile330))
+
+        first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_unvfile333))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762))
+
+        first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308))
+
+        first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile99))
+
+        first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        self.assertTrue(os.path.exists(first_repo_anothersub_unvfile47))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "the-big-commit")
+        self.assertTrue(v)
+
+        with open(first_repo_unvfile73, "a") as f:
+            f.write("more content, 1")
+        with open(first_repo_sub_unvfile715, "a") as f:
+            f.write("more content, 2")
+        with open(first_repo_anothersub_unvfile47, "a") as f:
+            f.write("more content, 3")
+        with open(first_repo_anothersub_unvfile99, "a") as f:
+            f.write("more content, 4")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "a") as f:
+            f.write("more content, 5")
+        with open(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "a") as f:
+            f.write("more content, 6")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "a") as f:
+            f.write("more content, 7")
+        with open(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "a") as f:
+            f.write("more content, 8")
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 8)
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "exclude", ["*/anothersub/*"], [])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 6)
+
+        v, r = git_lib.get_head_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(first_repo_unvfile73 in r)
+        self.assertTrue(first_repo_sub_unvfile715 in r)
+        self.assertFalse(first_repo_anothersub_unvfile47 in r)
+        self.assertFalse(first_repo_anothersub_unvfile99 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_unvfile330 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_unvfile333 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 in r)
+        self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 in r)
 
     def testResetGitRepo_ResetGitRepoStaged_Fail1(self):
 
@@ -3810,118 +4172,6 @@ class ResetGitRepoTest(unittest.TestCase):
         file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
         self.assertFalse(os.path.exists(file1_patch_filename))
 
-    # mvtodo: disabled
-    """
-    def testResetGitRepo_ResetGitRepo5(self):
-
-        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
-        os.mkdir(base_patch_backup_folder)
-        fixed_timestamp = "fixed_timestamp"
-        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
-        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1])
-                self.assertTrue(v)
-                # mvtodo: check r too
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
-        self.assertTrue(os.path.exists(file1_patch_filename))
-
-    def testResetGitRepo_ResetGitRepo6(self):
-
-        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
-        os.mkdir(base_patch_backup_folder)
-        fixed_timestamp = "fixed_timestamp"
-        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
-        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        with open(self.first_file2, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 2)
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
-                self.assertTrue(v)
-                # mvtodo: check r too
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
-        self.assertTrue(os.path.exists(file1_patch_filename))
-        self.assertTrue(os.path.exists(file2_patch_filename))
-
-    def testResetGitRepo_ResetGitRepo7(self):
-
-        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
-        os.mkdir(base_patch_backup_folder)
-        fixed_timestamp = "fixed_timestamp"
-        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
-        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
-        self.assertTrue(v)
-
-        with open(self.first_file2, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
-                self.assertTrue(v)
-                # mvtodo: check r too
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
-        self.assertTrue(os.path.exists(file1_patch_filename))
-        self.assertTrue(os.path.exists(file2_patch_filename))
-    """
-
     def testResetGitRepo_ResetGitRepo8(self):
 
         base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
@@ -4061,118 +4311,6 @@ class ResetGitRepoTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(file1_patch_filename))
         self.assertTrue(os.path.exists(file2_patch_filename))
-
-    # mvtodo: disabled
-    """
-    def testResetGitRepo_ResetGitRepo11(self):
-
-        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
-        os.mkdir(base_patch_backup_folder)
-        fixed_timestamp = "fixed_timestamp"
-        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
-        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1])
-                self.assertTrue(v)
-                # mvtodo: check r too
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
-        self.assertTrue(os.path.exists(file1_patch_filename))
-
-    def testResetGitRepo_ResetGitRepo12(self):
-
-        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
-        os.mkdir(base_patch_backup_folder)
-        fixed_timestamp = "fixed_timestamp"
-        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
-        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        with open(self.first_file2, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 2)
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
-                self.assertTrue(v)
-                # mvtodo: check r too
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
-        self.assertTrue(os.path.exists(file1_patch_filename))
-        self.assertTrue(os.path.exists(file2_patch_filename))
-
-    def testResetGitRepo_ResetGitRepo13(self):
-
-        base_patch_backup_folder = path_utils.concat_path(self.test_dir, "base_patch_backup_folder")
-        os.mkdir(base_patch_backup_folder)
-        fixed_timestamp = "fixed_timestamp"
-        dirname_patch_backup_folder = "%s_reset_git_repo_backup_%s" % (path_utils.basename_filtered(self.first_repo), fixed_timestamp)
-        final_patch_backup_folder = path_utils.concat_path(base_patch_backup_folder, dirname_patch_backup_folder)
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        with open(self.first_file1, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
-        self.assertTrue(v)
-
-        with open(self.first_file2, "w") as f:
-            f.write("extra stuff")
-
-        v, r = git_lib.get_head_modified_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-
-        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, base_patch_backup_folder)):
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value=fixed_timestamp):
-                v, r = reset_git_repo.reset_git_repo(self.first_repo, [self.first_file1, self.first_file2])
-                self.assertTrue(v)
-                # mvtodo: check r too
-
-        v, r = git_lib.get_head_files(self.first_repo)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
-
-        file1_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "1_reset_git_repo_head_file1.txt.patch")
-        file2_patch_filename = path_utils.concat_path(final_patch_backup_folder, "head", "2_reset_git_repo_head_file2.txt.patch")
-        self.assertTrue(os.path.exists(file1_patch_filename))
-        self.assertTrue(os.path.exists(file2_patch_filename))
-    """
 
     def testResetGitRepo_ResetGitRepo14(self):
 

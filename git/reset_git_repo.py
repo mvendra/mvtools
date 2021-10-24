@@ -50,7 +50,7 @@ def _apply_filters_tuplelistadapter(items_input, default_filter, include_list, e
 
 def _apply_filters(items_input, default_filter, include_list, exclude_list):
 
-    filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or ((default_filter == "exclude") and (len(include_list) > 0)))
+    filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or (default_filter == "exclude"))
 
     if not filtering_required:
         return items_input
@@ -72,76 +72,6 @@ def _apply_filters(items_input, default_filter, include_list, exclude_list):
         return None
 
     return items_filtered
-
-# mvtodo: disabled
-"""
-def reset_git_repo_file(target_repo, revert_file, patch_index, backup_obj):
-
-    # check if the requested file is staged in the repo - and if so, unstage it
-    v, r = git_lib.get_staged_files(target_repo)
-    if not v:
-        return False, "reset_git_repo_file: [%s]" % r
-    cached_files = r
-
-    if revert_file in cached_files:
-        v, r = git_lib.unstage(target_repo, [revert_file])
-        if not v:
-            return False, "reset_git_repo_file: [%s]" % r
-
-    v, r = git_lib.get_head_deleted_files(target_repo)
-    if not v:
-        return False, "reset_git_repo_file: [%s]" % r
-    deleted_files = r
-
-    if revert_file in deleted_files:
-        # simpler case - just undelete and bail out
-        v, r = git_lib.checkout(target_repo, [revert_file])
-        if not v:
-            return False, "reset_git_repo_file: unable to undelete [%s]: [%s]" % (revert_file, r)
-        return True, "file [%s] was undeleted" % revert_file
-
-    # check if the requested file exists
-    if not os.path.exists(revert_file):
-        return False, "reset_git_repo_file: File [%s] does not exist" % revert_file
-
-    # check if the requested file is modified in the repo
-    v, r = git_lib.get_head_modified_files(target_repo)
-    if not v:
-        return False, "reset_git_repo_file: [%s]" % r
-    mod_files = r
-
-    if not revert_file in mod_files:
-        return False, "reset_git_repo_file: File [%s] is not modified in the repo" % revert_file
-
-    # generate the backup patch
-    backup_filename = make_patch_filename(revert_file, "file", patch_index)
-    backup_contents = ""
-    v, r = git_lib.diff(target_repo, [revert_file])
-    if not v:
-        return False, "reset_git_repo_file: [%s]" % r
-    backup_contents = r
-
-    subfolder = None
-    dn = path_utils.dirname_filtered(revert_file)
-    if dn is None:
-        return False, "reset_git_repo_file: unable to resolve [%s]'s dirname." % revert_file
-    v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
-    if v:
-        subfolder = r
-
-    # make the backup patch
-    v, r = backup_obj.make_backup(subfolder, backup_filename, backup_contents)
-    gen_patch = r
-    if not v:
-        return False, "reset_git_repo_file: failed because [%s] already exists." % gen_patch
-
-    # revert file changes
-    v, r = git_lib.checkout(target_repo, [revert_file])
-    if not v:
-        return False, "reset_git_repo_file: [%s] patch was generated but reverting failed: [%s]" % (gen_patch, r)
-
-    return True, _report_patch(gen_patch)
-"""
 
 def reset_git_repo_unversioned(target_repo, backup_obj, default_filter, include_list, exclude_list):
 
@@ -401,10 +331,22 @@ def reset_git_repo_staged(target_repo, backup_obj, default_filter, include_list,
 
     return (not has_any_failed), report
 
-def reset_git_repo_head(target_repo, backup_obj):
+def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, exclude_list):
 
     report = []
     has_any_failed = False
+
+    # get updated-deleted files
+    v, r = git_lib.get_head_updated_deleted_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve head-updated-deleted files on repo [%s]: [%s]" % (target_repo, r)
+    upd_del_files = r
+
+    # filter updated-deleted files
+    upd_del_files_filtered = _apply_filters(upd_del_files.copy(), default_filter, include_list, exclude_list)
+    if upd_del_files_filtered is None:
+        return False, "Unable to apply filters (head-updated-deleted operation). Target repo: [%s]" % target_repo
+    upd_del_files_final = upd_del_files_filtered.copy()
 
     # get updated files
     v, r = git_lib.get_head_updated_files(target_repo)
@@ -412,11 +354,23 @@ def reset_git_repo_head(target_repo, backup_obj):
         return False, "Unable to retrieve head-updated files on repo [%s]: [%s]" % (target_repo, r)
     upd_files = r
 
+    # filter updated files
+    upd_files_filtered = _apply_filters(upd_files.copy(), default_filter, include_list, exclude_list)
+    if upd_files_filtered is None:
+        return False, "Unable to apply filters (head-updated operation). Target repo: [%s]" % target_repo
+    upd_files_final = upd_files_filtered.copy()
+
     # get modified files
     v, r = git_lib.get_head_modified_files(target_repo)
     if not v:
         return False, "Unable to retrieve head-modified files on repo [%s]: [%s]" % (target_repo, r)
     mod_files = r
+
+    # filter modified files
+    mod_files_filtered = _apply_filters(mod_files.copy(), default_filter, include_list, exclude_list)
+    if mod_files_filtered is None:
+        return False, "Unable to apply filters (head-modified operation). Target repo: [%s]" % target_repo
+    mod_files_final = mod_files_filtered.copy()
 
     # get deleted files
     v, r = git_lib.get_head_deleted_files(target_repo)
@@ -424,9 +378,16 @@ def reset_git_repo_head(target_repo, backup_obj):
         return False, "Unable to retrieve head-deleted files on repo [%s]: [%s]" % (target_repo, r)
     deleted_files = r
 
+    # filter deleted files
+    deleted_files_filtered = _apply_filters(deleted_files.copy(), default_filter, include_list, exclude_list)
+    if deleted_files_filtered is None:
+        return False, "Unable to apply filters (head-deleted operation). Target repo: [%s]" % target_repo
+    deleted_files_final = deleted_files_filtered.copy()
+
     files_to_backup = []
-    files_to_backup += mod_files.copy()
-    files_to_backup += upd_files.copy()
+    files_to_backup += mod_files_final.copy()
+    files_to_backup += upd_files_final.copy()
+    files_to_checkout = []
 
     c = 0
     for mf in files_to_backup:
@@ -456,20 +417,32 @@ def reset_git_repo_head(target_repo, backup_obj):
         report.append(_report_patch(gen_patch))
 
     # log undeleted files
-    for df in deleted_files:
+    for df in deleted_files_final:
         report.append("file [%s] is going to be undeleted" % df)
 
-    # log un-updated files
-    for uf in upd_files:
+    # log and unstage un-updated files
+    for uf in upd_files_final:
         v, r = git_lib.unstage(target_repo, [uf])
         if not v:
             return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (uf, target_repo, r)
         report.append("file [%s] was un-updated" % uf)
 
-    # revert all changes
-    v, r = git_lib.checkout(target_repo)
-    if not v:
-        return False, "Unable to checkout repo [%s]: [%s]" % (target_repo, r)
+    # log and unstage un-updated-and-un-deleted files
+    for udf in upd_del_files_final:
+        v, r = git_lib.unstage(target_repo, [udf])
+        if not v:
+            return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (udf, target_repo, r)
+        report.append("file [%s] was un-updated-and-un-deleted" % udf)
+
+    files_to_checkout += (mod_files_final.copy())
+    files_to_checkout += (deleted_files_final.copy())
+    files_to_checkout += (upd_files_final.copy())
+
+    # revert changes to head
+    for fc in files_to_checkout:
+        v, r = git_lib.checkout(target_repo, [fc])
+        if not v:
+            return False, "Unable to checkout file [%s] from repo [%s]: [%s]" % (fc, target_repo, r)
 
     return (not has_any_failed), report
 
@@ -518,25 +491,12 @@ def reset_git_repo(target_repo, default_filter, include_list, exclude_list, head
 
     # head
     if head:
-        v, r = reset_git_repo_head(target_repo, backup_obj)
+        v, r = reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("reset_git_repo_head: [%s]." % r)
         else:
             report += r
-
-    # mvtodo: disabled
-    """
-    # reset file by file
-    has_any_failed = False
-    report = []
-    c = 0
-    for i in files:
-        c += 1
-        v, r = reset_git_repo_file(target_repo, i, c, backup_obj)
-        has_any_failed |= (not v)
-        report.append(r)
-    """
 
     # stash
     if stash != 0:
