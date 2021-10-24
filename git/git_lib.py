@@ -728,11 +728,11 @@ def stash_clear(repo):
     repo = os.path.abspath(repo)
     return git_wrapper.stash_clear(repo)
 
-def stash_drop(repo):
+def stash_drop(repo, stash_name = None):
     if repo is None:
         return False, "No repo specified"
     repo = os.path.abspath(repo)
-    return git_wrapper.stash_drop(repo)
+    return git_wrapper.stash_drop(repo, stash_name)
 
 def stash_pop(repo):
     if repo is None:

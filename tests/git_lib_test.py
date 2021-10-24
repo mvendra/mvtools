@@ -3872,7 +3872,7 @@ class GitLibTest(unittest.TestCase):
             v, r = git_lib.stash_drop(self.first_repo)
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo)
+            dummy.assert_called_with(self.first_repo, None)
 
         with mock.patch("git_wrapper.stash_drop", return_value=(True, None)) as dummy:
             v, r = git_lib.stash_drop(None)
@@ -3888,7 +3888,7 @@ class GitLibTest(unittest.TestCase):
                 v, r = git_lib.stash_drop(first_rel_path)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo)
+                dummy.assert_called_with(self.first_repo, None)
 
         finally:
             os.chdir(saved_wd)
