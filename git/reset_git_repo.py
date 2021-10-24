@@ -33,11 +33,20 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
 
-def _has_in_second_pos_of_list(the_list, find_obj):
-    for li in the_list:
-        if li[1] == find_obj:
-            return True
-    return False
+def _apply_filters_tuplelistadapter(items_input, default_filter, include_list, exclude_list):
+
+    assembled_tuple_list = []
+
+    for items in items_input:
+
+        first, second = items
+        partial_step = _apply_filters([second], default_filter, include_list, exclude_list)
+        if partial_step is None:
+            return None
+        if len(partial_step) > 0:
+            assembled_tuple_list.append((first, second))
+
+    return assembled_tuple_list
 
 def _apply_filters(items_input, default_filter, include_list, exclude_list):
 
@@ -146,7 +155,7 @@ def reset_git_repo_unversioned(target_repo, backup_obj, default_filter, include_
 
     unversioned_list_filtered = _apply_filters(unversioned_list.copy(), default_filter, include_list, exclude_list)
     if unversioned_list_filtered is None:
-        return False, "Unable to apply filters. Target repo: [%s]" % target_repo
+        return False, "Unable to apply filters (unversioned operation). Target repo: [%s]" % target_repo
     unversioned_list_final = unversioned_list_filtered.copy()
 
     # remove unversioned files while backing them up first
@@ -285,22 +294,10 @@ def reset_git_repo_stash(target_repo, backup_obj, stash):
 
     return (not has_any_failed), report
 
-def reset_git_repo_staged(target_repo, backup_obj):
+def reset_git_repo_staged(target_repo, backup_obj, default_filter, include_list, exclude_list):
 
     report = []
     has_any_failed = False
-
-    # get staged files
-    v, r = git_lib.get_staged_files(target_repo)
-    if not v:
-        return False, "Unable to retrieve staged files on repo [%s]: [%s]" % (target_repo, r)
-    staged_files = r
-
-    # get staged deleted files
-    v, r = git_lib.get_staged_deleted_files(target_repo)
-    if not v:
-        return False, "Unable to retrieve staged-deleted files on repo [%s]: [%s]" % (target_repo, r)
-    staged_deleted_files = r
 
     # get staged renamed files
     v, r = git_lib.get_staged_renamed_files(target_repo)
@@ -308,17 +305,70 @@ def reset_git_repo_staged(target_repo, backup_obj):
         return False, "Unable to retrieve staged-renamed files on repo [%s]: [%s]" % (target_repo, r)
     staged_renamed_files = r
 
+    # filter staged renamed files
+    staged_renamed_files_filtered = _apply_filters_tuplelistadapter(staged_renamed_files.copy(), default_filter, include_list, exclude_list)
+    if staged_renamed_files_filtered is None:
+        return False, "Unable to apply filters (staged-renamed operation). Target repo: [%s]" % target_repo
+    staged_renamed_files_final = staged_renamed_files_filtered.copy()
+
+    for srf in staged_renamed_files_final:
+        oldname, newname = srf
+        report.append("file [%s] is going to be unstaged (was renamed)" % newname)
+        v, r = git_lib.unstage(target_repo, [newname])
+        if not v:
+            return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (srf, target_repo, r)
+        report.append("file [%s] is going to be deleted (was unversioned-leftover from the un-renaming)" % newname)
+
+        subfolder = "staged"
+        dn = path_utils.dirname_filtered(newname)
+        if dn is None:
+            return False, "Failed because [%s]'s dirname can't be resolved." % newname
+        v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
+        if v:
+            subfolder = path_utils.concat_path(subfolder, r)
+
+        # make the backup patch
+        v, r = backup_obj.make_backup_frompath(subfolder, path_utils.basename_filtered(newname), newname)
+        gen_patch = r
+        if not v:
+            return False, "Failed because [%s] already exists." % gen_patch
+        report.append(_report_patch(gen_patch))
+
+        if not path_utils.remove_path(newname): # cleanup the now-leftover resulting unversioned
+            return False, "Unable to remove leftover unversioned file [%s] on repo [%s]" % (newname, target_repo)
+
+    # get staged deleted files
+    v, r = git_lib.get_staged_deleted_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve staged-deleted files on repo [%s]: [%s]" % (target_repo, r)
+    staged_deleted_files = r
+
+    # filter staged deleted files
+    staged_deleted_files_filtered = _apply_filters(staged_deleted_files.copy(), default_filter, include_list, exclude_list)
+    if staged_deleted_files_filtered is None:
+        return False, "Unable to apply filters (staged-deleted operation). Target repo: [%s]" % target_repo
+    staged_deleted_files_final = staged_deleted_files_filtered.copy()
+
+    for sdf in staged_deleted_files_final:
+        report.append("file [%s] is going to be unstaged (was deleted)" % sdf)
+        v, r = git_lib.unstage(target_repo, [sdf])
+        if not v:
+            return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (sdf, target_repo, r)
+
+    # get staged files
+    v, r = git_lib.get_staged_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve staged files on repo [%s]: [%s]" % (target_repo, r)
+    staged_files = r
+
+    # filter staged files
+    staged_files_filtered = _apply_filters(staged_files.copy(), default_filter, include_list, exclude_list)
+    if staged_files_filtered is None:
+        return False, "Unable to apply filters (staged operation). Target repo: [%s]" % target_repo
+    staged_files_final = staged_files_filtered.copy()
+
     c = 0
-    for sf in staged_files:
-
-        if sf in staged_deleted_files:
-            report.append("file [%s] is going to be unstaged (was deleted)" % sf) # just unstage - cant run diff --cached
-            continue
-
-        if _has_in_second_pos_of_list(staged_renamed_files, sf):
-            report.append("file [%s] is going to be unstaged (was renamed)" % sf) # just unstage - cant run diff --cached
-            continue
-
+    for sf in staged_files_final:
         c += 1
 
         # generate the backup patch
@@ -344,10 +394,10 @@ def reset_git_repo_staged(target_repo, backup_obj):
             return False, "Failed because [%s] already exists." % gen_patch
         report.append(_report_patch(gen_patch))
 
-    # unstage everything
-    v, r = git_lib.unstage(target_repo)
-    if not v:
-        return False, "Unable to unstage files on repo [%s]: [%s]" % (target_repo, r)
+        # unstage file
+        v, r = git_lib.unstage(target_repo, [sf])
+        if not v:
+            return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (sf, target_repo, r)
 
     return (not has_any_failed), report
 
@@ -459,7 +509,7 @@ def reset_git_repo(target_repo, default_filter, include_list, exclude_list, head
 
     # staged
     if staged:
-        v, r = reset_git_repo_staged(target_repo, backup_obj)
+        v, r = reset_git_repo_staged(target_repo, backup_obj, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("reset_git_repo_staged: [%s]." % r)
