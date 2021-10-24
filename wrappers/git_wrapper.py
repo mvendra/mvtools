@@ -143,7 +143,7 @@ def stash_list(repo):
     cmd = ["git", "-C", repo, "stash", "list"]
     return git_wrapper_standard_command(cmd, "stash-list")
 
-def stash_show(repo, stash_name):
+def stash_show_diff(repo, stash_name):
     cmd = ["git", "-C", repo, "stash", "show", "-p", "--no-ext-diff", stash_name]
     return git_wrapper_standard_command(cmd, "stash-show")
 

@@ -99,7 +99,7 @@ def collect_git_patch_stash(repo, storage_path, stash):
             if c > stash:
                 break
 
-        v, r = git_lib.stash_show(repo, si)
+        v, r = git_lib.stash_show_diff(repo, si)
         if not v:
             return False, "Failed calling git command for stash: [%s]. Repository: [%s]. Stash name: [%s]." % (r, repo, si)
 

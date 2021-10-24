@@ -673,7 +673,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg")
         self.assertTrue(v)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertFalse(v)
 
         with open(test_file, "a") as f:
@@ -682,7 +682,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 
@@ -692,12 +692,12 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 2" in r)
         self.assertFalse("+test-contentslatest content, stash show 1" in r)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{1}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{1}")
         self.assertTrue(v)
         self.assertFalse("+test-contentslatest content, stash show 2" in r)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
@@ -714,7 +714,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg")
         self.assertTrue(v)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertFalse(v)
 
         with open(test_file, "a") as f:
@@ -723,7 +723,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 
@@ -737,12 +737,12 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( len(r.strip().split(os.linesep)), 2 )
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 2" in r)
         self.assertFalse("+test-contentslatest content, stash show 1" in r)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{1}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{1}")
         self.assertTrue(v)
         self.assertFalse("+test-contentslatest content, stash show 2" in r)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
@@ -766,7 +766,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg")
         self.assertTrue(v)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertFalse(v)
 
         with open(test_file, "a") as f:
@@ -775,7 +775,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 
@@ -789,12 +789,12 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( len(r.strip().split(os.linesep)), 2 )
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 2" in r)
         self.assertFalse("+test-contentslatest content, stash show 1" in r)
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{1}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{1}")
         self.assertTrue(v)
         self.assertFalse("+test-contentslatest content, stash show 2" in r)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
@@ -806,7 +806,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( len(r.strip().split(os.linesep)), 1 )
 
-        v, r = git_wrapper.stash_show(self.second_repo, "stash@{0}")
+        v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 

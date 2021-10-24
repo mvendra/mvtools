@@ -200,7 +200,7 @@ def reset_git_repo_stash(target_repo, backup_obj, stash):
             stash_name_to_use = git_lib.change_stash_index(si, c-1)
         backup_filename = make_patch_filename(stash_name_to_use, None, c)
         backup_contents = ""
-        v, r = git_lib.stash_show(target_repo, si)
+        v, r = git_lib.stash_show_diff(target_repo, si)
         if not v:
             return False, "Unable to stash-show on repo [%s]: [%s]" % (target_repo, r)
         backup_contents = r
