@@ -238,7 +238,7 @@ def get_head_files(repo):
 
     total_entries = []
 
-    funcs = [get_head_modified_files, get_head_deleted_files, get_head_updated_files]
+    funcs = [get_head_modified_files, get_head_deleted_files, get_head_updated_files, get_head_updated_deleted_files]
 
     for f in funcs:
         v, r = f(repo)

@@ -365,6 +365,34 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(self.first_repo in r[0])
 
+    def testGetHeadFiles3(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("differentmodif")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "modif-commit-msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # failure because of conflict
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_repo in r[0])
+
     def testGetHeadFilesRelativePath(self):
 
         sub1 = path_utils.concat_path(self.test_dir, "sub1")
