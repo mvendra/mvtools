@@ -376,7 +376,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy:
             v, r = self.svn_task.task_reset_repo(print, self.existent_path1, False, False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, False, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, False, 0)
 
     def testSvnPluginTaskResetRepo3(self):
 
@@ -385,7 +385,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy:
             v, r = self.svn_task.task_reset_repo(print, self.existent_path1, True, False, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, True, False, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], True, False, 0)
 
     def testSvnPluginTaskResetRepo4(self):
 
@@ -394,7 +394,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy:
             v, r = self.svn_task.task_reset_repo(print, self.existent_path1, False, True, None)
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, True, 0)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, True, 0)
 
     def testSvnPluginTaskResetRepo5(self):
 
@@ -403,7 +403,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("reset_svn_repo.reset_svn_repo", return_value=(True, [])) as dummy:
             v, r = self.svn_task.task_reset_repo(print, self.existent_path1, False, False, "1")
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, False, False, 1)
+            dummy.assert_called_with(self.existent_path1, "include", [], [], False, False, 1)
 
     def testSvnPluginTaskRewindRepo1(self):
 
@@ -515,7 +515,7 @@ class SvnPluginTest(unittest.TestCase):
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path2)
                     dummy2.assert_called_with(self.existent_path1)
-                    dummy3.assert_called_with(self.existent_path1, False, False, 3)
+                    dummy3.assert_called_with(self.existent_path1, "include", [], [], False, False, 3)
 
     def testSvnPluginTaskRewindRepo9(self):
 
@@ -529,7 +529,7 @@ class SvnPluginTest(unittest.TestCase):
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path2)
                     dummy2.assert_called_with(self.existent_path1)
-                    dummy3.assert_called_with(self.existent_path1, False, False, 1)
+                    dummy3.assert_called_with(self.existent_path1, "include", [], [], False, False, 1)
 
     def testSvnPluginTaskRewindRepo10(self):
 
@@ -543,7 +543,7 @@ class SvnPluginTest(unittest.TestCase):
                     self.assertTrue(v)
                     dummy1.assert_called_with(self.existent_path2)
                     dummy2.assert_called_with(self.existent_path1)
-                    dummy3.assert_called_with(self.existent_path1, False, False, 0)
+                    dummy3.assert_called_with(self.existent_path1, "include", [], [], False, False, 0)
 
     def testSvnPluginTaskPatchRepo1(self):
 

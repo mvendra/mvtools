@@ -240,7 +240,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "Invalid previous_count - expected numeric string: [%s]" % reset_previous_count
         reset_previous_count = int(reset_previous_count)
 
-        v, r = reset_svn_repo.reset_svn_repo(target_path, reset_head, reset_unversioned, reset_previous_count)
+        v, r = reset_svn_repo.reset_svn_repo(target_path, "include", [], [], reset_head, reset_unversioned, reset_previous_count) # mvtodo: wirings
         if not v:
             return False, r
         backed_up_patches = r
@@ -295,7 +295,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not found:
             return False, "Failed attempting to rewind repo [%s]: Revision [%s] was not found (hint: revision numbers must be prefixed with 'r' - example: 'r355')" % (source_path, rewind_to_rev)
 
-        v, r = reset_svn_repo.reset_svn_repo(target_path, False, False, c)
+        v, r = reset_svn_repo.reset_svn_repo(target_path, "include", [], [], False, False, c)
         if not v:
             return False, r
         backed_up_patches = r

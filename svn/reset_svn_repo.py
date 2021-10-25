@@ -14,6 +14,7 @@ import svn_lib
 import delayed_file_backup
 import maketimestamp
 import get_platform
+import fsquery_adv_filter
 
 def make_patch_filename(path, operation, index):
     if operation is None:
@@ -32,6 +33,31 @@ def _test_repo_path(path):
     if r is None:
         return False, "Path [%s] does not point to a supported repository." % path
     return True, r
+
+def _apply_filters(items_input, default_filter, include_list, exclude_list):
+
+    filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or (default_filter == "exclude"))
+
+    if not filtering_required:
+        return items_input
+
+    filters = []
+    items_filtered = []
+    if default_filter == "include":
+        filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
+        for ei in exclude_list:
+            filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_and(items_input, filters)
+
+    elif default_filter == "exclude":
+        filters.append( (fsquery_adv_filter.filter_all_negative, "not-used") )
+        for ii in include_list:
+            filters.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_or(items_input, filters)
+    else:
+        return None
+
+    return items_filtered
 
 def reset_svn_repo_previous(target_repo, backup_obj, previous):
 
@@ -122,7 +148,7 @@ def reset_svn_repo_unversioned(target_repo, backup_obj):
 
     return (not has_any_failed), report
 
-def reset_svn_repo_head(target_repo, backup_obj):
+def reset_svn_repo_head(target_repo, backup_obj, default_filter, include_list, exclude_list):
 
     report = []
     has_any_failed = False
@@ -133,11 +159,21 @@ def reset_svn_repo_head(target_repo, backup_obj):
         return False, "Unable to retrieve list of added files: [%s]" % r
     added_files = r
 
+    added_files_filtered = _apply_filters(added_files.copy(), default_filter, include_list, exclude_list)
+    if added_files_filtered is None:
+        return False, "Unable to apply filters (head-added operation). Target repo: [%s]" % target_repo
+    added_files_final = added_files_filtered.copy()
+
     # get versioned+delete-scheduled files
     v, r = svn_lib.get_head_deleted_files(target_repo)
     if not v:
         return False, "Unable to retrieve list of to-be-deleted files: [%s]" % r
     to_be_deleted_files = r
+
+    to_be_deleted_files_filtered = _apply_filters(to_be_deleted_files.copy(), default_filter, include_list, exclude_list)
+    if to_be_deleted_files_filtered is None:
+        return False, "Unable to apply filters (head-deleted operation). Target repo: [%s]" % target_repo
+    to_be_deleted_files_final = to_be_deleted_files_filtered.copy()
 
     # get versioned+replace-scheduled files
     v, r = svn_lib.get_head_replaced_files(target_repo)
@@ -145,11 +181,21 @@ def reset_svn_repo_head(target_repo, backup_obj):
         return False, "Unable to retrieve list of replaced files: [%s]" % r
     replaced_files = r
 
+    replaced_files_filtered = _apply_filters(replaced_files.copy(), default_filter, include_list, exclude_list)
+    if replaced_files_filtered is None:
+        return False, "Unable to apply filters (head-replaced operation). Target repo: [%s]" % target_repo
+    replaced_files_final = replaced_files_filtered.copy()
+
     # get missing files
     v, r = svn_lib.get_head_missing_files(target_repo)
     if not v:
         return False, "Unable to retrieve list of missing files: [%s]" % r
     missing_files = r
+
+    missing_files_filtered = _apply_filters(missing_files.copy(), default_filter, include_list, exclude_list)
+    if missing_files_filtered is None:
+        return False, "Unable to apply filters (head-missing operation). Target repo: [%s]" % target_repo
+    missing_files_final = missing_files_filtered.copy()
 
     # get modified files
     v, r = svn_lib.get_head_modified_files(target_repo)
@@ -157,46 +203,56 @@ def reset_svn_repo_head(target_repo, backup_obj):
         return False, "Unable to retrieve list of modified files: [%s]" % r
     modified_files = r
 
+    modified_files_filtered = _apply_filters(modified_files.copy(), default_filter, include_list, exclude_list)
+    if modified_files_filtered is None:
+        return False, "Unable to apply filters (head-modified operation). Target repo: [%s]" % target_repo
+    modified_files_final = modified_files_filtered.copy()
+
     # get conflicted files
     v, r = svn_lib.get_head_conflicted_files(target_repo)
     if not v:
         return False, "Unable to retrieve list of conflicted files: [%s]" % r
     conflicted_files = r
 
+    conflicted_files_filtered = _apply_filters(conflicted_files.copy(), default_filter, include_list, exclude_list)
+    if conflicted_files_filtered is None:
+        return False, "Unable to apply filters (head-conflicted operation). Target repo: [%s]" % target_repo
+    conflicted_files_final = conflicted_files_filtered.copy()
+
     # un-add new+added files (will be left as unversioned in the repo)
-    if len(added_files) > 0:
-        v, r = svn_lib.revert(target_repo, added_files)
+    if len(added_files_final) > 0:
+        v, r = svn_lib.revert(target_repo, added_files_final)
         if not v:
             return False, "Failed attempting to un-add files: [%s]" % r
-        for af in added_files:
+        for af in added_files_final:
             report.append("file [%s] was un-added" % af)
 
     # un-delete files
-    if len(to_be_deleted_files) > 0:
-        v, r = svn_lib.revert(target_repo, to_be_deleted_files)
+    if len(to_be_deleted_files_final) > 0:
+        v, r = svn_lib.revert(target_repo, to_be_deleted_files_final)
         if not v:
             return False, "Failed attempting to un-delete files: [%s]" % r
-        for af in to_be_deleted_files:
-            report.append("file [%s] was un-deleted" % af)
+        for df in to_be_deleted_files_final:
+            report.append("file [%s] was un-deleted" % df)
 
     # un-replace files
-    if len(replaced_files) > 0:
-        v, r = svn_lib.revert(target_repo, replaced_files)
+    if len(replaced_files_final) > 0:
+        v, r = svn_lib.revert(target_repo, replaced_files_final)
         if not v:
             return False, "Failed attempting to un-replace files: [%s]" % r
-        for rf in replaced_files:
+        for rf in replaced_files_final:
             report.append("file [%s] was un-replaced" % rf)
 
     # restore missing
-    for mf in missing_files:
+    for mf in missing_files_final:
         v, r = svn_lib.restore_subpath(target_repo, mf)
         if not v:
             return False, "Failed attempting to restore missing file [%s]: [%s]" % (mf, r)
         report.append("file [%s] has been restored" % mf)
 
     all_relevant_files_for_bk = []
-    all_relevant_files_for_bk += modified_files.copy()
-    all_relevant_files_for_bk += conflicted_files.copy()
+    all_relevant_files_for_bk += modified_files_final.copy()
+    all_relevant_files_for_bk += conflicted_files_final.copy()
 
     # revert files, backing them up first
     c = 0
@@ -233,7 +289,7 @@ def reset_svn_repo_head(target_repo, backup_obj):
 
     return (not has_any_failed), report
 
-def reset_svn_repo(target_repo, head, unversioned, previous):
+def reset_svn_repo(target_repo, default_filter, include_list, exclude_list, head, unversioned, previous):
 
     target_repo = path_utils.filter_remove_trailing_sep(target_repo)
     target_repo = os.path.abspath(target_repo)
@@ -269,7 +325,7 @@ def reset_svn_repo(target_repo, head, unversioned, previous):
 
     # head
     if head:
-        v, r = reset_svn_repo_head(target_repo, backup_obj)
+        v, r = reset_svn_repo_head(target_repo, backup_obj, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("reset_svn_repo_head: [%s]." % r)
@@ -297,7 +353,7 @@ def reset_svn_repo(target_repo, head, unversioned, previous):
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s target_repo [--head] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -308,6 +364,11 @@ if __name__ == "__main__":
     target_repo = sys.argv[1]
     params = sys.argv[2:]
 
+    default_filter = "include"
+    include_list = []
+    exclude_list = []
+    include_parse_next = False
+    exclude_parse_next = False
     head = False
     unversioned = False
     previous = 0
@@ -320,14 +381,32 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
-        if p == "--head":
+        if include_parse_next:
+            include_list.append(p)
+            include_parse_next = False
+            continue
+
+        if exclude_parse_next:
+            exclude_list.append(p)
+            exclude_parse_next = False
+            continue
+
+        if p == "--default-filter-include":
+            default_filter = "include"
+        elif p == "--default-filter-exclude":
+            default_filter = "exclude"
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
+        elif p == "--head":
             head = True
         elif p == "--unversioned":
             unversioned = True
         elif p == "--previous":
             previous_parse_next = True
 
-    v, r = reset_svn_repo(target_repo, head, unversioned, previous)
+    v, r = reset_svn_repo(target_repo, default_filter, include_list, exclude_list, head, unversioned, previous)
     for i in r:
         print(i)
     if not v:
