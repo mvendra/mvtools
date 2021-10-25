@@ -113,7 +113,17 @@ def reset_svn_repo_previous(target_repo, backup_obj, previous):
 
     return (not has_any_failed), report
 
-def reset_svn_repo_unversioned(target_repo, backup_obj):
+def reset_svn_repo_unversioned(target_repo, backup_obj, default_filter, include_list, exclude_list):
+
+    # unversioned filtering, on SVN, has a considerable limitation:
+    # it's not possible to filter out unversioned files or folder if they themselves are inside
+    # an unversioned base tree. for example:
+    # the_repo/sub/folder/some/domain/component
+    # if "sub" itself is unversioned, then it's not possible to deal with unversioned files
+    # that reside (for example) inside "domain", using something like: --default-filter-exclude --include '*/domain/*'
+    # this could possibly be solved by manually traversing (eg. with fsquery) each entry in order to assemble
+    # a full listing, and then processing that instead - and only then filtering the result of that - but that
+    # may come with some extra complications and corner cases.
 
     report = []
     has_any_failed = False
@@ -123,8 +133,13 @@ def reset_svn_repo_unversioned(target_repo, backup_obj):
         return False, "Unable to retrieve list of unversioned for repo [%s]: [%s]" % (target_repo, r)
     unversioned_list = r
 
+    unversioned_list_filtered = _apply_filters(unversioned_list.copy(), default_filter, include_list, exclude_list)
+    if unversioned_list_filtered is None:
+        return False, "Unable to apply filters (unversioned operation). Target repo: [%s]" % target_repo
+    unversioned_list_final = unversioned_list_filtered.copy()
+
     # make backups first
-    for ui in unversioned_list:
+    for ui in unversioned_list_final:
 
         subfolder = "unversioned"
         dn = path_utils.dirname_filtered(ui)
@@ -142,7 +157,7 @@ def reset_svn_repo_unversioned(target_repo, backup_obj):
         report.append(_report_patch(gen_patch))
 
     # then delete all unversioned, files and folders (that contain unversioned files *only*)
-    for ui in unversioned_list:
+    for ui in unversioned_list_final:
         if not path_utils.remove_path(ui):
             return False, "Failed removing path [%s]" % ui
 
@@ -334,7 +349,7 @@ def reset_svn_repo(target_repo, default_filter, include_list, exclude_list, head
 
     # unversioned
     if unversioned:
-        v, r = reset_svn_repo_unversioned(target_repo, backup_obj)
+        v, r = reset_svn_repo_unversioned(target_repo, backup_obj, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("reset_svn_repo_unversioned: [%s]." % r)
