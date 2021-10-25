@@ -574,9 +574,7 @@ if __name__ == "__main__":
             exclude_parse_next = False
             continue
 
-        if p == "--head":
-            head = True
-        elif p == "--default-filter-include":
+        if p == "--default-filter-include":
             default_filter = "include"
         elif p == "--default-filter-exclude":
             default_filter = "exclude"
@@ -584,6 +582,8 @@ if __name__ == "__main__":
             include_parse_next = True
         elif p == "--exclude":
             exclude_parse_next = True
+        elif p == "--head":
+            head = True
         elif p == "--staged":
             staged = True
         elif p == "--stash":
