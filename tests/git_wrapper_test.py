@@ -424,6 +424,93 @@ class GitWrapperTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.diff: file_list must be a list")
 
+    def testDiffIndexedFail1(self):
+        v, r = git_wrapper.diff_indexed(self.second_repo, None)
+        self.assertFalse(v)
+        self.assertEqual(r, "git_wrapper.diff_index: file_list can't be None")
+
+    def testDiffIndexedFail2(self):
+        v, r = git_wrapper.diff_indexed(self.second_repo, "string")
+        self.assertFalse(v)
+        self.assertEqual(r, "git_wrapper.diff_index: file_list must be a list")
+
+    def testDiffIndexed1(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("latest content1")
+
+        with open(test_file2, "a") as f:
+            f.write("latest content2")
+
+        v, r = git_wrapper.diff_indexed(self.second_repo, [test_file1, test_file2])
+        self.assertTrue(v)
+        self.assertTrue("+test-contents1latest content1" in r)
+        self.assertTrue("+test-contents2latest content2" in r)
+
+    def testDiffIndexed2(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        os.unlink(test_file1)
+        self.assertFalse(os.path.exists(test_file1))
+
+        v, r = git_wrapper.diff_indexed(self.second_repo, [test_file1])
+        self.assertTrue(v)
+        self.assertTrue("deleted file mode" in r)
+
+    def testDiffIndexed3(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("latest content1")
+
+        v, r = git_wrapper.stash(self.second_repo)
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("incompatible stuff, conflicts a-coming")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "one more msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.second_repo)
+        self.assertFalse(v) # fails because of conflict
+
+        v, r = git_wrapper.diff_indexed(self.second_repo, [test_file1])
+        self.assertTrue(v)
+        self.assertTrue("< Updated upstream" in r)
+        self.assertTrue("> Stashed changes" in r)
+
     def testDiffCached1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")

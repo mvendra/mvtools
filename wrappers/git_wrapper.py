@@ -103,6 +103,16 @@ def diff(repo, file_list=None):
             cmd.append(f)
     return git_wrapper_standard_command(cmd, "diff")
 
+def diff_indexed(repo, file_list):
+    if file_list is None:
+        return False, "git_wrapper.diff_index: file_list can't be None"
+    if not isinstance(file_list, list):
+        return False, "git_wrapper.diff_index: file_list must be a list"
+    cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--"]
+    for f in file_list:
+        cmd.append(f)
+    return git_wrapper_standard_command(cmd, "diff")
+
 def diff_cached(repo, file_list=None):
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached"]
     if file_list is not None:
