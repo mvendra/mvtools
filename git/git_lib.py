@@ -694,6 +694,17 @@ def diff(repo, file_list=None):
         return False, "file_list is invalid: [%s]" % file_list
     return git_wrapper.diff(repo, final_file_list)
 
+def diff_indexed(repo, file_list):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    if not isinstance(file_list, list):
+        return False, "file_list must be a list"
+    final_file_list = []
+    for fl in file_list:
+        final_file_list.append(os.path.abspath(fl))
+    return git_wrapper.diff_indexed(repo, final_file_list)
+
 def diff_cached(repo, file_list=None):
     if repo is None:
         return False, "No repo specified"
