@@ -308,6 +308,12 @@ def get_staged_files(repo):
 
     return True, all_staged_files
 
+def get_staged_modified_files(repo):
+    return get_staged_delegate(repo, ["M"])
+
+def get_staged_added_files(repo):
+    return get_staged_delegate(repo, ["A"])
+
 def get_staged_deleted_files(repo):
     return get_staged_delegate(repo, ["D"])
 

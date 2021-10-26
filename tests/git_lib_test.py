@@ -1271,6 +1271,194 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testGetStagedModifiedFiles(self):
+
+        v, r = git_lib.get_staged_modified_files(self.fourth_notrepo)
+        self.assertFalse(v)
+
+        v, r = git_lib.get_staged_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+
+        first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+
+        first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+
+        first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
+
+        first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more6), "more6-content6", "commit_msg_more6")
+        self.assertTrue(v)
+
+        first_more7 = path_utils.concat_path(self.first_repo, "more7.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more7), "more7-content7", "commit_msg_more7")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        self.assertTrue(os.path.exists(first_more6))
+        self.assertTrue(os.path.exists(first_more7))
+        os.unlink(first_more6)
+        os.unlink(first_more7)
+        self.assertFalse(os.path.exists(first_more6))
+        self.assertFalse(os.path.exists(first_more7))
+
+        with open(first_more2, "a") as f:
+            f.write("yet more contents")
+
+        with open(first_more5, "a") as f:
+            f.write("yet more contents")
+
+        with open(self.first_file1, "a") as f:
+            f.write("adding stuff")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_staged_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_file1 in r)
+        self.assertFalse(first_more1 in r)
+        self.assertFalse(first_more2 in r)
+        self.assertFalse(first_more3 in r)
+        self.assertFalse(first_more4 in r)
+        self.assertFalse(first_more6 in r)
+        self.assertFalse(first_more7 in r)
+
+    def testGetStagedModifiedFilesRelativePath(self):
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.mkdir(sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        os.unlink(testrepo_file1)
+        os.unlink(testrepo_file3)
+
+        with open(sub1_testrepo_sub2_file4, "a") as f:
+            f.write("extra unexpected info")
+
+        v, r = git_wrapper.stage(sub1_testrepo)
+        self.assertTrue(v)
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_staged_modified_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertFalse(testrepo_file1 in r)
+            self.assertFalse(testrepo_file2 in r)
+            self.assertFalse(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2_file4 in r)
+            self.assertFalse(sub1_testrepo_sub3_file4 in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
+    def testGetStagedModifiedFilesRelativePathSymlinkRepo(self):
+
+        sub2 = path_utils.concat_path(self.test_dir, "sub2")
+        self.assertFalse(os.path.exists(sub2))
+        os.mkdir(sub2)
+        self.assertTrue(os.path.exists(sub2))
+
+        sub1 = path_utils.concat_path(self.test_dir, "sub1")
+        self.assertFalse(os.path.exists(sub1))
+        os.symlink(sub2, sub1)
+        self.assertTrue(os.path.exists(sub1))
+
+        sub1_testrepo = path_utils.concat_path(sub1, "testrepo")
+        v, r = git_wrapper.init(sub1, "testrepo", False)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(sub1_testrepo))
+
+        testrepo_file1 = path_utils.concat_path(sub1_testrepo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file2), "file2-content1", "commit_msg_file2")
+        self.assertTrue(v)
+
+        testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo, path_utils.basename_filtered(testrepo_file3), "file3-content1", "commit_msg_file3")
+        self.assertTrue(v)
+
+        sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
+        os.mkdir(sub1_testrepo_sub2)
+        sub1_testrepo_sub3 = path_utils.concat_path(sub1_testrepo, "sub3")
+        os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
+
+        sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(sub1_testrepo_sub2, path_utils.basename_filtered(sub1_testrepo_sub2_file4), "file4-content1", "commit_msg_file4")
+        self.assertTrue(v)
+        sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
+
+        self.assertTrue(os.path.exists(sub1_testrepo_sub2_file4))
+        self.assertTrue(os.path.exists(sub1_testrepo_sub3_file4))
+
+        os.unlink(testrepo_file1)
+        os.unlink(testrepo_file3)
+        with open(sub1_testrepo_sub3_file4, "a") as f:
+            f.write("more onto the file")
+
+        v, r = git_wrapper.stage(sub1_testrepo)
+        self.assertTrue(v)
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+            v, r = git_lib.get_staged_modified_files("./sub1/testrepo")
+            self.assertTrue(v)
+            self.assertFalse(testrepo_file1 in r)
+            self.assertFalse(testrepo_file2 in r)
+            self.assertFalse(testrepo_file3 in r)
+            self.assertTrue(sub1_testrepo_sub2_file4 in r)
+            self.assertFalse(sub1_testrepo_sub3_file4 in r) # git resolves symlinks
+        finally:
+            os.chdir(saved_wd)
+
     def testGetStagedRenamedFiles(self):
 
         v, r = git_lib.get_staged_renamed_files(self.fourth_notrepo)
