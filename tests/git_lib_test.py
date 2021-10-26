@@ -2305,7 +2305,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2345,7 +2345,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2392,7 +2392,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2429,7 +2429,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2469,7 +2469,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2512,7 +2512,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2554,7 +2554,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2594,7 +2594,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2643,7 +2643,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2680,7 +2680,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2721,7 +2721,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2764,7 +2764,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2810,7 +2810,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2844,7 +2844,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2887,7 +2887,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2920,7 +2920,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2958,7 +2958,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -2999,7 +2999,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))
@@ -3032,7 +3032,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue(os.path.exists(generated_patch_file))

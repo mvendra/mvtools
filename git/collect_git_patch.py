@@ -5,8 +5,34 @@ import os
 
 import git_lib
 import path_utils
+import fsquery_adv_filter
 
 ERRMSG_EMPTY = "Empty contents"
+
+def _apply_filters(items_input, default_filter, include_list, exclude_list):
+
+    filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or (default_filter == "exclude"))
+
+    if not filtering_required:
+        return items_input
+
+    filters = []
+    items_filtered = []
+    if default_filter == "include":
+        filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
+        for ei in exclude_list:
+            filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_and(items_input, filters)
+
+    elif default_filter == "exclude":
+        filters.append( (fsquery_adv_filter.filter_all_negative, "not-used") )
+        for ii in include_list:
+            filters.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_or(items_input, filters)
+    else:
+        return None
+
+    return items_filtered
 
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, content):
 
@@ -27,8 +53,28 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
 
     return True, output_filename_full
 
-def collect_git_patch_head(repo, storage_path):
-    v, r = git_lib.diff(repo)
+def collect_git_patch_head(repo, storage_path, default_filter, include_list, exclude_list):
+
+    # mvtodo: "get_head_updated_deleted_files" is deliberately left out of the process below, because as of
+    # late 2021, on a Mint 20.1, Git version 2.25.1, trying to do a git diff while having a single item
+    # with status "UD" would cause a segfault on Git. if this ever gets corrected on Git, then it would
+    # be preferable to just use git_lib.get_head_files() directly instead
+
+    funcs = [git_lib.get_head_modified_files, git_lib.get_head_deleted_files, git_lib.get_head_updated_files]
+
+    head_items = []
+    for f in funcs:
+        v, r = f(repo)
+        if not v:
+            return False, "Failed retrieving head listing: [%s]" % r
+        head_items += r
+
+    head_items_filtered = _apply_filters(head_items.copy(), default_filter, include_list, exclude_list)
+    if head_items_filtered is None:
+        return False, "Unable to apply filters (head operation). Target repo: [%s]" % repo
+    head_items_final = head_items_filtered.copy()
+
+    v, r = git_lib.diff_indexed(repo, head_items_final)
     if not v:
         return False, "Failed calling git command for head: [%s]. Repository: [%s]." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
@@ -150,7 +196,7 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
 
     return True, written_file_list
 
-def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, stash, previous):
+def collect_git_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous):
 
     repo = path_utils.filter_remove_trailing_sep(repo)
     repo = os.path.abspath(repo)
@@ -168,7 +214,7 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
 
     # head
     if head:
-        v, r = collect_git_patch_head(repo, storage_path)
+        v, r = collect_git_patch_head(repo, storage_path, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("collect_git_patch_head: [%s]." % r)
@@ -223,7 +269,7 @@ def collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, st
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s repo [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -237,6 +283,11 @@ if __name__ == "__main__":
 
     # parse options
     storage_path_parse_next = False
+    default_filter = "include"
+    include_list = []
+    exclude_list = []
+    include_parse_next = False
+    exclude_parse_next = False
     head = False
     head_id = False
     staged = False
@@ -263,8 +314,26 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
+        if include_parse_next:
+            include_list.append(p)
+            include_parse_next = False
+            continue
+
+        if exclude_parse_next:
+            exclude_list.append(p)
+            exclude_parse_next = False
+            continue
+
         if p == "--storage-path":
             storage_path_parse_next = True
+        elif p == "--default-filter-include":
+            default_filter = "include"
+        elif p == "--default-filter-exclude":
+            default_filter = "exclude"
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
         elif p == "--head":
             head = True
         elif p == "--head-id":
@@ -281,7 +350,7 @@ if __name__ == "__main__":
     if storage_path is None:
         storage_path = os.getcwd()
 
-    v, r = collect_git_patch(repo, storage_path, head, head_id, staged, unversioned, stash, previous)
+    v, r = collect_git_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous)
     for i in r:
         print(i)
     if not v:

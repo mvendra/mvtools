@@ -47,7 +47,7 @@ def collect_patch(path, storage_path, head, head_id, staged, unversioned, stash,
         return False, "Can't collect patches from git-bare repos."
 
     if "git" in repotype_detected and (repotype == "git" or repotype == "all"):
-        v, r = collect_git_patch.collect_git_patch(path, storage_path, head, head_id, staged, unversioned, stash, previous)
+        v, r = collect_git_patch.collect_git_patch(path, storage_path, "include", [], [], head, head_id, staged, unversioned, stash, previous) # mvtodo: wirings
         if not v:
             return False, "Failed collecting git patches: %s" % r
 

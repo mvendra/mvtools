@@ -151,7 +151,7 @@ class ApplyGitPatchTest(unittest.TestCase):
         with open(self.first_file1, "a") as f:
             f.write("more stuff")
 
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patches = [r]
 

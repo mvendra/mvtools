@@ -1643,7 +1643,7 @@ class GitWrapperTest(unittest.TestCase):
         with open(test_file2_fourthrepo, "a") as f:
             f.write("latest content2")
 
-        v, r = collect_git_patch.collect_git_patch_head(fourth_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_head(fourth_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue( os.path.exists(generated_patch_file) )
