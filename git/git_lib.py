@@ -721,6 +721,22 @@ def diff_cached(repo, file_list=None):
         return False, "file_list is invalid: [%s]" % file_list
     return git_wrapper.diff_cached(repo, final_file_list)
 
+def diff_cached_indexed(repo, file_list=None):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    final_file_list = []
+    if file_list is None:
+        final_file_list = None
+    elif isinstance(file_list, str):
+        final_file_list.append(os.path.abspath(file_list))
+    elif isinstance(file_list, list):
+        for fl in file_list:
+            final_file_list.append(os.path.abspath(fl))
+    else:
+        return False, "file_list is invalid: [%s]" % file_list
+    return git_wrapper.diff_cached_indexed(repo, final_file_list)
+
 def rev_parse_head(repo):
     if repo is None:
         return False, "No repo specified"
