@@ -427,12 +427,12 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffIndexedFail1(self):
         v, r = git_wrapper.diff_indexed(self.second_repo, None)
         self.assertFalse(v)
-        self.assertEqual(r, "git_wrapper.diff_index: file_list can't be None")
+        self.assertEqual(r, "git_wrapper.diff_indexed: file_list can't be None")
 
     def testDiffIndexedFail2(self):
         v, r = git_wrapper.diff_indexed(self.second_repo, "string")
         self.assertFalse(v)
-        self.assertEqual(r, "git_wrapper.diff_index: file_list must be a list")
+        self.assertEqual(r, "git_wrapper.diff_indexed: file_list must be a list")
 
     def testDiffIndexed1(self):
 
@@ -607,6 +607,96 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.diff_cached(self.second_repo, 123)
         self.assertFalse(v)
         self.assertEqual(r, "git_wrapper.diff_cached: file_list must be a list")
+
+    def testDiffCachedIndexedFail1(self):
+        v, r = git_wrapper.diff_cached_indexed(self.second_repo, None)
+        self.assertFalse(v)
+        self.assertEqual(r, "git_wrapper.diff_cached_indexed: file_list can't be None")
+
+    def testDiffCachedIndexedFail2(self):
+        v, r = git_wrapper.diff_cached_indexed(self.second_repo, "string")
+        self.assertFalse(v)
+        self.assertEqual(r, "git_wrapper.diff_cached_indexed: file_list must be a list")
+
+    def testDiffCachedIndexed1(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("latest content1")
+
+        with open(test_file2, "a") as f:
+            f.write("latest content2")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.diff_cached_indexed(self.second_repo, [test_file1, test_file2])
+        self.assertTrue(v)
+        self.assertTrue("+test-contents1latest content1" in r)
+        self.assertTrue("+test-contents2latest content2" in r)
+
+    def testDiffCachedIndexed2(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        os.unlink(test_file1)
+        self.assertFalse(os.path.exists(test_file1))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.diff_cached_indexed(self.second_repo, [test_file1])
+        self.assertTrue(v)
+        self.assertTrue("deleted file mode" in r)
+
+    def testDiffCachedIndexed3(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        test_file1_renamed = path_utils.concat_path(self.second_repo, "test_file1_renamed.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        self.assertFalse(os.path.exists(test_file1_renamed))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        self.assertTrue(path_utils.copy_to_and_rename(test_file1, self.second_repo, path_utils.basename_filtered(test_file1_renamed)))
+        self.assertTrue(os.path.exists(test_file1_renamed))
+        os.unlink(test_file1)
+        self.assertFalse(os.path.exists(test_file1))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.diff_cached_indexed(self.second_repo, [test_file1])
+        self.assertTrue(v)
+        self.assertTrue("deleted file mode" in r)
+        self.assertTrue(path_utils.basename_filtered(test_file1) in r)
+
+        v, r = git_wrapper.diff_cached_indexed(self.second_repo, [test_file1_renamed])
+        self.assertTrue(v)
+        self.assertTrue("new file mode" in r)
+        self.assertTrue(path_utils.basename_filtered(test_file1_renamed) in r)
 
     def testRevParseHead(self):
 

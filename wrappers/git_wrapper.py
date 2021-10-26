@@ -105,13 +105,13 @@ def diff(repo, file_list=None):
 
 def diff_indexed(repo, file_list):
     if file_list is None:
-        return False, "git_wrapper.diff_index: file_list can't be None"
+        return False, "git_wrapper.diff_indexed: file_list can't be None"
     if not isinstance(file_list, list):
-        return False, "git_wrapper.diff_index: file_list must be a list"
+        return False, "git_wrapper.diff_indexed: file_list must be a list"
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--"]
     for f in file_list:
         cmd.append(f)
-    return git_wrapper_standard_command(cmd, "diff")
+    return git_wrapper_standard_command(cmd, "diff-indexed")
 
 def diff_cached(repo, file_list=None):
     cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached"]
@@ -122,9 +122,19 @@ def diff_cached(repo, file_list=None):
             cmd.append(f)
     return git_wrapper_standard_command(cmd, "diff-cached")
 
+def diff_cached_indexed(repo, file_list):
+    if file_list is None:
+        return False, "git_wrapper.diff_cached_indexed: file_list can't be None"
+    if not isinstance(file_list, list):
+        return False, "git_wrapper.diff_cached_indexed: file_list must be a list"
+    cmd = ["git", "-C", repo, "diff", "--no-ext-diff", "--cached", "--"]
+    for f in file_list:
+        cmd.append(f)
+    return git_wrapper_standard_command(cmd, "diff-cached-indexed")
+
 def rev_parse_head(repo):
     cmd = ["git", "-C", repo, "rev-parse", "HEAD"]
-    return git_wrapper_standard_command(cmd, "rev-parse")
+    return git_wrapper_standard_command(cmd, "rev-parse-head")
 
 def rev_parse_is_bare_repo(repo):
     cmd = ["git", "-C", repo, "rev-parse", "--is-bare-repository"]
@@ -159,7 +169,7 @@ def stash_show(repo, stash_name):
 
 def stash_show_diff(repo, stash_name):
     cmd = ["git", "-C", repo, "stash", "show", "-p", "--no-ext-diff", stash_name]
-    return git_wrapper_standard_command(cmd, "stash-show")
+    return git_wrapper_standard_command(cmd, "stash-show-diff")
 
 def stash_clear(repo):
     cmd = ["git", "-C", repo, "stash", "clear"]
