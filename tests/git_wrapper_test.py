@@ -1693,7 +1693,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stage(fourth_repo)
         self.assertTrue(v)
 
-        v, r = collect_git_patch.collect_git_patch_staged(fourth_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(fourth_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patch_file = r
         self.assertTrue( os.path.exists(generated_patch_file) )

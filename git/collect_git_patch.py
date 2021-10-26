@@ -85,10 +85,14 @@ def collect_git_patch_head_id(repo, storage_path):
         return False, "Failed calling git command for head-id: [%s]. Repository: [%s]." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r)
 
-def collect_git_patch_staged(repo, storage_path):
+def collect_git_patch_staged(repo, storage_path, default_filter, include_list, exclude_list):
+
+    # mvtodo: implement
+
     v, r = git_lib.diff_cached(repo)
     if not v:
         return False, "Failed calling git command for staged: [%s]. Repository: [%s]." % (r, repo)
+
     return collect_git_patch_cmd_generic(repo, storage_path, "staged.patch", "staged", r)
 
 def collect_git_patch_unversioned(repo, storage_path):
@@ -232,7 +236,7 @@ def collect_git_patch(repo, storage_path, default_filter, include_list, exclude_
 
     # staged
     if staged:
-        v, r = collect_git_patch_staged(repo, storage_path)
+        v, r = collect_git_patch_staged(repo, storage_path, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("collect_git_patch_staged: [%s]." % r)

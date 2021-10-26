@@ -344,12 +344,12 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(path_utils.basename_filtered(first_file7) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
-        self.assertFalse(path_utils.basename_filtered(first_sub1_file9) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_another_file10) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_another_file17) in contents_read)
-        self.assertFalse(path_utils.basename_filtered(first_sub2_file9) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub2_another_file10) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub2_another_file19) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_file9)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file17)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_file9)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19)) in contents_read)
 
     def testCollectPatchHeadSub(self):
 
@@ -488,12 +488,12 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertFalse(path_utils.basename_filtered(first_file7) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
-        self.assertFalse(path_utils.basename_filtered(first_sub1_file9) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_another_file10) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_another_file17) in contents_read)
-        self.assertFalse(path_utils.basename_filtered(first_sub2_file9) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub2_another_file10) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub2_another_file19) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_file9)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file17)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_file9)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19)) in contents_read)
 
     def testCollectPatchHead_Filtering2(self):
 
@@ -607,12 +607,12 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertFalse(path_utils.basename_filtered(first_file7) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_file9) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_another_file10) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_another_file17) in contents_read)
-        #self.assertFalse(path_utils.basename_filtered(first_sub2_file9) in contents_read) # file9 is fn-duped inside sub1 and sub2
-        #self.assertFalse(path_utils.basename_filtered(first_sub2_another_file10) in contents_read) # file10 is fn-duped inside sub1/another and sub2/another
-        self.assertFalse(path_utils.basename_filtered(first_sub2_another_file19) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_file9)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file17)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_file9)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file10)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19)) in contents_read)
 
     def testCollectPatchHead_Filtering3(self):
 
@@ -737,12 +737,12 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertFalse(path_utils.basename_filtered(first_file7) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
         self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_file9) in contents_read)
-        self.assertFalse(path_utils.basename_filtered(first_sub1_another_file10) in contents_read)
-        self.assertTrue(path_utils.basename_filtered(first_sub1_another_file17) in contents_read)
-        #self.assertFalse(path_utils.basename_filtered(first_sub2_file9) in contents_read) # file9 is fn-duped on sub1 and sub2
-        self.assertFalse(path_utils.basename_filtered(first_sub2_another_file10) in contents_read)
-        self.assertFalse(path_utils.basename_filtered(first_sub2_another_file19) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_file9)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file17)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_file9)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file10)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19)) in contents_read)
 
     def testCollectPatchHeadIdFail(self):
 
@@ -819,17 +819,17 @@ class CollectGitPatchTest(unittest.TestCase):
         if not git_wrapper.stage(self.first_repo):
             self.fail("")
 
-        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
 
         patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "staged.patch")
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
         self.assertFalse(v)
 
-    def testCollectPatchStaged(self):
+    def testCollectPatchStaged1(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
         if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
@@ -838,7 +838,7 @@ class CollectGitPatchTest(unittest.TestCase):
         if not git_wrapper.stage(self.first_repo):
             self.fail("")
 
-        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
 
         patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "staged.patch")
@@ -851,6 +851,262 @@ class CollectGitPatchTest(unittest.TestCase):
 
         self.assertTrue("newfilecontents" in contents_read)
 
+    def testCollectPatchStaged2(self):
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file4.txt", "first-file4-content", "first-file4-msg")
+        self.assertTrue(v)
+
+        first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file5.txt", "first-file5-content", "first-file5-msg")
+        self.assertTrue(v)
+
+        first_file6 = path_utils.concat_path(self.first_repo, "file6.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file6.txt", "first-file6-content", "first-file6-msg")
+        self.assertTrue(v)
+
+        first_file7 = path_utils.concat_path(self.first_repo, "file7.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file7.txt", "first-file7-content", "first-file7-msg")
+        self.assertTrue(v)
+
+        first_file8 = path_utils.concat_path(self.first_repo, "file8.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file8.txt", "first-file8-content", "first-file8-msg")
+        self.assertTrue(v)
+
+        first_sub1 = path_utils.concat_path(self.first_repo, "sub1")
+        self.assertFalse(os.path.exists(first_sub1))
+        os.mkdir(first_sub1)
+        self.assertTrue(os.path.exists(first_sub1))
+
+        first_sub1_file9 = path_utils.concat_path(first_sub1, "file9.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub1/file9.txt", "first-sub1-file9-content", "first-sub1-file9-msg")
+        self.assertTrue(v)
+
+        first_sub1_another = path_utils.concat_path(first_sub1, "another")
+        self.assertFalse(os.path.exists(first_sub1_another))
+        os.mkdir(first_sub1_another)
+        self.assertTrue(os.path.exists(first_sub1_another))
+
+        first_sub1_another_file10 = path_utils.concat_path(first_sub1_another, "file10.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub1/another/file10.txt", "first-sub1-another-file10-content", "first-sub1-another-file10-msg")
+        self.assertTrue(v)
+
+        first_sub1_another_file17 = path_utils.concat_path(first_sub1_another, "file17.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub1/another/file17.txt", "first-sub1-another-file17-content", "first-sub1-another-file17-msg")
+        self.assertTrue(v)
+
+        first_sub2 = path_utils.concat_path(self.first_repo, "sub2")
+        self.assertFalse(os.path.exists(first_sub2))
+        os.mkdir(first_sub2)
+        self.assertTrue(os.path.exists(first_sub2))
+
+        first_sub2_file9 = path_utils.concat_path(first_sub2, "file9.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/file9.txt", "first-sub2-file9-content", "first-sub2-file9-msg")
+        self.assertTrue(v)
+
+        first_sub2_another = path_utils.concat_path(first_sub2, "another")
+        self.assertFalse(os.path.exists(first_sub2_another))
+        os.mkdir(first_sub2_another)
+        self.assertTrue(os.path.exists(first_sub2_another))
+
+        first_sub2_another_file10 = path_utils.concat_path(first_sub2_another, "file10.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file10.txt", "first-sub2-another-file10-content", "first-sub2-another-file10-msg")
+        self.assertTrue(v)
+
+        first_sub2_another_file19 = path_utils.concat_path(first_sub2_another, "file19.txt")
+        first_sub2_another_file19_renamed = path_utils.concat_path(first_sub2_another, "file19_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("more file1")
+
+        with open(self.first_file3, "a") as f:
+            f.write("more file3")
+
+        self.assertTrue(os.path.exists(first_file4))
+        os.unlink(first_file4)
+        self.assertFalse(os.path.exists(first_file4))
+
+        self.assertTrue(os.path.exists(first_file7))
+        os.unlink(first_file7)
+        self.assertFalse(os.path.exists(first_file7))
+
+        self.assertTrue(os.path.exists(first_sub1_another_file17))
+        os.unlink(first_sub1_another_file17)
+        self.assertFalse(os.path.exists(first_sub1_another_file17))
+
+        self.assertTrue(path_utils.copy_to_and_rename(first_sub2_another_file19, path_utils.dirname_filtered(first_sub2_another_file19_renamed), path_utils.basename_filtered(first_sub2_another_file19_renamed)))
+        os.unlink(first_sub2_another_file19)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(r))
+
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "staged.patch")
+        self.assertTrue(os.path.exists(patch_file))
+        self.assertEqual(r, patch_file)
+
+        contents_read = ""
+        with open(patch_file) as f:
+            contents_read = f.read()
+
+        self.assertTrue(path_utils.basename_filtered(self.first_file1) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
+        self.assertTrue(path_utils.basename_filtered(self.first_file3) in contents_read)
+        self.assertTrue(path_utils.basename_filtered(first_file4) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(first_file5) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(first_file6) in contents_read)
+        self.assertTrue(path_utils.basename_filtered(first_file7) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_file9)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file17)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_file9)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19_renamed)) in contents_read)
+        self.assertEqual(contents_read.count("deleted file mode"), 3)
+        self.assertEqual(contents_read.count("rename from"), 1)
+        self.assertEqual(contents_read.count("rename to"), 1)
+
+    def testCollectPatchStaged3(self):
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file4.txt", "first-file4-content", "first-file4-msg")
+        self.assertTrue(v)
+
+        first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file5.txt", "first-file5-content", "first-file5-msg")
+        self.assertTrue(v)
+
+        first_file6 = path_utils.concat_path(self.first_repo, "file6.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file6.txt", "first-file6-content", "first-file6-msg")
+        self.assertTrue(v)
+
+        first_file7 = path_utils.concat_path(self.first_repo, "file7.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file7.txt", "first-file7-content", "first-file7-msg")
+        self.assertTrue(v)
+
+        first_file8 = path_utils.concat_path(self.first_repo, "file8.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file8.txt", "first-file8-content", "first-file8-msg")
+        self.assertTrue(v)
+
+        first_sub1 = path_utils.concat_path(self.first_repo, "sub1")
+        self.assertFalse(os.path.exists(first_sub1))
+        os.mkdir(first_sub1)
+        self.assertTrue(os.path.exists(first_sub1))
+
+        first_sub1_file9 = path_utils.concat_path(first_sub1, "file9.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub1/file9.txt", "first-sub1-file9-content", "first-sub1-file9-msg")
+        self.assertTrue(v)
+
+        first_sub1_another = path_utils.concat_path(first_sub1, "another")
+        self.assertFalse(os.path.exists(first_sub1_another))
+        os.mkdir(first_sub1_another)
+        self.assertTrue(os.path.exists(first_sub1_another))
+
+        first_sub1_another_file10 = path_utils.concat_path(first_sub1_another, "file10.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub1/another/file10.txt", "first-sub1-another-file10-content", "first-sub1-another-file10-msg")
+        self.assertTrue(v)
+
+        first_sub1_another_file17 = path_utils.concat_path(first_sub1_another, "file17.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub1/another/file17.txt", "first-sub1-another-file17-content", "first-sub1-another-file17-msg")
+        self.assertTrue(v)
+
+        first_sub2 = path_utils.concat_path(self.first_repo, "sub2")
+        self.assertFalse(os.path.exists(first_sub2))
+        os.mkdir(first_sub2)
+        self.assertTrue(os.path.exists(first_sub2))
+
+        first_sub2_file9 = path_utils.concat_path(first_sub2, "file9.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/file9.txt", "first-sub2-file9-content", "first-sub2-file9-msg")
+        self.assertTrue(v)
+
+        first_sub2_another = path_utils.concat_path(first_sub2, "another")
+        self.assertFalse(os.path.exists(first_sub2_another))
+        os.mkdir(first_sub2_another)
+        self.assertTrue(os.path.exists(first_sub2_another))
+
+        first_sub2_another_file10 = path_utils.concat_path(first_sub2_another, "file10.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file10.txt", "first-sub2-another-file10-content", "first-sub2-another-file10-msg")
+        self.assertTrue(v)
+
+        first_sub2_another_file19 = path_utils.concat_path(first_sub2_another, "file19.txt")
+        first_sub2_another_file19_renamed = path_utils.concat_path(first_sub2_another, "file19_renamed.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("more file1")
+
+        with open(self.first_file3, "a") as f:
+            f.write("more file3")
+
+        self.assertTrue(os.path.exists(first_file4))
+        os.unlink(first_file4)
+        self.assertFalse(os.path.exists(first_file4))
+
+        self.assertTrue(os.path.exists(first_file7))
+        os.unlink(first_file7)
+        self.assertFalse(os.path.exists(first_file7))
+
+        self.assertTrue(os.path.exists(first_sub1_another_file17))
+        os.unlink(first_sub1_another_file17)
+        self.assertFalse(os.path.exists(first_sub1_another_file17))
+
+        self.assertTrue(path_utils.copy_to_and_rename(first_sub2_another_file19, path_utils.dirname_filtered(first_sub2_another_file19_renamed), path_utils.basename_filtered(first_sub2_another_file19_renamed)))
+        os.unlink(first_sub2_another_file19)
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file5, "a") as f:
+            f.write("mod f5")
+
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(r))
+
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "staged.patch")
+        self.assertTrue(os.path.exists(patch_file))
+        self.assertEqual(r, patch_file)
+
+        contents_read = ""
+        with open(patch_file) as f:
+            contents_read = f.read()
+
+        self.assertTrue(os.path.exists(first_sub2_file9))
+        os.unlink(first_sub2_file9)
+        self.assertFalse(os.path.exists(first_sub2_file9))
+
+        first_sub1_another_file10_renamed = path_utils.concat_path(first_sub1_another, "file10_renamed.txt")
+        self.assertTrue(path_utils.copy_to_and_rename(first_sub1_another_file10, path_utils.dirname_filtered(first_sub1_another_file10_renamed), path_utils.basename_filtered(first_sub1_another_file10_renamed)))
+        os.unlink(first_sub1_another_file10)
+
+        self.assertTrue(path_utils.basename_filtered(self.first_file1) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
+        self.assertTrue(path_utils.basename_filtered(self.first_file3) in contents_read)
+        self.assertTrue(path_utils.basename_filtered(first_file4) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(first_file5) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(first_file6) in contents_read)
+        self.assertTrue(path_utils.basename_filtered(first_file7) in contents_read)
+        self.assertFalse(path_utils.basename_filtered(first_file8) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_file9)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub1), path_utils.basename_filtered(first_sub1_another), path_utils.basename_filtered(first_sub1_another_file17)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_file9)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file10)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19)) in contents_read)
+        self.assertTrue(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19_renamed)) in contents_read)
+        self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub1_another_file10_renamed)) in contents_read)
+        self.assertEqual(contents_read.count("deleted file mode"), 3)
+        self.assertEqual(contents_read.count("rename from"), 1)
+        self.assertEqual(contents_read.count("rename to"), 1)
+
     def testCollectPatchStagedSub(self):
 
         newfile = path_utils.concat_path(self.second_sub, "newfile_secondsub.txt")
@@ -860,7 +1116,7 @@ class CollectGitPatchTest(unittest.TestCase):
         if not git_wrapper.stage(self.second_sub):
             self.fail("")
 
-        v, r = collect_git_patch.collect_git_patch_staged(self.second_sub, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.second_sub, self.storage_path, "include", [], [])
         self.assertTrue(v)
 
         patch_file = path_utils.concat_path(self.storage_path, self.second_sub, "staged.patch")

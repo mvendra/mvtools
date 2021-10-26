@@ -174,7 +174,7 @@ class ApplyGitPatchTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patches = [r]
 

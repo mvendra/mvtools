@@ -61,7 +61,7 @@ def port_git_repo_staged(temp_path, source_repo, target_repo):
     report = []
 
     staged_files = None
-    v, r = collect_git_patch.collect_git_patch_staged(source_repo, temp_path)
+    v, r = collect_git_patch.collect_git_patch_staged(source_repo, temp_path, "include", [], []) # mvtodo: wirings
     if not v:
         return False, "Failed collecting the staging area from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     staged_files = [r]
