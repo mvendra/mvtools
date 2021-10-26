@@ -34,6 +34,17 @@ def _apply_filters(items_input, default_filter, include_list, exclude_list):
 
     return items_filtered
 
+def _assemble_list_from_functions(repo, func_list):
+
+    total_items = []
+    for f in func_list:
+        v, r = f(repo)
+        if not v:
+            return False, "Failed retrieving listing: [%s]" % r
+        total_items += r
+
+    return True, total_items
+
 def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title, content):
 
     if len(content) == 0:
@@ -60,14 +71,12 @@ def collect_git_patch_head(repo, storage_path, default_filter, include_list, exc
     # with status "UD" would cause a segfault on Git. if this ever gets corrected on Git, then it would
     # be preferable to just use git_lib.get_head_files() directly instead
 
-    funcs = [git_lib.get_head_modified_files, git_lib.get_head_deleted_files, git_lib.get_head_updated_files]
-
     head_items = []
-    for f in funcs:
-        v, r = f(repo)
-        if not v:
-            return False, "Failed retrieving head listing: [%s]" % r
-        head_items += r
+    funcs = [git_lib.get_head_modified_files, git_lib.get_head_deleted_files, git_lib.get_head_updated_files]
+    v, r = _assemble_list_from_functions(repo, funcs)
+    if not v:
+        return False, "Unable to assemble list of head items on repo [%s]: [%s]" % (repo, r)
+    head_items = r
 
     head_items_filtered = _apply_filters(head_items.copy(), default_filter, include_list, exclude_list)
     if head_items_filtered is None:
