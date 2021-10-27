@@ -238,7 +238,7 @@ def get_head_files(repo):
 
     total_entries = []
 
-    funcs = [get_head_modified_files, get_head_deleted_files, get_head_updated_files, get_head_updated_deleted_files]
+    funcs = [get_head_modified_files, get_head_deleted_files, get_head_updated_files, get_head_updated_deleted_files, get_head_deleted_updated_files]
 
     for f in funcs:
         v, r = f(repo)
@@ -259,6 +259,9 @@ def get_head_updated_files(repo):
 
 def get_head_updated_deleted_files(repo):
     return get_head_files_delegate(repo, "UD", "updated_deleted")
+
+def get_head_deleted_updated_files(repo):
+    return get_head_files_delegate(repo, "DU", "deleted_updated")
 
 def get_head_files_delegate(repo, status_detect, info_variation):
 
