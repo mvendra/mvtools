@@ -9,6 +9,32 @@ import fsquery_adv_filter
 
 ERRMSG_EMPTY = "Empty contents"
 
+def _make_list_tuplelistadapter(list_of_tuples):
+
+    assembled_list = []
+
+    for it in list_of_tuples:
+        first, second = it
+        assembled_list.append(first)
+        assembled_list.append(second)
+
+    return assembled_list
+
+def _apply_filters_tuplelistadapter(items_input, default_filter, include_list, exclude_list):
+
+    assembled_tuple_list = []
+
+    for items in items_input:
+
+        first, second = items
+        partial_step = _apply_filters([second], default_filter, include_list, exclude_list)
+        if partial_step is None:
+            return None
+        if len(partial_step) > 0:
+            assembled_tuple_list.append((first, second))
+
+    return assembled_tuple_list
+
 def _apply_filters(items_input, default_filter, include_list, exclude_list):
 
     filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or (default_filter == "exclude"))
@@ -96,12 +122,59 @@ def collect_git_patch_head_id(repo, storage_path):
 
 def collect_git_patch_staged(repo, storage_path, default_filter, include_list, exclude_list):
 
-    # mvtodo: implement
+    final_file_list = []
 
-    v, r = git_lib.diff_cached(repo)
+    # get staged-modified files
+    v, r = git_lib.get_staged_modified_files(repo)
+    if not v:
+        return False, "Unable to retrieve staged-modified files on repo [%s]: [%s]" % (repo, r)
+    staged_modified_files = r
+
+    # filter staged-modified files
+    staged_modified_files_filtered = _apply_filters(staged_modified_files.copy(), default_filter, include_list, exclude_list)
+    if staged_modified_files_filtered is None:
+        return False, "Unable to apply filters (staged-modified operation). Target repo: [%s]" % repo
+    final_file_list += staged_modified_files_filtered.copy()
+
+    # get staged-added files
+    v, r = git_lib.get_staged_added_files(repo)
+    if not v:
+        return False, "Unable to retrieve staged-added files on repo [%s]: [%s]" % (repo, r)
+    staged_added_files = r
+
+    # filter staged-added files
+    staged_added_files_filtered = _apply_filters(staged_added_files.copy(), default_filter, include_list, exclude_list)
+    if staged_added_files_filtered is None:
+        return False, "Unable to apply filters (staged-added operation). Target repo: [%s]" % repo
+    final_file_list += staged_added_files_filtered.copy()
+
+    # get staged-deleted files
+    v, r = git_lib.get_staged_deleted_files(repo)
+    if not v:
+        return False, "Unable to retrieve staged-deleted files on repo [%s]: [%s]" % (repo, r)
+    staged_deleted_files = r
+
+    # filter staged-deleted files
+    staged_deleted_files_filtered = _apply_filters(staged_deleted_files.copy(), default_filter, include_list, exclude_list)
+    if staged_deleted_files_filtered is None:
+        return False, "Unable to apply filters (staged-deleted operation). Target repo: [%s]" % repo
+    final_file_list += staged_deleted_files_filtered.copy()
+
+    # get staged-renamed files
+    v, r = git_lib.get_staged_renamed_files(repo)
+    if not v:
+        return False, "Unable to retrieve staged-renamed files on repo [%s]: [%s]" % (repo, r)
+    staged_renamed_files = r
+
+    # filter staged-renamed files
+    staged_renamed_files_filtered = _apply_filters_tuplelistadapter(staged_renamed_files.copy(), default_filter, include_list, exclude_list)
+    if staged_renamed_files_filtered is None:
+        return False, "Unable to apply filters (staged-renamed operation). Target repo: [%s]" % repo
+    final_file_list += _make_list_tuplelistadapter(staged_renamed_files_filtered.copy())
+
+    v, r = git_lib.diff_cached_indexed(repo, final_file_list)
     if not v:
         return False, "Failed calling git command for staged: [%s]. Repository: [%s]." % (r, repo)
-
     return collect_git_patch_cmd_generic(repo, storage_path, "staged.patch", "staged", r)
 
 def collect_git_patch_unversioned(repo, storage_path):
