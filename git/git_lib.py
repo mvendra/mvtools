@@ -295,10 +295,14 @@ def get_staged_files(repo):
 
     all_staged_files = []
 
-    v, r = get_staged_delegate(repo, ["M", "A", "D", "C", "U"])
-    if not v:
-        return False, r
-    all_staged_files += r
+    # mvtodo: in theory there shold also be a status "C" (Copied)
+    funcs = [get_staged_modified_files, get_staged_added_files, get_staged_deleted_files]
+
+    for f in funcs:
+        v, r = f(repo)
+        if not v:
+            return False, r
+        all_staged_files += r
 
     v, r = get_staged_renamed_files(repo)
     if not v:
@@ -597,6 +601,20 @@ def patch_as_stash(repo, patch_file, override_head_check, override_stash_check):
         return False, r
 
     return True, None
+
+def soft_reset(repo, file_list=None):
+
+    if repo is None:
+        return False, "No repo specified"
+
+    repo = os.path.abspath(repo)
+    file_list_final = []
+
+    if file_list is not None:
+        for f in file_list:
+            file_list_final.append(os.path.abspath(f))
+
+    return git_wrapper.reset_head(repo, file_list_final)
 
 def unstage(repo, file_list=None):
 

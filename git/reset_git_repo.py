@@ -420,18 +420,18 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
     for df in deleted_files_final:
         report.append("file [%s] is going to be undeleted" % df)
 
-    # log and unstage un-updated files
+    # log and reset un-updated files
     for uf in upd_files_final:
-        v, r = git_lib.unstage(target_repo, [uf])
+        v, r = git_lib.soft_reset(target_repo, [uf])
         if not v:
-            return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (uf, target_repo, r)
+            return False, "Unable to reset file [%s] on repo [%s]: [%s]" % (uf, target_repo, r)
         report.append("file [%s] was un-updated" % uf)
 
-    # log and unstage un-updated-and-un-deleted files
+    # log and reset un-updated-and-un-deleted files
     for udf in upd_del_files_final:
-        v, r = git_lib.unstage(target_repo, [udf])
+        v, r = git_lib.soft_reset(target_repo, [udf])
         if not v:
-            return False, "Unable to unstage file [%s] on repo [%s]: [%s]" % (udf, target_repo, r)
+            return False, "Unable to reset file [%s] on repo [%s]: [%s]" % (udf, target_repo, r)
         report.append("file [%s] was un-updated-and-un-deleted" % udf)
 
     files_to_checkout += (mod_files_final.copy())
