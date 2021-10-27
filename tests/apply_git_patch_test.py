@@ -99,7 +99,7 @@ class ApplyGitPatchTest(unittest.TestCase):
         second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
         self.assertFalse( os.path.exists(second_file5) )
 
-        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patches = r
 
@@ -128,7 +128,7 @@ class ApplyGitPatchTest(unittest.TestCase):
         second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
         self.assertFalse( os.path.exists(second_file5) )
 
-        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path)
+        v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
         generated_patches = r
 

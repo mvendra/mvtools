@@ -177,13 +177,20 @@ def collect_git_patch_staged(repo, storage_path, default_filter, include_list, e
         return False, "Failed calling git command for staged: [%s]. Repository: [%s]." % (r, repo)
     return collect_git_patch_cmd_generic(repo, storage_path, "staged.patch", "staged", r)
 
-def collect_git_patch_unversioned(repo, storage_path):
+def collect_git_patch_unversioned(repo, storage_path, default_filter, include_list, exclude_list):
+
+    written_file_list = []
 
     v, r = git_lib.get_unversioned_files(repo)
     if not v:
         return False, "Failed calling git command for unversioned: [%s]. Repository: [%s]." % (r, repo)
     unversioned_files = r
-    written_file_list = []
+
+    # filter unversioned files
+    unversioned_files_filtered = _apply_filters(unversioned_files.copy(), default_filter, include_list, exclude_list)
+    if unversioned_files_filtered is None:
+        return False, "Unable to apply filters (unversioned operation). Target repo: [%s]" % repo
+    unversioned_files_final = unversioned_files_filtered.copy()
 
     target_base = path_utils.concat_path(storage_path, repo, "unversioned")
     if os.path.exists(target_base):
@@ -192,7 +199,7 @@ def collect_git_patch_unversioned(repo, storage_path):
     if not path_utils.guaranteefolder(target_base):
         return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % target_base
 
-    for uf in unversioned_files:
+    for uf in unversioned_files_final:
 
         v, r = path_utils.based_path_find_outstanding_path(repo, uf)
         if not v:
@@ -327,7 +334,7 @@ def collect_git_patch(repo, storage_path, default_filter, include_list, exclude_
 
     # unversioned
     if unversioned:
-        v, r = collect_git_patch_unversioned(repo, storage_path)
+        v, r = collect_git_patch_unversioned(repo, storage_path, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("collect_git_patch_unversioned: [%s]." % r)

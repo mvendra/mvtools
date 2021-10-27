@@ -95,7 +95,7 @@ def port_git_repo_unversioned(temp_path, source_repo, target_repo):
     report = []
 
     unversioned_files = None
-    v, r = collect_git_patch.collect_git_patch_unversioned(source_repo, temp_path)
+    v, r = collect_git_patch.collect_git_patch_unversioned(source_repo, temp_path, "include", [], []) # mvtodo: wirings
     if not v:
         return False, "Failed collecting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     unversioned_files = r
