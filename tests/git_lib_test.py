@@ -633,6 +633,34 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(self.first_file1 in r[0])
 
+    def testGetHeadAddedAddedFiles(self):
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # should fail because of conflict
+
+        v, r = git_lib.get_head_added_added_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_more1 in r[0])
+
     def testGetHeadModifiedFilesRelativePath(self):
 
         sub1 = path_utils.concat_path(self.test_dir, "sub1")
@@ -3935,6 +3963,40 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_wrapper.stash_pop(self.first_repo)
         self.assertFalse(v) # fails because of conflict
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+
+        v, r = git_lib.soft_reset(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testSoftReset8(self):
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # should fail because of conflict
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
