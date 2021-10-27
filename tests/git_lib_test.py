@@ -633,6 +633,58 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(self.first_file1 in r[0])
 
+    def testGetHeadDeletedDeleted_And_UpdatedAdded_And_AddedUpdatedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_file1_renamed1 = path_utils.concat_path(self.first_repo, "file1_renamed1.txt")
+        first_file1_renamed2 = path_utils.concat_path(self.first_repo, "file1_renamed2.txt")
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        self.assertFalse(os.path.exists(first_file1_renamed1))
+        self.assertFalse(os.path.exists(first_file1_renamed2))
+
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed1)))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+        self.assertTrue(os.path.exists(first_file1_renamed1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        self.assertFalse(os.path.exists(first_file1_renamed1))
+
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed2)))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+        self.assertTrue(os.path.exists(first_file1_renamed2))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # should fail because of conflict
+
+        v, r = git_lib.get_head_deleted_deleted_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_file1 in r[0])
+
+        v, r = git_lib.get_head_updated_added_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_file1_renamed1 in r[0])
+
+        v, r = git_lib.get_head_added_updated_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_file1_renamed2 in r[0])
+
     def testGetHeadAddedAddedFiles(self):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
@@ -4008,6 +4060,54 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
+
+    def testSoftReset9(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_file1_renamed1 = path_utils.concat_path(self.first_repo, "file1_renamed1.txt")
+        first_file1_renamed2 = path_utils.concat_path(self.first_repo, "file1_renamed2.txt")
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        self.assertFalse(os.path.exists(first_file1_renamed1))
+        self.assertFalse(os.path.exists(first_file1_renamed2))
+
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed1)))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+        self.assertTrue(os.path.exists(first_file1_renamed1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        self.assertFalse(os.path.exists(first_file1_renamed1))
+
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed2)))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+        self.assertTrue(os.path.exists(first_file1_renamed2))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.stash_pop(self.first_repo)
+        self.assertFalse(v) # should fail because of conflict
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+
+        v, r = git_lib.soft_reset(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1) # self.first_file1 will be leftover as head-deleted, and the other two renames will be leftover as unversioned
 
     def testSoftResetRelativePath1(self):
 
