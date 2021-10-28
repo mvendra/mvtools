@@ -3,10 +3,36 @@
 import sys
 import os
 
+import fsquery_adv_filter
 import path_utils
 import svn_lib
 
 ERRMSG_EMPTY = "Empty contents"
+
+def _apply_filters(items_input, default_filter, include_list, exclude_list):
+
+    filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or (default_filter == "exclude"))
+
+    if not filtering_required:
+        return items_input
+
+    filters = []
+    items_filtered = []
+    if default_filter == "include":
+        filters.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
+        for ei in exclude_list:
+            filters.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_and(items_input, filters)
+
+    elif default_filter == "exclude":
+        filters.append( (fsquery_adv_filter.filter_all_negative, "not-used") )
+        for ii in include_list:
+            filters.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii, "auto")) )
+        items_filtered = fsquery_adv_filter.filter_path_list_or(items_input, filters)
+    else:
+        return None
+
+    return items_filtered
 
 def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title, content):
 
@@ -27,10 +53,80 @@ def collect_svn_patch_cmd_generic(repo, storage_path, output_filename, log_title
 
     return True, output_filename_full
 
-def collect_svn_patch_head(repo, storage_path):
-    v, r = svn_lib.diff(repo)
+def collect_svn_patch_head(repo, storage_path, default_filter, include_list, exclude_list):
+
+    final_diff_files = []
+
+    # get head-modified files
+    v, r = svn_lib.get_head_modified_files(repo)
+    if not v:
+        return False, "Unable to retrieve list of head-modified files on repo [%s]: [%s]" % (repo, r)
+    mod_files = r
+
+    # filter head-modified files
+    mod_files_filtered = _apply_filters(mod_files.copy(), default_filter, include_list, exclude_list)
+    if mod_files_filtered is None:
+        return False, "Unable to apply filters (head-modified operation). Target repo: [%s]" % target_repo
+    mod_files_final = mod_files_filtered.copy()
+
+    # get head-added files
+    v, r = svn_lib.get_head_added_files(repo)
+    if not v:
+        return False, "Unable to retrieve list of head-added files on repo [%s]: [%s]" % (repo, r)
+    add_files = r
+
+    # filter head-added files
+    add_files_filtered = _apply_filters(add_files.copy(), default_filter, include_list, exclude_list)
+    if add_files_filtered is None:
+        return False, "Unable to apply filters (head-added operation). Target repo: [%s]" % target_repo
+    add_files_final = add_files_filtered.copy()
+
+    # get head-deleted files
+    v, r = svn_lib.get_head_deleted_files(repo)
+    if not v:
+        return False, "Unable to retrieve list of head-deleted files on repo [%s]: [%s]" % (repo, r)
+    rem_files = r
+
+    # filter head-deleted files
+    rem_files_filtered = _apply_filters(rem_files.copy(), default_filter, include_list, exclude_list)
+    if rem_files_filtered is None:
+        return False, "Unable to apply filters (head-deleted operation). Target repo: [%s]" % target_repo
+    rem_files_final = rem_files_filtered.copy()
+
+    # get head-replaced files
+    v, r = svn_lib.get_head_replaced_files(repo)
+    if not v:
+        return False, "Unable to retrieve list of head-replaced files on repo [%s]: [%s]" % (repo, r)
+    rep_files = r
+
+    # filter head-replaced files
+    rep_files_filtered = _apply_filters(rep_files.copy(), default_filter, include_list, exclude_list)
+    if rep_files_filtered is None:
+        return False, "Unable to apply filters (head-replaced operation). Target repo: [%s]" % target_repo
+    rep_files_final = rep_files_filtered.copy()
+
+    # get head-conflicted files
+    v, r = svn_lib.get_head_conflicted_files(repo)
+    if not v:
+        return False, "Unable to retrieve list of head-conflicted files on repo [%s]: [%s]" % (repo, r)
+    con_files = r
+
+    # filter head-conflicted files
+    con_files_filtered = _apply_filters(con_files.copy(), default_filter, include_list, exclude_list)
+    if con_files_filtered is None:
+        return False, "Unable to apply filters (head-conflicted operation). Target repo: [%s]" % target_repo
+    con_files_final = con_files_filtered.copy()
+
+    final_diff_files += mod_files_final
+    final_diff_files += add_files_final
+    final_diff_files += rem_files_final
+    final_diff_files += rep_files_final
+    final_diff_files += con_files_final
+
+    v, r = svn_lib.diff(repo, final_diff_files)
     if not v:
         return False, "Failed calling svn command for head: [%s]. Repository: [%s]." % (r, repo)
+
     return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
 
 def collect_svn_patch_head_id(repo, storage_path):
@@ -39,7 +135,7 @@ def collect_svn_patch_head_id(repo, storage_path):
         return False, "Failed calling svn command for head-id: [%s]. Repository: [%s]." % (r, repo)
     return collect_svn_patch_cmd_generic(repo, storage_path, "head_id.txt", "head-id", r.encode("utf8"))
 
-def collect_svn_patch_unversioned(repo, storage_path):
+def collect_svn_patch_unversioned(repo, storage_path, default_filter, include_list, exclude_list):
 
     v, r = svn_lib.get_list_unversioned(repo)
     if not v:
@@ -104,7 +200,7 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
 
     return True, written_file_list
 
-def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
+def collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, unversioned, previous):
 
     repo = path_utils.filter_remove_trailing_sep(repo)
     repo = os.path.abspath(repo)
@@ -122,7 +218,7 @@ def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
 
     # head
     if head:
-        v, r = collect_svn_patch_head(repo, storage_path)
+        v, r = collect_svn_patch_head(repo, storage_path, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("collect_svn_patch_head: [%s]." % r)
@@ -140,7 +236,7 @@ def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
 
     # unversioned
     if unversioned:
-        v, r = collect_svn_patch_unversioned(repo, storage_path)
+        v, r = collect_svn_patch_unversioned(repo, storage_path, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("collect_svn_patch_unversioned: [%s]." % r)
@@ -159,7 +255,7 @@ def collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous):
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s repo [--storage-path the_storage_path] [--head] [--head-id] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s repo [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -173,6 +269,11 @@ if __name__ == "__main__":
 
     # parse options
     storage_path_parse_next = False
+    default_filter = "include"
+    include_list = []
+    exclude_list = []
+    include_parse_next = False
+    exclude_parse_next = False
     head = False
     head_id = False
     unversioned = False
@@ -186,6 +287,16 @@ if __name__ == "__main__":
             storage_path_parse_next = False
             continue
 
+        if include_parse_next:
+            include_list.append(p)
+            include_parse_next = False
+            continue
+
+        if exclude_parse_next:
+            exclude_list.append(p)
+            exclude_parse_next = False
+            continue
+
         if previous_parse_next:
             previous = int(p)
             previous_parse_next = False
@@ -193,6 +304,14 @@ if __name__ == "__main__":
 
         if p == "--storage-path":
             storage_path_parse_next = True
+        elif p == "--default-filter-include":
+            default_filter = "include"
+        elif p == "--default-filter-exclude":
+            default_filter = "exclude"
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
         elif p == "--head":
             head = True
         elif p == "--head-id":
@@ -205,7 +324,7 @@ if __name__ == "__main__":
     if storage_path is None:
         storage_path = os.getcwd()
 
-    v, r = collect_svn_patch(repo, storage_path, head, head_id, unversioned, previous)
+    v, r = collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, unversioned, previous)
     for i in r:
         print(i)
     if not v:

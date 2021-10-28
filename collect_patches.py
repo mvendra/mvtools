@@ -52,7 +52,7 @@ def collect_patch(path, storage_path, head, head_id, staged, unversioned, stash,
             return False, "Failed collecting git patches: %s" % r
 
     elif "svn" in repotype_detected and (repotype == "svn" or repotype == "all"):
-        v, r = collect_svn_patch.collect_svn_patch(path, storage_path, head, head_id, unversioned, previous)
+        v, r = collect_svn_patch.collect_svn_patch(path, storage_path, "include", [], [], head, head_id, unversioned, previous) # mvtodo: wirings
         if not v:
             return False, "Failed collecting svn patches: %s" % r
 

@@ -42,7 +42,7 @@ def port_svn_repo_head(temp_path, source_repo, target_repo):
     report = []
 
     head_files = None
-    v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path)
+    v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path, "include", [], [])
     if not v:
         if r == collect_svn_patch.ERRMSG_EMPTY:
             return True, [] # ignore if target head is unmodified
@@ -60,7 +60,7 @@ def port_svn_repo_unversioned(temp_path, source_repo, target_repo):
     report = []
 
     unversioned_files = None
-    v, r = collect_svn_patch.collect_svn_patch_unversioned(source_repo, temp_path)
+    v, r = collect_svn_patch.collect_svn_patch_unversioned(source_repo, temp_path, "include", [], [])
     if not v:
         return False, "Failed collecting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     unversioned_files = r
