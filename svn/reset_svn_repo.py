@@ -115,8 +115,8 @@ def reset_svn_repo_previous(target_repo, backup_obj, previous):
 
 def reset_svn_repo_unversioned(target_repo, backup_obj, default_filter, include_list, exclude_list):
 
-    # unversioned filtering, on SVN, has a considerable limitation:
-    # it's not possible to filter out unversioned files or folder if they themselves are inside
+    # mvtodo: unversioned filtering, on SVN, has a considerable limitation:
+    # it's not possible to filter out unversioned files or folders if they themselves are inside
     # an unversioned base tree. for example:
     # the_repo/sub/folder/some/domain/component
     # if "sub" itself is unversioned, then it's not possible to deal with unversioned files

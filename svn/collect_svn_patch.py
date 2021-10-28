@@ -137,11 +137,29 @@ def collect_svn_patch_head_id(repo, storage_path):
 
 def collect_svn_patch_unversioned(repo, storage_path, default_filter, include_list, exclude_list):
 
+    # mvtodo: unversioned filtering, on SVN, has a considerable limitation:
+    # it's not possible to filter out unversioned files or folders if they themselves are inside
+    # an unversioned base tree. for example:
+    # the_repo/sub/folder/some/domain/component
+    # if "sub" itself is unversioned, then it's not possible to deal with unversioned files
+    # that reside (for example) inside "domain", using something like: --default-filter-exclude --include '*/domain/*'
+    # this could possibly be solved by manually traversing (eg. with fsquery) each entry in order to assemble
+    # a full listing, and then processing that instead - and only then filtering the result of that - but that
+    # may come with some extra complications and corner cases.
+
+    written_file_list = []
+
+    # get unversioned files
     v, r = svn_lib.get_list_unversioned(repo)
     if not v:
         return False, "Failed calling svn command for unversioned: [%s]. Repository: [%s]." % (r, repo)
     unversioned_items = r
-    written_file_list = []
+
+    # filter unversioned files
+    unversioned_items_filtered = _apply_filters(unversioned_items.copy(), default_filter, include_list, exclude_list)
+    if unversioned_items_filtered is None:
+        return False, "Unable to apply filters (unversioned operation). Target repo: [%s]" % target_repo
+    unversioned_items_final = unversioned_items_filtered.copy()
 
     target_base = path_utils.concat_path(storage_path, repo, "unversioned")
     if os.path.exists(target_base):
@@ -150,7 +168,7 @@ def collect_svn_patch_unversioned(repo, storage_path, default_filter, include_li
     if not path_utils.guaranteefolder(target_base):
         return False, "Can't collect patch for unversioned: Failed guaranteeing folder: [%s]." % target_base
 
-    for uf in unversioned_items:
+    for uf in unversioned_items_final:
 
         v, r = path_utils.based_path_find_outstanding_path(repo, uf)
         if not v:
