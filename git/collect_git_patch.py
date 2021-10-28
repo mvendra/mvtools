@@ -9,6 +9,25 @@ import fsquery_adv_filter
 
 ERRMSG_EMPTY = "Empty contents"
 
+def _test_repo_status(repo_path):
+
+    # mvtodo: supporting exotic statuses (such as merge conflicts and etc) bears complexity that does not justify the gains. the git backend
+    # also has segfault issues when trying to diff / deal with some of these states. it's best to avoid automating the handling of these
+    # status with policy / workflow awareness instead.
+
+    items = []
+    funcs = [git_lib.get_head_deleted_deleted_files, git_lib.get_head_updated_added_files, git_lib.get_head_updated_deleted_files, git_lib.get_head_deleted_updated_files, git_lib.get_head_added_added_files, git_lib.get_head_added_updated_files]
+
+    for f in funcs:
+        v, r = f(repo_path)
+        if not v:
+            return False, "Unable to probe for illegal statuses on repo [%s]: [%s]" % (repo_path, r)
+        items += r
+
+    if len(items) > 0:
+        return False, "The repo [%s] has invalid statuses" % repo_path
+    return True, None
+
 def _make_list_tuplelistadapter(list_of_tuples):
 
     assembled_list = []
@@ -91,11 +110,6 @@ def collect_git_patch_cmd_generic(repo, storage_path, output_filename, log_title
     return True, output_filename_full
 
 def collect_git_patch_head(repo, storage_path, default_filter, include_list, exclude_list):
-
-    # mvtodo: "get_head_updated_deleted_files" is deliberately left out of the process below, because as of
-    # late 2021, on a Mint 20.1, Git version 2.25.1, trying to do a git diff while having a single item
-    # with status "UD" would cause a segfault on Git. if this ever gets corrected on Git, then it would
-    # be preferable to just use git_lib.get_head_files() directly instead
 
     head_items = []
     funcs = [git_lib.get_head_modified_files, git_lib.get_head_deleted_files, git_lib.get_head_updated_files]
@@ -301,6 +315,10 @@ def collect_git_patch(repo, storage_path, default_filter, include_list, exclude_
 
     if not os.path.exists(storage_path):
         return False, ["Storage path [%s] does not exist." % storage_path]
+
+    v, r = _test_repo_status(repo)
+    if not v:
+        return False, [r]
 
     report = []
     has_any_failed = False
