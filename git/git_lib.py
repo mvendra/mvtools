@@ -254,11 +254,11 @@ def get_head_modified_files(repo):
 def get_head_deleted_files(repo):
     return get_head_files_delegate(repo, " D", "deleted")
 
-def get_head_deleted_deleted_files(repo):
-    return get_head_files_delegate(repo, "DD", "deleted_deleted")
-
 def get_head_updated_files(repo):
     return get_head_files_delegate(repo, "UU", "updated")
+
+def get_head_deleted_deleted_files(repo):
+    return get_head_files_delegate(repo, "DD", "deleted_deleted")
 
 def get_head_updated_added_files(repo):
     return get_head_files_delegate(repo, "UA", "updated_added")

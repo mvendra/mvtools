@@ -24,6 +24,25 @@ def make_patch_filename(path, operation, index):
 def _report_patch(patch_filename):
     return "generated backup patch: [%s]" % patch_filename
 
+def _test_repo_status(repo_path):
+
+    # mvtodo: supporting exotic statuses (such as merge conflicts and etc) bears complexity that does not justify the gains. the git backend
+    # also has segfault issues when trying to diff / deal with some of these states. it's best to avoid automating the handling of these
+    # status with policy / workflow awareness instead.
+
+    items = []
+    funcs = [git_lib.get_head_deleted_deleted_files, git_lib.get_head_updated_added_files, git_lib.get_head_updated_deleted_files, git_lib.get_head_deleted_updated_files, git_lib.get_head_added_added_files, git_lib.get_head_added_updated_files]
+
+    for f in funcs:
+        v, r = f(repo_path)
+        if not v:
+            return False, "Unable to probe for illegal statuses on repo [%s]: [%s]" % (repo_path, r)
+        items += r
+
+    if len(items) > 0:
+        return False, "The repo [%s] has invalid statuses" % repo_path
+    return True, None
+
 def _test_repo_path(path):
 
     v, r = detect_repo_type.detect_repo_type(path)
@@ -336,18 +355,6 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
     report = []
     has_any_failed = False
 
-    # get updated-deleted files
-    v, r = git_lib.get_head_updated_deleted_files(target_repo)
-    if not v:
-        return False, "Unable to retrieve head-updated-deleted files on repo [%s]: [%s]" % (target_repo, r)
-    upd_del_files = r
-
-    # filter updated-deleted files
-    upd_del_files_filtered = _apply_filters(upd_del_files.copy(), default_filter, include_list, exclude_list)
-    if upd_del_files_filtered is None:
-        return False, "Unable to apply filters (head-updated-deleted operation). Target repo: [%s]" % target_repo
-    upd_del_files_final = upd_del_files_filtered.copy()
-
     # get updated files
     v, r = git_lib.get_head_updated_files(target_repo)
     if not v:
@@ -427,13 +434,6 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
             return False, "Unable to reset file [%s] on repo [%s]: [%s]" % (uf, target_repo, r)
         report.append("file [%s] was un-updated" % uf)
 
-    # log and reset un-updated-and-un-deleted files
-    for udf in upd_del_files_final:
-        v, r = git_lib.soft_reset(target_repo, [udf])
-        if not v:
-            return False, "Unable to reset file [%s] on repo [%s]: [%s]" % (udf, target_repo, r)
-        report.append("file [%s] was un-updated-and-un-deleted" % udf)
-
     files_to_checkout += (mod_files_final.copy())
     files_to_checkout += (deleted_files_final.copy())
     files_to_checkout += (upd_files_final.copy())
@@ -460,6 +460,10 @@ def reset_git_repo(target_repo, default_filter, include_list, exclude_list, head
     detected_repo_type = r
     if detected_repo_type != detect_repo_type.REPO_TYPE_GIT_STD:
         return False, ["Unsupported repository type: [%s] and [%s]." % (target_repo, detected_repo_type)]
+
+    v, r = _test_repo_status(target_repo)
+    if not v:
+        return False, [r]
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
     if not v:
