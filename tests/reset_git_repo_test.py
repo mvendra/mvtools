@@ -367,6 +367,35 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(any(self.first_file1 in s for s in r))
         self.assertTrue(os.path.exists(test_patch_file))
 
+    def testResetGitRepo_ResetGitRepoHead10(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("first modification")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("second modification")
+
+        v, r = git_lib.get_head_modified_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [self.first_file1])
+
+        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(os.path.exists(test_patch_file))
+
     def testResetGitRepo_ResetGitRepoHead_Filtering1(self):
 
         v, r = git_lib.get_head_files(self.first_repo)
