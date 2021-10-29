@@ -393,6 +393,70 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertTrue(self.first_repo in r[0])
 
+    def testGetHeadFiles4(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification")
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_file1 in r)
+
+    def testGetHeadFiles5(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
+        self.assertTrue(v)
+
+        with open(first_more1, "a") as f:
+            f.write("actual modification")
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_more1 in r)
+
+    def testGetHeadFiles6(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_file1_renamed = path_utils.concat_path(self.first_repo, "file1_renamed.txt")
+        self.assertFalse(os.path.exists(first_file1_renamed))
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed)))
+        self.assertTrue(os.path.exists(first_file1_renamed))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file1_renamed, "a") as f:
+            f.write("actual modification, again")
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_file1 in r[0])
+        self.assertTrue(path_utils.basename_filtered(first_file1_renamed) in r[0])
+
     def testGetHeadFilesRelativePath(self):
 
         sub1 = path_utils.concat_path(self.test_dir, "sub1")
@@ -546,6 +610,69 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(r, [first_more3])
+
+    def testGetHeadModifiedModifiedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification, again")
+
+        v, r = git_lib.get_head_modified_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, [self.first_file1])
+
+    def testGetHeadAddedModifiedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
+        self.assertTrue(v)
+
+        with open(first_more1, "a") as f:
+            f.write("actual modification, again")
+
+        v, r = git_lib.get_head_added_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertEqual(r, [first_more1])
+
+    def testGetHeadRenamedModifiedFiles(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_file1_renamed = path_utils.concat_path(self.first_repo, "file1_renamed.txt")
+        self.assertFalse(os.path.exists(first_file1_renamed))
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed)))
+        self.assertTrue(os.path.exists(first_file1_renamed))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file1_renamed, "a") as f:
+            f.write("actual modification, again")
+
+        v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(self.first_file1 in r[0])
+        self.assertTrue(path_utils.basename_filtered(first_file1_renamed) in r[0])
 
     def testGetHeadUpdatedFiles(self):
 

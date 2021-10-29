@@ -238,7 +238,7 @@ def get_head_files(repo):
 
     total_entries = []
 
-    funcs = [get_head_modified_files, get_head_deleted_files, get_head_updated_files, get_head_updated_deleted_files, get_head_deleted_updated_files, get_head_added_added_files, get_head_deleted_deleted_files, get_head_updated_added_files, get_head_added_updated_files]
+    funcs = [get_head_modified_files, get_head_deleted_files, get_head_updated_files, get_head_updated_deleted_files, get_head_deleted_updated_files, get_head_added_added_files, get_head_deleted_deleted_files, get_head_updated_added_files, get_head_added_updated_files, get_head_modified_modified_files, get_head_added_modified_files, get_head_renamed_modified_files]
 
     for f in funcs:
         v, r = f(repo)
@@ -253,6 +253,15 @@ def get_head_modified_files(repo):
 
 def get_head_deleted_files(repo):
     return get_head_files_delegate(repo, " D", "deleted")
+
+def get_head_modified_modified_files(repo):
+    return get_head_files_delegate(repo, "MM", "modified")
+
+def get_head_added_modified_files(repo):
+    return get_head_files_delegate(repo, "AM", "added_modified")
+
+def get_head_renamed_modified_files(repo):
+    return get_head_files_delegate(repo, "RM", "renamed_modified")
 
 def get_head_updated_files(repo):
     return get_head_files_delegate(repo, "UU", "updated")
