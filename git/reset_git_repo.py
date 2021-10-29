@@ -391,10 +391,49 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
         return False, "Unable to apply filters (head-deleted operation). Target repo: [%s]" % target_repo
     deleted_files_final = deleted_files_filtered.copy()
 
+    # get modified-modified files
+    v, r = git_lib.get_head_modified_modified_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve head-modified-modified files on repo [%s]: [%s]" % (target_repo, r)
+    mod_mod_files = r
+
+    # filter modified files
+    mod_mod_files_filtered = _apply_filters(mod_mod_files.copy(), default_filter, include_list, exclude_list)
+    if mod_mod_files_filtered is None:
+        return False, "Unable to apply filters (head-modified-modified operation). Target repo: [%s]" % target_repo
+    mod_mod_files_final = mod_mod_files_filtered.copy()
+
+    # get added-modified files
+    v, r = git_lib.get_head_added_modified_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve head-added-modified files on repo [%s]: [%s]" % (target_repo, r)
+    add_mod_files = r
+
+    # filter modified files
+    add_mod_files_filtered = _apply_filters(add_mod_files.copy(), default_filter, include_list, exclude_list)
+    if add_mod_files_filtered is None:
+        return False, "Unable to apply filters (head-added-modified operation). Target repo: [%s]" % target_repo
+    add_mod_files_final = add_mod_files_filtered.copy()
+
+    # get renamed-modified files
+    v, r = git_lib.get_head_renamed_modified_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve head-renamed-modified files on repo [%s]: [%s]" % (target_repo, r)
+    ren_mod_files = r
+
+    # filter modified files
+    ren_mod_files_filtered = _apply_filters(ren_mod_files.copy(), default_filter, include_list, exclude_list)
+    if ren_mod_files_filtered is None:
+        return False, "Unable to apply filters (head-renamed-modified operation). Target repo: [%s]" % target_repo
+    ren_mod_files_final = ren_mod_files_filtered.copy()
+
+    # mvtodo: use {add_mod_files_final}
+    # mvtodo: use {ren_mod_files_final}
+
     files_to_backup = []
     files_to_backup += mod_files_final.copy()
     files_to_backup += upd_files_final.copy()
-    files_to_checkout = []
+    files_to_backup += mod_mod_files_final.copy()
 
     c = 0
     for mf in files_to_backup:
@@ -427,16 +466,22 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
     for df in deleted_files_final:
         report.append("file [%s] is going to be undeleted" % df)
 
-    # log and reset un-updated files
-    for uf in upd_files_final:
-        v, r = git_lib.soft_reset(target_repo, [uf])
-        if not v:
-            return False, "Unable to reset file [%s] on repo [%s]: [%s]" % (uf, target_repo, r)
-        report.append("file [%s] was un-updated" % uf)
+    files_to_reset = []
+    files_to_reset += upd_files_final.copy()
+    files_to_reset += mod_mod_files_final.copy()
 
-    files_to_checkout += (mod_files_final.copy())
-    files_to_checkout += (deleted_files_final.copy())
-    files_to_checkout += (upd_files_final.copy())
+    # log and reset mixed states
+    for ftr in files_to_reset:
+        v, r = git_lib.soft_reset(target_repo, [ftr])
+        if not v:
+            return False, "Unable to reset file [%s] on repo [%s]: [%s]" % (ftr, target_repo, r)
+        report.append("file [%s] was head-reset (soft)" % ftr)
+
+    files_to_checkout = []
+    files_to_checkout += mod_files_final.copy()
+    files_to_checkout += deleted_files_final.copy()
+    files_to_checkout += upd_files_final.copy()
+    files_to_checkout += mod_mod_files_final.copy()
 
     # revert changes to head
     for fc in files_to_checkout:
