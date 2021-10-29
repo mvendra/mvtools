@@ -397,7 +397,7 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
         return False, "Unable to retrieve head-modified-modified files on repo [%s]: [%s]" % (target_repo, r)
     mod_mod_files = r
 
-    # filter modified files
+    # filter modified-modified files
     mod_mod_files_filtered = _apply_filters(mod_mod_files.copy(), default_filter, include_list, exclude_list)
     if mod_mod_files_filtered is None:
         return False, "Unable to apply filters (head-modified-modified operation). Target repo: [%s]" % target_repo
@@ -409,7 +409,7 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
         return False, "Unable to retrieve head-added-modified files on repo [%s]: [%s]" % (target_repo, r)
     add_mod_files = r
 
-    # filter modified files
+    # filter added-modified files
     add_mod_files_filtered = _apply_filters(add_mod_files.copy(), default_filter, include_list, exclude_list)
     if add_mod_files_filtered is None:
         return False, "Unable to apply filters (head-added-modified operation). Target repo: [%s]" % target_repo
@@ -421,20 +421,21 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
         return False, "Unable to retrieve head-renamed-modified files on repo [%s]: [%s]" % (target_repo, r)
     ren_mod_files = r
 
-    # filter modified files
-    ren_mod_files_filtered = _apply_filters(ren_mod_files.copy(), default_filter, include_list, exclude_list)
+    # filter renamed-modified files
+    ren_mod_files_filtered = _apply_filters_tuplelistadapter(ren_mod_files.copy(), default_filter, include_list, exclude_list)
     if ren_mod_files_filtered is None:
-        return False, "Unable to apply filters (head-renamed-modified operation). Target repo: [%s]" % target_repo
+        return False, "Unable to apply filters (renamed-modified operation). Target repo: [%s]" % target_repo
     ren_mod_files_final = ren_mod_files_filtered.copy()
-
-    # mvtodo: use {add_mod_files_final}
-    # mvtodo: use {ren_mod_files_final}
 
     files_to_backup = []
     files_to_backup += mod_files_final.copy()
     files_to_backup += upd_files_final.copy()
     files_to_backup += mod_mod_files_final.copy()
     files_to_backup += add_mod_files_final.copy()
+
+    for rmf in ren_mod_files_final:
+        oldname, newname = rmf
+        files_to_backup.append(newname)
 
     c = 0
     for mf in files_to_backup:
@@ -471,6 +472,10 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
     files_to_reset += upd_files_final.copy()
     files_to_reset += mod_mod_files_final.copy()
     files_to_reset += add_mod_files_final.copy()
+
+    for rmf in ren_mod_files_final:
+        oldname, newname = rmf
+        files_to_reset.append(newname)
 
     # log and reset mixed states
     for ftr in files_to_reset:
