@@ -434,6 +434,7 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
     files_to_backup += mod_files_final.copy()
     files_to_backup += upd_files_final.copy()
     files_to_backup += mod_mod_files_final.copy()
+    files_to_backup += add_mod_files_final.copy()
 
     c = 0
     for mf in files_to_backup:
@@ -469,6 +470,7 @@ def reset_git_repo_head(target_repo, backup_obj, default_filter, include_list, e
     files_to_reset = []
     files_to_reset += upd_files_final.copy()
     files_to_reset += mod_mod_files_final.copy()
+    files_to_reset += add_mod_files_final.copy()
 
     # log and reset mixed states
     for ftr in files_to_reset:

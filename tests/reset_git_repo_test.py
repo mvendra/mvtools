@@ -396,6 +396,43 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(any(self.first_file1 in s for s in r))
         self.assertTrue(os.path.exists(test_patch_file))
 
+    def testResetGitRepo_ResetGitRepoHead11(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_wrapper.stage(self.first_repo, [first_more1])
+        self.assertTrue(v)
+
+        with open(first_more1, "a") as f:
+            f.write("actual modification, again")
+
+        v, r = git_lib.get_head_added_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertEqual(r, [first_more1])
+
+        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_more1))
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], [])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(first_more1 in s for s in r))
+        self.assertTrue(os.path.exists(test_patch_file))
+
+        v, r = git_lib.get_unversioned_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertEqual(first_more1, r[0])
+
     def testResetGitRepo_ResetGitRepoHead_Filtering1(self):
 
         v, r = git_lib.get_head_files(self.first_repo)
