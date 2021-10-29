@@ -260,9 +260,6 @@ def get_head_modified_modified_files(repo):
 def get_head_added_modified_files(repo):
     return get_head_files_delegate(repo, "AM", "added_modified")
 
-def get_head_renamed_modified_files(repo):
-    return get_head_files_delegate(repo, "RM", "renamed_modified")
-
 def get_head_updated_files(repo):
     return get_head_files_delegate(repo, "UU", "updated")
 
@@ -283,6 +280,28 @@ def get_head_added_added_files(repo):
 
 def get_head_added_updated_files(repo):
     return get_head_files_delegate(repo, "AU", "added_updated")
+
+def get_head_renamed_modified_files(repo):
+
+    v, r = get_head_files_delegate(repo, "RM", "renamed_modified")
+    if not v:
+        return False, r
+    renamed_list = r
+
+    repo_local = os.path.abspath(repo)
+
+    renamed_list_filtered = []
+    for rl in renamed_list:
+
+        r = get_renamed_details(rl)
+        if r is None:
+            return False, "Unable to read out and parse head, renamed files from repo [%s]" % repo_local
+        original_fn = r[0]
+        renamed_fn  = r[1]
+
+        renamed_list_filtered.append( (original_fn, path_utils.concat_path(repo_local, renamed_fn)) )
+
+    return True, renamed_list_filtered
 
 def get_head_files_delegate(repo, status_detect, info_variation):
 

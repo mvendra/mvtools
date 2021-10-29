@@ -453,9 +453,10 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.get_head_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(self.first_file1 in r[0])
-        self.assertTrue(path_utils.basename_filtered(first_file1_renamed) in r[0])
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(any(first_file1_renamed in s for s in r))
+        for x in r:
+            self.assertTrue(os.path.exists(x[1]))
 
     def testGetHeadFilesRelativePath(self):
 
@@ -670,9 +671,10 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(self.first_file1 in r[0])
-        self.assertTrue(path_utils.basename_filtered(first_file1_renamed) in r[0])
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(any(first_file1_renamed in s for s in r))
+        for x in r:
+            self.assertTrue(os.path.exists(x[1]))
 
     def testGetHeadUpdatedFiles(self):
 
