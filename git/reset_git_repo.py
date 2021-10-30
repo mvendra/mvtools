@@ -31,7 +31,7 @@ def _test_repo_status(repo_path):
     # status with policy / workflow awareness instead.
 
     items = []
-    funcs = [git_lib.get_head_deleted_deleted_files, git_lib.get_head_updated_added_files, git_lib.get_head_updated_deleted_files, git_lib.get_head_deleted_updated_files, git_lib.get_head_added_added_files, git_lib.get_head_added_updated_files]
+    funcs = [git_lib.get_head_deleted_deleted_files, git_lib.get_head_updated_added_files, git_lib.get_head_updated_deleted_files, git_lib.get_head_deleted_updated_files, git_lib.get_head_added_added_files, git_lib.get_head_added_updated_files, git_lib.get_head_renamed_modified_files]
 
     for f in funcs:
         v, r = f(repo_path)
