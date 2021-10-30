@@ -296,6 +296,65 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testRepoHasAnyNotOfStatesFail(self):
+
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, None)
+        self.assertFalse(v)
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, "string")
+        self.assertFalse(v)
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, 123)
+        self.assertFalse(v)
+        v, r = git_lib.repo_has_any_not_of_states(None, [])
+        self.assertFalse(v)
+
+    def testRepoHasAnyNotOfStates1(self):
+
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [])
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testRepoHasAnyNotOfStates2(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("more stuff")
+
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" M"])
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testRepoHasAnyNotOfStates3(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("more stuff")
+
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" D"])
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+    def testRepoHasAnyNotOfStates4(self):
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" D"])
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testRepoHasAnyNotOfStates5(self):
+
+        self.assertTrue(os.path.exists(self.first_file1))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" D"])
+        self.assertTrue(v)
+        self.assertTrue(r)
+
     def testGetHeadFiles1(self):
 
         v, r = git_lib.is_head_clear(self.first_repo)

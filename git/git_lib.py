@@ -234,6 +234,42 @@ def get_current_branch(repo):
         return True, None
     return True, current_branch[0]
 
+def repo_has_any_not_of_states(repo, states):
+
+    if states is None:
+        return False, "states is unspecified"
+
+    if not isinstance(states, list):
+        return False, "states is not a list"
+
+    if repo is None:
+        return False, "No repo specified"
+
+    repo = os.path.abspath(repo)
+
+    t1 = is_repo_working_tree(repo)
+    if t1 is None:
+        return False, "%s does not exist" % repo
+    elif t1 is False:
+        return False, "%s is not a git work tree" % repo
+
+    v, r = git_wrapper.status(repo)
+    if not v:
+        return False, "repo_has_any_not_of_states failed: [%s]" % r
+    out = r.rstrip() # removes the trailing newline
+    if len(out) == 0:
+        return True, False
+    if len(states) == 0:
+        return True, False
+
+    for l in out.split("\n"):
+        cl = l.rstrip()
+        if len(cl) < 2:
+            continue
+        if cl[0:2] not in states:
+            return True, True
+    return True, False
+
 def get_head_files(repo):
 
     total_entries = []
