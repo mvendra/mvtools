@@ -796,6 +796,74 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file10)) in contents_read)
         self.assertFalse(path_utils.concat_path(path_utils.basename_filtered(first_sub2), path_utils.basename_filtered(first_sub2_another), path_utils.basename_filtered(first_sub2_another_file19)) in contents_read)
 
+    def testCollectPatchHead_Filtering4(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification, file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("actual modification, file2")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1, self.first_file2])
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("actual modification, again, file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("actual modification, again, file2")
+
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
+        self.assertFalse(os.path.exists(patch_file))
+
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], ["*/file2.txt"])
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(r))
+        self.assertTrue(os.path.exists(patch_file))
+
+        contents_read = ""
+        with open(patch_file) as f:
+            contents_read = f.read()
+        self.assertTrue("actual modification, again, file1" in contents_read)
+        self.assertFalse("actual modification, again, file2" in contents_read)
+
+    def testCollectPatchHead_Filtering5(self):
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        self.assertFalse(os.path.exists(first_more2))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        self.assertTrue(os.path.exists(first_more2))
+
+        v, r = git_wrapper.stage(self.first_repo, [first_more1, first_more2])
+        self.assertTrue(v)
+
+        with open(first_more1, "a") as f:
+            f.write("actual modification, again, more1")
+
+        with open(first_more2, "a") as f:
+            f.write("actual modification, again, more2")
+
+        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], ["*/more2.txt"])
+        self.assertTrue(v)
+
+        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
+        self.assertTrue(os.path.exists(patch_file))
+        self.assertEqual(r, patch_file)
+
+        contents_read = ""
+        with open(patch_file) as f:
+            contents_read = f.read()
+        self.assertTrue("actual modification, again, more1" in contents_read)
+        self.assertFalse("actual modification, again, more2" in contents_read)
+
     def testCollectPatchHeadIdFail(self):
 
         v, r = collect_git_patch.collect_git_patch_head_id(self.first_repo, self.storage_path)
