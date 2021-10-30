@@ -9,6 +9,12 @@ import fsquery_adv_filter
 
 ERRMSG_EMPTY = "Empty contents"
 
+def _known_states():
+
+    st = ["??", "R ", "D ", "A ", "M ", " M", " D", "UU", "MM", "AM", "DD", "UA", "UD", "DU", "AA", "AU", "RM"]
+
+    return st
+
 def _test_repo_status(repo_path):
 
     # mvtodo: supporting exotic statuses (such as merge conflicts and etc) bears complexity that does not justify the gains. the git backend
@@ -26,6 +32,13 @@ def _test_repo_status(repo_path):
 
     if len(items) > 0:
         return False, "The repo [%s] has invalid statuses" % repo_path
+
+    v, r = git_lib.repo_has_any_not_of_states(repo_path, _known_states())
+    if not v:
+        return False, "Unable to probe known states on repo: [%s]" % repo_path
+    if r:
+        return False, "Repo [%s] has an unknown state" % repo_path
+
     return True, None
 
 def _make_list_tuplelistadapter(list_of_tuples):
