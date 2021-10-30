@@ -1160,6 +1160,149 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 in r)
         self.assertFalse(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 in r)
 
+    def testResetGitRepo_ResetGitRepoHead_Filtering10(self):
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        with open(self.first_file1, "a") as f:
+            f.write("first modification, file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("first modification, file2")
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1, self.first_file2])
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("second modification, file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("second modification, file2")
+
+        v, r = git_lib.get_head_modified_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(any(self.first_file2 in s for s in r))
+
+        patch_file_filename = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(self.first_file1))
+        test_patch_file = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename)
+        self.assertFalse(os.path.exists(test_patch_file))
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/file2.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertFalse(any(self.first_file2 in s for s in r))
+        self.assertTrue(os.path.exists(test_patch_file))
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering11(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        self.assertTrue(os.path.exists(first_more1))
+
+        first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
+        self.assertFalse(os.path.exists(first_more2))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        self.assertTrue(os.path.exists(first_more2))
+
+        v, r = git_wrapper.stage(self.first_repo, [first_more1, first_more2])
+        self.assertTrue(v)
+
+        with open(first_more1, "a") as f:
+            f.write("actual modification, again, file1")
+
+        with open(first_more2, "a") as f:
+            f.write("actual modification, again, file2")
+
+        v, r = git_lib.get_head_added_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(first_more1 in s for s in r))
+        self.assertTrue(any(first_more2 in s for s in r))
+
+        patch_file_filename1 = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_more1))
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+
+        patch_file_filename2 = "2_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_more2))
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename2)
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/more2.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(first_more1 in s for s in r))
+        self.assertFalse(any(first_more2 in s for s in r))
+        self.assertTrue(os.path.exists(test_patch_file1))
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+    def testResetGitRepo_ResetGitRepoHead_Filtering12(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_file1_renamed = path_utils.concat_path(self.first_repo, "file1_renamed.txt")
+        self.assertFalse(os.path.exists(first_file1_renamed))
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed)))
+        self.assertTrue(os.path.exists(first_file1_renamed))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        first_file2_renamed = path_utils.concat_path(self.first_repo, "file2_renamed.txt")
+        self.assertFalse(os.path.exists(first_file2_renamed))
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file2, self.first_repo, path_utils.basename_filtered(first_file2_renamed)))
+        self.assertTrue(os.path.exists(first_file2_renamed))
+        os.unlink(self.first_file2)
+        self.assertFalse(os.path.exists(self.first_file2))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file1_renamed, "a") as f:
+            f.write("actual modification, again, file1")
+
+        with open(first_file2_renamed, "a") as f:
+            f.write("actual modification, again, file2")
+
+        v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(first_file1_renamed in s for s in r))
+        self.assertTrue(any(first_file2_renamed in s for s in r))
+
+        patch_file_filename1 = "1_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_file1_renamed))
+        test_patch_file1 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename1)
+        self.assertFalse(os.path.exists(test_patch_file1))
+
+        patch_file_filename2 = "2_reset_git_repo_head_%s.patch" % (path_utils.basename_filtered(first_file2_renamed))
+        test_patch_file2 = path_utils.concat_path(self.rdb_storage, "head", patch_file_filename2)
+        self.assertFalse(os.path.exists(test_patch_file2))
+
+        v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(any(first_file1_renamed in s for s in r))
+        self.assertTrue(any(self.first_file2 in s for s in r))
+        self.assertTrue(any(first_file2_renamed in s for s in r))
+        for x in r:
+            self.assertTrue(os.path.exists(x[1]))
+
+        v, r = reset_git_repo.reset_git_repo_head(self.first_repo, self.rdb, "include", [], ["*/file2_renamed.txt"])
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(any(first_file1_renamed in s for s in r))
+        self.assertFalse(any(first_file2_renamed in s for s in r))
+        self.assertTrue(os.path.exists(test_patch_file1))
+        self.assertFalse(os.path.exists(test_patch_file2))
+
     def testResetGitRepo_ResetGitRepoStaged_Fail1(self):
 
         v, r = reset_git_repo.reset_git_repo_staged(self.nonrepo, self.rdb, "include", [], [])
