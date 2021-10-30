@@ -403,36 +403,6 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertTrue("actual modification, again" in contents_read)
 
-    def testCollectPatchHead6(self):
-
-        v, r = git_lib.is_head_clear(self.first_repo)
-        self.assertTrue(v and r)
-
-        first_file1_renamed = path_utils.concat_path(self.first_repo, "file1_renamed.txt")
-        self.assertFalse(os.path.exists(first_file1_renamed))
-        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed)))
-        self.assertTrue(os.path.exists(first_file1_renamed))
-        os.unlink(self.first_file1)
-        self.assertFalse(os.path.exists(self.first_file1))
-
-        v, r = git_wrapper.stage(self.first_repo)
-        self.assertTrue(v)
-
-        with open(first_file1_renamed, "a") as f:
-            f.write("actual modification, again")
-
-        v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
-        self.assertTrue(v)
-
-        patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
-        self.assertTrue(os.path.exists(patch_file))
-        self.assertEqual(r, patch_file)
-
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
-        self.assertTrue("actual modification, again" in contents_read)
-
     def testCollectPatchHeadSub(self):
 
         with open(self.second_sub_file1, "a") as f:
@@ -3259,6 +3229,42 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         self.assertTrue(first_more1 in r[0])
+
+    def testCollectGitPatch_CollectGitPatch_HeadForbiddenStatus7(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v and r)
+
+        first_file1_renamed = path_utils.concat_path(self.first_repo, "file1_renamed.txt")
+        self.assertFalse(os.path.exists(first_file1_renamed))
+        self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed)))
+        self.assertTrue(os.path.exists(first_file1_renamed))
+        os.unlink(self.first_file1)
+        self.assertFalse(os.path.exists(self.first_file1))
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        with open(first_file1_renamed, "a") as f:
+            f.write("actual modification, again")
+
+        v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(any(first_file1_renamed in s for s in r))
+
+        v, r = collect_git_patch._test_repo_status(self.first_repo)
+        self.assertFalse(v)
+
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        self.assertFalse(v)
+
+        v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(any(self.first_file1 in s for s in r))
+        self.assertTrue(any(first_file1_renamed in s for s in r))
 
 if __name__ == '__main__':
     unittest.main()

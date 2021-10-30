@@ -16,7 +16,7 @@ def _test_repo_status(repo_path):
     # status with policy / workflow awareness instead.
 
     items = []
-    funcs = [git_lib.get_head_deleted_deleted_files, git_lib.get_head_updated_added_files, git_lib.get_head_updated_deleted_files, git_lib.get_head_deleted_updated_files, git_lib.get_head_added_added_files, git_lib.get_head_added_updated_files]
+    funcs = [git_lib.get_head_deleted_deleted_files, git_lib.get_head_updated_added_files, git_lib.get_head_updated_deleted_files, git_lib.get_head_deleted_updated_files, git_lib.get_head_added_added_files, git_lib.get_head_added_updated_files, git_lib.get_head_renamed_modified_files]
 
     for f in funcs:
         v, r = f(repo_path)
@@ -124,18 +124,6 @@ def collect_git_patch_head(repo, storage_path, default_filter, include_list, exc
     if head_items_filtered is None:
         return False, "Unable to apply filters (head operation). Target repo: [%s]" % repo
     head_items_final += head_items_filtered.copy()
-
-    # get head-renamed files
-    v, r = git_lib.get_head_renamed_modified_files(repo)
-    if not v:
-        return False, "Unable to assemble list of head-renamed-modified items on repo [%s]: [%s]" % (repo, r)
-    head_renamed_modified_items = r
-
-    # filter head-renamed files
-    head_renamed_modified_filtered = _apply_filters_tuplelistadapter(head_renamed_modified_items.copy(), default_filter, include_list, exclude_list)
-    if head_renamed_modified_filtered is None:
-        return False, "Unable to apply filters (head-renamed operation). Target repo: [%s]" % repo
-    head_items_final += _make_list_tuplelistadapter(head_renamed_modified_filtered.copy())
 
     v, r = git_lib.diff_indexed(repo, head_items_final)
     if not v:
