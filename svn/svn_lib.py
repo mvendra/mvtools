@@ -241,6 +241,37 @@ def get_previous_list(local_repo, previous_number=None):
     prev_list = rev_entries_filter(log_entries)
     return True, prev_list
 
+def repo_has_any_not_of_states(local_repo, states):
+
+    if states is None:
+        return False, "states is unspecified"
+
+    if not isinstance(states, list):
+        return False, "states is not a list"
+
+    if local_repo is None:
+        return False, "repo is unspecified"
+    local_repo_final = os.path.abspath(local_repo)
+    if not os.path.exists(local_repo_final):
+        return False, "Repo path [%s] does not exist." % local_repo_final
+
+    v, r = svn_wrapper.status(local_repo_final)
+    if not v:
+        return False, r
+    if len(states) == 0:
+        return True, False
+
+    for line in r.split(os.linesep):
+
+        if len(line.strip()) == 0:
+            break
+        item_status = line[0]
+
+        if item_status not in states:
+            return True, True
+
+    return True, False
+
 def get_head_files(local_repo):
 
     total_entries = []
