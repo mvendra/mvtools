@@ -474,5 +474,373 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(os.path.exists(second_sub1_sub2))
         self.assertTrue(os.path.exists(second_sub1_sub2_file5))
 
+    def testPortGitRepo_Filtering1(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("modif - file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("modif - file2")
+
+        self.assertTrue(os.path.exists(self.first_file3))
+        os.unlink(self.first_file3)
+        self.assertFalse(os.path.exists(self.first_file3))
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+
+        first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(self.first_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file2 in r)
+        self.assertTrue(first_file4 in r)
+
+        v, r = git_lib.get_unversioned_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_file5 in r)
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], [], True, True, False, True, 0)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        second_file2 = path_utils.concat_path(self.second_repo, "file2.txt")
+        second_file3 = path_utils.concat_path(self.second_repo, "file3.txt")
+        second_file4 = path_utils.concat_path(self.second_repo, "file4.txt")
+        second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(second_file1 in r)
+        self.assertTrue(second_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(second_file2 in r)
+        self.assertTrue(second_file4 in r)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(second_file5 in r)
+
+    def testPortGitRepo_Filtering2(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("modif - file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("modif - file2")
+
+        self.assertTrue(os.path.exists(self.first_file3))
+        os.unlink(self.first_file3)
+        self.assertFalse(os.path.exists(self.first_file3))
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+
+        first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(self.first_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file2 in r)
+        self.assertTrue(first_file4 in r)
+
+        v, r = git_lib.get_unversioned_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_file5 in r)
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], ["*/file3.txt"], True, True, False, True, 0)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        second_file2 = path_utils.concat_path(self.second_repo, "file2.txt")
+        second_file3 = path_utils.concat_path(self.second_repo, "file3.txt")
+        second_file4 = path_utils.concat_path(self.second_repo, "file4.txt")
+        second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(second_file1 in r)
+        self.assertFalse(second_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(second_file2 in r)
+        self.assertTrue(second_file4 in r)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(second_file5 in r)
+
+    def testPortGitRepo_Filtering3(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("modif - file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("modif - file2")
+
+        self.assertTrue(os.path.exists(self.first_file3))
+        os.unlink(self.first_file3)
+        self.assertFalse(os.path.exists(self.first_file3))
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+
+        first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(self.first_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file2 in r)
+        self.assertTrue(first_file4 in r)
+
+        v, r = git_lib.get_unversioned_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_file5 in r)
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", ["*/file5.txt"], [], True, True, False, True, 0)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        second_file2 = path_utils.concat_path(self.second_repo, "file2.txt")
+        second_file3 = path_utils.concat_path(self.second_repo, "file3.txt")
+        second_file4 = path_utils.concat_path(self.second_repo, "file4.txt")
+        second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(second_file5 in r)
+
+    def testPortGitRepo_Filtering4(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("modif - file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("modif - file2")
+
+        self.assertTrue(os.path.exists(self.first_file3))
+        os.unlink(self.first_file3)
+        self.assertFalse(os.path.exists(self.first_file3))
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+
+        first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(self.first_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file2 in r)
+        self.assertTrue(first_file4 in r)
+
+        v, r = git_lib.get_unversioned_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_file5 in r)
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", ["*/file1.txt"], [], True, True, False, True, 0)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        second_file2 = path_utils.concat_path(self.second_repo, "file2.txt")
+        second_file3 = path_utils.concat_path(self.second_repo, "file3.txt")
+        second_file4 = path_utils.concat_path(self.second_repo, "file4.txt")
+        second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(second_file1 in r)
+        self.assertFalse(second_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+    def testPortGitRepo_Filtering5(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("modif - file1")
+
+        with open(self.first_file2, "a") as f:
+            f.write("modif - file2")
+
+        self.assertTrue(os.path.exists(self.first_file3))
+        os.unlink(self.first_file3)
+        self.assertFalse(os.path.exists(self.first_file3))
+
+        first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+
+        first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(self.first_file3 in r)
+
+        v, r = git_lib.get_staged_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue(self.first_file2 in r)
+        self.assertTrue(first_file4 in r)
+
+        v, r = git_lib.get_unversioned_files(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertTrue(first_file5 in r)
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", [], [], True, True, False, True, 0)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
+        second_file2 = path_utils.concat_path(self.second_repo, "file2.txt")
+        second_file3 = path_utils.concat_path(self.second_repo, "file3.txt")
+        second_file4 = path_utils.concat_path(self.second_repo, "file4.txt")
+        second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
+
+        v, r = git_lib.get_head_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_staged_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
+        v, r = git_lib.get_unversioned_files(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+
 if __name__ == '__main__':
     unittest.main()
