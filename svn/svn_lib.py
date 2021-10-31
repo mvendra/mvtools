@@ -438,6 +438,8 @@ def revert(local_repo, repo_items):
 
     if not isinstance(repo_items, list):
         return False, "repo_items must be a list"
+    if len(repo_items) == 0:
+        return False, "repo_items can't be empty"
 
     repo_items_final = []
     for ri in repo_items:
@@ -455,10 +457,12 @@ def diff(local_repo, file_list=None, rev=None):
 
     file_list_final = None
     if file_list is not None:
+        file_list_final = []
 
         if not isinstance(file_list, list):
             return False, "file_list must be a list"
-        file_list_final = []
+        if len(file_list) == 0:
+            return False, "file_list can't be empty"
 
         for fi in file_list:
             file_list_final.append(fix_cygwin_path(fi))
