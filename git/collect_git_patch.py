@@ -146,10 +146,14 @@ def collect_git_patch_head(repo, storage_path, default_filter, include_list, exc
         return False, "Unable to apply filters (head operation). Target repo: [%s]" % repo
     head_items_final += head_items_filtered.copy()
 
-    v, r = git_lib.diff_indexed(repo, head_items_final)
-    if not v:
-        return False, "Failed calling git command for head: [%s]. Repository: [%s]." % (r, repo)
-    return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
+    head_patch_contents = ""
+    if len(head_items_final) > 0:
+        v, r = git_lib.diff_indexed(repo, head_items_final)
+        if not v:
+            return False, "Failed calling git command for head: [%s]. Repository: [%s]." % (r, repo)
+        head_patch_contents = r
+
+    return collect_git_patch_cmd_generic(repo, storage_path, "head.patch", "head", head_patch_contents)
 
 def collect_git_patch_head_id(repo, storage_path):
     v, r = git_lib.rev_parse_head(repo)
@@ -209,10 +213,14 @@ def collect_git_patch_staged(repo, storage_path, default_filter, include_list, e
         return False, "Unable to apply filters (staged-renamed operation). Target repo: [%s]" % repo
     final_file_list += _make_list_tuplelistadapter(staged_renamed_files_filtered.copy())
 
-    v, r = git_lib.diff_cached_indexed(repo, final_file_list)
-    if not v:
-        return False, "Failed calling git command for staged: [%s]. Repository: [%s]." % (r, repo)
-    return collect_git_patch_cmd_generic(repo, storage_path, "staged.patch", "staged", r)
+    staged_patch_contents = ""
+    if len(final_file_list) > 0:
+        v, r = git_lib.diff_cached_indexed(repo, final_file_list)
+        if not v:
+            return False, "Failed calling git command for staged: [%s]. Repository: [%s]." % (r, repo)
+        staged_patch_contents = r
+
+    return collect_git_patch_cmd_generic(repo, storage_path, "staged.patch", "staged", staged_patch_contents)
 
 def collect_git_patch_unversioned(repo, storage_path, default_filter, include_list, exclude_list):
 
