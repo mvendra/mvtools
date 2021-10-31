@@ -188,6 +188,7 @@ def reset_svn_repo_head(target_repo, backup_obj, default_filter, include_list, e
 
     report = []
     has_any_failed = False
+    c = 0
 
     # get new+added files
     v, r = svn_lib.get_head_added_files(target_repo)
@@ -273,6 +274,26 @@ def reset_svn_repo_head(target_repo, backup_obj, default_filter, include_list, e
 
     # un-replace files
     if len(replaced_files_final) > 0:
+
+        # back it up first
+        for rff in replaced_files_final:
+            c += 1
+            backup_filename = make_patch_filename(rff, "head", c)
+
+            subfolder = "head"
+            dn = path_utils.dirname_filtered(rff)
+            if dn is None:
+                return False, "Unable to resolve [%s]'s dirname." % rff
+            v, r = path_utils.based_path_find_outstanding_path(target_repo, dn)
+            if v:
+                subfolder = path_utils.concat_path(subfolder, r)
+
+            v, r = backup_obj.make_backup_frompath(subfolder, path_utils.basename_filtered(backup_filename), rff)
+            gen_patch = r
+            if not v:
+                return False, "Failed because [%s] already exists." % gen_patch
+            report.append(_report_patch(gen_patch))
+
         v, r = svn_lib.revert(target_repo, replaced_files_final)
         if not v:
             return False, "Failed attempting to un-replace files: [%s]" % r
@@ -291,7 +312,6 @@ def reset_svn_repo_head(target_repo, backup_obj, default_filter, include_list, e
     all_relevant_files_for_bk += conflicted_files_final.copy()
 
     # revert files, backing them up first
-    c = 0
     for mf in all_relevant_files_for_bk:
         c += 1
 
