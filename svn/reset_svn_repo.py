@@ -25,6 +25,27 @@ def make_patch_filename(path, operation, index):
 def _report_patch(patch_filename):
     return "generated backup patch: [%s]" % patch_filename
 
+def _known_states():
+
+    st = ["C", "M", "!", "R", "D", "A", "?", "X"]
+
+    return st
+
+def _test_repo_status(repo_path):
+
+    v, r = svn_lib.repo_has_any_not_of_states(repo_path, _known_states())
+    if not v:
+        return False, "Unable to probe known states on repo: [%s]" % repo_path
+    if len(r) > 0:
+        opened_list_as_string = ""
+        for x in r:
+            opened_list_as_string += "[%s] - " % x
+        if opened_list_as_string != "":
+            opened_list_as_string = opened_list_as_string[:len(opened_list_as_string)-3]
+        return False, "Repo [%s] has unknown states: %s" % (repo_path, opened_list_as_string)
+
+    return True, None
+
 def _test_repo_path(path):
 
     v, r = detect_repo_type.detect_repo_type(path)
@@ -318,6 +339,10 @@ def reset_svn_repo(target_repo, default_filter, include_list, exclude_list, head
     detected_repo_type = r
     if detected_repo_type != detect_repo_type.REPO_TYPE_SVN:
         return False, ["Unsupported repository type: [%s] and [%s]." % (target_repo, detected_repo_type)]
+
+    v, r = _test_repo_status(target_repo)
+    if not v:
+        return False, [r]
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
     if not v:

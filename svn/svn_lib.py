@@ -243,6 +243,8 @@ def get_previous_list(local_repo, previous_number=None):
 
 def repo_has_any_not_of_states(local_repo, states):
 
+    list_unwanted = []
+
     if states is None:
         return False, "states is unspecified"
 
@@ -259,18 +261,28 @@ def repo_has_any_not_of_states(local_repo, states):
     if not v:
         return False, r
     if len(states) == 0:
-        return True, False
+        return True, []
 
     for line in r.split(os.linesep):
 
         if len(line.strip()) == 0:
             break
+
+        if "local file edit, incoming replace with dir upon update" in line:
+            continue
+        if "Summary of conflicts" in line:
+            continue
+        if "Text conflicts" in line:
+            continue
+        if "Tree conflicts" in line:
+            continue
+
         item_status = line[0]
 
         if item_status not in states:
-            return True, True
+            list_unwanted.append(item_status)
 
-    return True, False
+    return True, list_unwanted
 
 def get_head_files(local_repo):
 
