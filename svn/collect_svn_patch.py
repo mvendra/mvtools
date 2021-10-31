@@ -144,11 +144,14 @@ def collect_svn_patch_head(repo, storage_path, default_filter, include_list, exc
     final_diff_files += rep_files_final
     final_diff_files += con_files_final
 
-    v, r = svn_lib.diff(repo, final_diff_files)
-    if not v:
-        return False, "Failed calling svn command for head: [%s]. Repository: [%s]." % (r, repo)
+    head_patch_contents = ""
+    if len(final_diff_files) > 0:
+        v, r = svn_lib.diff(repo, final_diff_files)
+        if not v:
+            return False, "Failed calling svn command for head: [%s]. Repository: [%s]." % (r, repo)
+        head_patch_contents = r
 
-    return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", r)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "head.patch", "head", head_patch_contents)
 
 def collect_svn_patch_head_id(repo, storage_path):
     v, r = svn_lib.get_head_revision(repo)
