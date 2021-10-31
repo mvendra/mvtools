@@ -287,7 +287,7 @@ class CustomTask(launch_jobs.BaseTask):
         port_repo_stash_count = int(port_repo_stash_count)
         port_repo_previous_count = int(port_repo_previous_count)
 
-        v, r = port_git_repo.port_git_repo(source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
+        v, r = port_git_repo.port_git_repo(source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count) # mvtodo: wirings
         if not v:
             return False, r
 
