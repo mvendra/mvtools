@@ -73,19 +73,19 @@ class PortGitRepoTest(unittest.TestCase):
 
     def testPortGitRepoBasicChecks(self):
 
-        v, r = port_git_repo.port_git_repo(self.nonexistent, self.second_repo, False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.nonexistent, self.second_repo, "include", [], [], False, False, False, False, 0)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonexistent, False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonexistent, "include", [], [], False, False, False, False, 0)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.nonrepo, self.second_repo, False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.nonrepo, self.second_repo, "include", [], [], False, False, False, False, 0)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonrepo, False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonrepo, "include", [], [], False, False, False, False, 0)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], [], False, False, False, False, 0)
         self.assertTrue(v)
 
     def testPortGitRepoStashFail(self):
@@ -289,23 +289,6 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse(r)
 
-    def testPortGitRepoStagedFail(self):
-
-        v, r = git_lib.is_head_clear(self.first_repo)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
-        v, r = git_lib.is_head_clear(self.second_repo)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
-        v, r = port_git_repo.port_git_repo_staged(self.storage_path, self.first_repo, self.second_repo)
-        self.assertFalse(v)
-
-        v, r = git_lib.is_head_clear(self.second_repo)
-        self.assertTrue(v)
-        self.assertTrue(r)
-
     def testPortGitRepoStaged1(self):
 
         with open(self.first_file1, "a") as f:
@@ -318,7 +301,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
-        v, r = port_git_repo.port_git_repo_staged(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_staged(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertTrue(v)
 
         v, r = git_lib.is_head_clear(self.second_repo)
@@ -343,12 +326,29 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
-        v, r = port_git_repo.port_git_repo_staged(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_staged(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertTrue(v)
 
         v, r = git_lib.is_head_clear(self.second_repo)
         self.assertTrue(v)
         self.assertFalse(r)
+
+    def testPortGitRepoStaged3(self):
+
+        v, r = git_lib.is_head_clear(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+        v, r = port_git_repo.port_git_repo_staged(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
+        self.assertTrue(v)
+
+        v, r = git_lib.is_head_clear(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(r)
 
     def testPortGitRepoHead1(self):
 
@@ -359,7 +359,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
-        v, r = port_git_repo.port_git_repo_head(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_head(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertTrue(v)
 
         v, r = git_lib.is_head_clear(self.second_repo)
@@ -378,7 +378,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
-        v, r = port_git_repo.port_git_repo_head(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_head(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertTrue(v)
 
         v, r = git_lib.is_head_clear(self.second_repo)
@@ -395,7 +395,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
-        v, r = port_git_repo.port_git_repo_head(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_head(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertTrue(v)
 
         v, r = git_lib.is_head_clear(self.second_repo)
@@ -427,7 +427,7 @@ class PortGitRepoTest(unittest.TestCase):
 
         self.assertTrue(create_and_write_file.create_file_contents(second_file4, "file4-contents-dupe"))
 
-        v, r = port_git_repo.port_git_repo_unversioned(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_unversioned(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertFalse(v)
 
         v, r = git_lib.is_head_clear(self.second_repo)
@@ -457,7 +457,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
-        v, r = port_git_repo.port_git_repo_unversioned(self.storage_path, self.first_repo, self.second_repo)
+        v, r = port_git_repo.port_git_repo_unversioned(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertTrue(v)
 
         v, r = git_lib.is_head_clear(self.second_repo)

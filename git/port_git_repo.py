@@ -56,13 +56,15 @@ def port_git_repo_previous(temp_path, source_repo, target_repo, previous_count):
 
     return True, report
 
-def port_git_repo_staged(temp_path, source_repo, target_repo):
+def port_git_repo_staged(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list):
 
     report = []
 
     staged_files = None
-    v, r = collect_git_patch.collect_git_patch_staged(source_repo, temp_path, "include", [], []) # mvtodo: wirings
+    v, r = collect_git_patch.collect_git_patch_staged(source_repo, temp_path, default_filter, include_list, exclude_list)
     if not v:
+        if r == collect_git_patch.ERRMSG_EMPTY:
+            return True, [] # ignore if target head is unmodified
         return False, "Failed collecting the staging area from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     staged_files = [r]
 
@@ -72,12 +74,12 @@ def port_git_repo_staged(temp_path, source_repo, target_repo):
 
     return True, report
 
-def port_git_repo_head(temp_path, source_repo, target_repo):
+def port_git_repo_head(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list):
 
     report = []
 
     head_files = None
-    v, r = collect_git_patch.collect_git_patch_head(source_repo, temp_path, "include", [], [])
+    v, r = collect_git_patch.collect_git_patch_head(source_repo, temp_path, default_filter, include_list, exclude_list)
     if not v:
         if r == collect_git_patch.ERRMSG_EMPTY:
             return True, [] # ignore if target head is unmodified
@@ -90,12 +92,12 @@ def port_git_repo_head(temp_path, source_repo, target_repo):
 
     return True, report
 
-def port_git_repo_unversioned(temp_path, source_repo, target_repo):
+def port_git_repo_unversioned(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list):
 
     report = []
 
     unversioned_files = None
-    v, r = collect_git_patch.collect_git_patch_unversioned(source_repo, temp_path, "include", [], []) # mvtodo: wirings
+    v, r = collect_git_patch.collect_git_patch_unversioned(source_repo, temp_path, default_filter, include_list, exclude_list)
     if not v:
         return False, "Failed collecting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     unversioned_files = r
@@ -111,7 +113,7 @@ def port_git_repo_unversioned(temp_path, source_repo, target_repo):
 
     return True, report
 
-def port_git_repo(source_repo, target_repo, head, staged, stash, unversioned, previous):
+def port_git_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous):
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
     if not v:
@@ -126,11 +128,11 @@ def port_git_repo(source_repo, target_repo, head, staged, stash, unversioned, pr
         return False, ["Can't apply patches. Temporary path [%s] already exists." % temp_path_patches]
     os.mkdir(temp_path_patches)
 
-    v, r = _port_git_repo_delegate(temp_path_patches, source_repo, target_repo, head, staged, stash, unversioned, previous)
+    v, r = _port_git_repo_delegate(temp_path_patches, source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous)
     shutil.rmtree(temp_path_patches)
     return v, r
 
-def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, stash, unversioned, previous):
+def _port_git_repo_delegate(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous):
 
     source_repo = path_utils.filter_remove_trailing_sep(source_repo)
     source_repo = os.path.abspath(source_repo)
@@ -174,7 +176,7 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
 
     # staged
     if staged:
-        v, r = port_git_repo_staged(temp_path, source_repo, target_repo)
+        v, r = port_git_repo_staged(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("port_git_repo_staged: [%s]" % r)
@@ -183,7 +185,7 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
 
     # head
     if head:
-        v, r = port_git_repo_head(temp_path, source_repo, target_repo)
+        v, r = port_git_repo_head(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("port_git_repo_head: [%s]" % r)
@@ -192,7 +194,7 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
 
     # unversioned
     if unversioned:
-        v, r = port_git_repo_unversioned(temp_path, source_repo, target_repo)
+        v, r = port_git_repo_unversioned(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("port_git_repo_unversioned: [%s]" % r)
@@ -202,7 +204,7 @@ def _port_git_repo_delegate(temp_path, source_repo, target_repo, head, staged, s
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--head] [--staged] [--stash X (use \"-1\" to port the entire stash)] [--unversioned] [--previous]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s source_repo target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--staged] [--stash X (use \"-1\" to port the entire stash)] [--unversioned] [--previous]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -214,6 +216,11 @@ if __name__ == "__main__":
     target_repo = sys.argv[2]
     params = sys.argv[3:]
 
+    default_filter = "include"
+    include_list = []
+    exclude_list = []
+    include_parse_next = False
+    exclude_parse_next = False
     head = False
     staged = False
     stash = 0
@@ -223,6 +230,16 @@ if __name__ == "__main__":
     previous_parse_next = False
 
     for p in params:
+
+        if include_parse_next:
+            include_list.append(p)
+            include_parse_next = False
+            continue
+
+        if exclude_parse_next:
+            exclude_list.append(p)
+            exclude_parse_next = False
+            continue
 
         if stash_parse_next:
             stash = int(p)
@@ -234,7 +251,15 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
-        if p == "--head":
+        if p == "--default-filter-include":
+            default_filter = "include"
+        elif p == "--default-filter-exclude":
+            default_filter = "exclude"
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
+        elif p == "--head":
             head = True
         elif p == "--staged":
             staged = True
@@ -245,7 +270,7 @@ if __name__ == "__main__":
         elif p == "--previous":
             previous_parse_next = True
 
-    v, r = port_git_repo(source_repo, target_repo, head, staged, stash, unversioned, previous)
+    v, r = port_git_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous)
     for i in r:
         print(i)
     if not v:
