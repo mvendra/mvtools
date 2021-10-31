@@ -311,7 +311,7 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [])
         self.assertTrue(v)
-        self.assertFalse(r)
+        self.assertEqual(r, [])
 
     def testRepoHasAnyNotOfStates2(self):
 
@@ -320,7 +320,7 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" M"])
         self.assertTrue(v)
-        self.assertFalse(r)
+        self.assertEqual(r, [])
 
     def testRepoHasAnyNotOfStates3(self):
 
@@ -329,7 +329,8 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" D"])
         self.assertTrue(v)
-        self.assertTrue(r)
+        self.assertEqual(len(r), 1)
+        self.assertEqual(r, [" M"])
 
     def testRepoHasAnyNotOfStates4(self):
 
@@ -339,7 +340,8 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" D"])
         self.assertTrue(v)
-        self.assertFalse(r)
+        self.assertEqual(len(r), 0)
+        self.assertEqual(r, [])
 
     def testRepoHasAnyNotOfStates5(self):
 
@@ -353,7 +355,8 @@ class GitLibTest(unittest.TestCase):
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" D"])
         self.assertTrue(v)
-        self.assertTrue(r)
+        self.assertEqual(len(r), 1)
+        self.assertEqual(r, ["??"])
 
     def testGetHeadFiles1(self):
 

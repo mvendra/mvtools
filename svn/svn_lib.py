@@ -243,7 +243,7 @@ def get_previous_list(local_repo, previous_number=None):
 
 def repo_has_any_not_of_states(local_repo, states):
 
-    list_unwanted = []
+    list_unexpected = []
 
     if states is None:
         return False, "states is unspecified"
@@ -280,9 +280,9 @@ def repo_has_any_not_of_states(local_repo, states):
         item_status = line[0]
 
         if item_status not in states:
-            list_unwanted.append(item_status)
+            list_unexpected.append(item_status)
 
-    return True, list_unwanted
+    return True, list_unexpected
 
 def get_head_files(local_repo):
 

@@ -21,23 +21,31 @@ def _test_repo_status(repo_path):
     # also has segfault issues when trying to diff / deal with some of these states. it's best to avoid automating the handling of these
     # status with policy / workflow awareness instead.
 
-    items = []
+    forbidden_items = []
+    unexpected_items = []
     funcs = [git_lib.get_head_deleted_deleted_files, git_lib.get_head_updated_added_files, git_lib.get_head_updated_deleted_files, git_lib.get_head_deleted_updated_files, git_lib.get_head_added_added_files, git_lib.get_head_added_updated_files, git_lib.get_head_renamed_modified_files]
 
     for f in funcs:
         v, r = f(repo_path)
         if not v:
             return False, "Unable to probe for illegal statuses on repo [%s]: [%s]" % (repo_path, r)
-        items += r
+        forbidden_items += r
 
-    if len(items) > 0:
+    if len(forbidden_items) > 0:
         return False, "The repo [%s] has invalid statuses" % repo_path
 
     v, r = git_lib.repo_has_any_not_of_states(repo_path, _known_states())
     if not v:
         return False, "Unable to probe known states on repo: [%s]" % repo_path
-    if r:
-        return False, "Repo [%s] has an unknown state" % repo_path
+    unexpected_items = r
+
+    if len(unexpected_items) > 0:
+        opened_list_as_string = ""
+        for x in unexpected_items:
+            opened_list_as_string += "[%s] - " % x
+        if opened_list_as_string != "":
+            opened_list_as_string = opened_list_as_string[:len(opened_list_as_string)-3]
+        return False, "Repo [%s] has unknown states: %s" % (repo_path, opened_list_as_string)
 
     return True, None
 

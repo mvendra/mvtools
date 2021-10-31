@@ -236,6 +236,8 @@ def get_current_branch(repo):
 
 def repo_has_any_not_of_states(repo, states):
 
+    list_unexpected = []
+
     if states is None:
         return False, "states is unspecified"
 
@@ -258,17 +260,20 @@ def repo_has_any_not_of_states(repo, states):
         return False, "repo_has_any_not_of_states failed: [%s]" % r
     out = r.rstrip() # removes the trailing newline
     if len(out) == 0:
-        return True, False
+        return True, []
     if len(states) == 0:
-        return True, False
+        return True, []
 
     for l in out.split("\n"):
         cl = l.rstrip()
         if len(cl) < 2:
             continue
-        if cl[0:2] not in states:
-            return True, True
-    return True, False
+
+        item_status = cl[0:2]
+        if item_status not in states:
+            list_unexpected.append(item_status)
+
+    return True, list_unexpected
 
 def get_head_files(repo):
 
