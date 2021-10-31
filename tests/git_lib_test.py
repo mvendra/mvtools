@@ -3777,6 +3777,20 @@ class GitLibTest(unittest.TestCase):
 
     def testUnstageFail1(self):
 
+        v, r = git_lib.unstage(None, None)
+        self.assertFalse(v)
+
+        v, r = git_lib.unstage(self.first_repo, "string")
+        self.assertFalse(v)
+
+        v, r = git_lib.unstage(self.first_repo, 123)
+        self.assertFalse(v)
+
+        v, r = git_lib.unstage(self.first_repo, [])
+        self.assertFalse(v)
+
+    def testUnstageFail2(self):
+
         first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_file2), "file2-content1", "commit_msg_file2")
         self.assertTrue(v)
@@ -3801,7 +3815,7 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.unstage(self.first_repo, [self.first_file1, first_file2])
         self.assertFalse(v)
 
-    def testUnstageFail2(self):
+    def testUnstageFail3(self):
 
         first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
 
@@ -3822,7 +3836,7 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.unstage(self.first_repo, [first_file2])
         self.assertFalse(v)
 
-    def testUnstageFail3(self):
+    def testUnstageFail4(self):
 
         first_file2 = path_utils.concat_path(self.first_repo, "file2.txt")
 
@@ -3981,6 +3995,20 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertFalse(self.first_file1 in r)
         self.assertTrue(first_file2 in r)
+
+    def testSoftResetFail(self):
+
+        v, r = git_lib.soft_reset(None, None)
+        self.assertFalse(v)
+
+        v, r = git_lib.soft_reset(self.first_repo, "string")
+        self.assertFalse(v)
+
+        v, r = git_lib.soft_reset(self.first_repo, 123)
+        self.assertFalse(v)
+
+        v, r = git_lib.soft_reset(self.first_repo, [])
+        self.assertFalse(v)
 
     def testSoftReset1(self):
 
@@ -5142,6 +5170,20 @@ class GitLibTest(unittest.TestCase):
             self.assertFalse(v)
             dummy.assert_not_called()
 
+    def testCheckoutFail(self):
+
+        v, r = git_lib.checkout(None, None)
+        self.assertFalse(v)
+
+        v, r = git_lib.checkout(self.first_repo, "string")
+        self.assertFalse(v)
+
+        v, r = git_lib.checkout(self.first_repo, 123)
+        self.assertFalse(v)
+
+        v, r = git_lib.checkout(self.first_repo, [])
+        self.assertFalse(v)
+
     def testCheckout(self):
 
         with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
@@ -5166,12 +5208,6 @@ class GitLibTest(unittest.TestCase):
             self.assertFalse(v)
             dummy.assert_not_called()
 
-        with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
-            v, r = git_lib.checkout(self.first_repo, self.first_file1)
-            self.assertTrue(v)
-            self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo, [self.first_file1])
-
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
@@ -5190,14 +5226,22 @@ class GitLibTest(unittest.TestCase):
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, [self.first_file1])
 
-            with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
-                v, r = git_lib.checkout(self.first_repo, first_file1_rel_path)
-                self.assertTrue(v)
-                self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo, [self.first_file1])
-
         finally:
             os.chdir(saved_wd)
+
+    def testDiffFail(self):
+
+        v, r = git_lib.diff(None, None)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff(self.first_repo, "string")
+        self.assertFalse(v)
+
+        v, r = git_lib.diff(self.first_repo, 123)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff(self.first_repo, [])
+        self.assertFalse(v)
 
     def testDiff(self):
 
@@ -5223,12 +5267,6 @@ class GitLibTest(unittest.TestCase):
             self.assertFalse(v)
             dummy.assert_not_called()
 
-        with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
-            v, r = git_lib.diff(self.first_repo, self.first_file1)
-            self.assertTrue(v)
-            self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo, [self.first_file1])
-
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
@@ -5247,14 +5285,25 @@ class GitLibTest(unittest.TestCase):
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, [self.first_file1])
 
-            with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
-                v, r = git_lib.diff(self.first_repo, first_file1_rel_path)
-                self.assertTrue(v)
-                self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo, [self.first_file1])
-
         finally:
             os.chdir(saved_wd)
+
+    def testDiffIndexedFail(self):
+
+        v, r = git_lib.diff_indexed(None, [self.first_file1])
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_indexed(None, None)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_indexed(self.first_repo, "string")
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_indexed(self.first_repo, 123)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_indexed(self.first_repo, [])
+        self.assertFalse(v)
 
     def testDiffIndexed(self):
 
@@ -5271,11 +5320,6 @@ class GitLibTest(unittest.TestCase):
 
         with mock.patch("git_wrapper.diff_indexed", return_value=(True, None)) as dummy:
             v, r = git_lib.diff_indexed(None, 123)
-            self.assertFalse(v)
-            dummy.assert_not_called()
-
-        with mock.patch("git_wrapper.diff_indexed", return_value=(True, None)) as dummy:
-            v, r = git_lib.diff_indexed(self.first_repo, self.first_file1)
             self.assertFalse(v)
             dummy.assert_not_called()
 
@@ -5299,6 +5343,20 @@ class GitLibTest(unittest.TestCase):
 
         finally:
             os.chdir(saved_wd)
+
+    def testDiffCachedFail(self):
+
+        v, r = git_lib.diff_cached(None, None)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_cached(self.first_repo, "string")
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_cached(self.first_repo, 123)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_cached(self.first_repo, [])
+        self.assertFalse(v)
 
     def testDiffCached(self):
 
@@ -5324,12 +5382,6 @@ class GitLibTest(unittest.TestCase):
             self.assertFalse(v)
             dummy.assert_not_called()
 
-        with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
-            v, r = git_lib.diff_cached(self.first_repo, self.first_file1)
-            self.assertTrue(v)
-            self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo, [self.first_file1])
-
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
@@ -5348,14 +5400,25 @@ class GitLibTest(unittest.TestCase):
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, [self.first_file1])
 
-            with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
-                v, r = git_lib.diff_cached(self.first_repo, first_file1_rel_path)
-                self.assertTrue(v)
-                self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo, [self.first_file1])
-
         finally:
             os.chdir(saved_wd)
+
+    def testDiffCachedIndexedFail(self):
+
+        v, r = git_lib.diff_cached_indexed(None, [self.first_file1])
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_cached_indexed(None, None)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_cached_indexed(self.first_repo, "string")
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_cached_indexed(self.first_repo, 123)
+        self.assertFalse(v)
+
+        v, r = git_lib.diff_cached_indexed(self.first_repo, [])
+        self.assertFalse(v)
 
     def testDiffCachedIndexed(self):
 
@@ -5364,12 +5427,6 @@ class GitLibTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called_with(self.first_repo, [self.first_file1])
-
-        with mock.patch("git_wrapper.diff_cached_indexed", return_value=(True, None)) as dummy:
-            v, r = git_lib.diff_cached_indexed(self.first_repo)
-            self.assertTrue(v)
-            self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo, None)
 
         with mock.patch("git_wrapper.diff_cached_indexed", return_value=(True, None)) as dummy:
             v, r = git_lib.diff_cached_indexed(None, [self.first_file1])
@@ -5381,12 +5438,6 @@ class GitLibTest(unittest.TestCase):
             self.assertFalse(v)
             dummy.assert_not_called()
 
-        with mock.patch("git_wrapper.diff_cached_indexed", return_value=(True, None)) as dummy:
-            v, r = git_lib.diff_cached_indexed(self.first_repo, self.first_file1)
-            self.assertTrue(v)
-            self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo, [self.first_file1])
-
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
@@ -5394,19 +5445,7 @@ class GitLibTest(unittest.TestCase):
             first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
 
             with mock.patch("git_wrapper.diff_cached_indexed", return_value=(True, None)) as dummy:
-                v, r = git_lib.diff_cached_indexed(first_rel_path)
-                self.assertTrue(v)
-                self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo, None)
-
-            with mock.patch("git_wrapper.diff_cached_indexed", return_value=(True, None)) as dummy:
                 v, r = git_lib.diff_cached_indexed(self.first_repo, [first_file1_rel_path])
-                self.assertTrue(v)
-                self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo, [self.first_file1])
-
-            with mock.patch("git_wrapper.diff_cached_indexed", return_value=(True, None)) as dummy:
-                v, r = git_lib.diff_cached_indexed(self.first_repo, first_file1_rel_path)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, [self.first_file1])

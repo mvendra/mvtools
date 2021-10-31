@@ -695,6 +695,10 @@ def soft_reset(repo, file_list=None):
     file_list_final = []
 
     if file_list is not None:
+        if not isinstance(file_list, list):
+            return False, "file_list must be a list"
+        if len(file_list) == 0:
+            return False, "file_list can't be empty"
         for f in file_list:
             file_list_final.append(os.path.abspath(f))
 
@@ -704,16 +708,21 @@ def unstage(repo, file_list=None):
 
     if repo is None:
         return False, "No repo specified"
-
     repo = os.path.abspath(repo)
-    file_list_final = []
 
+    v, r = get_staged_files(repo)
+    if not v:
+        return False, "Can't unstage - unable to fetch staged files first: [%s]" % r
+    staged_files = r
+
+    file_list_final = None
     if file_list is not None:
+        file_list_final = []
 
-        v, r = get_staged_files(repo)
-        if not v:
-            return False, "Can't unstage - unable to fetch staged files first: [%s]" % r
-        staged_files = r
+        if not isinstance(file_list, list):
+            return False, "file_list must be a list"
+        if len(file_list) == 0:
+            return False, "file_list can't be empty"
 
         for f in file_list:
             f_abs = os.path.abspath(f)
@@ -787,62 +796,79 @@ def fetch_all(repo):
     return git_wrapper.fetch_all(repo)
 
 def diff(repo, file_list=None):
+
     if repo is None:
         return False, "No repo specified"
     repo = os.path.abspath(repo)
-    final_file_list = []
-    if file_list is None:
-        final_file_list = None
-    elif isinstance(file_list, str):
-        final_file_list.append(os.path.abspath(file_list))
-    elif isinstance(file_list, list):
+
+    final_file_list = None
+    if file_list is not None:
+        final_file_list = []
+
+        if not isinstance(file_list, list):
+            return False, "file_list must be a list"
+        if len(file_list) == 0:
+            return False, "file_list can't be empty"
         for fl in file_list:
             final_file_list.append(os.path.abspath(fl))
-    else:
-        return False, "file_list is invalid: [%s]" % file_list
+
     return git_wrapper.diff(repo, final_file_list)
 
 def diff_indexed(repo, file_list):
+
     if repo is None:
         return False, "No repo specified"
     repo = os.path.abspath(repo)
+
+    final_file_list = []
+
+    if file_list is None:
+        return False, "file_list must be specified"
     if not isinstance(file_list, list):
         return False, "file_list must be a list"
-    final_file_list = []
+    if len(file_list) == 0:
+        return False, "file_list can't be empty"
     for fl in file_list:
         final_file_list.append(os.path.abspath(fl))
+
     return git_wrapper.diff_indexed(repo, final_file_list)
 
 def diff_cached(repo, file_list=None):
+
     if repo is None:
         return False, "No repo specified"
     repo = os.path.abspath(repo)
-    final_file_list = []
-    if file_list is None:
-        final_file_list = None
-    elif isinstance(file_list, str):
-        final_file_list.append(os.path.abspath(file_list))
-    elif isinstance(file_list, list):
+
+    final_file_list = None
+    if file_list is not None:
+        final_file_list = []
+
+        if not isinstance(file_list, list):
+            return False, "file_list must be a list"
+        if len(file_list) == 0:
+            return False, "file_list can't be empty"
         for fl in file_list:
             final_file_list.append(os.path.abspath(fl))
-    else:
-        return False, "file_list is invalid: [%s]" % file_list
+
     return git_wrapper.diff_cached(repo, final_file_list)
 
-def diff_cached_indexed(repo, file_list=None):
+def diff_cached_indexed(repo, file_list):
+
     if repo is None:
         return False, "No repo specified"
     repo = os.path.abspath(repo)
+
     final_file_list = []
+
     if file_list is None:
-        final_file_list = None
-    elif isinstance(file_list, str):
-        final_file_list.append(os.path.abspath(file_list))
-    elif isinstance(file_list, list):
-        for fl in file_list:
-            final_file_list.append(os.path.abspath(fl))
-    else:
-        return False, "file_list is invalid: [%s]" % file_list
+        return False, "file_list must be specified"
+    if not isinstance(file_list, list):
+        return False, "file_list must be a list"
+    if len(file_list) == 0:
+        return False, "file_list can't be empty"
+    for fl in file_list:
+        final_file_list.append(os.path.abspath(fl))
+
     return git_wrapper.diff_cached_indexed(repo, final_file_list)
 
 def rev_parse_head(repo):
@@ -888,19 +914,22 @@ def show(repo, commit_id):
     return git_wrapper.show(repo, commit_id)
 
 def checkout(repo, file_list=None):
+
     if repo is None:
         return False, "No repo specified"
     repo = os.path.abspath(repo)
-    final_file_list = []
-    if file_list is None:
-        final_file_list = None
-    elif isinstance(file_list, str):
-        final_file_list.append(os.path.abspath(file_list))
-    elif isinstance(file_list, list):
+
+    final_file_list = None
+    if file_list is not None:
+        final_file_list = []
+
+        if not isinstance(file_list, list):
+            return False, "file_list must be a list"
+        if len(file_list) == 0:
+            return False, "file_list can't be empty"
         for fl in file_list:
             final_file_list.append(os.path.abspath(fl))
-    else:
-        return False, "file_list is invalid: [%s]" % file_list
+
     return git_wrapper.checkout(repo, final_file_list)
 
 def config(key, value, global_cfg=True):
