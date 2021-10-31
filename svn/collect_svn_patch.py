@@ -9,6 +9,27 @@ import svn_lib
 
 ERRMSG_EMPTY = "Empty contents"
 
+def _known_states():
+
+    st = ["C", "M", "!", "R", "D", "A", "?", "X"]
+
+    return st
+
+def _test_repo_status(repo_path):
+
+    v, r = svn_lib.repo_has_any_not_of_states(repo_path, _known_states())
+    if not v:
+        return False, "Unable to probe known states on repo: [%s]" % repo_path
+    if len(r) > 0:
+        opened_list_as_string = ""
+        for x in r:
+            opened_list_as_string += "[%s] - " % x
+        if opened_list_as_string != "":
+            opened_list_as_string = opened_list_as_string[:len(opened_list_as_string)-3]
+        return False, "Repo [%s] has unknown states: %s" % (repo_path, opened_list_as_string)
+
+    return True, None
+
 def _apply_filters(items_input, default_filter, include_list, exclude_list):
 
     filtering_required = (((default_filter == "include") and (len(exclude_list) > 0)) or (default_filter == "exclude"))
@@ -230,6 +251,10 @@ def collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_
 
     if not os.path.exists(storage_path):
         return False, ["Storage path [%s] does not exist." % storage_path]
+
+    v, r = _test_repo_status(repo)
+    if not v:
+        return False, [r]
 
     report = []
     has_any_failed = False
