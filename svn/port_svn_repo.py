@@ -10,6 +10,7 @@ import path_utils
 import detect_repo_type
 import collect_svn_patch
 import apply_svn_patch
+import svn_lib
 
 def _test_repo_path(path):
 
@@ -40,6 +41,12 @@ def port_svn_repo_previous(temp_path, source_repo, target_repo, previous_count):
 def port_svn_repo_head(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list):
 
     report = []
+
+    v, r = svn_lib.get_head_conflicted_files(source_repo)
+    if not v:
+        return False, "Failed retrieving list of conflicted files on repo [%s]: [%s]" % (source_repo, r)
+    if len(r) > 0:
+        report.append("Warning: repo [%s] has conflicts. They are not portable!" % source_repo)
 
     head_files = None
     v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path, default_filter, include_list, exclude_list)
