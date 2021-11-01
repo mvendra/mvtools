@@ -293,6 +293,9 @@ class BackupPreparation:
         default_filter = ""
         includes = []
         excludes = []
+        default_subfilter = ""
+        subfilter_includes = []
+        subfilter_excludes = []
         head = False
         head_id = False
         staged = False
@@ -340,6 +343,22 @@ class BackupPreparation:
                     raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"exclude\"): [%s]. Aborting." % (var_options))
                 excludes.append(opt_val)
 
+            # default subfilter
+            if opt_name == "default-subfilter-include":
+                default_subfilter = "include"
+            if opt_name == "default-subfilter-exclude":
+                default_subfilter = "exclude"
+
+            # subfilter includes / excludes
+            if opt_name == "subfilter-include":
+                if opt_val is None or opt_val == "":
+                    raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"subfilter-include\"): [%s]. Aborting." % (var_options))
+                subfilter_includes.append(opt_val)
+            if opt_name == "subfilter-exclude":
+                if opt_val is None or opt_val == "":
+                    raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"subfilter-exclude\"): [%s]. Aborting." % (var_options))
+                subfilter_excludes.append(opt_val)
+
             # collection options
             if opt_name == "head":
                 head = True
@@ -369,7 +388,7 @@ class BackupPreparation:
             raise BackupPreparationException("Unable to guarantee folder [%s]." % (final_storage_path_patch_collector))
 
         # run the actual patch collector
-        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_script, final_storage_path_patch_collector, default_filter, includes, excludes, head, head_id, staged, unversioned, stash, previous, repo_type)
+        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_script, final_storage_path_patch_collector, default_filter, includes, excludes, default_subfilter, subfilter_includes, subfilter_excludes, head, head_id, staged, unversioned, stash, previous, repo_type)
         if not v:
             for i in r:
                 print("proc_run_collect_patches: [%s]" % i)

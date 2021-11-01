@@ -72,10 +72,17 @@ COPY_TREE_OUT {abort} = "/home/user/folder2"
 # necessary. For details about what kind of filtering these are able to do,
 # see the implementation of collect_patches.py.
 #
+# Like the above, there are also the "default-subfilter-include" and the "default-subfilter-exclude"
+# options that will (mutually exclusively) set the default subfiltering method. Subfiltering is the
+# filtering configuration that is passed down to the backend patch tools as their standard filtering.
+#
+# The corresponding options for including / excluding items for subfiltering are "subfilter-include"
+# and "subfilter-exclude", respectively.
+#
 # The options "head", "head-id", "staged", "unversioned", "stash" and
 # "previous" are idependent from each other and can be used as wanted, as per
 # the collect_patches.py script.
-RUN_COLLECT_PATCHES { custom-path-navigator: "/path/to/custom_pathnav.py" / storage-base: "collected_patches" / svn / git / all / default-include / default-exclude / include: "*/Components/*" / exclude: "*/UnwantedRepo/*" / head / head-id / staged / unversioned / stash / previous: "1" } = "/mp"
+RUN_COLLECT_PATCHES { custom-path-navigator: "/path/to/custom_pathnav.py" / storage-base: "collected_patches" / svn / git / all / default-include / default-exclude / include: "*/Components/*" / exclude: "*/UnwantedRepo/*" / default-subfilter-include / default-subfilter-exclude / subfilter-include: "*/Domain/*" / subfilter-exclude: "*/Another/*/Path/*" / head / head-id / staged / unversioned / stash / previous: "1" } = "/mp"
 
 # Copies stuff from the system. Valid values:
 # "crontab" will copy the user's crontab. If "abort" is specified, then if the
