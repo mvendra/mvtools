@@ -31,7 +31,7 @@ def resolve_py_into_custom_pathnav_func(path_to_py_script):
         return None
     return test_bind
 
-def collect_patch(path, storage_path, head, head_id, staged, unversioned, stash, previous, repotype):
+def collect_patch(path, storage_path, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
 
     if repotype != "svn" and repotype != "git" and repotype != "all":
         return False, ["Invalid repository type: %s" % repotype]
@@ -47,18 +47,18 @@ def collect_patch(path, storage_path, head, head_id, staged, unversioned, stash,
         return False, "Can't collect patches from git-bare repos."
 
     if "git" in repotype_detected and (repotype == "git" or repotype == "all"):
-        v, r = collect_git_patch.collect_git_patch(path, storage_path, "include", [], [], head, head_id, staged, unversioned, stash, previous) # mvtodo: wirings
+        v, r = collect_git_patch.collect_git_patch(path, storage_path, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous)
         if not v:
             return False, "Failed collecting git patches: %s" % r
 
     elif "svn" in repotype_detected and (repotype == "svn" or repotype == "all"):
-        v, r = collect_svn_patch.collect_svn_patch(path, storage_path, "include", [], [], head, head_id, unversioned, previous) # mvtodo: wirings
+        v, r = collect_svn_patch.collect_svn_patch(path, storage_path, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, unversioned, previous)
         if not v:
             return False, "Failed collecting svn patches: %s" % r
 
     return True, None
 
-def collect_patches_recursive(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
+def collect_patches_recursive(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
 
     custom_path_navigator_local_copy = custom_path_navigator
     if custom_path_navigator is not None:
@@ -94,19 +94,19 @@ def collect_patches_recursive(path, custom_path_navigator, storage_path, default
     report = []
     for it in items_filtered:
         print("Collecting patches on repo: [%s]" % it)
-        v, r = collect_patch(it, storage_path, head, head_id, staged, unversioned, stash, previous, repotype)
+        v, r = collect_patch(it, storage_path, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
         if not v:
             report.append("Failed collecting patches for repo: [%s]: %s" % (it, r))
 
     return (len(report)==0), report
 
-def collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
+def collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous, repotype):
 
     v, r = detect_repo_type.detect_repo_type(path)
     if not (v and (r == detect_repo_type.REPO_TYPE_GIT_STD or r == detect_repo_type.REPO_TYPE_SVN)):
-        return collect_patches_recursive(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
+        return collect_patches_recursive(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
 
-    v, r = collect_patch(path, storage_path, head, head_id, staged, unversioned, stash, previous, repotype)
+    v, r = collect_patch(path, storage_path, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
     return v, [r]
 
 """
@@ -134,7 +134,7 @@ be cautious about when using, to avoid mismatches and misuse.
 """
 
 def puaq():
-    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X] [--repo-type git|svn|all]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--default-subfilter-include | --default-subfilter-exclude] [--subfilter-include repo_basename] [--subfilter-exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X] [--repo-type git|svn|all]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -155,6 +155,11 @@ if __name__ == "__main__":
     exclude_list = []
     include_parse_next = False
     exclude_parse_next = False
+    default_subfilter = "include"
+    subfilter_include_list = []
+    subfilter_exclude_list = []
+    subfilter_include_parse_next = False
+    subfilter_exclude_parse_next = False
     head = False
     head_id = False
     staged = False
@@ -203,14 +208,36 @@ if __name__ == "__main__":
             exclude_parse_next = False
             continue
 
+        if subfilter_include_parse_next:
+            subfilter_include_list.append(p)
+            subfilter_include_parse_next = False
+            continue
+
+        if subfilter_exclude_parse_next:
+            subfilter_exclude_list.append(p)
+            subfilter_exclude_parse_next = False
+            continue
+
         if p == "--custom-path-navigator":
             custom_path_navigator_parse_next = True
+        elif p == "--storage-path":
+            storage_path_parse_next = True
         elif p == "--default-filter-include":
             default_filter = "include"
         elif p == "--default-filter-exclude":
             default_filter = "exclude"
-        elif p == "--storage-path":
-            storage_path_parse_next = True
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
+        elif p == "--default-subfilter-include":
+            default_subfilter = "include"
+        elif p == "--default-subfilter-exclude":
+            default_subfilter = "exclude"
+        elif p == "--subfilter-include":
+            subfilter_include_parse_next = True
+        elif p == "--subfilter-exclude":
+            subfilter_exclude_parse_next = True
         elif p == "--head":
             head = True
         elif p == "--head-id":
@@ -225,15 +252,11 @@ if __name__ == "__main__":
             previous_parse_next = True
         elif p == "--repo-type":
             repotype_parse_next = True
-        elif p == "--include":
-            include_parse_next = True
-        elif p == "--exclude":
-            exclude_parse_next = True
 
     if storage_path is None:
         storage_path = os.getcwd()
 
-    v, r = collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
+    v, r = collect_patches(path, custom_path_navigator, storage_path, default_filter, include_list, exclude_list, default_subfilter, subfilter_include_list, subfilter_exclude_list, head, head_id, staged, unversioned, stash, previous, repotype)
     if not v:
         for i in r:
             print("Failed: %s" % i)
