@@ -150,7 +150,8 @@ def patch(repo, source_file):
     if not os.path.exists(repo):
         return False, "%s does not exist." % repo
 
-    v, r = generic_run.run_cmd_simple(["svn", "patch", source_file], use_cwd=repo)
+    the_cmd = ["svn", "patch", source_file]
+    v, r = generic_run.run_cmd_simple(the_cmd, use_cwd=repo)
     if not v:
         return False, "Failed calling svn-patch command: %s." % r
 
