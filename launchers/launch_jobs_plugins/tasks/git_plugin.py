@@ -25,6 +25,9 @@ class CustomTask(launch_jobs.BaseTask):
         remote_name = None
         branch_name = None
         source_path = None
+        default_filter = None
+        filter_include = None
+        filter_exclude = None
         port_repo_head = False
         port_repo_staged = False
         port_repo_stash_count = None
@@ -76,6 +79,34 @@ class CustomTask(launch_jobs.BaseTask):
         # source_path
         try:
             source_path = self.params["source_path"]
+        except KeyError:
+            pass # optional
+
+        # default_filter
+        try:
+            default_filter = self.params["default_filter"]
+        except KeyError:
+            pass # optional
+
+        # filter_include
+        try:
+            filter_include = []
+            filter_include_read = self.params["filter_include"]
+            if isinstance(filter_include_read, list):
+                filter_include = filter_include_read
+            else:
+                filter_include.append(filter_include_read)
+        except KeyError:
+            pass # optional
+
+        # filter_exclude
+        try:
+            filter_exclude = []
+            filter_exclude_read = self.params["filter_exclude"]
+            if isinstance(filter_exclude_read, list):
+                filter_exclude = filter_exclude_read
+            else:
+                filter_exclude.append(filter_exclude_read)
         except KeyError:
             pass # optional
 
@@ -188,14 +219,14 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file, rewind_to_hash, rewind_like_source)
+        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file, rewind_to_hash, rewind_like_source)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, remote_name, branch_name, source_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files, rewind_to_hash, rewind_like_source = r
+        target_path, operation, source_url, remote_name, branch_name, source_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files, rewind_to_hash, rewind_like_source = r
 
         # delegate
         if operation == "clone_repo":
@@ -203,9 +234,9 @@ class CustomTask(launch_jobs.BaseTask):
         elif operation == "pull_repo":
             return self.task_pull_repo(feedback_object, target_path, remote_name, branch_name)
         elif operation == "port_repo":
-            return self.task_port_repo(feedback_object, source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
+            return self.task_port_repo(feedback_object, source_path, target_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
         elif operation == "reset_repo":
-            return self.task_reset_repo(feedback_object, target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
+            return self.task_reset_repo(feedback_object, target_path, default_filter, filter_include, filter_exclude, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
         elif operation == "rewind_repo":
             return self.task_rewind_repo(feedback_object, target_path, source_path, rewind_to_hash, rewind_like_source)
         elif operation == "patch_repo":
@@ -264,7 +295,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         return True, None
 
-    def task_port_repo(self, feedback_object, source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count):
+    def task_port_repo(self, feedback_object, source_path, target_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count):
 
         if source_path is None:
             return False, "Source path (source_path) is required for task_port_repo"
@@ -287,13 +318,13 @@ class CustomTask(launch_jobs.BaseTask):
         port_repo_stash_count = int(port_repo_stash_count)
         port_repo_previous_count = int(port_repo_previous_count)
 
-        v, r = port_git_repo.port_git_repo(source_path, target_path, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count) # mvtodo: wirings
+        v, r = port_git_repo.port_git_repo(source_path, target_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
         if not v:
             return False, r
 
         return True, None
 
-    def task_reset_repo(self, feedback_object, target_path, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count):
+    def task_reset_repo(self, feedback_object, target_path, default_filter, filter_include, filter_exclude, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count):
 
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
@@ -311,7 +342,7 @@ class CustomTask(launch_jobs.BaseTask):
         reset_stash_count = int(reset_stash_count)
         reset_previous_count = int(reset_previous_count)
 
-        v, r = reset_git_repo.reset_git_repo(target_path, "include", [], [], reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count) # mvtodo: wirings
+        v, r = reset_git_repo.reset_git_repo(target_path, default_filter, filter_include, filter_exclude, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
         if not v:
             return False, r
         backed_up_patches = r
@@ -370,7 +401,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not found:
             return False, "Failed attempting to rewind repo [%s]: Hash [%s] was not found" % (source_path, rewind_to_hash)
 
-        v, r = reset_git_repo.reset_git_repo(target_path, "include", [], [], False, False, 0, False, c) # mvtodo: wirings
+        v, r = reset_git_repo.reset_git_repo(target_path, "include", [], [], False, False, 0, False, c)
         if not v:
             return False, r
         backed_up_patches = r
