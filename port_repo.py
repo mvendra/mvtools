@@ -52,7 +52,7 @@ def port_repo(source_repo, target_repo, head, staged, stash, unversioned, previo
     if repos_type == detect_repo_type.REPO_TYPE_GIT_STD:
         return port_git_repo.port_git_repo(source_repo, target_repo, head, staged, stash, unversioned, previous) # mvtodo: wirings
     elif repos_type == detect_repo_type.REPO_TYPE_SVN:
-        return port_svn_repo.port_svn_repo(source_repo, target_repo, head, unversioned, previous)
+        return port_svn_repo.port_svn_repo(source_repo, target_repo, head, unversioned, previous) # mvtodo: wirings
 
     return False, "Porting failed: Unsupported repo type: [%s]" % repos_type
 

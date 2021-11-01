@@ -37,12 +37,12 @@ def port_svn_repo_previous(temp_path, source_repo, target_repo, previous_count):
 
     return True, report
 
-def port_svn_repo_head(temp_path, source_repo, target_repo):
+def port_svn_repo_head(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list):
 
     report = []
 
     head_files = None
-    v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path, "include", [], [])
+    v, r = collect_svn_patch.collect_svn_patch_head(source_repo, temp_path, default_filter, include_list, exclude_list)
     if not v:
         if r == collect_svn_patch.ERRMSG_EMPTY:
             return True, [] # ignore if target head is unmodified
@@ -55,12 +55,12 @@ def port_svn_repo_head(temp_path, source_repo, target_repo):
 
     return True, report
 
-def port_svn_repo_unversioned(temp_path, source_repo, target_repo):
+def port_svn_repo_unversioned(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list):
 
     report = []
 
     unversioned_files = None
-    v, r = collect_svn_patch.collect_svn_patch_unversioned(source_repo, temp_path, "include", [], [])
+    v, r = collect_svn_patch.collect_svn_patch_unversioned(source_repo, temp_path, default_filter, include_list, exclude_list)
     if not v:
         return False, "Failed collecting unversioned from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
     unversioned_files = r
@@ -76,7 +76,7 @@ def port_svn_repo_unversioned(temp_path, source_repo, target_repo):
 
     return True, report
 
-def port_svn_repo(source_repo, target_repo, head, unversioned, previous):
+def port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous):
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
     if not v:
@@ -91,11 +91,11 @@ def port_svn_repo(source_repo, target_repo, head, unversioned, previous):
         return False, ["Can't apply patches. Temporary path [%s] already exists." % temp_path_patches]
     os.mkdir(temp_path_patches)
 
-    v, r = _port_svn_repo_delegate(temp_path_patches, source_repo, target_repo, head, unversioned, previous)
+    v, r = _port_svn_repo_delegate(temp_path_patches, source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous)
     shutil.rmtree(temp_path_patches)
     return v, r
 
-def _port_svn_repo_delegate(temp_path, source_repo, target_repo, head, unversioned, previous):
+def _port_svn_repo_delegate(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous):
 
     source_repo = path_utils.filter_remove_trailing_sep(source_repo)
     source_repo = os.path.abspath(source_repo)
@@ -130,7 +130,7 @@ def _port_svn_repo_delegate(temp_path, source_repo, target_repo, head, unversion
 
     # head
     if head:
-        v, r = port_svn_repo_head(temp_path, source_repo, target_repo)
+        v, r = port_svn_repo_head(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("port_svn_repo_head: [%s]" % r)
@@ -139,7 +139,7 @@ def _port_svn_repo_delegate(temp_path, source_repo, target_repo, head, unversion
 
     # unversioned
     if unversioned:
-        v, r = port_svn_repo_unversioned(temp_path, source_repo, target_repo)
+        v, r = port_svn_repo_unversioned(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list)
         if not v:
             has_any_failed = True
             report.append("port_svn_repo_unversioned: [%s]" % r)
@@ -149,7 +149,7 @@ def _port_svn_repo_delegate(temp_path, source_repo, target_repo, head, unversion
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--head] [--unversioned] [--previous]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s source_repo target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--unversioned] [--previous]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -161,6 +161,11 @@ if __name__ == "__main__":
     target_repo = sys.argv[2]
     params = sys.argv[3:]
 
+    default_filter = "include"
+    include_list = []
+    exclude_list = []
+    include_parse_next = False
+    exclude_parse_next = False
     head = False
     unversioned = False
     previous = 0
@@ -168,19 +173,37 @@ if __name__ == "__main__":
 
     for p in params:
 
+        if include_parse_next:
+            include_list.append(p)
+            include_parse_next = False
+            continue
+
+        if exclude_parse_next:
+            exclude_list.append(p)
+            exclude_parse_next = False
+            continue
+
         if previous_parse_next:
             previous = int(p)
             previous_parse_next = False
             continue
 
-        if p == "--head":
+        if p == "--default-filter-include":
+            default_filter = "include"
+        elif p == "--default-filter-exclude":
+            default_filter = "exclude"
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
+        elif p == "--head":
             head = True
         elif p == "--unversioned":
             unversioned = True
         elif p == "--previous":
             previous_parse_next = True
 
-    v, r = port_svn_repo(source_repo, target_repo, head, unversioned, previous)
+    v, r = port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous)
     for i in r:
         print(i)
     if not v:

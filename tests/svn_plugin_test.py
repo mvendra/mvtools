@@ -349,7 +349,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("port_svn_repo.port_svn_repo", return_value=(True, None)) as dummy:
             v, r = self.svn_task.task_port_repo(print, self.existent_path1, self.existent_path2, False, False, "0")
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, self.existent_path2, False, False, 0)
+            dummy.assert_called_with(self.existent_path1, self.existent_path2, "include", [], [], False, False, 0)
 
     def testSvnPluginTaskPortRepo6(self):
 
@@ -359,7 +359,7 @@ class SvnPluginTest(unittest.TestCase):
         with mock.patch("port_svn_repo.port_svn_repo", return_value=(True, None)) as dummy:
             v, r = self.svn_task.task_port_repo(print, self.existent_path1, self.existent_path2, True, True, "7")
             self.assertTrue(v)
-            dummy.assert_called_with(self.existent_path1, self.existent_path2, True, True, 7)
+            dummy.assert_called_with(self.existent_path1, self.existent_path2, "include", [], [], True, True, 7)
 
     def testSvnPluginTaskResetRepo1(self):
 

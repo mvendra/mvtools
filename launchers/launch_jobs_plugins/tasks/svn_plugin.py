@@ -223,7 +223,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "Invalid previous_count - expected numeric string: [%s]" % port_repo_previous_count
         port_repo_previous_count = int(port_repo_previous_count)
 
-        v, r = port_svn_repo.port_svn_repo(source_path, target_path, port_repo_head, port_repo_unversioned, port_repo_previous_count)
+        v, r = port_svn_repo.port_svn_repo(source_path, target_path, "include", [], [], port_repo_head, port_repo_unversioned, port_repo_previous_count) # mvtodo: wirings
         if not v:
             return False, r
 
