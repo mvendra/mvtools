@@ -25,7 +25,7 @@ def check_repo_type(target_repo):
 
     return True, detected_target_type
 
-def reset_repo(target_repo, head, staged, stash, unversioned, previous):
+def reset_repo(target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous):
 
     if not os.path.exists(target_repo):
         return False, ["Target repo [%s] does not exist."  % target_repo]
@@ -36,14 +36,14 @@ def reset_repo(target_repo, head, staged, stash, unversioned, previous):
     detected_repo_type = r
 
     if detected_repo_type == detect_repo_type.REPO_TYPE_GIT_STD:
-        return reset_git_repo.reset_git_repo(target_repo, head, staged, stash, unversioned, previous)
+        return reset_git_repo.reset_git_repo(target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous)
     elif detected_repo_type == detect_repo_type.REPO_TYPE_SVN:
-        return reset_svn_repo.reset_svn_repo(target_repo, head, unversioned, previous)
+        return reset_svn_repo.reset_svn_repo(target_repo, default_filter, include_list, exclude_list, head, unversioned, previous)
 
     return False, ["Resetting failed: Unsupported repo type: [%s]" % repotype]
 
 def puaq():
-    print("Usage: %s target_repo [--head] [--staged] [--stash X (use \"-1\" to reset the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--staged] [--stash X (use \"-1\" to reset the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -54,6 +54,11 @@ if __name__ == "__main__":
     target_repo = sys.argv[1]
     params = sys.argv[2:]
 
+    default_filter = "include"
+    include_list = []
+    exclude_list = []
+    include_parse_next = False
+    exclude_parse_next = False
     head = False
     staged = False
     stash = 0
@@ -63,6 +68,16 @@ if __name__ == "__main__":
     previous_parse_next = False
 
     for p in params:
+
+        if include_parse_next:
+            include_list.append(p)
+            include_parse_next = False
+            continue
+
+        if exclude_parse_next:
+            exclude_list.append(p)
+            exclude_parse_next = False
+            continue
 
         if stash_parse_next:
             stash = int(p)
@@ -74,7 +89,15 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
-        if p == "--head":
+        if p == "--default-filter-include":
+            default_filter = "include"
+        elif p == "--default-filter-exclude":
+            default_filter = "exclude"
+        elif p == "--include":
+            include_parse_next = True
+        elif p == "--exclude":
+            exclude_parse_next = True
+        elif p == "--head":
             head = True
         elif p == "--staged":
             staged = True
@@ -85,7 +108,7 @@ if __name__ == "__main__":
         elif p == "--previous":
             previous_parse_next = True
 
-    v, r = reset_repo(target_repo, head, staged, stash, unversioned, previous)
+    v, r = reset_repo(target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous)
     for i in r:
         print(i)
     if not v:
