@@ -31,7 +31,7 @@ if __name__ == "__main__":
     str_find = sys.argv[2]
     str_rep = sys.argv[3]
     
-    playlists = fsquery.makecontentlist(path_playlists, False, True, False, False, False, True, "xspf")
+    playlists = fsquery.makecontentlist(path_playlists, False, False, True, False, False, False, True, "xspf")
     for p in playlists:
         print("Processing %s..." % p)
         proc(p, str_find, str_rep)

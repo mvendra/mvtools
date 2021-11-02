@@ -37,7 +37,7 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
 
     ext_list_aux = []
     ext_list_aux.append(extension)
-    filelist = fsquery.makecontentlist(path_files, True, True, False, True, False, True, ext_list_aux)
+    filelist = fsquery.makecontentlist(path_files, True, False, True, False, True, False, True, ext_list_aux)
     report = []
 
     if len(filelist) == 0:

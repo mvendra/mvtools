@@ -11,7 +11,7 @@ import generic_run
 def shred_target(path):
 
     if os.path.isdir(path):
-        ret = fsquery.makecontentlist(path, True, True, False, True, False, True, [])
+        ret = fsquery.makecontentlist(path, True, False, True, False, True, False, True, [])
         for i in ret:
             v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", i])
             if not v:

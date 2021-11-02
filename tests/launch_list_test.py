@@ -103,19 +103,19 @@ class LaunchListTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testListAllGood(self):
-        l = fsquery.makecontentlist(self.test_allgood, False, True, False, True, False, True, None)
+        l = fsquery.makecontentlist(self.test_allgood, False, False, True, False, True, False, True, None)
         v, r = launch_list.run_list(l, True, None)
         self.assertTrue(v)
 
     def testListAllBad(self):
-        l = fsquery.makecontentlist(self.test_allbad, False, True, False, True, False, True, None)
+        l = fsquery.makecontentlist(self.test_allbad, False, False, True, False, True, False, True, None)
         v, r = launch_list.run_list(l, True, None)
         self.assertFalse(v)
         for i in r:
             self.assertFalse(i[0])
 
     def testListMixedBag(self):
-        l = fsquery.makecontentlist(self.test_mixedbag, False, True, False, True, False, True, None)
+        l = fsquery.makecontentlist(self.test_mixedbag, False, False, True, False, True, False, True, None)
         v, r = launch_list.run_list(l, True, None)
         self.assertFalse(v)
 
@@ -133,7 +133,7 @@ class LaunchListTest(unittest.TestCase):
         self.assertTrue(v)
 
     def testListMixedBagAdapter(self):
-        l = fsquery.makecontentlist(self.test_mixedbag, False, True, False, True, False, True, None)
+        l = fsquery.makecontentlist(self.test_mixedbag, False, False, True, False, True, False, True, None)
         v, r = launch_list.run_list(l, True, None, self.adapter)
         self.assertFalse(v)
 

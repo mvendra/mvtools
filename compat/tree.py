@@ -47,7 +47,7 @@ class gentree:
 
     def traverse_delegate(self, current_node):
 
-        children = fsquery.makecontentlist(current_node, False, True, True, True, True, True, None)
+        children = fsquery.makecontentlist(current_node, False, False, True, True, True, True, True, None)
         for c in children:
 
             if os.path.isdir(c):

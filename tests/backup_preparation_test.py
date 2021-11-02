@@ -968,7 +968,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(ex_raised)
 
         patches_path = path_utils.concat_path(self.prep_target, "collected_patches")
-        generated_files = fsquery.makecontentlist(patches_path, True, True, True, True, True, True, None)
+        generated_files = fsquery.makecontentlist(patches_path, True, True, True, True, True, True, True, None)
         self.assertEqual(len(generated_files), 0)
 
     def testProcRunCollectPatches_DefaultInclude_ExcludeThirdOnly(self):

@@ -92,7 +92,7 @@ class CollectGitPatchTest(unittest.TestCase):
         ret = []
         patches_ranked = {}
 
-        patches = fsquery.makecontentlist(path_utils.concat_path(path, repo_path), False, True, False, False, False, True, None)
+        patches = fsquery.makecontentlist(path_utils.concat_path(path, repo_path), False, False, True, False, False, False, True, None)
         for p in patches:
             min_s = 9
             pn = path_utils.basename_filtered(p)
@@ -2847,7 +2847,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch.collect_git_patch_stash(self.first_repo, self.storage_path, -1)
         self.assertFalse(v)
 
-        patches = fsquery.makecontentlist(self.storage_path, False, True, False, False, False, True, None)
+        patches = fsquery.makecontentlist(self.storage_path, False, False, True, False, False, False, True, None)
         self.assertEqual(len(patches), 0)
 
     def testCollectPatchStash1(self):

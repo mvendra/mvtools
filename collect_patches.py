@@ -69,7 +69,7 @@ def collect_patches_recursive(path, custom_path_navigator, storage_path, default
     items = []
     if custom_path_navigator is None:
         # automatic path traversal
-        items = fsquery.makecontentlist(path, True, False, True, False, True, True, None)
+        items = fsquery.makecontentlist(path, True, False, False, True, False, True, True, None)
     else:
         items = custom_path_navigator(path)
 

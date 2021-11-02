@@ -23,7 +23,7 @@ def test_mass_hash_check(path_files, extension):
 
     ext_list_aux = []
     ext_list_aux.append(extension)
-    filelist = fsquery.makecontentlist(path_files, True, True, False, True, False, True, ext_list_aux)
+    filelist = fsquery.makecontentlist(path_files, True, False, True, False, True, False, True, ext_list_aux)
     report = []
 
     if len(filelist) == 0:

@@ -765,7 +765,7 @@ def is_folder_empty(path):
     if not os.path.isdir(path):
         return False
 
-    items = fsquery.makecontentlist(path, True, True, True, True, True, True, None)
+    items = fsquery.makecontentlist(path, True, False, True, True, True, True, True, None)
 
     return (len(items) == 0)
 

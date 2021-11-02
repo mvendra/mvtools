@@ -10,7 +10,7 @@ import terminal_colors
 
 def filteredsearch(path, search, extensions):
 
-    ret = fsquery.makecontentlist(path, True, False, True, False, False, True, extensions)
+    ret = fsquery.makecontentlist(path, True, False, False, True, False, False, True, extensions)
     for r in ret:
         try:
             out = check_output(["ag", search, r])

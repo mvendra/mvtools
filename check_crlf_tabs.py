@@ -111,7 +111,7 @@ def filter_generic(candidates, rem_exts, rem_roots, rem_files):
 
 def check_crlf(path, rem_exts, rem_roots, rem_files):
 
-    files = fsquery.makecontentlist(path, True, True, False, False, False, True, None)
+    files = fsquery.makecontentlist(path, True, True, True, False, False, False, True, None)
     files = filter_generic(files, rem_exts, rem_roots, rem_files)
 
     bad_files = []
@@ -127,7 +127,7 @@ def check_crlf(path, rem_exts, rem_roots, rem_files):
 
 def check_tabs(path, rem_exts, rem_roots, rem_files):
 
-    files = fsquery.makecontentlist(path, True, True, False, False, False, True, None)
+    files = fsquery.makecontentlist(path, True, True, True, False, False, False, True, None)
     files = filter_generic(files, rem_exts, rem_roots, rem_files)
 
     bad_files = []

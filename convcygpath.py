@@ -65,7 +65,7 @@ def find_next_path(root, path_string):
     if not os.path.exists(root):
         return False, None
 
-    contents = fsquery.makecontentlist(root, False, True, True, True, True, True, [])
+    contents = fsquery.makecontentlist(root, False, False, True, True, True, True, True, [])
     contents_map = _ar_to_map(contents)
     sr = linear_search(path_string, contents_map)
     if sr is None:

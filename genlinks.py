@@ -83,7 +83,7 @@ def genlinks():
         return False
 
     # run fsquery and collect contents inside mvtools
-    items = fsquery.makecontentlist(path_mvtools, True, True, False, False, False, True, None)
+    items = fsquery.makecontentlist(path_mvtools, True, False, True, False, False, False, True, None)
 
     # filter out exceptions
     items_filtered = apply_links_filters(items)
