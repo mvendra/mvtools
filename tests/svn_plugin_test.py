@@ -159,7 +159,7 @@ class SvnPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_head"] = "dummy_value3"
+        local_params["port_head"] = "dummy_value3"
         self.svn_task.params = local_params
 
         v, r = self.svn_task._read_params()
@@ -171,7 +171,7 @@ class SvnPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_unversioned"] = "dummy_value3"
+        local_params["port_unversioned"] = "dummy_value3"
         self.svn_task.params = local_params
 
         v, r = self.svn_task._read_params()
@@ -183,7 +183,7 @@ class SvnPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_previous_count"] = "dummy_value3"
+        local_params["port_previous_count"] = "dummy_value3"
         self.svn_task.params = local_params
 
         v, r = self.svn_task._read_params()
@@ -838,9 +838,9 @@ class SvnPluginTest(unittest.TestCase):
         local_params["default_filter"] = "dummy_value2"
         local_params["filter_include"] = "dummy_value3"
         local_params["filter_exclude"] = "dummy_value4"
-        local_params["port_repo_head"] = "dummy_value5"
-        local_params["port_repo_unversioned"] = "dummy_value6"
-        local_params["port_repo_previous_count"] = "dummy_value7"
+        local_params["port_head"] = "dummy_value5"
+        local_params["port_unversioned"] = "dummy_value6"
+        local_params["port_previous_count"] = "dummy_value7"
 
         self.svn_task.params = local_params
 
@@ -860,9 +860,9 @@ class SvnPluginTest(unittest.TestCase):
         local_params["default_filter"] = "dummy_value2"
         local_params["filter_include"] = ["dummy_value3", "dummy_value30"]
         local_params["filter_exclude"] = ["dummy_value4", "dummy_value40"]
-        local_params["port_repo_head"] = "dummy_value5"
-        local_params["port_repo_unversioned"] = "dummy_value6"
-        local_params["port_repo_previous_count"] = "dummy_value7"
+        local_params["port_head"] = "dummy_value5"
+        local_params["port_unversioned"] = "dummy_value6"
+        local_params["port_previous_count"] = "dummy_value7"
 
         self.svn_task.params = local_params
 
