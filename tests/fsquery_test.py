@@ -80,14 +80,14 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue(fsquery.filename_qualifies_extension_list ("/tmp/another", True, []) )
 
     def testMakecontentlist_1(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, "txt")
+        ret = fsquery.makecontentlist(self.test_dir, False, False, True, False, False, False, True, "txt")
         self.assertEqual(len(ret), 3)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
         self.assertTrue( self.file3 in ret )
 
     def testMakecontentlist_2(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, ["txt", "dat"])
+        ret = fsquery.makecontentlist(self.test_dir, False, False, True, False, False, False, True, ["txt", "dat"])
         self.assertEqual(len(ret), 4)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -95,23 +95,23 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.file4 in ret )
 
     def testMakecontentlist_3(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, False, ["txt", "dat"])
+        ret = fsquery.makecontentlist(self.test_dir, False, False, True, False, False, False, False, ["txt", "dat"])
         self.assertEqual(len(ret), 1)
         self.assertTrue( self.file5 in ret )
 
     def testMakecontentlist_4(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, "bin")
+        ret = fsquery.makecontentlist(self.test_dir, False, False, True, False, False, False, True, "bin")
         self.assertEqual(len(ret), 1)
         self.assertEqual( self.file5, ret[0] )
 
     def testMakecontentlist_5(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, False, False, False, True, "bin")
+        ret = fsquery.makecontentlist(self.test_dir, True, False, True, False, False, False, True, "bin")
         self.assertEqual(len(ret), 2)
         self.assertTrue( self.file5 in ret )
         self.assertTrue( self.sub1_file2 in ret )
 
     def testMakecontentlist_6(self):
-        ret = fsquery.makecontentlist(self.test_dir, False, True, False, False, False, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, False, False, True, False, False, False, True, None)
         self.assertEqual(len(ret), 5)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -120,7 +120,7 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.file5 in ret )
 
     def testMakecontentlist_7(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, False, False, False, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, True, False, True, False, False, False, True, None)
         self.assertEqual(len(ret), 8)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -132,7 +132,7 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub2_file1 in ret )
 
     def testMakecontentlist_8(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, False, True, False, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, True, False, True, False, True, False, True, None)
         self.assertEqual(len(ret), 11)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -147,7 +147,7 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub2_file2 in ret )
 
     def testMakecontentlist_9(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, True, True, False, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, True, False, True, True, True, False, True, None)
         self.assertEqual(len(ret), 13)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -163,7 +163,7 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub2_file2 in ret )
 
     def testMakecontentlist_10(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, True, True, True, True, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, True, False, True, True, True, True, True, None)
         self.assertEqual(len(ret), 14)
         self.assertTrue( self.file1 in ret )
         self.assertTrue( self.file2 in ret )
@@ -180,22 +180,219 @@ class FsqueryTest(unittest.TestCase):
         self.assertTrue( self.sub2_file2 in ret )
 
     def testMakecontentlist_11(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, False, False, False, True, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, True, False, False, False, False, True, True, None)
         self.assertEqual(len(ret), 1)
         self.assertTrue( self.sub2_sub1 in ret )
 
     def testMakecontentlist_12(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, False, False, True, False, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, True, False, False, False, True, False, True, None)
         self.assertEqual(len(ret), 3)
         self.assertTrue( self.sub2_file2 in ret )
         self.assertTrue( self.file6 in ret )
         self.assertTrue( self.file7 in ret )
 
     def testMakecontentlist_13(self):
-        ret = fsquery.makecontentlist(self.test_dir, True, False, True, False, False, True, None)
+        ret = fsquery.makecontentlist(self.test_dir, True, False, False, True, False, False, True, None)
         self.assertEqual(len(ret), 2)
         self.assertTrue( self.sub1 in ret )
         self.assertTrue( self.sub2 in ret )
+
+    def testMakecontentlist_14(self):
+
+        sub2_sub1_file21 = path_utils.concat_path(self.sub2_sub1, "file21")
+        create_and_write_file.create_file_contents(sub2_sub1_file21, "file21-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file21))
+
+        sub2_sub1_file23 = path_utils.concat_path(self.sub2_sub1, "file23")
+        create_and_write_file.create_file_contents(sub2_sub1_file23, "file23-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file23))
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(self.sub1, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        ret = fsquery.makecontentlist(self.sub2_sub1, True, True, True, True, True, True, True, None)
+        self.assertEqual(len(ret), 5)
+        self.assertTrue( sub2_sub1_linksub in ret )
+        self.assertTrue( sub2_sub1_file21 in ret )
+        self.assertTrue( sub2_sub1_file23 in ret )
+        self.assertTrue( linked_sub1_file1 in ret )
+        self.assertTrue( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_15(self):
+
+        sub2_sub1_file21 = path_utils.concat_path(self.sub2_sub1, "file21")
+        create_and_write_file.create_file_contents(sub2_sub1_file21, "file21-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file21))
+
+        sub2_sub1_file23 = path_utils.concat_path(self.sub2_sub1, "file23")
+        create_and_write_file.create_file_contents(sub2_sub1_file23, "file23-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file23))
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(self.sub1, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        ret = fsquery.makecontentlist(self.sub2_sub1, True, False, True, True, True, True, True, None)
+        self.assertEqual(len(ret), 3)
+        self.assertTrue( sub2_sub1_linksub in ret )
+        self.assertTrue( sub2_sub1_file21 in ret )
+        self.assertTrue( sub2_sub1_file23 in ret )
+        self.assertFalse( linked_sub1_file1 in ret )
+        self.assertFalse( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_16(self):
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(self.sub1, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        ret = fsquery.makecontentlist(sub2_sub1_linksub, True, True, True, True, True, True, True, None)
+        self.assertEqual(len(ret), 2)
+        self.assertTrue( linked_sub1_file1 in ret )
+        self.assertTrue( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_17(self):
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(self.sub1, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        ret = fsquery.makecontentlist(sub2_sub1_linksub, True, False, True, True, True, True, True, None)
+        self.assertEqual(len(ret), 2)
+        self.assertTrue( linked_sub1_file1 in ret )
+        self.assertTrue( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_18(self):
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(self.sub1, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        ret = fsquery.makecontentlist(sub2_sub1_linksub, False, True, True, True, True, True, True, None)
+        self.assertEqual(len(ret), 2)
+        self.assertTrue( linked_sub1_file1 in ret )
+        self.assertTrue( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_19(self):
+
+        sub2_sub1_file21 = path_utils.concat_path(self.sub2_sub1, "file21")
+        create_and_write_file.create_file_contents(sub2_sub1_file21, "file21-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file21))
+
+        sub2_sub1_file23 = path_utils.concat_path(self.sub2_sub1, "file23")
+        create_and_write_file.create_file_contents(sub2_sub1_file23, "file23-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file23))
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(self.sub1, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        ret = fsquery.makecontentlist(self.sub2_sub1, False, True, True, True, True, True, True, None)
+        self.assertEqual(len(ret), 3)
+        self.assertTrue( sub2_sub1_linksub in ret )
+        self.assertTrue( sub2_sub1_file21 in ret )
+        self.assertTrue( sub2_sub1_file23 in ret )
+        self.assertFalse( linked_sub1_file1 in ret )
+        self.assertFalse( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_20(self):
+
+        sub2_sub1_file21 = path_utils.concat_path(self.sub2_sub1, "file21")
+        create_and_write_file.create_file_contents(sub2_sub1_file21, "file21-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file21))
+
+        sub2_sub1_file23 = path_utils.concat_path(self.sub2_sub1, "file23")
+        create_and_write_file.create_file_contents(sub2_sub1_file23, "file23-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file23))
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(self.sub1, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        ret = fsquery.makecontentlist(self.sub2_sub1, False, True, True, False, True, True, True, None)
+        self.assertEqual(len(ret), 2)
+        self.assertFalse( sub2_sub1_linksub in ret )
+        self.assertTrue( sub2_sub1_file21 in ret )
+        self.assertTrue( sub2_sub1_file23 in ret )
+        self.assertFalse( linked_sub1_file1 in ret )
+        self.assertFalse( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_21(self):
+
+        another = self._create_test_dir("another")
+
+        sub2_sub1_file21 = path_utils.concat_path(self.sub2_sub1, "file21")
+        create_and_write_file.create_file_contents(sub2_sub1_file21, "file21-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file21))
+
+        sub2_sub1_file23 = path_utils.concat_path(self.sub2_sub1, "file23")
+        create_and_write_file.create_file_contents(sub2_sub1_file23, "file23-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file23))
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(another, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        another_circular = path_utils.concat_path(another, "circular")
+        os.symlink(self.sub2_sub1, another_circular)
+
+        ret = fsquery.makecontentlist(self.sub2_sub1, False, True, True, False, True, True, True, None)
+        self.assertEqual(len(ret), 2)
+        self.assertFalse( sub2_sub1_linksub in ret )
+        self.assertTrue( sub2_sub1_file21 in ret )
+        self.assertTrue( sub2_sub1_file23 in ret )
+        self.assertFalse( linked_sub1_file1 in ret )
+        self.assertFalse( linked_sub1_file2 in ret )
+
+    def testMakecontentlist_22(self):
+
+        another = self._create_test_dir("another")
+
+        sub2_sub1_file21 = path_utils.concat_path(self.sub2_sub1, "file21")
+        create_and_write_file.create_file_contents(sub2_sub1_file21, "file21-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file21))
+
+        sub2_sub1_file23 = path_utils.concat_path(self.sub2_sub1, "file23")
+        create_and_write_file.create_file_contents(sub2_sub1_file23, "file23-contents")
+        self.assertTrue(os.path.exists(sub2_sub1_file23))
+
+        sub2_sub1_linksub = path_utils.concat_path(self.sub2_sub1, "linksub")
+        os.symlink(another, sub2_sub1_linksub)
+        self.assertTrue(sub2_sub1_linksub)
+
+        linked_sub1_file1 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file1))
+        linked_sub1_file2 = path_utils.concat_path(self.sub2_sub1, "linksub", path_utils.basename_filtered(self.sub1_file2))
+
+        another_circular = path_utils.concat_path(another, "circular")
+        os.symlink(self.sub2_sub1, another_circular)
+
+        ret = fsquery.makecontentlist(self.sub2_sub1, True, True, True, False, True, True, True, None)
+        self.assertEqual(ret, None)
 
 if __name__ == '__main__':
     unittest.main()

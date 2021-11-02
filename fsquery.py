@@ -47,10 +47,11 @@ def __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_fil
 
     return ret_list_deleg
 
-def makecontentlist(path, recursive, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions):
+def makecontentlist(path, recursive, follow_symlinks, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions):
 
     # path: path to query
     # recursive: search path and subfolders
+    # follow_symlinks: also traverse into symlinked dirs
     # include_regular_files: include regular files - will be filtered by extension
     # include_regular_dirs: no further filtering
     # include_hidden_files: include files that start with "."
@@ -59,10 +60,17 @@ def makecontentlist(path, recursive, include_regular_files, include_regular_dirs
     # extensions: a list of extensions, to include or exclude. None means catch-all. can be a single string or a list of strings
 
     ret_list = []
+    circular_dict = {}
 
     if recursive:
 
-        for dirpath, dirnames, filenames in os.walk(path):
+        for dirpath, dirnames, filenames in os.walk(path, followlinks=follow_symlinks):
+            dirpath_resolved = os.path.realpath(dirpath)
+            if dirpath_resolved in circular_dict:
+                # circular inclusion detected
+                return None
+            else:
+                circular_dict[dirpath_resolved] = True
             ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
 
     else:
@@ -73,9 +81,10 @@ def makecontentlist(path, recursive, include_regular_files, include_regular_dirs
 
         folder_contents = os.listdir(path)
         for item in folder_contents:
-            if os.path.isdir(path_utils.concat_path(path, item)):
+            current_element = path_utils.concat_path(path, item)
+            if (os.path.isdir(current_element)):
                 dirnames.append(item)
-            elif os.path.isfile(path_utils.concat_path(path, item)):
+            elif os.path.isfile(current_element):
                 filenames.append(item)
 
         ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
@@ -83,7 +92,7 @@ def makecontentlist(path, recursive, include_regular_files, include_regular_dirs
     return ret_list
 
 def puaq():
-    print("Usage: %s path [-R|-r] include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include [extensions]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s path [-R|-r] follow_symlinks, include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include [extensions]" % path_utils.basename_filtered(__file__))
     exit(1)
 
 if __name__ == "__main__":
@@ -100,6 +109,7 @@ if __name__ == "__main__":
 
     # defaults
     rec = False
+    follow_symlinks = False
     inc_reg_files = True
     inc_reg_dirs = False
     inc_hidden_files = False
@@ -111,6 +121,13 @@ if __name__ == "__main__":
     if sys.argv[param_index].upper() == "-R":
         rec = True
         param_index += 1
+
+    # follow symlinks - mandatory
+    if sys.argv[param_index] == "yes":
+        follow_symlinks = True
+    elif sys.argv[param_index] == "no":
+        follow_symlinks = False
+    param_index += 1
 
     # include regular files - mandatory
     if sys.argv[param_index] == "yes":
@@ -150,6 +167,6 @@ if __name__ == "__main__":
     # extensions - optional
     exts = sys.argv[param_index:]
 
-    ret = makecontentlist(path, rec, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts_incl, exts)
+    ret = makecontentlist(path, rec, follow_symlinks, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts_incl, exts)
     for r in ret:
         print(r)
