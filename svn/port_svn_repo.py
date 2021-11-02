@@ -22,7 +22,6 @@ def _test_repo_path(path):
     return True, None
 
 def _reverse_list(the_list):
-
     reversed_list = []
     for x in reversed(the_list):
         reversed_list.append(x)

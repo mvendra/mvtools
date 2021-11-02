@@ -20,6 +20,12 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, None
 
+def _reverse_list(the_list):
+    reversed_list = []
+    for x in reversed(the_list):
+        reversed_list.append(x)
+    return reversed_list
+
 def port_git_repo_stash(temp_path, source_repo, target_repo, stash):
 
     report = []
@@ -31,7 +37,7 @@ def port_git_repo_stash(temp_path, source_repo, target_repo, stash):
     v, r = collect_git_patch.collect_git_patch_stash(source_repo, temp_path, stash)
     if not v:
         return False, "Failed collecting stash from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
-    stash_files = reversed(r)
+    stash_files = _reverse_list(r)
 
     v, r = apply_git_patch.apply_git_patch_stash(target_repo, stash_files)
     if not v:
@@ -47,7 +53,7 @@ def port_git_repo_previous(temp_path, source_repo, target_repo, previous_count):
     v, r = collect_git_patch.collect_git_patch_previous(source_repo, temp_path, previous_count)
     if not v:
         return False, "Failed porting previous (during collect-previous) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
-    previous_files = reversed(r)
+    previous_files = _reverse_list(r)
 
     # previous commits will be stacked up ontop of head - no autocommitting is available (on purpose)
     v, r = apply_git_patch.apply_git_patch_head(target_repo, previous_files)
