@@ -102,7 +102,7 @@ class PathUtilsTest(unittest.TestCase):
 
     def testExplodePath(self):
         result = path_utils.explodepath("/home/user")
-        self.assertEqual(result, "home user")
+        self.assertEqual(result, "/ home user")
 
     def testScratchFolder1(self):
 

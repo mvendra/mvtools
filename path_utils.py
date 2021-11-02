@@ -74,7 +74,7 @@ def arraytopath(the_path_array):
 
 def explodepath(apath):
 
-    tokens = apath.split("/")
+    tokens = splitpath(apath, "auto")
     result=""
     for tk in tokens:
         if tk == "":
