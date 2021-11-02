@@ -28,11 +28,11 @@ class CustomTask(launch_jobs.BaseTask):
         default_filter = None
         filter_include = None
         filter_exclude = None
-        port_repo_head = False
-        port_repo_staged = False
-        port_repo_stash_count = None
-        port_repo_unversioned = False
-        port_repo_previous_count = None
+        port_head = False
+        port_staged = False
+        port_stash_count = None
+        port_unversioned = False
+        port_previous_count = None
         reset_head = False
         reset_staged = False
         reset_stash_count = None
@@ -110,36 +110,36 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        # port_repo_head
+        # port_head
         try:
-            port_repo_head = self.params["port_repo_head"]
-            port_repo_head = True
+            port_head = self.params["port_head"]
+            port_head = True
         except KeyError:
             pass # optional
 
-        # port_repo_staged
+        # port_staged
         try:
-            port_repo_staged = self.params["port_repo_staged"]
-            port_repo_staged = True
+            port_staged = self.params["port_staged"]
+            port_staged = True
         except KeyError:
             pass # optional
 
-        # port_repo_stash_count
+        # port_stash_count
         try:
-            port_repo_stash_count = self.params["port_repo_stash_count"]
+            port_stash_count = self.params["port_stash_count"]
         except KeyError:
             pass # optional
 
-        # port_repo_unversioned
+        # port_unversioned
         try:
-            port_repo_unversioned = self.params["port_repo_unversioned"]
-            port_repo_unversioned = True
+            port_unversioned = self.params["port_unversioned"]
+            port_unversioned = True
         except KeyError:
             pass # optional
 
-        # port_repo_previous_count
+        # port_previous_count
         try:
-            port_repo_previous_count = self.params["port_repo_previous_count"]
+            port_previous_count = self.params["port_previous_count"]
         except KeyError:
             pass # optional
 
@@ -219,14 +219,14 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file, rewind_to_hash, rewind_like_source)
+        return True, (target_path, operation, source_url, remote_name, branch_name, source_path, default_filter, filter_include, filter_exclude, port_head, port_staged, port_stash_count, port_unversioned, port_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_file, patch_staged_file, patch_stash_file, patch_unversioned_base, patch_unversioned_file, rewind_to_hash, rewind_like_source)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, operation, source_url, remote_name, branch_name, source_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files, rewind_to_hash, rewind_like_source = r
+        target_path, operation, source_url, remote_name, branch_name, source_path, default_filter, filter_include, filter_exclude, port_head, port_staged, port_stash_count, port_unversioned, port_previous_count, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files, rewind_to_hash, rewind_like_source = r
 
         # delegate
         if operation == "clone_repo":
@@ -234,7 +234,7 @@ class CustomTask(launch_jobs.BaseTask):
         elif operation == "pull_repo":
             return self.task_pull_repo(feedback_object, target_path, remote_name, branch_name)
         elif operation == "port_repo":
-            return self.task_port_repo(feedback_object, source_path, target_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
+            return self.task_port_repo(feedback_object, source_path, target_path, default_filter, filter_include, filter_exclude, port_head, port_staged, port_stash_count, port_unversioned, port_previous_count)
         elif operation == "reset_repo":
             return self.task_reset_repo(feedback_object, target_path, default_filter, filter_include, filter_exclude, reset_head, reset_staged, reset_stash_count, reset_unversioned, reset_previous_count)
         elif operation == "rewind_repo":
@@ -295,7 +295,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         return True, None
 
-    def task_port_repo(self, feedback_object, source_path, target_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count):
+    def task_port_repo(self, feedback_object, source_path, target_path, default_filter, filter_include, filter_exclude, port_head, port_staged, port_stash_count, port_unversioned, port_previous_count):
 
         if source_path is None:
             return False, "Source path (source_path) is required for task_port_repo"
@@ -305,20 +305,20 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
-        if port_repo_stash_count is None:
-            port_repo_stash_count = "0"
-        if not port_repo_stash_count.lstrip("-").isnumeric():
-            return False, "Invalid stash_count - expected numeric string: [%s]" % port_repo_stash_count
+        if port_stash_count is None:
+            port_stash_count = "0"
+        if not port_stash_count.lstrip("-").isnumeric():
+            return False, "Invalid stash_count - expected numeric string: [%s]" % port_stash_count
 
-        if port_repo_previous_count is None:
-            port_repo_previous_count = "0"
-        if not port_repo_previous_count.isnumeric():
-            return False, "Invalid previous_count - expected numeric string: [%s]" % port_repo_previous_count
+        if port_previous_count is None:
+            port_previous_count = "0"
+        if not port_previous_count.isnumeric():
+            return False, "Invalid previous_count - expected numeric string: [%s]" % port_previous_count
 
-        port_repo_stash_count = int(port_repo_stash_count)
-        port_repo_previous_count = int(port_repo_previous_count)
+        port_stash_count = int(port_stash_count)
+        port_previous_count = int(port_previous_count)
 
-        v, r = port_git_repo.port_git_repo(source_path, target_path, default_filter, filter_include, filter_exclude, port_repo_head, port_repo_staged, port_repo_stash_count, port_repo_unversioned, port_repo_previous_count)
+        v, r = port_git_repo.port_git_repo(source_path, target_path, default_filter, filter_include, filter_exclude, port_head, port_staged, port_stash_count, port_unversioned, port_previous_count)
         if not v:
             return False, r
 

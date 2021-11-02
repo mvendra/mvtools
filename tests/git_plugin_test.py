@@ -193,7 +193,7 @@ class GitPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_head"] = "dummy_value3"
+        local_params["port_head"] = "dummy_value3"
         self.git_task.params = local_params
 
         v, r = self.git_task._read_params()
@@ -205,7 +205,7 @@ class GitPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_staged"] = "dummy_value3"
+        local_params["port_staged"] = "dummy_value3"
         self.git_task.params = local_params
 
         v, r = self.git_task._read_params()
@@ -217,7 +217,7 @@ class GitPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_stash_count"] = "dummy_value3"
+        local_params["port_stash_count"] = "dummy_value3"
         self.git_task.params = local_params
 
         v, r = self.git_task._read_params()
@@ -229,7 +229,7 @@ class GitPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_unversioned"] = "dummy_value3"
+        local_params["port_unversioned"] = "dummy_value3"
         self.git_task.params = local_params
 
         v, r = self.git_task._read_params()
@@ -241,7 +241,7 @@ class GitPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = "dummy_value1"
         local_params["operation"] = "dummy_value2"
-        local_params["port_repo_previous_count"] = "dummy_value3"
+        local_params["port_previous_count"] = "dummy_value3"
         self.git_task.params = local_params
 
         v, r = self.git_task._read_params()
@@ -516,14 +516,14 @@ class GitPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))
 
-        local_port_repo_head = False
-        local_port_repo_staged = False
-        local_port_repo_stash_count = "0"
-        local_port_repo_unversioned = False
+        local_port_head = False
+        local_port_staged = False
+        local_port_stash_count = "0"
+        local_port_unversioned = False
         local_prev_count = "0"
 
         with mock.patch("port_git_repo.port_git_repo", return_value=(True, None)) as dummy:
-            v, r = self.git_task.task_port_repo(print, self.existent_path1, self.existent_path2, "include", [], [], local_port_repo_head, local_port_repo_staged, local_port_repo_stash_count, local_port_repo_unversioned, local_prev_count)
+            v, r = self.git_task.task_port_repo(print, self.existent_path1, self.existent_path2, "include", [], [], local_port_head, local_port_staged, local_port_stash_count, local_port_unversioned, local_prev_count)
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2, "include", [], [], False, False, 0, False, 0)
 
@@ -532,14 +532,14 @@ class GitPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))
 
-        local_port_repo_head = True
-        local_port_repo_staged = True
-        local_port_repo_stash_count = "7"
-        local_port_repo_unversioned = True
+        local_port_head = True
+        local_port_staged = True
+        local_port_stash_count = "7"
+        local_port_unversioned = True
         local_prev_count = "5"
 
         with mock.patch("port_git_repo.port_git_repo", return_value=(True, None)) as dummy:
-            v, r = self.git_task.task_port_repo(print, self.existent_path1, self.existent_path2, "exclude", [], [], local_port_repo_head, local_port_repo_staged, local_port_repo_stash_count, local_port_repo_unversioned, local_prev_count)
+            v, r = self.git_task.task_port_repo(print, self.existent_path1, self.existent_path2, "exclude", [], [], local_port_head, local_port_staged, local_port_stash_count, local_port_unversioned, local_prev_count)
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2, "exclude", [], [], True, True, 7, True, 5)
 
@@ -558,14 +558,14 @@ class GitPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.existent_path1))
         self.assertTrue(os.path.exists(self.existent_path2))
 
-        local_port_repo_head = True
-        local_port_repo_staged = True
-        local_port_repo_stash_count = "-1"
-        local_port_repo_unversioned = True
+        local_port_head = True
+        local_port_staged = True
+        local_port_stash_count = "-1"
+        local_port_unversioned = True
         local_prev_count = "5"
 
         with mock.patch("port_git_repo.port_git_repo", return_value=(True, None)) as dummy:
-            v, r = self.git_task.task_port_repo(print, self.existent_path1, self.existent_path2, "include", [], [], local_port_repo_head, local_port_repo_staged, local_port_repo_stash_count, local_port_repo_unversioned, local_prev_count)
+            v, r = self.git_task.task_port_repo(print, self.existent_path1, self.existent_path2, "include", [], [], local_port_head, local_port_staged, local_port_stash_count, local_port_unversioned, local_prev_count)
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2, "include", [], [], True, True, -1, True, 5)
 
@@ -1410,11 +1410,11 @@ class GitPluginTest(unittest.TestCase):
         local_params["default_filter"] = "dummy_value2"
         local_params["filter_include"] = "dummy_value3"
         local_params["filter_exclude"] = "dummy_value4"
-        local_params["port_repo_head"] = "dummy_value5"
-        local_params["port_repo_staged"] = "dummy_value6"
-        local_params["port_repo_stash_count"] = "dummy_value7"
-        local_params["port_repo_unversioned"] = "dummy_value8"
-        local_params["port_repo_previous_count"] = "dummy_value9"
+        local_params["port_head"] = "dummy_value5"
+        local_params["port_staged"] = "dummy_value6"
+        local_params["port_stash_count"] = "dummy_value7"
+        local_params["port_unversioned"] = "dummy_value8"
+        local_params["port_previous_count"] = "dummy_value9"
         self.git_task.params = local_params
 
         with mock.patch("git_plugin.CustomTask.task_port_repo", return_value=(True, None)) as dummy:
@@ -1433,11 +1433,11 @@ class GitPluginTest(unittest.TestCase):
         local_params["default_filter"] = "dummy_value2"
         local_params["filter_include"] = ["dummy_value3", "dummy_value30"]
         local_params["filter_exclude"] = ["dummy_value4", "dummy_value40"]
-        local_params["port_repo_head"] = "dummy_value5"
-        local_params["port_repo_staged"] = "dummy_value6"
-        local_params["port_repo_stash_count"] = "dummy_value7"
-        local_params["port_repo_unversioned"] = "dummy_value8"
-        local_params["port_repo_previous_count"] = "dummy_value9"
+        local_params["port_head"] = "dummy_value5"
+        local_params["port_staged"] = "dummy_value6"
+        local_params["port_stash_count"] = "dummy_value7"
+        local_params["port_unversioned"] = "dummy_value8"
+        local_params["port_previous_count"] = "dummy_value9"
         self.git_task.params = local_params
 
         with mock.patch("git_plugin.CustomTask.task_port_repo", return_value=(True, None)) as dummy:
