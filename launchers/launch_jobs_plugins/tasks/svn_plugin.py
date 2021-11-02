@@ -257,8 +257,16 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = port_svn_repo.port_svn_repo(source_path, target_path, default_filter, filter_include, filter_exclude, port_head, port_unversioned, port_previous_count)
         if not v:
             return False, r
+        port_repo_output = r
 
-        return True, None
+        warning_msg = None
+        if port_repo_output is not None:
+            if len(port_repo_output) > 0 :
+                warning_msg = "port_svn_repo has produced output"
+            for o in port_repo_output:
+                feedback_object(o)
+
+        return True, warning_msg
 
     def task_reset_repo(self, feedback_object, target_path, default_filter, filter_include, filter_exclude, reset_head, reset_unversioned, reset_previous_count):
 
