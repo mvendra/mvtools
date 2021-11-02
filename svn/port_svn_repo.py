@@ -21,6 +21,13 @@ def _test_repo_path(path):
         return False, "Path [%s] does not point to a supported repository." % path
     return True, None
 
+def _reverse_list(the_list):
+
+    reversed_list = []
+    for x in reversed(the_list):
+        reversed_list.append(x)
+    return reversed_list
+
 def port_svn_repo_previous(temp_path, source_repo, target_repo, previous_count):
 
     report = []
@@ -29,7 +36,7 @@ def port_svn_repo_previous(temp_path, source_repo, target_repo, previous_count):
     v, r = collect_svn_patch.collect_svn_patch_previous(source_repo, temp_path, previous_count)
     if not v:
         return False, "Failed porting previous (during collect-previous) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
-    previous_files = reversed(r)
+    previous_files = _reverse_list(r)
 
     # previous commits will be stacked up ontop of head - no autocommitting is available (on purpose)
     v, r = apply_svn_patch.apply_svn_patch_head(target_repo, previous_files)
