@@ -27,7 +27,7 @@ def _report_patch(patch_filename):
 
 def _known_states():
 
-    st = ["C", "M", "!", "R", "D", "A", "?", "X"]
+    st = ["C", "M", "!", "R", "D", "A", "?", "X", "~"]
 
     return st
 
@@ -190,6 +190,17 @@ def reset_svn_repo_head(target_repo, backup_obj, default_filter, include_list, e
     has_any_failed = False
     c = 0
 
+    # get type changed files
+    v, r = svn_lib.get_head_type_changed_files(target_repo)
+    if not v:
+        return False, "Unable to retrieve list of type-changed files: [%s]" % r
+    type_changed_files = r
+
+    type_changed_files_filtered = _apply_filters(type_changed_files.copy(), default_filter, include_list, exclude_list)
+    if type_changed_files_filtered is None:
+        return False, "Unable to apply filters (type-changed operation). Target repo: [%s]" % target_repo
+    type_changed_files_final = type_changed_files_filtered.copy()
+
     # get new+added files
     v, r = svn_lib.get_head_added_files(target_repo)
     if not v:
@@ -255,6 +266,14 @@ def reset_svn_repo_head(target_repo, backup_obj, default_filter, include_list, e
     if conflicted_files_filtered is None:
         return False, "Unable to apply filters (head-conflicted operation). Target repo: [%s]" % target_repo
     conflicted_files_final = conflicted_files_filtered.copy()
+
+    # revert type-changed files
+    if len(type_changed_files_final) > 0:
+        v, r = svn_lib.revert(target_repo, type_changed_files_final)
+        if not v:
+            return False, "Failed attempting to un-type-change files: [%s]" % r
+        for tcf in type_changed_files_final:
+            report.append("file [%s] was un-type-changed" % tcf)
 
     # un-add new+added files (will be left as unversioned in the repo)
     if len(added_files_final) > 0:
