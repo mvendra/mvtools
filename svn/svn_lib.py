@@ -316,6 +316,9 @@ def get_head_replaced_files(local_repo):
 def get_head_conflicted_files(local_repo):
     return get_head_files_delegate(local_repo, "C")
 
+def get_head_type_changed_files(local_repo):
+    return get_head_files_delegate(local_repo, "~")
+
 def get_head_files_delegate(local_repo, status_detect):
 
     if local_repo is None:
