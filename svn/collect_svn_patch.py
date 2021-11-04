@@ -11,7 +11,7 @@ ERRMSG_EMPTY = "Empty contents"
 
 def _known_states():
 
-    st = ["C", "M", "!", "R", "D", "A", "?", "X"]
+    st = ["C", "M", "!", "R", "D", "A", "?", "X", "~"]
 
     return st
 
