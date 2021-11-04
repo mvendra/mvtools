@@ -465,15 +465,14 @@ def diff(local_repo, file_list=None, rev=None):
             return False, "file_list can't be empty"
 
         for fi in file_list:
-            fi_local = fix_cygwin_path(fi)
 
             # cut out the full preceding path of the files in relation to the base source repo
             # this is necessary to make the patches portable. as of nov/21, svn version 1.13 does
             # not offer a switch to do this on its own
 
-            v, r = path_utils.based_path_find_outstanding_path(local_repo, fi_local)
+            v, r = path_utils.based_path_find_outstanding_path(local_repo, fi)
             if not v:
-                return False, "Unable to find outstanding path between [%s] and [%s]" % (local_repo, fi_local)
+                return False, "Unable to find outstanding path between [%s] and [%s]" % (local_repo, fi)
             fi_local = r
 
             file_list_final.append(fi_local)
