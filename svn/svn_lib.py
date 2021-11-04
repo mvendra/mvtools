@@ -765,7 +765,7 @@ def restore_subpath_delegate(repo, repo_subpath, temp_path_full):
     subpath_leftover = r
 
     # export to temp folder
-    v, r = svn_wrapper.export(remote_link, subpath_leftover, temp_path_full, head_revision)
+    v, r = svn_wrapper.export(remote_link, subpath_leftover, fix_cygwin_path(temp_path_full), head_revision)
     if not v:
         return False, "Unable to restore [%s]'s subpath [%s]: Unable to export to local temp folder: [%s]" % (repo, repo_subpath, r)
 
