@@ -8,11 +8,15 @@ import prefix_checker
 import path_utils
 
 def prefix_checker_onelevel_caller(path, prefix_size):
-    r = True
-    subcats = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    v, r = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    if not v:
+        print(r)
+        return False
+    subcats = r
+    calls = True
     for c in subcats:
-        r &= prefix_checker.prefix_checker(c, prefix_size)
-    return r
+        calls &= prefix_checker.prefix_checker(c, prefix_size)
+    return calls
 
 def puaq():
     print("Usage: %s prefix_size [target-dir]" % path_utils.basename_filtered(__file__))
