@@ -37,7 +37,10 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
 
     ext_list_aux = []
     ext_list_aux.append(extension)
-    filelist = fsquery.makecontentlist(path_files, True, False, True, False, True, False, True, ext_list_aux)
+    v, r = fsquery.makecontentlist(path_files, True, False, True, False, True, False, True, ext_list_aux)
+    if not v:
+        return False, r
+    filelist = r
     report = []
 
     if len(filelist) == 0:
@@ -83,7 +86,7 @@ if __name__ == "__main__":
 
     r, v = test_mass_decrypt(path_files, path_temp_base, extension, passphrase)
     if not r:
+        print("Failures detected!")
         sys.exit(1)
-    else:
-        print("\nWill print the report...:")
-        print_report(v)
+    print("\nWill print the report...:")
+    print_report(v)
