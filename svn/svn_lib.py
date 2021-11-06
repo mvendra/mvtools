@@ -720,6 +720,9 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
 
     return True, warnings
 
+def _restore_subpath_check_return(output_message):
+    return _check_valid_codes(output_message, ["E155000"])
+
 def restore_subpath(repo, repo_subpath):
 
     if os.path.exists(repo_subpath):
@@ -767,10 +770,31 @@ def restore_subpath_delegate(repo, repo_subpath, temp_path_full):
         return False, "Unable to restore [%s]'s subpath [%s]: Unable to extract subpath from fullpath: [%s]" % (repo, repo_subpath, r)
     subpath_leftover = r
 
-    # export to temp folder
-    v, r = svn_wrapper.export(remote_link, subpath_leftover, fix_cygwin_path(temp_path_full), head_revision)
-    if not v:
-        return False, "Unable to restore [%s]'s subpath [%s]: Unable to export to local temp folder: [%s]" % (repo, repo_subpath, r)
+    iterations = 0
+    MAX_ITERATIONS = 6
+
+    while True:
+
+        iterations += 1
+        if iterations > MAX_ITERATIONS:
+            return False, "Unable to restore [%s]'s subpath [%s]: SVN server failed too many (%s) times." % (repo, repo_subpath, MAX_ITERATIONS)
+
+        # export to temp folder
+        v, r = svn_wrapper.export(remote_link, subpath_leftover, fix_cygwin_path(temp_path_full), head_revision)
+        if not v:
+            return False, "Unable to restore [%s]'s subpath [%s]: Unable to export to local temp folder: [%s]" % (repo, repo_subpath, r)
+        p_code = r[0]
+        p_out = r[1]
+        p_err = r[2]
+        if p_code: # it worked. quit trying to export.
+            break
+        else: # the call to the svn process failed. let's investigate what happened.
+            if _restore_subpath_check_return(p_err): # a known case - trying to export folders. treat as a success.
+                break
+            else: # unkown case - typically a network problem. just retry.
+                SLEEP_TIME = 5 # minutes
+                time.sleep(SLEEP_TIME * 60)
+                continue
 
     local_exported_file = path_utils.concat_path(temp_path_full, path_utils.basename_filtered(subpath_leftover))
     if not os.path.exists(local_exported_file) and not path_utils.is_path_broken_symlink(local_exported_file):
