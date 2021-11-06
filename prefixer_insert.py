@@ -36,7 +36,8 @@ def prefixer_insert(target_dir, prefix_to_reserve):
     sys.exit(1)
 
     PREFIX_SIZE = 3
-    dirs = fsquery.makecontentlist(target_dir, False, False, False, True, False, False, True, None)
+    v, r = fsquery.makecontentlist(target_dir, False, False, False, True, False, False, True, None)
+    dirs = r
     dirs.sort()
     for d in dirs:
         base = path_utils.dirname_filtered(d)
