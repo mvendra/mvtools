@@ -39,7 +39,7 @@ class graph_aux:
     def _visit(self, node_key, node_chain_list):
 
         if node_key in node_chain_list:
-            self.cycle_detection_record = node_key
+            self.cycle_detection_record = "%s -> [%s]" % (node_key, node_chain_list)
             return True # cycle detected
         node_chain_list.append(node_key)
 
