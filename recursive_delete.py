@@ -8,7 +8,8 @@ import path_utils
 
 def recursive_delete(path, filename):
 
-    all_files = fsquery.makecontentlist(path, True, False, True, False, True, False, True, None)
+    v, r = fsquery.makecontentlist(path, True, False, True, False, True, False, True, None)
+    all_files = r
     for f in all_files:
         bn = path_utils.basename_filtered(f)
         if bn == filename:
