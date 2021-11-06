@@ -5,6 +5,52 @@ import os
 
 import path_utils
 
+class graph_aux:
+
+    def __init__(self, root_node_key):
+        self.data = {}
+        self.root = root_node_key
+        self.data[root_node_key] = []
+        self.cycle_detection_record = None
+
+    def add_node(self, node_key):
+        if node_key in self.data:
+            return False # not added
+        self.data[node_key] = []
+        return True # node was added
+
+    def add_connection(self, node_key_source, node_key_target):
+        if not node_key_source in self.data:
+            return False
+        if not node_key_target in self.data:
+            return False
+        if node_key_target in self.data[node_key_source]:
+            return False
+        self.data[node_key_source].append(node_key_target)
+        return True
+
+    def get_cycle_error_report(self):
+        return self.cycle_detection_record
+
+    def detect_cycle(self):
+        self.cycle_detection_record = None
+        return self._visit(self.root, [])
+
+    def _visit(self, node_key, node_chain_list):
+
+        if node_key in node_chain_list:
+            self.cycle_detection_record = node_key
+            return True # cycle detected
+        node_chain_list.append(node_key)
+
+        for leaf in self.data[node_key]:
+            ret = self._visit(leaf, node_chain_list)
+            node_chain_list.pop()
+            if ret is True:
+                return True
+
+        return False
+
 def filename_qualifies_extension_list(filename, extensions_include, extensions):
 
     # no extensions specified. add everything indiscriminately
@@ -60,17 +106,22 @@ def makecontentlist(path, recursive, follow_symlinks, include_regular_files, inc
     # extensions: a list of extensions, to include or exclude. None means catch-all. can be a single string or a list of strings
 
     ret_list = []
-    circular_dict = {}
 
     if recursive:
 
+        g = graph_aux(os.path.realpath(path))
+
         for dirpath, dirnames, filenames in os.walk(path, followlinks=follow_symlinks):
+
             dirpath_resolved = os.path.realpath(dirpath)
-            if dirpath_resolved in circular_dict:
-                # circular inclusion detected
-                return None
-            else:
-                circular_dict[dirpath_resolved] = True
+            g.add_node(dirpath_resolved)
+            for leaf in dirnames:
+                leaf_real = os.path.realpath(path_utils.concat_path(dirpath, leaf))
+                g.add_node(leaf_real)
+                g.add_connection(dirpath_resolved, leaf_real)
+            if g.detect_cycle():
+                return False, "Cycle detected at [%s]" % (g.get_cycle_error_report())
+
             ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
 
     else:
@@ -89,7 +140,7 @@ def makecontentlist(path, recursive, follow_symlinks, include_regular_files, inc
 
         ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
 
-    return ret_list
+    return True, ret_list
 
 def puaq():
     print("Usage: %s path [-R|-r] follow_symlinks, include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include [extensions]" % path_utils.basename_filtered(__file__))
@@ -167,6 +218,9 @@ if __name__ == "__main__":
     # extensions - optional
     exts = sys.argv[param_index:]
 
-    ret = makecontentlist(path, rec, follow_symlinks, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts_incl, exts)
+    v, r = makecontentlist(path, rec, follow_symlinks, inc_reg_files, inc_reg_dirs, inc_hidden_files, inc_hidden_dirs, exts_incl, exts)
+    if not v:
+        print("Path [%s] failed: [%s]" % (path, r))
+        sys.exit(1)
     for r in ret:
         print(r)
