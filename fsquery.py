@@ -222,5 +222,5 @@ if __name__ == "__main__":
     if not v:
         print("Path [%s] failed: [%s]" % (path, r))
         sys.exit(1)
-    for r in ret:
-        print(r)
+    for x in r:
+        print(x)
