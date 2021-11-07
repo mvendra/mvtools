@@ -57,8 +57,10 @@ class CustomTask(launch_jobs.BaseTask):
         if not v:
             return False, "clone_repos failed - path does not exist: [%s]" % r
 
-        items = []
-        items = fsquery.makecontentlist(src_path, True, False, False, True, False, True, True, None)
+        v, r = fsquery.makecontentlist(src_path, True, False, False, True, False, True, True, None)
+        if not v:
+            return False, "clone_repos failed: [%s]" % r
+        items = r
 
         items_filtered_struct = []
         items_filtered_struct_pre = []
