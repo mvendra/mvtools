@@ -11,10 +11,6 @@ import path_utils
 Tests if all files inside a given path, that match the given extension, have an accompanying valid hash file (filename + ".sha256")
 """
 
-def puaq(): # print usage and quit
-    print("Usage: %s path_to_operate files_extension" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def test_mass_hash_check(path_files, extension):
 
     if not os.path.exists(path_files):
@@ -23,7 +19,10 @@ def test_mass_hash_check(path_files, extension):
 
     ext_list_aux = []
     ext_list_aux.append(extension)
-    filelist = fsquery.makecontentlist(path_files, True, False, True, False, True, False, True, ext_list_aux)
+    v, r = fsquery.makecontentlist(path_files, True, False, True, False, True, False, True, ext_list_aux)
+    if not v:
+        return False, [r]
+    filelist = r
     report = []
 
     if len(filelist) == 0:
@@ -38,13 +37,22 @@ def test_mass_hash_check(path_files, extension):
 
     return (len(report) == 0), report
 
-def print_report(report):
-    for l in report:
-        print(l)
-    if len(report) == 0:
+def print_report(v, r):
+
+    errcode = 0
+    if v:
         print("All passed!")
     else:
-        print("\nThere were %s errors." % len(report))
+        print("\nThere were %s errors." % len(r))
+        errcode = 1
+
+    for x in r:
+        print(x)
+    sys.exit(errcode)
+
+def puaq(): # print usage and quit
+    print("Usage: %s path_to_operate files_extension" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
 
@@ -54,9 +62,6 @@ if __name__ == "__main__":
     path_files = sys.argv[1]
     extension = sys.argv[2]
 
-    r, v = test_mass_hash_check(path_files, extension)
-    if not r:
-        sys.exit(1)
-    else:
-        print("\nWill print the report...:")
-        print_report(v)
+    v, r = test_mass_hash_check(path_files, extension)
+    print("\nWill print the report...:")
+    print_report(v, r)
