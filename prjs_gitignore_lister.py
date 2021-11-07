@@ -9,7 +9,8 @@ import path_utils
 def prjs_gitignore_lister(path):
     
     ls = []
-    projs = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    v, r = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    projs = r
     for p in projs:
 
         #pb = p[len(path)+1:]
