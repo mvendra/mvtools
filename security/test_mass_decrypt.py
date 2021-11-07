@@ -84,9 +84,10 @@ if __name__ == "__main__":
         print("Passphrase does not check")
         sys.exit(4)
 
-    r, v = test_mass_decrypt(path_files, path_temp_base, extension, passphrase)
-    if not r:
+    v, r = test_mass_decrypt(path_files, path_temp_base, extension, passphrase)
+    if not v:
         print("Failures detected!")
+        print(r)
         sys.exit(1)
     print("\nWill print the report...:")
-    print_report(v)
+    print_report(r)
