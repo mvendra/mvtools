@@ -4,20 +4,25 @@ import os
 import sys
 import fsquery
 from subprocess import check_output
+from subprocess import CalledProcessError
 
 import path_utils
 import terminal_colors
 
 def filteredsearch(path, search, extensions):
 
-    ret = fsquery.makecontentlist(path, True, False, False, True, False, False, True, extensions)
+    v, r = fsquery.makecontentlist(path, True, False, True, False, False, False, True, extensions)
+    ret = r
     for r in ret:
+        out = ""
         try:
             out = check_output(["ag", search, r])
             out = out.decode("ascii")
         except OSError as oe:
             print("Failed calling ag. Make sure silversearcher-ag is installed.")
             exit(1)
+        except CalledProcessError:
+            pass # no match, most likely
         if not len(out):
             continue
         print("%s%s" % (terminal_colors.TTY_BLUE, r))
