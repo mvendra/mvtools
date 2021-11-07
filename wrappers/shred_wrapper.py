@@ -11,12 +11,14 @@ import generic_run
 def shred_target(path):
 
     if os.path.isdir(path):
-        ret = fsquery.makecontentlist(path, True, False, True, False, True, False, True, [])
+        v, r = fsquery.makecontentlist(path, True, False, True, False, True, False, True, [])
+        ret = r
         for i in ret:
             v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", i])
             if not v:
                 return False, r
         shutil.rmtree(path)
+        return True, None
     else:
         return generic_run.run_cmd_simple(["shred", "-z", "-u", path])
 
@@ -35,5 +37,5 @@ if __name__ == "__main__":
     if v:
         print("Shredded target [%s]" % target_to_shred)
     else:
-        print("Failed shredding taget [%s]" % target_to_shred)
+        print("Failed shredding taget [%s]: [%s]" % (target_to_shred, r))
         sys.exit(1)
