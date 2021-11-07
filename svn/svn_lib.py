@@ -276,6 +276,10 @@ def repo_has_any_not_of_states(local_repo, states):
             continue
         if "Tree conflicts" in line:
             continue
+        if "> moved to" in line:
+            continue
+        if "> moved from" in line:
+            continue
 
         item_status = line[0]
 
