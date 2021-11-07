@@ -128,7 +128,10 @@ def _assemble_unversioned_all(unversioned_all):
             return False, "Path [%s] does not exist" % ua
 
         latest_assembled_pairs = []
-        found_files = fsquery.makecontentlist(ua, True, False, True, False, True, False, True, None)
+        v, r = fsquery.makecontentlist(ua, True, False, True, False, True, False, True, None)
+        if not v:
+            return False, r
+        found_files = r
         for ff in found_files:
             latest_assembled_pairs.append((ua, os.path.abspath(ff)))
 
