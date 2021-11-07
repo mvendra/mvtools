@@ -6,10 +6,6 @@ import os
 import fsquery
 import path_utils
 
-def puaq(): # print usage and quit
-    print("Usage: %s path_with_playlists" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def getcontents(thefile):
     contents = ""
     with open(thefile, "r") as f:
@@ -56,6 +52,10 @@ def proc(plfile):
             print("(index %s): %s of playlist %s does not exist!" % (i, path_utils.basename_filtered(t), path_utils.basename_filtered(plfile)))
     print("\n")
 
+def puaq(): # print usage and quit
+    print("Usage: %s path_with_playlists" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         puaq()
@@ -65,8 +65,8 @@ if __name__ == "__main__":
         print("%s does not exist." % path_playlists)
         sys.exit(1)
     
-    playlists = fsquery.makecontentlist(path_playlists, False, False, True, False, False, False, True, "xspf")
+    v, r = fsquery.makecontentlist(path_playlists, False, False, True, False, False, False, True, "xspf")
+    playlists = r
     for p in playlists:
         print("Processing %s..." % p)
         proc(p)
- 
