@@ -109,18 +109,20 @@ def makecontentlist(path, recursive, follow_symlinks, include_regular_files, inc
 
     if recursive:
 
-        g = graph_aux(os.path.realpath(path))
+        if follow_symlinks:
+            g = graph_aux(os.path.realpath(path))
 
         for dirpath, dirnames, filenames in os.walk(path, followlinks=follow_symlinks):
 
-            dirpath_resolved = os.path.realpath(dirpath)
-            g.add_node(dirpath_resolved)
-            for leaf in dirnames:
-                leaf_real = os.path.realpath(path_utils.concat_path(dirpath, leaf))
-                g.add_node(leaf_real)
-                g.add_connection(dirpath_resolved, leaf_real)
-            if g.detect_cycle():
-                return False, "Cycle detected at [%s]" % (g.get_cycle_error_report())
+            if follow_symlinks:
+                dirpath_resolved = os.path.realpath(dirpath)
+                g.add_node(dirpath_resolved)
+                for leaf in dirnames:
+                    leaf_real = os.path.realpath(path_utils.concat_path(dirpath, leaf))
+                    g.add_node(leaf_real)
+                    g.add_connection(dirpath_resolved, leaf_real)
+                if g.detect_cycle():
+                    return False, "Cycle detected at [%s]" % (g.get_cycle_error_report())
 
             ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
 
