@@ -58,7 +58,9 @@ def make_backup_artifacts_list(artifacts_base):
         if not cur_base.get_descend():
             retlist.append( ( cur_base.get_path(), cur_base.get_abort(), cur_base.get_warn_size(), cur_base.get_warn_abort() ) )
         else:
-            for cur_dir in fsquery.makecontentlist(cur_base.get_path(), False, False, True, True, True, True, True, None):
+            v, r = fsquery.makecontentlist(cur_base.get_path(), False, False, True, True, True, True, True, None)
+            all_detected_dirs = r
+            for cur_dir in all_detected_dirs:
                 add_cur = True
                 for cur_ex in cur_base.get_list_exceptions():
                     if cur_dir == path_utils.concat_path(cur_base.get_path(), cur_ex):
