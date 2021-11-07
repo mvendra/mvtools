@@ -7,10 +7,6 @@ from subprocess import call
 import fsquery
 import path_utils
 
-def puaq(): # print usage and quit
-    print("Usage: %s path_with_playlists string_to_find string_to_replace_with" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def proc(plfile, str_find, str_rep):
 
     str_find = str_find.replace("/", "\\/")
@@ -19,6 +15,10 @@ def proc(plfile, str_find, str_rep):
     the_cmd = ["sed", "-i", sed_opts, plfile]
 
     call(the_cmd)
+
+def puaq(): # print usage and quit
+    print("Usage: %s path_with_playlists string_to_find string_to_replace_with" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
@@ -31,7 +31,8 @@ if __name__ == "__main__":
     str_find = sys.argv[2]
     str_rep = sys.argv[3]
     
-    playlists = fsquery.makecontentlist(path_playlists, False, False, True, False, False, False, True, "xspf")
+    v, r = fsquery.makecontentlist(path_playlists, False, False, True, False, False, False, True, "xspf")
+    playlists = r
     for p in playlists:
         print("Processing %s..." % p)
         proc(p, str_find, str_rep)
