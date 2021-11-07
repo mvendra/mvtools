@@ -8,7 +8,8 @@ import prjs_gitignore_lister
 
 def prjs_gitignore_onelevel_caller(path):
     ls = []
-    subcats = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    v, r = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    subcats = r
     for c in subcats:
         tl = prjs_gitignore_lister.prjs_gitignore_lister(c)
         for a in tl:
