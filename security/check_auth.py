@@ -26,7 +26,8 @@ def check_permission(path):
 
 def check_auth_folder(path):
 
-    files_probe = fsquery.makecontentlist(path, True, False, True, True, True, True, True, "")
+    v, r = fsquery.makecontentlist(path, True, False, True, True, True, True, True, "")
+    files_probe = r
 
     exclude_list = ["*/.git/*"]
     filters = []
