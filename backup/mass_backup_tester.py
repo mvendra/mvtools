@@ -21,13 +21,13 @@ def backups_mass_check(config_file, pass_hash_file):
         return False
 
     # reads config file
-    r, v = backup_processor.read_config(config_file)
-    if not r:
+    v, r = backup_processor.read_config(config_file)
+    if not v:
         print("Failed reading config file: [%s]" % config_file)
         return False
 
-    path_folders = v[2]
-    temp_path = v[4]
+    path_folders = r[2]
+    temp_path = r[4]
     extension = "enc"
 
     # avoid conflict with tmp folder used by actual backup creation
@@ -40,25 +40,29 @@ def backups_mass_check(config_file, pass_hash_file):
         print("Can't scratch the folder [%s]." % temp_path)
         return False
 
+    v = backups_mass_check_delegate(extension, passphrase, path_folders, temp_path)
+    shutil.rmtree(temp_path)
+    return v
+
+def backups_mass_check_delegate(extension, passphrase, path_folders, temp_path):
+
+    return_value = True
+
     # test mass hash check
     for pf in path_folders:
         print("Mass hash checking [%s]..." % pf)
-        r, v = test_mass_hash_check.test_mass_hash_check(pf, extension)
-        if not r:
-            return False
-        test_mass_hash_check.print_report(v)
+        v, r = test_mass_hash_check.test_mass_hash_check(pf, extension)
+        return_value &= v
+        test_mass_hash_check.print_report(v, r)
 
     # test mass decrypt
     for pf in path_folders:
         print("Mass test-decrypting [%s]..." % pf)
-        r, v = test_mass_decrypt.test_mass_decrypt(pf, temp_path, extension, passphrase)
-        if not r:
-            return False
-        test_mass_decrypt.print_report(v)
+        v, r = test_mass_decrypt.test_mass_decrypt(pf, temp_path, extension, passphrase)
+        return_value &= v
+        test_mass_decrypt.print_report(v, r)
 
-    shutil.rmtree(temp_path)
-
-    return True
+    return return_value
 
 def puaq():
     print("Usage: %s config-file passhash-file" % path_utils.basename_filtered(__file__))

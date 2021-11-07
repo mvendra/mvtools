@@ -17,18 +17,18 @@ is complete, but it is not removed.
 This is like a dry-run version of a would-be mass_decrypt operation/script. Intended for validating purposes.
 """
 
-def puaq(): # print usage and quit
-    print("Usage: %s path_to_operate temporary_path files_extension passphrase_hash_file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+def print_report(v, r):
 
-
-def print_report(report):
-    for r in report:
-        print(r)
-    if len(report) == 0:
+    errcode = 0
+    if v:
         print("All passed!")
     else:
-        print("\nThere were %s errors." % len(report))
+        print("\nThere were %s errors." % len(r))
+        errcode = 5
+
+    for x in r:
+        print(x)
+    return errcode
 
 def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
 
@@ -39,7 +39,7 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
     ext_list_aux.append(extension)
     v, r = fsquery.makecontentlist(path_files, True, False, True, False, True, False, True, ext_list_aux)
     if not v:
-        return False, r
+        return False, [r]
     filelist = r
     report = []
 
@@ -56,6 +56,10 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
         print("\nWARNING: Failed deleting %s! You should do it now manually." % path_temp_used)
 
     return (len(report) == 0), report
+
+def puaq(): # print usage and quit
+    print("Usage: %s path_to_operate temporary_path files_extension passphrase_hash_file" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
 
@@ -85,9 +89,5 @@ if __name__ == "__main__":
         sys.exit(4)
 
     v, r = test_mass_decrypt(path_files, path_temp_base, extension, passphrase)
-    if not v:
-        print("Failures detected!")
-        print(r)
-        sys.exit(1)
     print("\nWill print the report...:")
-    print_report(r)
+    sys.exit(print_report(v, r))

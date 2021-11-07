@@ -44,11 +44,11 @@ def print_report(v, r):
         print("All passed!")
     else:
         print("\nThere were %s errors." % len(r))
-        errcode = 1
+        errcode = 5
 
     for x in r:
         print(x)
-    sys.exit(errcode)
+    return errcode
 
 def puaq(): # print usage and quit
     print("Usage: %s path_to_operate files_extension" % path_utils.basename_filtered(__file__))
@@ -64,4 +64,4 @@ if __name__ == "__main__":
 
     v, r = test_mass_hash_check(path_files, extension)
     print("\nWill print the report...:")
-    print_report(v, r)
+    sys.exit(print_report(v, r))
