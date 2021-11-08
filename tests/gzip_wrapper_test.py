@@ -56,9 +56,73 @@ class GzipWrapperTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.tar_file))
         self.assertTrue(os.path.exists(self.tar_gz_file))
 
-    def testGzipWrapperCompressAndDecompress(self):
+    def testGzipWrapperCompressAndDecompress1(self):
 
         v, r = tar_wrapper.make_pack(self.tar_file, [self.file1])
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(self.tar_file))
+        self.assertFalse(os.path.exists(self.tar_gz_file))
+
+        v, r = gzip_wrapper.compress(self.tar_file)
+        self.assertTrue(v)
+
+        self.assertFalse(os.path.exists(self.tar_file))
+        self.assertTrue(os.path.exists(self.tar_gz_file))
+
+        v, r = gzip_wrapper.decompress(self.tar_gz_file)
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(self.tar_file))
+        self.assertFalse(os.path.exists(self.tar_gz_file))
+
+    def testGzipWrapperCompressAndDecompress2(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blanksub_blankfn = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blanksub_blankfn))
+        self.assertTrue(create_and_write_file.create_file_contents(blanksub_blankfn, "def"))
+        self.assertTrue(os.path.exists(blanksub_blankfn))
+
+        v, r = tar_wrapper.make_pack(self.tar_file, [blanksub_blankfn])
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(self.tar_file))
+        self.assertFalse(os.path.exists(self.tar_gz_file))
+
+        v, r = gzip_wrapper.compress(self.tar_file)
+        self.assertTrue(v)
+
+        self.assertFalse(os.path.exists(self.tar_file))
+        self.assertTrue(os.path.exists(self.tar_gz_file))
+
+        v, r = gzip_wrapper.decompress(self.tar_gz_file)
+        self.assertTrue(v)
+
+        self.assertTrue(os.path.exists(self.tar_file))
+        self.assertFalse(os.path.exists(self.tar_gz_file))
+
+    def testGzipWrapperCompressAndDecompress3(self):
+
+        testfile1 = path_utils.concat_path(self.test_dir, "testfile1.txt")
+        self.assertFalse(os.path.exists(testfile1))
+        self.assertTrue(create_and_write_file.create_file_contents(testfile1, "def"))
+        self.assertTrue(os.path.exists(testfile1))
+
+        testfile2 = path_utils.concat_path(self.test_dir, "testfile2.txt")
+        self.assertFalse(os.path.exists(testfile2))
+        os.symlink(testfile1, testfile2)
+        self.assertTrue(os.path.exists(testfile2))
+
+        os.unlink(testfile1)
+        self.assertFalse(os.path.exists(testfile1))
+        self.assertTrue(path_utils.is_path_broken_symlink(testfile2))
+
+        v, r = tar_wrapper.make_pack(self.tar_file, [testfile2])
         self.assertTrue(v)
 
         self.assertTrue(os.path.exists(self.tar_file))
