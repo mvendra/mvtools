@@ -4,6 +4,7 @@ import os
 import sys
 
 import fsquery
+import mvtools_exception
 import terminal_colors
 
 import git_push
@@ -22,6 +23,8 @@ def filter_sub_files(sub_candidates):
 def push_subs(path):
 
     v, r = fsquery.makecontentlist(path, True, False, False, False, True, False, True, None)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     subs = filter_sub_files(r)
 
     report = []

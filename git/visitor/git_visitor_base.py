@@ -4,6 +4,7 @@ import os
 
 import path_utils
 import fsquery
+import mvtools_exception
 import git_lib
 
 import terminal_colors
@@ -224,6 +225,8 @@ def make_repo_list(path):
         return None
 
     v, r = fsquery.makecontentlist(path, True, False, False, True, False, True, True, [])
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     ret_list = r
     ret_list = filter_git_only(ret_list)
     ret_list = pluck_dotgit(ret_list)
