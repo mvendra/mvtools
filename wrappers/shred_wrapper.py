@@ -4,14 +4,17 @@ import sys
 import os
 import shutil
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 import generic_run
 
 def shred_target(path):
 
     if os.path.isdir(path):
         v, r = fsquery.makecontentlist(path, True, False, True, False, True, False, True, [])
+        if not v:
+            return False, r
         ret = r
         for i in ret:
             v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", i])

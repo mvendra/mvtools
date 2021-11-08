@@ -3,13 +3,16 @@
 import sys
 import os
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 
 def prjs_gitignore_lister(path):
     
     ls = []
     v, r = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     projs = r
     for p in projs:
 

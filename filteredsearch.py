@@ -2,16 +2,19 @@
 
 import os
 import sys
-import fsquery
 from subprocess import check_output
 from subprocess import CalledProcessError
 
 import path_utils
+import fsquery
+import mvtools_exception
 import terminal_colors
 
 def filteredsearch(path, search, extensions):
 
     v, r = fsquery.makecontentlist(path, True, False, True, False, False, False, True, extensions)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     ret = r
     for r in ret:
         out = ""

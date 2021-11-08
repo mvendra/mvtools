@@ -2,32 +2,10 @@
 
 import os
 import sys
-from pathlib import PurePath
 
-import fsquery
 import path_utils
-
-"""
-# python2
-# from http://stackoverflow.com/questions/4579908/cross-platform-splitting-of-path-in-python
-def os_path_split_asunder(path, debug=False):
-    parts = []
-    while True:
-        newpath, tail = os.path.split(path)
-        if debug: print repr(path), (newpath, tail)
-        if newpath == path:
-            assert not tail
-            if path: parts.append(path)
-            break
-        parts.append(tail)
-        path = newpath
-    parts.reverse()
-    return parts
-"""
-
-# python3
-def os_path_split_asunder(path):
-    return list(PurePath(path).parts)
+import fsquery
+import mvtools_exception
 
 def remove_root(files, roots):
 
@@ -35,7 +13,7 @@ def remove_root(files, roots):
 
     for f in files:
     
-        parts = os_path_split_asunder(f)
+        parts = path_utils.splitpath(f, "auto")
         add = True
         for r in roots:
             if r in parts:
@@ -113,8 +91,7 @@ def check_crlf(path, rem_exts, rem_roots, rem_files):
 
     v, r = fsquery.makecontentlist(path, True, True, True, False, False, False, True, None)
     if not v:
-        print(r)
-        sys.exit(1)
+        raise mvtools_exception.mvtools_exception(r)
     files = r
     files = filter_generic(files, rem_exts, rem_roots, rem_files)
 
@@ -133,8 +110,7 @@ def check_tabs(path, rem_exts, rem_roots, rem_files):
 
     v, r = fsquery.makecontentlist(path, True, True, True, False, False, False, True, None)
     if not v:
-        print(r)
-        sys.exit(1)
+        raise mvtools_exception.mvtools_exception(r)
     files = r
     files = filter_generic(files, rem_exts, rem_roots, rem_files)
 
