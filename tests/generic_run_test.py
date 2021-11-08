@@ -386,6 +386,23 @@ class GenericRunTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "test-for-echo" + os.linesep)
 
+    def testRunCmdSimpleBlankcmd(self):
+
+        blank_folder = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blank_folder))
+        os.mkdir(blank_folder)
+        self.assertTrue(os.path.exists(blank_folder))
+
+        blank_cmd = path_utils.concat_path(blank_folder, " ")
+        self.assertFalse(os.path.exists(blank_cmd))
+        self.assertTrue(create_and_write_file.create_file_contents(blank_cmd, self.test_script_print_content))
+        self.assertTrue(os.path.exists(blank_cmd))
+
+        os.chmod(blank_cmd, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+        v, r = generic_run.run_cmd_simple([blank_cmd])
+        self.assertTrue(v)
+        self.assertEqual(r, "the test output" + os.linesep)
+
     def testRunCmdSimpleFail1(self):
 
         v, r = generic_run.run_cmd_simple(["ocho"])
