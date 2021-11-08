@@ -946,5 +946,136 @@ class FsqueryTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertTrue(A in r)
 
+    def testMakecontentlist_31(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blankfile1 = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blankfile1))
+        self.assertTrue(create_and_write_file.create_file_contents(blankfile1, "blank contents"))
+        self.assertTrue(os.path.exists(blankfile1))
+
+        blankfile2 = path_utils.concat_path(blanksub, "   ")
+        self.assertFalse(os.path.exists(blankfile2))
+        self.assertTrue(create_and_write_file.create_file_contents(blankfile2, "blank contents"))
+        self.assertTrue(os.path.exists(blankfile2))
+
+        v, r = fsquery.makecontentlist(blanksub, False, False, True, False, True, True, True, None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 2)
+        self.assertTrue( blankfile1 in r )
+        self.assertTrue( blankfile2 in r )
+
+    def testMakecontentlist_32(self):
+
+        subtest = path_utils.concat_path(self.test_dir, "subtest")
+        self.assertFalse(os.path.exists(subtest))
+        os.mkdir(subtest)
+        self.assertTrue(os.path.exists(subtest))
+
+        subtestfile1 = path_utils.concat_path(subtest, "file1.txt")
+        self.assertFalse(os.path.exists(subtestfile1))
+        self.assertTrue(create_and_write_file.create_file_contents(subtestfile1, "blank contents"))
+        self.assertTrue(os.path.exists(subtestfile1))
+
+        subtestfile2 = path_utils.concat_path(subtest, "file2.txt")
+        self.assertFalse(os.path.exists(subtestfile2))
+        os.symlink(subtestfile1, subtestfile2)
+        self.assertTrue(os.path.exists(subtestfile2))
+
+        os.unlink(subtestfile1)
+        self.assertFalse(os.path.exists(subtestfile1))
+        self.assertTrue(path_utils.is_path_broken_symlink(subtestfile2))
+
+        v, r = fsquery.makecontentlist(subtest, False, False, True, True, True, True, True, None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertFalse( subtestfile1 in r )
+        self.assertTrue( subtestfile2 in r )
+
+    def testMakecontentlist_33(self):
+
+        subtest = path_utils.concat_path(self.test_dir, "subtest")
+        self.assertFalse(os.path.exists(subtest))
+        os.mkdir(subtest)
+        self.assertTrue(os.path.exists(subtest))
+
+        subtestfile1 = path_utils.concat_path(subtest, "file1.txt")
+        self.assertFalse(os.path.exists(subtestfile1))
+        self.assertTrue(create_and_write_file.create_file_contents(subtestfile1, "blank contents"))
+        self.assertTrue(os.path.exists(subtestfile1))
+
+        subtestfile2 = path_utils.concat_path(subtest, "file2.txt")
+        self.assertFalse(os.path.exists(subtestfile2))
+        os.symlink(subtestfile1, subtestfile2)
+        self.assertTrue(os.path.exists(subtestfile2))
+
+        os.unlink(subtestfile1)
+        self.assertFalse(os.path.exists(subtestfile1))
+        self.assertTrue(path_utils.is_path_broken_symlink(subtestfile2))
+
+        v, r = fsquery.makecontentlist(subtest, True, False, True, True, True, True, True, None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertFalse( subtestfile1 in r )
+        self.assertTrue( subtestfile2 in r )
+
+    def testMakecontentlist_34(self):
+
+        subtest = path_utils.concat_path(self.test_dir, "subtest")
+        self.assertFalse(os.path.exists(subtest))
+        os.mkdir(subtest)
+        self.assertTrue(os.path.exists(subtest))
+
+        subtest_sub1 = path_utils.concat_path(subtest, "sub1")
+        self.assertFalse(os.path.exists(subtest_sub1))
+        os.mkdir(subtest_sub1)
+        self.assertTrue(os.path.exists(subtest_sub1))
+
+        subtest_sub2 = path_utils.concat_path(subtest, "sub2")
+        self.assertFalse(os.path.exists(subtest_sub2))
+        os.symlink(subtest_sub1, subtest_sub2)
+        self.assertTrue(os.path.exists(subtest_sub2))
+
+        shutil.rmtree(subtest_sub1)
+        self.assertFalse(os.path.exists(subtest_sub1))
+        self.assertTrue(path_utils.is_path_broken_symlink(subtest_sub2))
+
+        v, r = fsquery.makecontentlist(subtest, False, False, True, True, True, True, True, None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertFalse( subtest_sub1 in r )
+        self.assertTrue( subtest_sub2 in r )
+
+    def testMakecontentlist_35(self):
+
+        subtest = path_utils.concat_path(self.test_dir, "subtest")
+        self.assertFalse(os.path.exists(subtest))
+        os.mkdir(subtest)
+        self.assertTrue(os.path.exists(subtest))
+
+        subtest_sub1 = path_utils.concat_path(subtest, "sub1")
+        self.assertFalse(os.path.exists(subtest_sub1))
+        os.mkdir(subtest_sub1)
+        self.assertTrue(os.path.exists(subtest_sub1))
+
+        subtest_sub2 = path_utils.concat_path(subtest, "sub2")
+        self.assertFalse(os.path.exists(subtest_sub2))
+        os.symlink(subtest_sub1, subtest_sub2)
+        self.assertTrue(os.path.exists(subtest_sub2))
+
+        shutil.rmtree(subtest_sub1)
+        self.assertFalse(os.path.exists(subtest_sub1))
+        self.assertTrue(path_utils.is_path_broken_symlink(subtest_sub2))
+
+        v, r = fsquery.makecontentlist(subtest, True, False, True, True, True, True, True, None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertFalse( subtest_sub1 in r )
+        self.assertTrue( subtest_sub2 in r )
+
 if __name__ == '__main__':
     unittest.main()

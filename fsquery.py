@@ -137,7 +137,7 @@ def makecontentlist(path, recursive, follow_symlinks, include_regular_files, inc
             current_element = path_utils.concat_path(path, item)
             if (os.path.isdir(current_element)):
                 dirnames.append(item)
-            elif os.path.isfile(current_element):
+            elif os.path.isfile(current_element) or path_utils.is_path_broken_symlink(current_element):
                 filenames.append(item)
 
         ret_list += __makecontentlist_delegate(dirpath, dirnames, filenames, include_regular_files, include_regular_dirs, include_hidden_files, include_hidden_dirs, extensions_include, extensions)
