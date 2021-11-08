@@ -7,6 +7,7 @@ import input_checked_passphrase
 import check_mounted
 import terminal_colors
 import fsquery
+import mvtools_exception
 import path_utils
 import dsl_type20
 import convert_unit
@@ -59,6 +60,8 @@ def make_backup_artifacts_list(artifacts_base):
             retlist.append( ( cur_base.get_path(), cur_base.get_abort(), cur_base.get_warn_size(), cur_base.get_warn_abort() ) )
         else:
             v, r = fsquery.makecontentlist(cur_base.get_path(), False, False, True, True, True, True, True, None)
+            if not v:
+                raise mvtools_exception.mvtools_exception(r)
             all_detected_dirs = r
             for cur_dir in all_detected_dirs:
                 add_cur = True
