@@ -1286,8 +1286,8 @@ class PathUtilsTest(unittest.TestCase):
 
         self.assertEqual(path_utils.is_folder_empty(None), None)
         self.assertEqual(path_utils.is_folder_empty(""), None)
-        self.assertFalse(path_utils.is_folder_empty(self.nonexistent))
-        self.assertFalse(path_utils.is_folder_empty(self.test_file))
+        self.assertEqual(path_utils.is_folder_empty(self.nonexistent), None)
+        self.assertEqual(path_utils.is_folder_empty(self.test_file), None)
 
         folder1_sub1 = path_utils.concat_path(self.folder1, "sub1")
         folder1_sub2 = path_utils.concat_path(self.folder1, "sub2")
