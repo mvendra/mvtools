@@ -3,12 +3,15 @@
 import sys
 import os
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 
 def recursive_delete(path, filename):
 
     v, r = fsquery.makecontentlist(path, True, False, True, False, True, False, True, None)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     all_files = r
     for f in all_files:
         bn = path_utils.basename_filtered(f)

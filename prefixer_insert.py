@@ -3,8 +3,9 @@
 import os
 import sys
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 import prjrenamer
 
 def pad_with_zeroes_left(num_in_str, amount):
@@ -37,6 +38,8 @@ def prefixer_insert(target_dir, prefix_to_reserve):
 
     PREFIX_SIZE = 3
     v, r = fsquery.makecontentlist(target_dir, False, False, False, True, False, False, True, None)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     dirs = r
     dirs.sort()
     for d in dirs:

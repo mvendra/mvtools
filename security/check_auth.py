@@ -5,10 +5,10 @@ import os
 import stat
 
 import terminal_colors
-
 import fsquery
 import fsquery_adv_filter
 import path_utils
+import mvtools_exception
 
 def print_success(msg):
     print("%s: %s%s%s" % (path_utils.basename_filtered(__file__), terminal_colors.TTY_GREEN, msg, terminal_colors.get_standard_color()))
@@ -27,6 +27,8 @@ def check_permission(path):
 def check_auth_folder(path):
 
     v, r = fsquery.makecontentlist(path, True, False, True, True, True, True, True, "")
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     files_probe = r
 
     exclude_list = ["*/.git/*"]

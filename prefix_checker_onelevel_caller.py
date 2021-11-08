@@ -3,12 +3,15 @@
 import sys
 import os
 
-import fsquery
-import prefix_checker
 import path_utils
+import fsquery
+import mvtools_exception
+import prefix_checker
 
 def prefix_checker_onelevel_caller(path, prefix_size):
     v, r = fsquery.makecontentlist(path, False, False, False, True, False, False, True, None)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     if not v:
         print(r)
         return False
