@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import fsquery
+import mvtools_exception
 
 class gentree:
     def __init__(self, path):
@@ -48,6 +49,8 @@ class gentree:
     def traverse_delegate(self, current_node):
 
         v, r = fsquery.makecontentlist(current_node, False, False, True, True, True, True, True, None)
+        if not v:
+            raise mvtools_exception.mvtools_exception(r)
         children = r
         for c in children:
 
