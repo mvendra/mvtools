@@ -270,5 +270,59 @@ class TarWrapperTest(unittest.TestCase):
         self.ext_file1 = path_utils.concat_path(self.extracted_folder, self.file1)
         self.assertTrue( os.path.exists( self.ext_file1 ) )
 
+    def testSpecialCases6(self):
+
+        blank_sub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blank_sub))
+        os.mkdir(blank_sub)
+        self.assertTrue(os.path.exists(blank_sub))
+
+        blank_sub_blank_fn = path_utils.concat_path(blank_sub, " ")
+        self.assertFalse(os.path.exists(blank_sub_blank_fn))
+        create_and_write_file.create_file_contents(blank_sub_blank_fn, "abc")
+        self.assertTrue(os.path.exists(blank_sub_blank_fn))
+
+        v, r = tar_wrapper.make_pack(self.tar_file, [blank_sub_blank_fn])
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.tar_file))
+
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
+        os.mkdir(self.extracted_folder)
+
+        v, r = tar_wrapper.extract(self.tar_file, self.extracted_folder)
+        self.assertTrue(v)
+
+        self.ext_file1 = path_utils.concat_path(self.extracted_folder, blank_sub_blank_fn)
+        self.assertTrue( os.path.exists( self.ext_file1 ) )
+
+    def testSpecialCases7(self):
+
+        test_source_file = path_utils.concat_path(self.test_dir, "test_source_file.txt")
+        self.assertFalse(os.path.exists(test_source_file))
+        create_and_write_file.create_file_contents(test_source_file, "abc")
+        self.assertTrue(os.path.exists(test_source_file))
+
+        test_source_link = path_utils.concat_path(self.test_dir, "test_source_link.txt")
+        self.assertFalse(os.path.exists(test_source_link))
+        os.symlink(test_source_file, test_source_link)
+        self.assertTrue(os.path.exists(test_source_link))
+
+        os.unlink(test_source_file)
+        self.assertFalse(os.path.exists(test_source_file))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_source_link))
+
+        v, r = tar_wrapper.make_pack(self.tar_file, [test_source_link])
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.tar_file))
+
+        self.extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
+        os.mkdir(self.extracted_folder)
+
+        v, r = tar_wrapper.extract(self.tar_file, self.extracted_folder)
+        self.assertTrue(v)
+
+        self.ext_file1 = path_utils.concat_path(self.extracted_folder, test_source_link)
+        self.assertTrue( path_utils.is_path_broken_symlink( self.ext_file1 ) )
+
 if __name__ == '__main__':
     unittest.main()

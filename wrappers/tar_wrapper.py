@@ -23,7 +23,7 @@ def make_pack(file_to_create, incl_list):
 
     for fi in range(len(incl_list)):
         incl_list[fi] = path_utils.filter_remove_trailing_sep(incl_list[fi])
-        if not os.path.exists( incl_list[fi] ):
+        if not os.path.exists( incl_list[fi] ) and not path_utils.is_path_broken_symlink(incl_list[fi]):
             return False, "%s does not exist." % incl_list(fi)
 
     # main option
