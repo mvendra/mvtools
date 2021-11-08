@@ -3,8 +3,9 @@
 import sys
 import os
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 
 def puaq():
     print("Usage: %s folder" % path_utils.basename_filtered(__file__))
@@ -14,6 +15,8 @@ def insert_pragma(path):
 
     exts = ["h"]
     v, r = fsquery.makecontentlist(path, True, False, True, False, False, False, True, exts)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     ret = r
 
     pragma_str = "\n#ifdef __GNUC__\n#pragma GCC system_header\n#endif\n"

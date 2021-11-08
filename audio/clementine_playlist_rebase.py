@@ -4,8 +4,9 @@ import sys
 import os
 from subprocess import call
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 
 def proc(plfile, str_find, str_rep):
 
@@ -32,6 +33,8 @@ if __name__ == "__main__":
     str_rep = sys.argv[3]
     
     v, r = fsquery.makecontentlist(path_playlists, False, False, True, False, False, False, True, "xspf")
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     playlists = r
     for p in playlists:
         print("Processing %s..." % p)

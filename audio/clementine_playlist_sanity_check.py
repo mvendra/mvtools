@@ -3,8 +3,9 @@
 import sys
 import os
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 
 def getcontents(thefile):
     contents = ""
@@ -66,6 +67,8 @@ if __name__ == "__main__":
         sys.exit(1)
     
     v, r = fsquery.makecontentlist(path_playlists, False, False, True, False, False, False, True, "xspf")
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     playlists = r
     for p in playlists:
         print("Processing %s..." % p)

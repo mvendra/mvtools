@@ -3,12 +3,15 @@
 import os
 import sys
 
-import fsquery
 import path_utils
+import fsquery
+import mvtools_exception
 
 def prefix_checker(target_dir, prefix_size):
 
     v, r = fsquery.makecontentlist(target_dir, False, False, True, True, False, False, True, None)
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     dirs = r
     dirs.sort()
     c=0

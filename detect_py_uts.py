@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import fsquery
+import mvtools_exception
 
 def puaq():
     print("Usage: %s target_path" % path_utils.basename_filtered(__file__))
@@ -27,6 +28,8 @@ def detect_py_uts(path):
 
     ret = []
     v, r = fsquery.makecontentlist(path, True, False, True, False, False, False, True, "py")
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     qr = r
 
     for f in qr:

@@ -3,10 +3,11 @@
 import sys
 import os
 
-import fsquery
 import path_utils
 import sendtoclipboard
 import mvtools_envvars
+import fsquery
+import mvtools_exception
 
 def puaq():
     print("Usage: %s path" % path_utils.basename_filtered(__file__))
@@ -66,6 +67,8 @@ def find_next_path(root, path_string):
         return False, None
 
     v, r = fsquery.makecontentlist(root, False, False, True, True, True, True, True, [])
+    if not v:
+        raise mvtools_exception.mvtools_exception(r)
     contents = r
     contents_map = _ar_to_map(contents)
     sr = linear_search(path_string, contents_map)
