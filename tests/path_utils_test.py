@@ -567,6 +567,25 @@ class PathUtilsTest(unittest.TestCase):
         folder2_file1 = path_utils.concat_path(self.folder2, "file1.txt")
         self.assertTrue(os.path.exists(folder2_file1))
 
+    def testCopyToFileBlank(self):
+
+        blank_folder = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blank_folder))
+        os.mkdir(blank_folder)
+        self.assertTrue(os.path.exists(blank_folder))
+
+        blank_file = path_utils.concat_path(blank_folder, " ")
+        self.assertFalse(os.path.exists(blank_file))
+        self.assertTrue(create_and_write_file.create_file_contents(blank_file, "blank file contents"))
+        self.assertTrue(os.path.exists(blank_file))
+
+        folder2_blank_file = path_utils.concat_path(self.folder2, " ")
+        self.assertFalse(os.path.exists(folder2_blank_file))
+        self.assertTrue(path_utils.copy_to(blank_file, self.folder2))
+        self.assertTrue(os.path.exists(folder2_blank_file))
+        with open(folder2_blank_file, "r") as f:
+            self.assertTrue("blank file contents" in f.read())
+
     def testCopyToFileBinary(self):
 
         folder1_file1 = path_utils.concat_path(self.folder1, "file1.bin")
@@ -601,6 +620,24 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(path_utils.copy_to(folder1_sub, self.folder2))
         self.assertTrue(os.path.exists(folder2_sub))
         self.assertTrue(os.path.exists(folder2_sub_file1))
+
+    def testCopyToFolderBlank(self):
+
+        folder1_blank = path_utils.concat_path(self.folder1, " ")
+        os.mkdir(folder1_blank)
+        self.assertTrue(os.path.exists(folder1_blank))
+
+        folder1_blank_file1 = path_utils.concat_path(folder1_blank, "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(folder1_blank_file1, "file1 contents"))
+
+        folder2_blank = path_utils.concat_path(self.folder2, " ")
+        folder2_blank_file1 = path_utils.concat_path(folder2_blank, "file1.txt")
+        self.assertFalse(os.path.exists(folder2_blank))
+        self.assertFalse(os.path.exists(folder2_blank_file1))
+
+        self.assertTrue(path_utils.copy_to(folder1_blank, self.folder2))
+        self.assertTrue(os.path.exists(folder2_blank))
+        self.assertTrue(os.path.exists(folder2_blank_file1))
 
     def testBasedPathFindOutstandingPathFail1(self):
 
@@ -928,6 +965,24 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.exists(target_path))
         self.assertFalse(path_utils.copy_file_to_and_rename(source_path, self.folder2, "target.txt"))
 
+    def testCopyToAndRename4(self):
+        source_path = path_utils.concat_path(self.folder1, " ")
+        final_path = path_utils.concat_path(self.folder1, "target.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path, "source contents"))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_to_and_rename(source_path, self.folder1, "target.txt"))
+        self.assertTrue(os.path.exists(final_path))
+
+    def testCopyToAndRename5(self):
+        source_path = path_utils.concat_path(self.folder1, "source.txt")
+        final_path = path_utils.concat_path(self.folder1, " ")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path, "source contents"))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_to_and_rename(source_path, self.folder1, " "))
+        self.assertTrue(os.path.exists(final_path))
+
     def testCopyFileToAndRenameBinary(self):
         source_path = path_utils.concat_path(self.folder1, "source.bin")
         final_path = path_utils.concat_path(self.folder1, "target.bin")
@@ -988,6 +1043,36 @@ class PathUtilsTest(unittest.TestCase):
         os.mkdir(target_path)
         self.assertTrue(os.path.exists(target_path))
         self.assertFalse(path_utils.copy_folder_to_and_rename(source_path, self.folder2, "target"))
+
+    def testCopyFolderToAndRename4(self):
+        source_path = path_utils.concat_path(self.folder1, " ")
+        final_path = path_utils.concat_path(self.folder1, "target")
+        os.mkdir(source_path)
+        source_path_file = path_utils.concat_path(source_path, "file1.txt")
+        final_path_file = path_utils.concat_path(self.folder1, "target", "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path_file, "test contents"))
+        self.assertTrue(os.path.exists(source_path_file))
+        self.assertFalse(os.path.exists(final_path_file))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_folder_to_and_rename(source_path, self.folder1, "target"))
+        self.assertTrue(os.path.exists(final_path))
+        self.assertTrue(os.path.exists(final_path_file))
+
+    def testCopyFolderToAndRename5(self):
+        source_path = path_utils.concat_path(self.folder1, "source")
+        final_path = path_utils.concat_path(self.folder1, " ")
+        os.mkdir(source_path)
+        source_path_file = path_utils.concat_path(source_path, "file1.txt")
+        final_path_file = path_utils.concat_path(self.folder1, " ", "file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(source_path_file, "test contents"))
+        self.assertTrue(os.path.exists(source_path_file))
+        self.assertFalse(os.path.exists(final_path_file))
+        self.assertTrue(os.path.exists(source_path))
+        self.assertFalse(os.path.exists(final_path))
+        self.assertTrue(path_utils.copy_folder_to_and_rename(source_path, self.folder1, " "))
+        self.assertTrue(os.path.exists(final_path))
+        self.assertTrue(os.path.exists(final_path_file))
 
     def testCompatWindowsPath(self):
         self.assertEqual(path_utils.compat_windows_path(None), None)
