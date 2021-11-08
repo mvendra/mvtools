@@ -157,6 +157,20 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_Parse8(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_5, dsl_type20.DSLType20_Options()))
 
+    def testDslType20_Parse9(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blankfile = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blankfile))
+        create_and_write_file.create_file_contents(blankfile, self.contents_cfg_test_ok_1)
+        self.assertTrue(os.path.exists(blankfile))
+
+        self.assertTrue(self.parse_test_aux(blankfile, dsl_type20.DSLType20_Options()))
+
     def testDslType20_GetVars1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
