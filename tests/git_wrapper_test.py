@@ -246,6 +246,59 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.clone(self.nonexistent_repo, third_repo)
         self.assertFalse(v)
 
+    def testClone4(self):
+
+        second_sub = path_utils.concat_path(self.second_repo, " ")
+        self.assertFalse(os.path.exists(second_sub))
+        os.mkdir(second_sub)
+        self.assertTrue(second_sub)
+
+        second_sub_fn = path_utils.concat_path(second_sub, " ")
+        self.assertFalse(os.path.exists(second_sub_fn))
+        self.assertTrue(create_and_write_file.create_file_contents(second_sub_fn, "test-contents"))
+        self.assertTrue(os.path.exists(second_sub_fn))
+
+        v, r = git_wrapper.stage(self.second_repo, [second_sub_fn])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone(self.second_repo, third_repo)
+        self.assertTrue(v)
+
+        third_sub_fn = path_utils.concat_path(third_repo, " ", " ")
+        self.assertTrue(os.path.exists(third_sub_fn))
+
+    def testClone5(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file, "test-contents"))
+
+        test_file_link = path_utils.concat_path(self.second_repo, "test_file_link.txt")
+        self.assertFalse(os.path.exists(test_file_link))
+        os.symlink(test_file, test_file_link)
+        self.assertTrue(os.path.exists(test_file_link))
+
+        os.unlink(test_file)
+        self.assertFalse(os.path.exists(test_file))
+
+        self.assertTrue(path_utils.is_path_broken_symlink(test_file_link))
+
+        v, r = git_wrapper.stage(self.second_repo, [test_file_link])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone(self.second_repo, third_repo)
+        self.assertTrue(v)
+
+        third_test_file_link = path_utils.concat_path(third_repo, path_utils.basename_filtered(test_file_link))
+        self.assertTrue(path_utils.is_path_broken_symlink(third_test_file_link))
+
     def testCloneExt1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
