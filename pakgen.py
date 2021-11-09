@@ -25,7 +25,7 @@ def pakgen(filename, dohash, files):
     report = ""
 
     for f in files:
-        if not os.path.exists( f ):
+        if not os.path.exists( f ) and not path_utils.is_path_broken_symlink(f):
             return False, "%s does not exist." % f
 
     FILENAME_TAR = "%s.tar" % filename

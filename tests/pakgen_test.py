@@ -158,6 +158,67 @@ class PakGenTest(unittest.TestCase):
         ext_file1 = path_utils.concat_path( extracted_folder, self.file1)
         self.assertTrue( os.path.exists( ext_file1 ) )
 
+    def testPakGen6(self):
+
+        subf = path_utils.concat_path(self.test_dir, "subf")
+        self.assertFalse(os.path.exists(subf))
+        os.mkdir(subf)
+        self.assertTrue(os.path.exists(subf))
+        subf_blankfolder = path_utils.concat_path(subf, " ")
+        self.assertFalse(os.path.exists(subf_blankfolder))
+        os.mkdir(subf_blankfolder)
+        self.assertTrue(os.path.exists(subf_blankfolder))
+
+        subf_blankfolder_blankfile = path_utils.concat_path(subf_blankfolder, " ")
+        self.assertFalse(os.path.exists(subf_blankfolder_blankfile))
+        self.assertTrue(create_and_write_file.create_file_contents(subf_blankfolder_blankfile, "bazooka and grenades"))
+        self.assertTrue(os.path.exists(subf_blankfolder_blankfile))
+
+        v, r = pakgen.pakgen(self.target_file, False, [subf_blankfolder_blankfile])
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists(self.target_file_tar_bz2) )
+
+        extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
+        os.mkdir(extracted_folder)
+
+        v, r = tar_wrapper.extract(self.target_file_tar_bz2, extracted_folder)
+        self.assertTrue(v)
+
+        ext_file1 = path_utils.concat_path( extracted_folder, subf_blankfolder_blankfile)
+        self.assertTrue( os.path.exists( ext_file1 ) )
+
+        with open(ext_file1, "r") as f:
+            self.assertTrue("bazooka and grenades" in f.read())
+
+    def testPakGen7(self):
+
+        test_source_file = path_utils.concat_path(self.test_dir, "test_source_file")
+        self.assertFalse(os.path.exists(test_source_file))
+        self.assertTrue(create_and_write_file.create_file_contents(test_source_file, "bazooka and grenades"))
+        self.assertTrue(os.path.exists(test_source_file))
+
+        test_source_link = path_utils.concat_path(self.test_dir, "test_source_link")
+        self.assertFalse(os.path.exists(test_source_link))
+        os.symlink(test_source_file, test_source_link)
+        self.assertTrue(os.path.exists(test_source_link))
+
+        os.unlink(test_source_file)
+        self.assertFalse(os.path.exists(test_source_file))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_source_link))
+
+        v, r = pakgen.pakgen(self.target_file, False, [test_source_link])
+        self.assertTrue(v)
+        self.assertTrue( os.path.exists(self.target_file_tar_bz2) )
+
+        extracted_folder = path_utils.concat_path(self.test_dir, "extracted")
+        os.mkdir(extracted_folder)
+
+        v, r = tar_wrapper.extract(self.target_file_tar_bz2, extracted_folder)
+        self.assertTrue(v)
+
+        ext_file1 = path_utils.concat_path( extracted_folder, test_source_link)
+        self.assertTrue( path_utils.is_path_broken_symlink( ext_file1 ) )
+
     def testPakGen_AddStrToReport(self):
 
         report = ""
