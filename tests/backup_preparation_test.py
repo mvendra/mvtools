@@ -80,15 +80,15 @@ class BackupPreparationTest(unittest.TestCase):
         self.file4 = path_utils.concat_path(self.test_dir, "heavyfile4.txt")
         create_and_write_file.create_file_contents(self.file4, "12345678" * 15000)
 
-        cfg_file_contents1 = ""
-        cfg_file_contents1 += ("SET_STORAGE_PATH {reset} = \"%s\"" + os.linesep) % (self.prep_target)
-        cfg_file_contents1 += ("SET_WARN_SIZE_EACH {abort} = \"%s\"" + os.linesep) % (self.warn_size_each1)
-        cfg_file_contents1 += ("SET_WARN_SIZE_FINAL {abort} = \"%s\"" + os.linesep) % (self.warn_size_final1)
-        cfg_file_contents1 += ("COPY_PATH {abort} = \"%s\"" + os.linesep) % (self.test_source_folder1)
-        cfg_file_contents1 += ("COPY_PATH {abort} = \"%s\"" + os.linesep) % (self.file3)
-        cfg_file_contents1 += ("COPY_TREE_OUT {abort} = \"%s\"" + os.linesep) % (self.test_source_folder2)
+        self.cfg_file_contents1 = ""
+        self.cfg_file_contents1 += ("SET_STORAGE_PATH {reset} = \"%s\"" + os.linesep) % (self.prep_target)
+        self.cfg_file_contents1 += ("SET_WARN_SIZE_EACH {abort} = \"%s\"" + os.linesep) % (self.warn_size_each1)
+        self.cfg_file_contents1 += ("SET_WARN_SIZE_FINAL {abort} = \"%s\"" + os.linesep) % (self.warn_size_final1)
+        self.cfg_file_contents1 += ("COPY_PATH {abort} = \"%s\"" + os.linesep) % (self.test_source_folder1)
+        self.cfg_file_contents1 += ("COPY_PATH {abort} = \"%s\"" + os.linesep) % (self.file3)
+        self.cfg_file_contents1 += ("COPY_TREE_OUT {abort} = \"%s\"" + os.linesep) % (self.test_source_folder2)
         self.test_config_file1 = path_utils.concat_path(self.test_dir, "test_config_file1.t20")
-        create_and_write_file.create_file_contents(self.test_config_file1, cfg_file_contents1)
+        create_and_write_file.create_file_contents(self.test_config_file1, self.cfg_file_contents1)
 
         cfg_file_contents2 = ""
         cfg_file_contents2 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
@@ -247,6 +247,30 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertEqual( self.test_source_folder1, bkprep.instructions[0][1])
         self.assertEqual( "source", bkprep.instructions[0][2][0][0])
         self.assertEqual( self.extra_dest_path, bkprep.instructions[0][2][0][1])
+
+    def testReadConfig7(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blanksub_blankfn = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blanksub_blankfn))
+        create_and_write_file.create_file_contents(blanksub_blankfn, self.cfg_file_contents1)
+        self.assertTrue(os.path.exists(blanksub_blankfn))
+
+        bkprep = backup_preparation.BackupPreparation(blanksub_blankfn)
+        bkprep.read_config(bkprep.config_file)
+        bkprep.setup_configuration()
+        self.assertEqual(bkprep.storage_path, self.prep_target)
+        self.assertTrue(bkprep.storage_path_reset)
+        self.assertTrue(bkprep.warn_size_each_active)
+        self.assertEqual(bkprep.warn_size_each, int(self.warn_size_each1))
+        self.assertTrue(bkprep.warn_size_each_abort)
+        self.assertTrue(bkprep.warn_size_final_active)
+        self.assertEqual(bkprep.warn_size_final, int(self.warn_size_final1))
+        self.assertTrue(bkprep.warn_size_final_abort)
 
     def testReadConfigFail1(self):
         bkprep = backup_preparation.BackupPreparation(self.test_config_file_fail1)
