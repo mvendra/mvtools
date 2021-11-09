@@ -145,9 +145,9 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace1, sample_custom_job_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace2, sample_custom_job_script_contents)
 
-        recipe_test_contents1 = "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_contents1 = "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file1, recipe_test_contents1)
+        create_and_write_file.create_file_contents(self.recipe_test_file1, self.recipe_test_contents1)
 
         recipe_test_contents2 = "[\n@test-job\n* task1 = \"nonexistent.py\"\n]"
         self.recipe_test_file2 = path_utils.concat_path(self.test_dir, "recipe_test2.t20")
@@ -492,6 +492,21 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorNamespaceExclusiveIsFoundAndDoesWork(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file33)
+        self.assertTrue(v)
+
+    def testRecipeProcessorBlankFilename(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blanksub_blankfile = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blanksub_blankfile))
+        self.assertTrue(create_and_write_file.create_file_contents(blanksub_blankfile, self.recipe_test_contents1))
+        self.assertTrue(os.path.exists(blanksub_blankfile))
+
+        v, r = recipe_processor.run_jobs_from_recipe_file(blanksub_blankfile)
         self.assertTrue(v)
 
 if __name__ == '__main__':
