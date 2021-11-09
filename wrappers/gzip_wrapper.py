@@ -11,7 +11,7 @@ def compress(target_archive):
     target_archive = path_utils.filter_remove_trailing_sep(target_archive)
 
     # prechecks
-    if not os.path.exists(target_archive):
+    if not os.path.exists(target_archive) and not path_utils.is_path_broken_symlink(target_archive):
         return False, "%s does not exist." % target_archive
 
     # actual command
