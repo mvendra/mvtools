@@ -235,19 +235,19 @@ class BackupProcessorTest(unittest.TestCase):
         os.chmod(self.prep_filename_fail, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
         # create (vanilla) config file
-        cfg_file_contents = ""
-        cfg_file_contents += ("BKPREPARATION = \"%s\"" + os.linesep) % (self.prep_filename)
-        cfg_file_contents += ("BKWARNING_EACH = \"%s\"" + os.linesep) % (self.warn_each_1)
-        cfg_file_contents += ("BKWARNING_FINAL = \"%s\"" + os.linesep) % (self.warn_final_1)
-        cfg_file_contents += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
-        cfg_file_contents += ("BKSOURCE {descend / ex: \"%s\" / ex: \"%s\"} = \"%s\"" + os.linesep) % (".file01.txt", "folder5", self.test_source_alt_folder)
-        cfg_file_contents += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder_another
-        cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
-        cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
-        cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
-        cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
+        self.cfg_file_contents = ""
+        self.cfg_file_contents += ("BKPREPARATION = \"%s\"" + os.linesep) % (self.prep_filename)
+        self.cfg_file_contents += ("BKWARNING_EACH = \"%s\"" + os.linesep) % (self.warn_each_1)
+        self.cfg_file_contents += ("BKWARNING_FINAL = \"%s\"" + os.linesep) % (self.warn_final_1)
+        self.cfg_file_contents += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
+        self.cfg_file_contents += ("BKSOURCE {descend / ex: \"%s\" / ex: \"%s\"} = \"%s\"" + os.linesep) % (".file01.txt", "folder5", self.test_source_alt_folder)
+        self.cfg_file_contents += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder_another
+        self.cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
+        self.cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
+        self.cfg_file_contents += ("BKTEMP = \"%s\"" + os.linesep) % self.bk_test_temp_folder
+        self.cfg_file_contents += ("BKTARGETS_BASEDIR = \"%s\"" + os.linesep) % self.bk_base_folder_test
         self.test_config_file = path_utils.concat_path(self.test_dir, "test_config_file.t20")
-        create_and_write_file.create_file_contents(self.test_config_file, cfg_file_contents)
+        create_and_write_file.create_file_contents(self.test_config_file, self.cfg_file_contents)
 
         # hash file
         self.hash_file = path_utils.concat_path(self.test_dir, ".hash_file_test")
@@ -583,6 +583,27 @@ class BackupProcessorTest(unittest.TestCase):
 
     def testReadConfig(self):
         v, r = backup_processor.read_config(self.test_config_file)
+        self.assertTrue(v)
+        self.assertEqual(r[0][0], self.prep_filename)
+        self.assertEqual(r[0][1], [])
+        self.assertEqual(r[2], [self.test_target_1_folder, self.test_target_2_folder])
+        self.assertEqual(r[3], self.bk_base_folder_test)
+        self.assertEqual(r[4], self.bk_test_temp_folder)
+        self.assertEqual( r[5], ( (convert_unit.convert_to_bytes(self.warn_each_1)[1],False) , (convert_unit.convert_to_bytes(self.warn_final_1)[1],False) ) )
+
+    def testReadConfigBlankFilename(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blanksub_blankfn = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blanksub_blankfn))
+        create_and_write_file.create_file_contents(blanksub_blankfn, self.cfg_file_contents)
+        self.assertTrue(os.path.exists(blanksub_blankfn))
+
+        v, r = backup_processor.read_config(blanksub_blankfn)
         self.assertTrue(v)
         self.assertEqual(r[0][0], self.prep_filename)
         self.assertEqual(r[0][1], [])
