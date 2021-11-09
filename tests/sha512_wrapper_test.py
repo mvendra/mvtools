@@ -89,5 +89,21 @@ class Sha512WrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertNotEqual(r, "not-the-right-hash")
 
+    def testHash512AppFile6(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blanksub_blankfn = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blanksub_blankfn))
+        create_and_write_file.create_file_contents(blanksub_blankfn, self.content1)
+        self.assertTrue(os.path.exists(blanksub_blankfn))
+
+        v, r = sha512_wrapper.hash_sha_512_app_file(blanksub_blankfn)
+        self.assertTrue(v)
+        self.assertEqual(r, self.content1_sha512)
+
 if __name__ == '__main__':
     unittest.main()
