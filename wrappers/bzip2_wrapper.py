@@ -11,7 +11,7 @@ def compress(file_to_compress):
     # file_to_compress: file to compress
 
     # prechecks
-    if not os.path.exists(file_to_compress):
+    if not os.path.exists(file_to_compress) and not path_utils.is_path_broken_symlink(file_to_compress):
         return False, "%s does not exist." % file_to_compress
 
     # actual command

@@ -175,5 +175,55 @@ class Bzip2WrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, hash)
 
+    def testCompressAndDecompress_BlankFilename(self):
+
+        blanksub = path_utils.concat_path(self.test_dir, " ")
+        self.assertFalse(os.path.exists(blanksub))
+        os.mkdir(blanksub)
+        self.assertTrue(os.path.exists(blanksub))
+
+        blankfile = path_utils.concat_path(blanksub, " ")
+        self.assertFalse(os.path.exists(blankfile))
+        self.assertTrue(create_and_write_file.create_file_contents(blankfile, "abc"))
+        self.assertTrue(os.path.exists(blankfile))
+
+        blankfile_bz = blankfile + ".bz2"
+        self.assertFalse(os.path.exists(blankfile_bz))
+        v, r = bzip2_wrapper.compress(blankfile)
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(blankfile_bz))
+        self.assertFalse(os.path.exists(blankfile))
+
+        v, r = bzip2_wrapper.decompress(blankfile_bz)
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(blankfile_bz))
+        self.assertTrue(os.path.exists(blankfile))
+
+        with open(blankfile, "r") as f:
+            self.assertTrue("abc" in f.read())
+
+    def testCompressAndDecompress_BrokenSymlink(self):
+
+        test_source_file = path_utils.concat_path(self.test_dir, "test_source_file.txt")
+        self.assertFalse(os.path.exists(test_source_file))
+        self.assertTrue(create_and_write_file.create_file_contents(test_source_file, "abc"))
+        self.assertTrue(os.path.exists(test_source_file))
+
+        test_source_link = path_utils.concat_path(self.test_dir, "test_source_link.txt")
+        self.assertFalse(os.path.exists(test_source_link))
+        os.symlink(test_source_file, test_source_link)
+        self.assertTrue(os.path.exists(test_source_link))
+
+        os.unlink(test_source_file)
+        self.assertFalse(os.path.exists(test_source_file))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_source_link))
+
+        test_source_link_bz = test_source_link + ".bz2"
+        self.assertFalse(os.path.exists(test_source_link_bz))
+        v, r = bzip2_wrapper.compress(test_source_link)
+        self.assertFalse(v) # bzip2 version 1.0.8 does not support broken symlinks
+        self.assertFalse(os.path.exists(test_source_link_bz))
+        self.assertTrue(path_utils.is_path_broken_symlink(test_source_link))
+
 if __name__ == '__main__':
     unittest.main()
