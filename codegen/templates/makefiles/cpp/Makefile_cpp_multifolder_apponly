@@ -74,7 +74,7 @@ LDFLAGS+=
 
 BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)
 RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)
-ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(notdir $(src:.cpp=.o)))
+ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))
 FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)
 
 all: prepfolders compile link 
@@ -84,7 +84,7 @@ prepfolders:
 	@mkdir -p $(RUN_FULL)
 
 compile:
-	$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(notdir $(src:.cpp=.o));)
+	$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)
 
 link:
 	$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS)
