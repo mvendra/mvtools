@@ -43,6 +43,20 @@ def makedir_if_needed(path):
         return True
     return False
 
+def unroll_path_dirname(path):
+
+    local_path = ""
+
+    dirname_subpath = path_utils.dirname_filtered(path)
+    if dirname_subpath is None:
+        return ""
+    dirname_subpath_pieces = path_utils.splitpath(dirname_subpath, "no")
+
+    for dsp in dirname_subpath_pieces:
+        local_path += "%s_" % dsp
+
+    return local_path
+
 class Builder():
 
     def __init__(self, basepath, appname, sources, options):
@@ -71,7 +85,7 @@ class Builder():
         self.run_full = self.run_base + self.target
 
         self.app_full_name = self.run_full + "/" + self.appname
-        self.all_objs = [path_utils.basename_filtered(path_utils.replace_extension(x, ".cpp", ".o")) for x in self.src]
+        self.all_objs = [(unroll_path_dirname(x) + path_utils.replace_extension(path_utils.basename_filtered(x), ".cpp", ".o")) for x in self.src]
 
         # compiler / linker flags
         self.compiler_flags_common = []
@@ -197,7 +211,7 @@ class Builder():
                 for i in self.include:
                     cmd.append(i)
             cmd += self.compiler_flags_to_use
-            cmd += ["-c", self.src_base + s, "-o", self.obj_full + "/" +  path_utils.basename_filtered(path_utils.replace_extension(s, ".cpp", ".o"))]
+            cmd += ["-c", self.src_base + s, "-o", self.obj_full + "/" + unroll_path_dirname(s) + path_utils.replace_extension(path_utils.basename_filtered(s), ".cpp", ".o")]
             self.call_cmd(cmd)
 
     def do_link(self):
