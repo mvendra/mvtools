@@ -102,7 +102,7 @@ def mkfile_cpp_contents(project_name):
     r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
     r += "BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)\n"
     r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(notdir $(src:.cpp=.o)))\n"
+    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
     r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
     r += "INCLUDES=-I$(BASE_SRC)\n"
     r += "\n"
@@ -119,7 +119,7 @@ def mkfile_cpp_contents(project_name):
 
     # COMPILE
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(notdir $(src:.cpp=.o));)\n"
+    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
     r += "\n"
 
     # LINK
@@ -230,7 +230,7 @@ def mkfile_c_contents(project_name):
     r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
     r += "BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)\n"
     r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(notdir $(src:.c=.o)))\n"
+    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
     r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
     r += "INCLUDES=-I$(BASE_SRC)\n"
     r += "\n"
@@ -247,7 +247,7 @@ def mkfile_c_contents(project_name):
 
     # COMPILE
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(notdir $(src:.c=.o));)\n"
+    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)\n"
     r += "\n"
 
     # LINK
