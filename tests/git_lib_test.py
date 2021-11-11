@@ -2662,6 +2662,10 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.is_repo_bare(self.nonexistent_repo)
         self.assertFalse(v)
 
+        v, r = git_lib.is_repo_bare(self.fourth_notrepo)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
     def testIsRepoBareRelativePath(self):
 
         saved_wd = os.getcwd()

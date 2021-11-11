@@ -559,9 +559,12 @@ def is_repo_bare(repo):
 
     repo = os.path.abspath(repo)
 
+    if not os.path.exists(repo):
+        return False, "Repo [%s] does not exist" % repo
+
     v, r = git_wrapper.rev_parse_is_bare_repo(repo)
     if not v:
-        return False, "git_lib.is_repo_bare failed: %s" % r
+        return True, False
     bare_query_result = "true" in r
 
     if not bare_query_result:
