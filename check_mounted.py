@@ -2,22 +2,23 @@
 
 import sys
 import os
-from subprocess import call
 
-import get_platform
-import mvtools_exception
 import path_utils
+import get_platform
+import generic_run
+import mvtools_exception
 
 def checkmounted_linux(path):
 
-    # disallows partial matches
-    path = " " + path + " "
+    v, r = generic_run.run_cmd_simple(["mount"])
+    if not v:
+        raise mvtools_exception.mvtools_exception("Unable to launch mount's subprocess")
+    mount_output = r.strip()
 
-    ret = os.popen("mount").read().strip()
-    if ret.find(path) > 0:
+    path = " " + path + " " # disallows partial matches
+    if mount_output.find(path) > 0:
         return True
-    else:
-        return False
+    return False
 
 def checkmounted_cygwin(path):
     return os.path.ismount(path)
