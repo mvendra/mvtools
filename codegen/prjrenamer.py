@@ -15,9 +15,15 @@ def readcontents(filename):
         contents = f.read()
     return contents
 
-def prjrename_validate(target_dir, project_name):
+def prjrename_validate(target_dir, project_name, project_new_name):
     if not os.path.exists(target_dir):
         print("%s does not exist. Specify another target directory." % target_dir)
+        return False
+    if not os.path.exists(path_utils.concat_path(target_dir, project_name)):
+        print("%s does not exist. Specify another original project." % path_utils.concat_path(target_dir, project_name))
+        return False
+    if os.path.exists(path_utils.concat_path(target_dir, project_new_name)):
+        print("%s already exists. Pick another new name." % path_utils.concat_path(target_dir, project_new_name))
         return False
     return True
 
@@ -90,27 +96,57 @@ def prjrename(target_dir, original_project_name, new_project_name):
     full_original = path_utils.concat_path(target_dir, original_project_name)
     full_new = path_utils.concat_path(target_dir, new_project_name)
 
-    if not prjrename_validate(target_dir, original_project_name):
+    if not prjrename_validate(target_dir, original_project_name, new_project_name):
         sys.exit(1)
 
     prj_fullname_base = path_utils.concat_path(target_dir, original_project_name)
     base_prj = path_utils.concat_path(prj_fullname_base, "proj")
 
-    # codelite
-    base_prj_codelite = path_utils.concat_path(base_prj, "codelite")
-    base_prj_codelite_fn = path_utils.concat_path(base_prj_codelite, "%s.project" % original_project_name)
-    codelite_rename(base_prj_codelite_fn, new_project_name)
+    # makefile_c
+    base_prj_makefile_c = path_utils.concat_path(base_prj, "makefile_c")
+    base_prj_makefile_c_fn = path_utils.concat_path(base_prj_makefile_c, "Makefile")
+    if os.path.isfile(base_prj_makefile_c_fn):
+        makefile_rename(base_prj_makefile_c_fn, original_project_name, new_project_name)
+        print("Adapted [%s]" % base_prj_makefile_c_fn)
 
-    # msvc15
-    base_prj_msvc15 = path_utils.concat_path(base_prj, "msvc15")
-    base_prj_msvc15_sln = path_utils.concat_path(base_prj_msvc15, "%s.sln" % original_project_name)
-    msvc15sln_rename(base_prj_msvc15_sln, new_project_name)
-    base_prj_msvc15_fn = path_utils.concat_path(base_prj_msvc15, "%s.vcxproj" % original_project_name)
-    msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name)
+    # makefile_cpp
+    base_prj_makefile_cpp = path_utils.concat_path(base_prj, "makefile_cpp")
+    base_prj_makefile_cpp_fn = path_utils.concat_path(base_prj_makefile_cpp, "Makefile")
+    if os.path.isfile(base_prj_makefile_cpp_fn):
+        makefile_rename(base_prj_makefile_cpp_fn, original_project_name, new_project_name)
+        print("Adapted [%s]" % base_prj_makefile_cpp_fn)
 
-    base_prj_makefile = path_utils.concat_path(base_prj, "makefile")
-    base_prj_makefile_fn = path_utils.concat_path(base_prj_makefile, "Makefile")
-    makefile_rename(base_prj_makefile_fn, original_project_name, new_project_name)
+    # codelite15_c
+    base_prj_codelite15_c = path_utils.concat_path(base_prj, "codelite15_c")
+    base_prj_codelite15_c_fn = path_utils.concat_path(base_prj_codelite15_c, "%s.project" % original_project_name)
+    if os.path.isfile(base_prj_codelite15_c_fn):
+        codelite_rename(base_prj_codelite15_c_fn, new_project_name)
+        print("Adapted [%s]" % base_prj_codelite15_c_fn)
+
+    # codelite13_cpp
+    base_prj_codelite13_cpp = path_utils.concat_path(base_prj, "codelite13_cpp")
+    base_prj_codelite13_cpp_fn = path_utils.concat_path(base_prj_codelite13_cpp, "%s.project" % original_project_name)
+    if os.path.isfile(base_prj_codelite13_cpp_fn):
+        codelite_rename(base_prj_codelite13_cpp_fn, new_project_name)
+        print("Adapted [%s]" % base_prj_codelite13_cpp_fn)
+
+    # msvc15_c
+    base_prj_msvc15_c = path_utils.concat_path(base_prj, "msvc15_c")
+    base_prj_msvc15_c_sln_fn = path_utils.concat_path(base_prj_msvc15_c, "%s.sln" % original_project_name)
+    base_prj_msvc15_c_vcxproj_fn = path_utils.concat_path(base_prj_msvc15_c, "%s.vcxproj" % original_project_name)
+    if os.path.isfile(base_prj_msvc15_c_sln_fn) and os.path.isfile(base_prj_msvc15_c_vcxproj_fn):
+        msvc15sln_rename(base_prj_msvc15_c_sln_fn, new_project_name)
+        msvc15vcxproj_rename(base_prj_msvc15_c_vcxproj_fn, new_project_name)
+        print("Adapted [%s] and [%s]" % (base_prj_msvc15_c_sln_fn, base_prj_msvc15_c_vcxproj_fn))
+
+    # msvc15_cpp
+    base_prj_msvc15_cpp = path_utils.concat_path(base_prj, "msvc15_cpp")
+    base_prj_msvc15_cpp_sln_fn = path_utils.concat_path(base_prj_msvc15_cpp, "%s.sln" % original_project_name)
+    base_prj_msvc15_cpp_vcxproj_fn = path_utils.concat_path(base_prj_msvc15_cpp, "%s.vcxproj" % original_project_name)
+    if os.path.isfile(base_prj_msvc15_cpp_sln_fn) and os.path.isfile(base_prj_msvc15_cpp_vcxproj_fn):
+        msvc15sln_rename(base_prj_msvc15_cpp_sln_fn, new_project_name)
+        msvc15vcxproj_rename(base_prj_msvc15_cpp_vcxproj_fn, new_project_name)
+        print("Adapted [%s] and [%s]" % (base_prj_msvc15_cpp_sln_fn, base_prj_msvc15_cpp_vcxproj_fn))
 
     os.rename(full_original, full_new)
 
