@@ -13,11 +13,6 @@ import git_visitor_status
 
 class GitVisitorStatusTest(unittest.TestCase):
 
-    def makeFilename(self):
-        self.internal_counter += 1
-        filename = "testfile_%s.txt" % self.internal_counter
-        return filename
-
     def setUp(self):
         v, r = self.delegate_setUp()
         if not v:

@@ -116,7 +116,7 @@ class DSLType20Test(unittest.TestCase):
     def parse_test_aux(self, filename, _dsl_t20_opts):
         contents = getcontents(filename)
         if contents is None:
-            self.fail("Unable to open and read file [%s]" % self.cfg_test_ok_1)
+            self.fail("Unable to open and read file [%s]" % filename)
 
         dsl = dsl_type20.DSLType20(_dsl_t20_opts)
         v, r = dsl.parse(contents)
