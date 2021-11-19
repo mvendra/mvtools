@@ -77,7 +77,7 @@ def codelite15_c_projfile_contents(project_name):
     r += "      </Completion>\n"
     r += "    </Configuration>\n"
 
-    r += "    <Configuration Name=\"Linux / x64 / Debug (LLVM)\" CompilerType=\"CLANG-11\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
+    r += "    <Configuration Name=\"Linux / x64 / Debug (LLVM)\" CompilerType=\"CLANG-13\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_debug_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
@@ -160,7 +160,7 @@ def codelite15_c_projfile_contents(project_name):
     r += "      </Completion>\n"
     r += "    </Configuration>\n"
 
-    r += "    <Configuration Name=\"Linux / x64 / Release (LLVM)\" CompilerType=\"CLANG-11\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
+    r += "    <Configuration Name=\"Linux / x64 / Release (LLVM)\" CompilerType=\"CLANG-13\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
     r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_release_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
