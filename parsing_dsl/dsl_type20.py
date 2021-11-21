@@ -17,6 +17,7 @@ import miniparse
 # variable2 {option1} = "value2"
 # variable3 {option2 / option3: "value3"} = "value4"
 # variable4 {option4: "value \"3\""} = "value \"5\"" # again, escaping quotes is necessary wherever you have a value
+# newlines inside variable/option values are forbidden
 #
 # variables can be optionally decorated arbitrarily, by using the variable_decorator option during the DSL object construction
 # example of a decorated variable (where variable_decorator = "* "):
@@ -104,6 +105,7 @@ class DSLType20:
         self.RCBRACKET = "}"
         self.EQ_SIGN = "="
         self.QUOTE = "\""
+        self.NEWLINE = "\n"
         self.BSLASH = "\\"
         self.FSLASH = "/"
         self.COMMENTS = ["#"]
@@ -182,7 +184,7 @@ class DSLType20:
                 cur_var = ("%s %s" %  (cur_var, prod_opts))
 
             # add the variable's value
-            v, r = miniparse.escape(y[1], self.BSLASH, ["\""])
+            v, r = miniparse.escape(y[1], self.BSLASH, [self.QUOTE])
             if not v:
                 return None
             var_escaped_value = r
@@ -239,6 +241,9 @@ class DSLType20:
             if co[1] is None:
                 expanded_context_options.append( co )
                 continue
+
+            if self.NEWLINE in co[1]:
+                return False, "Unable to parse context name: [%s]. Newlines are forbidden inside option values." % (context)
 
             v, r = self._expand(co[1])
             if not v:
@@ -624,13 +629,6 @@ class DSLType20:
 
     def add_var(self, var_name, var_val, var_opts, context=None):
 
-        local_context = context
-
-        if local_context is None:
-            local_context = self.default_context_id
-        else:
-            self.add_context(local_context, [])
-
         # validate var_name
         if not isinstance(var_name, str):
             return False, "variable's name is not a string"
@@ -643,6 +641,9 @@ class DSLType20:
         # validate var_val
         if not isinstance(var_val, str):
             return False, "variable's value is not a string"
+        if var_val is not None:
+            if self.NEWLINE in var_val:
+                return False, "newlines are forbidden inside values"
 
         # validate var_opts
         if not isinstance(var_opts, list):
@@ -656,6 +657,9 @@ class DSLType20:
                 return False, "variable's options's identifier is not a string"
             if not ( (isinstance(i[1], str)) or (i[1] is None) ):
                 return False, "variable's options's value is invalid"
+            if i[1] is not None:
+                if self.NEWLINE in i[1]:
+                    return False, "newlines are forbidden inside values"
 
         # expand the variable's value
         v, r = self._expand(var_val)
@@ -676,6 +680,12 @@ class DSLType20:
             if not v:
                 return False, "unable to expand variable's option value: [%s : %s]" % (o[0], o[1])
             var_opts.append( (o[0], r) )
+
+        local_context = context
+        if local_context is None:
+            local_context = self.default_context_id
+        else:
+            self.add_context(local_context, [])
 
         # check for duplicates, if checking is enabled
         if not self.allow_dupes:

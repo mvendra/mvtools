@@ -740,6 +740,10 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.add_context("ok", "nok")
         self.assertFalse(v)
 
+    def testDslType20_TestAddContextFail7(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertFalse(dsl.add_context("ok", [("var1", "first line\nsecond line")])[0])
+
     def testDslType20_TestAddVar1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_var("var1", "", [ ] )[0])
@@ -826,6 +830,14 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestAddVarFail10(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var(None, "val1", [ ("opt", "val") ] )[0])
+
+    def testDslType20_TestAddVarFail11(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertFalse(dsl.add_var("var1", "first line\nsecond line", [ ] )[0])
+
+    def testDslType20_TestAddVarFail12(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertFalse(dsl.add_var("var1", "val1", [ ("opt1", "first line\nsecond line") ] )[0])
 
     def testDslType20_TestCountOccurrenceFirstOfPair1(self):
         self.assertEqual(dsl_type20.count_occurrence_first_of_pair( [ ("b", None) ], "a" ), 0)
