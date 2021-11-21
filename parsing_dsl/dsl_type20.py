@@ -189,7 +189,7 @@ class DSLType20:
                 return None
             var_escaped_value = r
 
-            cur_var += " = \"" + var_escaped_value + "\""
+            cur_var += " = " + self.QUOTE + var_escaped_value + self.QUOTE
 
             result += cur_var
 
@@ -209,11 +209,11 @@ class DSLType20:
             options_result += input_options[o][0] # option's name
             if input_options[o][1] is not None:
                 # option has value
-                v, r = miniparse.escape((input_options[o][1]), self.BSLASH, ["\""])
+                v, r = miniparse.escape((input_options[o][1]), self.BSLASH, [self.QUOTE])
                 if not v:
                     return None
                 opt_escaped_value = r
-                options_result += ": \"" + opt_escaped_value + "\""
+                options_result += ": " + self.QUOTE + opt_escaped_value + self.QUOTE
 
             if o == (len(input_options)-1): # last option
                 options_result += "}"
@@ -511,7 +511,7 @@ class DSLType20:
             local_str_input = r[1]
 
             # forward until closing quote is found (the next not escaped)
-            v, r = miniparse.next_not_escaped_slice(local_str_input, "\"", self.BSLASH)
+            v, r = miniparse.next_not_escaped_slice(local_str_input, self.QUOTE, self.BSLASH)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_val = r[0]
