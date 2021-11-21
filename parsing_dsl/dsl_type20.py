@@ -97,13 +97,14 @@ class DSLType20:
         # string parsing
         self.IDENTIFIER = "[_\\-a-zA-Z0-9]+"
         self.ANYSPACE = "[ ]*"
+        self.SINGLESPACE = " "
         self.COLON = ":"
-        self.AT_SIGN = "@"
+        self.ATSIGN = "@"
         self.LBRACKET = "["
         self.RBRACKET = "]"
         self.LCBRACKET = "{"
         self.RCBRACKET = "}"
-        self.EQ_SIGN = "="
+        self.EQSIGN = "="
         self.QUOTE = "\""
         self.NEWLINE = "\n"
         self.BSLASH = "\\"
@@ -172,7 +173,7 @@ class DSLType20:
 
         result = ""
         if context != self.default_context_id:
-            result = ("\n[\n@" + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
+            result = ("\n[\n" + self.ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
 
         for y in self.data[context][1]:
 
@@ -189,7 +190,7 @@ class DSLType20:
                 return None
             var_escaped_value = r
 
-            cur_var += " = " + self.QUOTE + var_escaped_value + self.QUOTE
+            cur_var += self.SINGLESPACE + self.EQSIGN + self.SINGLESPACE + self.QUOTE + var_escaped_value + self.QUOTE
 
             result += cur_var
 
@@ -204,7 +205,7 @@ class DSLType20:
         for o in range(len(input_options)):
 
             if o == 0: # first option
-                options_result += "{"
+                options_result += self.LCBRACKET
 
             options_result += input_options[o][0] # option's name
             if input_options[o][1] is not None:
@@ -213,12 +214,12 @@ class DSLType20:
                 if not v:
                     return None
                 opt_escaped_value = r
-                options_result += ": " + self.QUOTE + opt_escaped_value + self.QUOTE
+                options_result += self.COLON + self.SINGLESPACE + self.QUOTE + opt_escaped_value + self.QUOTE
 
             if o == (len(input_options)-1): # last option
-                options_result += "}"
+                options_result += self.RCBRACKET
             else:
-                options_result += " / "
+                options_result += self.SINGLESPACE + self.FSLASH + self.SINGLESPACE
         return options_result
 
     def add_context(self, context, context_options):
@@ -317,7 +318,7 @@ class DSLType20:
         parsed_context_name = None
         parsed_opts = []
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.AT_SIGN + self.ANYSPACE + self.IDENTIFIER)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.ATSIGN + self.ANYSPACE + self.IDENTIFIER)
         if not v:
             return False, "Malformed context name: [%s]." % str_input
         parsed_context_name = (r[0]).strip()
@@ -345,7 +346,7 @@ class DSLType20:
                 return False, "Malformed context name: [%s]." % str_input
 
         # remove the at ("@") sign
-        v, r = miniparse.remove_next_of(parsed_context_name, self.AT_SIGN)
+        v, r = miniparse.remove_next_of(parsed_context_name, self.ATSIGN)
         if not v:
             return False, "Malformed context name: [%s]." % parsed_context_name
         parsed_context_name = r.strip()
@@ -399,7 +400,7 @@ class DSLType20:
         local_str_input = (r[1]).strip()
 
         # remove equal sign just before the variable's value
-        v, r = miniparse.scan_and_slice_end(local_str_input, self.EQ_SIGN)
+        v, r = miniparse.scan_and_slice_end(local_str_input, self.EQSIGN)
         if not v:
             return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
         local_str_input = (r[1]).strip()
