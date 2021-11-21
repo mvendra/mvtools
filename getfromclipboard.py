@@ -17,7 +17,7 @@ def _call_cmd(cmd):
 def _get_for_linux():
     r, c = _call_cmd(["xclip", "-sel", "clip", "-o"])
     if r:
-        return c.decode("ascii")
+        return c.decode("utf-8")
     else:
         print("Failed to call xclip. Make sure it is installed.")
         exit(1)
@@ -25,7 +25,7 @@ def _get_for_linux():
 def _get_for_cygwin():
     r, c = _call_cmd(["cat", "/dev/clipboard"])
     if r:
-        return c.decode("ascii")
+        return c.decode("utf-8")
     else:
         print("Failed.")
         exit(1)
