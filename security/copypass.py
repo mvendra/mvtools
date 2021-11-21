@@ -5,12 +5,8 @@ import os
 import time
 import getpass
 
-import sendtoclipboard
 import path_utils
-
-def puaq():
-    print("Usage: %s password_file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+import sendtoclipboard
 
 def getpasswordfromcontents(contents):
 
@@ -34,12 +30,8 @@ def getpasswordfromcontents(contents):
 
     return local_contents[:of_e]
 
-if __name__ == "__main__":
+def copypass(passfile):
 
-    if len(sys.argv) < 2:
-        puaq()
-
-    passfile = sys.argv[1]
     if not os.path.exists(passfile):
         print("%s does not exist. Aborting." % passfile)
         sys.exit(1)
@@ -64,3 +56,14 @@ if __name__ == "__main__":
         print("Unable to send password to clipboard.")
         sys.exit(1)
 
+def puaq():
+    print("Usage: %s password_file" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
+
+if __name__ == "__main__":
+
+    if len(sys.argv) < 2:
+        puaq()
+
+    if not copypass(sys.argv[1]):
+        sys.exit(1)
