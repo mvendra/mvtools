@@ -34,6 +34,44 @@ def _ensure_toolbus_db():
             errmsg = "First error: [%s]. Second error: [%s]" % (first_error, r)
         raise mvtools_exception.mvtools_exception(errmsg)
 
+def _de_newlines_string(the_string):
+
+    newlines = []
+    ret_string = ""
+
+    i = 0
+    for x in the_string:
+        i += 1
+
+        if x == "\n":
+            newlines.append(i-1)
+            continue
+        ret_string += x
+
+    return ret_string, newlines
+
+def _re_newlines_string(the_full_var):
+
+    ret_string = ""
+    newlines = []
+
+    var_val = the_full_var[1]
+    options = the_full_var[2]
+
+    for o in options:
+        if o[0] == "newlines_at":
+            newlines = (o[1]).split("/")
+
+    var_val_copy = var_val
+    for i in range(len(var_val) + len(newlines)):
+        if str(i) in newlines:
+            ret_string += "\n"
+            continue
+        ret_string += var_val_copy[0]
+        var_val_copy = var_val_copy[1:]
+
+    return ret_string
+
 def clipstack_push():
 
     _ensure_toolbus_db()
@@ -56,7 +94,15 @@ def clipstack_push():
     clipboard_readout = getfromclipboard.getfromclipboard()
     if clipboard_readout is None:
         raise mvtools_exception.mvtools_exception("clipstack_push: call to getfromclipboard failed.")
-    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, str(int(field_header_count[1]) + 1), clipboard_readout, [])
+
+    out_sans_newlines, newlines_stored = _de_newlines_string(clipboard_readout)
+    opts = []
+    newlines_at_expanded = ""
+    for x in newlines_stored:
+        newlines_at_expanded += "/" + str(x)
+    newlines_at_expanded = newlines_at_expanded[1:]
+    opts.append(("newlines_at", newlines_at_expanded))
+    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, str(int(field_header_count[1]) + 1), out_sans_newlines, opts)
     if not v:
         return False, r
 
@@ -111,7 +157,9 @@ def clipstack_top_delegate():
     if last_saved is None:
         return False, "Position [%s] is unexpectedly empty!" % header_count
 
-    return True, (last_saved[1], header_count)
+    last_saved_resolved = _re_newlines_string(last_saved)
+
+    return True, (last_saved_resolved, header_count)
 
 def clipstack_pop():
 
