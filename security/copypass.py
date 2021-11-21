@@ -2,7 +2,7 @@
 
 import sys
 import os
-import subprocess
+import time
 import getpass
 
 import sendtoclipboard
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     try:
         sendtoclipboard.sendtoclipboard(content_to_copy)
         print("Ok, you're up...")
-        subprocess.call(["sleep", "5"])
+        time.sleep(5)
         sendtoclipboard.sendtoclipboard("clear")
         print("Expired.")
     except:
