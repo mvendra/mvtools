@@ -58,6 +58,9 @@ def _re_newlines_string(the_full_var):
     var_val = the_full_var[1]
     options = the_full_var[2]
 
+    if len(options) == 0:
+        return var_val
+
     for o in options:
         if o[0] == "newlines_at":
             newlines = (o[1]).split("/")
@@ -101,7 +104,8 @@ def clipstack_push():
     for x in newlines_stored:
         newlines_at_expanded += "/" + str(x)
     newlines_at_expanded = newlines_at_expanded[1:]
-    opts.append(("newlines_at", newlines_at_expanded))
+    if len(newlines_at_expanded) > 0:
+        opts.append(("newlines_at", newlines_at_expanded))
     v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, str(int(field_header_count[1]) + 1), out_sans_newlines, opts)
     if not v:
         return False, r
