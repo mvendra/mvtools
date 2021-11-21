@@ -173,11 +173,11 @@ class DSLType20:
 
         result = ""
         if context != self.default_context_id:
-            result = ("\n[\n" + self.ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
+            result = (self.NEWLINE + self.LBRACKET + self.NEWLINE + self.ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
 
         for y in self.data[context][1]:
 
-            cur_var = "\n" + self.variable_decorator + y[0] # variable's name
+            cur_var = self.NEWLINE + self.variable_decorator + y[0] # variable's name
 
             # produce the options
             prod_opts = self._produce_options(y[2])
@@ -195,7 +195,7 @@ class DSLType20:
             result += cur_var
 
         if context != self.default_context_id:
-            result += "\n]\n"
+            result += self.NEWLINE + self.RBRACKET + self.NEWLINE
 
         return result
 
@@ -266,7 +266,7 @@ class DSLType20:
         expecting_context_name = False
         expecting_context_closure = False
 
-        lines = contents.split("\n")
+        lines = contents.split(self.NEWLINE)
         for line in lines:
 
             line_t = self.sanitize_line(line)
