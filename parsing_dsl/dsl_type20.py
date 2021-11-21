@@ -185,10 +185,12 @@ class DSLType20:
                 cur_var = ("%s %s" %  (cur_var, prod_opts))
 
             # add the variable's value
-            v, r = miniparse.escape(y[1], self.BSLASH, [self.QUOTE])
-            if not v:
-                return None
-            var_escaped_value = r
+            var_escaped_value = ""
+            if y[1] != "":
+                v, r = miniparse.escape(y[1], self.BSLASH, [self.QUOTE])
+                if not v:
+                    return None
+                var_escaped_value = r
 
             cur_var += self.SINGLESPACE + self.EQSIGN + self.SINGLESPACE + self.QUOTE + var_escaped_value + self.QUOTE
 
@@ -444,9 +446,6 @@ class DSLType20:
         # final validations
         if var_name == "":
             return False, "Empty var name: [%s]" % str_input
-
-        if var_value == "":
-            return False, "Empty var value: [%s]" % str_input
 
         v, r = self.add_var(var_name, var_value, parsed_opts, local_context)
         if not v:
