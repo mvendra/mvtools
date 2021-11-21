@@ -3,14 +3,14 @@
 import sys
 import os
 import stat
-import shred_wrapper
 import getpass
 
-from subprocess import check_output
-from subprocess import call
-
+import mvtools_envvars
 import path_utils
 import decrypt
+import copypass
+import shred_wrapper
+import randomfilenamegen
 
 def puaq():
     print("Usage: %s enc_password_file" % path_utils.basename_filtered(__file__))
@@ -39,7 +39,16 @@ if __name__ == "__main__":
         print("%s does not exist. Aborting." % encpassfile)
         sys.exit(1)
 
-    random_fn = check_output(["randomfilenamegen.sh"])
+    v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
+    if not v:
+        print("Unable to retrieve mvtool's temp path: [%s]" % r)
+        sys.exit(1)
+    temp_base_path = r
+
+    random_fn = path_utils.concat_path(temp_base_path, randomfilenamegen.randomfilenamegen())
+    if os.path.exists(random_fn):
+        print("Random file name [%s] already exists. Aborting." % random_fn)
+        sys.exit(1)
     passphrase = getpass.getpass("Type in...\n")
 
     v, r = decrypt.symmetric_decrypt(encpassfile, random_fn, passphrase)
@@ -49,10 +58,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        call(["copypass.py", random_fn])
+        copypass.copypass(random_fn)
         shred_wrapper.shred_target(random_fn)
     except:
         print("Unable to send password to clipboard.")
         shred_wrapper.shred_target(random_fn)
         sys.exit(1)
-
