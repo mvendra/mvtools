@@ -2,7 +2,8 @@
 
 import os
 import sys
-from subprocess import call
+import stat
+
 import path_utils
 
 class secexcept(RuntimeError):
@@ -107,10 +108,10 @@ exit 0 #SENTINEL\n"""
             f.write(inst_ct)
             f.write(pack_ct)
 
-        call(["chmod", "+x", _self.outputfn])
+        os.chmod(_self.outputfn, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
 
 def puaq():
-    print("Usage: %s input_instructionsfile.sh input_packagefile.tar.gz output_filename.sh" % path_utils.basename_filtered(__file__))
+    print("Usage: %s input_instructionsfile.sh input_packagefile.tar.gz (or tar.bz2, .zip, etc) output_filename.sh" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
