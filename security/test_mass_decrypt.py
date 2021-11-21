@@ -3,7 +3,6 @@
 import sys
 import os
 import shutil
-from subprocess import check_output
 
 import fsquery
 import path_utils
