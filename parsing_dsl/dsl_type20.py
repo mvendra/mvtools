@@ -212,16 +212,19 @@ class DSLType20:
             options_result += input_options[o][0] # option's name
             if input_options[o][1] is not None:
                 # option has value
-                v, r = miniparse.escape((input_options[o][1]), self.BSLASH, [self.QUOTE])
-                if not v:
-                    return None
-                opt_escaped_value = r
+                opt_escaped_value = ""
+                if input_options[o][1] != "":
+                    v, r = miniparse.escape((input_options[o][1]), self.BSLASH, [self.QUOTE])
+                    if not v:
+                        return None
+                    opt_escaped_value = r
                 options_result += self.COLON + self.SINGLESPACE + self.QUOTE + opt_escaped_value + self.QUOTE
 
             if o == (len(input_options)-1): # last option
                 options_result += self.RCBRACKET
             else:
                 options_result += self.SINGLESPACE + self.FSLASH + self.SINGLESPACE
+
         return options_result
 
     def add_context(self, context, context_options):

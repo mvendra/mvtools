@@ -791,6 +791,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.get_vars("var1", "ctx1"), [("var1", "val2", [("opt1", "val3")] )])
         self.assertEqual(dsl.get_all_vars("ctx1"), [ ("var1", "val2", [("opt1", "val3")] ) ] )
 
+    def testDslType20_TestAddVar9(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertTrue(dsl.add_var("var1", "val1", [ ("opt1", None) ] )[0])
+        self.assertEqual(dsl.get_all_vars(), [ ("var1", "val1", [ ("opt1", None) ]) ] )
+
     def testDslType20_TestAddVarFail1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_var("var1", None, [ ] )[0])
@@ -1123,6 +1128,62 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_1.add_var("var1", "", [], "ctx1")[0])
         self.assertEqual(dsl_1.get_all_vars("ctx1"), [("var1", "", [])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 = \"\"\n]")
+
+        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        v, r = dsl_2.parse(dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(dsl_1.get_all_vars(), dsl_2.get_all_vars())
+        self.assertEqual(dsl_1.produce(), dsl_2.produce())
+
+    def testDslType20_TestProduce14(self):
+        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        self.assertTrue(dsl_1.add_context("ctx1", [])[0])
+        self.assertTrue(dsl_1.add_var("var1", "", [("opt1", None)], "ctx1")[0])
+        self.assertEqual(dsl_1.get_all_vars("ctx1"), [("var1", "", [("opt1", None)])])
+        self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 {opt1} = \"\"\n]")
+
+        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        v, r = dsl_2.parse(dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(dsl_1.get_all_vars(), dsl_2.get_all_vars())
+        self.assertEqual(dsl_1.produce(), dsl_2.produce())
+
+    def testDslType20_TestProduce15(self):
+        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        self.assertTrue(dsl_1.add_context("ctx1", [("opt1", None)])[0])
+        self.assertTrue(dsl_1.add_var("var1", "", [], "ctx1")[0])
+        self.assertEqual(dsl_1.get_all_vars("ctx1"), [("var1", "", [])])
+        self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1}\nvar1 = \"\"\n]")
+
+        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        v, r = dsl_2.parse(dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(dsl_1.get_all_vars(), dsl_2.get_all_vars())
+        self.assertEqual(dsl_1.produce(), dsl_2.produce())
+
+    def testDslType20_TestProduce16(self):
+        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        self.assertTrue(dsl_1.add_context("ctx1", [])[0])
+        self.assertTrue(dsl_1.add_var("var1", "", [("opt1", "")], "ctx1")[0])
+        self.assertEqual(dsl_1.get_all_vars("ctx1"), [("var1", "", [("opt1", "")])])
+        self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 {opt1: \"\"} = \"\"\n]")
+
+        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        v, r = dsl_2.parse(dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(dsl_1.get_all_vars(), dsl_2.get_all_vars())
+        self.assertEqual(dsl_1.produce(), dsl_2.produce())
+
+    def testDslType20_TestProduce17(self):
+        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
+        self.assertTrue(dsl_1.add_context("ctx1", [("opt1", "")])[0])
+        self.assertTrue(dsl_1.add_var("var1", "", [], "ctx1")[0])
+        self.assertEqual(dsl_1.get_all_vars("ctx1"), [("var1", "", [])])
+        self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1: \"\"}\nvar1 = \"\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options(allow_dupes=False))
         v, r = dsl_2.parse(dsl_1.produce())
