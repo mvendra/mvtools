@@ -5,6 +5,7 @@ import os
 import subprocess
 
 import get_platform
+import generic_run
 
 def _call_cmd(cmd):
     ret = ""
@@ -15,9 +16,9 @@ def _call_cmd(cmd):
     return True, ret
 
 def _get_for_linux():
-    v, r = _call_cmd(["xclip", "-sel", "clip", "-o"])
+    v, r = generic_run.run_cmd_simple(["xclip", "-sel", "clip", "-o"])
     if v:
-        return r.decode("utf-8")
+        return r
     return None
 
 def _get_for_cygwin():
