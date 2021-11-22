@@ -145,4 +145,6 @@ if __name__ == "__main__":
     new_path = convert_win_path_to_cygwin_path(target_path)
     new_path = escape_spaces(new_path)
     if new_path is not None:
-        sendtoclipboard.sendtoclipboard(new_path)
+        v, r = sendtoclipboard.sendtoclipboard(new_path)
+        if not v:
+            print(r)

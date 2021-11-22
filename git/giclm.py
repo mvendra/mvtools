@@ -21,7 +21,10 @@ def copy_last_commit_message(repo):
 
     msg = git_lib.remove_gitlog_decorations(r)
     if msg is not None:
-        sendtoclipboard.sendtoclipboard(msg)
+        v, r = sendtoclipboard.sendtoclipboard(msg)
+        if not v:
+            print(r)
+            sys.exit(1)
 
 if __name__ == "__main__":
 

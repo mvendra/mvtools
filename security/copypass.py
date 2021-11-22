@@ -47,11 +47,21 @@ def copypass(passfile):
         content_to_copy = contents
 
     try:
-        sendtoclipboard.sendtoclipboard(content_to_copy)
-        print("Ok, you're up...")
-        time.sleep(5)
-        sendtoclipboard.sendtoclipboard("clear")
+
+        v, r = sendtoclipboard.sendtoclipboard(content_to_copy)
+        if not v:
+            print(r)
+        else:
+            print("Ok, you're up...")
+            time.sleep(5)
+
+        v, r = sendtoclipboard.sendtoclipboard("clear")
+        if not v:
+            print(r)
+            return False
+
         print("Expired.")
+
     except:
         print("Unable to send password to clipboard.")
         return False

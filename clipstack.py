@@ -174,8 +174,9 @@ def clipstack_pop():
     header_count = r[1]
 
     # update the clipboard
-    if not sendtoclipboard.sendtoclipboard(last_saved):
-        raise mvtools_exception.mvtools_exception("clipstack_pop: call to sendtoclipboard failed.")
+    v, r = sendtoclipboard.sendtoclipboard(last_saved)
+    if not v:
+        raise mvtools_exception.mvtools_exception("clipstack_pop: call to sendtoclipboard failed: [%s]" % r)
 
     # remove the last field (top-of-stack)
     v, r = toolbus.remove_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, str(header_count))
