@@ -2,18 +2,9 @@
 
 import sys
 import os
-import subprocess
 
 import get_platform
 import generic_run
-
-def _call_cmd(cmd):
-    ret = ""
-    try:
-        ret = subprocess.check_output(cmd)
-    except OSError as oe:
-        return False, None
-    return True, ret
 
 def _get_for_linux():
     v, r = generic_run.run_cmd_simple(["xclip", "-sel", "clip", "-o"])
@@ -22,9 +13,9 @@ def _get_for_linux():
     return None
 
 def _get_for_cygwin():
-    v, r = _call_cmd(["cat", "/dev/clipboard"])
+    v, r = generic_run.run_cmd_simple(["cat", "/dev/clipboard"])
     if v:
-        return r.decode("utf8")
+        return r
     return None
 
 def getfromclipboard():
