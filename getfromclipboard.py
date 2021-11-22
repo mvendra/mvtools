@@ -24,7 +24,7 @@ def _get_for_linux():
 def _get_for_cygwin():
     v, r = _call_cmd(["cat", "/dev/clipboard"])
     if v:
-        return r.decode("utf-8")
+        return r.decode("utf8")
     return None
 
 def getfromclipboard():

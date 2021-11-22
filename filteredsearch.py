@@ -20,7 +20,7 @@ def filteredsearch(path, search, extensions):
         out = ""
         try:
             out = check_output(["ag", search, r])
-            out = out.decode("utf-8")
+            out = out.decode("utf8")
         except OSError as oe:
             print("Failed calling ag. Make sure silversearcher-ag is installed.")
             exit(1)

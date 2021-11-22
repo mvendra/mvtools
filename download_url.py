@@ -16,7 +16,7 @@ def download_url(source_url, target_path):
     contents = None
     try:
         with urllib.request.urlopen(source_url) as f:
-            contents = f.read().decode("utf-8")
+            contents = f.read().decode("utf8")
     except urllib.error.HTTPError as httpex:
         return False, "Downloading failed: [%s]" % httpex
 
