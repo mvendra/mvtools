@@ -9,6 +9,7 @@ import toolbus
 import minicron
 import retry
 import terminal_colors
+import mvtools_exception
 
 LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
 
@@ -287,8 +288,12 @@ def run_job_list_delegate(job_list, feedback_object, execution_name, options):
 
             try:
                 v, r = j.run_job(feedback_object, execution_name)
+            except mvtools_exception.mvtools_exception as mvtex:
+                return False, ["Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (j.name, j.get_desc(), mvtex)]
+            except Exception as ex:
+                return False, ["Job [%s][%s] caused an exception. Aborting: [%s]" % (j.name, j.get_desc(), ex)]
             except:
-                return False, ["Job [%s][%s] caused an exception. Aborting." % (j.name, j.get_desc())]
+                return False, ["Job [%s][%s] caused an unknown exception. Aborting." % (j.name, j.get_desc())]
 
             if v:
                 j_msg = _format_job_info_msg_succeeded(j)
