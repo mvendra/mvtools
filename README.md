@@ -26,6 +26,8 @@ tree
 
 xclip
 
+xsel
+
 silversearcher-ag
 
 meld
