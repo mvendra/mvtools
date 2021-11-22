@@ -151,9 +151,11 @@ class DSLType20:
             return ""
 
         for c in self.COMMENTS:
-            n = line_out.find(c)
-            if n != -1:
-                line_out = line_out[:n]
+            line_out = miniparse.guarded_right_cut(line_out, [c], self.QUOTE)
+            if line_out is None:
+                return None
+            if line_out == "":
+                return ""
 
         return line_out.strip()
 
@@ -275,6 +277,8 @@ class DSLType20:
         for line in lines:
 
             line_t = self.sanitize_line(line)
+            if line_t is None:
+                return False, "Unable to sanitize line: [%s]" % line
             if line_t == "":
                 continue
 

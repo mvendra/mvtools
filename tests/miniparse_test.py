@@ -298,6 +298,10 @@ class MiniparseTest(unittest.TestCase):
         p = miniparse.guarded_right_cut("abc''#", ["#"], "'")
         self.assertEqual(p, "abc''")
 
+    def testGuardedRightCut39(self):
+        p = miniparse.guarded_right_cut("var1 = \"#val1\"", ["#"], "\"")
+        self.assertEqual(p, "var1 = \"#val1\"")
+
     def testSplitNext1(self):
         p = miniparse.split_next(None, None)
         self.assertEqual(p, None)
