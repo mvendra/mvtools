@@ -13,10 +13,13 @@ def _get_for_linux():
     return None
 
 def _get_for_cygwin():
-    v, r = generic_run.run_cmd_simple(["cat", "/dev/clipboard"])
-    if v:
-        return r
-    return None
+    contents = None
+    try:
+        with open("/dev/clipboard", "r") as f:
+            contents = f.read()
+    except:
+        pass
+    return contents
 
 def getfromclipboard():
 
