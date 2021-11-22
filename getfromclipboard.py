@@ -2,14 +2,14 @@
 
 import sys
 import os
-from subprocess import check_output
+import subprocess
 
 import get_platform
 
 def _call_cmd(cmd):
     ret = ""
     try:
-        ret = check_output(cmd)
+        ret = subprocess.check_output(cmd)
     except OSError as oe:
         return False, None
     return True, ret
