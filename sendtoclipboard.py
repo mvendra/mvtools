@@ -13,7 +13,7 @@ def sendtoclipboard(contents):
 
     if plat == get_platform.PLAT_CYGWIN:
         call("inline_echo.py '%s' > /dev/clipboard" % (contents), shell=True)
-        return False
+        return True
 
     clipboard_app = ""
     if plat == get_platform.PLAT_LINUX:
