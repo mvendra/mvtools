@@ -9,13 +9,21 @@ import get_platform
 import path_utils
 
 def sendtoclipboard_linux(contents):
+    if contents is None:
+        return False, "Contents can't be None"
     v, r = generic_run.run_cmd_simple(["xsel", "--clipboard", "--input"], use_input=contents)
     if not v:
         return False, r
     return True, None
 
 def sendtoclipboard_cygwin(contents):
-    subprocess.call("inline_echo.py '%s' > /dev/clipboard" % (contents), shell=True)
+    if contents is None:
+        return False, "Contents can't be None"
+    try:
+        with open("/dev/clipboard", "w") as f:
+            f.write(contents)
+    except:
+        return False, "Unable to write to /dev/clipboard - exception raised"
     return True, None
 
 def sendtoclipboard(contents):
