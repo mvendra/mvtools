@@ -58,8 +58,11 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        copypass.copypass(random_fn)
+        ret = copypass.copypass(random_fn)
         shred_wrapper.shred_target(random_fn)
+        if not ret:
+            print("Call to copypass failed")
+            sys.exit(1)
     except:
         print("Unable to send password to clipboard.")
         shred_wrapper.shred_target(random_fn)

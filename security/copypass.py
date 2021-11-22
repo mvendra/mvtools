@@ -34,7 +34,7 @@ def copypass(passfile):
 
     if not os.path.exists(passfile):
         print("%s does not exist. Aborting." % passfile)
-        sys.exit(1)
+        return False
 
     contents=""
     with open(passfile) as f:
@@ -54,7 +54,9 @@ def copypass(passfile):
         print("Expired.")
     except:
         print("Unable to send password to clipboard.")
-        sys.exit(1)
+        return False
+
+    return True
 
 def puaq():
     print("Usage: %s password_file" % path_utils.basename_filtered(__file__))
