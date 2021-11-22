@@ -14,7 +14,9 @@ class ClipboardToolsTest(unittest.TestCase):
         test_string = "parabola"
         #v, r = sendtoclipboard.sendtoclipboard(test_string) # mvtodo: hangs the terminal when called with launch_list.
         #self.assertTrue(v)
-        #self.assertEqual(getfromclipboard.getfromclipboard(), test_string) # mvtodo: meaningless without the above
+        #v, r = getfromclipboard.getfromclipboard() # mvtodo: meaningless without the above
+        #self.assertTrue(v)
+        #self.assertEqual(r, test_string)
 
 if __name__ == '__main__':
     unittest.main()

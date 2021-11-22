@@ -94,7 +94,10 @@ def clipstack_push():
         return False, "Database is corrupted (nonmatching header-count vs number of actual entries)"
 
     # store the current clipboard contents
-    clipboard_readout = getfromclipboard.getfromclipboard()
+    v, r = getfromclipboard.getfromclipboard()
+    if not v:
+        return False, r
+    clipboard_readout = r
     if clipboard_readout is None:
         raise mvtools_exception.mvtools_exception("clipstack_push: call to getfromclipboard failed.")
 
