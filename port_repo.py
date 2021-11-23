@@ -36,7 +36,7 @@ def check_repos_type(source_repo, target_repo):
 
     return True, detected_source_type
 
-def port_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous):
+def port_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous, cherry_pick_previous):
 
     if not os.path.exists(source_repo):
         return False, "Source repo [%s] does not exist."  % source_repo
@@ -50,14 +50,14 @@ def port_repo(source_repo, target_repo, default_filter, include_list, exclude_li
     repos_type = r
 
     if repos_type == detect_repo_type.REPO_TYPE_GIT_STD:
-        return port_git_repo.port_git_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous)
+        return port_git_repo.port_git_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous, cherry_pick_previous)
     elif repos_type == detect_repo_type.REPO_TYPE_SVN:
-        return port_svn_repo.port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous)
+        return port_svn_repo.port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous, cherry_pick_previous)
 
     return False, "Porting failed: Unsupported repo type: [%s]" % repos_type
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--staged] [--stash X (use \"-1\" to port the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s source_repo target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--staged] [--stash X (use \"-1\" to port the entire stash)] [--unversioned] [--previous X] [--cherry-pick-previous HASH/REV]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -80,8 +80,9 @@ if __name__ == "__main__":
     stash_parse_next = False
     unversioned = False
     previous = 0
-
     previous_parse_next = False
+    cherry_pick_previous = None
+    cherry_pick_previous_parse_next = False
 
     for p in params:
 
@@ -105,6 +106,11 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
+        if cherry_pick_previous_parse_next:
+            cherry_pick_previous = p
+            cherry_pick_previous_parse_next = False
+            continue
+
         if p == "--default-filter-include":
             default_filter = "include"
         elif p == "--default-filter-exclude":
@@ -123,8 +129,10 @@ if __name__ == "__main__":
             stash_parse_next = True
         elif p == "--unversioned":
             unversioned = True
+        elif p == "--cherry-pick-previous":
+            cherry_pick_previous_parse_next = True
 
-    v, r = port_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous)
+    v, r = port_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, staged, stash, unversioned, previous, cherry_pick_previous)
     if not v:
         print("Porting repo [%s] to [%s] failed: %s" % (source_repo, target_repo, r))
         sys.exit(1)
