@@ -111,25 +111,25 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testGeneral(self):
 
-        v, r = collect_git_patch.collect_git_patch(self.nonexistent, self.storage_path, "include", [], [], False, False, False, False, 0, 0)
+        v, r = collect_git_patch.collect_git_patch(self.nonexistent, self.storage_path, "include", [], [], False, False, False, False, 0, 0, None)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.nonexistent, "include", [], [], False, False, False, False, 0, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.nonexistent, "include", [], [], False, False, False, False, 0, 0, None)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], False, False, False, False, 0, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], False, False, False, False, 0, 0, None)
         self.assertTrue(v)
 
     def testGeneralBestEffort(self):
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, False, 0, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, False, 0, 0, None)
         self.assertFalse(v)
         first_head_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         first_head_id_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
         self.assertFalse( os.path.exists( first_head_patch_filename ) )
         self.assertFalse( os.path.exists( first_head_id_patch_filename ) )
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, True, False, False, 0, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, True, False, False, 0, 0, None)
         second_head_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         second_head_id_patch_filename = path_utils.concat_path(self.storage_path, self.first_repo, "head_id.txt")
         self.assertFalse(v)
@@ -2988,6 +2988,64 @@ class CollectGitPatchTest(unittest.TestCase):
             contents_read = f.read()
         self.assertTrue("second-file1-content" in contents_read)
 
+    def testCollectPatchCherryPickPreviousFail1(self):
+
+        v, r = collect_git_patch.collect_git_patch_cherry_pick_previous(self.nonexistent, self.storage_path, "aabb")
+        self.assertFalse(v)
+
+    def testCollectPatchCherryPickPreviousFail2(self):
+
+        v, r = collect_git_patch.collect_git_patch_cherry_pick_previous(self.first_repo, self.storage_path, "tttt")
+        self.assertFalse(v)
+
+    def testCollectPatchCherryPickPrevious1(self):
+
+        v, r = git_lib.get_head_hash(self.first_repo)
+        self.assertTrue(v)
+        hash_head = r
+
+        v, r = collect_git_patch.collect_git_patch_cherry_pick_previous(self.first_repo, self.storage_path, hash_head)
+        self.assertTrue(v)
+
+    def testCollectPatchCherryPickPrevious2(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("content to be cherry picked later")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "commitmsg")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(self.first_repo)
+        self.assertTrue(v)
+        stored_hash = r
+
+        with open(self.first_file1, "a") as f:
+            f.write("nondetectful")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "commitmsg")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("ship-of-the-line")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "commitmsg")
+        self.assertTrue(v)
+
+        v, r = collect_git_patch.collect_git_patch_cherry_pick_previous(self.first_repo, self.storage_path, stored_hash)
+        self.assertTrue(v)
+        generated_patch = r
+
+        contents = None
+        with open(generated_patch, "r") as f:
+            contents = f.read()
+
+        self.assertTrue("content to be cherry picked later" in contents)
+        self.assertFalse("nondetectful" in contents)
+        self.assertFalse("ship-of-the-line" in contents)
+
     def testCollectGitPatch(self):
         pass # mvtodo {test combinations and doubletap (detect overwrites)}
 
@@ -3023,7 +3081,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch._test_repo_status(self.first_repo)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0, None)
         self.assertFalse(v)
 
         v, r = git_lib.get_head_deleted_updated_files(self.first_repo)
@@ -3062,7 +3120,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch._test_repo_status(self.first_repo)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0, None)
         self.assertFalse(v)
 
         v, r = git_lib.get_head_updated_deleted_files(self.first_repo)
@@ -3142,7 +3200,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch._test_repo_status(self.first_repo)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0, None)
         self.assertFalse(v)
 
         v, r = git_lib.get_head_deleted_deleted_files(self.first_repo)
@@ -3222,7 +3280,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch._test_repo_status(self.first_repo)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0, None)
         self.assertFalse(v)
 
         v, r = git_lib.get_head_deleted_deleted_files(self.first_repo)
@@ -3310,7 +3368,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch._test_repo_status(self.first_repo)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0, None)
         self.assertFalse(v)
 
         v, r = git_lib.get_head_deleted_deleted_files(self.first_repo)
@@ -3357,7 +3415,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch._test_repo_status(self.first_repo)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0, None)
         self.assertFalse(v)
 
         v, r = git_lib.get_head_added_added_files(self.first_repo)
@@ -3392,7 +3450,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = collect_git_patch._test_repo_status(self.first_repo)
         self.assertFalse(v)
 
-        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0)
+        v, r = collect_git_patch.collect_git_patch(self.first_repo, self.storage_path, "include", [], [], True, False, False, 0, False, 0, None)
         self.assertFalse(v)
 
         v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
