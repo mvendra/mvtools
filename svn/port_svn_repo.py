@@ -27,6 +27,23 @@ def _reverse_list(the_list):
         reversed_list.append(x)
     return reversed_list
 
+def port_svn_repo_cherry_pick_previous(temp_path, source_repo, target_repo, cherry_pick_previous):
+
+    report = []
+
+    previous_cherry_picked_file = None
+    v, r = collect_svn_patch.collect_svn_patch_cherry_pick_previous(source_repo, temp_path, cherry_pick_previous)
+    if not v:
+        return False, "Failed porting previous (during collect-cherry-pick-previous) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
+    previous_cherry_picked_file = [r]
+
+    # previous-cherry-picked commits will be stacked up ontop of head - no autocommitting is available (on purpose)
+    v, r = apply_svn_patch.apply_svn_patch_head(target_repo, previous_cherry_picked_file)
+    if not v:
+        return False, "Failed porting cherry-picked-previous (during head-apply) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
+
+    return True, report
+
 def port_svn_repo_previous(temp_path, source_repo, target_repo, previous_count):
 
     report = []
@@ -89,7 +106,7 @@ def port_svn_repo_unversioned(temp_path, source_repo, target_repo, default_filte
 
     return True, report
 
-def port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous):
+def port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous, cherry_pick_previous):
 
     v, r = mvtools_envvars.mvtools_envvar_read_temp_path()
     if not v:
@@ -104,11 +121,11 @@ def port_svn_repo(source_repo, target_repo, default_filter, include_list, exclud
         return False, ["Can't apply patches. Temporary path [%s] already exists." % temp_path_patches]
     os.mkdir(temp_path_patches)
 
-    v, r = _port_svn_repo_delegate(temp_path_patches, source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous)
+    v, r = _port_svn_repo_delegate(temp_path_patches, source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous, cherry_pick_previous)
     shutil.rmtree(temp_path_patches)
     return v, r
 
-def _port_svn_repo_delegate(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous):
+def _port_svn_repo_delegate(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous, cherry_pick_previous):
 
     source_repo = path_utils.filter_remove_trailing_sep(source_repo)
     source_repo = os.path.abspath(source_repo)
@@ -141,6 +158,15 @@ def _port_svn_repo_delegate(temp_path, source_repo, target_repo, default_filter,
         else:
             report += r
 
+    # cherry pick previous
+    if cherry_pick_previous is not None:
+        v, r = port_svn_repo_cherry_pick_previous(temp_path, source_repo, target_repo, cherry_pick_previous)
+        if not v:
+            has_any_failed = True
+            report.append("port_svn_repo_cherry_pick_previous: [%s]." % r)
+        else:
+            report += r
+
     # head
     if head:
         v, r = port_svn_repo_head(temp_path, source_repo, target_repo, default_filter, include_list, exclude_list)
@@ -162,7 +188,7 @@ def _port_svn_repo_delegate(temp_path, source_repo, target_repo, default_filter,
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s source_repo target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s source_repo target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--unversioned] [--previous X] [--cherry-pick-previous REV]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -183,6 +209,8 @@ if __name__ == "__main__":
     unversioned = False
     previous = 0
     previous_parse_next = False
+    cherry_pick_previous = None
+    cherry_pick_previous_parse_next = False
 
     for p in params:
 
@@ -201,6 +229,11 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
+        if cherry_pick_previous_parse_next:
+            cherry_pick_previous = p
+            cherry_pick_previous_parse_next = False
+            continue
+
         if p == "--default-filter-include":
             default_filter = "include"
         elif p == "--default-filter-exclude":
@@ -215,8 +248,10 @@ if __name__ == "__main__":
             unversioned = True
         elif p == "--previous":
             previous_parse_next = True
+        elif p == "--cherry-pick-previous":
+            cherry_pick_previous_parse_next = True
 
-    v, r = port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous)
+    v, r = port_svn_repo(source_repo, target_repo, default_filter, include_list, exclude_list, head, unversioned, previous, cherry_pick_previous)
     for i in r:
         print(i)
     if not v:
