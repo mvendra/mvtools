@@ -53,10 +53,10 @@ def port_git_repo_cherry_pick_previous(temp_path, source_repo, target_repo, cher
     v, r = collect_git_patch.collect_git_patch_cherry_pick_previous(source_repo, temp_path, cherry_pick_previous)
     if not v:
         return False, "Failed porting previous (during collect-cherry-pick-previous) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
-    previous_cherry_picked_file = r
+    previous_cherry_picked_file = [r]
 
     # previous-cherry-picked commits will be stacked up ontop of head - no autocommitting is available (on purpose)
-    v, r = apply_git_patch.apply_git_patch_head(target_repo, [previous_cherry_picked_file])
+    v, r = apply_git_patch.apply_git_patch_head(target_repo, previous_cherry_picked_file)
     if not v:
         return False, "Failed porting cherry-picked-previous (during head-apply) from [%s] to [%s]: [%s]" % (source_repo, target_repo, r)
 
