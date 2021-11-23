@@ -242,7 +242,14 @@ def collect_svn_patch_previous(repo, storage_path, previous_number):
 
     return True, written_file_list
 
-def collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, unversioned, previous):
+def collect_svn_patch_cherry_pick_previous(repo, storage_path, cherry_pick_previous):
+
+    v, r = svn_lib.diff(repo, None, cherry_pick_previous)
+    if not v:
+        return False, "Failed calling svn command for cherry-pick-previous: [%s]. Repository: [%s]." % (r, repo)
+    return collect_svn_patch_cmd_generic(repo, storage_path, "cherry_picked_previous_%s.patch" % cherry_pick_previous, "cherry-pick-previous", r)
+
+def collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, unversioned, previous, cherry_pick_previous):
 
     repo = path_utils.filter_remove_trailing_sep(repo)
     repo = os.path.abspath(repo)
@@ -298,10 +305,19 @@ def collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_
         else:
             report += r
 
+    # cherry pick previous
+    if cherry_pick_previous is not None:
+        v, r = collect_svn_patch_cherry_pick_previous(repo, storage_path, cherry_pick_previous)
+        if not v:
+            has_any_failed = True
+            report.append("collect_svn_patch_cherry_pick_previous: [%s]." % r)
+        else:
+            report.append(r)
+
     return (not has_any_failed), report
 
 def puaq():
-    print("Usage: %s repo [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s repo [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--unversioned] [--previous X] [--cherry-pick-previous REV]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -325,6 +341,8 @@ if __name__ == "__main__":
     unversioned = False
     previous = 0
     previous_parse_next = False
+    cherry_pick_previous = None
+    cherry_pick_previous_parse_next = False
 
     for p in params:
 
@@ -348,6 +366,11 @@ if __name__ == "__main__":
             previous_parse_next = False
             continue
 
+        if cherry_pick_previous_parse_next:
+            cherry_pick_previous = p
+            cherry_pick_previous_parse_next = False
+            continue
+
         if p == "--storage-path":
             storage_path_parse_next = True
         elif p == "--default-filter-include":
@@ -366,11 +389,13 @@ if __name__ == "__main__":
             unversioned = True
         elif p == "--previous":
             previous_parse_next = True
+        elif p == "--cherry-pick-previous":
+            cherry_pick_previous_parse_next = True
 
     if storage_path is None:
         storage_path = os.getcwd()
 
-    v, r = collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, unversioned, previous)
+    v, r = collect_svn_patch(repo, storage_path, default_filter, include_list, exclude_list, head, head_id, unversioned, previous, cherry_pick_previous)
     for i in r:
         print(i)
     if not v:
