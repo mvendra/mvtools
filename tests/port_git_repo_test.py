@@ -73,19 +73,19 @@ class PortGitRepoTest(unittest.TestCase):
 
     def testPortGitRepoBasicChecks(self):
 
-        v, r = port_git_repo.port_git_repo(self.nonexistent, self.second_repo, "include", [], [], False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.nonexistent, self.second_repo, "include", [], [], False, False, False, False, 0, None)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonexistent, "include", [], [], False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonexistent, "include", [], [], False, False, False, False, 0, None)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.nonrepo, self.second_repo, "include", [], [], False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.nonrepo, self.second_repo, "include", [], [], False, False, False, False, 0, None)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonrepo, "include", [], [], False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.nonrepo, "include", [], [], False, False, False, False, 0, None)
         self.assertFalse(v)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], [], False, False, False, False, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], [], False, False, False, False, 0, None)
         self.assertTrue(v)
 
     def testPortGitRepoStashFail(self):
@@ -253,6 +253,77 @@ class PortGitRepoTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.second_repo)
         self.assertTrue(v)
         self.assertFalse(r)
+
+    def testPortGitRepoCherryPickPreviousFail1(self):
+
+        v, r = port_git_repo.port_git_repo_cherry_pick_previous(self.storage_path, self.first_repo, self.second_repo, "tttt")
+        self.assertFalse(v)
+
+    def testPortGitRepoCherryPickPrevious1(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("target-of-cherry-picking")
+
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.first_repo, "newmsg1")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(self.first_repo)
+        self.assertTrue(v)
+        head_hash = r
+
+        v, r = port_git_repo.port_git_repo_cherry_pick_previous(self.storage_path, self.first_repo, self.second_repo, head_hash)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(self.second_repo, path_utils.basename_filtered(self.first_file1))
+
+        contents = None
+        with open(second_file1, "r") as f:
+            contents = f.read()
+
+        self.assertTrue("target-of-cherry-picking" in contents)
+
+    def testPortGitRepoCherryPickPrevious2(self):
+
+        with open(self.first_file1, "a") as f:
+            f.write("target-of-cherry-picking")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "newmsg1")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(self.first_repo)
+        self.assertTrue(v)
+        stored_hash = r
+
+        with open(self.first_file1, "a") as f:
+            f.write("nondetectful")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "newmsg10")
+        self.assertTrue(v)
+
+        with open(self.first_file1, "a") as f:
+            f.write("airlifting")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "newmsg100")
+        self.assertTrue(v)
+
+        v, r = port_git_repo.port_git_repo_cherry_pick_previous(self.storage_path, self.first_repo, self.second_repo, stored_hash)
+        self.assertTrue(v)
+
+        second_file1 = path_utils.concat_path(self.second_repo, path_utils.basename_filtered(self.first_file1))
+
+        contents = None
+        with open(second_file1, "r") as f:
+            contents = f.read()
+
+        self.assertTrue("target-of-cherry-picking" in contents)
+        self.assertFalse("nondetectful" in contents)
+        self.assertFalse("airlifting" in contents)
 
     def testPortGitRepoPrevious2(self):
 
@@ -524,7 +595,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], [], True, True, False, True, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], [], True, True, False, True, 0, None)
         self.assertTrue(v)
 
         second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
@@ -600,7 +671,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], ["*/file3.txt"], True, True, False, True, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "include", [], ["*/file3.txt"], True, True, False, True, 0, None)
         self.assertTrue(v)
 
         second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
@@ -676,7 +747,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", ["*/file5.txt"], [], True, True, False, True, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", ["*/file5.txt"], [], True, True, False, True, 0, None)
         self.assertTrue(v)
 
         second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
@@ -748,7 +819,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", ["*/file1.txt"], [], True, True, False, True, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", ["*/file1.txt"], [], True, True, False, True, 0, None)
         self.assertTrue(v)
 
         second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
@@ -821,7 +892,7 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", [], [], True, True, False, True, 0)
+        v, r = port_git_repo.port_git_repo(self.first_repo, self.second_repo, "exclude", [], [], True, True, False, True, 0, None)
         self.assertTrue(v)
 
         second_file1 = path_utils.concat_path(self.second_repo, "file1.txt")
