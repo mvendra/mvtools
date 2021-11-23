@@ -336,8 +336,6 @@ def collect_git_patch_previous(repo, storage_path, previous_number):
 
 def collect_git_patch_cherry_pick_previous(repo, storage_path, cherry_pick_previous):
 
-    written_file_list = []
-
     v, r = git_lib.show(repo, cherry_pick_previous)
     if not v:
         return False, "Failed calling git command for cherry-pick-previous: [%s]. Repository: [%s]." % (r, repo)
