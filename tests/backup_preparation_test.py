@@ -123,7 +123,7 @@ class BackupPreparationTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.test_cnav1_file, file_cnav1_contents)
         cfg_file_contents5 = ""
         cfg_file_contents5 += ("SET_STORAGE_PATH = \"%s\"" + os.linesep) % (self.prep_target)
-        cfg_file_contents5 += ("RUN_COLLECT_PATCHES {custom-path-navigator: \"%s\" / storage-base: \"collected_patches\" / default-exclude / include: \"*/second\" / default-subfilter-include / subfilter-exclude: \"*/repository\" / head-id} = \"%s\"" + os.linesep) % (self.test_cnav1_file, self.repo_src_folder)
+        cfg_file_contents5 += ("RUN_COLLECT_PATCHES {custom-path-navigator: \"%s\" / storage-base: \"collected_patches\" / default-exclude / include: \"*/second\" / default-subfilter-include / subfilter-exclude: \"*/repository\" / head-id / cherry-pick-previous: \"aabb\" / previous: \"15\" / stash: \"-1\" / unversioned / staged / head} = \"%s\"" + os.linesep) % (self.test_cnav1_file, self.repo_src_folder)
         self.test_config_file5 = path_utils.concat_path(self.test_dir, "test_config_file5.t20")
         create_and_write_file.create_file_contents(self.test_config_file5, cfg_file_contents5)
 
@@ -238,6 +238,14 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertEqual( "subfilter-exclude", bkprep.instructions[0][2][5][0])
         self.assertEqual( "*/repository", bkprep.instructions[0][2][5][1])
         self.assertEqual( "head-id", bkprep.instructions[0][2][6][0])
+        self.assertEqual( "cherry-pick-previous", bkprep.instructions[0][2][7][0])
+        self.assertEqual( "previous", bkprep.instructions[0][2][8][0])
+        self.assertEqual( "15", bkprep.instructions[0][2][8][1])
+        self.assertEqual( "stash", bkprep.instructions[0][2][9][0])
+        self.assertEqual( "-1", bkprep.instructions[0][2][9][1])
+        self.assertEqual( "unversioned", bkprep.instructions[0][2][10][0])
+        self.assertEqual( "staged", bkprep.instructions[0][2][11][0])
+        self.assertEqual( "head", bkprep.instructions[0][2][12][0])
 
     def testReadConfig6(self):
         bkprep = backup_preparation.BackupPreparation(self.test_config_file6)
@@ -849,6 +857,48 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(os.path.exists(collected_second_repo_head_id_patch))
         self.assertTrue(os.path.exists(collected_second_repo_previous_1))
         self.assertTrue( "r2-file1-content1" in collected_second_repo_previous_1_contents )
+
+    def testProcRunCollectPatches2(self):
+
+        # first repo
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
+        self.assertTrue(v)
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        self.assertTrue(v)
+        with open(first_repo_file1, "a") as f:
+            f.write("additional contents, r1-f1")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "commitmsg")
+        self.assertTrue(v)
+
+        v, r = git_lib.get_head_hash(self.first_repo)
+        self.assertTrue(v)
+        first_repo_stored_hash = r
+
+        with open(first_repo_file1, "a") as f:
+            f.write("yetmorestuff-first")
+        v, r = git_wrapper.stage(self.first_repo)
+        self.assertTrue(v)
+        v, r = git_wrapper.commit(self.first_repo, "commitmsg-again")
+        self.assertTrue(v)
+
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("default-subfilter-include", ""), ("cherry-pick-previous", first_repo_stored_hash)])
+
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
+        collected_first_repo_cherry_picked_previous_patch = path_utils.concat_path(collected_first_repo, "cherry_picked_previous_%s.patch" % first_repo_stored_hash)
+        collected_first_repo_cherry_picked_previous_contents = None
+        with open(collected_first_repo_cherry_picked_previous_patch, "r") as f:
+            collected_first_repo_cherry_picked_previous_contents = f.read()
+
+        self.assertTrue(os.path.exists(collected_first_repo))
+        self.assertTrue(os.path.exists(collected_first_repo_cherry_picked_previous_patch))
+        self.assertTrue( "additional contents, r1-f1" in collected_first_repo_cherry_picked_previous_contents )
+        self.assertFalse( "yetmorestuff-first" in collected_first_repo_cherry_picked_previous_contents )
 
     def testProcRunCollectPatches_ExcludeAll(self):
 

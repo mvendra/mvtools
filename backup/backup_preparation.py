@@ -301,6 +301,7 @@ class BackupPreparation:
         staged = False
         unversioned = False
         stash = False
+        cherry_pick_previous = None
         previous = 0
 
         # source path
@@ -370,6 +371,8 @@ class BackupPreparation:
                 unversioned = True
             if opt_name == "stash":
                 stash = True
+            if opt_name == "cherry-pick-previous":
+                cherry_pick_previous = opt_val
             if opt_name == "previous":
                 try:
                     previous = int(opt_val)
@@ -388,7 +391,7 @@ class BackupPreparation:
             raise BackupPreparationException("Unable to guarantee folder [%s]." % (final_storage_path_patch_collector))
 
         # run the actual patch collector
-        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_script, final_storage_path_patch_collector, default_filter, includes, excludes, default_subfilter, subfilter_includes, subfilter_excludes, head, head_id, staged, unversioned, stash, previous, repo_type)
+        v, r = collect_patches.collect_patches(source_path, custom_path_navigator_script, final_storage_path_patch_collector, default_filter, includes, excludes, default_subfilter, subfilter_includes, subfilter_excludes, head, head_id, staged, unversioned, stash, previous, cherry_pick_previous, repo_type)
         if not v:
             for i in r:
                 print("proc_run_collect_patches: [%s]" % i)
