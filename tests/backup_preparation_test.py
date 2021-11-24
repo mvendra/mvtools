@@ -810,7 +810,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_first_repo_head_patch = path_utils.concat_path(collected_first_repo, "head.patch")
@@ -900,6 +900,58 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue( "additional contents, r1-f1" in collected_first_repo_cherry_picked_previous_contents )
         self.assertFalse( "yetmorestuff-first" in collected_first_repo_cherry_picked_previous_contents )
 
+    def testProcRunCollectPatches3(self):
+
+        # first repo
+        v, r = git_wrapper.init(self.repo_src_folder, "first", False)
+        self.assertTrue(v)
+        first_repo_file1 = path_utils.concat_path(self.first_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_repo_file1), "r1-file1-content1", "r1-commit_msg_file1")
+        self.assertTrue(v)
+        with open(first_repo_file1, "a") as f:
+            f.write("additional contents, r1-f1")
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+        with open(first_repo_file1, "a") as f:
+            f.write("yetmorestuff-first")
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+        with open(first_repo_file1, "a") as f:
+            f.write("latest-stash-stuff")
+        v, r = git_wrapper.stash(self.first_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_stash_list(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 3)
+
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("default-subfilter-include", ""), ("stash", "2")])
+
+        collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
+        collected_first_repo_stash_0_patch = path_utils.concat_path(collected_first_repo, "stash@{0}.patch")
+        collected_first_repo_stash_0_contents = None
+        with open(collected_first_repo_stash_0_patch, "r") as f:
+            collected_first_repo_stash_0_contents = f.read()
+        collected_first_repo_stash_1_patch = path_utils.concat_path(collected_first_repo, "stash@{1}.patch")
+        collected_first_repo_stash_1_contents = None
+        with open(collected_first_repo_stash_1_patch, "r") as f:
+            collected_first_repo_stash_1_contents = f.read()
+        collected_first_repo_stash_2_patch = path_utils.concat_path(collected_first_repo, "stash@{2}.patch")
+
+        self.assertTrue(os.path.exists(collected_first_repo))
+        self.assertTrue(os.path.exists(collected_first_repo_stash_0_patch))
+        self.assertFalse( "additional contents, r1-f1" in collected_first_repo_stash_0_contents )
+        self.assertFalse( "yetmorestuff-first" in collected_first_repo_stash_0_contents )
+        self.assertTrue( "latest-stash-stuff" in collected_first_repo_stash_0_contents )
+        self.assertTrue(os.path.exists(collected_first_repo_stash_1_patch))
+        self.assertFalse( "additional contents, r1-f1" in collected_first_repo_stash_1_contents )
+        self.assertTrue( "yetmorestuff-first" in collected_first_repo_stash_1_contents )
+        self.assertFalse( "latest-stash-stuff" in collected_first_repo_stash_1_contents )
+        self.assertFalse(os.path.exists(collected_first_repo_stash_2_patch))
+
     def testProcRunCollectPatches_ExcludeAll(self):
 
         # first repo
@@ -927,7 +979,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
@@ -967,7 +1019,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
@@ -1078,7 +1130,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", ""), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)

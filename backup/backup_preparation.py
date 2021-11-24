@@ -370,7 +370,10 @@ class BackupPreparation:
             if opt_name == "unversioned":
                 unversioned = True
             if opt_name == "stash":
-                stash = True
+                try:
+                    stash = int(opt_val)
+                except:
+                    raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"stash\"): [%s]. Aborting." % (var_options))
             if opt_name == "cherry-pick-previous":
                 cherry_pick_previous = opt_val
             if opt_name == "previous":
