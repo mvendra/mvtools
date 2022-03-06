@@ -53,9 +53,20 @@ class GenericRunPluginTest(unittest.TestCase):
 
         v, r = self.generic_run_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", None) )
+        self.assertEqual( r, ("dummy_value1", None, None) )
 
     def testGenericRunPluginReadParams3(self):
+
+        local_params = {}
+        local_params["command"] = "dummy_value1"
+        local_params["cwd"] = "dummy_value2"
+        self.generic_run_task.params = local_params
+
+        v, r = self.generic_run_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None) )
+
+    def testGenericRunPluginReadParams4(self):
 
         local_params = {}
         local_params["command"] = "dummy_value1"
@@ -64,9 +75,21 @@ class GenericRunPluginTest(unittest.TestCase):
 
         v, r = self.generic_run_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", ["dummy_value2"]) )
+        self.assertEqual( r, ("dummy_value1", None, ["dummy_value2"]) )
 
-    def testGenericRunPluginReadParams4(self):
+    def testGenericRunPluginReadParams5(self):
+
+        local_params = {}
+        local_params["command"] = "dummy_value1"
+        local_params["cwd"] = "dummy_value2"
+        local_params["arg"] = "dummy_value3"
+        self.generic_run_task.params = local_params
+
+        v, r = self.generic_run_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", ["dummy_value3"]) )
+
+    def testGenericRunPluginReadParams6(self):
 
         local_params = {}
         local_params["command"] = "dummy_value1"
@@ -75,7 +98,19 @@ class GenericRunPluginTest(unittest.TestCase):
 
         v, r = self.generic_run_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", ["dummy_value2", "dummy_value3"]) )
+        self.assertEqual( r, ("dummy_value1", None, ["dummy_value2", "dummy_value3"]) )
+
+    def testGenericRunPluginReadParams6(self):
+
+        local_params = {}
+        local_params["command"] = "dummy_value1"
+        local_params["cwd"] = "dummy_value2"
+        local_params["arg"] = ["dummy_value3", "dummy_value4"]
+        self.generic_run_task.params = local_params
+
+        v, r = self.generic_run_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", ["dummy_value3", "dummy_value4"]) )
 
     def testGenericRunPluginRunTask1(self):
 
@@ -87,9 +122,21 @@ class GenericRunPluginTest(unittest.TestCase):
         with mock.patch("generic_run.run_cmd_simple", return_value=(True, None)) as dummy:
             v, r = self.generic_run_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(["dummy_value1", "dummy_value2"])
+            dummy.assert_called_with(["dummy_value1", "dummy_value2"], use_cwd=None)
 
     def testGenericRunPluginRunTask2(self):
+
+        local_params = {}
+        local_params["command"] = "dummy_value1"
+        local_params["cwd"] = "dummy_value2"
+        self.generic_run_task.params = local_params
+
+        with mock.patch("generic_run.run_cmd_simple", return_value=(True, None)) as dummy:
+            v, r = self.generic_run_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(["dummy_value1"], use_cwd="dummy_value2")
+
+    def testGenericRunPluginRunTask3(self):
 
         local_params = {}
         local_params["command"] = "dummy_value1"
@@ -99,13 +146,27 @@ class GenericRunPluginTest(unittest.TestCase):
         with mock.patch("generic_run.run_cmd_simple", return_value=(True, None)) as dummy:
             v, r = self.generic_run_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(["dummy_value1", "dummy_value2", "dummy_value3"])
+            dummy.assert_called_with(["dummy_value1", "dummy_value2", "dummy_value3"], use_cwd=None)
 
-    def testGenericRunPluginRunTask3(self):
+    def testGenericRunPluginRunTask4(self):
 
         local_params = {}
         local_params["command"] = "dummy_value1"
-        local_params["arg"] = "dummy_value2"
+        local_params["cwd"] = "dummy_value2"
+        local_params["arg"] = ["dummy_value3", "dummy_value4"]
+        self.generic_run_task.params = local_params
+
+        with mock.patch("generic_run.run_cmd_simple", return_value=(True, None)) as dummy:
+            v, r = self.generic_run_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(["dummy_value1", "dummy_value3", "dummy_value4"], use_cwd="dummy_value2")
+
+    def testGenericRunPluginRunTask5(self):
+
+        local_params = {}
+        local_params["command"] = "dummy_value1"
+        local_params["cwd"] = "dummy_value2"
+        local_params["arg"] = "dummy_value3"
         self.generic_run_task.params = local_params
 
         with mock.patch("generic_run.run_cmd_simple", return_value=(False, None)) as dummy:

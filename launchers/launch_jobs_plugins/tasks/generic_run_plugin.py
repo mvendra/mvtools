@@ -15,6 +15,7 @@ class CustomTask(launch_jobs.BaseTask):
     def _read_params(self):
 
         command = None
+        cwd = None
         args = None
 
         # command
@@ -22,6 +23,12 @@ class CustomTask(launch_jobs.BaseTask):
             command = self.params["command"]
         except KeyError:
             return False, "command is a required parameter"
+
+        # cwd
+        try:
+            cwd = self.params["cwd"]
+        except KeyError:
+            pass # optional
 
         # args
         try:
@@ -33,14 +40,14 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        return True, (command, args)
+        return True, (command, cwd, args)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        command, args = r
+        command, cwd, args = r
 
         final_cmd = []
         final_cmd.append(command)
@@ -49,7 +56,7 @@ class CustomTask(launch_jobs.BaseTask):
             for a in args:
                 final_cmd.append(a)
 
-        v, r = generic_run.run_cmd_simple(final_cmd)
+        v, r = generic_run.run_cmd_simple(final_cmd, use_cwd=cwd)
         if not v:
             return False, "Running command [%s] failed: [%s]" % (final_cmd, r)
 
