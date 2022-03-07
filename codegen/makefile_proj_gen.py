@@ -30,6 +30,7 @@ def mkfile_cpp_contents(project_name):
     r += "PLAT=linux\n"
     r += "MODE=release\n"
     r += "INCLUDES=\n"
+    r += "LIBS=\n"
     r += "CPPFLAGS=\n"
     r += "LDFLAGS=\n"
     r += "POSTBUILD=\n"
@@ -124,7 +125,7 @@ def mkfile_cpp_contents(project_name):
 
     # LINK
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS)\n"
+    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
@@ -158,6 +159,7 @@ def mkfile_c_contents(project_name):
     r += "PLAT=linux\n"
     r += "MODE=release\n"
     r += "INCLUDES=\n"
+    r += "LIBS=\n"
     r += "CFLAGS=\n"
     r += "LDFLAGS=\n"
     r += "POSTBUILD=\n"
@@ -252,7 +254,7 @@ def mkfile_c_contents(project_name):
 
     # LINK
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS)\n"
+    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
