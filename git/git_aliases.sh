@@ -53,6 +53,13 @@ gikill(){
     return
   fi
 
+  # binary patches safety
+  gisho --oneline | egrep "Binary files (.)* differ"
+  if [ $? -eq 0 ]; then
+    echo "The last commit was binary. The backup patch will be ineffective. Press any key to proceed."
+    read
+  fi
+
   # backs up all commits to be deleted
   MAX=$RANGE
   (( MAX-- ))
@@ -64,12 +71,6 @@ gikill(){
     FN+="$i.patch"
     git show HEAD~$i > $FN
   done
-
-  gisho --oneline | sed -n 4p | cut -b-1,2,3,4,5,6 | grep -Fxq "Binary"
-  if [ $? -eq 0 ]; then
-    echo "The last commit was binary. The backup patch will be ineffective. Press any key to proceed."
-    read
-  fi
 
   # carries out the removal
   git reset --hard HEAD~$RANGE
@@ -109,4 +110,3 @@ alias gilsu="git ls-files --exclude-standard --others"
 
 alias gimv="git mv"
 alias girm="git rm"
-
