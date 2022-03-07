@@ -104,7 +104,7 @@ def mkfile_cpp_contents(project_name):
     r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
     r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
-    r += "INCLUDES=-I$(BASE_SRC)\n"
+    r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
     # TARGETS
@@ -232,7 +232,7 @@ def mkfile_c_contents(project_name):
     r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
     r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
-    r += "INCLUDES=-I$(BASE_SRC)\n"
+    r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
     # TARGETS
