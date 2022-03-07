@@ -57,7 +57,11 @@ gikill(){
   MAX=$RANGE
   (( MAX-- ))
   for i in `seq 0 $MAX`; do
-    FN="$TEMP_FOLDER/gikill_backup_$i.patch"
+    HASH=`get_git_hash.py`
+    FN="$TEMP_FOLDER/gikill_backup_"
+    FN+=$HASH
+    FN+="_"
+    FN+="$i.patch"
     git show HEAD~$i > $FN
   done
 
