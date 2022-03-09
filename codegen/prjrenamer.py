@@ -75,6 +75,39 @@ def msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name):
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
 
+def msvc17sln_rename(base_prj_msvc17_sln, new_project_name):
+
+    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_msvc17_sln)))
+    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc17_sln), "%s.sln" % new_project_name)
+    os.rename(base_prj_msvc17_sln, npn_full)
+
+    contents = readcontents(npn_full)
+    str_cur = "\"%s\", \"%s.vcxproj\"" % (opn, opn)
+    str_new = "\"%s\", \"%s.vcxproj\"" % (npn, npn)
+    contents = contents.replace(str_cur, str_new)
+
+    writecontents(npn_full, contents)
+
+def msvc17vcxproj_rename(base_prj_msvc17_fn, new_project_name):
+
+    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_msvc17_fn)))
+    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc17_fn), "%s.vcxproj" % new_project_name)
+    os.rename(base_prj_msvc17_fn, npn_full)
+
+    contents = readcontents(npn_full)
+    str_cur = "<RootNamespace>%s</RootNamespace>" % opn
+    str_new = "<RootNamespace>%s</RootNamespace>" % npn
+
+    contents = contents.replace(str_cur, str_new)
+    writecontents(npn_full, contents)
+
+def msvc17vcxprojfilters_rename(base_prj_msvc17_c_vcxproj_filters_fn, new_project_name):
+
+    npf_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc17_c_vcxproj_filters_fn), "%s.vcxproj.filters" % new_project_name)
+    os.rename(base_prj_msvc17_c_vcxproj_filters_fn, npf_full)
+
 def makefile_rename(base_prj_makefile_fn, current_project_name, new_project_name):
 
     opn = path_utils.filter_remove_trailing_sep(current_project_name)
@@ -147,6 +180,17 @@ def prjrename(target_dir, original_project_name, new_project_name):
         msvc15sln_rename(base_prj_msvc15_cpp_sln_fn, new_project_name)
         msvc15vcxproj_rename(base_prj_msvc15_cpp_vcxproj_fn, new_project_name)
         print("Adapted [%s] and [%s]" % (base_prj_msvc15_cpp_sln_fn, base_prj_msvc15_cpp_vcxproj_fn))
+
+    # msvc17_c
+    base_prj_msvc17_c = path_utils.concat_path(base_prj, "msvc17_c")
+    base_prj_msvc17_c_sln_fn = path_utils.concat_path(base_prj_msvc17_c, "%s.sln" % original_project_name)
+    base_prj_msvc17_c_vcxproj_fn = path_utils.concat_path(base_prj_msvc17_c, "%s.vcxproj" % original_project_name)
+    base_prj_msvc17_c_vcxproj_filters_fn = path_utils.concat_path(base_prj_msvc17_c, "%s.vcxproj.filters" % original_project_name)
+    if os.path.isfile(base_prj_msvc17_c_sln_fn) and os.path.isfile(base_prj_msvc17_c_vcxproj_fn):
+        msvc17sln_rename(base_prj_msvc17_c_sln_fn, new_project_name)
+        msvc17vcxproj_rename(base_prj_msvc17_c_vcxproj_fn, new_project_name)
+        msvc17vcxprojfilters_rename(base_prj_msvc17_c_vcxproj_filters_fn, new_project_name)
+        print("Adapted [%s], [%s] and [%s]" % (base_prj_msvc17_c_sln_fn, base_prj_msvc17_c_vcxproj_fn, base_prj_msvc17_c_vcxproj_filters_fn))
 
     os.rename(full_original, full_new)
 
