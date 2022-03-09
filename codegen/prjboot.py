@@ -18,8 +18,10 @@ PROJECT_TYPE_CODELITE13_CPP = "codelite13_cpp"
 PROJECT_TYPE_MSVC15_C = "msvc15_c"
 PROJECT_TYPE_MSVC15_CPP = "msvc15_cpp"
 
+PROJECT_TYPE_MSVC17_C = "msvc17_c"
+
 # hint: adding new project types should warrant a review of the accompanying "prjrenamer" tool as well
-PROJECT_TYPES = [PROJECT_TYPE_MAKEFILE_C, PROJECT_TYPE_MAKEFILE_CPP, PROJECT_TYPE_CODELITE15_C, PROJECT_TYPE_CODELITE13_CPP, PROJECT_TYPE_MSVC15_C, PROJECT_TYPE_MSVC15_CPP]
+PROJECT_TYPES = [PROJECT_TYPE_MAKEFILE_C, PROJECT_TYPE_MAKEFILE_CPP, PROJECT_TYPE_CODELITE15_C, PROJECT_TYPE_CODELITE13_CPP, PROJECT_TYPE_MSVC15_C, PROJECT_TYPE_MSVC15_CPP, PROJECT_TYPE_MSVC17_C]
 PROJECT_TYPE_DEFAULT = PROJECT_TYPE_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):
@@ -38,6 +40,8 @@ def prjboot(target_dir, proj_name, proj_type):
         chosen_function = msvc_proj_gen.generate_msvc15_c
     elif proj_type == PROJECT_TYPE_MSVC15_CPP:
         chosen_function = msvc_proj_gen.generate_msvc15_cpp
+    elif proj_type == PROJECT_TYPE_MSVC17_C:
+        chosen_function = msvc_proj_gen.generate_msvc17_c
     else:
         print("Unknown project type: [%s]" % proj_type)
         sys.exit(1)
