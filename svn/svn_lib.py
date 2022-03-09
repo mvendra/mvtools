@@ -720,7 +720,7 @@ def checkout_autoretry(feedback_object, remote_link, local_repo, autobackups):
         SLEEP_TIME = 15 # minutes
         feedback_object("Iteration number [%d] has failed. Will sleep for [%d] minutes before retrying." % (iterations, SLEEP_TIME))
         time.sleep(SLEEP_TIME * 60)
-        feedback_object("Iteration number [%d] will resume now." % iterations)
+        feedback_object("Iteration number [%d] will resume now (at %s)." % (iterations, maketimestamp.get_timestamp_now_compact()))
 
     return True, warnings
 
