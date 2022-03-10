@@ -76,21 +76,24 @@ class OutputBackupHelperTest(unittest.TestCase):
 
     def testOutputBackupHelper_DumpOutputsAutobackup1(self):
 
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_test_timestamp.txt")
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_0_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_0_test_timestamp.txt")
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(False, "error msg")) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
-                self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
+                            self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
 
     def testOutputBackupHelper_DumpOutputsAutobackup2(self):
 
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_test_timestamp.txt")
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_0_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_0_test_timestamp.txt")
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
@@ -98,14 +101,17 @@ class OutputBackupHelperTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_stdout_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
-                self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
+                            self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
 
     def testOutputBackupHelper_DumpOutputsAutobackup3(self):
 
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_test_timestamp.txt")
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_0_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_0_test_timestamp.txt")
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
@@ -113,22 +119,28 @@ class OutputBackupHelperTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_stderr_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
-                self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
+                            self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
 
     def testOutputBackupHelper_DumpOutputsAutobackup4(self):
 
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_test_timestamp.txt")
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_0_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_0_test_timestamp.txt")
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
-                self.assertEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
+                            self.assertEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
 
         self.assertTrue(os.path.exists(test_stdout_fn))
         self.assertTrue(os.path.exists(test_stderr_fn))
@@ -145,16 +157,19 @@ class OutputBackupHelperTest(unittest.TestCase):
 
     def testOutputBackupHelper_DumpOutputsAutobackup5(self):
 
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_test_timestamp.txt")
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_0_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_0_test_timestamp.txt")
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
-                self.assertEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
+                            self.assertEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
 
         self.assertTrue(os.path.exists(test_stdout_fn))
         self.assertTrue(os.path.exists(test_stderr_fn))
@@ -166,9 +181,12 @@ class OutputBackupHelperTest(unittest.TestCase):
             f.write("-more stuff on stderr")
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                out_list = [ ( "app_stdout", "stdout-contents", "saved stdout" ) , ( "app_stderr", "stderr-contents", "saved stderr" ) ]
-                self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "saved stdout" ) , ( "app_stderr", "stderr-contents", "saved stderr" ) ]
+                            self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
 
         stdout_contents = ""
         with open(test_stdout_fn, "r") as f:
@@ -182,38 +200,80 @@ class OutputBackupHelperTest(unittest.TestCase):
 
     def testOutputBackupHelper_DumpOutputsAutobackup6(self):
 
-        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_test_timestamp.txt")
-        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_test_timestamp.txt")
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_0_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_0_test_timestamp.txt")
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
-            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
-                self.assertEqual(output_backup_helper.dump_outputs_autobackup(True, print, out_list), None)
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
+                            self.assertEqual(output_backup_helper.dump_outputs_autobackup(True, print, out_list), None)
+
+        self.assertFalse(os.path.exists(test_stdout_fn))
+        self.assertFalse(os.path.exists(test_stderr_fn))
+
+    def testOutputBackupHelper_DumpOutputsAutobackup7(self):
+
+        test_stdout_fn = path_utils.concat_path(self.output_backup_storage, "app_stdout_autobackup_5_test_timestamp.txt")
+        test_stderr_fn = path_utils.concat_path(self.output_backup_storage, "app_stderr_autobackup_5_test_timestamp.txt")
+
+        self.assertFalse(os.path.exists(test_stdout_fn))
+        self.assertFalse(os.path.exists(test_stderr_fn))
+
+        with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
+            with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
+                with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "5", []))) as dummy4:
+                        with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
+                            out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
+                            self.assertEqual(output_backup_helper.dump_outputs_autobackup(True, print, out_list), None)
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
 
     def testOutputBackupHelper_DumpSingleAutobackup1(self):
 
-        test_out_fn = path_utils.concat_path(self.output_backup_storage, "app_out_autobackup_test_timestamp.txt")
+        test_out_fn = path_utils.concat_path(self.output_backup_storage, "app_out_autobackup_0_test_timestamp.txt")
         self.assertFalse(os.path.exists(test_out_fn))
 
-        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-            self.assertEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
+        with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
+                with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy3:
+                    with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy4:
+                        self.assertEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
 
         self.assertTrue(os.path.exists(test_out_fn))
 
     def testOutputBackupHelper_DumpSingleAutobackup2(self):
 
-        test_out_fn = path_utils.concat_path(self.output_backup_storage, "app_out_autobackup_test_timestamp.txt")
+        test_out_fn = path_utils.concat_path(self.output_backup_storage, "app_out_autobackup_0_test_timestamp.txt")
         self.assertFalse(os.path.exists(test_out_fn))
         self.assertTrue(create_and_write_file.create_file_contents(test_out_fn, "contents"))
 
-        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-            self.assertNotEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
+        with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
+                with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy3:
+                    with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy4:
+                        self.assertNotEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
+
+        self.assertTrue(os.path.exists(test_out_fn))
+
+    def testOutputBackupHelper_DumpSingleAutobackup3(self):
+
+        test_out_fn = path_utils.concat_path(self.output_backup_storage, "app_out_autobackup_8_test_timestamp.txt")
+        self.assertFalse(os.path.exists(test_out_fn))
+        self.assertTrue(create_and_write_file.create_file_contents(test_out_fn, "contents"))
+
+        with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
+            with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
+                with mock.patch("toolbus.get_field", return_value=(True, ("index", "8", []))) as dummy3:
+                    with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy4:
+                        self.assertNotEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
 
         self.assertTrue(os.path.exists(test_out_fn))
 
