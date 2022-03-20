@@ -6,12 +6,16 @@ import os
 import path_utils
 import generic_run
 
-def make(work_dir, target):
+def make(work_dir, target, prefix):
 
     full_cmd = ["make"]
 
     if target is not None:
         full_cmd.append(target)
+
+    if prefix is not None:
+        prefix_line = "PREFIX=%s" % prefix
+        full_cmd.append(prefix_line)
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=work_dir)
     if not v:
