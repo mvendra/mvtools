@@ -18,6 +18,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         work_dir = None
         target = None
+        prefix = None
         save_output = None
         save_error_output = None
         suppress_stderr_warnings = None
@@ -31,6 +32,12 @@ class CustomTask(launch_jobs.BaseTask):
         # target
         try:
             target = self.params["target"]
+        except KeyError:
+            pass # optional
+
+        # prefix
+        try:
+            prefix = self.params["prefix"]
         except KeyError:
             pass # optional
 
@@ -63,7 +70,7 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
-        return True, (work_dir, target, save_output, save_error_output, suppress_stderr_warnings)
+        return True, (work_dir, target, prefix, save_output, save_error_output, suppress_stderr_warnings)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -73,10 +80,10 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        work_dir, target, save_output, save_error_output, suppress_stderr_warnings = r
+        work_dir, target, prefix, save_output, save_error_output, suppress_stderr_warnings = r
 
         # actual execution
-        v, r = make_wrapper.make(work_dir, target)
+        v, r = make_wrapper.make(work_dir, target, prefix)
         if not v:
             return False, r
         proc_result = r[0]
