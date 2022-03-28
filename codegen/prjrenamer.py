@@ -121,6 +121,12 @@ def makefile_rename(base_prj_makefile_fn, current_project_name, new_project_name
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
 
+def gitignore_rename(base_gitignore_fn, current_project_name, new_project_name):
+
+    contents = readcontents(base_gitignore_fn)
+    adapted_contents = contents.replace(current_project_name, new_project_name)
+    writecontents(base_gitignore_fn, adapted_contents)
+
 def prjrename(target_dir, original_project_name, new_project_name):
 
     original_project_name = path_utils.filter_remove_trailing_sep(original_project_name)
@@ -191,6 +197,12 @@ def prjrename(target_dir, original_project_name, new_project_name):
         msvc17vcxproj_rename(base_prj_msvc17_c_vcxproj_fn, new_project_name)
         msvc17vcxprojfilters_rename(base_prj_msvc17_c_vcxproj_filters_fn, new_project_name)
         print("Adapted [%s], [%s] and [%s]" % (base_prj_msvc17_c_sln_fn, base_prj_msvc17_c_vcxproj_fn, base_prj_msvc17_c_vcxproj_filters_fn))
+
+    # gitignore
+    gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
+    if os.path.isfile(gitignore_filename):
+        gitignore_rename(gitignore_filename, original_project_name, new_project_name)
+        print("Adapted [%s]" % gitignore_filename)
 
     os.rename(full_original, full_new)
 
