@@ -89,6 +89,12 @@ def get_c_linker_flags_release_gcc():
 
     return contents
 
+def get_clang_version():
+
+    contents = "14"
+
+    return contents
+
 def c_compiler_flags_debug_msvc():
 
     contents = []
