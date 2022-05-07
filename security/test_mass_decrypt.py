@@ -8,6 +8,7 @@ import fsquery
 import path_utils
 import decrypt
 import input_checked_passphrase
+import terminal_colors
 
 """ test_mass_decrypt
 Tests if all files inside a given path, that match the given extension, have been encrypted with the same given passphrase (recursively).
@@ -20,9 +21,9 @@ def print_report(v, r):
 
     errcode = 0
     if v:
-        print("All passed!")
+        print("%sAll passed!%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
     else:
-        print("\nThere were %s errors." % len(r))
+        print("%s\nThere were %s errors:%s" % (terminal_colors.TTY_RED, len(r), terminal_colors.TTY_WHITE))
         errcode = 5
 
     for x in r:

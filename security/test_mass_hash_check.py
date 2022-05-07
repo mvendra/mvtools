@@ -6,6 +6,7 @@ import fsquery
 
 import hash_check
 import path_utils
+import terminal_colors
 
 """ test_mass_hash_check
 Tests if all files inside a given path, that match the given extension, have an accompanying valid hash file (filename + ".sha256")
@@ -41,9 +42,9 @@ def print_report(v, r):
 
     errcode = 0
     if v:
-        print("All passed!")
+        print("%sAll passed!%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
     else:
-        print("\nThere were %s errors." % len(r))
+        print("%s\nThere were %s errors:%s" % (terminal_colors.TTY_RED, len(r), terminal_colors.TTY_WHITE))
         errcode = 5
 
     for x in r:
