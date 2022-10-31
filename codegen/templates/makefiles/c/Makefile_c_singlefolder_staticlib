@@ -28,7 +28,7 @@ CFLAGS += \
 	-fsanitize=address \
 	-pthread \
 	-D_GLIBCXX_DEBUG \
-	-std=c17
+	-std=c18
 POSTBUILD=
 #DEFINES= -D _DEBUG -D _LOG 
 endif
@@ -43,7 +43,7 @@ CFLAGS += \
 	-static \
 	-fPIC \
 	-pthread \
-	-std=c17
+	-std=c18
 POSTBUILD= strip $(LIBNAME)
 #DEFINES= -D _LOG 
 endif

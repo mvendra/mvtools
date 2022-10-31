@@ -25,7 +25,7 @@ CFLAGS += \
 	-fsanitize=address \
 	-pthread \
 	-D_GLIBCXX_DEBUG \
-	-std=c17
+	-std=c18
 POSTBUILD=
 #DEFINES= -D _DEBUG -D _LOG 
 endif
@@ -39,7 +39,7 @@ CFLAGS += \
 	-Werror \
 	-fPIC \
 	-pthread \
-	-std=c17
+	-std=c18
 POSTBUILD= strip $(TESTAPPNAME)
 #DEFINES= -D _LOG 
 endif

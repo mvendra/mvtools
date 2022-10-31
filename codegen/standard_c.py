@@ -55,7 +55,7 @@ def get_c_compiler_flags_linux_gcc():
 
     contents = []
 
-    contents.append("-std=c17")
+    contents.append("-std=c18")
 
     return contents
 
@@ -63,7 +63,7 @@ def get_c_compiler_flags_windows_gcc():
 
     contents = []
 
-    contents.append("-std=c17")
+    contents.append("-std=c18")
 
     return contents
 
@@ -71,7 +71,7 @@ def get_c_compiler_flags_macosx_gcc():
 
     contents = []
 
-    contents.append("-std=c17")
+    contents.append("-std=c18")
 
     return contents
 
@@ -111,6 +111,6 @@ def c_compiler_flags_windows_msvc():
 
     contents = []
 
-    contents.append("/std:c17")
+    contents.append("/std:c18")
 
     return contents
