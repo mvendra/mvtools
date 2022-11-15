@@ -11,8 +11,8 @@ else
 fi
 
 TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
-#gipul_all_remotes_current_branch.py $TARGET
-#gipul_all_remotes_all_branches.py $TARGET
-#gipul_all_remotes_no_offline_all_branches.py $TARGET
-gipul_offline_only_all_branches.py $TARGET
+#mvti_gipul_all_remotes_current_branch.py $TARGET
+#mvti_gipul_all_remotes_all_branches.py $TARGET
+#mvti_gipul_all_remotes_no_offline_all_branches.py $TARGET
+mvti_gipul_offline_only_all_branches.py $TARGET
 
