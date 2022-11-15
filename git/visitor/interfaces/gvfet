@@ -1,4 +1,0 @@
-#!/bin/bash
-
-#git_visitor_fetch.py --not-remotename offline
-git_visitor_fetch.py
