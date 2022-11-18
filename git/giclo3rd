@@ -1,0 +1,15 @@
+#!/bin/bash
+
+puaq(){ # puaq stands for Print Usage And Quit
+  echo "Usage: `basename $0` url"
+  exit 1
+}
+
+if [ -z $1 ]; then
+  puaq
+fi
+
+URL=$1
+
+git clone $URL --origin thirdparty
+
