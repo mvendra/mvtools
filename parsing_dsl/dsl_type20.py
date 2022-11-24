@@ -109,7 +109,7 @@ class DSLType20:
         self.NEWLINE = "\n"
         self.BSLASH = "\\"
         self.FSLASH = "/"
-        self.COMMENTS = ["#"]
+        self.COMMENTS = ["#", "//"]
 
         # read options
         self.expand_envvars = _options._expand_envvars
@@ -151,7 +151,7 @@ class DSLType20:
             return ""
 
         for c in self.COMMENTS:
-            line_out = miniparse.guarded_right_cut(line_out, [c], self.QUOTE)
+            line_out = miniparse.guarded_right_cut(line_out, list(c), self.QUOTE)
             if line_out is None:
                 return None
             if line_out == "":

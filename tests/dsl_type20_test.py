@@ -127,11 +127,16 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl.sanitize_line(""), "")
         self.assertEqual(dsl.sanitize_line("abc"), "abc")
         self.assertEqual(dsl.sanitize_line("#abc"), "")
+        self.assertEqual(dsl.sanitize_line("abc//def"), "abc")
+        self.assertEqual(dsl.sanitize_line("//abc def"), "")
         self.assertEqual(dsl.sanitize_line("abc#def"), "abc")
         self.assertEqual(dsl.sanitize_line("   abc   "), "abc")
         self.assertEqual(dsl.sanitize_line(" #   abc   "), "")
         self.assertEqual(dsl.sanitize_line("   abc   #"), "abc")
-        self.assertEqual(dsl.sanitize_line("   abc   // def   # xyz"), "abc   // def")
+        self.assertEqual(dsl.sanitize_line("   abc   // def   # xyz"), "abc")
+        self.assertEqual(dsl.sanitize_line("   abc   # def   // xyz"), "abc")
+        self.assertEqual(dsl.sanitize_line("   abc   \"#\" def   // xyz"), "abc   \"#\" def")
+        self.assertEqual(dsl.sanitize_line("   abc   \"//\" def   // xyz"), "abc   \"//\" def")
 
     def testDslType20_Parse1(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Options()))
@@ -1281,6 +1286,19 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_1.add_var("var1", "#val1", [])[0])
         self.assertEqual(dsl_1.get_all_vars(), [("var1", "#val1", [])])
         self.assertEqual(dsl_1.produce(), "var1 = \"#val1\"")
+
+        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        v, r = dsl_2.parse(dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(dsl_1.get_all_vars(), dsl_2.get_all_vars())
+        self.assertEqual(dsl_1.produce(), dsl_2.produce())
+
+    def testDslType20_TestProduce25(self):
+        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertTrue(dsl_1.add_var("var1", "//val1", [])[0])
+        self.assertEqual(dsl_1.get_all_vars(), [("var1", "//val1", [])])
+        self.assertEqual(dsl_1.produce(), "var1 = \"//val1\"")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         v, r = dsl_2.parse(dsl_1.produce())
