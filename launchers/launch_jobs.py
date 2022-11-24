@@ -14,28 +14,28 @@ import mvtools_exception
 LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
 
 def _format_job_info_msg_task(job, task):
-    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (job.name, job.get_desc(), maketimestamp.get_timestamp_now(), task.name, task.get_desc())
+    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), task.name, task.get_desc())
 
 def _format_job_info_msg_started(job):
-    return "Job:  [%s][%s][%s]: started." % (job.name, job.get_desc(), maketimestamp.get_timestamp_now())
+    return "Job:  [%s][%s][%s]: started." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
 
 def _format_job_info_msg_pause_failed(job, detail):
-    return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (job.name, job.get_desc(), maketimestamp.get_timestamp_now(), detail)
+    return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
 
 def _format_job_info_msg_succeeded(job):
-    return "Job:  [%s][%s][%s]: succeeded." % (job.name, job.get_desc(), maketimestamp.get_timestamp_now())
+    return "Job:  [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
 
 def _format_job_info_msg_failed(job, detail):
-    return "Job:  [%s][%s][%s]: failed: [%s]." % (job.name, job.get_desc(), maketimestamp.get_timestamp_now(), detail)
+    return "Job:  [%s][%s][%s]: failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
 
 def _format_task_info_msg(task, detail):
-    return "Task: [%s][%s][%s]: succeeded." % (task.name, task.get_desc(), maketimestamp.get_timestamp_now())
+    return "Task: [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), task.name, task.get_desc())
 
 def _format_task_error_msg(task, detail):
-    return "Task: [%s][%s][%s]: failed: [%s]" % (task.name, task.get_desc(), maketimestamp.get_timestamp_now(), detail)
+    return "Task: [%s][%s][%s]: failed: [%s]" % (maketimestamp.get_timestamp_now(), task.name, task.get_desc(), detail)
 
 def _format_task_warning_msg(task, detail):
-    return "Task: [%s][%s][%s]: warns: [%s]" % (task.name, task.get_desc(), maketimestamp.get_timestamp_now(), detail)
+    return "Task: [%s][%s][%s]: warns: [%s]" % (maketimestamp.get_timestamp_now(), task.name, task.get_desc(), detail)
 
 def _format_task_warning_msg_console_output(task, detail):
     return "%s%s%s." % (terminal_colors.TTY_YELLOW, _format_task_warning_msg(task, detail), terminal_colors.get_standard_color())
@@ -90,7 +90,7 @@ def _setup_toolbus(execution_name):
     # if the following field already exists, then this execution has already been registered on toolbus. fail.
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status")
     if not v:
-        return False, "Unable to start execution: [%s]." % r
+        return False, "Unable to start execution: [%s]" % r
     if r is not None:
         return False, "Unable to start execution: execution name [%s] already exists inside launch_jobs's toolbus database." % execution_name
 
@@ -138,7 +138,7 @@ def _is_status_running_delegate(execution_name):
 
 def _get_delay_report_msg(execution_name):
     delay_timestamp = maketimestamp.get_timestamp_now()
-    base_delay_report_message = "Execution context [%s] will be delayed at [%s]." % (execution_name, delay_timestamp)
+    base_delay_report_message = "Execution context [%s] will be delayed at [%s]" % (execution_name, delay_timestamp)
     return base_delay_report_message
 
 def _handle_delayed_start_time(feedback_object, message_report_function, execution_name, time_delay):
@@ -150,7 +150,7 @@ def _handle_delayed_start_time(feedback_object, message_report_function, executi
     if wait_duration is None:
         return False, "Requested delay of [%s] couldn't be parsed." % (time_delay)
 
-    feedback_object("%s Reason: time delay of [%s]." % (message_report_function(execution_name), time_delay))
+    feedback_object("%s Reason: time delay of [%s]" % (message_report_function(execution_name), time_delay))
     if not minicron.busy_wait(wait_duration):
         return False, "Requested delay of [%s] failed to be performed." % (time_delay)
 
@@ -159,13 +159,13 @@ def _handle_delayed_start_time(feedback_object, message_report_function, executi
 def _handle_delayed_start_signal(feedback_object, message_report_function, execution_name, signal_delay):
     if signal_delay is None:
         return True, None
-    feedback_object("%s Reason: signal delay [%s]." % (message_report_function(execution_name), signal_delay))
+    feedback_object("%s Reason: signal delay [%s]" % (message_report_function(execution_name), signal_delay))
     return _retry_helper(signal_delay, "signal", _handle_delayed_start_signal_delegate)
 
 def _handle_delayed_start_execution(feedback_object, message_report_function, execution_name, execution_delay):
     if execution_delay is None:
         return True, None
-    feedback_object("%s Reason: execution delay [%s]." % (message_report_function(execution_name), execution_delay))
+    feedback_object("%s Reason: execution delay [%s]" % (message_report_function(execution_name), execution_delay))
     return _retry_helper(execution_delay, "execution", _handle_delayed_start_execution_delegate)
 
 def _handle_delayed_start(feedback_object, execution_name, time_delay, signal_delay, execution_delay):
@@ -273,7 +273,7 @@ def run_job_list_delegate(job_list, feedback_object, execution_name, options):
     if not v:
         return False, ["Unable to start execution: execution name [%s]'s begin-timestamp couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
 
-    feedback_object("Execution context [%s] will begin running at [%s]." % (execution_name, begin_timestamp))
+    feedback_object("Execution context [%s] will begin running at [%s]" % (execution_name, begin_timestamp))
 
     report = []
     for j in job_list:
