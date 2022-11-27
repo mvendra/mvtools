@@ -28,8 +28,10 @@ def filter_git_only(path_list):
 
     ret = []
     for d in path_list:
-        if path_utils.filter_remove_trailing_sep(d).endswith(".git"):
-            ret.append(d)
+        dc = path_utils.filter_remove_trailing_sep(d)
+        if path_utils.basename_filtered(dc) == ".git":
+            if git_lib.is_repo_standard(dc):
+                ret.append(dc)
     return ret
 
 def pluck_dotgit(path_list):

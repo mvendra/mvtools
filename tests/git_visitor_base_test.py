@@ -64,7 +64,7 @@ class GitVisitorBaseTest(unittest.TestCase):
 
     def testFilterGitOnly(self):
 
-        repos = ["/home/user/nuke/first/.git", "/home/user/nuke", "/made/up/path"]
+        repos = ["/home/user/nuke/first/.git", "/home/user/nuke", "/made/up/path", "/home/user/nuke/second/_.git"]
 
         r = git_visitor_base.filter_git_only(repos)
         self.assertEqual( len(r), 1)
