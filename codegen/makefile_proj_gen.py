@@ -272,45 +272,7 @@ def generate_makefile_c(target_dir, project_name):
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
     base_prj = path_utils.concat_path(prj_fullname_base, "proj")
-
-    base_build = path_utils.concat_path(prj_fullname_base, "build")
-    base_build_linux_x64_debug = path_utils.concat_path(base_build, "linux_x64_debug")
-    base_build_linux_x64_release = path_utils.concat_path(base_build, "linux_x64_release")
-    base_build_windows_x64_debug = path_utils.concat_path(base_build, "windows_x64_debug")
-    base_build_windows_x64_release = path_utils.concat_path(base_build, "windows_x64_release")
-    base_build_macosx_x64_debug = path_utils.concat_path(base_build, "macosx_x64_debug")
-    base_build_macosx_x64_release = path_utils.concat_path(base_build, "macosx_x64_release")
-
-    base_run = path_utils.concat_path(prj_fullname_base, "run")
-    base_run_linux_x64_debug = path_utils.concat_path(base_run, "linux_x64_debug")
-    base_run_linux_x64_release = path_utils.concat_path(base_run, "linux_x64_release")
-    base_run_windows_x64_debug = path_utils.concat_path(base_run, "windows_x64_debug")
-    base_run_windows_x64_release = path_utils.concat_path(base_run, "windows_x64_release")
-    base_run_macosx_x64_debug = path_utils.concat_path(base_run, "macosx_x64_debug")
-    base_run_macosx_x64_release = path_utils.concat_path(base_run, "macosx_x64_release")
-
     base_src = path_utils.concat_path(prj_fullname_base, "src")
-
-    prjboot_util.makedir_if_needed(prj_fullname_base)
-    prjboot_util.makedir_if_needed(base_prj)
-
-    prjboot_util.makedir_if_needed(base_build)
-    prjboot_util.makedir_if_needed(base_build_linux_x64_debug)
-    prjboot_util.makedir_if_needed(base_build_linux_x64_release)
-    prjboot_util.makedir_if_needed(base_build_windows_x64_debug)
-    prjboot_util.makedir_if_needed(base_build_windows_x64_release)
-    prjboot_util.makedir_if_needed(base_build_macosx_x64_debug)
-    prjboot_util.makedir_if_needed(base_build_macosx_x64_release)
-
-    prjboot_util.makedir_if_needed(base_run)
-    prjboot_util.makedir_if_needed(base_run_linux_x64_debug)
-    prjboot_util.makedir_if_needed(base_run_linux_x64_release)
-    prjboot_util.makedir_if_needed(base_run_windows_x64_debug)
-    prjboot_util.makedir_if_needed(base_run_windows_x64_release)
-    prjboot_util.makedir_if_needed(base_run_macosx_x64_debug)
-    prjboot_util.makedir_if_needed(base_run_macosx_x64_release)
-
-    prjboot_util.makedir_if_needed(base_src)
 
     # generate the actual C Makefile
     base_prj_makefile_c = path_utils.concat_path(base_prj, "makefile_c")
@@ -321,8 +283,6 @@ def generate_makefile_c(target_dir, project_name):
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
 
     # main C file
     base_src_main_c_fn = path_utils.concat_path(base_src, "main.c")
@@ -343,45 +303,7 @@ def generate_makefile_cpp(target_dir, project_name):
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
     base_prj = path_utils.concat_path(prj_fullname_base, "proj")
-
-    base_build = path_utils.concat_path(prj_fullname_base, "build")
-    base_build_linux_x64_debug = path_utils.concat_path(base_build, "linux_x64_debug")
-    base_build_linux_x64_release = path_utils.concat_path(base_build, "linux_x64_release")
-    base_build_windows_x64_debug = path_utils.concat_path(base_build, "windows_x64_debug")
-    base_build_windows_x64_release = path_utils.concat_path(base_build, "windows_x64_release")
-    base_build_macosx_x64_debug = path_utils.concat_path(base_build, "macosx_x64_debug")
-    base_build_macosx_x64_release = path_utils.concat_path(base_build, "macosx_x64_release")
-
-    base_run = path_utils.concat_path(prj_fullname_base, "run")
-    base_run_linux_x64_debug = path_utils.concat_path(base_run, "linux_x64_debug")
-    base_run_linux_x64_release = path_utils.concat_path(base_run, "linux_x64_release")
-    base_run_windows_x64_debug = path_utils.concat_path(base_run, "windows_x64_debug")
-    base_run_windows_x64_release = path_utils.concat_path(base_run, "windows_x64_release")
-    base_run_macosx_x64_debug = path_utils.concat_path(base_run, "macosx_x64_debug")
-    base_run_macosx_x64_release = path_utils.concat_path(base_run, "macosx_x64_release")
-
     base_src = path_utils.concat_path(prj_fullname_base, "src")
-
-    prjboot_util.makedir_if_needed(prj_fullname_base)
-    prjboot_util.makedir_if_needed(base_prj)
-
-    prjboot_util.makedir_if_needed(base_build)
-    prjboot_util.makedir_if_needed(base_build_linux_x64_debug)
-    prjboot_util.makedir_if_needed(base_build_linux_x64_release)
-    prjboot_util.makedir_if_needed(base_build_windows_x64_debug)
-    prjboot_util.makedir_if_needed(base_build_windows_x64_release)
-    prjboot_util.makedir_if_needed(base_build_macosx_x64_debug)
-    prjboot_util.makedir_if_needed(base_build_macosx_x64_release)
-
-    prjboot_util.makedir_if_needed(base_run)
-    prjboot_util.makedir_if_needed(base_run_linux_x64_debug)
-    prjboot_util.makedir_if_needed(base_run_linux_x64_release)
-    prjboot_util.makedir_if_needed(base_run_windows_x64_debug)
-    prjboot_util.makedir_if_needed(base_run_windows_x64_release)
-    prjboot_util.makedir_if_needed(base_run_macosx_x64_debug)
-    prjboot_util.makedir_if_needed(base_run_macosx_x64_release)
-
-    prjboot_util.makedir_if_needed(base_src)
 
     # generate the actual C++ Makefile
     base_prj_makefile_cpp = path_utils.concat_path(base_prj, "makefile_cpp")
@@ -392,8 +314,6 @@ def generate_makefile_cpp(target_dir, project_name):
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
 
     # main C++ file
     base_src_main_cpp_fn = path_utils.concat_path(base_src, "main.cpp")

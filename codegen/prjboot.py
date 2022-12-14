@@ -5,6 +5,7 @@ import os
 
 import path_utils
 
+import common_gen
 import makefile_proj_gen
 import codelite_proj_gen
 import msvc_proj_gen
@@ -26,6 +27,10 @@ PROJECT_TYPE_DEFAULT = PROJECT_TYPE_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):
 
+    v, r = common_gen.generate_common_structure(target_dir, proj_name)
+    if not v:
+        return False, r
+
     chosen_function = None
 
     if proj_type == PROJECT_TYPE_MAKEFILE_C:
@@ -43,13 +48,13 @@ def prjboot(target_dir, proj_name, proj_type):
     elif proj_type == PROJECT_TYPE_MSVC17_C:
         chosen_function = msvc_proj_gen.generate_msvc17_c
     else:
-        print("Unknown project type: [%s]" % proj_type)
-        sys.exit(1)
+        return False, "Unknown project type: [%s]" % proj_type
 
     v, r = chosen_function(target_dir, proj_name)
     if not v:
-        print(r)
-        sys.exit(1)
+        return False, r
+
+    return True, None
 
 def parse_proj_types(proj_types):
     contents = "["
@@ -108,4 +113,7 @@ if __name__ == "__main__":
             proj_type_next = True
             continue
 
-    prjboot(target_dir, proj_name, proj_type)
+    v, r = prjboot(target_dir, proj_name, proj_type)
+    if not v:
+        print(r)
+        sys.exit(1)
