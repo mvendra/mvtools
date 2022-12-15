@@ -60,7 +60,7 @@ def generate_common_structure(target_dir, project_name):
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/")
     prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "run/")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "lib/")
+    #prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "lib/") -> stopped adding the lib/ folder by default to gitignore, so its lib/.gitkeep can more easily be noticed and committed for the first time
 
     # lib/gitkeep
     libgitkeep_filename = path_utils.concat_path(prj_fullname_base, "lib", ".gitkeep")
