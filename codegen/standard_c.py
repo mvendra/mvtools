@@ -91,7 +91,7 @@ def get_c_linker_flags_release_gcc():
 
 def get_clang_version():
 
-    contents = "14"
+    contents = "15"
 
     return contents
 
