@@ -160,7 +160,7 @@ def msvc17projfile_contents_c(project_name, project_hex_id):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def msvc17projfile_filters_contents_c(src_filter_hex_id, inc_filter_hex_id):
+def msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id):
 
     r = ""
     r += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -170,15 +170,15 @@ def msvc17projfile_filters_contents_c(src_filter_hex_id, inc_filter_hex_id):
     r += "      <Filter>src</Filter>\n"
     r += "    </ClCompile>\n"
     r += "    <ClCompile Include=\"..\\..\\src\\subfolder\\second.c\">\n"
-    r += "      <Filter>src</Filter>\n"
+    r += "      <Filter>src\\subfolder</Filter>\n"
     r += "    </ClCompile>\n"
     r += "  </ItemGroup>\n"
     r += "  <ItemGroup>\n"
     r += "    <Filter Include=\"src\">\n"
     r += "      <UniqueIdentifier>{%s}</UniqueIdentifier>\n" % src_filter_hex_id.lower()
     r += "    </Filter>\n"
-    r += "    <Filter Include=\"inc\">\n"
-    r += "      <UniqueIdentifier>{%s}</UniqueIdentifier>\n" % inc_filter_hex_id.lower()
+    r += "    <Filter Include=\"src\\subfolder\">\n"
+    r += "      <UniqueIdentifier>{%s}</UniqueIdentifier>\n" % src_subfolder_filter_hex_id.lower()
     r += "    </Filter>\n"
     r += "  </ItemGroup>\n"
     r += "</Project>"
@@ -199,13 +199,13 @@ def generate_msvc17_c(target_dir, project_name):
     project_projfile_hex_id = msvc17_prjfile_hex_id()
     solution_hex_id = msvc17_solution_hex_id()
     src_filter_hex_id = msvc17_solution_hex_id()
-    inc_filter_hex_id = msvc17_solution_hex_id()
+    src_subfolder_filter_hex_id = msvc17_solution_hex_id()
     base_prj_msvc17 = path_utils.concat_path(base_prj, "msvc17_c")
     os.mkdir(base_prj_msvc17)
     base_prj_filters_msvc17_fn = path_utils.concat_path(base_prj_msvc17, "%s.vcxproj.filters" % project_name)
     base_prj_msvc17_fn = path_utils.concat_path(base_prj_msvc17, "%s.vcxproj" % project_name)
     base_prj_msvc17_sln = path_utils.concat_path(base_prj_msvc17, "%s.sln" % project_name)
-    prjboot_util.writecontents(base_prj_filters_msvc17_fn, msvc17projfile_filters_contents_c(src_filter_hex_id, inc_filter_hex_id))
+    prjboot_util.writecontents(base_prj_filters_msvc17_fn, msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id))
     prjboot_util.writecontents(base_prj_msvc17_fn, msvc17projfile_contents_c(project_name, project_projfile_hex_id))
     prjboot_util.writecontents(base_prj_msvc17_sln, msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id, solution_hex_id))
 
