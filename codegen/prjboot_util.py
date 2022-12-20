@@ -16,6 +16,11 @@ def makedir_if_needed(path):
 
 def writecontents(filename, contents):
     if os.path.exists(filename):
+        contents_read = ""
+        with open(filename, "r") as f:
+            contents_read = f.read()
+        if contents == contents_read:
+            return True # file already exists, but its contents match the contents to be written - so it doesn't matter
         return False
     if not isinstance(contents, bytearray):
         contents_ba = bytearray()
