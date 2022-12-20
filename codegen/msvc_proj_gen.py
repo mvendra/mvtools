@@ -123,6 +123,7 @@ def msvc17projfile_contents_c(project_name, project_hex_id):
     r += "      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>\n"
     r += "      <ConformanceMode>true</ConformanceMode>\n"
     r += "      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>\n"
+    r += "      <LanguageStandard_C>%s</LanguageStandard_C>\n" % standard_c.c_compiler_standard_windows_msvc()
     r += "    </ClCompile>\n"
     r += "    <Link>\n"
     r += "      <SubSystem>Console</SubSystem>\n"
@@ -141,6 +142,7 @@ def msvc17projfile_contents_c(project_name, project_hex_id):
     r += "      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>\n"
     r += "      <ConformanceMode>true</ConformanceMode>\n"
     r += "      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>\n"
+    r += "      <LanguageStandard_C>%s</LanguageStandard_C>\n" % standard_c.c_compiler_standard_windows_msvc()
     r += "    </ClCompile>\n"
     r += "    <Link>\n"
     r += "      <SubSystem>Console</SubSystem>\n"

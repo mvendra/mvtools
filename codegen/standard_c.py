@@ -111,6 +111,10 @@ def c_compiler_flags_windows_msvc():
 
     contents = []
 
-    contents.append("/std:c18")
+    return contents
+
+def c_compiler_standard_windows_msvc():
+
+    contents = "stdc17"
 
     return contents
