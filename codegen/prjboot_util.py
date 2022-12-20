@@ -6,7 +6,7 @@ import os
 from random import randrange
 
 def secondary_c_app():
-    return "\nvoid func(){}\n"
+    return "\nvoid func(void);\n\nvoid func(void){}\n"
 
 def makedir_if_needed(path):
     if not os.path.exists(path):
