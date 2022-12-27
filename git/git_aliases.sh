@@ -79,7 +79,7 @@ gikill(){
 
 alias gista="git status"
 alias giadd="git add"
-alias giunadd="git reset HEAD"
+alias giunadd="git reset HEAD" # mvtodo: does not work before the first commit
 alias gicom="git_commit_with_prechecks.py"
 alias gilog="git log"
 alias gipus="git push"
