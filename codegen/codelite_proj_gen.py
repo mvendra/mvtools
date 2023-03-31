@@ -360,7 +360,7 @@ def codelite13_cpp_projfile_contents(project_name):
     r += "      </Completion>\n"
     r += "    </Configuration>\n"
 
-    r += "    <Configuration Name=\"Debug (LLVM)\" CompilerType=\"clang( tags/RELEASE_500/final )\" DebuggerType=\"LLDB Debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
+    r += "    <Configuration Name=\"Debug (LLVM)\" CompilerType=\"CLANG-%s\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n" % standard_cpp.get_clang_version()
     r += "      <Compiler Options=\"%s\" C_Options=\"-g;-O0;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_cpp.get_cpp_compiler_flags_debug_gcc() + standard_cpp.get_cpp_compiler_flags_linux_gcc())
     r += "        <IncludePath Value=\"../../src\"/>\n"
     r += "      </Compiler>\n"
@@ -446,7 +446,7 @@ def codelite13_cpp_projfile_contents(project_name):
     r += "      </Completion>\n"
     r += "    </Configuration>\n"
 
-    r += "    <Configuration Name=\"Release (LLVM)\" CompilerType=\"clang( tags/RELEASE_500/final )\" DebuggerType=\"LLDB Debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
+    r += "    <Configuration Name=\"Release (LLVM)\" CompilerType=\"CLANG-%s\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n" % standard_cpp.get_clang_version()
     r += "      <Compiler Options=\"%s\" C_Options=\"-O2;-Wall\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_cpp.get_cpp_compiler_flags_release_gcc() + standard_cpp.get_cpp_compiler_flags_linux_gcc())
     r += "        <IncludePath Value=\"../../src\"/>\n"
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
