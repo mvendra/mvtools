@@ -56,7 +56,7 @@ def get_cpp_compiler_flags_linux_gcc():
 
     contents = []
 
-    contents.append("-std=c++14")
+    contents.append("-std=c++17")
 
     return contents
 
@@ -64,7 +64,7 @@ def get_cpp_compiler_flags_windows_gcc():
 
     contents = []
 
-    contents.append("-std=c++14")
+    contents.append("-std=c++17")
 
     return contents
 
@@ -72,7 +72,7 @@ def get_cpp_compiler_flags_macosx_gcc():
 
     contents = []
 
-    contents.append("-std=c++14")
+    contents.append("-std=c++17")
 
     return contents
 
@@ -112,6 +112,6 @@ def cpp_compiler_flags_windows_msvc():
 
     contents = []
 
-    contents.append("/std:c++14")
+    contents.append("/std:c++17")
 
     return contents
