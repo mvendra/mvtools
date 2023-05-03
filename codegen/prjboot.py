@@ -113,7 +113,7 @@ if __name__ == "__main__":
             proj_type_next = True
             continue
 
-    v, r = prjboot(target_dir, proj_name, proj_type)
+    v, r = prjboot(path_utils.filter_remove_trailing_sep(target_dir), path_utils.filter_remove_trailing_sep(proj_name), proj_type)
     if not v:
         print(r)
         sys.exit(1)
