@@ -31,6 +31,7 @@ def pre_generate_genlinks_links(mvtools_path, links_path):
     source_items_templ  = ["path_utils.py", "fsquery.py", "fsquery_adv_filter.py", "detect_repo_type.py", "mvtools_envvars.py"]
     source_items_templ += ["git/git_lib.py", "wrappers/git_wrapper.py"]
     source_items_templ += ["svn/svn_lib.py", "wrappers/svn_wrapper.py"]
+    source_items_templ += ["parsing_dsl/dsl_type20.py", "parsing_dsl/miniparse.py"]
     source_items_templ += ["launchers/generic_run.py"]
 
     source_items = []
