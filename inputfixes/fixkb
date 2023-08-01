@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# first number: delay before starting to repeat (bigger is slower)
+# second number: rate of repetitions (bigger is faster)
+
+xset r rate 180 30 
+
