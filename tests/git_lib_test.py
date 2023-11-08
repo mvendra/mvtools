@@ -2366,21 +2366,24 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
         first_more3 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
         self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        first_more4 = path_utils.concat_path(self.first_repo, "\" \"")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
 
         first_sub = path_utils.concat_path(self.first_repo, "subfolder")
         os.mkdir(first_sub)
         self.assertTrue(os.path.exists(first_sub))
-        first_sub_more4 = path_utils.concat_path(first_sub, "more4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub_more4, "more4-contents"))
+        first_sub_more5 = path_utils.concat_path(first_sub, "more5.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(first_sub_more5, "more5-contents"))
 
         v, r = git_lib.get_unversioned_files_and_folders(self.first_repo)
 
         self.assertTrue(v)
-        self.assertEqual(len(r), 5)
+        self.assertEqual(len(r), 6)
         self.assertTrue(first_zero1 in r)
         self.assertTrue(first_more1 in r)
         self.assertTrue(first_more2 in r)
         #self.assertTrue(first_more3 in r) # mvtodo: might require extra system config or ...
+        self.assertTrue(first_more4 in r)
         self.assertTrue(first_sub in r)
 
         v, r = git_wrapper.stage(self.first_repo)
