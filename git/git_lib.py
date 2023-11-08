@@ -480,11 +480,19 @@ def get_unversioned_files_and_folders(repo):
         return False, "No repo specified"
     repo = os.path.abspath(repo)
 
-    v, r = git_wrapper.status_simple(repo)
+    v, r = git_wrapper.status_nullterm_porcelain_v1(repo)
     if not v:
         return False, r
     saved_st_msg = r
-    status_items = [x for x in r.split(os.linesep) if x != ""]
+
+    current = ""
+    status_items = []
+    for c in saved_st_msg:
+        if c == "\x00":
+            status_items.append(current)
+            current = ""
+        else:
+            current += c
 
     unversioned_files = []
     for si in status_items:
