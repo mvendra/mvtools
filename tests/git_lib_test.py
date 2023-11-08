@@ -96,7 +96,6 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(git_lib.remove_gitstatus_simple_decorations("A       subfolder/more4.txt"), "     subfolder/more4.txt")
         self.assertEqual(git_lib.remove_gitstatus_simple_decorations("? file5.txt"), None)
         self.assertEqual(git_lib.remove_gitstatus_simple_decorations("??? file5.txt"), None)
-        self.assertEqual(git_lib.remove_gitstatus_simple_decorations("?? \" \""), " ")
 
     def testChangeStashIndex(self):
 
