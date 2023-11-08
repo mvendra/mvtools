@@ -1347,6 +1347,37 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("A  test_file2.txt" in r)
 
+    def testStatusPorcelainV1(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-status-simple, test contents"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-status-simple, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_porcelain_v1(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual("", r)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        v, r = git_wrapper.status_porcelain_v1(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("?? test_file2.txt" in r)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_porcelain_v1(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("A  test_file2.txt" in r)
+
     def testRemoteList_and_RemoteAdd_and_ChangeUrl(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
