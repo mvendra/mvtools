@@ -24,7 +24,7 @@ def run_cmd(cmd_list, use_input=None, use_shell=False, use_cwd=None, use_env=Non
         return False, "Nothing to run"
 
     try:
-        process = subprocess.run(cmd_list, input=use_input, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=use_shell, cwd=use_cwd, check=False, encoding=use_encoding, errors=use_errors, env=use_env, timeout=use_timeout)
+        process = subprocess.run(cmd_list, input=use_input, capture_output=True, shell=use_shell, cwd=use_cwd, check=False, encoding=use_encoding, errors=use_errors, env=use_env, timeout=use_timeout)
         return True, run_cmd_result( (process.returncode==0), process.returncode, process.stdout, process.stderr )
     except Exception as ex:
         return False, str(ex)
