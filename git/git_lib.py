@@ -84,7 +84,12 @@ def remove_gitstatus_simple_decorations(statusmsg_singleline):
         return None
     if statusmsg_singleline[2] != " ":
         return None
-    return statusmsg_singleline[3:]
+    final_str = statusmsg_singleline[3:]
+    if len(final_str) > 2: # git may have quoted this filename
+        if final_str[0] == "\"" and final_str[len(final_str)-1] == "\"":
+            final_str = final_str[1:]
+            final_str = final_str[:-1]
+    return final_str
 
 def is_repo_root(path):
     if path is None:
