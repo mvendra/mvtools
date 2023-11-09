@@ -890,8 +890,22 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v and r)
 
+        first_more1 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        self.assertTrue(v)
+
         with open(self.first_file1, "a") as f:
             f.write("actual modification, second")
+
+        with open(first_more1, "a") as f:
+            f.write("actual modification, third")
+
+        with open(first_more2, "a") as f:
+            f.write("actual modification, fourth")
 
         v, r = git_wrapper.stash(self.first_repo)
         self.assertTrue(v)
@@ -900,19 +914,29 @@ class GitLibTest(unittest.TestCase):
         os.unlink(self.first_file1)
         self.assertFalse(os.path.exists(self.first_file1))
 
-        v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
+        self.assertTrue(os.path.exists(first_more1))
+        os.unlink(first_more1)
+        self.assertFalse(os.path.exists(first_more1))
+
+        self.assertTrue(os.path.exists(first_more2))
+        os.unlink(first_more2)
+        self.assertFalse(os.path.exists(first_more2))
+
+        v, r = git_wrapper.stage(self.first_repo, [self.first_file1, first_more1, first_more2])
         self.assertTrue(v)
 
         v, r = git_wrapper.commit(self.first_repo, "conflict commit")
         self.assertTrue(v)
 
         v, r = git_wrapper.stash_pop(self.first_repo)
-        self.assertFalse(v) # should fail because of conflict
+        self.assertFalse(v) # should fail because of conflicts
 
         v, r = git_lib.get_head_deleted_updated_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(self.first_file1 in r[0])
+        self.assertEqual(len(r), 3)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
 
     def testGetHeadDeletedDeleted_And_UpdatedAdded_And_AddedUpdatedFiles(self):
 
