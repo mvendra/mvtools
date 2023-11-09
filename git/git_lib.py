@@ -357,22 +357,28 @@ def get_head_files_delegate(repo, status_detect, info_variation):
     elif t1 is False:
         return False, "%s is not a git work tree." % repo
 
-    v, r = git_wrapper.status(repo)
+    v, r = git_wrapper.status_nullterm_porcelain_v1(repo)
     if not v:
         return False, "get_head_%s_files failed: %s" % (info_variation, r)
-    out = r.rstrip() # removes the trailing newline
-    if len(out) == 0:
-        return True, []
+    saved_st_msg = r
+
+    current = ""
+    status_items = []
+    for c in saved_st_msg:
+        if c == "\x00":
+            status_items.append(current)
+            current = ""
+        else:
+            current += c
 
     ret = []
-    for l in out.split("\n"):
-        cl = l.rstrip()
-        if len(cl) < 2:
-            continue
-        if cl[0:2] == status_detect:
-            lf = cl[3:]
-            fp = path_utils.concat_path(repo, lf)
-            ret.append(os.path.abspath(fp))
+    for it in status_items:
+        if (len(it) < 3):
+            return False, "get_head_%s_files failed: %s" % (info_variation, saved_st_msg)
+        if it[0:2] == status_detect:
+            ce = it[3:]
+            cef = path_utils.concat_path(repo, ce)
+            ret.append(os.path.abspath(cef))
     return True, ret
 
 def get_staged_files(repo):

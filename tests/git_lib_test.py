@@ -658,6 +658,14 @@ class GitLibTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
         self.assertTrue(v)
 
+        first_more4 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more4), "file4-content4", "commit_msg_file4")
+        self.assertTrue(v)
+
+        first_more5 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more5), "file5-content5", "commit_msg_file5")
+        self.assertTrue(v)
+
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
         self.assertTrue(v)
 
@@ -670,9 +678,18 @@ class GitLibTest(unittest.TestCase):
         with open(first_more3, "a") as f:
             f.write("actual modification, again")
 
+        with open(first_more4, "a") as f:
+            f.write("actual modification, again")
+
+        with open(first_more5, "a") as f:
+            f.write("actual modification, again")
+
         v, r = git_lib.get_head_modified_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(r, [first_more3])
+        self.assertEqual(len(r), 3)
+        self.assertTrue(first_more3 in r)
+        self.assertTrue(first_more4 in r)
+        self.assertTrue(first_more5 in r)
 
     def testGetHeadModifiedModifiedFiles(self):
 
