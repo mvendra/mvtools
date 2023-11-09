@@ -854,6 +854,54 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "")
 
+    def testLsFilesNullTerm1(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
+            self.fail("Failed creating test file %s" % test_file1)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg")
+        self.assertTrue(v)
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
+            self.fail("Failed creating test file %s" % test_file2)
+
+        test_file3 = path_utils.concat_path(self.second_repo, "test_file3.txt")
+        if not create_and_write_file.create_file_contents(test_file3, "test-contents3"):
+            self.fail("Failed creating test file %s" % test_file3)
+
+        v, r = git_wrapper.ls_files_nullterm(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse( path_utils.basename_filtered(test_file1) in r)
+        self.assertTrue( path_utils.basename_filtered(test_file2) in r)
+        self.assertTrue( path_utils.basename_filtered(test_file3) in r)
+
+        v, r = git_wrapper.stage(self.second_repo, [test_file3])
+        self.assertTrue(v)
+
+        v, r = git_wrapper.ls_files_nullterm(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse( path_utils.basename_filtered(test_file1) in r)
+        self.assertTrue( path_utils.basename_filtered(test_file2) in r)
+        self.assertFalse( path_utils.basename_filtered(test_file3) in r)
+
+    def testLsFilesNullTerm2(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.ls_files_nullterm(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "")
+
     def testStash_and_StashList(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")

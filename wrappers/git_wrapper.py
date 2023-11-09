@@ -155,6 +155,10 @@ def ls_files(repo):
     cmd = ["git", "-C", repo, "ls-files", "--exclude-standard", "--others"]
     return git_wrapper_standard_command(cmd, "ls-files")
 
+def ls_files_nullterm(repo):
+    cmd = ["git", "-C", repo, "ls-files", "-z", "--exclude-standard", "--others"]
+    return git_wrapper_standard_command(cmd, "ls-files-nullterm")
+
 def stash(repo):
     cmd = ["git", "-C", repo, "stash"]
     return git_wrapper_standard_command(cmd, "stash")
