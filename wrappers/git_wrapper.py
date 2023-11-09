@@ -210,7 +210,7 @@ def show(repo, commit_id=None):
     return git_wrapper_standard_command(cmd, "show")
 
 def status(repo):
-    cmd = ["git", "-C", repo, "status", "--porcelain"]
+    cmd = ["git", "-C", repo, "status", "--porcelain=v1"]
     return git_wrapper_standard_command(cmd, "status")
 
 def status_simple(repo):
