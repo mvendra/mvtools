@@ -742,16 +742,48 @@ class GitLibTest(unittest.TestCase):
         os.unlink(self.first_file1)
         self.assertFalse(os.path.exists(self.first_file1))
 
+        first_more1 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        self.assertTrue(v)
+
+        first_more1_renamed = path_utils.concat_path(self.first_repo, "  ")
+        self.assertFalse(os.path.exists(first_more1_renamed))
+        self.assertTrue(path_utils.copy_to_and_rename(first_more1, self.first_repo, path_utils.basename_filtered(first_more1_renamed)))
+        self.assertTrue(os.path.exists(first_more1_renamed))
+        os.unlink(first_more1)
+        self.assertFalse(os.path.exists(first_more1))
+
+        first_more2_renamed = path_utils.concat_path(self.first_repo, "%s%s" % (os.linesep, os.linesep))
+        self.assertFalse(os.path.exists(first_more2_renamed))
+        self.assertTrue(path_utils.copy_to_and_rename(first_more2, self.first_repo, path_utils.basename_filtered(first_more2_renamed)))
+        self.assertTrue(os.path.exists(first_more2_renamed))
+        os.unlink(first_more2)
+        self.assertFalse(os.path.exists(first_more2))
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
         with open(first_file1_renamed, "a") as f:
             f.write("actual modification, again")
 
+        with open(first_more1_renamed, "a") as f:
+            f.write("actual modification, again")
+
+        with open(first_more2_renamed, "a") as f:
+            f.write("actual modification, again")
+
         v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertTrue(any(self.first_file1 in s for s in r))
         self.assertTrue(any(first_file1_renamed in s for s in r))
+        self.assertTrue(any(first_more1 in s for s in r))
+        self.assertTrue(any(first_more1_renamed in s for s in r))
+        self.assertTrue(any(first_more2 in s for s in r))
+        self.assertTrue(any(first_more2_renamed in s for s in r))
         for x in r:
             self.assertTrue(os.path.exists(x[1]))
 
