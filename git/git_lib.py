@@ -380,7 +380,7 @@ def get_head_files_delegate(repo, status_detect, info_variation, pair_mode):
             continue
 
         if (len(it) < 3):
-            return False, "get_head_%s_files failed: %s" % (info_variation, saved_st_msg)
+            continue
 
         if it[0:2] == status_detect:
 
@@ -393,9 +393,6 @@ def get_head_files_delegate(repo, status_detect, info_variation, pair_mode):
 
             cef = path_utils.concat_path(repo, ce)
             ret.append(os.path.abspath(cef))
-
-        else:
-            return False, "get_head_%s_files failed: %s" % (info_variation, saved_st_msg)
 
     return True, ret
 
