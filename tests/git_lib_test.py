@@ -919,17 +919,47 @@ class GitLibTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v and r)
 
+        first_more1 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        self.assertTrue(v)
+
         first_file1_renamed1 = path_utils.concat_path(self.first_repo, "file1_renamed1.txt")
         first_file1_renamed2 = path_utils.concat_path(self.first_repo, "file1_renamed2.txt")
+        first_more1_renamed1 = path_utils.concat_path(self.first_repo, "  ")
+        first_more1_renamed2 = path_utils.concat_path(self.first_repo, "   ")
+        first_more2_renamed1 = path_utils.concat_path(self.first_repo, "%s%s" % (os.linesep, os.linesep))
+        first_more2_renamed2 = path_utils.concat_path(self.first_repo, "%s%s%s" % (os.linesep, os.linesep, os.linesep))
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertFalse(os.path.exists(first_file1_renamed1))
         self.assertFalse(os.path.exists(first_file1_renamed2))
 
+        self.assertTrue(os.path.exists(first_more1))
+        self.assertFalse(os.path.exists(first_more1_renamed1))
+        self.assertFalse(os.path.exists(first_more1_renamed2))
+
+        self.assertTrue(os.path.exists(first_more2))
+        self.assertFalse(os.path.exists(first_more2_renamed1))
+        self.assertFalse(os.path.exists(first_more2_renamed2))
+
         self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed1)))
         os.unlink(self.first_file1)
         self.assertFalse(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(first_file1_renamed1))
+
+        self.assertTrue(path_utils.copy_to_and_rename(first_more1, self.first_repo, path_utils.basename_filtered(first_more1_renamed1)))
+        os.unlink(first_more1)
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(os.path.exists(first_more1_renamed1))
+
+        self.assertTrue(path_utils.copy_to_and_rename(first_more2, self.first_repo, path_utils.basename_filtered(first_more2_renamed1)))
+        os.unlink(first_more2)
+        self.assertFalse(os.path.exists(first_more2))
+        self.assertTrue(os.path.exists(first_more2_renamed1))
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -939,32 +969,52 @@ class GitLibTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertFalse(os.path.exists(first_file1_renamed1))
+        self.assertTrue(os.path.exists(first_more1))
+        self.assertFalse(os.path.exists(first_more1_renamed1))
+        self.assertTrue(os.path.exists(first_more2))
+        self.assertFalse(os.path.exists(first_more2_renamed1))
 
         self.assertTrue(path_utils.copy_to_and_rename(self.first_file1, self.first_repo, path_utils.basename_filtered(first_file1_renamed2)))
         os.unlink(self.first_file1)
         self.assertFalse(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(first_file1_renamed2))
 
+        self.assertTrue(path_utils.copy_to_and_rename(first_more1, self.first_repo, path_utils.basename_filtered(first_more1_renamed2)))
+        os.unlink(first_more1)
+        self.assertFalse(os.path.exists(first_more1))
+        self.assertTrue(os.path.exists(first_more1_renamed2))
+
+        self.assertTrue(path_utils.copy_to_and_rename(first_more2, self.first_repo, path_utils.basename_filtered(first_more2_renamed2)))
+        os.unlink(first_more2)
+        self.assertFalse(os.path.exists(first_more2))
+        self.assertTrue(os.path.exists(first_more2_renamed2))
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
         v, r = git_wrapper.stash_pop(self.first_repo)
-        self.assertFalse(v) # should fail because of conflict
+        self.assertFalse(v) # should fail because of conflicts
 
         v, r = git_lib.get_head_deleted_deleted_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(self.first_file1 in r[0])
+        self.assertEqual(len(r), 3)
+        self.assertTrue(self.first_file1 in r)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
 
         v, r = git_lib.get_head_updated_added_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(first_file1_renamed1 in r[0])
+        self.assertEqual(len(r), 3)
+        self.assertTrue(first_file1_renamed1 in r)
+        self.assertTrue(first_more1_renamed1 in r)
+        self.assertTrue(first_more2_renamed1 in r)
 
         v, r = git_lib.get_head_added_updated_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(first_file1_renamed2 in r[0])
+        self.assertEqual(len(r), 3)
+        self.assertTrue(first_file1_renamed2 in r)
+        self.assertTrue(first_more1_renamed2 in r)
+        self.assertTrue(first_more2_renamed2 in r)
 
     def testGetHeadAddedAddedFiles(self):
 
