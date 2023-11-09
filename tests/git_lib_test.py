@@ -1071,6 +1071,16 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
         self.assertTrue(os.path.exists(first_more1))
 
+        first_more2 = path_utils.concat_path(self.first_repo, " ")
+        self.assertFalse(os.path.exists(first_more2))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        self.assertTrue(os.path.exists(first_more2))
+
+        first_more3 = path_utils.concat_path(self.first_repo, os.linesep)
+        self.assertFalse(os.path.exists(first_more3))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        self.assertTrue(os.path.exists(first_more3))
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
@@ -1081,16 +1091,26 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents"))
         self.assertTrue(os.path.exists(first_more1))
 
+        self.assertFalse(os.path.exists(first_more2))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-conflicting-contents"))
+        self.assertTrue(os.path.exists(first_more2))
+
+        self.assertFalse(os.path.exists(first_more3))
+        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-conflicting-contents"))
+        self.assertTrue(os.path.exists(first_more3))
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
         v, r = git_wrapper.stash_pop(self.first_repo)
-        self.assertFalse(v) # should fail because of conflict
+        self.assertFalse(v) # should fail because of conflicts
 
         v, r = git_lib.get_head_added_added_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertTrue(first_more1 in r[0])
+        self.assertEqual(len(r), 3)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more2 in r)
+        self.assertTrue(first_more3 in r)
 
     def testGetHeadModifiedFilesRelativePath(self):
 
