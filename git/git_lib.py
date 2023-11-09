@@ -465,10 +465,19 @@ def get_unversioned_files(repo):
 
     repo = os.path.abspath(repo)
 
-    v, r = git_wrapper.ls_files(repo)
+    v, r = git_wrapper.ls_files_nullterm(repo)
     if not v:
         return False, r
-    unversioned_files = [path_utils.concat_path(repo, x) for x in r.split(os.linesep) if x != ""]
+    saved_ls_msg = r
+
+    current = ""
+    unversioned_files = []
+    for c in saved_ls_msg:
+        if c == "\x00":
+            unversioned_files.append(path_utils.concat_path(repo, current))
+            current = ""
+        else:
+            current += c
     return True, unversioned_files
 
 def get_unversioned_files_and_folders(repo):
