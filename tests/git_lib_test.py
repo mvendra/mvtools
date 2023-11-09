@@ -1092,15 +1092,32 @@ class GitLibTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
         self.assertTrue(v)
 
+        first_more4 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more4), "file1-content4", "commit_msg_file4")
+        self.assertTrue(v)
+
+        first_more5 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more5), "file5-content5", "commit_msg_file5")
+        self.assertTrue(v)
+
         os.unlink(first_more1)
         self.assertFalse(os.path.exists(first_more1))
 
         os.unlink(first_more2)
         self.assertFalse(os.path.exists(first_more2))
 
+        os.unlink(first_more4)
+        self.assertFalse(os.path.exists(first_more4))
+
+        os.unlink(first_more5)
+        self.assertFalse(os.path.exists(first_more5))
+
         v, r = git_lib.get_head_deleted_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(r, [first_more1])
+        self.assertEqual(len(r), 3)
+        self.assertTrue(first_more1 in r)
+        self.assertTrue(first_more4 in r)
+        self.assertTrue(first_more5 in r)
 
     def testGetHeadDeletedFilesRelativePath(self):
 
