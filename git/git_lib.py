@@ -290,61 +290,59 @@ def get_head_files(repo):
     return True, total_entries
 
 def get_head_modified_files(repo):
-    return get_head_files_delegate(repo, " M", "modified")
+    return get_head_files_delegate(repo, " M", "modified", False)
 
 def get_head_deleted_files(repo):
-    return get_head_files_delegate(repo, " D", "deleted")
+    return get_head_files_delegate(repo, " D", "deleted", False)
 
 def get_head_modified_modified_files(repo):
-    return get_head_files_delegate(repo, "MM", "modified")
+    return get_head_files_delegate(repo, "MM", "modified", False)
 
 def get_head_added_modified_files(repo):
-    return get_head_files_delegate(repo, "AM", "added_modified")
+    return get_head_files_delegate(repo, "AM", "added_modified", False)
 
 def get_head_updated_files(repo):
-    return get_head_files_delegate(repo, "UU", "updated")
+    return get_head_files_delegate(repo, "UU", "updated", False)
 
 def get_head_deleted_deleted_files(repo):
-    return get_head_files_delegate(repo, "DD", "deleted_deleted")
+    return get_head_files_delegate(repo, "DD", "deleted_deleted", False)
 
 def get_head_updated_added_files(repo):
-    return get_head_files_delegate(repo, "UA", "updated_added")
+    return get_head_files_delegate(repo, "UA", "updated_added", False)
 
 def get_head_updated_deleted_files(repo):
-    return get_head_files_delegate(repo, "UD", "updated_deleted")
+    return get_head_files_delegate(repo, "UD", "updated_deleted", False)
 
 def get_head_deleted_updated_files(repo):
-    return get_head_files_delegate(repo, "DU", "deleted_updated")
+    return get_head_files_delegate(repo, "DU", "deleted_updated", False)
 
 def get_head_added_added_files(repo):
-    return get_head_files_delegate(repo, "AA", "added_added")
+    return get_head_files_delegate(repo, "AA", "added_added", False)
 
 def get_head_added_updated_files(repo):
-    return get_head_files_delegate(repo, "AU", "added_updated")
+    return get_head_files_delegate(repo, "AU", "added_updated", False)
 
 def get_head_renamed_modified_files(repo):
 
-    v, r = get_head_files_delegate(repo, "RM", "renamed_modified")
+    v, r = get_head_files_delegate(repo, "RM", "renamed_modified", True)
     if not v:
         return False, r
     renamed_list = r
 
     repo_local = os.path.abspath(repo)
 
-    renamed_list_filtered = []
+    renamed_list_plus_repo = []
     for rl in renamed_list:
 
-        r = get_renamed_details(rl)
-        if r is None:
-            return False, "Unable to read out and parse head, renamed files from repo [%s]" % repo_local
-        original_fn = r[0]
-        renamed_fn  = r[1]
+        # as of L23, Python 3.10's "-z --porcelain=v1" will return the renamed filename first
+        renamed_fn  = rl[0]
+        original_fn = rl[1]
 
-        renamed_list_filtered.append( (original_fn, path_utils.concat_path(repo_local, renamed_fn)) )
+        renamed_list_plus_repo.append((path_utils.concat_path(repo_local, original_fn), path_utils.concat_path(repo_local, renamed_fn)))
 
-    return True, renamed_list_filtered
+    return True, renamed_list_plus_repo
 
-def get_head_files_delegate(repo, status_detect, info_variation):
+def get_head_files_delegate(repo, status_detect, info_variation, pair_mode):
 
     if repo is None:
         return False, "No repo specified"
@@ -372,13 +370,33 @@ def get_head_files_delegate(repo, status_detect, info_variation):
             current += c
 
     ret = []
+    pair_flag = False
+    pair_previous = None
     for it in status_items:
+
+        if pair_flag:
+            ret.append((pair_previous, it))
+            pair_flag = False
+            continue
+
         if (len(it) < 3):
             return False, "get_head_%s_files failed: %s" % (info_variation, saved_st_msg)
+
         if it[0:2] == status_detect:
+
             ce = it[3:]
+
+            if pair_mode:
+                pair_flag = True
+                pair_previous = ce
+                continue
+
             cef = path_utils.concat_path(repo, ce)
             ret.append(os.path.abspath(cef))
+
+        else:
+            return False, "get_head_%s_files failed: %s" % (info_variation, saved_st_msg)
+
     return True, ret
 
 def get_staged_files(repo):
