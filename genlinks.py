@@ -60,7 +60,7 @@ def apply_links_filters(items):
 
     # setup filters
     exclude_list = ["*/__pycache__/*", "*/.git/*", "*/hexascconv/src/hexascconv/*", "*/hexascconv/build/classes/*", "*/nbproject/*", "*/links/*", "*/kbase/*", "*/deprecated/*", "*/tests/*", "*/compat/*", "*/codegen/templates/*"]
-    exclude_list += ["*/LICENSE", "*/README.md", "*/hexascconv/dist/README.TXT", "*/built-jar.properties", "*/hexascconv/manifest.mf", "*/hexascconv/build.xml"]
+    exclude_list += ["*/LICENSE", "*/README.md", "*/POLICY", "*/hexascconv/dist/README.TXT", "*/built-jar.properties", "*/hexascconv/manifest.mf", "*/hexascconv/build.xml"]
     exclude_list_ext = ["pyc", "t20", "png"]
 
     filters = []
