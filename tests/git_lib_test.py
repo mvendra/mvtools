@@ -1669,12 +1669,26 @@ class GitLibTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more7), "more7-content7", "commit_msg_more7")
         self.assertTrue(v)
 
+        first_more8 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more8), "more8-content8", "commit_msg_more8")
+        self.assertTrue(v)
+
+        first_more9 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more9), "more9-content9", "commit_msg_more9")
+        self.assertTrue(v)
+
         self.assertTrue(os.path.exists(first_more6))
         self.assertTrue(os.path.exists(first_more7))
+        self.assertTrue(os.path.exists(first_more8))
+        self.assertTrue(os.path.exists(first_more9))
         os.unlink(first_more6)
         os.unlink(first_more7)
+        os.unlink(first_more8)
+        os.unlink(first_more9)
         self.assertFalse(os.path.exists(first_more6))
         self.assertFalse(os.path.exists(first_more7))
+        self.assertFalse(os.path.exists(first_more8))
+        self.assertFalse(os.path.exists(first_more9))
 
         v, r = git_wrapper.stage(self.first_repo, [first_more6])
         self.assertTrue(v)
@@ -1686,18 +1700,20 @@ class GitLibTest(unittest.TestCase):
         with open(first_more2, "a") as f:
             f.write("yet more contents")
 
-        v, r = git_wrapper.stage(self.first_repo, [first_more7, first_more2])
+        v, r = git_wrapper.stage(self.first_repo, [first_more7, first_more2, first_more8, first_more9])
         self.assertTrue(v)
 
         v, r = git_lib.get_staged_deleted_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(len(r), 4)
         self.assertFalse(first_more1 in r)
         self.assertFalse(first_more2 in r)
         self.assertFalse(first_more3 in r)
         self.assertFalse(first_more4 in r)
         self.assertTrue(first_more6 in r)
         self.assertTrue(first_more7 in r)
+        self.assertTrue(first_more8 in r)
+        self.assertTrue(first_more9 in r)
 
     def testGetStagedDeletedFilesRelativePath(self):
 
