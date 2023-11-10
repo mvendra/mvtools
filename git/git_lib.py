@@ -255,23 +255,28 @@ def repo_has_any_not_of_states(repo, states):
     elif t1 is False:
         return False, "%s is not a git work tree" % repo
 
-    v, r = git_wrapper.status(repo)
+    v, r = git_wrapper.status_nullterm_porcelain_v1(repo)
     if not v:
         return False, "repo_has_any_not_of_states failed: [%s]" % r
-    out = r.rstrip() # removes the trailing newline
-    if len(out) == 0:
-        return True, []
-    if len(states) == 0:
-        return True, []
+    saved_st_msg = r
 
-    for l in out.split("\n"):
-        cl = l.rstrip()
-        if len(cl) < 2:
+    current = ""
+    status_items = []
+    for c in saved_st_msg:
+        if c == "\x00":
+            status_items.append(current)
+            current = ""
+        else:
+            current += c
+
+    for it in status_items:
+
+        if len(it) < 3:
             continue
 
-        item_status = cl[0:2]
-        if item_status not in states:
-            list_unexpected.append(item_status)
+        ces = it[0:2]
+        if ces not in states:
+            list_unexpected.append(it)
 
     return True, list_unexpected
 

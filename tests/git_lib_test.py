@@ -358,6 +358,26 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertEqual(r, ["??"])
 
+    def testRepoHasAnyNotOfStates6(self):
+
+        first_more1 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file2-content2", "commit_msg_file2")
+        self.assertTrue(v)
+
+        with open(first_more1, "a") as f:
+            f.write("more stuff")
+
+        with open(first_more2, "a") as f:
+            f.write("more stuff")
+
+        v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" M"])
+        self.assertTrue(v)
+        self.assertEqual(r, [])
+
     def testGetHeadFiles1(self):
 
         v, r = git_lib.is_head_clear(self.first_repo)
@@ -701,7 +721,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
-        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file2-content2", "commit_msg_file2")
         self.assertTrue(v)
 
         with open(self.first_file1, "a") as f:
@@ -788,7 +808,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
-        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file2-content2", "commit_msg_file2")
         self.assertTrue(v)
 
         first_more1_renamed = path_utils.concat_path(self.first_repo, "  ")
@@ -838,7 +858,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
-        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file2-content2", "commit_msg_file2")
         self.assertTrue(v)
 
         with open(self.first_file1, "a") as f:
@@ -888,7 +908,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
-        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file2-content2", "commit_msg_file2")
         self.assertTrue(v)
 
         self.assertTrue(os.path.exists(self.first_file1))
@@ -941,7 +961,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
-        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file2-content2", "commit_msg_file2")
         self.assertTrue(v)
 
         with open(self.first_file1, "a") as f:
@@ -994,7 +1014,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, os.linesep)
-        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file5-content2", "commit_msg_file2")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more2), "file2-content2", "commit_msg_file2")
         self.assertTrue(v)
 
         first_file1_renamed1 = path_utils.concat_path(self.first_repo, "file1_renamed1.txt")
