@@ -11,6 +11,11 @@ add2path(){
         fi
     fi
 
+    if [[ $PATH =~ $1 ]]; then
+        echo "Warning: envvar [$1] is already in the PATH"
+        return
+    fi
+
     export PATH=${PATH}:${1}
 
 }
@@ -21,6 +26,10 @@ add2pythonpath(){
         # first use. dont add the comma at the beginning
         export PYTHONPATH=${1}
     else
+        if [[ $PYTHONPATH =~ $1 ]]; then
+            echo "Warning: envvar [$1] is already in the PYTHONPATH"
+            return
+        fi
         export PYTHONPATH=${PYTHONPATH}:${1}
     fi
 
