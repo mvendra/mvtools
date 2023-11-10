@@ -1866,6 +1866,14 @@ class GitLibTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more7), "more7-content7", "commit_msg_more7")
         self.assertTrue(v)
 
+        first_more8 = path_utils.concat_path(self.first_repo, " ")
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more8), "more8-content8", "commit_msg_more8")
+        self.assertTrue(v)
+
+        first_more9 = path_utils.concat_path(self.first_repo, os.linesep)
+        v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more9), "more9-content9", "commit_msg_more9")
+        self.assertTrue(v)
+
         v, r = git_lib.get_staged_modified_files(self.first_repo)
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
@@ -1886,12 +1894,18 @@ class GitLibTest(unittest.TestCase):
         with open(self.first_file1, "a") as f:
             f.write("adding stuff")
 
+        with open(first_more8, "a") as f:
+            f.write("adding stuff")
+
+        with open(first_more9, "a") as f:
+            f.write("adding stuff")
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
         v, r = git_lib.get_staged_modified_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(len(r), 3)
         self.assertTrue(self.first_file1 in r)
         self.assertFalse(first_more1 in r)
         self.assertFalse(first_more2 in r)
@@ -1899,6 +1913,8 @@ class GitLibTest(unittest.TestCase):
         self.assertFalse(first_more4 in r)
         self.assertFalse(first_more6 in r)
         self.assertFalse(first_more7 in r)
+        self.assertTrue(first_more8 in r)
+        self.assertTrue(first_more9 in r)
 
     def testGetStagedModifiedFilesRelativePath(self):
 
