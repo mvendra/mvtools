@@ -121,7 +121,7 @@ def is_head_clear(repo):
 
     repo = os.path.abspath(repo)
 
-    v, r = git_wrapper.status_simple(repo)
+    v, r = git_wrapper.status_nullterm_porcelain_v1(repo)
     if not v:
         return False, r
 
