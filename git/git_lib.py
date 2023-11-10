@@ -418,17 +418,17 @@ def get_staged_files(repo):
     return True, all_staged_files
 
 def get_staged_modified_files(repo):
-    return get_staged_delegate(repo, ["M"])
+    return get_staged_delegate(repo, ["M"], False)
 
 def get_staged_added_files(repo):
-    return get_staged_delegate(repo, ["A"])
+    return get_staged_delegate(repo, ["A"], False)
 
 def get_staged_deleted_files(repo):
-    return get_staged_delegate(repo, ["D"])
+    return get_staged_delegate(repo, ["D"], False)
 
 def get_staged_renamed_files(repo):
 
-    v, r = get_staged_delegate(repo, ["R"])
+    v, r = get_staged_delegate(repo, ["R"], True)
     if not v:
         return False, r
     renamed_list = r
@@ -446,7 +446,7 @@ def get_staged_renamed_files(repo):
 
     return True, renamed_list_plus_repo
 
-def get_staged_delegate(repo, check_chars):
+def get_staged_delegate(repo, check_chars, pair_mode):
 
     if repo is None:
         return False, "No repo specified"
@@ -472,8 +472,6 @@ def get_staged_delegate(repo, check_chars):
             current = ""
         else:
             current += c
-
-    pair_mode = True # mvtodo
 
     ret = []
     pair_flag = False
