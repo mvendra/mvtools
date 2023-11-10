@@ -276,7 +276,7 @@ def repo_has_any_not_of_states(repo, states):
 
         ces = it[0:2]
         if ces not in states:
-            list_unexpected.append(it)
+            list_unexpected.append(ces)
 
     return True, list_unexpected
 
