@@ -435,18 +435,16 @@ def get_staged_renamed_files(repo):
 
     repo_local = os.path.abspath(repo)
 
-    renamed_list_filtered = []
+    renamed_list_plus_repo = []
     for rl in renamed_list:
 
-        r = get_renamed_details(rl)
-        if r is None:
-            return False, "Unable to read out and parse staged, renamed files from repo [%s]" % repo_local
-        original_fn = r[0]
-        renamed_fn  = r[1]
+        # as of L23, Python 3.10's "-z --porcelain=v1" will return the renamed filename first
+        renamed_fn  = rl[0]
+        original_fn = rl[1]
 
-        renamed_list_filtered.append( (original_fn, path_utils.concat_path(repo_local, renamed_fn)) )
+        renamed_list_plus_repo.append((path_utils.concat_path(repo_local, original_fn), path_utils.concat_path(repo_local, renamed_fn)))
 
-    return True, renamed_list_filtered
+    return True, renamed_list_plus_repo
 
 def get_staged_delegate(repo, check_chars):
 
@@ -461,22 +459,47 @@ def get_staged_delegate(repo, check_chars):
     elif t1 is False:
         return False, "%s is not a git work tree." % repo
 
-    v, r = git_wrapper.status(repo)
+    v, r = git_wrapper.status_nullterm_porcelain_v1(repo)
     if not v:
-        return False, "get_staged_files failed: %s" % r
-    out = r.rstrip() # removes the trailing newline
-    if len(out) == 0:
-        return True, []
+        return False, "get_staged_files failed: [%s]" % r
+    saved_st_msg = r
+
+    current = ""
+    status_items = []
+    for c in saved_st_msg:
+        if c == "\x00":
+            status_items.append(current)
+            current = ""
+        else:
+            current += c
+
+    pair_mode = True # mvtodo
 
     ret = []
-    for l in out.split("\n"):
-        cl = l.rstrip()
-        if len(cl) < 2:
+    pair_flag = False
+    pair_previous = None
+    for it in status_items:
+
+        if pair_flag:
+            ret.append((pair_previous, it))
+            pair_flag = False
             continue
-        if cl[0] in check_chars:
-            lf = cl[3:]
-            fp = path_utils.concat_path(repo, lf)
-            ret.append(os.path.abspath(fp))
+
+        if (len(it) < 3):
+            continue
+
+        if it[0] in check_chars:
+
+            ce = it[3:]
+
+            if pair_mode:
+                pair_flag = True
+                pair_previous = ce
+                continue
+
+            cef = path_utils.concat_path(repo, ce)
+            ret.append(os.path.abspath(cef))
+
     return True, ret
 
 def get_unversioned_files(repo):
