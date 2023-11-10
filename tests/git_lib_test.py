@@ -2102,12 +2102,18 @@ class GitLibTest(unittest.TestCase):
         first_more88 = path_utils.concat_path(self.first_repo, "more88.txt")
         self.assertTrue(create_and_write_file.create_file_contents(first_more88, "more88-contents"))
 
+        first_more9 = path_utils.concat_path(self.first_repo, " ")
+        self.assertTrue(create_and_write_file.create_file_contents(first_more9, "more9-contents"))
+
+        first_more99 = path_utils.concat_path(self.first_repo, os.linesep)
+        self.assertTrue(create_and_write_file.create_file_contents(first_more99, "more99-contents"))
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
         v, r = git_lib.get_staged_added_files(self.first_repo)
         self.assertTrue(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(len(r), 4)
         self.assertFalse(self.first_file1 in r)
         self.assertFalse(first_more1 in r)
         self.assertFalse(first_more2 in r)
@@ -2117,6 +2123,8 @@ class GitLibTest(unittest.TestCase):
         self.assertFalse(first_more7 in r)
         self.assertTrue(first_more8 in r)
         self.assertTrue(first_more88 in r)
+        self.assertTrue(first_more9 in r)
+        self.assertTrue(first_more99 in r)
 
     def testGetStagedAddedFilesRelativePath(self):
 
