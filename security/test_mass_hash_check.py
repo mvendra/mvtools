@@ -9,7 +9,7 @@ import path_utils
 import terminal_colors
 
 """ test_mass_hash_check
-Tests if all files inside a given path, that match the given extension, have an accompanying valid hash file (filename + ".sha256")
+Tests if all files inside a given path, that match the given extension, have an accompanying valid hash file (filename + ".sha512")
 """
 
 def test_mass_hash_check(path_files, extension):
@@ -30,10 +30,10 @@ def test_mass_hash_check(path_files, extension):
         print("WARNING: Nothing to test.")
 
     for f in filelist:
-        hash_file = f + ".sha256"
+        hash_file = f + ".sha512"
         if not os.path.exists(hash_file):
             report.append(f + " has no corresponding hash file.")
-        elif not hash_check.sha256sum_check(f, hash_file):
+        elif not hash_check.sha512sum_check(f, hash_file):
             report.append(f + " check FAILED.")
 
     return (len(report) == 0), report
