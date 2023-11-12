@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import sha512_wrapper
+import terminal_colors
 
 def puaq():
     print("Usage: %s archive-to-check [hash-file]" % path_utils.basename_filtered(__file__))
@@ -49,7 +50,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     if sha512sum_check(archive_file, hash_file):
-        print("Correct match")
+        print("%sCorrect match%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
     else:
-        print("Check failed!")
+        print("%sCheck failed!%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
         sys.exit(1)
