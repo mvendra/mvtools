@@ -14,12 +14,12 @@ if [ ! -f $1 ]; then
   exit 2
 fi
 
-HASHFNAME=$1.sha256
+HASHFNAME=$1.sha512
 
 if [ -e $HASHFNAME ]; then
   echo "$HASHFNAME exists. Refusing to overwrite."
   exit 3
 fi
 
-sha256sum $1 > $HASHFNAME
+sha512sum $1 > $HASHFNAME
 
