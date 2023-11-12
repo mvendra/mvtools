@@ -34,5 +34,5 @@ FILENAME=`basename $TARGET`
 zip -r $FILENAME.zip $TARGET
 
 if $DO_HASH; then
-    sha256sum $FILENAME.zip > $FILENAME.zip.sha256
+    sha512sum $FILENAME.zip > $FILENAME.zip.sha512
 fi
