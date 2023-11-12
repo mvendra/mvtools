@@ -7,7 +7,7 @@ from random import randrange
 
 import path_utils
 import maketimestamp
-import sha256_wrapper
+import sha256_wrapper # think twice before upgraading to sha512: some platforms have very short max path limitations
 
 def randomfilenamegen():
 
