@@ -8,7 +8,7 @@ import generic_run
 import pakgen
 import encrypt
 import dirsize
-import sha256_wrapper
+import sha512_wrapper
 import shred_wrapper
 import terminal_colors
 import maketimestamp
@@ -121,7 +121,7 @@ class BackupEngine:
             CURPAK_TAR = CURPAK + ".tar"
             CURPAK_TAR_BZ2 = CURPAK_TAR + ".bz2"
             CURPAK_TAR_BZ2_ENC = CURPAK_TAR_BZ2 + ".enc"
-            CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha256"
+            CURPAK_TAR_BZ2_ENC_HASH = CURPAK_TAR_BZ2_ENC + ".sha512"
 
             # check if there are any preexisting artifacts
             if os.path.exists(CURPAK):
@@ -183,7 +183,7 @@ class BackupEngine:
                         print("%sGenerated package [%s] exceeds the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, CURPAK_TAR_BZ2_ENC, terminal_colors.TTY_WHITE))
 
             # create hash from the encrypted package
-            v, r = sha256_wrapper.hash_sha_256_app_file(CURPAK_TAR_BZ2_ENC)
+            v, r = sha512_wrapper.hash_sha_512_app_file(CURPAK_TAR_BZ2_ENC)
             if not v:
                 print("%sFailed generating hash for [%s].%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.TTY_WHITE))
                 return False

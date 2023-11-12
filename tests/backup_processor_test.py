@@ -811,36 +811,36 @@ class BackupProcessorTest(unittest.TestCase):
         # target 1
         tg1_folder1_e = path_utils.concat_path(tg1_final, "source_test", "folder1.tar.bz2.enc")
         tg1_folder1_z = path_utils.concat_path(tg1_final, "source_test", "folder1.tar.bz2")
-        tg1_folder1_h = path_utils.concat_path(tg1_final, "source_test", "folder1.tar.bz2.enc.sha256")
+        tg1_folder1_h = path_utils.concat_path(tg1_final, "source_test", "folder1.tar.bz2.enc.sha512")
         tg1_folder2_e = path_utils.concat_path(tg1_final, "source_test", "folder2.tar.bz2.enc")
         tg1_folder2_z = path_utils.concat_path(tg1_final, "source_test", "folder2.tar.bz2")
-        tg1_folder2_h = path_utils.concat_path(tg1_final, "source_test", "folder2.tar.bz2.enc.sha256")
+        tg1_folder2_h = path_utils.concat_path(tg1_final, "source_test", "folder2.tar.bz2.enc.sha512")
         tg1_folder3_e = path_utils.concat_path(tg1_final, "source_test", "folder3.tar.bz2.enc")
         tg1_folder3_z = path_utils.concat_path(tg1_final, "source_test", "folder3.tar.bz2")
-        tg1_folder3_h = path_utils.concat_path(tg1_final, "source_test", "folder3.tar.bz2.enc.sha256")
+        tg1_folder3_h = path_utils.concat_path(tg1_final, "source_test", "folder3.tar.bz2.enc.sha512")
         tg1_folder4_e = path_utils.concat_path(tg1_final, "source_test", ".folder4.tar.bz2.enc")
         tg1_folder4_z = path_utils.concat_path(tg1_final, "source_test", ".folder4.tar.bz2")
-        tg1_folder4_h = path_utils.concat_path(tg1_final, "source_test", ".folder4.tar.bz2.enc.sha256")
+        tg1_folder4_h = path_utils.concat_path(tg1_final, "source_test", ".folder4.tar.bz2.enc.sha512")
         tg1_file0_e = path_utils.concat_path(tg1_final, "source_test", ".file0.txt.tar.bz2.enc")
         tg1_file0_z = path_utils.concat_path(tg1_final, "source_test", ".file0.txt.tar.bz2")
-        tg1_file0_h = path_utils.concat_path(tg1_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
+        tg1_file0_h = path_utils.concat_path(tg1_final, "source_test", ".file0.txt.tar.bz2.enc.sha512")
 
         # target 2
         tg2_folder1_e = path_utils.concat_path(tg2_final, "source_test", "folder1.tar.bz2.enc")
         tg2_folder1_z = path_utils.concat_path(tg2_final, "source_test", "folder1.tar.bz2")
-        tg2_folder1_h = path_utils.concat_path(tg2_final, "source_test", "folder1.tar.bz2.enc.sha256")
+        tg2_folder1_h = path_utils.concat_path(tg2_final, "source_test", "folder1.tar.bz2.enc.sha512")
         tg2_folder2_e = path_utils.concat_path(tg2_final, "source_test", "folder2.tar.bz2.enc")
         tg2_folder2_z = path_utils.concat_path(tg2_final, "source_test", "folder2.tar.bz2")
-        tg2_folder2_h = path_utils.concat_path(tg2_final, "source_test", "folder2.tar.bz2.enc.sha256")
+        tg2_folder2_h = path_utils.concat_path(tg2_final, "source_test", "folder2.tar.bz2.enc.sha512")
         tg2_folder3_e = path_utils.concat_path(tg2_final, "source_test", "folder3.tar.bz2.enc")
         tg2_folder3_z = path_utils.concat_path(tg2_final, "source_test", "folder3.tar.bz2")
-        tg2_folder3_h = path_utils.concat_path(tg2_final, "source_test", "folder3.tar.bz2.enc.sha256")
+        tg2_folder3_h = path_utils.concat_path(tg2_final, "source_test", "folder3.tar.bz2.enc.sha512")
         tg2_folder4_e = path_utils.concat_path(tg2_final, "source_test", ".folder4.tar.bz2.enc")
         tg2_folder4_z = path_utils.concat_path(tg2_final, "source_test", ".folder4.tar.bz2")
-        tg2_folder4_h = path_utils.concat_path(tg2_final, "source_test", ".folder4.tar.bz2.enc.sha256")
+        tg2_folder4_h = path_utils.concat_path(tg2_final, "source_test", ".folder4.tar.bz2.enc.sha512")
         tg2_file0_e = path_utils.concat_path(tg2_final, "source_test", ".file0.txt.tar.bz2.enc")
         tg2_file0_z = path_utils.concat_path(tg2_final, "source_test", ".file0.txt.tar.bz2")
-        tg2_file0_h = path_utils.concat_path(tg2_final, "source_test", ".file0.txt.tar.bz2.enc.sha256")
+        tg2_file0_h = path_utils.concat_path(tg2_final, "source_test", ".file0.txt.tar.bz2.enc.sha512")
 
         # target1
         self.assertTrue( os.path.exists( tg1_folder1_e ) )
@@ -868,18 +868,18 @@ class BackupProcessorTest(unittest.TestCase):
 
         # check hashes
         # target 1
-        self.assertTrue(hash_check.sha256sum_check( tg1_folder1_e, tg1_folder1_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_folder2_e, tg1_folder2_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_folder3_e, tg1_folder3_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_folder4_e, tg1_folder4_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_file0_e, tg1_file0_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_folder1_e, tg1_folder1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_folder2_e, tg1_folder2_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_folder3_e, tg1_folder3_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_folder4_e, tg1_folder4_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_file0_e, tg1_file0_h ))
 
         # target 2
-        self.assertTrue(hash_check.sha256sum_check( tg2_folder1_e, tg2_folder1_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_folder2_e, tg2_folder2_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_folder3_e, tg2_folder3_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_folder4_e, tg2_folder4_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_file0_e, tg2_file0_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_folder1_e, tg2_folder1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_folder2_e, tg2_folder2_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_folder3_e, tg2_folder3_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_folder4_e, tg2_folder4_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_file0_e, tg2_file0_h ))
 
         # decrypt files
         # target 1
@@ -963,10 +963,10 @@ class BackupProcessorTest(unittest.TestCase):
         # another source
         tg1_folder_another_e = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another.tar.bz2.enc")
         tg1_folder_another_z = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another.tar.bz2")
-        tg1_folder_another_h = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another.tar.bz2.enc.sha256")
+        tg1_folder_another_h = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another.tar.bz2.enc.sha512")
         tg1_folder7_e = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc")
         tg1_folder7_z = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2")
-        tg1_folder7_h = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc.sha256")
+        tg1_folder7_h = path_utils.concat_path(tg1_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc.sha512")
 
         # target 2
         # alt source
@@ -977,10 +977,10 @@ class BackupProcessorTest(unittest.TestCase):
         # another source
         tg2_folder_another_e = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another.tar.bz2.enc")
         tg2_folder_another_z = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another.tar.bz2")
-        tg2_folder_another_h = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another.tar.bz2.enc.sha256")
+        tg2_folder_another_h = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another.tar.bz2.enc.sha512")
         tg2_folder7_e = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc")
         tg2_folder7_z = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2")
-        tg2_folder7_h = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc.sha256")
+        tg2_folder7_h = path_utils.concat_path(tg2_final, "backup_processor_test", "source_test_another", "folder7.tar.bz2.enc.sha512")
 
         # target 1
         self.assertFalse( os.path.exists( tg1_folder5 ) )
@@ -991,7 +991,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertFalse( os.path.exists( tg1_folder7_e ) )
         self.assertFalse( os.path.exists( tg1_folder7_h ) )
 
-        self.assertTrue(hash_check.sha256sum_check( tg1_folder_another_e, tg1_folder_another_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_folder_another_e, tg1_folder_another_h ))
 
         self.assertTrue(decrypt.symmetric_decrypt( tg1_folder_another_e, tg1_folder_another_z, self.passphrase )[0])
 
@@ -1013,7 +1013,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertFalse( os.path.exists( tg2_folder7_e ) )
         self.assertFalse( os.path.exists( tg2_folder7_h ) )
 
-        self.assertTrue(hash_check.sha256sum_check( tg2_folder_another_e, tg2_folder_another_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_folder_another_e, tg2_folder_another_h ))
 
         self.assertTrue(decrypt.symmetric_decrypt( tg2_folder_another_e, tg2_folder_another_z, self.passphrase )[0])
 
@@ -1040,50 +1040,50 @@ class BackupProcessorTest(unittest.TestCase):
         # target 1
         tg1_space_file1_e = path_utils.concat_path(tg1_final, "special_folder", "   sp_file1.txt.tar.bz2.enc")
         tg1_space_file1_z = path_utils.concat_path(tg1_final, "special_folder", "   sp_file1.txt.tar.bz2")
-        tg1_space_file1_h = path_utils.concat_path(tg1_final, "special_folder", "   sp_file1.txt.tar.bz2.enc.sha256")
+        tg1_space_file1_h = path_utils.concat_path(tg1_final, "special_folder", "   sp_file1.txt.tar.bz2.enc.sha512")
         tg1_space_file2_e = path_utils.concat_path(tg1_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc")
         tg1_space_file2_z = path_utils.concat_path(tg1_final, "special_folder", "sp_fi  le2.txt.tar.bz2")
-        tg1_space_file2_h = path_utils.concat_path(tg1_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc.sha256")
+        tg1_space_file2_h = path_utils.concat_path(tg1_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc.sha512")
         tg1_space_file3_e = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2.enc")
         tg1_space_file3_z = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2")
-        tg1_space_file3_h = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha256")
+        tg1_space_file3_h = path_utils.concat_path(tg1_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha512")
         tg1_quote_file1_e = path_utils.concat_path(tg1_final, "special_folder", "file\"1.txt.tar.bz2.enc")
         tg1_quote_file1_z = path_utils.concat_path(tg1_final, "special_folder", "file\"1.txt.tar.bz2")
-        tg1_quote_file1_h = path_utils.concat_path(tg1_final, "special_folder", "file\"1.txt.tar.bz2.enc.sha256")
+        tg1_quote_file1_h = path_utils.concat_path(tg1_final, "special_folder", "file\"1.txt.tar.bz2.enc.sha512")
 
         tg1_space_folder1_e = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2.enc")
         tg1_space_folder1_z = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2")
-        tg1_space_folder1_h = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2.enc.sha256")
+        tg1_space_folder1_h = path_utils.concat_path(tg1_final, "special_folder", "   sp_folder1.tar.bz2.enc.sha512")
         tg1_space_folder2_e = path_utils.concat_path(tg1_final, "special_folder", "sp_fol   der2.tar.bz2.enc")
         tg1_space_folder2_z = path_utils.concat_path(tg1_final, "special_folder", "sp_fol   der2.tar.bz2")
-        tg1_space_folder2_h = path_utils.concat_path(tg1_final, "special_folder", "sp_fol   der2.tar.bz2.enc.sha256")
+        tg1_space_folder2_h = path_utils.concat_path(tg1_final, "special_folder", "sp_fol   der2.tar.bz2.enc.sha512")
         tg1_space_folder3_e = path_utils.concat_path(tg1_final, "special_folder", "sp_folder3   .tar.bz2.enc")
         tg1_space_folder3_z = path_utils.concat_path(tg1_final, "special_folder", "sp_folder3   .tar.bz2")
-        tg1_space_folder3_h = path_utils.concat_path(tg1_final, "special_folder", "sp_folder3   .tar.bz2.enc.sha256")
+        tg1_space_folder3_h = path_utils.concat_path(tg1_final, "special_folder", "sp_folder3   .tar.bz2.enc.sha512")
 
         # target 2
         tg2_space_file1_e = path_utils.concat_path(tg2_final, "special_folder", "   sp_file1.txt.tar.bz2.enc")
         tg2_space_file1_z = path_utils.concat_path(tg2_final, "special_folder", "   sp_file1.txt.tar.bz2")
-        tg2_space_file1_h = path_utils.concat_path(tg2_final, "special_folder", "   sp_file1.txt.tar.bz2.enc.sha256")
+        tg2_space_file1_h = path_utils.concat_path(tg2_final, "special_folder", "   sp_file1.txt.tar.bz2.enc.sha512")
         tg2_space_file2_e = path_utils.concat_path(tg2_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc")
         tg2_space_file2_z = path_utils.concat_path(tg2_final, "special_folder", "sp_fi  le2.txt.tar.bz2")
-        tg2_space_file2_h = path_utils.concat_path(tg2_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc.sha256")
+        tg2_space_file2_h = path_utils.concat_path(tg2_final, "special_folder", "sp_fi  le2.txt.tar.bz2.enc.sha512")
         tg2_space_file3_e = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2.enc")
         tg2_space_file3_z = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2")
-        tg2_space_file3_h = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha256")
+        tg2_space_file3_h = path_utils.concat_path(tg2_final, "special_folder", "sp_file3.txt  .tar.bz2.enc.sha512")
         tg2_quote_file1_e = path_utils.concat_path(tg2_final, "special_folder", "file\"1.txt.tar.bz2.enc")
         tg2_quote_file1_z = path_utils.concat_path(tg2_final, "special_folder", "file\"1.txt.tar.bz2")
-        tg2_quote_file1_h = path_utils.concat_path(tg2_final, "special_folder", "file\"1.txt.tar.bz2.enc.sha256")
+        tg2_quote_file1_h = path_utils.concat_path(tg2_final, "special_folder", "file\"1.txt.tar.bz2.enc.sha512")
 
         tg2_space_folder1_e = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2.enc")
         tg2_space_folder1_z = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2")
-        tg2_space_folder1_h = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2.enc.sha256")
+        tg2_space_folder1_h = path_utils.concat_path(tg2_final, "special_folder", "   sp_folder1.tar.bz2.enc.sha512")
         tg2_space_folder2_e = path_utils.concat_path(tg2_final, "special_folder", "sp_fol   der2.tar.bz2.enc")
         tg2_space_folder2_z = path_utils.concat_path(tg2_final, "special_folder", "sp_fol   der2.tar.bz2")
-        tg2_space_folder2_h = path_utils.concat_path(tg2_final, "special_folder", "sp_fol   der2.tar.bz2.enc.sha256")
+        tg2_space_folder2_h = path_utils.concat_path(tg2_final, "special_folder", "sp_fol   der2.tar.bz2.enc.sha512")
         tg2_space_folder3_e = path_utils.concat_path(tg2_final, "special_folder", "sp_folder3   .tar.bz2.enc")
         tg2_space_folder3_z = path_utils.concat_path(tg2_final, "special_folder", "sp_folder3   .tar.bz2")
-        tg2_space_folder3_h = path_utils.concat_path(tg2_final, "special_folder", "sp_folder3   .tar.bz2.enc.sha256")
+        tg2_space_folder3_h = path_utils.concat_path(tg2_final, "special_folder", "sp_folder3   .tar.bz2.enc.sha512")
 
         # check existence
         self.assertTrue( os.path.exists( tg1_space_file1_e ) )
@@ -1103,14 +1103,14 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg1_space_folder3_h ) )
 
         # check hashes
-        self.assertTrue(hash_check.sha256sum_check( tg1_space_file1_e, tg1_space_file1_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_space_file2_e, tg1_space_file2_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_space_file3_e, tg1_space_file3_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_quote_file1_e, tg1_quote_file1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_space_file1_e, tg1_space_file1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_space_file2_e, tg1_space_file2_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_space_file3_e, tg1_space_file3_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_quote_file1_e, tg1_quote_file1_h ))
 
-        self.assertTrue(hash_check.sha256sum_check( tg1_space_folder1_e, tg1_space_folder1_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_space_folder2_e, tg1_space_folder2_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg1_space_folder3_e, tg1_space_folder3_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_space_folder1_e, tg1_space_folder1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_space_folder2_e, tg1_space_folder2_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg1_space_folder3_e, tg1_space_folder3_h ))
 
         # decrypt generated packages
         self.assertTrue(decrypt.symmetric_decrypt( tg1_space_file1_e, tg1_space_file1_z, self.passphrase )[0])
@@ -1167,14 +1167,14 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( tg2_space_folder3_h ) )
 
         # check hashes
-        self.assertTrue(hash_check.sha256sum_check( tg2_space_file1_e, tg2_space_file1_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_space_file2_e, tg2_space_file2_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_space_file3_e, tg2_space_file3_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_quote_file1_e, tg2_quote_file1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_space_file1_e, tg2_space_file1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_space_file2_e, tg2_space_file2_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_space_file3_e, tg2_space_file3_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_quote_file1_e, tg2_quote_file1_h ))
 
-        self.assertTrue(hash_check.sha256sum_check( tg2_space_folder1_e, tg2_space_folder1_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_space_folder2_e, tg2_space_folder2_h ))
-        self.assertTrue(hash_check.sha256sum_check( tg2_space_folder3_e, tg2_space_folder3_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_space_folder1_e, tg2_space_folder1_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_space_folder2_e, tg2_space_folder2_h ))
+        self.assertTrue(hash_check.sha512sum_check( tg2_space_folder3_e, tg2_space_folder3_h ))
 
         # decrypt generated packages
         self.assertTrue(decrypt.symmetric_decrypt( tg2_space_file1_e, tg2_space_file1_z, self.passphrase )[0])
