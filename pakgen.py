@@ -6,7 +6,7 @@ import os
 import tar_wrapper
 import bzip2_wrapper
 import create_and_write_file
-import sha256_wrapper
+import sha512_wrapper
 import path_utils
 
 def add_str_to_report(target_string, additional_string):
@@ -48,10 +48,10 @@ def pakgen(filename, dohash, files):
     report = add_str_to_report(report, r)
 
     if dohash:
-        HASH_FILENAME = "%s.sha256"  % FILENAME_TAR_BZ2
+        HASH_FILENAME = "%s.sha512"  % FILENAME_TAR_BZ2
         if os.path.exists(HASH_FILENAME):
             return False, "%s already exists." % HASH_FILENAME
-        v, r = sha256_wrapper.hash_sha_256_app_file(FILENAME_TAR_BZ2)
+        v, r = sha512_wrapper.hash_sha_512_app_file(FILENAME_TAR_BZ2)
         if v:
             report = add_str_to_report(report, r)
             if not create_and_write_file.create_file_contents(HASH_FILENAME, r):

@@ -31,19 +31,19 @@ class PakGenTest(unittest.TestCase):
         # the target tar file
         self.target_file = path_utils.concat_path(self.test_dir, "target")
         self.target_file_tar_bz2 = self.target_file + ".tar.bz2"
-        self.target_file_tar_bz2_hash = self.target_file_tar_bz2 + ".sha256"
+        self.target_file_tar_bz2_hash = self.target_file_tar_bz2 + ".sha512"
 
         self.target_with_space_1 = path_utils.concat_path(self.test_dir, "te st")
         self.target_with_space_1_tar_bz2 = self.target_with_space_1 + ".tar.bz2"
-        self.target_with_space_1_tar_bz2_hash = self.target_with_space_1_tar_bz2 + ".sha256"
+        self.target_with_space_1_tar_bz2_hash = self.target_with_space_1_tar_bz2 + ".sha512"
 
         self.target_with_space_2 = path_utils.concat_path(self.test_dir, "  test")
         self.target_with_space_2_tar_bz2 = self.target_with_space_2 + ".tar.bz2"
-        self.target_with_space_2_tar_bz2_hash = self.target_with_space_2_tar_bz2 + ".sha256"
+        self.target_with_space_2_tar_bz2_hash = self.target_with_space_2_tar_bz2 + ".sha512"
 
         self.target_with_space_3 = path_utils.concat_path(self.test_dir, "test   ")
         self.target_with_space_3_tar_bz2 = self.target_with_space_3 + ".tar.bz2"
-        self.target_with_space_3_tar_bz2_hash = self.target_with_space_3_tar_bz2 + ".sha256"
+        self.target_with_space_3_tar_bz2_hash = self.target_with_space_3_tar_bz2 + ".sha512"
 
         self.file_nonexistant = path_utils.concat_path(self.test_dir, "no_file")
 
