@@ -18,7 +18,7 @@ Dependencies
 
 The dependencies are optional, depending on which scripts are intended for use.
 
-python
+python3.8+
 
 git
 
