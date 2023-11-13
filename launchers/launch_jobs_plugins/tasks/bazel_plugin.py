@@ -19,6 +19,7 @@ class CustomTask(launch_jobs.BaseTask):
         exec_path = None
         operation = None
         target = None
+        fail_test_fail_task = None
         save_output = None
         save_error_output = None
         suppress_stderr_warnings = None
@@ -40,6 +41,9 @@ class CustomTask(launch_jobs.BaseTask):
             target = self.params["target"]
         except KeyError:
             pass # optional
+
+        # fail_test_fail_task
+        fail_test_fail_task = "fail_test_fail_task" in self.params
 
         # save_output
         try:
@@ -70,7 +74,7 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
-        return True, (exec_path, operation, target, save_output, save_error_output, suppress_stderr_warnings)
+        return True, (exec_path, operation, target, fail_test_fail_task, save_output, save_error_output, suppress_stderr_warnings)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -78,7 +82,7 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        exec_path, operation, target, save_output, save_error_output, suppress_stderr_warnings = r
+        exec_path, operation, target, fail_test_fail_task, save_output, save_error_output, suppress_stderr_warnings = r
 
         # delegate
         if operation == "build":
@@ -88,7 +92,7 @@ class CustomTask(launch_jobs.BaseTask):
         elif operation == "clean":
             return self.task_clean(feedback_object, exec_path, save_output, save_error_output, suppress_stderr_warnings)
         elif operation == "test":
-            return self.task_test(feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings)
+            return self.task_test(feedback_object, exec_path, target, fail_test_fail_task, save_output, save_error_output, suppress_stderr_warnings)
         else:
             return False, "Operation [%s] is invalid" % operation
 
@@ -176,7 +180,7 @@ class CustomTask(launch_jobs.BaseTask):
                 warnings = log_helper.add_to_warnings(warnings, "bazel's stderr has been suppressed")
         return True, warnings
 
-    def task_test(self, feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings):
+    def task_test(self, feedback_object, exec_path, target, fail_test_fail_task, save_output, save_error_output, suppress_stderr_warnings):
 
         warnings = None
 
@@ -202,4 +206,8 @@ class CustomTask(launch_jobs.BaseTask):
                 warnings = log_helper.add_to_warnings(warnings, proc_stderr)
             else:
                 warnings = log_helper.add_to_warnings(warnings, "bazel's stderr has been suppressed")
-        return True, warnings
+
+        ret = True
+        if fail_test_fail_task and not proc_result:
+            ret = False
+        return ret, warnings
