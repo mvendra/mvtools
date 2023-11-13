@@ -53,6 +53,10 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # validate exec_path
+        if not os.path.exists(exec_path):
+            return False, "exec_path [%s] does not exist." % exec_path
+
         # suppress_stderr_warnings
         suppress_stderr_warnings = "suppress_stderr_warnings" in self.params
 
