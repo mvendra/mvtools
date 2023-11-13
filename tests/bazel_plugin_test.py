@@ -163,5 +163,29 @@ class BazelPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True) )
 
+    def testBazelPluginRunTask1(self):
+
+        local_params = {}
+        local_params["exec_path"] = self.existent_path1
+        local_params["operation"] = "invalid-operation"
+        self.bazel_task.params = local_params
+
+        with mock.patch("bazel_plugin.CustomTask.task_build", return_value=(True, None)) as dummy:
+            v, r = self.bazel_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+    def testBazelPluginRunTask2(self):
+
+        local_params = {}
+        local_params["exec_path"] = self.existent_path1
+        local_params["operation"] = "build"
+        self.bazel_task.params = local_params
+
+        with mock.patch("bazel_plugin.CustomTask.task_build", return_value=(True, None)) as dummy:
+            v, r = self.bazel_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, None, None, False)
+
 if __name__ == '__main__':
     unittest.main()
