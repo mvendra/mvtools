@@ -83,6 +83,8 @@ class CustomTask(launch_jobs.BaseTask):
         # delegate
         if operation == "build":
             return self.task_build(feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings)
+        elif operation == "fetch":
+            return self.task_fetch(feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings)
         else:
             return False, "Operation [%s] is invalid" % operation
 
@@ -113,3 +115,6 @@ class CustomTask(launch_jobs.BaseTask):
             else:
                 warnings = log_helper.add_to_warnings(warnings, "bazel's stderr has been suppressed")
         return True, warnings
+
+    def task_fetch(self, feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings):
+        pass # mvtodo
