@@ -87,6 +87,8 @@ class CustomTask(launch_jobs.BaseTask):
             return self.task_fetch(feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings)
         elif operation == "clean":
             return self.task_clean(feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings)
+        elif operation == "test":
+            return self.task_test(feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings)
         else:
             return False, "Operation [%s] is invalid" % operation
 
@@ -122,4 +124,7 @@ class CustomTask(launch_jobs.BaseTask):
         pass # mvtodo
 
     def task_clean(self, feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings):
+        pass # mvtodo
+
+    def task_test(self, feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings):
         pass # mvtodo

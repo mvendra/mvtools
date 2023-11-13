@@ -211,5 +211,17 @@ class BazelPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, None, None, None, False)
 
+    def testBazelPluginRunTask5(self):
+
+        local_params = {}
+        local_params["exec_path"] = self.existent_path1
+        local_params["operation"] = "test"
+        self.bazel_task.params = local_params
+
+        with mock.patch("bazel_plugin.CustomTask.task_test", return_value=(True, None)) as dummy:
+            v, r = self.bazel_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, None, None, False)
+
 if __name__ == '__main__':
     unittest.main()
