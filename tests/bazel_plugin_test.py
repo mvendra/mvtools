@@ -223,5 +223,24 @@ class BazelPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, None, None, None, False)
 
+    def testBazelPluginTaskBuild1(self):
+
+        with mock.patch("bazel_wrapper.build", return_value=(False, "dummy-error")) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, None, False)
+                self.assertFalse(v)
+                dummy1.assert_called_with(self.existent_path1, None)
+                dummy2.assert_not_called()
+
+    def testBazelPluginTaskBuild2(self):
+
+        with mock.patch("bazel_wrapper.build", return_value=(True, (True, "", ""))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, None, False)
+                self.assertTrue(v)
+                dummy1.assert_called_with(self.existent_path1, None)
+                out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
 if __name__ == '__main__':
     unittest.main()
