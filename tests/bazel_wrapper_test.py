@@ -53,6 +53,24 @@ class BazelWrapperTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "build", "test-target"], use_cwd="nonempty")
 
+    def testFetchFail1(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.fetch(None, None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+    def testFetch1(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.fetch("nonempty", None)
+            self.assertTrue(v)
+            dummy.assert_called_with(["bazel", "fetch"], use_cwd="nonempty")
+
+    def testFetch2(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.fetch("nonempty", "test-target")
+            self.assertTrue(v)
+            dummy.assert_called_with(["bazel", "fetch", "test-target"], use_cwd="nonempty")
+
     def testCleanFail1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = bazel_wrapper.clean(None)
