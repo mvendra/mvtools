@@ -98,7 +98,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", None, None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", None, False, None, None, False) )
 
     def testBazelPluginReadParams5(self):
 
@@ -110,7 +110,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", False, None, None, False) )
 
     def testBazelPluginReadParams6(self):
 
@@ -123,7 +123,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", False, "dummy_value3", None, False) )
 
     def testBazelPluginReadParams7(self):
 
@@ -149,7 +149,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", False, "dummy_value3", "dummy_value4", False) )
 
     def testBazelPluginReadParams9(self):
 
@@ -177,7 +177,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", False, "dummy_value3", "dummy_value4", True) )
 
     def testBazelPluginRunTask1(self):
 

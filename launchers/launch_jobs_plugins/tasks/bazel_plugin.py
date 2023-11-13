@@ -19,7 +19,7 @@ class CustomTask(launch_jobs.BaseTask):
         exec_path = None
         operation = None
         target = None
-        fail_test_fail_task = None
+        fail_test_fail_task = False
         save_output = None
         save_error_output = None
         suppress_stderr_warnings = None
