@@ -15,6 +15,16 @@ import output_backup_helper
 
 import bazel_plugin
 
+def FileHasContents(filename, contents):
+    if not os.path.exists(filename):
+        return False
+    local_contents = ""
+    with open(filename, "r") as f:
+        local_contents = f.read()
+    if local_contents == contents:
+        return True
+    return False
+
 class BazelPluginTest(unittest.TestCase):
 
     def setUp(self):
@@ -40,6 +50,12 @@ class BazelPluginTest(unittest.TestCase):
 
         # nonexistent path 1
         self.nonexistent_path1 = path_utils.concat_path(self.test_dir, "nonexistent_path1")
+
+        # dumped_stdout_file
+        self.dumped_stdout_file = path_utils.concat_path(self.test_dir, "dumped_stdout_file")
+
+        # dumped_stderr_file
+        self.dumped_stderr_file = path_utils.concat_path(self.test_dir, "dumped_stderr_file")
 
         return True, ""
 
@@ -229,6 +245,7 @@ class BazelPluginTest(unittest.TestCase):
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
                 v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, None, False)
                 self.assertFalse(v)
+                self.assertEqual(r, "dummy-error")
                 dummy1.assert_called_with(self.existent_path1, None)
                 dummy2.assert_not_called()
 
@@ -238,6 +255,7 @@ class BazelPluginTest(unittest.TestCase):
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
                 v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, None, False)
                 self.assertTrue(v)
+                self.assertEqual(r, None)
                 dummy1.assert_called_with(self.existent_path1, None)
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -248,8 +266,56 @@ class BazelPluginTest(unittest.TestCase):
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
                 v, r = self.bazel_task.task_build(print, self.existent_path1, "dummy_value1", None, None, False)
                 self.assertTrue(v)
+                self.assertEqual(r, None)
                 dummy1.assert_called_with(self.existent_path1, "dummy_value1")
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
+    def testBazelPluginTaskBuild4(self):
+
+        with mock.patch("bazel_wrapper.build", return_value=(True, (True, "test-stdout", ""))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_build(print, self.existent_path1, None, self.dumped_stdout_file, None, False)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                dummy1.assert_called_with(self.existent_path1, None)
+                out_list = [("bazel_plugin_stdout", "test-stdout", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
+    def testBazelPluginTaskBuild5(self):
+
+        with mock.patch("bazel_wrapper.build", return_value=(True, (True, "", "test-stderr"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, self.dumped_stderr_file, False)
+                self.assertTrue(v)
+                self.assertEqual(r, "test-stderr")
+                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                dummy1.assert_called_with(self.existent_path1, None)
+                out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
+    def testBazelPluginTaskBuild6(self):
+
+        with mock.patch("bazel_wrapper.build", return_value=(True, (True, "", ""))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="somewarning") as dummy2:
+                v, r = self.bazel_task.task_build(print, self.existent_path1, "dummy_value1", None, None, False)
+                self.assertTrue(v)
+                self.assertEqual(r, "somewarning")
+                dummy1.assert_called_with(self.existent_path1, "dummy_value1")
+                out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
+    def testBazelPluginTaskBuild7(self):
+
+        with mock.patch("bazel_wrapper.build", return_value=(True, (True, "", "test-stderr"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, self.dumped_stderr_file, True)
+                self.assertTrue(v)
+                self.assertEqual(r, "bazel's stderr has been suppressed")
+                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                dummy1.assert_called_with(self.existent_path1, None)
+                out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
 
 if __name__ == '__main__':
