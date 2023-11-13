@@ -58,5 +58,37 @@ class BazelPluginTest(unittest.TestCase):
         v, r = self.bazel_task._read_params()
         self.assertFalse(v)
 
+    def testBazelPluginReadParams2(self):
+
+        local_params = {}
+        local_params["exec_path"] = "dummy_value1"
+        self.bazel_task.params = local_params
+
+        v, r = self.bazel_task._read_params()
+        self.assertFalse(v)
+
+    def testBazelPluginReadParams3(self):
+
+        local_params = {}
+        local_params["exec_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        self.bazel_task.params = local_params
+
+        v, r = self.bazel_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", None, None, None, False) )
+
+    def testBazelPluginReadParams4(self):
+
+        local_params = {}
+        local_params["exec_path"] = "dummy_value1"
+        local_params["operation"] = "dummy_value2"
+        local_params["target"] = "dummy_value3"
+        self.bazel_task.params = local_params
+
+        v, r = self.bazel_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", None, None, False) )
+
 if __name__ == '__main__':
     unittest.main()
