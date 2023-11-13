@@ -121,7 +121,32 @@ class CustomTask(launch_jobs.BaseTask):
         return True, warnings
 
     def task_fetch(self, feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings):
-        pass # mvtodo
+
+        warnings = None
+
+        # actual execution
+        v, r = bazel_wrapper.fetch(exec_path, target)
+        if not v:
+            return False, r
+        proc_result = r[0]
+        proc_stdout = r[1]
+        proc_stderr = r[2]
+
+        # dump outputs
+        output_backup_helper.dump_output(feedback_object, save_output, proc_stdout, ("Bazel's stdout has been saved to: [%s]" % save_output))
+        output_backup_helper.dump_output(feedback_object, save_error_output, proc_stderr, ("Bazel's stderr has been saved to: [%s]" % save_error_output))
+
+        # autobackup outputs
+        output_list = [("bazel_plugin_stdout", proc_stdout, "Bazel's stdout"), ("bazel_plugin_stderr", proc_stderr, "Bazel's stderr")]
+        warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(proc_result, feedback_object, output_list))
+
+        # warnings
+        if len(proc_stderr) > 0:
+            if not suppress_stderr_warnings:
+                warnings = log_helper.add_to_warnings(warnings, proc_stderr)
+            else:
+                warnings = log_helper.add_to_warnings(warnings, "bazel's stderr has been suppressed")
+        return True, warnings
 
     def task_clean(self, feedback_object, exec_path, save_output, save_error_output, suppress_stderr_warnings):
         pass # mvtodo
