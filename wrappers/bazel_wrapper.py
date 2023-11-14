@@ -6,7 +6,7 @@ import os
 import path_utils
 import generic_run
 
-def build(exec_path, jobs, config, target):
+def build(exec_path, jobs, config, target, options):
 
     if exec_path is None:
         return False, "Invalid execution path"
@@ -22,6 +22,9 @@ def build(exec_path, jobs, config, target):
 
     if target is not None:
         full_cmd.append(target)
+
+    for opt in options:
+        full_cmd.append(opt)
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
     if not v:
@@ -60,7 +63,7 @@ def clean(exec_path, expunge):
         return False, r
     return True, (r.success, r.stdout, r.stderr)
 
-def test(exec_path, jobs, config, target):
+def test(exec_path, jobs, config, target, options):
 
     if exec_path is None:
         return False, "Invalid execution path"
@@ -76,6 +79,9 @@ def test(exec_path, jobs, config, target):
 
     if target is not None:
         full_cmd.append(target)
+
+    for opt in options:
+        full_cmd.append(opt)
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
     if not v:

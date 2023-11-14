@@ -37,31 +37,31 @@ class BazelWrapperTest(unittest.TestCase):
 
     def testBuildFail1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.build(None, None, None, None)
+            v, r = bazel_wrapper.build(None, None, None, None, [])
             self.assertFalse(v)
             dummy.assert_not_called()
 
     def testBuild1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.build("nonempty", None, None, None)
+            v, r = bazel_wrapper.build("nonempty", None, None, None, [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "build"], use_cwd="nonempty")
 
     def testBuild2(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.build("nonempty", "64", None, None)
+            v, r = bazel_wrapper.build("nonempty", "64", None, None, [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "build", "--jobs=64"], use_cwd="nonempty")
 
     def testBuild3(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.build("nonempty", "64", "test-config", None)
+            v, r = bazel_wrapper.build("nonempty", "64", "test-config", None, [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "build", "--jobs=64", "--config=test-config"], use_cwd="nonempty")
 
     def testBuild4(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.build("nonempty", "64", "test-config", "test-target")
+            v, r = bazel_wrapper.build("nonempty", "64", "test-config", "test-target", [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "build", "--jobs=64", "--config=test-config", "test-target"], use_cwd="nonempty")
 
@@ -103,31 +103,31 @@ class BazelWrapperTest(unittest.TestCase):
 
     def testTestFail1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.test(None, None, None, None)
+            v, r = bazel_wrapper.test(None, None, None, None, [])
             self.assertFalse(v)
             dummy.assert_not_called()
 
     def testTest1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.test("nonempty", None, None, None)
+            v, r = bazel_wrapper.test("nonempty", None, None, None, [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "test"], use_cwd="nonempty")
 
     def testTest2(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.test("nonempty", "64", None, None)
+            v, r = bazel_wrapper.test("nonempty", "64", None, None, [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "test", "--jobs=64"], use_cwd="nonempty")
 
     def testTest3(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.test("nonempty", "64", "test-config", None)
+            v, r = bazel_wrapper.test("nonempty", "64", "test-config", None, [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "test", "--jobs=64", "--config=test-config"], use_cwd="nonempty")
 
     def testTest4(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.test("nonempty", "64", "test-config", "test-target")
+            v, r = bazel_wrapper.test("nonempty", "64", "test-config", "test-target", [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "test", "--jobs=64", "--config=test-config", "test-target"], use_cwd="nonempty")
 
