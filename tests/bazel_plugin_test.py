@@ -214,12 +214,13 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["save_output"] = "dummy_value7"
+        local_params["option"] = "dummy_value7"
+        local_params["save_output"] = "dummy_value8"
         self.bazel_task.params = local_params
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, [], "dummy_value7", None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], "dummy_value8", None, False) )
 
     def testBazelPluginReadParams13(self):
 
@@ -231,6 +232,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value5"
         local_params["expunge"] = "dummy_value6"
         local_params["fail_test_fail_task"] = "dummy_value7"
+        local_params["option"] = "dummy_value8"
         local_params["save_output"] = self.existent_path1
         self.bazel_task.params = local_params
 
@@ -247,13 +249,14 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["save_output"] = "dummy_value7"
-        local_params["save_error_output"] = "dummy_value8"
+        local_params["option"] = "dummy_value7"
+        local_params["save_output"] = "dummy_value8"
+        local_params["save_error_output"] = "dummy_value9"
         self.bazel_task.params = local_params
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, [], "dummy_value7", "dummy_value8", False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], "dummy_value8", "dummy_value9", False) )
 
     def testBazelPluginReadParams15(self):
 
@@ -265,7 +268,8 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value5"
         local_params["expunge"] = "dummy_value6"
         local_params["fail_test_fail_task"] = "dummy_value7"
-        local_params["save_output"] = "dummy_value8"
+        local_params["option"] = "dummy_value8"
+        local_params["save_output"] = "dummy_value9"
         local_params["save_error_output"] = self.existent_path1
         self.bazel_task.params = local_params
 
@@ -282,14 +286,15 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["save_output"] = "dummy_value7"
-        local_params["save_error_output"] = "dummy_value8"
-        local_params["suppress_stderr_warnings"] = "dummy_value9"
+        local_params["option"] = "dummy_value7"
+        local_params["save_output"] = "dummy_value8"
+        local_params["save_error_output"] = "dummy_value9"
+        local_params["suppress_stderr_warnings"] = "dummy_value10"
         self.bazel_task.params = local_params
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, [], "dummy_value7", "dummy_value8", True) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], "dummy_value8", "dummy_value9", True) )
 
     def testBazelPluginRunTask1(self):
 
