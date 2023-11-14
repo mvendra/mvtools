@@ -66,7 +66,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         # options
         try:
-            options_read = self.params["options"]
+            options_read = self.params["option"]
             if isinstance(options_read, list):
                 options = options_read
             else:
