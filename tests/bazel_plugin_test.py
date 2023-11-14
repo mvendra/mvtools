@@ -262,7 +262,7 @@ class BazelPluginTest(unittest.TestCase):
         with mock.patch("bazel_plugin.CustomTask.task_clean", return_value=(True, None)) as dummy:
             v, r = self.bazel_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, None, None, False)
+            dummy.assert_called_with(print, self.existent_path1, False, None, None, False)
 
     def testBazelPluginRunTask5(self):
 
@@ -449,7 +449,7 @@ class BazelPluginTest(unittest.TestCase):
 
         with mock.patch("bazel_wrapper.clean", return_value=(False, "dummy-error")) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
-                v, r = self.bazel_task.task_clean(print, self.existent_path1, None, None, False)
+                v, r = self.bazel_task.task_clean(print, self.existent_path1, False, None, None, False)
                 self.assertFalse(v)
                 self.assertEqual(r, "dummy-error")
                 dummy1.assert_called_with(self.existent_path1, False)
@@ -459,7 +459,7 @@ class BazelPluginTest(unittest.TestCase):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", ""))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
-                v, r = self.bazel_task.task_clean(print, self.existent_path1, None, None, False)
+                v, r = self.bazel_task.task_clean(print, self.existent_path1, False, None, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy1.assert_called_with(self.existent_path1, False)
@@ -470,7 +470,7 @@ class BazelPluginTest(unittest.TestCase):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "test-stdout", ""))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
-                v, r = self.bazel_task.task_clean(print, self.existent_path1, self.dumped_stdout_file, None, False)
+                v, r = self.bazel_task.task_clean(print, self.existent_path1, False, self.dumped_stdout_file, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
@@ -482,7 +482,7 @@ class BazelPluginTest(unittest.TestCase):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", "test-stderr"))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
-                v, r = self.bazel_task.task_clean(print, self.existent_path1, None, self.dumped_stderr_file, False)
+                v, r = self.bazel_task.task_clean(print, self.existent_path1, False, None, self.dumped_stderr_file, False)
                 self.assertTrue(v)
                 self.assertEqual(r, "test-stderr")
                 self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
@@ -494,7 +494,7 @@ class BazelPluginTest(unittest.TestCase):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", ""))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="somewarning") as dummy2:
-                v, r = self.bazel_task.task_clean(print, self.existent_path1, None, None, False)
+                v, r = self.bazel_task.task_clean(print, self.existent_path1, False, None, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, "somewarning")
                 dummy1.assert_called_with(self.existent_path1, False)
@@ -505,7 +505,7 @@ class BazelPluginTest(unittest.TestCase):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", "test-stderr"))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
-                v, r = self.bazel_task.task_clean(print, self.existent_path1, None, self.dumped_stderr_file, True)
+                v, r = self.bazel_task.task_clean(print, self.existent_path1, False, None, self.dumped_stderr_file, True)
                 self.assertTrue(v)
                 self.assertEqual(r, "bazel's stderr has been suppressed")
                 self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
