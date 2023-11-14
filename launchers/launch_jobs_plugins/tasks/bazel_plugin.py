@@ -101,7 +101,7 @@ class CustomTask(launch_jobs.BaseTask):
         warnings = None
 
         # actual execution
-        v, r = bazel_wrapper.build(exec_path, target)
+        v, r = bazel_wrapper.build(exec_path, None, target)
         if not v:
             return False, r
         proc_result = r[0]
@@ -185,7 +185,7 @@ class CustomTask(launch_jobs.BaseTask):
         warnings = None
 
         # actual execution
-        v, r = bazel_wrapper.test(exec_path, target)
+        v, r = bazel_wrapper.test(exec_path, None, target)
         if not v:
             return False, r
         proc_result = r[0]
