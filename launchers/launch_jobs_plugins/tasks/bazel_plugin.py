@@ -43,6 +43,8 @@ class CustomTask(launch_jobs.BaseTask):
         # jobs
         try:
             jobs = self.params["jobs"]
+            if not isinstance(jobs, str):
+                return False, "jobs is expected once at most"
         except KeyError:
             pass # optional
 
