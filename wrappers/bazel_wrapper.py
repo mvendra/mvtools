@@ -54,13 +54,16 @@ def clean(exec_path):
         return False, r
     return True, (r.success, r.stdout, r.stderr)
 
-def test(exec_path, target):
+def test(exec_path, config, target):
 
     if exec_path is None:
         return False, "Invalid execution path"
 
     full_cmd = ["bazel"]
     full_cmd.append("test")
+
+    if config is not None:
+        full_cmd.append("--config=%s" % config)
 
     if target is not None:
         full_cmd.append(target)
