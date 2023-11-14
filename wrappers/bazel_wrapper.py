@@ -6,13 +6,16 @@ import os
 import path_utils
 import generic_run
 
-def build(exec_path, target):
+def build(exec_path, config, target):
 
     if exec_path is None:
         return False, "Invalid execution path"
 
     full_cmd = ["bazel"]
     full_cmd.append("build")
+
+    if config is not None:
+        full_cmd.append("--config=%s" % config)
 
     if target is not None:
         full_cmd.append(target)
