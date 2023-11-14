@@ -6,13 +6,16 @@ import os
 import path_utils
 import generic_run
 
-def build(exec_path, config, target):
+def build(exec_path, jobs, config, target):
 
     if exec_path is None:
         return False, "Invalid execution path"
 
     full_cmd = ["bazel"]
     full_cmd.append("build")
+
+    if jobs is not None:
+        full_cmd.append("--jobs=%s" % jobs)
 
     if config is not None:
         full_cmd.append("--config=%s" % config)
@@ -57,13 +60,16 @@ def clean(exec_path, expunge):
         return False, r
     return True, (r.success, r.stdout, r.stderr)
 
-def test(exec_path, config, target):
+def test(exec_path, jobs, config, target):
 
     if exec_path is None:
         return False, "Invalid execution path"
 
     full_cmd = ["bazel"]
     full_cmd.append("test")
+
+    if jobs is not None:
+        full_cmd.append("--jobs=%s" % jobs)
 
     if config is not None:
         full_cmd.append("--config=%s" % config)
