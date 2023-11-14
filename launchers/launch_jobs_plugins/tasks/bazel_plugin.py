@@ -164,7 +164,7 @@ class CustomTask(launch_jobs.BaseTask):
         warnings = None
 
         # actual execution
-        v, r = bazel_wrapper.clean(exec_path)
+        v, r = bazel_wrapper.clean(exec_path, False)
         if not v:
             return False, r
         proc_result = r[0]
