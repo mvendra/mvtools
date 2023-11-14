@@ -488,6 +488,17 @@ class BazelPluginTest(unittest.TestCase):
 
     def testBazelPluginTaskClean3(self):
 
+        with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", ""))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_clean(print, self.existent_path1, True, None, None, False)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy1.assert_called_with(self.existent_path1, True)
+                out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
+    def testBazelPluginTaskClean4(self):
+
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "test-stdout", ""))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
                 v, r = self.bazel_task.task_clean(print, self.existent_path1, False, self.dumped_stdout_file, None, False)
@@ -498,7 +509,7 @@ class BazelPluginTest(unittest.TestCase):
                 out_list = [("bazel_plugin_stdout", "test-stdout", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
 
-    def testBazelPluginTaskClean4(self):
+    def testBazelPluginTaskClean5(self):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", "test-stderr"))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
@@ -510,7 +521,7 @@ class BazelPluginTest(unittest.TestCase):
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
 
-    def testBazelPluginTaskClean5(self):
+    def testBazelPluginTaskClean6(self):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", ""))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="somewarning") as dummy2:
@@ -521,7 +532,7 @@ class BazelPluginTest(unittest.TestCase):
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
 
-    def testBazelPluginTaskClean6(self):
+    def testBazelPluginTaskClean7(self):
 
         with mock.patch("bazel_wrapper.clean", return_value=(True, (True, "", "test-stderr"))) as dummy1:
             with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
