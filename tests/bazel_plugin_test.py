@@ -180,7 +180,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["option"] = "dummy_value7"
+        local_params["opt"] = "dummy_value7"
         self.bazel_task.params = local_params
 
         v, r = self.bazel_task._read_params()
@@ -197,7 +197,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["option"] = ["dummy_value7", "dummy_value8"]
+        local_params["opt"] = ["dummy_value7", "dummy_value8"]
         self.bazel_task.params = local_params
 
         v, r = self.bazel_task._read_params()
@@ -214,7 +214,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["option"] = "dummy_value7"
+        local_params["opt"] = "dummy_value7"
         local_params["save_output"] = "dummy_value8"
         self.bazel_task.params = local_params
 
@@ -232,7 +232,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value5"
         local_params["expunge"] = "dummy_value6"
         local_params["fail_test_fail_task"] = "dummy_value7"
-        local_params["option"] = "dummy_value8"
+        local_params["opt"] = "dummy_value8"
         local_params["save_output"] = self.existent_path1
         self.bazel_task.params = local_params
 
@@ -249,7 +249,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["option"] = "dummy_value7"
+        local_params["opt"] = "dummy_value7"
         local_params["save_output"] = "dummy_value8"
         local_params["save_error_output"] = "dummy_value9"
         self.bazel_task.params = local_params
@@ -268,7 +268,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value5"
         local_params["expunge"] = "dummy_value6"
         local_params["fail_test_fail_task"] = "dummy_value7"
-        local_params["option"] = "dummy_value8"
+        local_params["opt"] = "dummy_value8"
         local_params["save_output"] = "dummy_value9"
         local_params["save_error_output"] = self.existent_path1
         self.bazel_task.params = local_params
@@ -286,7 +286,7 @@ class BazelPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value4"
         local_params["expunge"] = "dummy_value5"
         local_params["fail_test_fail_task"] = "dummy_value6"
-        local_params["option"] = "dummy_value7"
+        local_params["opt"] = "dummy_value7"
         local_params["save_output"] = "dummy_value8"
         local_params["save_error_output"] = "dummy_value9"
         local_params["suppress_stderr_warnings"] = "dummy_value10"
