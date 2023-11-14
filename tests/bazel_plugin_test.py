@@ -238,7 +238,7 @@ class BazelPluginTest(unittest.TestCase):
         with mock.patch("bazel_plugin.CustomTask.task_build", return_value=(True, None)) as dummy:
             v, r = self.bazel_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, None, None, None, False)
+            dummy.assert_called_with(print, self.existent_path1, None, None, None, None, False)
 
     def testBazelPluginRunTask3(self):
 
@@ -274,7 +274,7 @@ class BazelPluginTest(unittest.TestCase):
         with mock.patch("bazel_plugin.CustomTask.task_test", return_value=(True, None)) as dummy:
             v, r = self.bazel_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, None, False, None, None, False)
+            dummy.assert_called_with(print, self.existent_path1, None, None, False, None, None, False)
 
     def testBazelPluginTaskBuild1(self):
 
