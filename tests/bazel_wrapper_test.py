@@ -79,13 +79,13 @@ class BazelWrapperTest(unittest.TestCase):
 
     def testCleanFail1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.clean(None)
+            v, r = bazel_wrapper.clean(None, False)
             self.assertFalse(v)
             dummy.assert_not_called()
 
     def testClean1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.clean("nonempty")
+            v, r = bazel_wrapper.clean("nonempty", False)
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "clean"], use_cwd="nonempty")
 
