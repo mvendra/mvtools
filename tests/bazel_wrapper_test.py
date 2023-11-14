@@ -115,15 +115,21 @@ class BazelWrapperTest(unittest.TestCase):
 
     def testTest2(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.test("nonempty", None, "test-config", None)
+            v, r = bazel_wrapper.test("nonempty", "64", None, None)
             self.assertTrue(v)
-            dummy.assert_called_with(["bazel", "test", "--config=test-config"], use_cwd="nonempty")
+            dummy.assert_called_with(["bazel", "test", "--jobs=64"], use_cwd="nonempty")
 
     def testTest3(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = bazel_wrapper.test("nonempty", None, "test-config", "test-target")
+            v, r = bazel_wrapper.test("nonempty", "64", "test-config", None)
             self.assertTrue(v)
-            dummy.assert_called_with(["bazel", "test", "--config=test-config", "test-target"], use_cwd="nonempty")
+            dummy.assert_called_with(["bazel", "test", "--jobs=64", "--config=test-config"], use_cwd="nonempty")
+
+    def testTest4(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.test("nonempty", "64", "test-config", "test-target")
+            self.assertTrue(v)
+            dummy.assert_called_with(["bazel", "test", "--jobs=64", "--config=test-config", "test-target"], use_cwd="nonempty")
 
 if __name__ == '__main__':
     unittest.main()
