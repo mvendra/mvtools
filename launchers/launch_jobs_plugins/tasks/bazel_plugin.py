@@ -49,6 +49,8 @@ class CustomTask(launch_jobs.BaseTask):
         # config
         try:
             config = self.params["config"]
+            if not isinstance(config, str):
+                return False, "config is expected once at most"
         except KeyError:
             pass # optional
 
