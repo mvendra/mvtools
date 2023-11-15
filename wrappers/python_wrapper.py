@@ -6,12 +6,15 @@ import os
 import path_utils
 import generic_run
 
-def exec(args, cwd=None):
+def exec(script, args, cwd=None):
+
+    if script is None:
+        return False, "script is required"
 
     if not isinstance(args, list):
         return False, "args must be a list"
 
-    full_cmd = ["python3"]
+    full_cmd = ["python3", script]
 
     for a in args:
         full_cmd.append(a)

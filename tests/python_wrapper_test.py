@@ -37,27 +37,33 @@ class PythonWrapperTest(unittest.TestCase):
 
     def testExec1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = python_wrapper.exec(None, None)
+            v, r = python_wrapper.exec(None, [], None)
             self.assertFalse(v)
             dummy.assert_not_called()
 
     def testExec2(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = python_wrapper.exec([], None)
-            self.assertTrue(v)
-            dummy.assert_called_with(["python3"])
+            v, r = python_wrapper.exec("test-script.py", None, None)
+            self.assertFalse(v)
+            dummy.assert_not_called()
 
     def testExec3(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = python_wrapper.exec([], "nonempty")
+            v, r = python_wrapper.exec("test-script.py", [], None)
             self.assertTrue(v)
-            dummy.assert_called_with(["python3"], use_cwd="nonempty")
+            dummy.assert_called_with(["python3", "test-script.py"])
 
     def testExec4(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = python_wrapper.exec(["param1", "param2"], "nonempty")
+            v, r = python_wrapper.exec("test-script.py", [], "test-cwd")
             self.assertTrue(v)
-            dummy.assert_called_with(["python3", "param1", "param2"], use_cwd="nonempty")
+            dummy.assert_called_with(["python3", "test-script.py"], use_cwd="test-cwd")
+
+    def testExec5(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = python_wrapper.exec("test-script.py", ["param1", "param2"], "test-cwd")
+            self.assertTrue(v)
+            dummy.assert_called_with(["python3", "test-script.py", "param1", "param2"], use_cwd="test-cwd")
 
 if __name__ == '__main__':
     unittest.main()
