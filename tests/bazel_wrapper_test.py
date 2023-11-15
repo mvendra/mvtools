@@ -128,6 +128,18 @@ class BazelWrapperTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "run"], use_cwd="nonempty")
 
+    def testRun6(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.run("nonempty", "alsononempty", [])
+            self.assertTrue(v)
+            dummy.assert_called_with(["bazel", "run", "alsononempty"], use_cwd="nonempty")
+
+    def testRun7(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.run("nonempty", "alsononempty", ["morestuff"])
+            self.assertTrue(v)
+            dummy.assert_called_with(["bazel", "run", "alsononempty", "--", "morestuff"], use_cwd="nonempty")
+
     def testTestFail1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = bazel_wrapper.test(None, None, None, None, [])
