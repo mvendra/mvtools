@@ -119,7 +119,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = "dummy_value1"
+        local_params["arg"] = "dummy_value1"
         self.python_task.params = local_params
 
         v, r = self.python_task._read_params()
@@ -131,7 +131,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = ["dummy_value1", "dummy_value2"]
+        local_params["arg"] = ["dummy_value1", "dummy_value2"]
         self.python_task.params = local_params
 
         v, r = self.python_task._read_params()
@@ -143,7 +143,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = "dummy_value1"
+        local_params["arg"] = "dummy_value1"
         local_params["save_output"] = "dummy_value2"
         self.python_task.params = local_params
 
@@ -156,7 +156,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = "dummy_value1"
+        local_params["arg"] = "dummy_value1"
         local_params["save_output"] = "dummy_value2"
         local_params["save_error_output"] = "dummy_value3"
         self.python_task.params = local_params
@@ -170,7 +170,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = "dummy_value1"
+        local_params["arg"] = "dummy_value1"
         local_params["save_output"] = "dummy_value2"
         local_params["save_error_output"] = "dummy_value3"
         local_params["suppress_stderr_warnings"] = "dummy_value4"
@@ -208,7 +208,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = "dummy_value1"
+        local_params["arg"] = "dummy_value1"
         self.python_task.params = local_params
 
         with mock.patch("python_wrapper.exec", return_value=(True, (True, "", ""))) as dummy:
@@ -221,7 +221,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = "dummy_value1"
+        local_params["arg"] = "dummy_value1"
         local_params["save_output"] = self.dumped_stdout_file
         local_params["save_error_output"] = self.dumped_stderr_file
         self.python_task.params = local_params
@@ -241,7 +241,7 @@ class PythonPluginTest(unittest.TestCase):
         local_params = {}
         local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
-        local_params["args"] = "dummy_value1"
+        local_params["arg"] = "dummy_value1"
         local_params["save_output"] = self.dumped_stdout_file
         local_params["save_error_output"] = self.dumped_stderr_file
         local_params["suppress_stderr_warnings"] = True
