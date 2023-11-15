@@ -63,6 +63,33 @@ def clean(exec_path, expunge):
         return False, r
     return True, (r.success, r.stdout, r.stderr)
 
+def run(exec_path, target, args):
+
+    if exec_path is None:
+        return False, "Invalid execution path"
+
+    if target is not None and not isinstance(target, str):
+        return False, "target must be a string"
+
+    if not isinstance(args, list):
+        return False, "args must be a list"
+
+    full_cmd = ["bazel"]
+    full_cmd.append("run")
+
+    if target is not None:
+        full_cmd.append(target)
+
+    if len(args) > 0:
+        full_cmd.append("--")
+        for a in args:
+            full_cmd.append(a)
+
+    v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
+    if not v:
+        return False, r
+    return True, (r.success, r.stdout, r.stderr)
+
 def test(exec_path, jobs, config, target, options):
 
     if exec_path is None:
