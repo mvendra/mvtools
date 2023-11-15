@@ -11,6 +11,9 @@ def exec(script, args, cwd=None):
     if script is None:
         return False, "script is required"
 
+    if not isinstance(script, str):
+        return False, "script must be a string"
+
     if not isinstance(args, list):
         return False, "args must be a list"
 
