@@ -97,22 +97,22 @@ class PythonPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["script"] = self.existent_path1
+        local_params["cwd"] = self.nonexistent_path1
+        self.python_task.params = local_params
+
+        v, r = self.python_task._read_params()
+        self.assertFalse(v)
+
+    def testPythonPluginReadParams5(self):
+
+        local_params = {}
+        local_params["script"] = self.existent_path1
         local_params["cwd"] = self.existent_path2
         self.python_task.params = local_params
 
         v, r = self.python_task._read_params()
         self.assertTrue(v)
         self.assertEqual( r, (self.existent_path1, self.existent_path2, [], None, None, False) )
-
-    def testPythonPluginReadParams5(self):
-
-        local_params = {}
-        local_params["script"] = self.existent_path1
-        local_params["cwd"] = self.nonexistent_path1
-        self.python_task.params = local_params
-
-        v, r = self.python_task._read_params()
-        self.assertFalse(v)
 
     def testPythonPluginReadParams6(self):
 
