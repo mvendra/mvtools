@@ -11,6 +11,9 @@ def build(exec_path, jobs, config, target, options):
     if exec_path is None:
         return False, "Invalid execution path"
 
+    if target is not None and not isinstance(target, str):
+        return False, "target must be a string"
+
     full_cmd = ["bazel"]
     full_cmd.append("build")
 
@@ -35,6 +38,9 @@ def fetch(exec_path, target):
 
     if exec_path is None:
         return False, "Invalid execution path"
+
+    if target is not None and not isinstance(target, str):
+        return False, "target must be a string"
 
     full_cmd = ["bazel"]
     full_cmd.append("fetch")
@@ -94,6 +100,9 @@ def test(exec_path, jobs, config, target, options):
 
     if exec_path is None:
         return False, "Invalid execution path"
+
+    if target is not None and not isinstance(target, str):
+        return False, "target must be a string"
 
     full_cmd = ["bazel"]
     full_cmd.append("test")

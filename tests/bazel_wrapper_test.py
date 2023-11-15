@@ -41,6 +41,11 @@ class BazelWrapperTest(unittest.TestCase):
             self.assertFalse(v)
             dummy.assert_not_called()
 
+    def testBuildFail2(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.build("nonempty", None, None, [], [])
+            self.assertFalse(v)
+
     def testBuild1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = bazel_wrapper.build("nonempty", None, None, None, [])
@@ -70,6 +75,11 @@ class BazelWrapperTest(unittest.TestCase):
             v, r = bazel_wrapper.fetch(None, None)
             self.assertFalse(v)
             dummy.assert_not_called()
+
+    def testFetchFail2(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.fetch("nonempty", [])
+            self.assertFalse(v)
 
     def testFetch1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
@@ -145,6 +155,11 @@ class BazelWrapperTest(unittest.TestCase):
             v, r = bazel_wrapper.test(None, None, None, None, [])
             self.assertFalse(v)
             dummy.assert_not_called()
+
+    def testTestFail2(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.test("nonempty", None, None, [], [])
+            self.assertFalse(v)
 
     def testTest1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
