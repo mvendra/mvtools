@@ -180,5 +180,41 @@ class PythonPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, (self.existent_path1, self.existent_path2, ["dummy_value1"], "dummy_value2", "dummy_value3", True) )
 
+    def testPythonPluginRunTask1(self):
+
+        local_params = {}
+        local_params["script"] = self.existent_path1
+        self.python_task.params = local_params
+
+        with mock.patch("python_wrapper.exec", return_value=(True, (True, "", ""))) as dummy:
+            v, r = self.python_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1, None, [])
+
+    def testPythonPluginRunTask2(self):
+
+        local_params = {}
+        local_params["script"] = self.existent_path1
+        local_params["cwd"] = self.existent_path2
+        self.python_task.params = local_params
+
+        with mock.patch("python_wrapper.exec", return_value=(True, (True, "", ""))) as dummy:
+            v, r = self.python_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1, self.existent_path2, [])
+
+    def testPythonPluginRunTask3(self):
+
+        local_params = {}
+        local_params["script"] = self.existent_path1
+        local_params["cwd"] = self.existent_path2
+        local_params["args"] = "dummy_value1"
+        self.python_task.params = local_params
+
+        with mock.patch("python_wrapper.exec", return_value=(True, (True, "", ""))) as dummy:
+            v, r = self.python_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(self.existent_path1, self.existent_path2, ["dummy_value1"])
+
 if __name__ == '__main__':
     unittest.main()
