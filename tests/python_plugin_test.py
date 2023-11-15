@@ -216,5 +216,46 @@ class PythonPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2, ["dummy_value1"])
 
+    def testPythonPluginRunTask4(self):
+
+        local_params = {}
+        local_params["script"] = self.existent_path1
+        local_params["cwd"] = self.existent_path2
+        local_params["args"] = "dummy_value1"
+        local_params["save_output"] = self.dumped_stdout_file
+        local_params["save_error_output"] = self.dumped_stderr_file
+        self.python_task.params = local_params
+
+        with mock.patch("python_wrapper.exec", return_value=(True, (True, "test-stdout", "test-stderr"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="somewarning") as dummy2:
+                v, r = self.python_task.run_task(print, "exe_name")
+                self.assertTrue(v)
+                self.assertTrue("somewarning" in r)
+                self.assertTrue("test-stderr" in r)
+                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                dummy1.assert_called_with(self.existent_path1, self.existent_path2, ["dummy_value1"])
+
+    def testPythonPluginRunTask5(self):
+
+        local_params = {}
+        local_params["script"] = self.existent_path1
+        local_params["cwd"] = self.existent_path2
+        local_params["args"] = "dummy_value1"
+        local_params["save_output"] = self.dumped_stdout_file
+        local_params["save_error_output"] = self.dumped_stderr_file
+        local_params["suppress_stderr_warnings"] = True
+        self.python_task.params = local_params
+
+        with mock.patch("python_wrapper.exec", return_value=(True, (True, "test-stdout", "test-stderr"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value="somewarning") as dummy2:
+                v, r = self.python_task.run_task(print, "exe_name")
+                self.assertTrue(v)
+                self.assertTrue("somewarning" in r)
+                self.assertFalse("test-stderr" in r)
+                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                dummy1.assert_called_with(self.existent_path1, self.existent_path2, ["dummy_value1"])
+
 if __name__ == '__main__':
     unittest.main()
