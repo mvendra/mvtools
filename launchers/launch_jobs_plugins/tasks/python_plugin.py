@@ -37,7 +37,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         # args
         try:
-            args_read = self.params["args"]
+            args_read = self.params["arg"]
             if isinstance(args_read, list):
                 args = args_read
             else:
