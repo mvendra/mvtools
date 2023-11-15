@@ -103,6 +103,27 @@ class BazelWrapperTest(unittest.TestCase):
 
     def testRun1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.run(None, None, [])
+            self.assertFalse(v)
+
+    def testRun2(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.run("nonempty", [], [])
+            self.assertFalse(v)
+
+    def testRun3(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.run("nonempty", None, "alsononemptybutnotalist")
+            self.assertFalse(v)
+
+    def testRun4(self):
+        with mock.patch("generic_run.run_cmd", return_value=(False, self.result_obj)) as dummy:
+            v, r = bazel_wrapper.run("nonempty", None, [])
+            self.assertFalse(v)
+            dummy.assert_called_with(["bazel", "run"], use_cwd="nonempty")
+
+    def testRun5(self):
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = bazel_wrapper.run("nonempty", None, [])
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "run"], use_cwd="nonempty")
