@@ -6,7 +6,7 @@ import os
 import path_utils
 import generic_run
 
-def exec(script, args, cwd=None):
+def exec(script, cwd, args):
 
     if script is None:
         return False, "script is required"
