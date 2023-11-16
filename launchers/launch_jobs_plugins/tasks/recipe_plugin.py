@@ -25,9 +25,11 @@ class CustomTask(launch_jobs.BaseTask):
         execution_delay = None
         envvars = []
 
+        local_params = self.params.copy()
+
         # operation
-        local_run = "run" in self.params
-        local_test = "test" in self.params
+        local_run = "run" in local_params
+        local_test = "test" in local_params
         if local_run and local_test:
             return False, "Specify only either run or test - not both"
         if not local_run and not local_test:
@@ -35,54 +37,58 @@ class CustomTask(launch_jobs.BaseTask):
 
         if local_run:
             operation = "run"
-        if local_test:
+            del local_params["run"]
+        elif local_test:
             operation = "test"
+            del local_params["test"]
 
         # recipe
         try:
-            recipe = self.params["recipe"]
+            recipe = local_params["recipe"]
+            del local_params["recipe"]
         except KeyError:
             return False, "recipe is a required parameter"
 
         # exec_name
         try:
-            exec_name = self.params["exec_name"]
+            exec_name = local_params["exec_name"]
+            del local_params["exec_name"]
         except KeyError:
             pass # optional
 
         # early_abort
         try:
-            early_abort = self.params["early_abort"]
+            early_abort = local_params["early_abort"]
+            del local_params["early_abort"]
         except KeyError:
             pass # optional
 
         # time_delay
         try:
-            time_delay = self.params["time_delay"]
+            time_delay = local_params["time_delay"]
+            del local_params["time_delay"]
         except KeyError:
             pass # optional
 
         # signal_delay
         try:
-            signal_delay = self.params["signal_delay"]
+            signal_delay = local_params["signal_delay"]
+            del local_params["signal_delay"]
         except KeyError:
             pass # optional
 
         # execution_delay
         try:
-            execution_delay = self.params["execution_delay"]
+            execution_delay = local_params["execution_delay"]
+            del local_params["execution_delay"]
         except KeyError:
             pass # optional
 
         # envvars
-        try:
-            envvars_read = self.params["envvar"]
-            if isinstance(envvars_read, list):
-                envvars = envvars_read
-            else:
-                envvars.append(envvars_read)
-        except KeyError:
-            pass # optional
+        for ev in local_params:
+            if not isinstance(local_params[ev], str): # reject stacked options: envvars can only hold one single value
+                return False, "envvar [%s] rejected - stacked option. Choose only one value for its option" % ev
+            envvars.append( (ev, local_params[ev]) )
 
         # validate recipe
         if not os.path.exists(recipe):

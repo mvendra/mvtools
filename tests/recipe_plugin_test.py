@@ -191,7 +191,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", "dummy_value6", ["dummy_value7"]) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", "dummy_value6", [("envvar", "dummy_value7")]) )
 
     def testRecipePluginReadParams13(self):
 
@@ -207,8 +207,7 @@ class RecipePluginTest(unittest.TestCase):
         self.recipe_task.params = local_params
 
         v, r = self.recipe_task._read_params()
-        self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", "dummy_value6", ["dummy_value7", "dummy_value8"]) )
+        self.assertFalse(v)
 
     def testRecipePluginRunTask1(self):
 
