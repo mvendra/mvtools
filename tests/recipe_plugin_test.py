@@ -124,12 +124,12 @@ class RecipePluginTest(unittest.TestCase):
         local_params["test"] = "dummy_value1"
         local_params["recipe"] = self.existent_path1
         local_params["exec_name"] = "dummy_value2"
-        local_params["envvar"] = "dummy_value3"
+        local_params["early_abort"] = "dummy_value3"
         self.recipe_task.params = local_params
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", None, None, ["dummy_value3"]) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", None, []) )
 
     def testRecipePluginReadParams9(self):
 
@@ -137,12 +137,43 @@ class RecipePluginTest(unittest.TestCase):
         local_params["test"] = "dummy_value1"
         local_params["recipe"] = self.existent_path1
         local_params["exec_name"] = "dummy_value2"
-        local_params["envvar"] = ["dummy_value3", "dummy_value4"]
+        local_params["early_abort"] = "dummy_value3"
+        local_params["time_delay"] = "dummy_value4"
         self.recipe_task.params = local_params
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", None, None, ["dummy_value3", "dummy_value4"]) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", []) )
+
+    def testRecipePluginReadParams10(self):
+
+        local_params = {}
+        local_params["test"] = "dummy_value1"
+        local_params["recipe"] = self.existent_path1
+        local_params["exec_name"] = "dummy_value2"
+        local_params["early_abort"] = "dummy_value3"
+        local_params["time_delay"] = "dummy_value4"
+        local_params["envvar"] = "dummy_value5"
+        self.recipe_task.params = local_params
+
+        v, r = self.recipe_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", ["dummy_value5"]) )
+
+    def testRecipePluginReadParams11(self):
+
+        local_params = {}
+        local_params["test"] = "dummy_value1"
+        local_params["recipe"] = self.existent_path1
+        local_params["exec_name"] = "dummy_value2"
+        local_params["early_abort"] = "dummy_value3"
+        local_params["time_delay"] = "dummy_value4"
+        local_params["envvar"] = ["dummy_value5", "dummy_value6"]
+        self.recipe_task.params = local_params
+
+        v, r = self.recipe_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", ["dummy_value5", "dummy_value6"]) )
 
 if __name__ == '__main__':
     unittest.main()
