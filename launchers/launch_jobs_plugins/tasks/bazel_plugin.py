@@ -24,6 +24,7 @@ class CustomTask(launch_jobs.BaseTask):
         expunge = False
         fail_test_fail_task = False
         options = []
+        arguments = []
         save_output = None
         save_error_output = None
         suppress_stderr_warnings = None
@@ -78,6 +79,16 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # arguments
+        try:
+            arguments_read = self.params["arg"]
+            if isinstance(arguments_read, list):
+                arguments = arguments_read
+            else:
+                arguments.append(arguments_read)
+        except KeyError:
+            pass # optional
+
         # save_output
         try:
             save_output = self.params["save_output"]
@@ -107,7 +118,7 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
-        return True, (exec_path, operation, jobs, config, target, expunge, fail_test_fail_task, options, save_output, save_error_output, suppress_stderr_warnings)
+        return True, (exec_path, operation, jobs, config, target, expunge, fail_test_fail_task, options, arguments, save_output, save_error_output, suppress_stderr_warnings)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -115,7 +126,7 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        exec_path, operation, jobs, config, target, expunge, fail_test_fail_task, options, save_output, save_error_output, suppress_stderr_warnings = r
+        exec_path, operation, jobs, config, target, expunge, fail_test_fail_task, options, arguments, save_output, save_error_output, suppress_stderr_warnings = r
 
         # delegate
         if operation == "build":
@@ -124,6 +135,8 @@ class CustomTask(launch_jobs.BaseTask):
             return self.task_fetch(feedback_object, exec_path, target, save_output, save_error_output, suppress_stderr_warnings)
         elif operation == "clean":
             return self.task_clean(feedback_object, exec_path, expunge, save_output, save_error_output, suppress_stderr_warnings)
+        elif operation == "run":
+            return self.task_run(feedback_object, exec_path, target, arguments, save_output, save_error_output, suppress_stderr_warnings)
         elif operation == "test":
             return self.task_test(feedback_object, exec_path, jobs, config, target, fail_test_fail_task, options, save_output, save_error_output, suppress_stderr_warnings)
         else:
@@ -191,6 +204,34 @@ class CustomTask(launch_jobs.BaseTask):
 
         # actual execution
         v, r = bazel_wrapper.clean(exec_path, expunge)
+        if not v:
+            return False, r
+        proc_result = r[0]
+        proc_stdout = r[1]
+        proc_stderr = r[2]
+
+        # dump outputs
+        output_backup_helper.dump_output(feedback_object, save_output, proc_stdout, ("Bazel's stdout has been saved to: [%s]" % save_output))
+        output_backup_helper.dump_output(feedback_object, save_error_output, proc_stderr, ("Bazel's stderr has been saved to: [%s]" % save_error_output))
+
+        # autobackup outputs
+        output_list = [("bazel_plugin_stdout", proc_stdout, "Bazel's stdout"), ("bazel_plugin_stderr", proc_stderr, "Bazel's stderr")]
+        warnings = log_helper.add_to_warnings(warnings, output_backup_helper.dump_outputs_autobackup(proc_result, feedback_object, output_list))
+
+        # warnings
+        if len(proc_stderr) > 0:
+            if not suppress_stderr_warnings:
+                warnings = log_helper.add_to_warnings(warnings, proc_stderr)
+            else:
+                warnings = log_helper.add_to_warnings(warnings, "bazel's stderr has been suppressed")
+        return True, warnings
+
+    def task_run(self, feedback_object, exec_path, target, arguments, save_output, save_error_output, suppress_stderr_warnings):
+
+        warnings = None
+
+        # actual execution
+        v, r = bazel_wrapper.run(exec_path, target, arguments)
         if not v:
             return False, r
         proc_result = r[0]

@@ -98,7 +98,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", None, None, None, False, False, [], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", None, None, None, False, False, [], [], None, None, False) )
 
     def testBazelPluginReadParams5(self):
 
@@ -110,7 +110,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", None, None, False, False, [], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", None, None, False, False, [], [], None, None, False) )
 
     def testBazelPluginReadParams6(self):
 
@@ -134,7 +134,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", None, False, False, [], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", None, False, False, [], [], None, None, False) )
 
     def testBazelPluginReadParams8(self):
 
@@ -160,7 +160,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", False, False, [], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", False, False, [], [], None, None, False) )
 
     def testBazelPluginReadParams10(self):
 
@@ -175,7 +175,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, False, [], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, False, [], [], None, None, False) )
 
     def testBazelPluginReadParams11(self):
 
@@ -191,7 +191,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, [], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, [], [], None, None, False) )
 
     def testBazelPluginReadParams12(self):
 
@@ -208,7 +208,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], [], None, None, False) )
 
     def testBazelPluginReadParams13(self):
 
@@ -225,7 +225,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7", "dummy_value8"], None, None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7", "dummy_value8"], [], None, None, False) )
 
     def testBazelPluginReadParams14(self):
 
@@ -243,7 +243,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], "dummy_value8", None, False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], [], "dummy_value8", None, False) )
 
     def testBazelPluginReadParams15(self):
 
@@ -279,7 +279,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], "dummy_value8", "dummy_value9", False) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], [], "dummy_value8", "dummy_value9", False) )
 
     def testBazelPluginReadParams17(self):
 
@@ -317,7 +317,7 @@ class BazelPluginTest(unittest.TestCase):
 
         v, r = self.bazel_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], "dummy_value8", "dummy_value9", True) )
+        self.assertEqual( r, (self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", True, True, ["dummy_value7"], [], "dummy_value8", "dummy_value9", True) )
 
     def testBazelPluginRunTask1(self):
 
