@@ -98,7 +98,12 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         operation, recipe, exec_name, early_abort, time_delay, signal_delay, execution_delay, envvars = r
 
-        req_opts = recipe_processor.assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
+        local_early_abort = None
+        if early_abort == "no":
+            local_early_abort = False
+        elif early_abort == "yes":
+            local_early_abort = True
+        req_opts = recipe_processor.assemble_requested_options(local_early_abort, time_delay, signal_delay, execution_delay)
 
         # actual execution
         if operation == "run":
