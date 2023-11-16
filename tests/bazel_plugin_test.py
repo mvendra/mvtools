@@ -705,6 +705,28 @@ class BazelPluginTest(unittest.TestCase):
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
 
+    def testBazelPluginTaskRun3(self):
+
+        with mock.patch("bazel_wrapper.run", return_value=(True, (True, "", ""))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_run(print, self.existent_path1, "dummy_value1", [], None, None, False)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy1.assert_called_with(self.existent_path1, "dummy_value1", [])
+                out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
+    def testBazelPluginTaskRun4(self):
+
+        with mock.patch("bazel_wrapper.run", return_value=(True, (True, "", ""))) as dummy1:
+            with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy2:
+                v, r = self.bazel_task.task_run(print, self.existent_path1, None, ["dummy_value1", "dummy_value2"], None, None, False)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy1.assert_called_with(self.existent_path1, None, ["dummy_value1", "dummy_value2"])
+                out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
+                dummy2.assert_called_with(True, print, out_list)
+
     def testBazelPluginTaskTest1(self):
 
         with mock.patch("bazel_wrapper.test", return_value=(False, "dummy-error")) as dummy1:
