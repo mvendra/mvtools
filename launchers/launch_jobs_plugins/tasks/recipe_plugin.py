@@ -98,7 +98,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         operation, recipe, exec_name, early_abort, time_delay, signal_delay, execution_delay, envvars = r
 
-        req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
+        req_opts = recipe_processor.assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
         # actual execution
         if operation == "run":
