@@ -104,6 +104,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         operation, recipe, exec_name, early_abort, time_delay, signal_delay, execution_delay, envvars = r
 
+        # handle early_abort translation
         local_early_abort = None
         if early_abort == "no":
             local_early_abort = False
