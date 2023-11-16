@@ -9,7 +9,6 @@ from unittest.mock import patch
 from unittest.mock import call
 
 import mvtools_test_fixture
-import create_and_write_file
 import path_utils
 import output_backup_helper
 
