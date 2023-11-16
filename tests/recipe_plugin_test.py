@@ -217,6 +217,19 @@ class RecipePluginTest(unittest.TestCase):
         local_params["recipe"] = self.existent_path1
         self.recipe_task.params = local_params
 
+        with mock.patch("recipe_processor.run_jobs_from_recipe_file", return_value=(False, "error-message")) as dummy1:
+            with mock.patch("recipe_processor.assemble_requested_options", return_value="req_opts_mock") as dummy2:
+                v, r = self.recipe_task.run_task(print, "exe_name")
+                self.assertFalse(v)
+                self.assertEqual(r, "error-message")
+
+    def testRecipePluginRunTask2(self):
+
+        local_params = {}
+        local_params["run"] = "dummy_value1"
+        local_params["recipe"] = self.existent_path1
+        self.recipe_task.params = local_params
+
         with mock.patch("recipe_processor.run_jobs_from_recipe_file", return_value=(True, None)) as dummy1:
             with mock.patch("recipe_processor.assemble_requested_options", return_value="req_opts_mock") as dummy2:
                 v, r = self.recipe_task.run_task(print, "exe_name")
@@ -224,7 +237,7 @@ class RecipePluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_path1, None, "req_opts_mock")
                 dummy2.assert_called_with(None, None, None, None)
 
-    def testRecipePluginRunTask2(self):
+    def testRecipePluginRunTask3(self):
 
         local_params = {}
         local_params["run"] = "dummy_value1"
@@ -239,7 +252,7 @@ class RecipePluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_path1, "dummy_value2", "req_opts_mock")
                 dummy2.assert_called_with(None, None, None, None)
 
-    def testRecipePluginRunTask3(self):
+    def testRecipePluginRunTask4(self):
 
         local_params = {}
         local_params["run"] = "dummy_value1"
@@ -254,7 +267,7 @@ class RecipePluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_path1, None, "req_opts_mock")
                 dummy2.assert_called_with("dummy_value2", None, None, None)
 
-    def testRecipePluginRunTask4(self):
+    def testRecipePluginRunTask5(self):
 
         local_params = {}
         local_params["run"] = "dummy_value1"
@@ -269,7 +282,7 @@ class RecipePluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_path1, None, "req_opts_mock")
                 dummy2.assert_called_with(None, "dummy_value2", None, None)
 
-    def testRecipePluginRunTask5(self):
+    def testRecipePluginRunTask6(self):
 
         local_params = {}
         local_params["run"] = "dummy_value1"
@@ -284,7 +297,7 @@ class RecipePluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_path1, None, "req_opts_mock")
                 dummy2.assert_called_with(None, None, "dummy_value2", None)
 
-    def testRecipePluginRunTask6(self):
+    def testRecipePluginRunTask7(self):
 
         local_params = {}
         local_params["run"] = "dummy_value1"
@@ -298,19 +311,6 @@ class RecipePluginTest(unittest.TestCase):
                 self.assertTrue(v)
                 dummy1.assert_called_with(self.existent_path1, None, "req_opts_mock")
                 dummy2.assert_called_with(None, None, None, "dummy_value2")
-
-    def testRecipePluginRunTask7(self):
-
-        local_params = {}
-        local_params["run"] = "dummy_value1"
-        local_params["recipe"] = self.existent_path1
-        self.recipe_task.params = local_params
-
-        with mock.patch("recipe_processor.run_jobs_from_recipe_file", return_value=(False, "error-message")) as dummy1:
-            with mock.patch("recipe_processor.assemble_requested_options", return_value="req_opts_mock") as dummy2:
-                v, r = self.recipe_task.run_task(print, "exe_name")
-                self.assertFalse(v)
-                self.assertEqual(r, "error-message")
 
 if __name__ == '__main__':
     unittest.main()
