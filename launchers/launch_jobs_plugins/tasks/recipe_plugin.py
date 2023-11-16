@@ -21,6 +21,8 @@ class CustomTask(launch_jobs.BaseTask):
         exec_name = None
         early_abort = None
         time_delay = None
+        signal_delay = None
+        execution_delay = None
         envvars = []
 
         # operation
@@ -60,6 +62,18 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # signal_delay
+        try:
+            signal_delay = self.params["signal_delay"]
+        except KeyError:
+            pass # optional
+
+        # execution_delay
+        try:
+            execution_delay = self.params["execution_delay"]
+        except KeyError:
+            pass # optional
+
         # envvars
         try:
             envvars_read = self.params["envvar"]
@@ -74,7 +88,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(recipe):
             return False, "recipe [%s] does not exist" % recipe
 
-        return True, (operation, recipe, exec_name, early_abort, time_delay, envvars)
+        return True, (operation, recipe, exec_name, early_abort, time_delay, signal_delay, execution_delay, envvars)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -82,9 +96,9 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        operation, recipe, exec_name, early_abort, time_delay, envvars = r
+        operation, recipe, exec_name, early_abort, time_delay, signal_delay, execution_delay, envvars = r
 
-        req_opts = assemble_requested_options(early_abort, time_delay, None, None)
+        req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
         # actual execution
         if operation == "run":

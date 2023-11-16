@@ -63,7 +63,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("run", self.existent_path1, None, None, None, []) )
+        self.assertEqual( r, ("run", self.existent_path1, None, None, None, None, None, []) )
 
     def testRecipePluginReadParams3(self):
 
@@ -74,7 +74,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, None, None, None, []) )
+        self.assertEqual( r, ("test", self.existent_path1, None, None, None, None, None, []) )
 
     def testRecipePluginReadParams4(self):
 
@@ -116,7 +116,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", None, None, []) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", None, None, None, None, []) )
 
     def testRecipePluginReadParams8(self):
 
@@ -129,7 +129,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", None, []) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", None, None, None, []) )
 
     def testRecipePluginReadParams9(self):
 
@@ -143,7 +143,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", []) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", None, None, []) )
 
     def testRecipePluginReadParams10(self):
 
@@ -158,7 +158,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", ["dummy_value5"]) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", None, None, ["dummy_value5"]) )
 
     def testRecipePluginReadParams11(self):
 
@@ -173,7 +173,7 @@ class RecipePluginTest(unittest.TestCase):
 
         v, r = self.recipe_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", ["dummy_value5", "dummy_value6"]) )
+        self.assertEqual( r, ("test", self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", None, None, ["dummy_value5", "dummy_value6"]) )
 
 if __name__ == '__main__':
     unittest.main()
