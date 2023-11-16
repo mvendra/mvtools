@@ -19,6 +19,8 @@ class CustomTask(launch_jobs.BaseTask):
         operation = None
         recipe = None
         exec_name = None
+        early_abort = None
+        time_delay = None
         envvars = []
 
         # operation
@@ -46,6 +48,18 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # early_abort
+        try:
+            early_abort = self.params["early_abort"]
+        except KeyError:
+            pass # optional
+
+        # time_delay
+        try:
+            time_delay = self.params["time_delay"]
+        except KeyError:
+            pass # optional
+
         # envvars
         try:
             envvars_read = self.params["envvar"]
@@ -60,7 +74,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(recipe):
             return False, "recipe [%s] does not exist" % recipe
 
-        return True, (operation, recipe, exec_name, envvars)
+        return True, (operation, recipe, exec_name, early_abort, time_delay, envvars)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -68,12 +82,14 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        operation, recipe, exec_name, envvars = r
+        operation, recipe, exec_name, early_abort, time_delay, envvars = r
+
+        req_opts = assemble_requested_options(early_abort, time_delay, None, None)
 
         # actual execution
         if operation == "run":
-            return recipe_processor.run_jobs_from_recipe_file(recipe, exec_name)
+            return recipe_processor.run_jobs_from_recipe_file(recipe, exec_name, req_opts)
         elif operation == "test":
-            return recipe_processor.test_jobs_from_recipe_file(recipe, exec_name)
+            return recipe_processor.test_jobs_from_recipe_file(recipe, exec_name, req_opts)
 
         return False, "Invalid operation (or not reached)"
