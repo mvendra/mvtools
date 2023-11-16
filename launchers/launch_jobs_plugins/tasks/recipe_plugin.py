@@ -104,6 +104,10 @@ class CustomTask(launch_jobs.BaseTask):
         if operation == "run":
             return recipe_processor.run_jobs_from_recipe_file(recipe, exec_name, req_opts)
         elif operation == "test":
-            return recipe_processor.test_jobs_from_recipe_file(recipe, exec_name, req_opts)
+            v, r = recipe_processor.test_jobs_from_recipe_file(recipe, exec_name, req_opts)
+            # below: recipe_processor.test_jobs_from_recipe_file returns extra info on the second parameter upon success
+            if not v:
+                return False, r
+            return True, None
 
         return False, "Invalid operation (or not reached)"
