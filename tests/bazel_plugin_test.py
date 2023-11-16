@@ -394,6 +394,18 @@ class BazelPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["exec_path"] = self.existent_path1
+        local_params["operation"] = "run"
+        self.bazel_task.params = local_params
+
+        with mock.patch("bazel_plugin.CustomTask.task_run", return_value=(True, None)) as dummy:
+            v, r = self.bazel_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, None, [], None, None, False)
+
+    def testBazelPluginRunTask6(self):
+
+        local_params = {}
+        local_params["exec_path"] = self.existent_path1
         local_params["operation"] = "test"
         self.bazel_task.params = local_params
 
