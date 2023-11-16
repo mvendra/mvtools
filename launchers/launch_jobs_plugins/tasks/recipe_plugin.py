@@ -112,6 +112,10 @@ class CustomTask(launch_jobs.BaseTask):
             local_early_abort = True
         req_opts = recipe_processor.assemble_requested_options(local_early_abort, time_delay, signal_delay, execution_delay)
 
+        # handle envvars
+        for ev in envvars:
+            os.environ[ev[0]] = ev[1]
+
         # actual execution
         if operation == "run":
             return recipe_processor.run_jobs_from_recipe_file(recipe, exec_name, req_opts)
