@@ -18,11 +18,11 @@ def mkfile_c_contents(project_name):
     r += "\n"
     r += "COMPILER=gcc\n"
     r += "\n"
-    r += "APPNAME=%s\n" % project_name
+    r += "OUTNAME=%s\n" % project_name
     r += "BASE=../..\n"
     r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_OBJ=$(BASE)/build\n"
-    r += "RUN=$(BASE)/run\n"
+    r += "BASE_TMP=$(BASE)/tmp\n"
+    r += "OUT=$(BASE)/out\n"
     r += "\n"
 
     # VARS PRESET
@@ -30,7 +30,7 @@ def mkfile_c_contents(project_name):
     r += "PLAT=linux\n"
     r += "MODE=release\n"
     r += "INCLUDES=\n"
-    r += "LIBS=\n"
+    r += "DEPS=\n"
     r += "CFLAGS=\n"
     r += "LDFLAGS=\n"
     r += "POSTBUILD=\n"
@@ -101,10 +101,10 @@ def mkfile_c_contents(project_name):
 
     # FINAL VARS
     r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
-    r += "BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)\n"
-    r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
-    r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
+    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_ARCH_MODE)\n"
+    r += "OUT_FULL=$(OUT)/$(PLAT_ARCH_MODE)\n"
+    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
+    r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
@@ -114,18 +114,18 @@ def mkfile_c_contents(project_name):
 
     # PREPFOLDERS
     r += "prepfolders:\n"
-    r += "\t@mkdir -p $(BASE_OBJ_FULL)\n"
-    r += "\t@mkdir -p $(RUN_FULL)\n"
+    r += "\t@mkdir -p $(BASE_TMP_FULL)\n"
+    r += "\t@mkdir -p $(OUT_FULL)\n"
     r += "\n"
 
     # COMPILE
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)\n"
+    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)\n"
     r += "\n"
 
     # LINK
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
+    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
@@ -142,15 +142,15 @@ def generate_makefile_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
-    base_prj = path_utils.concat_path(prj_fullname_base, "proj")
+    base_build = path_utils.concat_path(prj_fullname_base, "build")
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C Makefile
-    base_prj_makefile_c = path_utils.concat_path(base_prj, "makefile_c")
-    prjboot_util.makedir_if_needed(base_prj_makefile_c)
-    base_prj_makefile_fn = path_utils.concat_path(base_prj_makefile_c, "Makefile")
-    if not prjboot_util.writecontents(base_prj_makefile_fn, mkfile_c_contents(project_name)):
-        return False, "Failed creating [%s]" % base_prj_makefile_fn
+    base_build_makefile_c = path_utils.concat_path(base_build, "makefile_c")
+    prjboot_util.makedir_if_needed(base_build_makefile_c)
+    base_build_makefile_fn = path_utils.concat_path(base_build_makefile_c, "Makefile")
+    if not prjboot_util.writecontents(base_build_makefile_fn, mkfile_c_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_makefile_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
@@ -178,11 +178,11 @@ def mkfile_cpp_contents(project_name):
     r += "\n"
     r += "COMPILER=g++\n"
     r += "\n"
-    r += "APPNAME=%s\n" % project_name
+    r += "OUTNAME=%s\n" % project_name
     r += "BASE=../..\n"
     r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_OBJ=$(BASE)/build\n"
-    r += "RUN=$(BASE)/run\n"
+    r += "BASE_TMP=$(BASE)/tmp\n"
+    r += "OUT=$(BASE)/out\n"
     r += "\n"
 
     # VARS PRESET
@@ -190,7 +190,7 @@ def mkfile_cpp_contents(project_name):
     r += "PLAT=linux\n"
     r += "MODE=release\n"
     r += "INCLUDES=\n"
-    r += "LIBS=\n"
+    r += "DEPS=\n"
     r += "CPPFLAGS=\n"
     r += "LDFLAGS=\n"
     r += "POSTBUILD=\n"
@@ -261,10 +261,10 @@ def mkfile_cpp_contents(project_name):
 
     # FINAL VARS
     r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
-    r += "BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)\n"
-    r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
-    r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
+    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_ARCH_MODE)\n"
+    r += "OUT_FULL=$(OUT)/$(PLAT_ARCH_MODE)\n"
+    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
+    r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
@@ -274,18 +274,18 @@ def mkfile_cpp_contents(project_name):
 
     # PREPFOLDERS
     r += "prepfolders:\n"
-    r += "\t@mkdir -p $(BASE_OBJ_FULL)\n"
-    r += "\t@mkdir -p $(RUN_FULL)\n"
+    r += "\t@mkdir -p $(BASE_TMP_FULL)\n"
+    r += "\t@mkdir -p $(OUT_FULL)\n"
     r += "\n"
 
     # COMPILE
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
+    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
     r += "\n"
 
     # LINK
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
+    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
@@ -302,15 +302,15 @@ def generate_makefile_cpp(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
-    base_prj = path_utils.concat_path(prj_fullname_base, "proj")
+    base_build = path_utils.concat_path(prj_fullname_base, "build")
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C++ Makefile
-    base_prj_makefile_cpp = path_utils.concat_path(base_prj, "makefile_cpp")
-    prjboot_util.makedir_if_needed(base_prj_makefile_cpp)
-    base_prj_makefile_fn = path_utils.concat_path(base_prj_makefile_cpp, "Makefile")
-    if not prjboot_util.writecontents(base_prj_makefile_fn, mkfile_cpp_contents(project_name)):
-        return False, "Failed creating [%s]" % base_prj_makefile_fn
+    base_build_makefile_cpp = path_utils.concat_path(base_build, "makefile_cpp")
+    prjboot_util.makedir_if_needed(base_build_makefile_cpp)
+    base_build_makefile_fn = path_utils.concat_path(base_build_makefile_cpp, "Makefile")
+    if not prjboot_util.writecontents(base_build_makefile_fn, mkfile_cpp_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_makefile_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
