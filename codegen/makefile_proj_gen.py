@@ -26,7 +26,6 @@ def mkfile_c_contents(project_name):
     r += "\n"
 
     # VARS PRESET
-    r += "ARCH := $(shell getconf LONG_BIT)\n"
     r += "PLAT=linux\n"
     r += "MODE=release\n"
     r += "INCLUDES=\n"
@@ -51,31 +50,32 @@ def mkfile_c_contents(project_name):
 
     # ARCH FLAGS
     r += "# ARCH FLAGS\n"
-    r += "ifeq ($(ARCH),64)\n"
-    r += "\tCFLAGS+=-m64\n"
-    r += "endif\n"
+    r += "CFLAGS+=-m64\n"
     r += "\n"
 
     # PLAT
     r += "# PLAT FLAGS\n"
     r += "UNAME_S := $(shell uname -s)\n"
+    r += "\n"
 
     # LINUX
-    r += "\n# LINUX\n"
+    r += "# LINUX\n"
     r += "ifeq ($(UNAME_S),Linux)\n"
     r += "\tPLAT=linux\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_linux_gcc())), "\n")
     r += "endif\n"
+    r += "\n"
 
     # WINDOWS
-    r += "\n# WINDOWS\n"
+    r += "# WINDOWS\n"
     r += "ifneq (,$(findstring CYGWIN,$(UNAME_S)))\n"
     r += "\tPLAT=windows\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_windows_gcc())), "\n")
     r += "endif\n"
+    r += "\n"
 
     # MACOSX
-    r += "\n# MACOSX\n"
+    r += "# MACOSX\n"
     r += "ifeq ($(UNAME_S),Darwin)\n"
     r += "\tPLAT=macosx\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_macosx_gcc())), "\n")
@@ -100,9 +100,9 @@ def mkfile_c_contents(project_name):
     r += "\n"
 
     # FINAL VARS
-    r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
-    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_ARCH_MODE)\n"
-    r += "OUT_FULL=$(OUT)/$(PLAT_ARCH_MODE)\n"
+    r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
+    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
+    r += "OUT_FULL=$(OUT)/$(PLAT_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
     r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
@@ -186,7 +186,6 @@ def mkfile_cpp_contents(project_name):
     r += "\n"
 
     # VARS PRESET
-    r += "ARCH := $(shell getconf LONG_BIT)\n"
     r += "PLAT=linux\n"
     r += "MODE=release\n"
     r += "INCLUDES=\n"
@@ -211,31 +210,32 @@ def mkfile_cpp_contents(project_name):
 
     # ARCH FLAGS
     r += "# ARCH FLAGS\n"
-    r += "ifeq ($(ARCH),64)\n"
-    r += "\tCPPFLAGS+=-m64\n"
-    r += "endif\n"
+    r += "CFLAGS+=-m64\n"
     r += "\n"
 
     # PLAT
     r += "# PLAT FLAGS\n"
     r += "UNAME_S := $(shell uname -s)\n"
+    r += "\n"
 
     # LINUX
-    r += "\n# LINUX\n"
+    r += "# LINUX\n"
     r += "ifeq ($(UNAME_S),Linux)\n"
     r += "\tPLAT=linux\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_linux_gcc())), "\n")
     r += "endif\n"
+    r += "\n"
 
     # WINDOWS
-    r += "\n# WINDOWS\n"
+    r += "# WINDOWS\n"
     r += "ifneq (,$(findstring CYGWIN,$(UNAME_S)))\n"
     r += "\tPLAT=windows\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_windows_gcc())), "\n")
     r += "endif\n"
+    r += "\n"
 
     # MACOSX
-    r += "\n# MACOSX\n"
+    r += "# MACOSX\n"
     r += "ifeq ($(UNAME_S),Darwin)\n"
     r += "\tPLAT=macosx\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_macosx_gcc())), "\n")
@@ -260,9 +260,9 @@ def mkfile_cpp_contents(project_name):
     r += "\n"
 
     # FINAL VARS
-    r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
-    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_ARCH_MODE)\n"
-    r += "OUT_FULL=$(OUT)/$(PLAT_ARCH_MODE)\n"
+    r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
+    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
+    r += "OUT_FULL=$(OUT)/$(PLAT_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
     r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
