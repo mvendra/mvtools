@@ -13,31 +13,38 @@ def mkfile_c_contents(project_name):
 
     r  = ""
 
-    # BASE SETUP
+    # TARGETS
     r += ".PHONY : all prepfolders clean compile link\n"
     r += "\n"
+
+    # PLUMBING
+    r += "# PLUMBING\n"
     r += "COMPILER=gcc\n"
     r += "\n"
+
+    # PROJECT SETUP
+    r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
+    r += "SRC=main.c subfolder/second.c\n"
+    r += "CFLAGS=\n"
+    r += "INCLUDES=\n"
+    r += "LDFLAGS=\n"
+    r += "DEPS=\n"
+    r += "POSTBUILD=\n"
+    r += "\n"
+
+    # AUTOCONF PREP
+    r += "# AUTOCONF PREP\n"
     r += "BASE=../..\n"
     r += "BASE_SRC=$(BASE)/src\n"
     r += "BASE_TMP=$(BASE)/tmp\n"
     r += "OUT=$(BASE)/out\n"
     r += "\n"
 
-    # VARS PRESET
+    # DEFAULTS
+    r += "# DEFAULTS\n"
     r += "PLAT=linux\n"
     r += "MODE=release\n"
-    r += "INCLUDES=\n"
-    r += "DEPS=\n"
-    r += "CFLAGS=\n"
-    r += "LDFLAGS=\n"
-    r += "POSTBUILD=\n"
-    r += "\n"
-
-    # SOURCES
-    r += "# SOURCES\n"
-    r += "SRC=main.c subfolder/second.c\n"
     r += "\n"
 
     # MODE
@@ -46,11 +53,6 @@ def mkfile_c_contents(project_name):
     r += "\t# to use, do 'make MODE=debug'\n"
     r += "\tMODE=debug\n"
     r += "endif\n"
-    r += "\n"
-
-    # ARCH FLAGS
-    r += "# ARCH FLAGS\n"
-    r += "CFLAGS+=-m64\n"
     r += "\n"
 
     # PLAT
@@ -99,7 +101,13 @@ def mkfile_c_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # FINAL VARS
+    # ARCH FLAGS
+    r += "# ARCH FLAGS\n"
+    r += "CFLAGS+=-m64\n"
+    r += "\n"
+
+    # AUTOCONF COMPLETE
+    r += "# AUTOCONF COMPLETE\n"
     r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
     r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
     r += "OUT_FULL=$(OUT)/$(PLAT_MODE)\n"
@@ -108,7 +116,7 @@ def mkfile_c_contents(project_name):
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
-    # TARGETS
+    # ALL
     r += "all: prepfolders compile link\n"
     r += "\n"
 
