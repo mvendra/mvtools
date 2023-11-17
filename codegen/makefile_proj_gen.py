@@ -197,10 +197,10 @@ def mkfile_cpp_contents(project_name):
 
     # AUTOCONF PREP
     r += "# AUTOCONF PREP\n"
-    r += "INCLUDES=\n"
-    r += "DEPS=\n"
     r += "CPPFLAGS=\n"
+    r += "INCLUDES=\n"
     r += "LDFLAGS=\n"
+    r += "DEPS=\n"
     r += "POSTBUILD=\n"
     r += "\n"
 
