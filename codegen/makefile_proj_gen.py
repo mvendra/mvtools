@@ -181,22 +181,19 @@ def mkfile_cpp_contents(project_name):
 
     r  = ""
 
-    # BASE SETUP
+    # TARGETS
     r += ".PHONY : all prepfolders clean compile link\n"
     r += "\n"
 
+    # PLUMBING
+    r += "# PLUMBING\n"
     r += "COMPILER=g++\n"
     r += "\n"
 
+    # PROJECT SETUP
+    r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
-    r += "BASE=../..\n"
-    r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_TMP=$(BASE)/tmp\n"
-    r += "OUT=$(BASE)/out\n"
-    r += "\n"
-
-    # AUTOCONF PREP
-    r += "# AUTOCONF PREP\n"
+    r += "SRC=main.cpp subfolder/second.cpp\n"
     r += "CPPFLAGS=\n"
     r += "INCLUDES=\n"
     r += "LDFLAGS=\n"
@@ -204,9 +201,12 @@ def mkfile_cpp_contents(project_name):
     r += "POSTBUILD=\n"
     r += "\n"
 
-    # SOURCES
-    r += "# SOURCES\n"
-    r += "SRC=main.cpp subfolder/second.cpp\n"
+    # AUTOCONF PREP
+    r += "# AUTOCONF PREP\n"
+    r += "BASE=../..\n"
+    r += "BASE_SRC=$(BASE)/src\n"
+    r += "BASE_TMP=$(BASE)/tmp\n"
+    r += "OUT=$(BASE)/out\n"
     r += "\n"
 
     # DEFAULTS
