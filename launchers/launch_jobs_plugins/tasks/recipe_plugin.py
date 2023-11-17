@@ -112,9 +112,20 @@ class CustomTask(launch_jobs.BaseTask):
             local_early_abort = True
         req_opts = recipe_processor.assemble_requested_options(local_early_abort, time_delay, signal_delay, execution_delay)
 
-        # handle envvars
+        # keep a copy and update envvars
+        envvars_copy = os.environ.copy()
         for ev in envvars:
             os.environ[ev[0]] = ev[1]
+
+        v, r = self.run_task_delegate(operation,recipe, exec_name, req_opts)
+
+        # restore envvars
+        os.environ.clear()
+        os.environ.update(envvars_copy)
+
+        return v, r
+
+    def run_task_delegate(self, operation, recipe, exec_name, req_opts):
 
         # actual execution
         if operation == "run":
