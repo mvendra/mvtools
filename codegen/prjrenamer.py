@@ -162,13 +162,6 @@ def prjrename(target_dir, original_project_name, new_project_name):
         codelite_rename(base_prj_codelite15_c_fn, new_project_name)
         print("Adapted [%s]" % base_prj_codelite15_c_fn)
 
-    # codelite13_cpp
-    base_prj_codelite13_cpp = path_utils.concat_path(base_prj, "codelite13_cpp")
-    base_prj_codelite13_cpp_fn = path_utils.concat_path(base_prj_codelite13_cpp, "%s.project" % original_project_name)
-    if os.path.isfile(base_prj_codelite13_cpp_fn):
-        codelite_rename(base_prj_codelite13_cpp_fn, new_project_name)
-        print("Adapted [%s]" % base_prj_codelite13_cpp_fn)
-
     # msvc15_c
     base_prj_msvc15_c = path_utils.concat_path(base_prj, "msvc15_c")
     base_prj_msvc15_c_sln_fn = path_utils.concat_path(base_prj_msvc15_c, "%s.sln" % original_project_name)

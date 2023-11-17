@@ -14,7 +14,6 @@ PROJECT_TYPE_MAKEFILE_C = "makefile_c"
 PROJECT_TYPE_MAKEFILE_CPP = "makefile_cpp"
 
 PROJECT_TYPE_CODELITE15_C = "codelite15_c"
-PROJECT_TYPE_CODELITE13_CPP = "codelite13_cpp"
 
 PROJECT_TYPE_MSVC15_C = "msvc15_c"
 PROJECT_TYPE_MSVC15_CPP = "msvc15_cpp"
@@ -22,7 +21,7 @@ PROJECT_TYPE_MSVC15_CPP = "msvc15_cpp"
 PROJECT_TYPE_MSVC17_C = "msvc17_c"
 
 # hint: adding new project types should warrant a review of the accompanying "prjrenamer" tool as well
-PROJECT_TYPES = [PROJECT_TYPE_MAKEFILE_C, PROJECT_TYPE_MAKEFILE_CPP, PROJECT_TYPE_CODELITE15_C, PROJECT_TYPE_CODELITE13_CPP, PROJECT_TYPE_MSVC15_C, PROJECT_TYPE_MSVC15_CPP, PROJECT_TYPE_MSVC17_C]
+PROJECT_TYPES = [PROJECT_TYPE_MAKEFILE_C, PROJECT_TYPE_MAKEFILE_CPP, PROJECT_TYPE_CODELITE15_C, PROJECT_TYPE_MSVC15_C, PROJECT_TYPE_MSVC15_CPP, PROJECT_TYPE_MSVC17_C]
 PROJECT_TYPE_DEFAULT = PROJECT_TYPE_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):
@@ -39,8 +38,6 @@ def prjboot(target_dir, proj_name, proj_type):
         chosen_function = makefile_proj_gen.generate_makefile_cpp
     elif proj_type == PROJECT_TYPE_CODELITE15_C:
         chosen_function = codelite_proj_gen.generate_codelite15_c
-    elif proj_type == PROJECT_TYPE_CODELITE13_CPP:
-        chosen_function = codelite_proj_gen.generate_codelite13_cpp
     elif proj_type == PROJECT_TYPE_MSVC15_C:
         chosen_function = msvc_proj_gen.generate_msvc15_c
     elif proj_type == PROJECT_TYPE_MSVC15_CPP:
