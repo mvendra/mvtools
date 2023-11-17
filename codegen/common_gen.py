@@ -19,6 +19,9 @@ def generate_common_structure(target_dir, project_name):
 
     # tmp
     base_tmp = path_utils.concat_path(prj_fullname_base, "tmp")
+    base_tmp_linux = path_utils.concat_path(base_tmp, "linux")
+    base_tmp_windows = path_utils.concat_path(base_tmp, "windows")
+    base_tmp_macosx = path_utils.concat_path(base_tmp, "macosx")
     base_tmp_linux_debug = path_utils.concat_path(base_tmp, "linux_debug")
     base_tmp_linux_release = path_utils.concat_path(base_tmp, "linux_release")
     base_tmp_windows_debug = path_utils.concat_path(base_tmp, "windows_debug")
@@ -49,6 +52,9 @@ def generate_common_structure(target_dir, project_name):
     prjboot_util.makedir_if_needed(base_build_macosx)
 
     prjboot_util.makedir_if_needed(base_tmp)
+    prjboot_util.makedir_if_needed(base_tmp_linux)
+    prjboot_util.makedir_if_needed(base_tmp_windows)
+    prjboot_util.makedir_if_needed(base_tmp_macosx)
     prjboot_util.makedir_if_needed(base_tmp_linux_debug)
     prjboot_util.makedir_if_needed(base_tmp_linux_release)
     prjboot_util.makedir_if_needed(base_tmp_windows_debug)
