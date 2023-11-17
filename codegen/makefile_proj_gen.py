@@ -197,8 +197,6 @@ def mkfile_cpp_contents(project_name):
 
     # AUTOCONF PREP
     r += "# AUTOCONF PREP\n"
-    r += "PLAT=linux\n"
-    r += "MODE=release\n"
     r += "INCLUDES=\n"
     r += "DEPS=\n"
     r += "CPPFLAGS=\n"
@@ -209,6 +207,12 @@ def mkfile_cpp_contents(project_name):
     # SOURCES
     r += "# SOURCES\n"
     r += "SRC=main.cpp subfolder/second.cpp\n"
+    r += "\n"
+
+    # DEFAULTS
+    r += "# DEFAULTS\n"
+    r += "PLAT=linux\n"
+    r += "MODE=release\n"
     r += "\n"
 
     # MODE
