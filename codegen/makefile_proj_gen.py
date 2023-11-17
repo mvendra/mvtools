@@ -9,135 +9,6 @@ import prjboot_util
 import standard_c
 import standard_cpp
 
-def mkfile_cpp_contents(project_name):
-
-    r  = ""
-
-    # BASE SETUP
-    r += ".PHONY : all prepfolders clean compile link\n"
-    r += "\n"
-    r += "COMPILER=g++\n"
-    r += "\n"
-    r += "APPNAME=%s\n" % project_name
-    r += "BASE=../..\n"
-    r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_OBJ=$(BASE)/build\n"
-    r += "RUN=$(BASE)/run\n"
-    r += "\n"
-
-    # VARS PRESET
-    r += "ARCH := $(shell getconf LONG_BIT)\n"
-    r += "PLAT=linux\n"
-    r += "MODE=release\n"
-    r += "INCLUDES=\n"
-    r += "LIBS=\n"
-    r += "CPPFLAGS=\n"
-    r += "LDFLAGS=\n"
-    r += "POSTBUILD=\n"
-    r += "\n"
-
-    # SOURCES
-    r += "# SOURCES\n"
-    r += "SRC=main.cpp subfolder/second.cpp\n"
-    r += "\n"
-
-    # MODE
-    r += "# MODE\n"
-    r += "ifeq ($(MODE),)\n"
-    r += "\t# to use, do 'make MODE=debug'\n"
-    r += "\tMODE=debug\n"
-    r += "endif\n"
-    r += "\n"
-
-    # ARCH FLAGS
-    r += "# ARCH FLAGS\n"
-    r += "ifeq ($(ARCH),64)\n"
-    r += "\tCPPFLAGS+=-m64\n"
-    r += "endif\n"
-    r += "\n"
-
-    # PLAT
-    r += "# PLAT FLAGS\n"
-    r += "UNAME_S := $(shell uname -s)\n"
-
-    # LINUX
-    r += "\n# LINUX\n"
-    r += "ifeq ($(UNAME_S),Linux)\n"
-    r += "\tPLAT=linux\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_linux_gcc())), "\n")
-    r += "endif\n"
-
-    # WINDOWS
-    r += "\n# WINDOWS\n"
-    r += "ifneq (,$(findstring CYGWIN,$(UNAME_S)))\n"
-    r += "\tPLAT=windows\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_windows_gcc())), "\n")
-    r += "endif\n"
-
-    # MACOSX
-    r += "\n# MACOSX\n"
-    r += "ifeq ($(UNAME_S),Darwin)\n"
-    r += "\tPLAT=macosx\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_macosx_gcc())), "\n")
-    r += "endif\n"
-    r += "\n"
-
-    # DEBUG CONFIG
-    r += "# DEBUG\n"
-    r += "ifeq ($(MODE),debug)\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_debug_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_debug_gcc())), "\n")
-    r += "endif\n"
-    r += "\n"
-
-    # RELEASE CONFIG
-    r += "# RELEASE\n"
-    r += "ifeq ($(MODE),release)\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_release_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_release_gcc())), "\n")
-    r += "\tPOSTBUILD=strip $(FULL_APP_NAME)\n"
-    r += "endif\n"
-    r += "\n"
-
-    # FINAL VARS
-    r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
-    r += "BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)\n"
-    r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
-    r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
-    r += "INCLUDES+=-I$(BASE_SRC)\n"
-    r += "\n"
-
-    # TARGETS
-    r += "all: prepfolders compile link\n"
-    r += "\n"
-
-    # PREPFOLDERS
-    r += "prepfolders:\n"
-    r += "\t@mkdir -p $(BASE_OBJ_FULL)\n"
-    r += "\t@mkdir -p $(RUN_FULL)\n"
-    r += "\n"
-
-    # COMPILE
-    r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
-    r += "\n"
-
-    # LINK
-    r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
-    r += "\t$(POSTBUILD)\n"
-    r += "\n"
-
-    # CLEAN
-    r += "clean:\n"
-    r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
-    r += "\trm $(FULL_APP_NAME)\n"
-
-    ba_r = bytearray()
-    ba_r.extend(map(ord, r))
-    return ba_r
-
 def mkfile_c_contents(project_name):
 
     r  = ""
@@ -297,6 +168,135 @@ def generate_makefile_c(target_dir, project_name):
         return False, "Failed creating [%s]" % base_src_subfolder_secondary_c_fn
 
     return True, None
+
+def mkfile_cpp_contents(project_name):
+
+    r  = ""
+
+    # BASE SETUP
+    r += ".PHONY : all prepfolders clean compile link\n"
+    r += "\n"
+    r += "COMPILER=g++\n"
+    r += "\n"
+    r += "APPNAME=%s\n" % project_name
+    r += "BASE=../..\n"
+    r += "BASE_SRC=$(BASE)/src\n"
+    r += "BASE_OBJ=$(BASE)/build\n"
+    r += "RUN=$(BASE)/run\n"
+    r += "\n"
+
+    # VARS PRESET
+    r += "ARCH := $(shell getconf LONG_BIT)\n"
+    r += "PLAT=linux\n"
+    r += "MODE=release\n"
+    r += "INCLUDES=\n"
+    r += "LIBS=\n"
+    r += "CPPFLAGS=\n"
+    r += "LDFLAGS=\n"
+    r += "POSTBUILD=\n"
+    r += "\n"
+
+    # SOURCES
+    r += "# SOURCES\n"
+    r += "SRC=main.cpp subfolder/second.cpp\n"
+    r += "\n"
+
+    # MODE
+    r += "# MODE\n"
+    r += "ifeq ($(MODE),)\n"
+    r += "\t# to use, do 'make MODE=debug'\n"
+    r += "\tMODE=debug\n"
+    r += "endif\n"
+    r += "\n"
+
+    # ARCH FLAGS
+    r += "# ARCH FLAGS\n"
+    r += "ifeq ($(ARCH),64)\n"
+    r += "\tCPPFLAGS+=-m64\n"
+    r += "endif\n"
+    r += "\n"
+
+    # PLAT
+    r += "# PLAT FLAGS\n"
+    r += "UNAME_S := $(shell uname -s)\n"
+
+    # LINUX
+    r += "\n# LINUX\n"
+    r += "ifeq ($(UNAME_S),Linux)\n"
+    r += "\tPLAT=linux\n"
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_linux_gcc())), "\n")
+    r += "endif\n"
+
+    # WINDOWS
+    r += "\n# WINDOWS\n"
+    r += "ifneq (,$(findstring CYGWIN,$(UNAME_S)))\n"
+    r += "\tPLAT=windows\n"
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_windows_gcc())), "\n")
+    r += "endif\n"
+
+    # MACOSX
+    r += "\n# MACOSX\n"
+    r += "ifeq ($(UNAME_S),Darwin)\n"
+    r += "\tPLAT=macosx\n"
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_macosx_gcc())), "\n")
+    r += "endif\n"
+    r += "\n"
+
+    # DEBUG CONFIG
+    r += "# DEBUG\n"
+    r += "ifeq ($(MODE),debug)\n"
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_debug_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_debug_gcc())), "\n")
+    r += "endif\n"
+    r += "\n"
+
+    # RELEASE CONFIG
+    r += "# RELEASE\n"
+    r += "ifeq ($(MODE),release)\n"
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_release_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_release_gcc())), "\n")
+    r += "\tPOSTBUILD=strip $(FULL_APP_NAME)\n"
+    r += "endif\n"
+    r += "\n"
+
+    # FINAL VARS
+    r += "PLAT_ARCH_MODE=$(PLAT)_x$(ARCH)_$(MODE)\n"
+    r += "BASE_OBJ_FULL=$(BASE_OBJ)/$(PLAT_ARCH_MODE)\n"
+    r += "RUN_FULL=$(RUN)/$(PLAT_ARCH_MODE)\n"
+    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
+    r += "FULL_APP_NAME=$(RUN_FULL)/$(APPNAME)\n"
+    r += "INCLUDES+=-I$(BASE_SRC)\n"
+    r += "\n"
+
+    # TARGETS
+    r += "all: prepfolders compile link\n"
+    r += "\n"
+
+    # PREPFOLDERS
+    r += "prepfolders:\n"
+    r += "\t@mkdir -p $(BASE_OBJ_FULL)\n"
+    r += "\t@mkdir -p $(RUN_FULL)\n"
+    r += "\n"
+
+    # COMPILE
+    r += "compile:\n"
+    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_OBJ_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
+    r += "\n"
+
+    # LINK
+    r += "link:\n"
+    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
+    r += "\t$(POSTBUILD)\n"
+    r += "\n"
+
+    # CLEAN
+    r += "clean:\n"
+    r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
+    r += "\trm $(FULL_APP_NAME)\n"
+
+    ba_r = bytearray()
+    ba_r.extend(map(ord, r))
+    return ba_r
 
 def generate_makefile_cpp(target_dir, project_name):
 
