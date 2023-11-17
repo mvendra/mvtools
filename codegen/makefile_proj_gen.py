@@ -184,8 +184,10 @@ def mkfile_cpp_contents(project_name):
     # BASE SETUP
     r += ".PHONY : all prepfolders clean compile link\n"
     r += "\n"
+
     r += "COMPILER=g++\n"
     r += "\n"
+
     r += "OUTNAME=%s\n" % project_name
     r += "BASE=../..\n"
     r += "BASE_SRC=$(BASE)/src\n"
@@ -215,11 +217,6 @@ def mkfile_cpp_contents(project_name):
     r += "\t# to use, do 'make MODE=debug'\n"
     r += "\tMODE=debug\n"
     r += "endif\n"
-    r += "\n"
-
-    # ARCH FLAGS
-    r += "# ARCH FLAGS\n"
-    r += "CFLAGS+=-m64\n"
     r += "\n"
 
     # PLAT
@@ -266,6 +263,11 @@ def mkfile_cpp_contents(project_name):
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_release_gcc())), "\n")
     r += "\tPOSTBUILD=strip $(FULL_APP_NAME)\n"
     r += "endif\n"
+    r += "\n"
+
+    # ARCH FLAGS
+    r += "# ARCH FLAGS\n"
+    r += "CFLAGS+=-m64\n"
     r += "\n"
 
     # AUTOCONF COMPLETE
