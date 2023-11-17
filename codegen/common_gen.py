@@ -13,6 +13,9 @@ def generate_common_structure(target_dir, project_name):
 
     # build
     base_build = path_utils.concat_path(prj_fullname_base, "build")
+    base_build_linux = path_utils.concat_path(base_build, "linux")
+    base_build_windows = path_utils.concat_path(base_build, "windows")
+    base_build_macosx = path_utils.concat_path(base_build, "macosx")
 
     # tmp
     base_tmp = path_utils.concat_path(prj_fullname_base, "tmp")
@@ -41,6 +44,9 @@ def generate_common_structure(target_dir, project_name):
     # create folders accordingly
     prjboot_util.makedir_if_needed(prj_fullname_base)
     prjboot_util.makedir_if_needed(base_build)
+    prjboot_util.makedir_if_needed(base_build_linux)
+    prjboot_util.makedir_if_needed(base_build_windows)
+    prjboot_util.makedir_if_needed(base_build_macosx)
 
     prjboot_util.makedir_if_needed(base_tmp)
     prjboot_util.makedir_if_needed(base_tmp_linux_debug)
