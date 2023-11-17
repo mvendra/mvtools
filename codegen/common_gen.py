@@ -59,12 +59,12 @@ def generate_common_structure(target_dir, project_name):
 
     prjboot_util.makedir_if_needed(base_tmp)
     prjboot_util.makedir_if_needed(base_tmp_linux)
-    prjboot_util.makedir_if_needed(base_tmp_windows)
-    prjboot_util.makedir_if_needed(base_tmp_macosx)
     prjboot_util.makedir_if_needed(base_tmp_linux_debug)
     prjboot_util.makedir_if_needed(base_tmp_linux_release)
+    prjboot_util.makedir_if_needed(base_tmp_windows)
     prjboot_util.makedir_if_needed(base_tmp_windows_debug)
     prjboot_util.makedir_if_needed(base_tmp_windows_release)
+    prjboot_util.makedir_if_needed(base_tmp_macosx)
     prjboot_util.makedir_if_needed(base_tmp_macosx_debug)
     prjboot_util.makedir_if_needed(base_tmp_macosx_release)
 
