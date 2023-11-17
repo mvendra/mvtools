@@ -43,6 +43,9 @@ def generate_common_structure(target_dir, project_name):
 
     # dep
     base_dep = path_utils.concat_path(prj_fullname_base, "dep")
+    base_dep_linux = path_utils.concat_path(base_dep, "linux")
+    base_dep_windows = path_utils.concat_path(base_dep, "windows")
+    base_dep_macosx = path_utils.concat_path(base_dep, "macosx")
 
     # src
     base_src = path_utils.concat_path(prj_fullname_base, "src")
@@ -77,6 +80,9 @@ def generate_common_structure(target_dir, project_name):
     prjboot_util.makedir_if_needed(base_out_macosx_release)
 
     prjboot_util.makedir_if_needed(base_dep)
+    prjboot_util.makedir_if_needed(base_dep_linux)
+    prjboot_util.makedir_if_needed(base_dep_windows)
+    prjboot_util.makedir_if_needed(base_dep_macosx)
 
     prjboot_util.makedir_if_needed(base_src)
 
