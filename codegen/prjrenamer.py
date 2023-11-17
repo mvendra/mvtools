@@ -47,34 +47,6 @@ def codelite_rename(base_prj_codelite_fn, new_project_name):
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
 
-def msvc15sln_rename(base_prj_msvc15_sln, new_project_name):
-
-    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_msvc15_sln)))
-    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
-    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc15_sln), "%s.sln" % new_project_name)
-    os.rename(base_prj_msvc15_sln, npn_full)
-
-    contents = readcontents(npn_full)
-    str_cur = "\"%s\", \"%s.vcxproj\"" % (opn, opn)
-    str_new = "\"%s\", \"%s.vcxproj\"" % (npn, npn)
-
-    contents = contents.replace(str_cur, str_new)
-    writecontents(npn_full, contents)
-
-def msvc15vcxproj_rename(base_prj_msvc15_fn, new_project_name):
-
-    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_msvc15_fn)))
-    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
-    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_prj_msvc15_fn), "%s.vcxproj" % new_project_name)
-    os.rename(base_prj_msvc15_fn, npn_full)
-
-    contents = readcontents(npn_full)
-    str_cur = "<RootNamespace>%s</RootNamespace>" % opn
-    str_new = "<RootNamespace>%s</RootNamespace>" % npn
-
-    contents = contents.replace(str_cur, str_new)
-    writecontents(npn_full, contents)
-
 def msvc17sln_rename(base_prj_msvc17_sln, new_project_name):
 
     opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_prj_msvc17_sln)))
