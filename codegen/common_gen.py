@@ -32,14 +32,14 @@ def generate_common_structure(target_dir, project_name):
     # out
     base_out = path_utils.concat_path(prj_fullname_base, "out")
     base_out_linux = path_utils.concat_path(base_out, "linux")
+    base_out_linux_debug = path_utils.concat_path(base_out_linux, "debug")
+    base_out_linux_release = path_utils.concat_path(base_out_linux, "release")
     base_out_windows = path_utils.concat_path(base_out, "windows")
+    base_out_windows_debug = path_utils.concat_path(base_out_windows, "debug")
+    base_out_windows_release = path_utils.concat_path(base_out_windows, "release")
     base_out_macosx = path_utils.concat_path(base_out, "macosx")
-    base_out_linux_debug = path_utils.concat_path(base_out, "linux_debug")
-    base_out_linux_release = path_utils.concat_path(base_out, "linux_release")
-    base_out_windows_debug = path_utils.concat_path(base_out, "windows_debug")
-    base_out_windows_release = path_utils.concat_path(base_out, "windows_release")
-    base_out_macosx_debug = path_utils.concat_path(base_out, "macosx_debug")
-    base_out_macosx_release = path_utils.concat_path(base_out, "macosx_release")
+    base_out_macosx_debug = path_utils.concat_path(base_out_macosx, "debug")
+    base_out_macosx_release = path_utils.concat_path(base_out_macosx, "release")
 
     # dep
     base_dep = path_utils.concat_path(prj_fullname_base, "dep")
@@ -70,12 +70,12 @@ def generate_common_structure(target_dir, project_name):
 
     prjboot_util.makedir_if_needed(base_out)
     prjboot_util.makedir_if_needed(base_out_linux)
-    prjboot_util.makedir_if_needed(base_out_windows)
-    prjboot_util.makedir_if_needed(base_out_macosx)
     prjboot_util.makedir_if_needed(base_out_linux_debug)
     prjboot_util.makedir_if_needed(base_out_linux_release)
+    prjboot_util.makedir_if_needed(base_out_windows)
     prjboot_util.makedir_if_needed(base_out_windows_debug)
     prjboot_util.makedir_if_needed(base_out_windows_release)
+    prjboot_util.makedir_if_needed(base_out_macosx)
     prjboot_util.makedir_if_needed(base_out_macosx_debug)
     prjboot_util.makedir_if_needed(base_out_macosx_release)
 
