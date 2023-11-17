@@ -193,7 +193,8 @@ def mkfile_cpp_contents(project_name):
     r += "OUT=$(BASE)/out\n"
     r += "\n"
 
-    # VARS PRESET
+    # AUTOCONF PREP
+    r += "# AUTOCONF PREP\n"
     r += "PLAT=linux\n"
     r += "MODE=release\n"
     r += "INCLUDES=\n"
@@ -267,7 +268,8 @@ def mkfile_cpp_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # FINAL VARS
+    # AUTOCONF COMPLETE
+    r += "# AUTOCONF COMPLETE\n"
     r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
     r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
     r += "OUT_FULL=$(OUT)/$(PLAT_MODE)\n"
@@ -276,7 +278,7 @@ def mkfile_cpp_contents(project_name):
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
-    # TARGETS
+    # ALL
     r += "all: prepfolders compile link\n"
     r += "\n"
 
