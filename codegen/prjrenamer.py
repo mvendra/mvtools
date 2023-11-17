@@ -171,15 +171,6 @@ def prjrename(target_dir, original_project_name, new_project_name):
         msvc15vcxproj_rename(base_prj_msvc15_c_vcxproj_fn, new_project_name)
         print("Adapted [%s] and [%s]" % (base_prj_msvc15_c_sln_fn, base_prj_msvc15_c_vcxproj_fn))
 
-    # msvc15_cpp
-    base_prj_msvc15_cpp = path_utils.concat_path(base_prj, "msvc15_cpp")
-    base_prj_msvc15_cpp_sln_fn = path_utils.concat_path(base_prj_msvc15_cpp, "%s.sln" % original_project_name)
-    base_prj_msvc15_cpp_vcxproj_fn = path_utils.concat_path(base_prj_msvc15_cpp, "%s.vcxproj" % original_project_name)
-    if os.path.isfile(base_prj_msvc15_cpp_sln_fn) and os.path.isfile(base_prj_msvc15_cpp_vcxproj_fn):
-        msvc15sln_rename(base_prj_msvc15_cpp_sln_fn, new_project_name)
-        msvc15vcxproj_rename(base_prj_msvc15_cpp_vcxproj_fn, new_project_name)
-        print("Adapted [%s] and [%s]" % (base_prj_msvc15_cpp_sln_fn, base_prj_msvc15_cpp_vcxproj_fn))
-
     # msvc17_c
     base_prj_msvc17_c = path_utils.concat_path(base_prj, "msvc17_c")
     base_prj_msvc17_c_sln_fn = path_utils.concat_path(base_prj_msvc17_c, "%s.sln" % original_project_name)
