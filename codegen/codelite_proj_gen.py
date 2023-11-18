@@ -163,7 +163,7 @@ def linux_codelite15_c_projfile_contents(project_name):
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_linux_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../../out/linux/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/release/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
@@ -205,7 +205,7 @@ def linux_codelite15_c_projfile_contents(project_name):
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
-    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
+    r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_flags_linux_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
     r += "      <General OutputFile=\"../../../out/linux/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/release/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"

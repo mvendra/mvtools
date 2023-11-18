@@ -83,7 +83,7 @@ def get_c_linker_flags_linux_debug_gcc():
 
     return contents
 
-def get_c_linker_flags_release_gcc():
+def get_c_linker_flags_linux_release_gcc():
 
     contents = []
 

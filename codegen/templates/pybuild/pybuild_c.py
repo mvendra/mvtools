@@ -139,7 +139,7 @@ class Builder():
 
         # release linker flags
         if self.mode == "release" and self.compiler == "gcc":
-            self.linker_flags_release += standard_c.get_c_linker_flags_release_gcc()
+            self.linker_flags_release += standard_c.get_c_linker_flags_linux_release_gcc()
 
     def parseoptions(self, options):
 
