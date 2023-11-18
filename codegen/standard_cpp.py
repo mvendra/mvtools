@@ -22,7 +22,7 @@ def get_main_cpp_app():
 
     return contents
 
-def get_cpp_compiler_flags_linux_gcc():
+def get_cpp_compiler_flags_linux_common_gcc():
 
     contents = []
 
