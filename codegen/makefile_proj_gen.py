@@ -110,9 +110,9 @@ def mkfile_c_contents(project_name):
     # AUTOCONF COMPLETE
     r += "# AUTOCONF COMPLETE\n"
     r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
-    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
+    r += "TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
     r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
+    r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
     r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
@@ -123,13 +123,13 @@ def mkfile_c_contents(project_name):
 
     # PREPFOLDERS
     r += "prepfolders:\n"
-    r += "\t@mkdir -p $(BASE_TMP_FULL)\n"
+    r += "\t@mkdir -p $(TMP_FULL)\n"
     r += "\t@mkdir -p $(OUT_FULL)\n"
     r += "\n"
 
     # COMPILE
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)\n"
+    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)\n"
     r += "\n"
 
     # LINK
@@ -280,9 +280,9 @@ def mkfile_cpp_contents(project_name):
     # AUTOCONF COMPLETE
     r += "# AUTOCONF COMPLETE\n"
     r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
-    r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
+    r += "TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
     r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
+    r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
     r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
@@ -293,13 +293,13 @@ def mkfile_cpp_contents(project_name):
 
     # PREPFOLDERS
     r += "prepfolders:\n"
-    r += "\t@mkdir -p $(BASE_TMP_FULL)\n"
+    r += "\t@mkdir -p $(TMP_FULL)\n"
     r += "\t@mkdir -p $(OUT_FULL)\n"
     r += "\n"
 
     # COMPILE
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
+    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
     r += "\n"
 
     # LINK
