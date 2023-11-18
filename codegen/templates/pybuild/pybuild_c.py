@@ -116,7 +116,7 @@ class Builder():
 
         # common compiler flags
         if self.plat == get_platform.PLAT_LINUX and self.compiler == "gcc":
-            self.compiler_flags_common += standard_c.get_c_compiler_flags_linux_gcc()
+            self.compiler_flags_common += standard_c.get_c_compiler_flags_linux_common_gcc()
         if self.plat == get_platform.PLAT_MACOSX and self.compiler == "gcc":
             self.compiler_flags_common += standard_c.get_c_compiler_flags_macosx_gcc()
 
