@@ -95,25 +95,25 @@ def get_clang_version():
 
     return contents
 
-def c_compiler_flags_windows_debug_msvc():
+def get_c_compiler_flags_windows_debug_msvc():
 
     contents = []
 
     return contents
 
-def c_compiler_flags_windows_release_msvc():
+def get_c_compiler_flags_windows_release_msvc():
 
     contents = []
 
     return contents
 
-def c_compiler_flags_windows_msvc():
+def get_c_compiler_flags_windows_msvc():
 
     contents = []
 
     return contents
 
-def c_compiler_standard_windows_msvc():
+def get_c_compiler_standard_windows_msvc():
 
     contents = "stdc17"
 

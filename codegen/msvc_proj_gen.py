@@ -117,13 +117,13 @@ def windows_msvc17projfile_contents_c(project_name, project_hex_id):
     r += "  </PropertyGroup>\n"
     r += "  <ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Debug|x64'\">\n"
     r += "    <ClCompile>\n"
-    r += "%s\n" % (prjboot_util.format_xml_tag_openclose("      ", "AdditionalOptions", prjboot_util.unroll_options_with_suffix(" ", "%(AdditionalOptions)", standard_c.c_compiler_flags_windows_debug_msvc() + standard_c.c_compiler_flags_windows_msvc())))
+    r += "%s\n" % (prjboot_util.format_xml_tag_openclose("      ", "AdditionalOptions", prjboot_util.unroll_options_with_suffix(" ", "%(AdditionalOptions)", standard_c.get_c_compiler_flags_windows_debug_msvc() + standard_c.get_c_compiler_flags_windows_msvc())))
     r += "      <WarningLevel>Level3</WarningLevel>\n"
     r += "      <SDLCheck>true</SDLCheck>\n"
     r += "      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>\n"
     r += "      <ConformanceMode>true</ConformanceMode>\n"
     r += "      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>\n"
-    r += "      <LanguageStandard_C>%s</LanguageStandard_C>\n" % standard_c.c_compiler_standard_windows_msvc()
+    r += "      <LanguageStandard_C>%s</LanguageStandard_C>\n" % standard_c.get_c_compiler_standard_windows_msvc()
     r += "    </ClCompile>\n"
     r += "    <Link>\n"
     r += "      <SubSystem>Console</SubSystem>\n"
@@ -134,7 +134,7 @@ def windows_msvc17projfile_contents_c(project_name, project_hex_id):
     r += "  </ItemDefinitionGroup>\n"
     r += "  <ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Release|x64'\">\n"
     r += "    <ClCompile>\n"
-    r += "%s\n" % (prjboot_util.format_xml_tag_openclose("      ", "AdditionalOptions", prjboot_util.unroll_options_with_suffix(" ", "%(AdditionalOptions)", standard_c.c_compiler_flags_windows_release_msvc() + standard_c.c_compiler_flags_windows_msvc())))
+    r += "%s\n" % (prjboot_util.format_xml_tag_openclose("      ", "AdditionalOptions", prjboot_util.unroll_options_with_suffix(" ", "%(AdditionalOptions)", standard_c.get_c_compiler_flags_windows_release_msvc() + standard_c.get_c_compiler_flags_windows_msvc())))
     r += "      <WarningLevel>Level3</WarningLevel>\n"
     r += "      <FunctionLevelLinking>true</FunctionLevelLinking>\n"
     r += "      <IntrinsicFunctions>true</IntrinsicFunctions>\n"
@@ -142,7 +142,7 @@ def windows_msvc17projfile_contents_c(project_name, project_hex_id):
     r += "      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>\n"
     r += "      <ConformanceMode>true</ConformanceMode>\n"
     r += "      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>\n"
-    r += "      <LanguageStandard_C>%s</LanguageStandard_C>\n" % standard_c.c_compiler_standard_windows_msvc()
+    r += "      <LanguageStandard_C>%s</LanguageStandard_C>\n" % standard_c.get_c_compiler_standard_windows_msvc()
     r += "    </ClCompile>\n"
     r += "    <Link>\n"
     r += "      <SubSystem>Console</SubSystem>\n"
