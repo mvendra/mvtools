@@ -22,6 +22,15 @@ def get_main_cpp_app():
 
     return contents
 
+def get_cpp_compiler_flags_linux_gcc():
+
+    contents = []
+
+    contents.append("-std=c++17")
+    contents.append("-m64")
+
+    return contents
+
 def get_cpp_compiler_flags_linux_debug_gcc():
 
     contents = []
@@ -49,15 +58,6 @@ def get_cpp_compiler_flags_linux_release_gcc():
     contents.append("-pedantic")
     contents.append("-fPIC")
     contents.append("-DNDEBUG")
-
-    return contents
-
-def get_cpp_compiler_flags_linux_gcc():
-
-    contents = []
-
-    contents.append("-std=c++17")
-    contents.append("-m64")
 
     return contents
 
