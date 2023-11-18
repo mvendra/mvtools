@@ -109,9 +109,8 @@ def mkfile_c_contents(project_name):
 
     # AUTOCONF COMPLETE
     r += "# AUTOCONF COMPLETE\n"
-    r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
-    r += "TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
-    r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
+    r += "TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)\n"
+    r += "OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
     r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
@@ -279,9 +278,8 @@ def mkfile_cpp_contents(project_name):
 
     # AUTOCONF COMPLETE
     r += "# AUTOCONF COMPLETE\n"
-    r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
-    r += "TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
-    r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
+    r += "TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)\n"
+    r += "OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
     r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
