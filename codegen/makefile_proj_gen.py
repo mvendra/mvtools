@@ -9,7 +9,7 @@ import prjboot_util
 import standard_c
 import standard_cpp
 
-def mkfile_c_contents(project_name):
+def linux_mkfile_c_contents(project_name):
 
     r = ""
 
@@ -158,7 +158,7 @@ def generate_linux_makefile_c(target_dir, project_name):
     base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
     prjboot_util.makedir_if_needed(base_build_linux_makefile_c)
     base_build_linux_makefile_c_fn = path_utils.concat_path(base_build_linux_makefile_c, "Makefile")
-    if not prjboot_util.writecontents(base_build_linux_makefile_c_fn, mkfile_c_contents(project_name)):
+    if not prjboot_util.writecontents(base_build_linux_makefile_c_fn, linux_mkfile_c_contents(project_name)):
         return False, "Failed creating [%s]" % base_build_linux_makefile_c_fn
 
     # gitignore
@@ -178,7 +178,7 @@ def generate_linux_makefile_c(target_dir, project_name):
 
     return True, None
 
-def mkfile_cpp_contents(project_name):
+def linux_mkfile_cpp_contents(project_name):
 
     r = ""
 
@@ -327,7 +327,7 @@ def generate_linux_makefile_cpp(target_dir, project_name):
     base_build_linux_makefile_cpp = path_utils.concat_path(base_build_linux, "makefile_cpp")
     prjboot_util.makedir_if_needed(base_build_linux_makefile_cpp)
     base_build_linux_makefile_cpp_fn = path_utils.concat_path(base_build_linux_makefile_cpp, "Makefile")
-    if not prjboot_util.writecontents(base_build_linux_makefile_cpp_fn, mkfile_cpp_contents(project_name)):
+    if not prjboot_util.writecontents(base_build_linux_makefile_cpp_fn, linux_mkfile_cpp_contents(project_name)):
         return False, "Failed creating [%s]" % base_build_linux_makefile_cpp_fn
 
     # gitignore
