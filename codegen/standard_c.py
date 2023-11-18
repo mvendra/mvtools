@@ -95,13 +95,13 @@ def get_clang_version():
 
     return contents
 
-def c_compiler_flags_debug_msvc():
+def c_compiler_flags_windows_debug_msvc():
 
     contents = []
 
     return contents
 
-def c_compiler_flags_release_msvc():
+def c_compiler_flags_windows_release_msvc():
 
     contents = []
 
