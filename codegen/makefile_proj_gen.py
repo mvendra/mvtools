@@ -152,14 +152,15 @@ def generate_makefile_c(target_dir, project_name):
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
     base_build = path_utils.concat_path(prj_fullname_base, "build")
+    base_build_linux = path_utils.concat_path(base_build, "linux")
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C Makefile
-    base_build_makefile_c = path_utils.concat_path(base_build, "makefile_c")
-    prjboot_util.makedir_if_needed(base_build_makefile_c)
-    base_build_makefile_fn = path_utils.concat_path(base_build_makefile_c, "Makefile")
-    if not prjboot_util.writecontents(base_build_makefile_fn, mkfile_c_contents(project_name)):
-        return False, "Failed creating [%s]" % base_build_makefile_fn
+    base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
+    prjboot_util.makedir_if_needed(base_build_linux_makefile_c)
+    base_build_linux_makefile_c_fn = path_utils.concat_path(base_build_linux_makefile_c, "Makefile")
+    if not prjboot_util.writecontents(base_build_linux_makefile_c_fn, mkfile_c_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_linux_makefile_c_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
@@ -321,14 +322,15 @@ def generate_makefile_cpp(target_dir, project_name):
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
     base_build = path_utils.concat_path(prj_fullname_base, "build")
+    base_build_linux = path_utils.concat_path(base_build, "linux")
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C++ Makefile
-    base_build_makefile_cpp = path_utils.concat_path(base_build, "makefile_cpp")
-    prjboot_util.makedir_if_needed(base_build_makefile_cpp)
-    base_build_makefile_fn = path_utils.concat_path(base_build_makefile_cpp, "Makefile")
-    if not prjboot_util.writecontents(base_build_makefile_fn, mkfile_cpp_contents(project_name)):
-        return False, "Failed creating [%s]" % base_build_makefile_fn
+    base_build_linux_makefile_cpp = path_utils.concat_path(base_build_linux, "makefile_cpp")
+    prjboot_util.makedir_if_needed(base_build_linux_makefile_cpp)
+    base_build_linux_makefile_cpp_fn = path_utils.concat_path(base_build_linux_makefile_cpp, "Makefile")
+    if not prjboot_util.writecontents(base_build_linux_makefile_cpp_fn, mkfile_cpp_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_linux_makefile_cpp_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
