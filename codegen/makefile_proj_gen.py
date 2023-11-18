@@ -26,7 +26,7 @@ def mkfile_c_contents(project_name):
     r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
     r += "SRC=main.c subfolder/second.c\n"
-    r += "BASE=../..\n"
+    r += "BASE=../../..\n"
     r += "BASE_DEP=$(BASE)/dep\n"
     r += "CFLAGS=\n"
     r += "INCLUDES=\n"
@@ -195,7 +195,7 @@ def mkfile_cpp_contents(project_name):
     r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
     r += "SRC=main.cpp subfolder/second.cpp\n"
-    r += "BASE=../..\n"
+    r += "BASE=../../..\n"
     r += "BASE_DEP=$(BASE)/dep\n"
     r += "CPPFLAGS=\n"
     r += "INCLUDES=\n"
