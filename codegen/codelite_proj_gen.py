@@ -159,7 +159,7 @@ def linux_codelite15_c_projfile_contents(project_name):
     r += "    </Configuration>\n"
 
     r += "    <Configuration Name=\"Linux / Release\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
-    r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_release_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
+    r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_linux_release_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"
@@ -201,7 +201,7 @@ def linux_codelite15_c_projfile_contents(project_name):
     r += "    </Configuration>\n"
 
     r += "    <Configuration Name=\"Linux / Release (LLVM)\" CompilerType=\"CLANG-%s\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n" % standard_c.get_clang_version()
-    r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_release_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
+    r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_linux_release_gcc() + standard_c.get_c_compiler_flags_linux_gcc())
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"\" Required=\"yes\">\n"

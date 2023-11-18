@@ -128,7 +128,7 @@ class Builder():
 
         # release compiler flags
         if self.mode == "release" and self.compiler == "gcc":
-            self.compiler_flags_release += standard_c.get_c_compiler_flags_release_gcc()
+            self.compiler_flags_release += standard_c.get_c_compiler_flags_linux_release_gcc()
 
         # common linker flags
         self.linker_flags_common += [] # currently NOP
