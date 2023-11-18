@@ -9,19 +9,19 @@ import prjboot_util
 import standard_c
 import standard_cpp
 
-def msvc17_prj_hex_id():
+def windows_msvc17_prj_hex_id():
     prj_id = prjboot_util.random_32_hex_string_dashed()
     return prj_id
 
-def msvc17_prjfile_hex_id():
+def windows_msvc17_prjfile_hex_id():
     prjfile_id = prjboot_util.random_32_hex_string_dashed()
     return prjfile_id
 
-def msvc17_solution_hex_id():
+def windows_msvc17_solution_hex_id():
     sln_id = prjboot_util.random_32_hex_string_dashed()
     return sln_id
 
-def msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id, solution_hex_id):
+def windows_msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id, solution_hex_id):
 
     r = ""
     r += "\nMicrosoft Visual Studio Solution File, Format Version 12.00\n"
@@ -53,7 +53,7 @@ def msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id
     ba_r.extend(map(ord, r))
     return ba_r
 
-def msvc17projfile_contents_c(project_name, project_hex_id):
+def windows_msvc17projfile_contents_c(project_name, project_hex_id):
 
     r = ""
     r += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -162,7 +162,7 @@ def msvc17projfile_contents_c(project_name, project_hex_id):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id):
+def windows_msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id):
 
     r = ""
     r += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -198,19 +198,19 @@ def generate_windows_msvc17_c(target_dir, project_name):
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual Visual Studio project and solution files
-    project_hex_id = msvc17_prj_hex_id()
-    project_projfile_hex_id = msvc17_prjfile_hex_id()
-    solution_hex_id = msvc17_solution_hex_id()
-    src_filter_hex_id = msvc17_solution_hex_id()
-    src_subfolder_filter_hex_id = msvc17_solution_hex_id()
+    project_hex_id = windows_msvc17_prj_hex_id()
+    project_projfile_hex_id = windows_msvc17_prjfile_hex_id()
+    solution_hex_id = windows_msvc17_solution_hex_id()
+    src_filter_hex_id = windows_msvc17_solution_hex_id()
+    src_subfolder_filter_hex_id = windows_msvc17_solution_hex_id()
     base_build_windows_msvc17 = path_utils.concat_path(base_build_windows, "msvc17_c")
     prjboot_util.makedir_if_needed(base_build_windows_msvc17)
     base_build_windows_filters_msvc17_fn = path_utils.concat_path(base_build_windows_msvc17, "%s.vcxproj.filters" % project_name)
     base_build_windows_msvc17_fn = path_utils.concat_path(base_build_windows_msvc17, "%s.vcxproj" % project_name)
     base_build_windows_msvc17_sln = path_utils.concat_path(base_build_windows_msvc17, "%s.sln" % project_name)
-    prjboot_util.writecontents(base_build_windows_filters_msvc17_fn, msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id))
-    prjboot_util.writecontents(base_build_windows_msvc17_fn, msvc17projfile_contents_c(project_name, project_projfile_hex_id))
-    prjboot_util.writecontents(base_build_windows_msvc17_sln, msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id, solution_hex_id))
+    prjboot_util.writecontents(base_build_windows_filters_msvc17_fn, windows_msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id))
+    prjboot_util.writecontents(base_build_windows_msvc17_fn, windows_msvc17projfile_contents_c(project_name, project_projfile_hex_id))
+    prjboot_util.writecontents(base_build_windows_msvc17_sln, windows_msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id, solution_hex_id))
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
