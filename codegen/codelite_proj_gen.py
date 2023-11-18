@@ -8,7 +8,7 @@ import prjboot_util
 
 import standard_c
 
-def codelite15_c_projfile_contents(project_name):
+def linux_codelite15_c_projfile_contents(project_name):
 
     r = ""
 
@@ -261,7 +261,7 @@ def generate_linux_codelite15_c(target_dir, project_name):
     base_build_linux_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
     prjboot_util.makedir_if_needed(base_build_linux_codelite15_c)
     base_build_linux_codelite15_c_fn = path_utils.concat_path(base_build_linux_codelite15_c, "%s.project" % project_name)
-    if not prjboot_util.writecontents(base_build_linux_codelite15_c_fn, codelite15_c_projfile_contents(project_name)):
+    if not prjboot_util.writecontents(base_build_linux_codelite15_c_fn, linux_codelite15_c_projfile_contents(project_name)):
         return False, "Failed creating [%s]" % base_build_linux_codelite15_c_fn
 
     # gitignore
