@@ -22,6 +22,15 @@ def get_main_c_app():
 
     return contents
 
+def get_c_compiler_flags_linux_gcc():
+
+    contents = []
+
+    contents.append("-std=c18")
+    contents.append("-m64")
+
+    return contents
+
 def get_c_compiler_flags_linux_debug_gcc():
 
     contents = []
@@ -51,23 +60,6 @@ def get_c_compiler_flags_linux_release_gcc():
 
     return contents
 
-def get_c_compiler_flags_linux_gcc():
-
-    contents = []
-
-    contents.append("-std=c18")
-    contents.append("-m64")
-
-    return contents
-
-def get_c_compiler_flags_macosx_gcc():
-
-    contents = []
-
-    contents.append("-std=c18")
-
-    return contents
-
 def get_c_linker_flags_linux_debug_gcc():
 
     contents = []
@@ -85,6 +77,14 @@ def get_c_linker_flags_linux_release_gcc():
 def get_clang_version():
 
     contents = "17"
+
+    return contents
+
+def get_c_compiler_flags_macosx_gcc():
+
+    contents = []
+
+    contents.append("-std=c18")
 
     return contents
 
