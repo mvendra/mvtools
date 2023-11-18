@@ -92,7 +92,7 @@ def get_cpp_linker_flags_release_gcc():
 
 def get_clang_version():
 
-    contents = "16"
+    contents = "17"
 
     return contents
 
