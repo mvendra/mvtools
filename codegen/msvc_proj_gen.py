@@ -204,7 +204,7 @@ def generate_msvc17_c(target_dir, project_name):
     src_filter_hex_id = msvc17_solution_hex_id()
     src_subfolder_filter_hex_id = msvc17_solution_hex_id()
     base_build_windows_msvc17 = path_utils.concat_path(base_build_windows, "msvc17_c")
-    os.mkdir(base_build_windows_msvc17)
+    prjboot_util.makedir_if_needed(base_build_windows_msvc17)
     base_build_windows_filters_msvc17_fn = path_utils.concat_path(base_build_windows_msvc17, "%s.vcxproj.filters" % project_name)
     base_build_windows_msvc17_fn = path_utils.concat_path(base_build_windows_msvc17, "%s.vcxproj" % project_name)
     base_build_windows_msvc17_sln = path_utils.concat_path(base_build_windows_msvc17, "%s.sln" % project_name)
