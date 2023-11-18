@@ -88,6 +88,12 @@ def get_c_compiler_flags_macosx_gcc():
 
     return contents
 
+def get_c_compiler_flags_windows_msvc():
+
+    contents = []
+
+    return contents
+
 def get_c_compiler_flags_windows_debug_msvc():
 
     contents = []
@@ -95,12 +101,6 @@ def get_c_compiler_flags_windows_debug_msvc():
     return contents
 
 def get_c_compiler_flags_windows_release_msvc():
-
-    contents = []
-
-    return contents
-
-def get_c_compiler_flags_windows_msvc():
 
     contents = []
 
