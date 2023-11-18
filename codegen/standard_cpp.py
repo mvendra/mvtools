@@ -96,19 +96,19 @@ def get_clang_version():
 
     return contents
 
-def cpp_compiler_flags_debug_msvc():
+def get_cpp_compiler_flags_windows_debug_msvc():
 
     contents = []
 
     return contents
 
-def cpp_compiler_flags_release_msvc():
+def get_cpp_compiler_flags_windows_release_msvc():
 
     contents = []
 
     return contents
 
-def cpp_compiler_flags_windows_msvc():
+def get_cpp_compiler_flags_windows_msvc():
 
     contents = []
 
