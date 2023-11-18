@@ -11,7 +11,7 @@ import standard_cpp
 
 def mkfile_c_contents(project_name):
 
-    r  = ""
+    r = ""
 
     # TARGETS
     r += ".PHONY : all prepfolders clean compile link\n"
@@ -180,7 +180,7 @@ def generate_makefile_c(target_dir, project_name):
 
 def mkfile_cpp_contents(project_name):
 
-    r  = ""
+    r = ""
 
     # TARGETS
     r += ".PHONY : all prepfolders clean compile link\n"
