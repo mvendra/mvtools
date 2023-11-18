@@ -89,6 +89,14 @@ def get_clang_version():
 
     return contents
 
+def get_cpp_compiler_flags_windows_msvc():
+
+    contents = []
+
+    contents.append("/std:c++17")
+
+    return contents
+
 def get_cpp_compiler_flags_windows_debug_msvc():
 
     contents = []
@@ -98,13 +106,5 @@ def get_cpp_compiler_flags_windows_debug_msvc():
 def get_cpp_compiler_flags_windows_release_msvc():
 
     contents = []
-
-    return contents
-
-def get_cpp_compiler_flags_windows_msvc():
-
-    contents = []
-
-    contents.append("/std:c++17")
 
     return contents
