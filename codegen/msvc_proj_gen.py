@@ -193,7 +193,8 @@ def generate_msvc17_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
-    base_prj = path_utils.concat_path(prj_fullname_base, "proj")
+    base_build = path_utils.concat_path(prj_fullname_base, "build")
+    base_build_windows = path_utils.concat_path(base_build, "windows")
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual Visual Studio project and solution files
@@ -202,14 +203,14 @@ def generate_msvc17_c(target_dir, project_name):
     solution_hex_id = msvc17_solution_hex_id()
     src_filter_hex_id = msvc17_solution_hex_id()
     src_subfolder_filter_hex_id = msvc17_solution_hex_id()
-    base_prj_msvc17 = path_utils.concat_path(base_prj, "msvc17_c")
-    os.mkdir(base_prj_msvc17)
-    base_prj_filters_msvc17_fn = path_utils.concat_path(base_prj_msvc17, "%s.vcxproj.filters" % project_name)
-    base_prj_msvc17_fn = path_utils.concat_path(base_prj_msvc17, "%s.vcxproj" % project_name)
-    base_prj_msvc17_sln = path_utils.concat_path(base_prj_msvc17, "%s.sln" % project_name)
-    prjboot_util.writecontents(base_prj_filters_msvc17_fn, msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id))
-    prjboot_util.writecontents(base_prj_msvc17_fn, msvc17projfile_contents_c(project_name, project_projfile_hex_id))
-    prjboot_util.writecontents(base_prj_msvc17_sln, msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id, solution_hex_id))
+    base_build_windows_msvc17 = path_utils.concat_path(base_build_windows, "msvc17_c")
+    os.mkdir(base_build_windows_msvc17)
+    base_build_windows_filters_msvc17_fn = path_utils.concat_path(base_build_windows_msvc17, "%s.vcxproj.filters" % project_name)
+    base_build_windows_msvc17_fn = path_utils.concat_path(base_build_windows_msvc17, "%s.vcxproj" % project_name)
+    base_build_windows_msvc17_sln = path_utils.concat_path(base_build_windows_msvc17, "%s.sln" % project_name)
+    prjboot_util.writecontents(base_build_windows_filters_msvc17_fn, msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_hex_id))
+    prjboot_util.writecontents(base_build_windows_msvc17_fn, msvc17projfile_contents_c(project_name, project_projfile_hex_id))
+    prjboot_util.writecontents(base_build_windows_msvc17_sln, msvc17slnfile_contents(project_name, project_hex_id, project_projfile_hex_id, solution_hex_id))
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
