@@ -38,7 +38,7 @@ def mkfile_c_contents(project_name):
     r += "BASE=../..\n"
     r += "BASE_SRC=$(BASE)/src\n"
     r += "BASE_TMP=$(BASE)/tmp\n"
-    r += "OUT=$(BASE)/out\n"
+    r += "BASE_OUT=$(BASE)/out\n"
     r += "\n"
 
     # DEFAULTS
@@ -110,7 +110,7 @@ def mkfile_c_contents(project_name):
     r += "# AUTOCONF COMPLETE\n"
     r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
     r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
-    r += "OUT_FULL=$(OUT)/$(PLAT_MODE)\n"
+    r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
     r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
@@ -206,7 +206,7 @@ def mkfile_cpp_contents(project_name):
     r += "BASE=../..\n"
     r += "BASE_SRC=$(BASE)/src\n"
     r += "BASE_TMP=$(BASE)/tmp\n"
-    r += "OUT=$(BASE)/out\n"
+    r += "BASE_OUT=$(BASE)/out\n"
     r += "\n"
 
     # DEFAULTS
@@ -278,7 +278,7 @@ def mkfile_cpp_contents(project_name):
     r += "# AUTOCONF COMPLETE\n"
     r += "PLAT_MODE=$(PLAT)_$(MODE)\n"
     r += "BASE_TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
-    r += "OUT_FULL=$(OUT)/$(PLAT_MODE)\n"
+    r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(BASE_TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
     r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
