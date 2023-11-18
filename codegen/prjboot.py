@@ -11,36 +11,36 @@ import codelite_proj_gen
 import msvc_proj_gen
 
 # Linux
-PROJECT_TYPE_LINUX_CODELITE15_C = "linux_codelite15_c"
-PROJECT_TYPE_LINUX_MAKEFILE_C = "linux_makefile_c"
-PROJECT_TYPE_LINUX_MAKEFILE_CPP = "linux_makefile_cpp"
+PROJECT_TYPE_LINUX_CODELITE15_C = ("linux_codelite15_c", codelite_proj_gen.generate_linux_codelite15_c)
+PROJECT_TYPE_LINUX_MAKEFILE_C = ("linux_makefile_c", makefile_proj_gen.generate_linux_makefile_c)
+PROJECT_TYPE_LINUX_MAKEFILE_CPP = ("linux_makefile_cpp", makefile_proj_gen.generate_linux_makefile_cpp)
 
 # Windows
-PROJECT_TYPE_WINDOWS_MSVC17_C = "windows_msvc17_c"
+PROJECT_TYPE_WINDOWS_MSVC17_C = ("windows_msvc17_c", msvc_proj_gen.generate_windows_msvc17_c)
 
 # hint: adding new project types should warrant a review of the accompanying "prjrenamer" tool as well
-PROJECT_TYPES = [PROJECT_TYPE_LINUX_MAKEFILE_C, PROJECT_TYPE_LINUX_MAKEFILE_CPP, PROJECT_TYPE_LINUX_CODELITE15_C, PROJECT_TYPE_WINDOWS_MSVC17_C]
+PROJECT_TYPES = [PROJECT_TYPE_LINUX_CODELITE15_C, PROJECT_TYPE_LINUX_MAKEFILE_C, PROJECT_TYPE_LINUX_MAKEFILE_CPP, PROJECT_TYPE_WINDOWS_MSVC17_C]
 PROJECT_TYPE_DEFAULT = PROJECT_TYPE_LINUX_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):
 
+    chosen_function = None
+
+    # select the right function for this project type
+    for pt in PROJECT_TYPES:
+        if proj_type == pt[0]:
+            chosen_function = pt[1]
+            break
+
+    if chosen_function is None:
+        return False, "Unknown project type: [%s]" % proj_type
+
+    # generate common structure for all projects
     v, r = common_gen.generate_common_structure(target_dir, proj_name)
     if not v:
         return False, r
 
-    chosen_function = None
-
-    if proj_type == PROJECT_TYPE_LINUX_MAKEFILE_C:
-        chosen_function = makefile_proj_gen.generate_linux_makefile_c
-    elif proj_type == PROJECT_TYPE_LINUX_MAKEFILE_CPP:
-        chosen_function = makefile_proj_gen.generate_linux_makefile_cpp
-    elif proj_type == PROJECT_TYPE_LINUX_CODELITE15_C:
-        chosen_function = codelite_proj_gen.generate_linux_codelite15_c
-    elif proj_type == PROJECT_TYPE_WINDOWS_MSVC17_C:
-        chosen_function = msvc_proj_gen.generate_windows_msvc17_c
-    else:
-        return False, "Unknown project type: [%s]" % proj_type
-
+    # carry out specific generation
     v, r = chosen_function(target_dir, proj_name)
     if not v:
         return False, r
@@ -52,7 +52,7 @@ def parse_proj_types(proj_types):
     cut_last = False
     for pt in proj_types:
         cut_last = True
-        contents += pt + " | "
+        contents += pt[0] + " | "
     if cut_last:
         contents = contents[:len(contents)-3]
     return contents + "]"
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     proj_name = "newproject"
     proj_name_next = False
 
-    proj_type = PROJECT_TYPE_DEFAULT
+    proj_type = PROJECT_TYPE_DEFAULT[0]
     proj_type_next = False
 
     for p in params:
