@@ -22,7 +22,7 @@ def get_main_cpp_app():
 
     return contents
 
-def get_cpp_compiler_flags_debug_gcc():
+def get_cpp_compiler_flags_linux_debug_gcc():
 
     contents = []
 
@@ -38,7 +38,7 @@ def get_cpp_compiler_flags_debug_gcc():
 
     return contents
 
-def get_cpp_compiler_flags_release_gcc():
+def get_cpp_compiler_flags_linux_release_gcc():
 
     contents = []
 
@@ -76,7 +76,7 @@ def get_cpp_compiler_flags_macosx_gcc():
 
     return contents
 
-def get_cpp_linker_flags_debug_gcc():
+def get_cpp_linker_flags_linux_debug_gcc():
 
     contents = []
 
@@ -84,7 +84,7 @@ def get_cpp_linker_flags_debug_gcc():
 
     return contents
 
-def get_cpp_linker_flags_release_gcc():
+def get_cpp_linker_flags_linux_release_gcc():
 
     contents = []
 

@@ -124,22 +124,22 @@ class Builder():
 
         # debug compiler flags
         if self.mode == "debug" and self.compiler == "g++":
-            self.compiler_flags_debug += standard_cpp.get_cpp_compiler_flags_debug_gcc()
+            self.compiler_flags_debug += standard_cpp.get_cpp_compiler_flags_linux_debug_gcc()
 
         # release compiler flags
         if self.mode == "release" and self.compiler == "g++":
-            self.compiler_flags_release += standard_cpp.get_cpp_compiler_flags_release_gcc()
+            self.compiler_flags_release += standard_cpp.get_cpp_compiler_flags_linux_release_gcc()
 
         # common linker flags
         self.linker_flags_common += [] # currently NOP
 
         # debug linker flags
         if self.mode == "debug" and self.compiler == "g++":
-            self.linker_flags_debug += standard_cpp.get_cpp_linker_flags_debug_gcc()
+            self.linker_flags_debug += standard_cpp.get_cpp_linker_flags_linux_debug_gcc()
 
         # release linker flags
         if self.mode == "release" and self.compiler == "g++":
-            self.linker_flags_release += standard_cpp.get_cpp_linker_flags_release_gcc()
+            self.linker_flags_release += standard_cpp.get_cpp_linker_flags_linux_release_gcc()
 
     def parseoptions(self, options):
 
