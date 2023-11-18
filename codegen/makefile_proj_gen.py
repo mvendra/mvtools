@@ -98,7 +98,7 @@ def mkfile_c_contents(project_name):
     r += "ifeq ($(MODE),release)\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_release_gcc())), "\n")
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_release_gcc())), "\n")
-    r += "\tPOSTBUILD=strip $(FULL_APP_NAME)\n"
+    r += "\tPOSTBUILD=strip $(OUTNAME_FULL)\n"
     r += "endif\n"
     r += "\n"
 
@@ -113,7 +113,7 @@ def mkfile_c_contents(project_name):
     r += "TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
     r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
-    r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
+    r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
@@ -134,14 +134,14 @@ def mkfile_c_contents(project_name):
 
     # LINK
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
+    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
     # CLEAN
     r += "clean:\n"
     r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
-    r += "\trm $(FULL_APP_NAME)\n"
+    r += "\trm $(OUTNAME_FULL)\n"
 
     ba_r = bytearray()
     ba_r.extend(map(ord, r))
@@ -268,7 +268,7 @@ def mkfile_cpp_contents(project_name):
     r += "ifeq ($(MODE),release)\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_release_gcc())), "\n")
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_release_gcc())), "\n")
-    r += "\tPOSTBUILD=strip $(FULL_APP_NAME)\n"
+    r += "\tPOSTBUILD=strip $(OUTNAME_FULL)\n"
     r += "endif\n"
     r += "\n"
 
@@ -283,7 +283,7 @@ def mkfile_cpp_contents(project_name):
     r += "TMP_FULL=$(BASE_TMP)/$(PLAT_MODE)\n"
     r += "OUT_FULL=$(BASE_OUT)/$(PLAT_MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
-    r += "FULL_APP_NAME=$(OUT_FULL)/$(OUTNAME)\n"
+    r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
@@ -304,14 +304,14 @@ def mkfile_cpp_contents(project_name):
 
     # LINK
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(FULL_APP_NAME) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
+    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
     # CLEAN
     r += "clean:\n"
     r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
-    r += "\trm $(FULL_APP_NAME)\n"
+    r += "\trm $(OUTNAME_FULL)\n"
 
     ba_r = bytearray()
     ba_r.extend(map(ord, r))
