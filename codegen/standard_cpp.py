@@ -57,6 +57,7 @@ def get_cpp_compiler_flags_linux_gcc():
     contents = []
 
     contents.append("-std=c++17")
+    contents.append("-m64")
 
     return contents
 

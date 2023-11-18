@@ -94,11 +94,6 @@ def linux_mkfile_c_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # ARCH FLAGS
-    r += "# ARCH FLAGS\n"
-    r += "CFLAGS+=-m64\n"
-    r += "\n"
-
     # AUTOCONF COMPLETE
     r += "# AUTOCONF COMPLETE\n"
     r += "TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)\n"
@@ -258,11 +253,6 @@ def linux_mkfile_cpp_contents(project_name):
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_linux_release_gcc())), "\n")
     r += "\tPOSTBUILD=strip $(OUTNAME_FULL)\n"
     r += "endif\n"
-    r += "\n"
-
-    # ARCH FLAGS
-    r += "# ARCH FLAGS\n"
-    r += "CFLAGS+=-m64\n"
     r += "\n"
 
     # AUTOCONF COMPLETE

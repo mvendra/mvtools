@@ -56,6 +56,7 @@ def get_c_compiler_flags_linux_gcc():
     contents = []
 
     contents.append("-std=c18")
+    contents.append("-m64")
 
     return contents
 
