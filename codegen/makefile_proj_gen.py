@@ -69,14 +69,6 @@ def linux_mkfile_c_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # WINDOWS
-    r += "# WINDOWS\n"
-    r += "ifneq (,$(findstring CYGWIN,$(UNAME_S)))\n"
-    r += "\tPLAT=windows\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_windows_gcc())), "\n")
-    r += "endif\n"
-    r += "\n"
-
     # MACOSX
     r += "# MACOSX\n"
     r += "ifeq ($(UNAME_S),Darwin)\n"
@@ -235,14 +227,6 @@ def linux_mkfile_cpp_contents(project_name):
     r += "ifeq ($(UNAME_S),Linux)\n"
     r += "\tPLAT=linux\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_linux_gcc())), "\n")
-    r += "endif\n"
-    r += "\n"
-
-    # WINDOWS
-    r += "# WINDOWS\n"
-    r += "ifneq (,$(findstring CYGWIN,$(UNAME_S)))\n"
-    r += "\tPLAT=windows\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_windows_gcc())), "\n")
     r += "endif\n"
     r += "\n"
 

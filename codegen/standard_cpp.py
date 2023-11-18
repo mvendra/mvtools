@@ -60,14 +60,6 @@ def get_cpp_compiler_flags_linux_gcc():
 
     return contents
 
-def get_cpp_compiler_flags_windows_gcc():
-
-    contents = []
-
-    contents.append("-std=c++17")
-
-    return contents
-
 def get_cpp_compiler_flags_macosx_gcc():
 
     contents = []
