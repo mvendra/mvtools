@@ -124,7 +124,7 @@ class Builder():
 
         # debug compiler flags
         if self.mode == "debug" and self.compiler == "gcc":
-            self.compiler_flags_debug += standard_c.get_c_compiler_flags_debug_gcc()
+            self.compiler_flags_debug += standard_c.get_c_compiler_flags_linux_debug_gcc()
 
         # release compiler flags
         if self.mode == "release" and self.compiler == "gcc":
