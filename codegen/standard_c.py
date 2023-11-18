@@ -75,7 +75,7 @@ def get_c_compiler_flags_macosx_gcc():
 
     return contents
 
-def get_c_linker_flags_debug_gcc():
+def get_c_linker_flags_linux_debug_gcc():
 
     contents = []
 
