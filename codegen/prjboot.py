@@ -10,16 +10,17 @@ import makefile_proj_gen
 import codelite_proj_gen
 import msvc_proj_gen
 
-PROJECT_TYPE_MAKEFILE_C = "makefile_c"
-PROJECT_TYPE_MAKEFILE_CPP = "makefile_cpp"
+# Linux
+PROJECT_TYPE_LINUX_CODELITE15_C = "linux_codelite15_c"
+PROJECT_TYPE_LINUX_MAKEFILE_C = "linux_makefile_c"
+PROJECT_TYPE_LINUX_MAKEFILE_CPP = "linux_makefile_cpp"
 
-PROJECT_TYPE_CODELITE15_C = "codelite15_c"
-
-PROJECT_TYPE_MSVC17_C = "msvc17_c"
+# Windows
+PROJECT_TYPE_WINDOWS_MSVC17_C = "windows_msvc17_c"
 
 # hint: adding new project types should warrant a review of the accompanying "prjrenamer" tool as well
-PROJECT_TYPES = [PROJECT_TYPE_MAKEFILE_C, PROJECT_TYPE_MAKEFILE_CPP, PROJECT_TYPE_CODELITE15_C, PROJECT_TYPE_MSVC17_C]
-PROJECT_TYPE_DEFAULT = PROJECT_TYPE_CODELITE15_C
+PROJECT_TYPES = [PROJECT_TYPE_LINUX_MAKEFILE_C, PROJECT_TYPE_LINUX_MAKEFILE_CPP, PROJECT_TYPE_LINUX_CODELITE15_C, PROJECT_TYPE_WINDOWS_MSVC17_C]
+PROJECT_TYPE_DEFAULT = PROJECT_TYPE_LINUX_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):
 
@@ -29,13 +30,13 @@ def prjboot(target_dir, proj_name, proj_type):
 
     chosen_function = None
 
-    if proj_type == PROJECT_TYPE_MAKEFILE_C:
+    if proj_type == PROJECT_TYPE_LINUX_MAKEFILE_C:
         chosen_function = makefile_proj_gen.generate_makefile_c
-    elif proj_type == PROJECT_TYPE_MAKEFILE_CPP:
+    elif proj_type == PROJECT_TYPE_LINUX_MAKEFILE_CPP:
         chosen_function = makefile_proj_gen.generate_makefile_cpp
-    elif proj_type == PROJECT_TYPE_CODELITE15_C:
+    elif proj_type == PROJECT_TYPE_LINUX_CODELITE15_C:
         chosen_function = codelite_proj_gen.generate_codelite15_c
-    elif proj_type == PROJECT_TYPE_MSVC17_C:
+    elif proj_type == PROJECT_TYPE_WINDOWS_MSVC17_C:
         chosen_function = msvc_proj_gen.generate_msvc17_c
     else:
         return False, "Unknown project type: [%s]" % proj_type
