@@ -109,27 +109,32 @@ def linux_mkfile_c_contents(project_name):
     r += "\n"
 
     # ALL
+    r += "# TARGET: ALL\n"
     r += "all: prepfolders compile link\n"
     r += "\n"
 
     # PREPFOLDERS
+    r += "# TARGET: PREPFOLDERS\n"
     r += "prepfolders:\n"
     r += "\t@mkdir -p $(TMP_FULL)\n"
     r += "\t@mkdir -p $(OUT_FULL)\n"
     r += "\n"
 
     # COMPILE
+    r += "# TARGET: COMPILE\n"
     r += "compile:\n"
     r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)\n"
     r += "\n"
 
     # LINK
+    r += "# TARGET: LINK\n"
     r += "link:\n"
     r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
     # CLEAN
+    r += "# TARGET: CLEAN\n"
     r += "clean:\n"
     r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
     r += "\trm $(OUTNAME_FULL)\n"
@@ -270,27 +275,32 @@ def linux_mkfile_cpp_contents(project_name):
     r += "\n"
 
     # ALL
+    r += "# TARGET: ALL\n"
     r += "all: prepfolders compile link\n"
     r += "\n"
 
     # PREPFOLDERS
+    r += "# TARGET: PREPFOLDERS\n"
     r += "prepfolders:\n"
     r += "\t@mkdir -p $(TMP_FULL)\n"
     r += "\t@mkdir -p $(OUT_FULL)\n"
     r += "\n"
 
     # COMPILE
+    r += "# TARGET: COMPILE\n"
     r += "compile:\n"
     r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
     r += "\n"
 
     # LINK
+    r += "# TARGET: LINK\n"
     r += "link:\n"
     r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
     # CLEAN
+    r += "# TARGET: CLEAN\n"
     r += "clean:\n"
     r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
     r += "\trm $(OUTNAME_FULL)\n"
