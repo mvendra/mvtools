@@ -189,7 +189,7 @@ def msvc17projfile_filters_contents_c(src_filter_hex_id, src_subfolder_filter_he
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_msvc17_c(target_dir, project_name):
+def generate_windows_msvc17_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)

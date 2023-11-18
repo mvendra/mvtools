@@ -146,7 +146,7 @@ def mkfile_c_contents(project_name):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_makefile_c(target_dir, project_name):
+def generate_linux_makefile_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
@@ -315,7 +315,7 @@ def mkfile_cpp_contents(project_name):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_makefile_cpp(target_dir, project_name):
+def generate_linux_makefile_cpp(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)

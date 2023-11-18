@@ -31,13 +31,13 @@ def prjboot(target_dir, proj_name, proj_type):
     chosen_function = None
 
     if proj_type == PROJECT_TYPE_LINUX_MAKEFILE_C:
-        chosen_function = makefile_proj_gen.generate_makefile_c
+        chosen_function = makefile_proj_gen.generate_linux_makefile_c
     elif proj_type == PROJECT_TYPE_LINUX_MAKEFILE_CPP:
-        chosen_function = makefile_proj_gen.generate_makefile_cpp
+        chosen_function = makefile_proj_gen.generate_linux_makefile_cpp
     elif proj_type == PROJECT_TYPE_LINUX_CODELITE15_C:
-        chosen_function = codelite_proj_gen.generate_codelite15_c
+        chosen_function = codelite_proj_gen.generate_linux_codelite15_c
     elif proj_type == PROJECT_TYPE_WINDOWS_MSVC17_C:
-        chosen_function = msvc_proj_gen.generate_msvc17_c
+        chosen_function = msvc_proj_gen.generate_windows_msvc17_c
     else:
         return False, "Unknown project type: [%s]" % proj_type
 

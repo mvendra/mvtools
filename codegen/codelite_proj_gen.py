@@ -249,7 +249,7 @@ def codelite15_c_projfile_contents(project_name):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_codelite15_c(target_dir, project_name):
+def generate_linux_codelite15_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
