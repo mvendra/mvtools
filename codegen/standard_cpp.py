@@ -75,11 +75,12 @@ def get_cpp_linker_flags_linux_release_gcc():
 
     return contents
 
-def get_cpp_compiler_flags_macosx_gcc():
+def get_cpp_compiler_flags_macosx_common_gcc():
 
     contents = []
 
-    contents.append("-std=c++17")
+    for it in get_cpp_compiler_flags_linux_common_gcc():
+        contents.append(it)
 
     return contents
 
