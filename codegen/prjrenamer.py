@@ -47,6 +47,17 @@ def codelite_rename(base_build_codelite_fn, new_project_name):
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
 
+def makefile_rename(base_build_plat_makefile_fn, current_project_name, new_project_name):
+
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_plat_makefile_fn), "Makefile")
+
+    contents = readcontents(npn_full)
+    str_cur = "OUTNAME=%s" % current_project_name
+    str_new = "OUTNAME=%s" % new_project_name
+
+    contents = contents.replace(str_cur, str_new)
+    writecontents(npn_full, contents)
+
 def msvc17sln_rename(base_build_msvc17_sln, new_project_name):
 
     opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_build_msvc17_sln)))
@@ -80,17 +91,6 @@ def msvc17vcxprojfilters_rename(base_build_msvc17_c_vcxproj_filters_fn, new_proj
     npf_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_msvc17_c_vcxproj_filters_fn), "%s.vcxproj.filters" % new_project_name)
     os.rename(base_build_msvc17_c_vcxproj_filters_fn, npf_full)
 
-def makefile_rename(base_build_plat_makefile_fn, current_project_name, new_project_name):
-
-    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_plat_makefile_fn), "Makefile")
-
-    contents = readcontents(npn_full)
-    str_cur = "OUTNAME=%s" % current_project_name
-    str_new = "OUTNAME=%s" % new_project_name
-
-    contents = contents.replace(str_cur, str_new)
-    writecontents(npn_full, contents)
-
 def gitignore_rename(base_gitignore_fn, current_project_name, new_project_name):
 
     contents = readcontents(base_gitignore_fn)
@@ -114,6 +114,13 @@ def prjrename(target_dir, original_project_name, new_project_name):
     base_build_windows = path_utils.concat_path(base_build, "windows")
     base_build_macosx = path_utils.concat_path(base_build, "macosx")
 
+    # linux/codelite15_c
+    base_build_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
+    base_build_codelite15_c_fn = path_utils.concat_path(base_build_codelite15_c, "%s.project" % local_original_project_name)
+    if os.path.isfile(base_build_codelite15_c_fn):
+        codelite_rename(base_build_codelite15_c_fn, local_new_project_name)
+        print("Adapted [%s]" % base_build_codelite15_c_fn)
+
     # linux/makefile_c
     base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
     base_build_linux_makefile_c_fn = path_utils.concat_path(base_build_linux_makefile_c, "Makefile")
@@ -127,13 +134,6 @@ def prjrename(target_dir, original_project_name, new_project_name):
     if os.path.isfile(base_build_linux_makefile_cpp_fn):
         makefile_rename(base_build_linux_makefile_cpp_fn, local_original_project_name, local_new_project_name)
         print("Adapted [%s]" % base_build_linux_makefile_cpp_fn)
-
-    # linux/codelite15_c
-    base_build_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
-    base_build_codelite15_c_fn = path_utils.concat_path(base_build_codelite15_c, "%s.project" % local_original_project_name)
-    if os.path.isfile(base_build_codelite15_c_fn):
-        codelite_rename(base_build_codelite15_c_fn, local_new_project_name)
-        print("Adapted [%s]" % base_build_codelite15_c_fn)
 
     # windows/msvc17_c
     base_build_msvc17_c = path_utils.concat_path(base_build_windows, "msvc17_c")
