@@ -101,16 +101,16 @@ def gitignore_rename(base_gitignore_fn, current_project_name, new_project_name):
 
 def prjrename(target_dir, original_project_name, new_project_name):
 
-    original_project_name = path_utils.filter_remove_trailing_sep(original_project_name)
-    new_project_name = path_utils.filter_remove_trailing_sep(new_project_name)
+    local_original_project_name = path_utils.filter_remove_trailing_sep(original_project_name)
+    local_new_project_name = path_utils.filter_remove_trailing_sep(new_project_name)
 
-    full_original = path_utils.concat_path(target_dir, original_project_name)
-    full_new = path_utils.concat_path(target_dir, new_project_name)
+    full_original = path_utils.concat_path(target_dir, local_original_project_name)
+    full_new = path_utils.concat_path(target_dir, local_new_project_name)
 
-    if not prjrename_validate(target_dir, original_project_name, new_project_name):
+    if not prjrename_validate(target_dir, local_original_project_name, local_new_project_name):
         sys.exit(1)
 
-    prj_fullname_base = path_utils.concat_path(target_dir, original_project_name)
+    prj_fullname_base = path_utils.concat_path(target_dir, local_original_project_name)
     base_build = path_utils.concat_path(prj_fullname_base, "build")
     base_build_linux = path_utils.concat_path(base_build, "linux")
     base_build_windows = path_utils.concat_path(base_build, "windows")
@@ -120,38 +120,38 @@ def prjrename(target_dir, original_project_name, new_project_name):
     base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
     base_build_linux_makefile_c_fn = path_utils.concat_path(base_build_linux_makefile_c, "Makefile")
     if os.path.isfile(base_build_linux_makefile_c_fn):
-        makefile_rename(base_build_linux_makefile_c_fn, original_project_name, new_project_name)
+        makefile_rename(base_build_linux_makefile_c_fn, local_original_project_name, local_new_project_name)
         print("Adapted [%s]" % base_build_linux_makefile_c_fn)
 
     # linux/makefile_cpp
     base_build_linux_makefile_cpp = path_utils.concat_path(base_build_linux, "makefile_cpp")
     base_build_linux_makefile_cpp_fn = path_utils.concat_path(base_build_linux_makefile_cpp, "Makefile")
     if os.path.isfile(base_build_linux_makefile_cpp_fn):
-        makefile_rename(base_build_linux_makefile_cpp_fn, original_project_name, new_project_name)
+        makefile_rename(base_build_linux_makefile_cpp_fn, local_original_project_name, local_new_project_name)
         print("Adapted [%s]" % base_build_linux_makefile_cpp_fn)
 
     # linux/codelite15_c
     base_build_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
-    base_build_codelite15_c_fn = path_utils.concat_path(base_build_codelite15_c, "%s.project" % original_project_name)
+    base_build_codelite15_c_fn = path_utils.concat_path(base_build_codelite15_c, "%s.project" % local_original_project_name)
     if os.path.isfile(base_build_codelite15_c_fn):
-        codelite_rename(base_build_codelite15_c_fn, new_project_name)
+        codelite_rename(base_build_codelite15_c_fn, local_new_project_name)
         print("Adapted [%s]" % base_build_codelite15_c_fn)
 
     # windows/msvc17_c
     base_build_msvc17_c = path_utils.concat_path(base_build_windows, "msvc17_c")
-    base_build_msvc17_c_sln_fn = path_utils.concat_path(base_build_msvc17_c, "%s.sln" % original_project_name)
-    base_build_msvc17_c_vcxproj_fn = path_utils.concat_path(base_build_msvc17_c, "%s.vcxproj" % original_project_name)
-    base_build_msvc17_c_vcxproj_filters_fn = path_utils.concat_path(base_build_msvc17_c, "%s.vcxproj.filters" % original_project_name)
+    base_build_msvc17_c_sln_fn = path_utils.concat_path(base_build_msvc17_c, "%s.sln" % local_original_project_name)
+    base_build_msvc17_c_vcxproj_fn = path_utils.concat_path(base_build_msvc17_c, "%s.vcxproj" % local_original_project_name)
+    base_build_msvc17_c_vcxproj_filters_fn = path_utils.concat_path(base_build_msvc17_c, "%s.vcxproj.filters" % local_original_project_name)
     if os.path.isfile(base_build_msvc17_c_sln_fn) and os.path.isfile(base_build_msvc17_c_vcxproj_fn):
-        msvc17sln_rename(base_build_msvc17_c_sln_fn, new_project_name)
-        msvc17vcxproj_rename(base_build_msvc17_c_vcxproj_fn, new_project_name)
-        msvc17vcxprojfilters_rename(base_build_msvc17_c_vcxproj_filters_fn, new_project_name)
+        msvc17sln_rename(base_build_msvc17_c_sln_fn, local_new_project_name)
+        msvc17vcxproj_rename(base_build_msvc17_c_vcxproj_fn, local_new_project_name)
+        msvc17vcxprojfilters_rename(base_build_msvc17_c_vcxproj_filters_fn, local_new_project_name)
         print("Adapted [%s], [%s] and [%s]" % (base_build_msvc17_c_sln_fn, base_build_msvc17_c_vcxproj_fn, base_build_msvc17_c_vcxproj_filters_fn))
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
     if os.path.isfile(gitignore_filename):
-        gitignore_rename(gitignore_filename, original_project_name, new_project_name)
+        gitignore_rename(gitignore_filename, local_original_project_name, local_new_project_name)
         print("Adapted [%s]" % gitignore_filename)
 
     os.rename(full_original, full_new)
