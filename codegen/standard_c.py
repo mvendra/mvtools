@@ -100,6 +100,8 @@ def get_c_compiler_flags_windows_common_msvc():
 
     contents = []
 
+    contents.append("/utf-8")
+
     return contents
 
 def get_c_compiler_flags_windows_debug_msvc():
