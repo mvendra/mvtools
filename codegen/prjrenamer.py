@@ -116,28 +116,28 @@ def prjrename(target_dir, original_project_name, new_project_name):
     base_build_windows = path_utils.concat_path(base_build, "windows")
     base_build_macosx = path_utils.concat_path(base_build, "macosx")
 
-    # makefile_c
-    base_build_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
-    base_build_makefile_c_fn = path_utils.concat_path(base_build_makefile_c, "Makefile")
-    if os.path.isfile(base_build_makefile_c_fn):
-        makefile_rename(base_build_makefile_c_fn, original_project_name, new_project_name)
-        print("Adapted [%s]" % base_build_makefile_c_fn)
+    # linux/makefile_c
+    base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
+    base_build_linux_makefile_c_fn = path_utils.concat_path(base_build_linux_makefile_c, "Makefile")
+    if os.path.isfile(base_build_linux_makefile_c_fn):
+        makefile_rename(base_build_linux_makefile_c_fn, original_project_name, new_project_name)
+        print("Adapted [%s]" % base_build_linux_makefile_c_fn)
 
-    # makefile_cpp
-    base_build_makefile_cpp = path_utils.concat_path(base_build_linux, "makefile_cpp")
-    base_build_makefile_cpp_fn = path_utils.concat_path(base_build_makefile_cpp, "Makefile")
-    if os.path.isfile(base_build_makefile_cpp_fn):
-        makefile_rename(base_build_makefile_cpp_fn, original_project_name, new_project_name)
-        print("Adapted [%s]" % base_build_makefile_cpp_fn)
+    # linux/makefile_cpp
+    base_build_linux_makefile_cpp = path_utils.concat_path(base_build_linux, "makefile_cpp")
+    base_build_linux_makefile_cpp_fn = path_utils.concat_path(base_build_linux_makefile_cpp, "Makefile")
+    if os.path.isfile(base_build_linux_makefile_cpp_fn):
+        makefile_rename(base_build_linux_makefile_cpp_fn, original_project_name, new_project_name)
+        print("Adapted [%s]" % base_build_linux_makefile_cpp_fn)
 
-    # codelite15_c
+    # linux/codelite15_c
     base_build_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
     base_build_codelite15_c_fn = path_utils.concat_path(base_build_codelite15_c, "%s.project" % original_project_name)
     if os.path.isfile(base_build_codelite15_c_fn):
         codelite_rename(base_build_codelite15_c_fn, new_project_name)
         print("Adapted [%s]" % base_build_codelite15_c_fn)
 
-    # msvc17_c
+    # windows/msvc17_c
     base_build_msvc17_c = path_utils.concat_path(base_build_windows, "msvc17_c")
     base_build_msvc17_c_sln_fn = path_utils.concat_path(base_build_msvc17_c, "%s.sln" % original_project_name)
     base_build_msvc17_c_vcxproj_fn = path_utils.concat_path(base_build_msvc17_c, "%s.vcxproj" % original_project_name)
