@@ -60,8 +60,8 @@ def makefile_rename(base_build_plat_makefile_fn, current_project_name, new_proje
 
 def msvc17sln_rename(base_build_msvc17_sln, new_project_name):
 
-    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_build_msvc17_sln)))
-    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
+    opn = remove_ext(path_utils.basename_filtered(base_build_msvc17_sln))
+    npn = remove_ext(new_project_name)
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_msvc17_sln), "%s.sln" % new_project_name)
     os.rename(base_build_msvc17_sln, npn_full)
 
@@ -74,8 +74,8 @@ def msvc17sln_rename(base_build_msvc17_sln, new_project_name):
 
 def msvc17vcxproj_rename(base_build_msvc17_fn, new_project_name):
 
-    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_build_msvc17_fn)))
-    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
+    opn = remove_ext(path_utils.basename_filtered(base_build_msvc17_fn))
+    npn = remove_ext(new_project_name)
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_msvc17_fn), "%s.vcxproj" % new_project_name)
     os.rename(base_build_msvc17_fn, npn_full)
 
