@@ -136,15 +136,15 @@ def prjrename(target_dir, original_project_name, new_project_name):
         print("Adapted [%s]" % base_build_linux_makefile_cpp_fn)
 
     # windows/msvc17_c
-    base_build_msvc17_c = path_utils.concat_path(base_build_windows, "msvc17_c")
-    base_build_msvc17_c_sln_fn = path_utils.concat_path(base_build_msvc17_c, "%s.sln" % local_original_project_name)
-    base_build_msvc17_c_vcxproj_fn = path_utils.concat_path(base_build_msvc17_c, "%s.vcxproj" % local_original_project_name)
-    base_build_msvc17_c_vcxproj_filters_fn = path_utils.concat_path(base_build_msvc17_c, "%s.vcxproj.filters" % local_original_project_name)
-    if os.path.isfile(base_build_msvc17_c_sln_fn) and os.path.isfile(base_build_msvc17_c_vcxproj_fn):
-        msvc17sln_rename(base_build_msvc17_c_sln_fn, local_new_project_name)
-        msvc17vcxproj_rename(base_build_msvc17_c_vcxproj_fn, local_new_project_name)
-        msvc17vcxprojfilters_rename(base_build_msvc17_c_vcxproj_filters_fn, local_new_project_name)
-        print("Adapted [%s], [%s] and [%s]" % (base_build_msvc17_c_sln_fn, base_build_msvc17_c_vcxproj_fn, base_build_msvc17_c_vcxproj_filters_fn))
+    base_build_windows_msvc17_c = path_utils.concat_path(base_build_windows, "msvc17_c")
+    base_build_windows_msvc17_c_sln_fn = path_utils.concat_path(base_build_windows_msvc17_c, "%s.sln" % local_original_project_name)
+    base_build_windows_msvc17_c_vcxproj_fn = path_utils.concat_path(base_build_windows_msvc17_c, "%s.vcxproj" % local_original_project_name)
+    base_build_windows_msvc17_c_vcxproj_filters_fn = path_utils.concat_path(base_build_windows_msvc17_c, "%s.vcxproj.filters" % local_original_project_name)
+    if os.path.isfile(base_build_windows_msvc17_c_sln_fn) and os.path.isfile(base_build_windows_msvc17_c_vcxproj_fn):
+        msvc17sln_rename(base_build_windows_msvc17_c_sln_fn, local_new_project_name)
+        msvc17vcxproj_rename(base_build_windows_msvc17_c_vcxproj_fn, local_new_project_name)
+        msvc17vcxprojfilters_rename(base_build_windows_msvc17_c_vcxproj_filters_fn, local_new_project_name)
+        print("Adapted [%s], [%s] and [%s]" % (base_build_windows_msvc17_c_sln_fn, base_build_windows_msvc17_c_vcxproj_fn, base_build_windows_msvc17_c_vcxproj_filters_fn))
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
