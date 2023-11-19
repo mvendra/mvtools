@@ -18,23 +18,26 @@ This script is supposed to be integrated similar to
 the following structure:
 
 (project)/
-(project)/proj/                         (project files; codelite, codeblocks, visual studio, xcode, makefiles, etc)
-(project)/proj/pybuild
-(project)/proj/pybuild/pybuild_c.py     (this script)
 
-(project)/build/                        (intermediate/object files - by platform, arch and mode)
-(project)/build/linux_x64_debug
-(project)/build/linux_x64_release
+(project)/build/
+(project)/build/linux/
+(project)/build/linux/pybuild_c/
+(project)/build/linux/pybuild_c/pybuild_c.py
 
-(project)/run/                          (final files/runtime folder - by platform, arch and mode)
-(project)/run/linux_x64_debug
-(project)/run/linux_x64_release
+(project)/dep/
+(project)/dep/linux/
 
-(project)/src
-(project)/lib
-(project)/lib/third_party
+(project)/tmp/
+(project)/tmp/linux/
+(project)/tmp/linux/debug/
+(project)/tmp/linux/release/
 
-... and so on.
+(project)/out/
+(project)/out/linux/
+(project)/out/linux/debug/
+(project)/out/linux/release/
+
+(project)/src/
 """
 
 def makedir_if_needed(path):
@@ -68,23 +71,22 @@ class Builder():
         self.appname = appname
         self.src = sources
 
-        self.src_base = "../../src/"
-        self.obj_base = "../../build/"
-        self.run_base = "../../run/"
+        self.src_base = "../../../src/"
+        self.tmp_base = "../../../tmp/"
+        self.out_base = "../../../out/"
 
         self.include = []
         self.include.append("-I%s" % self.src_base)
 
         self.plat = get_platform.getplat()
-        self.arch = get_platform.getarch()
         self.mode = self.options["mode"]
 
-        self.target = self.plat + "_" + self.arch + "_" + self.mode
+        self.target = path_utils.concat_path(self.plat, self.mode)
 
-        self.obj_full = self.obj_base + self.target
-        self.run_full = self.run_base + self.target
+        self.tmp_full = path_utils.concat_path(self.tmp_base, self.target)
+        self.out_full = path_utils.concat_path(self.out_base, self.target)
 
-        self.app_full_name = self.run_full + "/" + self.appname
+        self.out_full_fn = path_utils.concat_path(self.out_full, self.appname)
         self.all_objs = [(unroll_path_dirname(x) + path_utils.replace_extension(path_utils.basename_filtered(x), ".c", ".o")) for x in self.src]
 
         # compiler / linker flags
@@ -184,21 +186,21 @@ class Builder():
 
     def do_structure(self):
 
-        makedir_if_needed(self.obj_base)
-        makedir_if_needed(self.run_base)
+        makedir_if_needed(self.tmp_base)
+        makedir_if_needed(self.out_base)
 
-        makedir_if_needed(self.obj_full)
-        makedir_if_needed(self.run_full)
+        makedir_if_needed(self.tmp_full)
+        makedir_if_needed(self.out_full)
 
     def do_clean(self):
 
         for o in self.all_objs:
             cmd = ["rm"]
-            full_obj = self.obj_full + "/" + o
+            full_obj = self.tmp_full + "/" + o
             cmd.append(full_obj)
             self.call_cmd(cmd)
 
-        cmd = ["rm", self.app_full_name]
+        cmd = ["rm", self.out_full_fn]
         self.call_cmd(cmd)
 
     def do_compile(self):
@@ -209,13 +211,13 @@ class Builder():
                 for i in self.include:
                     cmd.append(i)
             cmd += self.compiler_flags_to_use
-            cmd += ["-c", self.src_base + s, "-o", self.obj_full + "/" + unroll_path_dirname(s) + path_utils.replace_extension(path_utils.basename_filtered(s), ".c", ".o")]
+            cmd += ["-c", self.src_base + s, "-o", self.tmp_full + "/" + unroll_path_dirname(s) + path_utils.replace_extension(path_utils.basename_filtered(s), ".c", ".o")]
             self.call_cmd(cmd)
 
     def do_link(self):
 
-        cmd = [self.compiler, "-o", self.app_full_name]
-        cmd += [self.obj_full + "/" + x for x in self.all_objs]
+        cmd = [self.compiler, "-o", self.out_full_fn]
+        cmd += [self.tmp_full + "/" + x for x in self.all_objs]
 
         if len(self.linker_flags_to_use) > 0:
             for l in self.linker_flags_to_use:
