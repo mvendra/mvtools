@@ -89,7 +89,7 @@ def get_clang_version():
 
     return contents
 
-def get_cpp_compiler_flags_windows_msvc():
+def get_cpp_compiler_flags_windows_common_msvc():
 
     contents = []
 
