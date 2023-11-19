@@ -1,0 +1,87 @@
+.PHONY : all prepfolders clean compile link
+
+# PLUMBING
+COMPILER=gcc
+LINKER=ar
+
+# PROJECT SETUP
+OUTNAME=newproject
+SRC=main.c subfolder/second.c
+BASE=../../..
+BASE_DEP=$(BASE)/dep
+CFLAGS=
+INCLUDES=
+LDFLAGS=
+DEPS=
+POSTBUILD=
+
+# AUTOCONF PREP
+BASE_SRC=$(BASE)/src
+BASE_TMP=$(BASE)/tmp
+BASE_OUT=$(BASE)/out
+
+# DEFAULTS
+PLAT=linux
+MODE=release
+
+# MODE
+ifeq ($(MODE),)
+	# to use, do 'make MODE=debug'
+	MODE=debug
+endif
+
+# PLAT FLAGS
+UNAME_S := $(shell uname -s)
+
+# LINUX
+ifeq ($(UNAME_S),Linux)
+	PLAT=linux
+	CFLAGS+=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8 -static
+endif
+
+# MACOSX
+ifeq ($(UNAME_S),Darwin)
+	PLAT=macosx
+	CFLAGS+=-std=c18
+endif
+
+# DEBUG
+ifeq ($(MODE),debug)
+	CFLAGS+=-g -Wall -Wextra -Werror -pedantic -fPIC -fsanitize=address -D_GLIBCXX_DEBUG
+	LDFLAGS+=-lasan
+endif
+
+# RELEASE
+ifeq ($(MODE),release)
+	CFLAGS+=-O2 -Wall -Wextra -Werror -pedantic -fPIC -DNDEBUG
+	POSTBUILD=strip -g $(OUTNAME_FULL)
+endif
+
+# AUTOCONF COMPLETE
+TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)
+OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)
+ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))
+OUTNAME_FULL=$(OUT_FULL)/lib$(OUTNAME).a
+INCLUDES+=-I$(BASE_SRC)
+
+# TARGET: ALL
+all: prepfolders compile link
+
+# TARGET: PREPFOLDERS
+prepfolders:
+	@mkdir -p $(TMP_FULL)
+	@mkdir -p $(OUT_FULL)
+
+# TARGET: COMPILE
+compile:
+	$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)
+
+# TARGET: LINK
+link:
+	$(LINKER) -rcs $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS)
+	$(POSTBUILD)
+
+# TARGET: CLEAN
+clean:
+	$(foreach objs,$(ALL_OBJS),rm $(objs);)
+	rm $(OUTNAME_FULL)
