@@ -82,13 +82,11 @@ def msvc17vcxprojfilters_rename(base_build_msvc17_c_vcxproj_filters_fn, new_proj
 
 def makefile_rename(base_build_plat_makefile_fn, current_project_name, new_project_name):
 
-    opn = path_utils.filter_remove_trailing_sep(current_project_name)
-    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_plat_makefile_fn), "Makefile")
 
     contents = readcontents(npn_full)
-    str_cur = "OUTNAME=%s" % opn
-    str_new = "OUTNAME=%s" % npn
+    str_cur = "OUTNAME=%s" % current_project_name
+    str_new = "OUTNAME=%s" % new_project_name
 
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
@@ -101,8 +99,8 @@ def gitignore_rename(base_gitignore_fn, current_project_name, new_project_name):
 
 def prjrename(target_dir, original_project_name, new_project_name):
 
-    local_original_project_name = path_utils.filter_remove_trailing_sep(original_project_name)
-    local_new_project_name = path_utils.filter_remove_trailing_sep(new_project_name)
+    local_original_project_name = path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(original_project_name))
+    local_new_project_name = path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name))
 
     full_original = path_utils.concat_path(target_dir, local_original_project_name)
     full_new = path_utils.concat_path(target_dir, local_new_project_name)
