@@ -35,8 +35,8 @@ def remove_ext(path):
 
 def codelite_rename(base_build_codelite_fn, new_project_name):
 
-    opn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(base_build_codelite_fn)))
-    npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
+    opn = remove_ext(path_utils.basename_filtered(base_build_codelite_fn))
+    npn = remove_ext(new_project_name)
     npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_codelite_fn), "%s.project" % new_project_name)
     os.rename(base_build_codelite_fn, npn_full)
 
@@ -115,11 +115,11 @@ def prjrename(target_dir, original_project_name, new_project_name):
     base_build_macosx = path_utils.concat_path(base_build, "macosx")
 
     # linux/codelite15_c
-    base_build_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
-    base_build_codelite15_c_fn = path_utils.concat_path(base_build_codelite15_c, "%s.project" % local_original_project_name)
-    if os.path.isfile(base_build_codelite15_c_fn):
-        codelite_rename(base_build_codelite15_c_fn, local_new_project_name)
-        print("Adapted [%s]" % base_build_codelite15_c_fn)
+    base_build_linux_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
+    base_build_linux_codelite15_c_fn = path_utils.concat_path(base_build_linux_codelite15_c, "%s.project" % local_original_project_name)
+    if os.path.isfile(base_build_linux_codelite15_c_fn):
+        codelite_rename(base_build_linux_codelite15_c_fn, local_new_project_name)
+        print("Adapted [%s]" % base_build_linux_codelite15_c_fn)
 
     # linux/makefile_c
     base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
