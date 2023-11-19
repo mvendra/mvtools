@@ -5,6 +5,7 @@ COMPILER=gcc
 LINKER=ar
 
 # PROJECT SETUP
+# To link to this library, just do -lthe-library-name (i.e. $OUTNAME in this particular Makefile - see below)
 OUTNAME=newproject
 SRC=main.c subfolder/second.c
 BASE=../../..
