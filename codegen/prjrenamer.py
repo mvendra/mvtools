@@ -58,12 +58,12 @@ def makefile_rename(base_build_plat_makefile_fn, current_project_name, new_proje
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
 
-def msvc17sln_rename(base_build_msvc17_sln, new_project_name):
+def msvc17sln_rename(base_build_windows_msvc17_sln, new_project_name):
 
-    opn = remove_ext(path_utils.basename_filtered(base_build_msvc17_sln))
+    opn = remove_ext(path_utils.basename_filtered(base_build_windows_msvc17_sln))
     npn = remove_ext(new_project_name)
-    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_msvc17_sln), "%s.sln" % new_project_name)
-    os.rename(base_build_msvc17_sln, npn_full)
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_windows_msvc17_sln), "%s.sln" % new_project_name)
+    os.rename(base_build_windows_msvc17_sln, npn_full)
 
     contents = readcontents(npn_full)
     str_cur = "\"%s\", \"%s.vcxproj\"" % (opn, opn)
@@ -72,12 +72,12 @@ def msvc17sln_rename(base_build_msvc17_sln, new_project_name):
 
     writecontents(npn_full, contents)
 
-def msvc17vcxproj_rename(base_build_msvc17_fn, new_project_name):
+def msvc17vcxproj_rename(base_build_windows_msvc17_fn, new_project_name):
 
-    opn = remove_ext(path_utils.basename_filtered(base_build_msvc17_fn))
+    opn = remove_ext(path_utils.basename_filtered(base_build_windows_msvc17_fn))
     npn = remove_ext(new_project_name)
-    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_msvc17_fn), "%s.vcxproj" % new_project_name)
-    os.rename(base_build_msvc17_fn, npn_full)
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_windows_msvc17_fn), "%s.vcxproj" % new_project_name)
+    os.rename(base_build_windows_msvc17_fn, npn_full)
 
     contents = readcontents(npn_full)
     str_cur = "<RootNamespace>%s</RootNamespace>" % opn
