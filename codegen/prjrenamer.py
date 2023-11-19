@@ -33,12 +33,12 @@ def remove_ext(path):
     f, e = path.split(".")
     return f
 
-def codelite_rename(base_build_codelite_fn, new_project_name):
+def codelite_rename(base_build_plat_codelite_fn, new_project_name):
 
-    opn = remove_ext(path_utils.basename_filtered(base_build_codelite_fn))
+    opn = remove_ext(path_utils.basename_filtered(base_build_plat_codelite_fn))
     npn = remove_ext(new_project_name)
-    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_codelite_fn), "%s.project" % new_project_name)
-    os.rename(base_build_codelite_fn, npn_full)
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_plat_codelite_fn), "%s.project" % new_project_name)
+    os.rename(base_build_plat_codelite_fn, npn_full)
 
     contents = readcontents(npn_full)
     str_cur = "CodeLite_Project Name=\"%s\"" % opn
