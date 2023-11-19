@@ -80,15 +80,15 @@ def msvc17vcxprojfilters_rename(base_build_msvc17_c_vcxproj_filters_fn, new_proj
     npf_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_msvc17_c_vcxproj_filters_fn), "%s.vcxproj.filters" % new_project_name)
     os.rename(base_build_msvc17_c_vcxproj_filters_fn, npf_full)
 
-def makefile_rename(base_build_makefile_fn, current_project_name, new_project_name):
+def makefile_rename(base_build_plat_makefile_fn, current_project_name, new_project_name):
 
     opn = path_utils.filter_remove_trailing_sep(current_project_name)
     npn = remove_ext(path_utils.filter_remove_trailing_sep(path_utils.basename_filtered(new_project_name)))
-    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_makefile_fn), "Makefile")
+    npn_full = path_utils.concat_path(path_utils.dirname_filtered(base_build_plat_makefile_fn), "Makefile")
 
     contents = readcontents(npn_full)
-    str_cur = "APPNAME=%s" % opn
-    str_new = "APPNAME=%s" % npn
+    str_cur = "OUTNAME=%s" % opn
+    str_new = "OUTNAME=%s" % npn
 
     contents = contents.replace(str_cur, str_new)
     writecontents(npn_full, contents)
