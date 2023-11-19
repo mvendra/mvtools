@@ -28,6 +28,8 @@ def get_c_compiler_flags_linux_common_gcc():
 
     contents.append("-std=c18")
     contents.append("-m64")
+    contents.append("-finput-charset=utf-8")
+    contents.append("-fexec-charset=utf-8")
 
     return contents
 
