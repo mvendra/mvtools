@@ -120,7 +120,7 @@ class Builder():
         if self.plat == get_platform.PLAT_LINUX and self.compiler == "g++":
             self.compiler_flags_common += standard_cpp.get_cpp_compiler_flags_linux_common_gcc()
         if self.plat == get_platform.PLAT_MACOSX and self.compiler == "g++":
-            self.compiler_flags_common += standard_cpp.get_cpp_compiler_flags_macosx_gcc()
+            self.compiler_flags_common += standard_cpp.get_cpp_compiler_flags_macosx_common_gcc()
 
         # debug compiler flags
         if self.mode == "debug" and self.compiler == "g++":
