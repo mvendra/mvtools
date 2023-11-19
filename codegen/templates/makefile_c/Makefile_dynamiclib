@@ -7,7 +7,7 @@ LINKER=$(COMPILER)
 # PROJECT SETUP
 # To link to this library, pass [-Wl,-rpath,"."] to your linker (during the linking step, particularly), plus -lthe-final-so-name (i.e. $SONAME in this particular Makefile - see below/further)
 # This will tell the application executable to search its own current path (".") for the library's soname. You could also pass "../../../dep/linux/my_library" for example.
-OUTNAME=newproject
+OUTNAME=dynamiclib
 SO_SUFFIX=-dev.1
 SRC=main.c subfolder/second.c
 BASE=../../..
