@@ -142,31 +142,31 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse2(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_fail_2, dsl_type20.DSLType20_Options())) # mvtodo: fix
-
-    def testDslType20_Parse3(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_Parse4(self):
+    def testDslType20_Parse3(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_Parse5(self):
+    def testDslType20_Parse4(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_5, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_Parse6(self):
+    def testDslType20_Parse5(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_Parse7(self):
+    def testDslType20_Parse6(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_Parse8(self):
+    def testDslType20_Parse7(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_3, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_Parse9(self):
+    def testDslType20_Parse8(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_4, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_Parse10(self):
+    def testDslType20_Parse9(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_5, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_Parse10(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_fail_2, dsl_type20.DSLType20_Options())) # mvtodo: fix
 
     def testDslType20_Parse11(self):
 
