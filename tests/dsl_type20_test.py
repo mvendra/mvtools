@@ -85,14 +85,14 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_fail_1 = "var1 = val1\n"
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.t20")
 
-        self.contents_cfg_test_fail_3 = "{var1 = \"val1\"}\n"
+        self.contents_cfg_test_fail_2 = "{var1 = \"val1\"}\n"
+        self.cfg_test_fail_2 = path_utils.concat_path(self.test_dir, "test_fail_2.t20")
+
+        self.contents_cfg_test_fail_3 = "{fakeopt} var1 = \"val1\"\n"
         self.cfg_test_fail_3 = path_utils.concat_path(self.test_dir, "test_fail_3.t20")
 
-        self.contents_cfg_test_fail_4 = "{fakeopt} var1 = \"val1\"\n"
+        self.contents_cfg_test_fail_4 = "var1 {opt1: \"val1} = \"val2\"\n"
         self.cfg_test_fail_4 = path_utils.concat_path(self.test_dir, "test_fail_4.t20")
-
-        self.contents_cfg_test_fail_5 = "var1 {opt1: \"val1} = \"val2\"\n"
-        self.cfg_test_fail_5 = path_utils.concat_path(self.test_dir, "test_fail_5.t20")
 
         create_and_write_file.create_file_contents(self.cfg_test_ok_1, self.contents_cfg_test_ok_1)
         create_and_write_file.create_file_contents(self.cfg_test_ok_2, self.contents_cfg_test_ok_2)
@@ -101,9 +101,9 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_ok_5, self.contents_cfg_test_ok_5)
         create_and_write_file.create_file_contents(self.cfg_test_ok_6, self.contents_cfg_test_ok_6)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
+        create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
         create_and_write_file.create_file_contents(self.cfg_test_fail_4, self.contents_cfg_test_fail_4)
-        create_and_write_file.create_file_contents(self.cfg_test_fail_5, self.contents_cfg_test_fail_5)
 
         return True, ""
 
@@ -142,13 +142,13 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse2(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, dsl_type20.DSLType20_Options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_2, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse3(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, dsl_type20.DSLType20_Options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_3, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse4(self):
-        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_5, dsl_type20.DSLType20_Options()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse5(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Options()))
