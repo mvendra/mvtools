@@ -381,38 +381,37 @@ class DSLType20:
         if not local_context in self.data:
             return False, "Can't parse variable: [%s]: Context doesn't exist: [%s]." % (str_input, context)
 
-        # start by parsing the variable's value
+        # start by parsing the variable's value - if it has it
         v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
-        if not v:
-            return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
-        if r[1][len(r[1])-1] == self.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
-            return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
-        local_str_input = r[1]
+        if v:
+            if r[1][len(r[1])-1] == self.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
+                return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
+            local_str_input = r[1]
 
-        # find next nonescaped quote in reverse (beginning of the value)
-        v, r = miniparse.last_not_escaped_slice(local_str_input, self.QUOTE, self.BSLASH)
-        if not v:
-            return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
-        local_str_input = (r[1]).strip()
-        var_value = r[0]
+            # find next nonescaped quote in reverse (beginning of the value)
+            v, r = miniparse.last_not_escaped_slice(local_str_input, self.QUOTE, self.BSLASH)
+            if not v:
+                return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
+            local_str_input = (r[1]).strip()
+            var_value = r[0]
 
-        # descape the variable's value
-        v, r = miniparse.descape(var_value, self.BSLASH)
-        if not v:
-            return False, "Variable descaping failed: [%s]" % var_value
-        var_value = r
+            # descape the variable's value
+            v, r = miniparse.descape(var_value, self.BSLASH)
+            if not v:
+                return False, "Variable descaping failed: [%s]" % var_value
+            var_value = r
 
-        # remove first quote of value
-        v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
-        if not v:
-            return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
-        local_str_input = (r[1]).strip()
+            # remove first quote of value
+            v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
+            if not v:
+                return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
+            local_str_input = (r[1]).strip()
 
-        # remove equal sign just before the variable's value
-        v, r = miniparse.scan_and_slice_end(local_str_input, self.EQSIGN)
-        if not v:
-            return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
-        local_str_input = (r[1]).strip()
+            # remove equal sign just before the variable's value
+            v, r = miniparse.scan_and_slice_end(local_str_input, self.EQSIGN)
+            if not v:
+                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
+            local_str_input = (r[1]).strip()
 
         v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.LCBRACKET)
         if v:
@@ -646,8 +645,6 @@ class DSLType20:
             return False, "malformed varialbe (invalid leftovers)"
 
         # validate var_val
-        if not isinstance(var_val, str):
-            return False, "variable's value is not a string"
         if var_val is not None:
             if self.NEWLINE in var_val:
                 return False, "newlines are forbidden inside values"
@@ -669,10 +666,11 @@ class DSLType20:
                     return False, "newlines are forbidden inside values"
 
         # expand the variable's value
-        v, r = self._expand(var_val)
-        if not v:
-            return False, "unable to expand variable's value: [%s]" % var_val
-        var_val = r
+        if var_val is not None:
+            v, r = self._expand(var_val)
+            if not v:
+                return False, "unable to expand variable's value: [%s]" % var_val
+            var_val = r
 
         # expand the option's value
         var_opts_pre = var_opts
