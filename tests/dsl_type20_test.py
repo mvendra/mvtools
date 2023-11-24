@@ -136,6 +136,12 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_17 += "]\n"
         self.cfg_test_ok_17 = path_utils.concat_path(self.test_dir, "test_ok_17.t20")
 
+        self.contents_cfg_test_ok_18 = "[\n"
+        self.contents_cfg_test_ok_18 += "@ctx {opt1: \"val1\"}\n"
+        self.contents_cfg_test_ok_18 += "var1 {opt1}\n"
+        self.contents_cfg_test_ok_18 += "]\n"
+        self.cfg_test_ok_18 = path_utils.concat_path(self.test_dir, "test_ok_18.t20")
+
         self.contents_cfg_test_fail_1 = "var1 = val1\n"
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.t20")
 
@@ -165,6 +171,7 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_ok_15, self.contents_cfg_test_ok_15)
         create_and_write_file.create_file_contents(self.cfg_test_ok_16, self.contents_cfg_test_ok_16)
         create_and_write_file.create_file_contents(self.cfg_test_ok_17, self.contents_cfg_test_ok_17)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_18, self.contents_cfg_test_ok_18)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
@@ -267,6 +274,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_17, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse22(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_18, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_Parse23(self):
 
         blanksub = path_utils.concat_path(self.test_dir, " ")
         self.assertFalse(os.path.exists(blanksub))
@@ -465,6 +475,14 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertEqual(dsl.get_all_vars("ctx"), [("var1", None, [("opt1", "val2")])])
+
+    def testDslType20_TestVanilla15(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        v, r = dsl.parse("[\n@ctx {opt1: \"val1\"}\nvar1 {opt1}\n]")
+        self.assertTrue(v)
+
+        self.assertEqual(dsl.get_all_vars("ctx"), [("var1", None, [("opt1", None)])])
 
     def testDslType20_TestParseDecoratedVar1(self):
 
