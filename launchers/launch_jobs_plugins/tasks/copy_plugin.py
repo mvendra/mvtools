@@ -81,8 +81,10 @@ class CustomTask(launch_jobs.BaseTask):
 
     def task_delegate(self, source_base_path, source_path, target_path, rename_to):
 
-        if not os.path.exists(source_path):
-            return False, "source_path [%s] does not exist." % source_path
+        local_source_path = source_path
+
+        if not os.path.exists(local_source_path):
+            return False, "source_path [%s] does not exist." % local_source_path
 
         if not os.path.exists(target_path):
             return False, "target_path [%s] does not exist." % target_path
@@ -95,15 +97,15 @@ class CustomTask(launch_jobs.BaseTask):
         if rename_to is None:
 
             # copy without renaming. remember: the name is part of the copying of the object.
-            v = path_utils.copy_to(source_path, target_path)
+            v = path_utils.copy_to(local_source_path, target_path)
             if not v:
-                return False, "Copying [%s] to [%s] failed." % (source_path, target_path)
+                return False, "Copying [%s] to [%s] failed." % (local_source_path, target_path)
 
         else:
 
             # copy with renaming
-            v = path_utils.copy_to_and_rename(source_path, target_path, rename_to)
+            v = path_utils.copy_to_and_rename(local_source_path, target_path, rename_to)
             if not v:
-                return False, "Copying [%s] to [%s] with new name [%s] failed." % (source_path, target_path, rename_to)
+                return False, "Copying [%s] to [%s] with new name [%s] failed." % (local_source_path, target_path, rename_to)
 
         return True, None
