@@ -186,15 +186,16 @@ class DSLType20:
             if len(prod_opts) > 0:
                 cur_var = ("%s %s" %  (cur_var, prod_opts))
 
-            # add the variable's value
-            var_escaped_value = ""
-            if y[1] != "":
-                v, r = miniparse.escape(y[1], self.BSLASH, [self.QUOTE])
-                if not v:
-                    return None
-                var_escaped_value = r
+            # add the variable's value - if it has it
+            if y[1] is not None:
+                var_escaped_value = ""
+                if y[1] != "":
+                    v, r = miniparse.escape(y[1], self.BSLASH, [self.QUOTE])
+                    if not v:
+                        return None
+                    var_escaped_value = r
 
-            cur_var += self.SINGLESPACE + self.EQSIGN + self.SINGLESPACE + self.QUOTE + var_escaped_value + self.QUOTE
+                cur_var += self.SINGLESPACE + self.EQSIGN + self.SINGLESPACE + self.QUOTE + var_escaped_value + self.QUOTE
 
             result += cur_var
 
