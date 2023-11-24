@@ -11,6 +11,7 @@ import miniparse
 # updates are supposed to be done manually using text editors - to simplify the implementation.
 #
 # samples:
+# variable1 # variable defined but no value set (i.e. value-less variable)
 # variable1 = "value1" # quotes are mandatory for values
 # variable1 = "value \"1\"" # quotes inside values must be escaped with "\"
 # variable1 = "value \\2" # the escape character "\" itself has to be escaped
