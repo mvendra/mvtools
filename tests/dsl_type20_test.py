@@ -246,7 +246,7 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_Parse19(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_15, dsl_type20.DSLType20_Options()))
 
-    def testDslType20_ParseX(self): # mvtodo
+    def testDslType20_Parse20(self):
 
         blanksub = path_utils.concat_path(self.test_dir, " ")
         self.assertFalse(os.path.exists(blanksub))
