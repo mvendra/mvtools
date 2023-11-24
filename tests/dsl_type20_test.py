@@ -494,6 +494,14 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(dsl.get_all_vars("ctx"), [("var1", None, [("opt1", None)])])
 
+    def testDslType20_TestVanilla16(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        v, r = dsl.parse("[\n@ctx {opt1}\nvar1 {opt1}\n]")
+        self.assertTrue(v)
+
+        self.assertEqual(dsl.get_all_vars("ctx"), [("var1", None, [("opt1", None)])]) # doubletapping (in the variable) valueless options (that were inherited from the parent context) in order to disable/drop them, is not yet supported
+
     def testDslType20_TestParseDecoratedVar1(self):
 
         decorated_var = "* var1 {opt1} = \"val1\""
