@@ -70,7 +70,7 @@ class CopyPluginTest(unittest.TestCase):
     def testCopyPluginReadParams2(self):
 
         local_params = {}
-        local_params["source_path"] = "dummy_value1"
+        local_params["source_base_path"] = "dummy_value1"
         self.copy_task.params = local_params
 
         v, r = self.copy_task._read_params()
@@ -79,37 +79,50 @@ class CopyPluginTest(unittest.TestCase):
     def testCopyPluginReadParams3(self):
 
         local_params = {}
-        local_params["source_path"] = "dummy_value1"
-        local_params["target_path"] = "dummy_value2"
+        local_params["source_base_path"] = "dummy_value1"
+        local_params["source_path"] = "dummy_value2"
         self.copy_task.params = local_params
 
         v, r = self.copy_task._read_params()
-        self.assertTrue(v)
-        self.assertEqual( r, (None, ["dummy_value1"], "dummy_value2", None) )
+        self.assertFalse(v)
 
     def testCopyPluginReadParams4(self):
 
         local_params = {}
-        local_params["source_path"] = "dummy_value1"
-        local_params["target_path"] = "dummy_value2"
-        local_params["rename_to"] = "dummy_value3"
+        local_params["source_base_path"] = "dummy_value1"
+        local_params["source_path"] = "dummy_value2"
+        local_params["target_path"] = "dummy_value3"
         self.copy_task.params = local_params
 
         v, r = self.copy_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (None, ["dummy_value1"], "dummy_value2", "dummy_value3") )
+        self.assertEqual( r, ("dummy_value1", ["dummy_value2"], "dummy_value3", None) )
 
     def testCopyPluginReadParams5(self):
 
         local_params = {}
-        local_params["source_path"] = ["dummy_value1", "dummy_value2"]
+        local_params["source_base_path"] = "dummy_value1"
+        local_params["source_path"] = "dummy_value2"
         local_params["target_path"] = "dummy_value3"
         local_params["rename_to"] = "dummy_value4"
         self.copy_task.params = local_params
 
         v, r = self.copy_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", ["dummy_value2"], "dummy_value3", "dummy_value4") )
+
+    def testCopyPluginReadParams6(self):
+
+        local_params = {}
+        local_params["source_base_path"] = "dummy_value1"
+        local_params["source_path"] = ["dummy_value2", "dummy_value3"]
+        local_params["target_path"] = "dummy_value4"
+        local_params["rename_to"] = "dummy_value5"
+        self.copy_task.params = local_params
+
+        v, r = self.copy_task._read_params()
         self.assertFalse(v)
-        self.assertNotEqual( r, (None, ["dummy_value1", "dummy_value2"], "dummy_value3", "dummy_value4") )
+        self.assertNotEqual( r, ("dummy_value1", ["dummy_value2", "dummy_value3"], "dummy_value4", "dummy_value5") )
 
     def testCopyPluginRunTask1(self):
 
