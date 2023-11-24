@@ -82,6 +82,9 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_6 = "var1\n"
         self.cfg_test_ok_6 = path_utils.concat_path(self.test_dir, "test_ok_6.t20")
 
+        self.contents_cfg_test_ok_7 = "var1 {opt1}\n"
+        self.cfg_test_ok_7 = path_utils.concat_path(self.test_dir, "test_ok_7.t20")
+
         self.contents_cfg_test_fail_1 = "var1 = val1\n"
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.t20")
 
@@ -100,6 +103,7 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_ok_4, self.contents_cfg_test_ok_4)
         create_and_write_file.create_file_contents(self.cfg_test_ok_5, self.contents_cfg_test_ok_5)
         create_and_write_file.create_file_contents(self.cfg_test_ok_6, self.contents_cfg_test_ok_6)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_7, self.contents_cfg_test_ok_7)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
@@ -169,6 +173,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_6, dsl_type20.DSLType20_Options()))
 
     def testDslType20_Parse11(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_7, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_ParseX(self): # mvtodo
 
         blanksub = path_utils.concat_path(self.test_dir, " ")
         self.assertFalse(os.path.exists(blanksub))
