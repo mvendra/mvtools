@@ -94,6 +94,36 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_10 = "var1 {opt1 / opt2: \"val1\"}\n"
         self.cfg_test_ok_10 = path_utils.concat_path(self.test_dir, "test_ok_10.t20")
 
+        self.contents_cfg_test_ok_11 = "[\n"
+        self.contents_cfg_test_ok_11 += "@ctx\n"
+        self.contents_cfg_test_ok_11 += "var1\n"
+        self.contents_cfg_test_ok_11 += "]\n"
+        self.cfg_test_ok_11 = path_utils.concat_path(self.test_dir, "test_ok_11.t20")
+
+        self.contents_cfg_test_ok_12 = "[\n"
+        self.contents_cfg_test_ok_12 += "@ctx\n"
+        self.contents_cfg_test_ok_12 += "var1 {opt1}\n"
+        self.contents_cfg_test_ok_12 += "]\n"
+        self.cfg_test_ok_12 = path_utils.concat_path(self.test_dir, "test_ok_12.t20")
+
+        self.contents_cfg_test_ok_13 = "[\n"
+        self.contents_cfg_test_ok_13 += "@ctx\n"
+        self.contents_cfg_test_ok_13 += "var1 {opt1 / opt2}\n"
+        self.contents_cfg_test_ok_13 += "]\n"
+        self.cfg_test_ok_13 = path_utils.concat_path(self.test_dir, "test_ok_13.t20")
+
+        self.contents_cfg_test_ok_14 = "[\n"
+        self.contents_cfg_test_ok_14 += "@ctx\n"
+        self.contents_cfg_test_ok_14 += "var1 {opt1: \"val1\" / opt2}\n"
+        self.contents_cfg_test_ok_14 += "]\n"
+        self.cfg_test_ok_14 = path_utils.concat_path(self.test_dir, "test_ok_14.t20")
+
+        self.contents_cfg_test_ok_15 = "[\n"
+        self.contents_cfg_test_ok_15 += "@ctx\n"
+        self.contents_cfg_test_ok_15 += "var1 {opt1 / opt2: \"val1\"}\n"
+        self.contents_cfg_test_ok_15 += "]\n"
+        self.cfg_test_ok_15 = path_utils.concat_path(self.test_dir, "test_ok_15.t20")
+
         self.contents_cfg_test_fail_1 = "var1 = val1\n"
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.t20")
 
@@ -116,6 +146,11 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_ok_8, self.contents_cfg_test_ok_8)
         create_and_write_file.create_file_contents(self.cfg_test_ok_9, self.contents_cfg_test_ok_9)
         create_and_write_file.create_file_contents(self.cfg_test_ok_10, self.contents_cfg_test_ok_10)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_11, self.contents_cfg_test_ok_11)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_12, self.contents_cfg_test_ok_12)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_13, self.contents_cfg_test_ok_13)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_14, self.contents_cfg_test_ok_14)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_15, self.contents_cfg_test_ok_15)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
@@ -195,6 +230,21 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_Parse14(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_10, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_Parse15(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_11, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_Parse16(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_12, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_Parse17(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_13, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_Parse18(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_14, dsl_type20.DSLType20_Options()))
+
+    def testDslType20_Parse19(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_15, dsl_type20.DSLType20_Options()))
 
     def testDslType20_ParseX(self): # mvtodo
 
