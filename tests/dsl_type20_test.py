@@ -126,7 +126,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.contents_cfg_test_ok_16 = "[\n"
         self.contents_cfg_test_ok_16 += "@ctx {opt1: \"val1\"}\n"
-        self.contents_cfg_test_ok_16 += "var1 {opt2: \"val1\"}\n"
+        self.contents_cfg_test_ok_16 += "var1 {opt1: \"val2\"}\n"
         self.contents_cfg_test_ok_16 += "]\n"
         self.cfg_test_ok_16 = path_utils.concat_path(self.test_dir, "test_ok_16.t20")
 
