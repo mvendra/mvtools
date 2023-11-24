@@ -85,7 +85,7 @@ class CopyPluginTest(unittest.TestCase):
 
         v, r = self.copy_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (["dummy_value1"], "dummy_value2", None) )
+        self.assertEqual( r, (None, ["dummy_value1"], "dummy_value2", None) )
 
     def testCopyPluginReadParams4(self):
 
@@ -97,7 +97,7 @@ class CopyPluginTest(unittest.TestCase):
 
         v, r = self.copy_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (["dummy_value1"], "dummy_value2", "dummy_value3") )
+        self.assertEqual( r, (None, ["dummy_value1"], "dummy_value2", "dummy_value3") )
 
     def testCopyPluginReadParams5(self):
 
@@ -109,7 +109,7 @@ class CopyPluginTest(unittest.TestCase):
 
         v, r = self.copy_task._read_params()
         self.assertFalse(v)
-        self.assertNotEqual( r, (["dummy_value1", "dummy_value2"], "dummy_value3", "dummy_value4") )
+        self.assertNotEqual( r, (None, ["dummy_value1", "dummy_value2"], "dummy_value3", "dummy_value4") )
 
     def testCopyPluginRunTask1(self):
 

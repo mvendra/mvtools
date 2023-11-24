@@ -12,9 +12,16 @@ class CustomTask(launch_jobs.BaseTask):
 
     def _read_params(self):
 
+        source_base_path = None
         source_path = []
         target_path = None
         rename_to = None
+
+        # source_base_path
+        try:
+            source_base_path = self.params["source_base_path"]
+        except KeyError:
+            pass # optional
 
         # source_path
         try:
@@ -42,7 +49,7 @@ class CustomTask(launch_jobs.BaseTask):
         if len(source_path) > 1 and rename_to is not None:
             return False, "Specifying rename_to and multiple source_path's at the same time is forbidden"
 
-        return True, (source_path, target_path, rename_to)
+        return True, (source_base_path, source_path, target_path, rename_to)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -63,16 +70,16 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        source_path, target_path, rename_to = r
+        source_base_path, source_path, target_path, rename_to = r
 
         for sp in source_path:
-            v, r = self.task_delegate(sp, target_path, rename_to)
+            v, r = self.task_delegate(source_base_path, sp, target_path, rename_to)
             if not v:
                 return False, r
 
         return True, None
 
-    def task_delegate(self, source_path, target_path, rename_to):
+    def task_delegate(self, source_base_path, source_path, target_path, rename_to):
 
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
