@@ -40,7 +40,11 @@ class CopyPluginTest(unittest.TestCase):
         self.existent_path2 = path_utils.concat_path(self.test_dir, "existent_path2")
         os.mkdir(self.existent_path2)
 
-        # nonexistent path 1
+        # existent path 3
+        self.existent_path3 = path_utils.concat_path(self.test_dir, "existent_path3")
+        os.mkdir(self.existent_path3)
+
+        # nonexistent path
         self.nonexistent_path = path_utils.concat_path(self.test_dir, "nonexistent_path1")
 
         # existent file 1
@@ -94,6 +98,18 @@ class CopyPluginTest(unittest.TestCase):
         v, r = self.copy_task._read_params()
         self.assertTrue(v)
         self.assertEqual( r, (["dummy_value1"], "dummy_value2", "dummy_value3") )
+
+    def testCopyPluginReadParams5(self):
+
+        local_params = {}
+        local_params["source_path"] = ["dummy_value1", "dummy_value2"]
+        local_params["target_path"] = "dummy_value3"
+        local_params["rename_to"] = "dummy_value4"
+        self.copy_task.params = local_params
+
+        v, r = self.copy_task._read_params()
+        self.assertFalse(v)
+        self.assertNotEqual( r, (["dummy_value1", "dummy_value2"], "dummy_value3", "dummy_value4") )
 
     def testCopyPluginRunTask1(self):
 
@@ -158,6 +174,43 @@ class CopyPluginTest(unittest.TestCase):
             v, r = self.copy_task.run_task(print, "exe_name")
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2, "renamed.txt")
+
+    def testCopyPluginRunTask6(self):
+
+        local_params = {}
+        local_params["source_path"] = [self.existent_path1, self.existent_path2]
+        local_params["target_path"] = self.existent_path3
+        self.copy_task.params = local_params
+
+        with mock.patch("path_utils.copy_to", return_value=(True, None)) as dummy:
+            v, r = self.copy_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual( dummy.mock_calls, [ mock.call(self.existent_path1, self.existent_path3), mock.call(self.existent_path2, self.existent_path3) ] )
+
+    def testCopyPluginRunTask7(self):
+
+        local_params = {}
+        local_params["source_path"] = [self.existent_path1, self.existent_path2]
+        local_params["target_path"] = self.existent_path3
+        local_params["rename_to"] = "renamed.txt"
+        self.copy_task.params = local_params
+
+        with mock.patch("path_utils.copy_to", return_value=(True, None)) as dummy:
+            v, r = self.copy_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertNotEqual( dummy.mock_calls, [ mock.call(self.existent_path1, self.existent_path3), mock.call(self.existent_path2, self.existent_path3) ] )
+
+    def testCopyPluginRunTask8(self):
+
+        local_params = {}
+        local_params["source_path"] = [self.existent_path1, self.nonexistent_path]
+        local_params["target_path"] = self.existent_path3
+        self.copy_task.params = local_params
+
+        with mock.patch("path_utils.copy_to", return_value=(True, None)) as dummy:
+            v, r = self.copy_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertNotEqual( dummy.mock_calls, [ mock.call(self.existent_path1, self.existent_path3), mock.call(self.nonexistent_path, self.existent_path3) ] )
 
 if __name__ == '__main__':
     unittest.main()
