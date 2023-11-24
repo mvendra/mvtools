@@ -49,6 +49,10 @@ class CustomTask(launch_jobs.BaseTask):
         if len(source_path) > 1 and rename_to is not None:
             return False, "Specifying rename_to and multiple source_path's at the same time is forbidden"
 
+        if source_base_path is not None:
+            if not os.path.exists(source_base_path):
+                return False, "source_base_path [%s] does not exist" % source_base_path
+
         return True, (source_base_path, source_path, target_path, rename_to)
 
     def run_task(self, feedback_object, execution_name=None):
