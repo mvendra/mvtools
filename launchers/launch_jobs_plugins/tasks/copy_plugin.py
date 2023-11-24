@@ -82,6 +82,8 @@ class CustomTask(launch_jobs.BaseTask):
     def task_delegate(self, source_base_path, source_path, target_path, rename_to):
 
         local_source_path = source_path
+        if source_base_path is not None:
+            local_source_path = path_utils.concat_path(source_base_path, source_path)
 
         if not os.path.exists(local_source_path):
             return False, "source_path [%s] does not exist." % local_source_path
