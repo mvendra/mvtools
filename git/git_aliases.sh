@@ -4,11 +4,23 @@
 gicom(){
 
     len_inputs=0
+    ignore_mvtags_switch=false
+    use_editor=false
+
     for a in "$@"; do
         len_inputs=$((len_inputs+1))
+        if [ "$a" == "--ignore-mvtags" ]; then
+            ignore_mvtags_switch=true
+        fi
     done
 
-    if [ $len_inputs -eq 0 ]; then
+    if [ $len_inputs -eq 0 ]; then # no parameters. use commit with editor mode.
+        use_editor=true
+    elif [ $len_inputs -eq 1 ] && [ "$ignore_mvtags_switch" = true ]; then # only one parameter and it was the "--ignore-mvtags" ovveride switch. use commit with editor mode.
+        use_editor=true
+    fi
+
+    if [ "$use_editor" = true ]; then
 
         test_mvtags_in_git_cache.py
         if [ $? -ne 0 ]; then
