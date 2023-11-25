@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# COMMIT
+gicom(){
+
+    if [[ -z $@ ]]; then
+        git commit
+    else
+        git_commit_with_prechecks.py $@
+    fi
+
+}
+
 alias gichepi="git cherry-pick"
 
 # DIFF
@@ -15,7 +26,7 @@ gishogui(){
     # mvtodo: does not work on the first commit of a repository
     HASH=$1
     if [ -z $1 ]; then
-      HASH="HEAD"
+        HASH="HEAD"
     fi
     git difftool -y --no-prompt $HASH~1 $HASH
 
@@ -82,7 +93,6 @@ gikill(){
 alias gista="git status"
 alias giadd="git add"
 alias giunadd="git reset HEAD" # mvtodo: does not work before the first commit
-alias gicom="git_commit_with_prechecks.py"
 alias gilog="git log"
 alias gipus="git push"
 alias gipul="git pull --ff-only"
