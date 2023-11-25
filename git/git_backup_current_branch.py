@@ -30,7 +30,7 @@ def git_backup_current_branch(repo):
     if not v:
         return v, r
 
-    return True, None
+    return True, "Created backup of branch [%s] as [%s]" % (current_branch, backup_branch)
 
 if __name__ == "__main__":
 
@@ -39,6 +39,8 @@ if __name__ == "__main__":
         repo = sys.argv[1]
 
     v, r = git_backup_current_branch(repo)
-    if not v:
-        print("Backing up current branch failed for repo [%s]: [%s]" % (target_repo, r))
+    if v:
+        print(r)
+    else:
+        print("Backing up current branch failed for repo [%s]: [%s]" % (repo, r))
         exit(1)
