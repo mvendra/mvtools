@@ -12,7 +12,7 @@ BASE_DEP=$(BASE)/dep
 CFLAGS=
 INCLUDES=
 LDFLAGS=-L$(BASE_DEP)/$(PLAT)/$(MODE)
-DEPS=-lstaticlib -ldynamiclib
+LIBS=-lstaticlib -ldynamiclib
 POSTBUILD=
 
 # AUTOCONF PREP
@@ -78,7 +78,7 @@ compile:
 
 # TARGET: LINK
 link:
-	$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS) -Wl,-rpath,"$(BASE_DEP)/$(PLAT)/$(MODE)"
+	$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS) -Wl,-rpath,"$(BASE_DEP)/$(PLAT)/$(MODE)"
 	$(POSTBUILD)
 
 # TARGET: CLEAN

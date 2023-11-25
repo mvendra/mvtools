@@ -31,7 +31,7 @@ def linux_mkfile_c_contents(project_name):
     r += "CFLAGS=\n"
     r += "INCLUDES=\n"
     r += "LDFLAGS=\n"
-    r += "DEPS=\n"
+    r += "LIBS=\n"
     r += "POSTBUILD=\n"
     r += "\n"
 
@@ -124,7 +124,7 @@ def linux_mkfile_c_contents(project_name):
     # LINK
     r += "# TARGET: LINK\n"
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
+    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
@@ -192,7 +192,7 @@ def linux_mkfile_cpp_contents(project_name):
     r += "CPPFLAGS=\n"
     r += "INCLUDES=\n"
     r += "LDFLAGS=\n"
-    r += "DEPS=\n"
+    r += "LIBS=\n"
     r += "POSTBUILD=\n"
     r += "\n"
 
@@ -285,7 +285,7 @@ def linux_mkfile_cpp_contents(project_name):
     # LINK
     r += "# TARGET: LINK\n"
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(DEPS)\n"
+    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 

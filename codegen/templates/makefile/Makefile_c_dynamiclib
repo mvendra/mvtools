@@ -15,7 +15,7 @@ BASE_DEP=$(BASE)/dep
 CFLAGS=
 INCLUDES=
 LDFLAGS=
-DEPS=
+LIBS=
 POSTBUILD=
 
 # AUTOCONF PREP
@@ -82,7 +82,7 @@ compile:
 
 # TARGET: LINK
 link:
-	$(LINKER) -o $(OUTNAME_FULL) -shared $(ALL_OBJS) -Wl,-soname,$(SONAME) $(LDFLAGS) $(DEPS)
+	$(LINKER) -o $(OUTNAME_FULL) -shared $(ALL_OBJS) -Wl,-soname,$(SONAME) $(LDFLAGS) $(LIBS)
 	$(POSTBUILD)
 
 # TARGET: CLEAN
