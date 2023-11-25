@@ -296,6 +296,61 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testCreateBranch(self):
+
+        v, r = git_lib.get_current_branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "master")
+
+        v, r = git_lib.get_branches(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("master" in r)
+        self.assertFalse("new-test-branch" in r)
+
+        v, r = git_lib.create_branch(self.first_repo, "new-test-branch")
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        v, r = git_lib.get_current_branch(self.first_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "master")
+
+        v, r = git_lib.get_branches(self.first_repo)
+        self.assertTrue(v)
+        self.assertTrue("master" in r)
+        self.assertTrue("new-test-branch" in r)
+
+    def testCreateBranchRelativePath(self):
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            v, r = git_lib.get_current_branch("./first")
+            self.assertTrue(v)
+            self.assertEqual(r, "master")
+
+            v, r = git_lib.get_branches("./first")
+            self.assertTrue(v)
+            self.assertTrue("master" in r)
+            self.assertFalse("new-test-branch" in r)
+
+            v, r = git_lib.create_branch("./first", "new-test-branch")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+
+            v, r = git_lib.get_current_branch("./first")
+            self.assertTrue(v)
+            self.assertEqual(r, "master")
+
+            v, r = git_lib.get_branches("./first")
+            self.assertTrue(v)
+            self.assertTrue("master" in r)
+            self.assertTrue("new-test-branch" in r)
+
+        finally:
+            os.chdir(saved_wd)
+
     def testRepoHasAnyNotOfStatesFail(self):
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, None)
