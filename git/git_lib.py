@@ -1011,12 +1011,6 @@ def config(key, value, global_cfg=True):
         return False, "key unspecified"
     return git_wrapper.config(key, value, global_cfg)
 
-def commit_editor(repo):
-    if repo is None:
-        return False, "No repo specified"
-    repo = os.path.abspath(repo)
-    return git_wrapper.commit_editor(repo)
-
 def commit_direct(repo, params):
     if repo is None:
         return False, "No repo specified"

@@ -3,8 +3,6 @@
 import sys
 import os
 
-from subprocess import call
-
 import path_utils
 import generic_run
 
@@ -33,10 +31,6 @@ def config(key, value, global_cfg=True):
 def apply(repo, source_file):
     cmd = ["git", "-C", repo, "apply", source_file]
     return git_wrapper_standard_command(cmd, "apply")
-
-def commit_editor(repo):
-    retcode = call("git -C %s commit" % repo, shell=True) # mvtodo: still not supported by generic_run
-    return (retcode==0), "git_wrapper.commit_editor"
 
 def commit_direct(repo, params):
     if not isinstance(params, list):

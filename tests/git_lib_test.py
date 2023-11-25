@@ -5231,33 +5231,6 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
-    def testCommitEditor(self):
-
-        with mock.patch("git_wrapper.commit_editor", return_value=(True, None)) as dummy:
-            v, r = git_lib.commit_editor(self.first_repo)
-            self.assertTrue(v)
-            self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo)
-
-        with mock.patch("git_wrapper.commit_editor", return_value=(True, None)) as dummy:
-            v, r = git_lib.commit_editor(None)
-            self.assertFalse(v)
-            dummy.assert_not_called()
-
-        saved_wd = os.getcwd()
-        try:
-            os.chdir(self.test_dir)
-
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
-            with mock.patch("git_wrapper.commit_editor", return_value=(True, None)) as dummy:
-                v, r = git_lib.commit_editor(first_rel_path)
-                self.assertTrue(v)
-                self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo)
-
-        finally:
-            os.chdir(saved_wd)
-
     def testCommitDirect(self):
 
         with mock.patch("git_wrapper.commit_direct", return_value=(True, None)) as dummy:
