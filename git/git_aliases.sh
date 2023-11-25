@@ -59,6 +59,19 @@ gishogui(){
 
 }
 
+gishofi(){
+
+    HASH=$1
+
+    if [ -z $HASH ]; then
+        echo "Hash is a required parameter. Aborting."
+        return 1
+    fi
+
+    git diff-tree --no-commit-id --name-only $HASH -r
+
+}
+
 gikill(){
 
     # removes $1 commits from the repository
@@ -151,6 +164,5 @@ alias giver="git version"
 alias gicle="git clean"
 alias gifsck="git fsck"
 alias gilsu="git ls-files --exclude-standard --others"
-
 alias gimv="git mv"
 alias girm="git rm"
