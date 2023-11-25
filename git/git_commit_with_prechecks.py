@@ -39,7 +39,9 @@ if __name__ == "__main__":
     if len(check) == 0:
         # no mvtags detected/override valve activated. we are clear to proceed and commit.
         v, r = gicom(repo, params)
-        if not v:
+        if v:
+            inline_echo.inline_echo(r)
+        else:
             print(r)
             exit(1)
     else:
