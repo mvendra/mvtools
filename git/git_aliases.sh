@@ -4,7 +4,13 @@
 gicom(){
 
     if [[ -z $@ ]]; then
+
+        test_mvtags_in_git_cache.py
+        if [ $? -ne 0 ]; then
+            return 1
+        fi
         git commit
+
     else
         git_commit_with_prechecks.py "$@"
     fi
