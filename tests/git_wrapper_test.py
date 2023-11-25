@@ -1484,6 +1484,30 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("* master" in r)
 
+    def testBranchNew(self):
+
+        v, r = git_wrapper.branch(self.second_repo)
+        self.assertTrue(v)
+        self.assertEqual("", r.strip())
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        if not create_and_write_file.create_file_contents(test_file, "test-branch, test contents"):
+            self.fail("Failed creating test file %s" % test_file)
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-branch, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.branch(self.second_repo, ["new-branch-name"]) # spawn new branch
+        self.assertTrue(v)
+
+        v, r = git_wrapper.branch(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("* master" in r)
+        self.assertTrue("new-branch-name" in r)
+
     def testBranchCreateAndSwitch(self):
 
         v, r = git_wrapper.branch(self.second_repo)

@@ -227,8 +227,12 @@ def remote_change_url(repo, remote, new_url):
     cmd = ["git", "-C", repo, "remote", "set-url", remote, new_url]
     return git_wrapper_standard_command(cmd, "remote-change-url")
 
-def branch(repo):
+def branch(repo, params=[]):
+    if not isinstance(params, list):
+        return False, "git_wrapper.branch: params must be a list"
     cmd = ["git", "-C", repo, "branch"]
+    for p in params:
+        cmd.append(p)
     return git_wrapper_standard_command(cmd, "branch")
 
 def branch_create_and_switch(repo, branchname):
