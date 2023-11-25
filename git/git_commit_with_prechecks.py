@@ -10,12 +10,8 @@ import inline_echo
 def gicom(repo, params):
 
     if len(params) == 0:
-        return False # editor invokation is no longer supported here
-
-    v, r = git_lib.commit_direct(repo, params)
-    if not v:
-        print("gicom failed: [%s]" % r)
-    exit(not v)
+        return False, "editor invocation is no longer supported here"
+    return git_lib.commit_direct(repo, params)
 
 if __name__ == "__main__":
 
@@ -42,8 +38,9 @@ if __name__ == "__main__":
 
     if len(check) == 0:
         # no mvtags detected/override valve activated. we are clear to proceed and commit.
-        if not gicom(repo, params):
-            print("gicom failed.")
+        v, r = gicom(repo, params)
+        if not v:
+            print(r)
             exit(1)
     else:
         # violations detected. report and abort.
