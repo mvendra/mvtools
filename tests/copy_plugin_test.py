@@ -201,6 +201,24 @@ class CopyPluginTest(unittest.TestCase):
 
     def testCopyPluginRunTask6(self):
 
+        extended_path = "extended"
+        extended_path_full = path_utils.concat_path(self.existent_path1, extended_path)
+        os.mkdir(extended_path_full)
+        self.assertTrue(os.path.exists(extended_path_full))
+
+        local_params = {}
+        local_params["source_base_path"] = self.existent_path1
+        local_params["source_path"] = extended_path
+        local_params["target_path"] = self.existent_path3
+        self.copy_task.params = local_params
+
+        with mock.patch("path_utils.copy_to", return_value=(True, None)) as dummy:
+            v, r = self.copy_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(extended_path_full, self.existent_path3)
+
+    def testCopyPluginRunTask7(self):
+
         local_params = {}
         local_params["source_path"] = self.existent_path1
         local_params["target_path"] = self.existent_path2
@@ -212,7 +230,49 @@ class CopyPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2, "renamed.txt")
 
-    def testCopyPluginRunTask7(self):
+    def testCopyPluginRunTask8(self):
+
+        extended_path = "extended"
+        extended_path_full = path_utils.concat_path(self.existent_path1, extended_path)
+        os.mkdir(extended_path_full)
+        self.assertTrue(os.path.exists(extended_path_full))
+
+        local_params = {}
+        local_params["source_base_path"] = self.existent_path1
+        local_params["source_path"] = extended_path
+        local_params["target_path"] = self.existent_path3
+        local_params["rename_to"] = "renamed.txt"
+        self.copy_task.params = local_params
+
+        with mock.patch("path_utils.copy_to_and_rename", return_value=(True, None)) as dummy:
+            v, r = self.copy_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(extended_path_full, self.existent_path3, "renamed.txt")
+
+    def testCopyPluginRunTask9(self):
+
+        extended_path1 = "extended1"
+        extended_path2 = "extended2"
+        extended_path_full1 = path_utils.concat_path(self.existent_path1, extended_path1)
+        extended_path_full2 = path_utils.concat_path(self.existent_path1, extended_path2)
+        os.mkdir(extended_path_full1)
+        self.assertTrue(os.path.exists(extended_path_full1))
+        os.mkdir(extended_path_full2)
+        self.assertTrue(os.path.exists(extended_path_full2))
+
+        local_params = {}
+        local_params["source_base_path"] = self.existent_path1
+        local_params["source_path"] = [extended_path1, extended_path2]
+        local_params["target_path"] = self.existent_path3
+        local_params["rename_to"] = "renamed.txt"
+        self.copy_task.params = local_params
+
+        with mock.patch("path_utils.copy_to_and_rename", return_value=(True, None)) as dummy:
+            v, r = self.copy_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertNotEqual( dummy.mock_calls, [ mock.call(extended_path_full1, self.existent_path3, "renamed.txt"), mock.call(extended_path_full2, self.existent_path3, "renamed.txt") ] )
+
+    def testCopyPluginRunTask10(self):
 
         local_params = {}
         local_params["source_path"] = [self.existent_path1, self.existent_path2]
@@ -224,7 +284,7 @@ class CopyPluginTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual( dummy.mock_calls, [ mock.call(self.existent_path1, self.existent_path3), mock.call(self.existent_path2, self.existent_path3) ] )
 
-    def testCopyPluginRunTask8(self):
+    def testCopyPluginRunTask11(self):
 
         local_params = {}
         local_params["source_path"] = [self.existent_path1, self.existent_path2]
@@ -237,7 +297,7 @@ class CopyPluginTest(unittest.TestCase):
             self.assertFalse(v)
             self.assertNotEqual( dummy.mock_calls, [ mock.call(self.existent_path1, self.existent_path3), mock.call(self.existent_path2, self.existent_path3) ] )
 
-    def testCopyPluginRunTask9(self):
+    def testCopyPluginRunTask12(self):
 
         local_params = {}
         local_params["source_path"] = [self.existent_path1, self.nonexistent_path]
