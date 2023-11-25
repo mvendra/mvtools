@@ -42,6 +42,8 @@ alias gichepi="git cherry-pick"
 alias gidif_setgui="git config --global diff.external meldiff.py"
 alias gidif_setcmd="git config --global --unset diff.external"
 alias gidif="git diff"
+alias gidifsta="git diff --staged"
+alias gidifca="git diff --cached"
 alias gidif_noext="gidif --no-ext"
 
 # SHOW
