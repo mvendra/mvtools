@@ -6,10 +6,6 @@ import os
 import git_lib
 import path_utils
 
-def puaq():
-    print("Usage: %s repo_path" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def check_mvtags_in_file(repo, thefile):
 
     """ check_mvtags_in_file
@@ -73,10 +69,9 @@ def check_mvtags_in_repo(repo):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 2:
-        puaq()
-
-    repo = sys.argv[1]
+    repo = os.getcwd()
+    if len(sys.argv) > 1:
+        repo = sys.argv[1]
 
     if not os.path.exists(repo):
         print("%s does not exist. Aborting." % repo)
