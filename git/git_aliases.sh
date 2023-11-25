@@ -134,6 +134,7 @@ alias gista="git status"
 alias giadd="git add"
 alias giunadd="git reset HEAD" # mvtodo: does not work before the first commit
 alias gilog="git log"
+alias gilogline="gilog --oneline"
 alias gipus="git push"
 alias gipul="git pull --ff-only"
 alias giclo="git clone"
