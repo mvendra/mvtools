@@ -3,7 +3,12 @@
 # COMMIT
 gicom(){
 
-    if [[ -z $@ ]]; then
+    len_inputs=0
+    for a in "$@"; do
+        len_inputs=$((len_inputs+1))
+    done
+
+    if [ $len_inputs -eq 0 ]; then
 
         test_mvtags_in_git_cache.py
         if [ $? -ne 0 ]; then
