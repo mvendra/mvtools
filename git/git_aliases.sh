@@ -22,9 +22,11 @@ gicom(){
 
     if [ "$use_editor" = true ]; then
 
-        test_mvtags_in_git_cache.py
-        if [ $? -ne 0 ]; then
-            return 1
+        if [ "$ignore_mvtags_switch" = false ]; then
+            test_mvtags_in_git_cache.py
+            if [ $? -ne 0 ]; then
+                return 1
+            fi
         fi
         git commit
 
