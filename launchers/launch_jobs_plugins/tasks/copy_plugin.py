@@ -53,6 +53,9 @@ class CustomTask(launch_jobs.BaseTask):
             if not os.path.exists(source_base_path):
                 return False, "source_base_path [%s] does not exist" % source_base_path
 
+        if not os.path.exists(target_path):
+            return False, "target_path [%s] does not exist." % target_path
+
         return True, (source_base_path, source_path, target_path, rename_to)
 
     def run_task(self, feedback_object, execution_name=None):
@@ -91,9 +94,6 @@ class CustomTask(launch_jobs.BaseTask):
 
         if not os.path.exists(local_source_path):
             return False, "source_path [%s] does not exist." % local_source_path
-
-        if not os.path.exists(target_path):
-            return False, "target_path [%s] does not exist." % target_path
 
         if rename_to is not None:
             final_path = path_utils.concat_path(target_path, rename_to)

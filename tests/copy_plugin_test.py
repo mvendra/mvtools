@@ -107,8 +107,8 @@ class CopyPluginTest(unittest.TestCase):
         self.copy_task.params = local_params
 
         v, r = self.copy_task._read_params()
-        self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, ["dummy_value1"], "dummy_value2", None) )
+        self.assertFalse(v)
+        self.assertNotEqual( r, (self.existent_path1, ["dummy_value1"], "dummy_value2", None) )
 
     def testCopyPluginReadParams6(self):
 
@@ -120,8 +120,8 @@ class CopyPluginTest(unittest.TestCase):
         self.copy_task.params = local_params
 
         v, r = self.copy_task._read_params()
-        self.assertTrue(v)
-        self.assertEqual( r, (self.existent_path1, ["dummy_value1"], "dummy_value2", "dummy_value3") )
+        self.assertFalse(v)
+        self.assertNotEqual( r, (self.existent_path1, ["dummy_value1"], "dummy_value2", "dummy_value3") )
 
     def testCopyPluginReadParams7(self):
 
