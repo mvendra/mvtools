@@ -6,7 +6,7 @@ gicom(){
     if [[ -z $@ ]]; then
         git commit
     else
-        git_commit_with_prechecks.py $@
+        git_commit_with_prechecks.py "$@"
     fi
 
 }
