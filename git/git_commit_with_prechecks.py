@@ -10,13 +10,9 @@ import inline_echo
 def gicom(repo, params):
 
     if len(params) == 0:
-        # special case. we will call git differently
-        # because here we want the $EDITOR to be able to more easily
-        # integrate with the calling terminal
-        v, r = git_lib.commit_editor(repo)
-    else:
-        v, r = git_lib.commit_direct(repo, params)
+        return False # editor invokation is no longer supported here
 
+    v, r = git_lib.commit_direct(repo, params)
     if not v:
         print("gicom failed: [%s]" % r)
     exit(not v)
@@ -46,7 +42,9 @@ if __name__ == "__main__":
 
     if len(check) == 0:
         # no mvtags detected/override valve activated. we are clear to proceed and commit.
-        gicom(repo, params)
+        if not gicom(repo, params):
+            print("gicom failed.")
+            exit(1)
     else:
         # violations detected. report and abort.
         for c in check:
