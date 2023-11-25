@@ -18,9 +18,8 @@ def gicom(repo, params):
         v, r = git_lib.commit_direct(repo, params)
 
     if not v:
-        print("gicom failed: %s" % r)
-    inline_echo.inline_echo(r)
-    exit(v)
+        print("gicom failed: [%s]" % r)
+    exit(not v)
 
 if __name__ == "__main__":
 
