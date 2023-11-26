@@ -198,6 +198,9 @@ def is_previous_commit_range_by_configured_user(repo, num_prev):
         return False, "Unable to check previous commit range by configured user. Repo: [%s]: [%s]" % (repo, r)
     hash_list = r
 
+    if num_prev > len(hash_list):
+        return False, "Unable to check previous commit range by configured user. Repo: [%s]: number of available commits (%s) is smaller than requested (%s)" % (repo, len(hash_list), num_prev)
+
     for hash in hash_list:
 
         v, r = show_msg_only(repo, hash)
