@@ -2814,5 +2814,163 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue("test-contents1" in r)
         self.assertTrue("test-contents2" in r)
 
+    def testResetSoftHeadFail1(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("test-contents1" in r)
+        self.assertTrue("test-contents2" in r)
+
+        v, r = git_wrapper.reset_soft_head(self.second_repo, 1)
+        self.assertFalse(v) # cant reset the very first commit
+
+    def testResetSoftHead1(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        with open(test_file1, "a") as f:
+            f.write("smore1")
+
+        with open(test_file2, "a") as f:
+            f.write("smore2")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("yetmore1")
+
+        with open(test_file2, "a") as f:
+            f.write("yetmore2")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg3")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("yetmore1" in r)
+        self.assertTrue("yetmore2" in r)
+
+        v, r = git_wrapper.reset_soft_head(self.second_repo, 1)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse("yetmore1" in r)
+        self.assertFalse("yetmore2" in r)
+        self.assertTrue("smore1" in r)
+        self.assertTrue("smore2" in r)
+
+    def testResetSoftHead2(self):
+
+        test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+
+        test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        with open(test_file1, "a") as f:
+            f.write("smore1")
+
+        with open(test_file2, "a") as f:
+            f.write("smore2")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("yetmore1")
+
+        with open(test_file2, "a") as f:
+            f.write("yetmore2")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg3")
+        self.assertTrue(v)
+
+        with open(test_file1, "a") as f:
+            f.write("againmorestuff1")
+
+        with open(test_file2, "a") as f:
+            f.write("againmorestuff2")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg4")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.status_simple(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue(len(r.strip()) == 0)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("againmorestuff1" in r)
+        self.assertTrue("againmorestuff2" in r)
+
+        v, r = git_wrapper.reset_soft_head(self.second_repo, 3)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("test-contents1" in r)
+        self.assertTrue("test-contents2" in r)
+
 if __name__ == '__main__':
     unittest.main()
