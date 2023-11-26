@@ -44,6 +44,35 @@ def get_renamed_details(renamed_msg):
 
     return (filename_original, filename_renamed)
 
+def get_user_id_from_commit_msg(commitmsg):
+
+    lines = commitmsg.split("\n")
+    username = None
+    useremail = None
+
+    c = 0
+    for l in lines:
+        c += 1
+        if c == 2:
+
+            first_space = l.find(" ")
+            if first_space == -1:
+                return False, "Unable to get user id from commit msg - unable to find first space on line: [%s]" % l
+
+            first_anglebracket = l.find("<", first_space)
+            if first_anglebracket == -1:
+                return False, "Unable to get user id from commit msg - unable to find first angled bracket on line: [%s]" % l
+
+            second_anglebracket = l.find(">", first_anglebracket)
+            if second_anglebracket == -1:
+                return False, "Unable to get user id from commit msg - unable to find second angled bracket on line: [%s]" % l
+
+            username = l[first_space+1:first_anglebracket-1]
+            useremail = l[first_anglebracket+1:second_anglebracket]
+            return True, (username, useremail)
+
+    return False, "Unable to get user id from commit msg"
+
 def remove_gitlog_decorations(commitmsg):
 
     res = commitmsg

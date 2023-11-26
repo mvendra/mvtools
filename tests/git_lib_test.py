@@ -2898,6 +2898,12 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testGetUserIdFromCommitMsg(self):
+
+        v, r = git_lib.get_user_id_from_commit_msg("commit d9948e9bd55fa36274abe4877c40ae8ee10769a0\nAuthor: FirstName LastName <firstname.lastname@email.com>\nDate:   Sat Nov 25 19:14:30 2023 +0100\n\n    commit-msg\n")
+        self.assertTrue(v)
+        self.assertEqual( r, ("FirstName LastName", "firstname.lastname@email.com") )
+
     def testRemoveGitlogDecorations(self):
 
         self.first_file = path_utils.concat_path(self.first_repo, "file.txt")
