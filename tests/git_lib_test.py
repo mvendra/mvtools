@@ -5367,6 +5367,33 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testShowMsgOnly(self):
+
+        with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
+            v, r = git_lib.show_msg_only(self.first_repo, "the-commit-id")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.first_repo, ["-s", "the-commit-id"])
+
+        with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
+            v, r = git_lib.show_msg_only(None, "the-commit-id")
+            self.assertFalse(v)
+            dummy.assert_not_called()
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
+                v, r = git_lib.show_msg_only(first_rel_path, "the-commit-id")
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(self.first_repo, ["-s", "the-commit-id"])
+
+        finally:
+            os.chdir(saved_wd)
+
     def testStashShow(self):
 
         with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:

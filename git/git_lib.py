@@ -1019,6 +1019,12 @@ def show(repo, commit_id):
     repo = os.path.abspath(repo)
     return git_wrapper.show(repo, [commit_id])
 
+def show_msg_only(repo, commit_id):
+    if repo is None:
+        return False, "No repo specified"
+    repo = os.path.abspath(repo)
+    return git_wrapper.show(repo, ["-s", commit_id])
+
 def checkout(repo, file_list=None):
 
     if repo is None:
