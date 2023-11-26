@@ -18,13 +18,14 @@ def git_wrapper_extended_command(cmd, cmd_name="git_wrapper_extended_command"):
         return False, "Failed calling %s: %s" % (cmd_name, r)
     return True, (r.success, r.stdout, r.stderr)
 
-def config(key, value, global_cfg=True):
+def config(key, value=None, global_cfg=True):
 
     cmd = ["git", "config"]
     if global_cfg:
         cmd.append("--global")
     cmd.append(key)
-    cmd.append(value)
+    if value is not None:
+        cmd.append(value)
 
     return git_wrapper_standard_command(cmd, "config")
 
