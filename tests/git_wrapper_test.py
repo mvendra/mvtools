@@ -1323,7 +1323,7 @@ class GitWrapperTest(unittest.TestCase):
             self.fail("Failed retrieving commit id, testShow")
         commit_id = r[:p]
 
-        v, r = git_wrapper.show(self.second_repo, commit_id)
+        v, r = git_wrapper.show(self.second_repo, [commit_id])
         self.assertTrue(v)
         contents_first_call = r
         self.assertTrue("test-show, test contents" in contents_first_call)

@@ -198,10 +198,10 @@ def log(repo, limit=None):
         cmd.append(str(limit))
     return git_wrapper_standard_command(cmd, "log")
 
-def show(repo, commit_id=None):
+def show(repo, params=[]):
     cmd = ["git", "-C", repo, "show"]
-    if commit_id is not None:
-        cmd.append(commit_id)
+    for p in params:
+        cmd.append(p)
     return git_wrapper_standard_command(cmd, "show")
 
 def status(repo):

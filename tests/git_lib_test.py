@@ -5346,7 +5346,7 @@ class GitLibTest(unittest.TestCase):
             v, r = git_lib.show(self.first_repo, "the-commit-id")
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with(self.first_repo, "the-commit-id")
+            dummy.assert_called_with(self.first_repo, ["the-commit-id"])
 
         with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
             v, r = git_lib.show(None, "the-commit-id")
@@ -5362,7 +5362,7 @@ class GitLibTest(unittest.TestCase):
                 v, r = git_lib.show(first_rel_path, "the-commit-id")
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                dummy.assert_called_with(self.first_repo, "the-commit-id")
+                dummy.assert_called_with(self.first_repo, ["the-commit-id"])
 
         finally:
             os.chdir(saved_wd)
