@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import git_lib
+import git_backup_current_branch
 
 def git_smash(repo, num_commits):
 
@@ -24,6 +25,10 @@ def git_smash(repo, num_commits):
         return False, "git_smash: repo [%s] is not clear" % repo
 
     v, r = git_lib.is_previous_commit_range_by_configured_user(repo, num_commits)
+    if not v:
+        return False, "git_smash: [%s]" % r
+
+    v, r = git_backup_current_branch.git_backup_current_branch(repo)
     if not v:
         return False, "git_smash: [%s]" % r
 
