@@ -2743,6 +2743,16 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue("smore1" in r)
         self.assertTrue("smore2" in r)
 
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg3")
+        self.assertFalse(v)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        self.assertFalse("yetmore1" in r)
+        self.assertFalse("yetmore2" in r)
+        self.assertTrue("smore1" in r)
+        self.assertTrue("smore2" in r)
+
     def testResetHardHead2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
@@ -2898,6 +2908,16 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertFalse("yetmore1" in r)
         self.assertFalse("yetmore2" in r)
+        self.assertTrue("smore1" in r)
+        self.assertTrue("smore2" in r)
+
+        v, r = git_wrapper.commit(self.second_repo, "test commit msg3")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.show(self.second_repo)
+        self.assertTrue(v)
+        self.assertTrue("yetmore1" in r)
+        self.assertTrue("yetmore2" in r)
         self.assertTrue("smore1" in r)
         self.assertTrue("smore2" in r)
 
