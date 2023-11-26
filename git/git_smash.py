@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import git_lib
+import git_wrapper
 import git_backup_current_branch
 
 def git_smash(repo, num_commits):
@@ -32,7 +33,11 @@ def git_smash(repo, num_commits):
     if not v:
         return False, "git_smash: [%s]" % r
 
-    return False, "mvtodo"
+    v, r = git_wrapper.reset_soft_head(repo, num_commits)
+    if not v:
+        return False, "git_smash: [%s]" % r
+
+    return True, "git_smash: (%s) commits smashed down on repo [%s]" % (num_commits, repo)
 
 def puaq():
     print("Usage: %s [repository] number_of_commits" % path_utils.basename_filtered(__file__))
