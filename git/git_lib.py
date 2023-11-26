@@ -170,6 +170,49 @@ def get_configured_user_id():
 
     return True, (user_name, user_email)
 
+def get_committers_user_id(repo, hash, limit):
+
+    # get the committer's user id, given a repo and a hash
+
+    if repo is None:
+        return False, "No repo specified"
+
+    repo = os.path.abspath(repo)
+
+    t1 = is_repo_working_tree(repo)
+    if t1 is None:
+        return False, "[%s] does not exist." % repo
+    elif t1 is False:
+        return False, "[%s] is not a git work tree." % repo
+
+    v, r = get_previous_hash_list(repo, limit)
+    if not v:
+        return False, "Unable to get committer's user id. Repo: [%s]: [%s]" % (repo, r)
+    hash_list = r
+
+    target_hash = None
+    target_hash_found = False
+    for h in hash_list:
+
+        if hash in h:
+            target_hash = h
+            target_hash_found = True
+            break
+
+    if not target_hash_found:
+        return False, "Unable to fetch user id from commit. Hash not found. Repo: [%s]. Hash: [%s]" % (repo, hash)
+
+    v, r = show_msg_only(repo, target_hash)
+    if not v:
+        return False, "Unable to fetch commit message. Repo: [%s]. Hash: [%s]: [%s]" % (repo, target_hash, r)
+    commit_msg = r
+
+    v, r = get_user_id_from_commit_msg(commit_msg)
+    if not v:
+        return False, "Unable to fetch user id from commit message. Repo: [%s]. Hash: [%s]. Commit msg: [%s]: [%s]" % (repo, target_hash, commit_msg, r)
+
+    return True, r
+
 def get_remotes(repo):
 
     if repo is None:
