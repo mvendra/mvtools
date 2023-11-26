@@ -4,6 +4,7 @@ import sys
 import os
 
 import path_utils
+import git_lib
 
 def git_smash(repo, num_commits):
 
@@ -15,6 +16,16 @@ def git_smash(repo, num_commits):
 
     if num_commits == 1:
         return False, "git_smash: number of commits is too small"
+
+    v, r = git_lib.is_head_clear(repo)
+    if not v:
+        return False, "git_smash failed - repo: [%s]: [%s]" % (repo, r)
+    if not r:
+        return False, "git_smash: repo [%s] is not clear" % repo
+
+    v, r = git_lib.is_previous_commit_range_by_configured_user(repo, num_commits)
+    if not v:
+        return False, "git_smash: [%s]" % r
 
     return False, "mvtodo"
 
