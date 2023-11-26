@@ -5548,6 +5548,12 @@ class GitLibTest(unittest.TestCase):
             self.assertFalse(v)
             dummy.assert_not_called()
 
+        with mock.patch("git_wrapper.config", return_value=(True, None)) as dummy:
+            v, r = git_lib.config("the-key", None, False)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("the-key", None, False)
+
     def testCheckoutFail(self):
 
         v, r = git_lib.checkout(None, None)

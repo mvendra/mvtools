@@ -1024,7 +1024,7 @@ def checkout(repo, file_list=None):
 
     return git_wrapper.checkout(repo, final_file_list)
 
-def config(key, value, global_cfg=True):
+def config(key, value=None, global_cfg=True):
     if key is None:
         return False, "key unspecified"
     return git_wrapper.config(key, value, global_cfg)
