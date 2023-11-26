@@ -127,6 +127,20 @@ def is_head_clear(repo):
 
     return True, (r.strip() == "")
 
+def get_configured_user_id():
+
+    v, r = config("user.name", None, global_cfg=True)
+    if not v:
+        return False, "Could not retrieve user's name: [%s]" % r
+    user_name = r.strip()
+
+    v, r = config("user.email", None, global_cfg=True)
+    if not v:
+        return False, "Could not retrieve user's email: [%s]" % r
+    user_email = r.strip()
+
+    return True, (user_name, user_email)
+
 def get_remotes(repo):
 
     if repo is None:
