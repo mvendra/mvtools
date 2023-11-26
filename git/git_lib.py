@@ -170,6 +170,54 @@ def get_configured_user_id():
 
     return True, (user_name, user_email)
 
+def is_previous_commit_range_by_configured_user(repo, num_prev):
+
+    # get the committer's user id, given a repo and a hash
+
+    if repo is None:
+        return False, "Unable to check previous commit range by configured user. No repo especified"
+
+    if not isinstance(num_prev, int):
+        return False, "Unable to check previous commit range by configured user. num_prev is not numeric (%s)" % num_prev
+
+    repo = os.path.abspath(repo)
+
+    t1 = is_repo_working_tree(repo)
+    if t1 is None:
+        return False, "Unable to check previous commit range by configured user. [%s] does not exist." % repo
+    elif t1 is False:
+        return False, "Unable to check previous commit range by configured user. [%s] is not a git work tree." % repo
+
+    v, r = get_configured_user_id()
+    if not v:
+        return False, "Unable to check previous commit range by configured user. Repo: [%s]: [%s]" % (repo, r)
+    config_username, config_useremail = r
+
+    v, r = get_previous_hash_list(repo, num_prev)
+    if not v:
+        return False, "Unable to check previous commit range by configured user. Repo: [%s]: [%s]" % (repo, r)
+    hash_list = r
+
+    for hash in hash_list:
+
+        v, r = show_msg_only(repo, hash)
+        if not v:
+            return False, "Unable to fetch commit message. Repo: [%s]. Hash: [%s]: [%s]" % (repo, hash, r)
+        commit_msg = r
+
+        v, r = get_user_id_from_commit_msg(commit_msg)
+        if not v:
+            return False, "Unable to fetch user id from commit message. Repo: [%s]. Hash: [%s]. Commit msg: [%s]: [%s]" % (repo, hash, commit_msg, r)
+        commit_username, commit_useremail = r
+
+        if config_username != commit_username:
+            return False, "User id for hash [%s]: username [%s] is different to [%s] - repository: [%s]" % (hash, config_username, commit_username, repo)
+
+        if config_useremail != commit_useremail:
+            return False, "User id for hash [%s]: useremail [%s] is different to [%s] - repository: [%s]" % (hash, config_useremail, commit_useremail, repo)
+
+    return True, None
+
 def get_committers_user_id(repo, hash, limit):
 
     # get the committer's user id, given a repo and a hash
