@@ -103,5 +103,18 @@ class MvPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.path1, self.path2))
 
+    def testMvPluginReadParams7(self):
+
+        final_path = path_utils.concat_path(self.path2, path_utils.basename_filtered(self.path1))
+        os.mkdir(final_path)
+
+        local_params = {}
+        local_params["source_path"] = self.path1
+        local_params["target_path"] = self.path2
+        self.mv_task.params = local_params
+
+        v, r = self.mv_task._read_params()
+        self.assertFalse(v)
+
 if __name__ == '__main__':
     unittest.main()

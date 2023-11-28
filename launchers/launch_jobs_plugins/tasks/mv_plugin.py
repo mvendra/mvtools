@@ -32,6 +32,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(source_path):
             return False, "Source path [%s] does not exist" % source_path
 
+        # renaming is *not* allowed
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
