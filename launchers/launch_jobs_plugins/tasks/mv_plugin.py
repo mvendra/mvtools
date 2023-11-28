@@ -36,6 +36,9 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
+        if not os.path.isdir(target_path):
+            return False, "Target path [%s] must be a folder" % target_path
+
         final_path = path_utils.concat_path(target_path, path_utils.basename_filtered(source_path))
         if os.path.exists(final_path):
             return False, "Final path [%s] already exists" % final_path
