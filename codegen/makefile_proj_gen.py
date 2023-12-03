@@ -81,7 +81,7 @@ def linux_mkfile_c_contents(project_name):
     r += "# DEBUG\n"
     r += "ifeq ($(MODE),debug)\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_linux_debug_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_linux_debug_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_linux_common_gcc() + standard_c.get_c_linker_flags_linux_debug_gcc())), "\n")
     r += "endif\n"
     r += "\n"
 
@@ -89,7 +89,7 @@ def linux_mkfile_c_contents(project_name):
     r += "# RELEASE\n"
     r += "ifeq ($(MODE),release)\n"
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_linux_release_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_linux_release_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_linux_common_gcc() + standard_c.get_c_linker_flags_linux_release_gcc())), "\n")
     r += "\tPOSTBUILD=strip $(OUTNAME_FULL)\n"
     r += "endif\n"
     r += "\n"
