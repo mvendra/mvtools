@@ -42,7 +42,7 @@ endif
 # MACOSX
 ifeq ($(UNAME_S),Darwin)
 	PLAT=macosx
-	CFLAGS+=-std=c18
+	CFLAGS+=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8
 endif
 
 # DEBUG
