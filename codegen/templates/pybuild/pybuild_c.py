@@ -131,7 +131,7 @@ class Builder():
             self.compiler_flags_release += standard_c.get_c_compiler_flags_linux_release_gcc()
 
         # common linker flags
-        self.linker_flags_common += [] # currently NOP
+        self.linker_flags_common += standard_c.get_c_linker_flags_linux_common_gcc()
 
         # debug linker flags
         if self.mode == "debug" and self.compiler == "gcc":
