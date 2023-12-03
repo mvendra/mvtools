@@ -3,6 +3,8 @@
 import sys
 import os
 
+################################################################################################################################################################################################
+
 def get_main_cpp_app():
 
     contents = ""
@@ -21,6 +23,8 @@ def get_main_cpp_app():
     contents += "\n"
 
     return contents
+
+################################################################################################################################################################################################
 
 def get_cpp_compiler_flags_linux_common_gcc():
 
@@ -61,6 +65,8 @@ def get_cpp_compiler_flags_linux_release_gcc():
 
     return contents
 
+################################################################################################################################################################################################
+
 def get_cpp_linker_flags_linux_debug_gcc():
 
     contents = []
@@ -75,6 +81,8 @@ def get_cpp_linker_flags_linux_release_gcc():
 
     return contents
 
+################################################################################################################################################################################################
+
 def get_cpp_compiler_flags_macosx_common_gcc():
 
     contents = []
@@ -84,28 +92,10 @@ def get_cpp_compiler_flags_macosx_common_gcc():
 
     return contents
 
+################################################################################################################################################################################################
+
 def get_clang_version():
 
     contents = "17"
-
-    return contents
-
-def get_cpp_compiler_flags_windows_common_msvc():
-
-    contents = []
-
-    contents.append("/std:c++17")
-
-    return contents
-
-def get_cpp_compiler_flags_windows_debug_msvc():
-
-    contents = []
-
-    return contents
-
-def get_cpp_compiler_flags_windows_release_msvc():
-
-    contents = []
 
     return contents
