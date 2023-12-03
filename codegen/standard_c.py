@@ -90,6 +90,28 @@ def get_c_linker_flags_linux_release_gcc():
 
 ################################################################################################################################################################################################
 
+def get_c_linker_libs_linux_common_gcc():
+
+    contents = []
+
+    return contents
+
+def get_c_linker_libs_linux_debug_gcc():
+
+    contents = []
+
+    contents.append("-lasan")
+
+    return contents
+
+def get_c_linker_libs_linux_release_gcc():
+
+    contents = []
+
+    return contents
+
+################################################################################################################################################################################################
+
 def get_c_compiler_flags_macosx_common_gcc():
 
     contents = []
