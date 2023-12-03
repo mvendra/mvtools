@@ -44,8 +44,8 @@ def get_cpp_compiler_flags_linux_debug_gcc():
     contents.append("-Wextra")
     contents.append("-Werror")
     contents.append("-pedantic")
-    contents.append("-Weffc++")
     contents.append("-fPIC")
+    contents.append("-Weffc++")
     contents.append("-fsanitize=address")
     contents.append("-D_GLIBCXX_DEBUG")
 
