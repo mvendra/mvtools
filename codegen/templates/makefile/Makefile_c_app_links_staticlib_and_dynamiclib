@@ -9,7 +9,7 @@ OUTNAME=sample_app
 SRC=main.c
 BASE=../../..
 BASE_DEP=$(BASE)/dep
-CFLAGS=
+CFLAGS=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8
 INCLUDES=
 LDFLAGS=-L$(BASE_DEP)/$(PLAT)/$(MODE)
 LIBS=-lstaticlib -ldynamiclib
@@ -36,19 +36,17 @@ UNAME_S := $(shell uname -s)
 # LINUX
 ifeq ($(UNAME_S),Linux)
 	PLAT=linux
-	CFLAGS+=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8
 endif
 
 # MACOSX
 ifeq ($(UNAME_S),Darwin)
 	PLAT=macosx
-	CFLAGS+=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8
 endif
 
 # DEBUG
 ifeq ($(MODE),debug)
 	CFLAGS+=-g -Wall -Wextra -Werror -pedantic -fPIC -fsanitize=address -D_GLIBCXX_DEBUG
-	LDFLAGS+=-lasan
+	LIBS+=-lasan
 endif
 
 # RELEASE
