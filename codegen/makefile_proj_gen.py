@@ -99,6 +99,10 @@ def linux_mkfile_c_contents(project_name):
     r += "TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)\n"
     r += "OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
+    r += "LIBS_HEAD=$(foreach lib,$(LIBS),$(if $(filter-out $(lib),-lasan),,$(lib)))\n"
+    r += "LIBS_TAIL=$(foreach lib,$(LIBS),$(if $(filter-out $(lib),-lasan),$(lib),))\n"
+    r += "LIBS_SORTED=$(foreach lib,$(LIBS_HEAD),$(lib))\n"
+    r += "LIBS_SORTED+=$(foreach lib,$(LIBS_TAIL),$(lib))\n"
     r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
     r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
@@ -124,7 +128,7 @@ def linux_mkfile_c_contents(project_name):
     # LINK
     r += "# TARGET: LINK\n"
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
+    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS_SORTED)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
