@@ -9,8 +9,8 @@ OUTNAME=sample_app
 SRC=main.c
 BASE=../../..
 BASE_DEP=$(BASE)/dep
-CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 INCLUDES=
+CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=-L$(BASE_DEP)/$(PLAT)/$(MODE)
 LIBS=-lstaticlib -ldynamiclib
 POSTBUILD=

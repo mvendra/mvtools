@@ -10,8 +10,8 @@ OUTNAME=staticlib
 SRC=main.c subfolder/second.c
 BASE=../../..
 BASE_DEP=$(BASE)/dep
-CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 INCLUDES=
+CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=
 LIBS=
 POSTBUILD=
