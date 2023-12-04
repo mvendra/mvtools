@@ -94,7 +94,7 @@ def get_cpp_linker_libs_linux_debug_gcc():
 
     contents = []
 
-    contents.append("-lasan")
+    contents.append("-lasan") # remember that asan must always be the first to be linked
 
     return contents
 
