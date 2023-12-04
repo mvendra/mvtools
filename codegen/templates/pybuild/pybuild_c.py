@@ -89,15 +89,18 @@ class Builder():
         self.out_full_fn = path_utils.concat_path(self.out_full, self.appname)
         self.all_objs = [(unroll_path_dirname(x) + path_utils.replace_extension(path_utils.basename_filtered(x), ".c", ".o")) for x in self.src]
 
-        # compiler / linker flags
+        # compiler flags / linker flags / linker libs
         self.compiler_flags_common = []
         self.compiler_flags_debug = []
         self.compiler_flags_release = []
         self.linker_flags_common = []
         self.linker_flags_debug = []
         self.linker_flags_release = []
+        self.linker_libs_common = []
+        self.linker_libs_debug = []
+        self.linker_libs_release = []
 
-        # standard C hook - will add compiler / linker flags depending on the compiler, platform, mode, etc
+        # standard C hook - will add compiler flags / linker flags / linker libs depending on the compiler, platform, mode, etc
         self.standard_c_hook()
 
         # select compiler flags to actually use
@@ -113,6 +116,13 @@ class Builder():
             self.linker_flags_to_use += self.linker_flags_debug
         elif self.mode == "release":
             self.linker_flags_to_use += self.linker_flags_release
+
+        # select linker libs to actually use
+        self.linker_libs_to_use = self.linker_libs_common
+        if self.mode == "debug":
+            self.linker_libs_to_use += self.linker_libs_debug
+        elif self.mode == "release":
+            self.linker_libs_to_use += self.linker_libs_release
 
     def standard_c_hook(self):
 
@@ -138,6 +148,17 @@ class Builder():
         # release linker flags
         if self.mode == "release" and self.compiler == "gcc":
             self.linker_flags_release += standard_c.get_c_linker_flags_linux_release_gcc()
+
+        # common linker libs
+        self.linker_libs_common += standard_c.get_c_linker_libs_linux_common_gcc()
+
+        # debug linker libs
+        if self.mode == "debug" and self.compiler == "gcc":
+            self.linker_libs_debug += standard_c.get_c_linker_libs_linux_debug_gcc()
+
+        # release linker libs
+        if self.mode == "release" and self.compiler == "gcc":
+            self.linker_libs_release += standard_c.get_c_linker_libs_linux_release_gcc()
 
     def parseoptions(self, options):
 
@@ -219,6 +240,10 @@ class Builder():
 
         if len(self.linker_flags_to_use) > 0:
             for l in self.linker_flags_to_use:
+                cmd.append(l)
+
+        if len(self.linker_libs_to_use) > 0:
+            for l in self.linker_libs_to_use:
                 cmd.append(l)
 
         self.call_cmd(cmd)
