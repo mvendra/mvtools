@@ -3,14 +3,20 @@
 TARGET=""
 
 if [ -z $1 ]; then
-  # target repo not specified. lets use current working dir
-  TARGET=`pwd -P`
+    # target repo not specified. lets use current working dir
+    TARGET=`pwd -P`
 else
-  # target repo has been specified. lets use it
-  TARGET=$1
+    # target repo has been specified. lets use it
+    TARGET=$1
 fi
 
-TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
+RESOLVED_TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
 #gipus_all_remotes_current_branch.py $TARGET
 #gipus_all_remotes_no_offline_all_branches.py $TARGET
-gipus_all_remotes_all_branches.py $TARGET
+
+if [ $? -ne 0 ]; then
+    echo "Unable to find repository root from [$TARGET]"
+    exit 1
+fi
+
+gipus_all_remotes_all_branches.py $RESOLVED_TARGET
