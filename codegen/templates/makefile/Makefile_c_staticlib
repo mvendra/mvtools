@@ -10,7 +10,7 @@ OUTNAME=staticlib
 SRC=main.c subfolder/second.c
 BASE=../../..
 BASE_DEP=$(BASE)/dep
-CFLAGS=
+CFLAGS=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8
 INCLUDES=
 LDFLAGS=
 LIBS=
@@ -37,19 +37,17 @@ UNAME_S := $(shell uname -s)
 # LINUX
 ifeq ($(UNAME_S),Linux)
 	PLAT=linux
-	CFLAGS+=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8 -static
 endif
 
 # MACOSX
 ifeq ($(UNAME_S),Darwin)
 	PLAT=macosx
-	CFLAGS+=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8 -static
 endif
 
 # DEBUG
 ifeq ($(MODE),debug)
 	CFLAGS+=-g -Wall -Wextra -Werror -pedantic -fPIC -fsanitize=address -D_GLIBCXX_DEBUG
-	LDFLAGS+=-lasan
+	LIBS+=-lasan
 endif
 
 # RELEASE
