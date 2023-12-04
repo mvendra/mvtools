@@ -12,7 +12,7 @@ SO_SUFFIX=-dev.1
 SRC=main.c subfolder/second.c
 BASE=../../..
 BASE_DEP=$(BASE)/dep
-CFLAGS=-std=c18 -m64 -finput-charset=utf-8 -fexec-charset=utf-8
+CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 INCLUDES=
 LDFLAGS=
 LIBS=
@@ -48,13 +48,13 @@ endif
 
 # DEBUG
 ifeq ($(MODE),debug)
-	CFLAGS+=-g -Wall -Wextra -Werror -pedantic -fPIC -fsanitize=address -D_GLIBCXX_DEBUG
+	CFLAGS+=-g -fsanitize=address -D_GLIBCXX_DEBUG
 	LIBS+=-lasan
 endif
 
 # RELEASE
 ifeq ($(MODE),release)
-	CFLAGS+=-O2 -Wall -Wextra -Werror -pedantic -fPIC -DNDEBUG
+	CFLAGS+=-O2 -DNDEBUG
 	POSTBUILD=strip $(OUTNAME_FULL)
 endif
 
