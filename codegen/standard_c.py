@@ -78,8 +78,6 @@ def get_c_linker_flags_linux_debug_gcc():
 
     contents = []
 
-    contents.append("-lasan")
-
     return contents
 
 def get_c_linker_flags_linux_release_gcc():
