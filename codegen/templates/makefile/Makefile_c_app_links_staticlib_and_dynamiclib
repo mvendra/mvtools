@@ -5,7 +5,7 @@ COMPILER=gcc
 
 # PROJECT SETUP
 # For this sample/template Makefile to correctly link with staticlib and dynamiclib, you'd need to build and deploy them into $(BASE_DEP)/$(PLAT)/$(MODE) (see below/further) - and also create the soname symlink for the dynamic lib inside of it as well
-OUTNAME=sample_app
+OUTNAME=sampleapp
 SRC=main.c
 BASE=../../..
 BASE_DEP=$(BASE)/dep
