@@ -189,8 +189,8 @@ def linux_mkfile_cpp_contents(project_name):
     r += "SRC=main.cpp subfolder/second.cpp\n"
     r += "BASE=../../..\n"
     r += "BASE_DEP=$(BASE)/dep\n"
-    r += "CPPFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_compiler_flags_linux_common_gcc())
     r += "INCLUDES=\n"
+    r += "CPPFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_compiler_flags_linux_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_flags_linux_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_libs_linux_common_gcc())
     r += "POSTBUILD=\n"
