@@ -31,6 +31,11 @@ def get_cpp_compiler_flags_linux_common_gcc():
     contents = []
 
     contents.append("-std=c++17")
+    contents.append("-Wall")
+    contents.append("-Wextra")
+    contents.append("-Werror")
+    contents.append("-pedantic")
+    contents.append("-fPIC")
     contents.append("-m64")
 
     return contents
@@ -40,11 +45,6 @@ def get_cpp_compiler_flags_linux_debug_gcc():
     contents = []
 
     contents.append("-g")
-    contents.append("-Wall")
-    contents.append("-Wextra")
-    contents.append("-Werror")
-    contents.append("-pedantic")
-    contents.append("-fPIC")
     contents.append("-Weffc++")
     contents.append("-fsanitize=address")
     contents.append("-D_GLIBCXX_DEBUG")
@@ -56,11 +56,6 @@ def get_cpp_compiler_flags_linux_release_gcc():
     contents = []
 
     contents.append("-O2")
-    contents.append("-Wall")
-    contents.append("-Wextra")
-    contents.append("-Werror")
-    contents.append("-pedantic")
-    contents.append("-fPIC")
     contents.append("-DNDEBUG")
 
     return contents
