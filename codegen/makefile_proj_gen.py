@@ -28,10 +28,10 @@ def linux_mkfile_c_contents(project_name):
     r += "SRC=main.c subfolder/second.c\n"
     r += "BASE=../../..\n"
     r += "BASE_DEP=$(BASE)/dep\n"
-    r += "CFLAGS=%s\n" % prjboot_util.unroll_var("", "", standard_c.get_c_compiler_flags_linux_common_gcc())
+    r += "CFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_compiler_flags_linux_common_gcc())
     r += "INCLUDES=\n"
-    r += "LDFLAGS=%s\n" % prjboot_util.unroll_var("", "", standard_c.get_c_linker_flags_linux_common_gcc())
-    r += "LIBS=%s\n" % prjboot_util.unroll_var("", "", standard_c.get_c_linker_libs_linux_common_gcc())
+    r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc())
+    r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_libs_linux_common_gcc())
     r += "POSTBUILD=\n"
     r += "\n"
 
@@ -189,10 +189,10 @@ def linux_mkfile_cpp_contents(project_name):
     r += "SRC=main.cpp subfolder/second.cpp\n"
     r += "BASE=../../..\n"
     r += "BASE_DEP=$(BASE)/dep\n"
-    r += "CPPFLAGS=%s\n" % prjboot_util.unroll_var("", "", standard_cpp.get_cpp_compiler_flags_linux_common_gcc())
+    r += "CPPFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_compiler_flags_linux_common_gcc())
     r += "INCLUDES=\n"
-    r += "LDFLAGS=%s\n" % prjboot_util.unroll_var("", "", standard_cpp.get_cpp_linker_flags_linux_common_gcc())
-    r += "LIBS=%s\n" % prjboot_util.unroll_var("", "", standard_cpp.get_cpp_linker_libs_linux_common_gcc())
+    r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_flags_linux_common_gcc())
+    r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_libs_linux_common_gcc())
     r += "POSTBUILD=\n"
     r += "\n"
 
