@@ -28,8 +28,8 @@ def linux_mkfile_c_contents(project_name):
     r += "SRC=main.c subfolder/second.c\n"
     r += "BASE=../../..\n"
     r += "BASE_DEP=$(BASE)/dep\n"
-    r += "CFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_compiler_flags_linux_common_gcc())
     r += "INCLUDES=\n"
+    r += "CFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_compiler_flags_linux_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_libs_linux_common_gcc())
     r += "POSTBUILD=\n"
