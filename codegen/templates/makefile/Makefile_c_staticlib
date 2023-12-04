@@ -7,7 +7,7 @@ LINKER=ar
 # PROJECT SETUP
 # To link to this library, just do -lthe-library-name (i.e. $OUTNAME in this particular Makefile - see below)
 OUTNAME=staticlib
-SRC=main.c subfolder/second.c
+SRC=subfolder/second.c
 BASE=../../..
 BASE_DEP=$(BASE)/dep
 INCLUDES=
