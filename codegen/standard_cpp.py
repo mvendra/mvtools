@@ -39,6 +39,7 @@ def get_cpp_compiler_flags_linux_common_gcc():
     contents.append("-fPIC")
     contents.append("-finput-charset=utf-8")
     contents.append("-fexec-charset=utf-8")
+    contents.append("-Weffc++")
 
     return contents
 
@@ -47,7 +48,6 @@ def get_cpp_compiler_flags_linux_debug_gcc():
     contents = []
 
     contents.append("-g")
-    contents.append("-Weffc++")
     contents.append("-fsanitize=address")
     contents.append("-D_GLIBCXX_DEBUG")
 
