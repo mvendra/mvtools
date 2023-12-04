@@ -60,6 +60,10 @@ endif
 TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)
 OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)
 ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))
+LIBS_HEAD=$(foreach lib,$(LIBS),$(if $(filter-out $(lib),-lasan),,$(lib)))
+LIBS_TAIL=$(foreach lib,$(LIBS),$(if $(filter-out $(lib),-lasan),$(lib),))
+LIBS_SORTED=$(foreach lib,$(LIBS_HEAD),$(lib))
+LIBS_SORTED+=$(foreach lib,$(LIBS_TAIL),$(lib))
 OUTNAME_FULL=$(OUT_FULL)/lib$(OUTNAME).a
 INCLUDES+=-I$(BASE_SRC)
 
@@ -77,7 +81,7 @@ compile:
 
 # TARGET: LINK
 link:
-	$(LINKER) -rcs $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)
+	$(LINKER) -rcs $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS_SORTED)
 	$(POSTBUILD)
 
 # TARGET: CLEAN
