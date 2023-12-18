@@ -618,10 +618,8 @@ class DSLType20:
                 return False, "unable to expand context's option value: [%s : %s]" % (co[0], co[1])
             expanded_context_options.append( (co[0], r) )
 
-        if context in self.data:
-            return False, "Failed adding new context: [%s] already exists" % context
-
-        self.data[context] = [expanded_context_options, []]
+        new_ctx = DSLType20_Context(context, expanded_context_options)
+        self.data.append(new_ctx)
         return True, None
 
     def rem_context(self, context):
