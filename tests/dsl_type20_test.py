@@ -1170,21 +1170,21 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestRemCtx1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.rem_ctx(None))
+        self.assertFalse(dsl.rem_context(None))
 
     def testDslType20_TestRemCtx2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.rem_ctx(dsl.default_context_id))
+        self.assertFalse(dsl.rem_context(dsl.default_context_id))
 
     def testDslType20_TestRemCtx3(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.rem_ctx("ctx1"))
+        self.assertFalse(dsl.rem_context("ctx1"))
 
     def testDslType20_TestRemCtx4(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_context("ctx1", [])[0])
         self.assertTrue("ctx1" in dsl.get_all_contexts() )
-        self.assertTrue(dsl.rem_ctx("ctx1"))
+        self.assertTrue(dsl.rem_context("ctx1"))
         self.assertFalse("ctx1" in dsl.get_all_contexts() )
 
     def testDslType20_TestRemCtx5(self):
@@ -1193,7 +1193,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl.add_context("ctx2", [])[0])
         self.assertTrue("ctx1" in dsl.get_all_contexts() )
         self.assertTrue("ctx2" in dsl.get_all_contexts() )
-        self.assertTrue(dsl.rem_ctx("ctx1"))
+        self.assertTrue(dsl.rem_context("ctx1"))
         self.assertFalse("ctx1" in dsl.get_all_contexts() )
         self.assertTrue("ctx2" in dsl.get_all_contexts() )
 
