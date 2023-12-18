@@ -589,7 +589,10 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def add_context(self, context_name, context_options):
+    def add_context(self, parent_context, context_name, context_options):
+
+        if parent_context is None:
+            parent_context = self.default_context_id
 
         if not isinstance(context_name, str):
             return False, "Invalid parameter"
