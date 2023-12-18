@@ -589,19 +589,19 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def add_context(self, context, context_options):
+    def add_context(self, context_name, context_options):
 
-        if not isinstance(context, str):
+        if not isinstance(context_name, str):
             return False, "Invalid parameter"
 
         if not isinstance(context_options, list):
             return False, "Invalid parameter"
 
-        v, r = miniparse.scan_and_slice_beginning(context, self.IDENTIFIER)
+        v, r = miniparse.scan_and_slice_beginning(context_name, self.IDENTIFIER)
         if not v:
-            return False, "Unable to parse context name: [%s]" % context
+            return False, "Unable to parse context name: [%s]" % context_name
         if r[1] != "":
-            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context, r[1])
+            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
 
         expanded_context_options = []
         for co in context_options:
@@ -611,14 +611,14 @@ class DSLType20:
                 continue
 
             if self.NEWLINE in co[1]:
-                return False, "Unable to parse context name: [%s]. Newlines are forbidden inside option values." % (context)
+                return False, "Unable to parse context name: [%s]. Newlines are forbidden inside option values." % (context_name)
 
             v, r = self._expand(co[1])
             if not v:
                 return False, "unable to expand context's option value: [%s : %s]" % (co[0], co[1])
             expanded_context_options.append( (co[0], r) )
 
-        new_ctx = DSLType20_Context(context, expanded_context_options)
+        new_ctx = DSLType20_Context(context_name, expanded_context_options)
         self.data.append(new_ctx)
         return True, None
 
