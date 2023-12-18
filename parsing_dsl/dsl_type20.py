@@ -117,6 +117,9 @@ class DSLType20_Context:
     def get_entries(self):
         return self.entries
 
+    def add_entry(self, new_entry):
+        self.entries.append(new_entry)
+
 class DSLType20_Options:
     def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
         self._expand_envvars = expand_envvars
@@ -591,6 +594,40 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
+    def find_context(self, context_name, callback_func, callback_data):
+
+        if context_name is None:
+            context_name = self.default_context_id
+
+        ctx_to_nav = []
+        ctx_to_nav.append(self.data)
+
+        at_least_one_match = False
+
+        while (len(ctx_to_nav) > 0):
+
+            current = ctx_to_nav.pop()
+
+            if current.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                continue
+
+            if current.get_name() == context_name:
+                at_least_one_match = True
+                callback_func(current, callback_data)
+                if not self.allow_dupes:
+                    break
+
+            for entry in current.get_entries():
+                if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                    ctx_to_nav.append(entry)
+
+        return at_least_one_match
+
+    def _add_ctx_helper(self, ptr, cb_data_ctx_opts):
+
+        new_ctx = DSLType20_Context(cb_data_ctx_opts[0], cb_data_ctx_opts[1])
+        ptr.add_entry(new_ctx)
+
     def add_context(self, parent_context, context_name, context_options):
 
         if parent_context is None:
@@ -620,11 +657,12 @@ class DSLType20:
 
             v, r = self._expand(co[1])
             if not v:
-                return False, "unable to expand context's option value: [%s : %s]" % (co[0], co[1])
+                return False, "Unable to expand context's option value: [%s : %s]" % (co[0], co[1])
             expanded_context_options.append( (co[0], r) )
 
-        new_ctx = DSLType20_Context(context_name, expanded_context_options)
-        self.data.append(new_ctx)
+        if not self.find_context(parent_context, self._add_ctx_helper, (context_name, expanded_context_options)):
+            return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
+
         return True, None
 
     def rem_context(self, context):
