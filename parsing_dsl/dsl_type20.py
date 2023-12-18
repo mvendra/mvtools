@@ -78,6 +78,42 @@ def count_occurrence_first_of_pair(list_target, first_value):
             c += 1
     return c
 
+DSLTYPE20_ENTRY_TYPE_VAR = 1
+DSLTYPE20_ENTRY_TYPE_CTX = 2
+
+class DSLType20_Variable:
+    def __init__(self, name, value, options):
+        self.name = name
+        self.value = value
+        self.options = options
+
+    def get_type(self):
+        return DSLTYPE20_ENTRY_TYPE_VAR
+
+    def get_name(self):
+        return self.name
+
+    def get_value(self):
+        return self.value
+
+    def get_options(self):
+        return self.options
+
+class DSLType20_Context:
+    def __init__(self, name, options):
+        self.name = name
+        self.options = options
+        self.entries = []
+
+    def get_type(self):
+        return DSLTYPE20_ENTRY_TYPE_CTX
+
+    def get_name(self):
+        return self.name
+
+    def get_options(self):
+        return self.options
+
 class DSLType20_Options:
     def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
         self._expand_envvars = expand_envvars
