@@ -114,6 +114,9 @@ class DSLType20_Context:
     def get_options(self):
         return self.options
 
+    def get_entries(self):
+        return self.entries
+
 class DSLType20_Options:
     def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
         self._expand_envvars = expand_envvars
@@ -126,7 +129,7 @@ class DSLType20:
     def __init__(self, _options):
 
         # internal
-        self.data = []
+        self.data = None
         self.default_context_id = "default-context"
         self.max_number_options = 1024
         self.clear()
@@ -156,9 +159,8 @@ class DSLType20:
         self.variable_decorator = _options._variable_decorator
 
     def clear(self):
-        self.data = []
-        def_ctx = DSLType20_Context(self.default_context_id, [])
-        self.data.append(def_ctx)
+        self.data = None
+        self.data = DSLType20_Context(self.default_context_id, [])
 
     def _expand(self, str_input):
 
