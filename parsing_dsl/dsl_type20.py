@@ -599,10 +599,9 @@ class DSLType20:
         if context_name is None:
             context_name = self.default_context_id
 
+        list_matches = []
         ctx_to_nav = []
         ctx_to_nav.append(self.data)
-
-        at_least_one_match = False
 
         while (len(ctx_to_nav) > 0):
 
@@ -612,8 +611,7 @@ class DSLType20:
                 continue
 
             if current.get_name() == context_name:
-                at_least_one_match = True
-                callback_func(current, callback_data)
+                list_matches.append(current)
                 if not self.allow_dupes:
                     break
 
@@ -621,7 +619,10 @@ class DSLType20:
                 if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                     ctx_to_nav.append(entry)
 
-        return at_least_one_match
+        for match in list_matches:
+            callback_func(match, callback_data)
+
+        return (len(list_matches) > 0)
 
     def _add_ctx_helper(self, ptr, cb_data_ctx_opts):
 
