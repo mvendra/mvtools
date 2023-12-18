@@ -157,7 +157,8 @@ class DSLType20:
 
     def clear(self):
         self.data = []
-        self.data.append( (self.default_context_id, []) )
+        def_ctx = DSLType20_Context(self.default_context_id, [])
+        self.data.append(def_ctx)
 
     def _expand(self, str_input):
 
