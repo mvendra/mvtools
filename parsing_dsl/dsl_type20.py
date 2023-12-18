@@ -90,8 +90,8 @@ class DSLType20:
     def __init__(self, _options):
 
         # internal
-        self.data = {}
-        self.default_context_id = "default context" # unparseable string - so as to not impose too many restrictions on client code
+        self.data = []
+        self.default_context_id = "default-context"
         self.max_number_options = 1024
         self.clear()
 
@@ -120,8 +120,8 @@ class DSLType20:
         self.variable_decorator = _options._variable_decorator
 
     def clear(self):
-        self.data = {}
-        self.data[self.default_context_id] = [[], []]
+        self.data = []
+        self.data.append( (self.default_context_id, []) )
 
     def _expand(self, str_input):
 
@@ -230,41 +230,6 @@ class DSLType20:
                 options_result += self.SINGLESPACE + self.FSLASH + self.SINGLESPACE
 
         return options_result
-
-    def add_context(self, context, context_options):
-
-        if not isinstance(context, str):
-            return False, "Invalid parameter"
-
-        if not isinstance(context_options, list):
-            return False, "Invalid parameter"
-
-        v, r = miniparse.scan_and_slice_beginning(context, self.IDENTIFIER)
-        if not v:
-            return False, "Unable to parse context name: [%s]" % context
-        if r[1] != "":
-            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context, r[1])
-
-        expanded_context_options = []
-        for co in context_options:
-
-            if co[1] is None:
-                expanded_context_options.append( co )
-                continue
-
-            if self.NEWLINE in co[1]:
-                return False, "Unable to parse context name: [%s]. Newlines are forbidden inside option values." % (context)
-
-            v, r = self._expand(co[1])
-            if not v:
-                return False, "unable to expand context's option value: [%s : %s]" % (co[0], co[1])
-            expanded_context_options.append( (co[0], r) )
-
-        if context in self.data:
-            return False, "Failed adding new context: [%s] already exists" % context
-
-        self.data[context] = [expanded_context_options, []]
-        return True, None
 
     def parse(self, contents):
 
@@ -587,6 +552,57 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
+    def add_context(self, context, context_options):
+
+        if not isinstance(context, str):
+            return False, "Invalid parameter"
+
+        if not isinstance(context_options, list):
+            return False, "Invalid parameter"
+
+        v, r = miniparse.scan_and_slice_beginning(context, self.IDENTIFIER)
+        if not v:
+            return False, "Unable to parse context name: [%s]" % context
+        if r[1] != "":
+            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context, r[1])
+
+        expanded_context_options = []
+        for co in context_options:
+
+            if co[1] is None:
+                expanded_context_options.append( co )
+                continue
+
+            if self.NEWLINE in co[1]:
+                return False, "Unable to parse context name: [%s]. Newlines are forbidden inside option values." % (context)
+
+            v, r = self._expand(co[1])
+            if not v:
+                return False, "unable to expand context's option value: [%s : %s]" % (co[0], co[1])
+            expanded_context_options.append( (co[0], r) )
+
+        if context in self.data:
+            return False, "Failed adding new context: [%s] already exists" % context
+
+        self.data[context] = [expanded_context_options, []]
+        return True, None
+
+    def rem_context(self, context):
+
+        if context == self.default_context_id:
+            return False
+        if not isinstance(context, str):
+            return False
+        if not context in self.data:
+            return False
+
+        try:
+            del self.data[context]
+        except:
+            return False
+
+        return True
+
     def get_all_vars(self, context=None):
         return self.get_vars(None, context)
 
@@ -738,22 +754,6 @@ class DSLType20:
         self.data[local_context][1] = local_all_vars_new
 
         return (len(local_all_vars) != len(local_all_vars_new))
-
-    def rem_ctx(self, context):
-
-        if context == self.default_context_id:
-            return False
-        if not isinstance(context, str):
-            return False
-        if not context in self.data:
-            return False
-
-        try:
-            del self.data[context]
-        except:
-            return False
-
-        return True
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
