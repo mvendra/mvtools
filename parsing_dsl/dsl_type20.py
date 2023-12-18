@@ -594,7 +594,7 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def find_context(self, context_name, callback_func, callback_data):
+    def _find_context(self, context_name, callback_func, callback_data):
 
         if context_name is None:
             context_name = self.default_context_id
@@ -661,7 +661,7 @@ class DSLType20:
                 return False, "Unable to expand context's option value: [%s : %s]" % (co[0], co[1])
             expanded_context_options.append( (co[0], r) )
 
-        if not self.find_context(parent_context, self._add_ctx_helper, (context_name, expanded_context_options)):
+        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, expanded_context_options)):
             return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
 
         return True, None
