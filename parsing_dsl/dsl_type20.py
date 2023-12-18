@@ -666,25 +666,6 @@ class DSLType20:
 
         return True, None
 
-    def rem_context(self, context):
-
-        if context == self.default_context_id:
-            return False
-        if not isinstance(context, str):
-            return False
-        if not context in self.data:
-            return False
-
-        try:
-            del self.data[context]
-        except:
-            return False
-
-        return True
-
-    def get_all_vars(self, context=None):
-        return self.get_vars(None, context)
-
     def get_all_contexts(self):
 
         result = []
@@ -703,32 +684,21 @@ class DSLType20:
 
         return self.data[context][0]
 
-    def get_vars(self, varname, context=None):
+    def rem_context(self, context):
 
-        local_context = self.default_context_id
-        if context is not None:
-            local_context = context
-        if not local_context in self.data:
-            return None
+        if context == self.default_context_id:
+            return False
+        if not isinstance(context, str):
+            return False
+        if not context in self.data:
+            return False
 
-        ret = []
-        ctx_options_to_add = []
-        for v in self.data[local_context][1]:
-            if ((varname is not None) and (v[0] == varname)) or (varname is None):
+        try:
+            del self.data[context]
+        except:
+            return False
 
-                # add context options to the return list, if the option is enabled
-                if self.vars_auto_ctx_options:
-                    if not self.allow_dupes: # variable options will override context options
-                        for co in self.data[local_context][0]:
-                            if count_occurrence_first_of_pair(v[2], co[0]) < 1:
-                                # var option and context option dupe. skip this context option - i.e. the var's option will effectively override this ctx opt
-                                ctx_options_to_add.append(co)
-                    else:
-                        ctx_options_to_add = self.data[local_context][0]
-
-                ret.append( (v[0], v[1], ctx_options_to_add + v[2] ) )
-
-        return ret
+        return True
 
     def add_variable(self, var_name, var_val, var_opts, context=None):
 
@@ -806,6 +776,36 @@ class DSLType20:
         self.data[local_context][1].append( (var_name, var_val, var_opts) )
 
         return True, None
+
+    def get_all_vars(self, context=None):
+        return self.get_vars(None, context)
+
+    def get_vars(self, varname, context=None):
+
+        local_context = self.default_context_id
+        if context is not None:
+            local_context = context
+        if not local_context in self.data:
+            return None
+
+        ret = []
+        ctx_options_to_add = []
+        for v in self.data[local_context][1]:
+            if ((varname is not None) and (v[0] == varname)) or (varname is None):
+
+                # add context options to the return list, if the option is enabled
+                if self.vars_auto_ctx_options:
+                    if not self.allow_dupes: # variable options will override context options
+                        for co in self.data[local_context][0]:
+                            if count_occurrence_first_of_pair(v[2], co[0]) < 1:
+                                # var option and context option dupe. skip this context option - i.e. the var's option will effectively override this ctx opt
+                                ctx_options_to_add.append(co)
+                    else:
+                        ctx_options_to_add = self.data[local_context][0]
+
+                ret.append( (v[0], v[1], ctx_options_to_add + v[2] ) )
+
+        return ret
 
     def rem_var(self, var_name, index=None, context=None):
 
