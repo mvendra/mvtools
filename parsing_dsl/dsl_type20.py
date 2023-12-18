@@ -462,7 +462,7 @@ class DSLType20:
         if var_name == "":
             return False, "Empty var name: [%s]" % str_input
 
-        v, r = self.add_var(var_name, var_value, parsed_opts, local_context)
+        v, r = self.add_variable(var_name, var_value, parsed_opts, local_context)
         if not v:
             return False, "Unable to add variable [%s]: [%s]" % (var_name, r)
 
@@ -729,7 +729,7 @@ class DSLType20:
 
         return ret
 
-    def add_var(self, var_name, var_val, var_opts, context=None):
+    def add_variable(self, var_name, var_val, var_opts, context=None):
 
         # validate var_name
         if not isinstance(var_name, str):
