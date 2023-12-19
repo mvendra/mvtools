@@ -344,7 +344,7 @@ class DSLType20:
                 return False, r
 
         if expecting_context_closure:
-            return False, "Last context: [%s] was not closed." % printable_context(context)
+            return False, "Last context: [%s] was not closed." % printable_context(context) # mvtodo: replace with ctx.get_name() and ditch printable_context
 
         return True, None
 
