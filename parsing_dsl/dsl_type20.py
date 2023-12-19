@@ -101,8 +101,9 @@ def count_occurrence_first_of_pair(list_target, first_value):
     return c
 
 class DSLType20_Variable:
-    def __init__(self, name, value, options):
+    def __init__(self, configs, name, value, options):
 
+        self.configs = configs
         self.name = name
         self.value = value
         self.options = options
@@ -465,7 +466,7 @@ class DSLType20:
         # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
 
         var_name, var_val, var_opts = cb_data_add
-        new_var = DSLType20_Variable(var_name, var_val, var_opts)
+        new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
         ptr.add_entry(new_var)
 
     def _get_variable_helper(self, ptr, cb_data_get):
