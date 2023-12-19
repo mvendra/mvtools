@@ -410,6 +410,12 @@ class DSLType20:
 
         return True, None
 
+    def produce(self):
+
+        result = ""
+        result += self._produce_context(self.data)
+        return result.strip()
+
     def _expand(self, str_input):
 
         if str_input is None:
@@ -470,12 +476,6 @@ class DSLType20:
             result.append(opt_obj)
 
         return True, result
-
-    def produce(self):
-
-        result = ""
-        result += self._produce_context(self.data)
-        return result.strip()
 
     def _produce_context(self, context):
 
