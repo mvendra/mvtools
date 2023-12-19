@@ -215,13 +215,13 @@ class DSLType20_Context:
         self.entries.append(new_entry)
 
 class DSLType20_Config:
-    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
+    def __init__(self, _expand_envvars = False, _expand_user = False, _allow_dupes = True, _vars_auto_ctx_options=False, _variable_decorator = ""):
 
-        self._expand_envvars = expand_envvars
-        self._expand_user = expand_user
-        self._allow_dupes = allow_dupes
-        self._vars_auto_ctx_options = vars_auto_ctx_options
-        self._variable_decorator = variable_decorator
+        self.expand_envvars = _expand_envvars
+        self.expand_user = _expand_user
+        self.allow_dupes = _allow_dupes
+        self.vars_auto_ctx_options = _vars_auto_ctx_options
+        self.variable_decorator = _variable_decorator
 
 class DSLType20:
     def __init__(self, _configs):
