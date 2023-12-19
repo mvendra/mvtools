@@ -206,11 +206,7 @@ class DSLType20:
         self.clear()
 
         # read configs
-        self.expand_envvars = _configs._expand_envvars
-        self.expand_user = _configs._expand_user
-        self.allow_dupes = _configs._allow_dupes
-        self.vars_auto_ctx_options = _configs._vars_auto_ctx_options
-        self.variable_decorator = _configs._variable_decorator
+        self.configs = _configs
 
     def clear(self):
         self.data = None
