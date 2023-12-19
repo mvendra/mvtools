@@ -617,7 +617,7 @@ class DSLType20:
         if context_name is None:
             context_name = self.default_context_id
 
-        list_matches = []
+        ptr_match = None
         ctx_to_nav = []
         ctx_to_nav.append(self.data)
 
@@ -629,18 +629,17 @@ class DSLType20:
                 continue
 
             if current.get_name() == context_name:
-                list_matches.append(current)
-                if not self.allow_dupes:
-                    break
+                ptr_match = current
+                break
 
             for entry in current.get_entries():
                 if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                     ctx_to_nav.append(entry)
 
-        for match in list_matches:
-            callback_func(match, callback_data)
+        if ptr_match is not None and callback_func is not None:
+            callback_func(ptr_match, callback_data)
 
-        return (len(list_matches) > 0)
+        return (ptr_match is not None)
 
     def _add_ctx_helper(self, ptr, cb_data_ctx):
 
@@ -678,6 +677,10 @@ class DSLType20:
             ctx_opt_name, ctx_opt_val = ctx_opt
             ctx_opt_obj = DSLType20_Option(ctx_opt_name, ctx_opt_val)
             obj_context_options.append(ctx_opt_obj)
+
+        # first check if the context doesn't already exist
+        if self._find_context(context_name, None, None):
+            return False, "Failed adding new context: [%s] already exists" % context_name
 
         # add new context to the internal datastructure
         if not self._find_context(parent_context, self._add_ctx_helper, (context_name, obj_context_options)):
