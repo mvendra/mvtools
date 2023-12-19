@@ -79,7 +79,8 @@ def count_occurrence_first_of_pair(list_target, first_value):
     return c
 
 DSLTYPE20_ENTRY_TYPE_VAR = 1
-DSLTYPE20_ENTRY_TYPE_CTX = 2
+DSLTYPE20_ENTRY_TYPE_OPT = 2
+DSLTYPE20_ENTRY_TYPE_CTX = 3
 
 class DSLType20_Variable:
     def __init__(self, name, value, options):
@@ -98,6 +99,20 @@ class DSLType20_Variable:
 
     def get_options(self):
         return self.options
+
+class DSLType20_Option:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def get_type(self):
+        return DSLTYPE20_ENTRY_TYPE_OPT
+
+    def get_name(self):
+        return self.name
+
+    def get_value(self):
+        return self.value
 
 class DSLType20_Context:
     def __init__(self, ptr_parent, name, options):
