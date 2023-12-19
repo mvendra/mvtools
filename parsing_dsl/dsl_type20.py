@@ -196,6 +196,16 @@ class DSLType20_Context:
         self.options = options
         self.entries = []
 
+        # validations
+        if not isinstance(self.name, str):
+            return False, "Invalid parameter (context_name): [%s]" % self.name
+
+        v, r = miniparse.scan_and_slice_beginning(self.name, IDENTIFIER)
+        if not v:
+            return False, "Unable to parse context name: [%s]" % self.name
+        if r[1] != "":
+            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (self.name, r[1])
+
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_CTX
 
@@ -245,17 +255,6 @@ class DSLType20:
 
         if parent_context is None:
             parent_context = self.default_context_id
-
-        # precond validations # mvtodo: not here
-        if not isinstance(context_name, str):
-            return False, "Invalid parameter (context_name): [%s]" % context_name
-
-        # validate context name # mvtodo: also not here
-        v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
-        if not v:
-            return False, "Unable to parse context name: [%s]" % context_name
-        if r[1] != "":
-            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
 
         # convert incoming options from "neutral" format into options objects list
         v, r = self._make_obj_opt_list(context_options)
