@@ -815,7 +815,7 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, None
 
-    def get_all_vars(self, context=None):
+    def get_all_variables(self, context=None):
         return self.get_vars(None, context)
 
     def get_vars(self, varname, context=None):
