@@ -197,7 +197,7 @@ class DSLType20_Config:
         self._variable_decorator = variable_decorator
 
 class DSLType20:
-    def __init__(self, _options):
+    def __init__(self, _configs):
 
         # internal
         self.data = None
@@ -205,12 +205,12 @@ class DSLType20:
         self.max_number_options = 1024
         self.clear()
 
-        # read options
-        self.expand_envvars = _options._expand_envvars
-        self.expand_user = _options._expand_user
-        self.allow_dupes = _options._allow_dupes
-        self.vars_auto_ctx_options = _options._vars_auto_ctx_options
-        self.variable_decorator = _options._variable_decorator
+        # read configs
+        self.expand_envvars = _configs._expand_envvars
+        self.expand_user = _configs._expand_user
+        self.allow_dupes = _configs._allow_dupes
+        self.vars_auto_ctx_options = _configs._vars_auto_ctx_options
+        self.variable_decorator = _configs._variable_decorator
 
     def clear(self):
         self.data = None
