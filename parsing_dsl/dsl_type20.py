@@ -857,16 +857,14 @@ class DSLType20:
 
     def get_variables(self, varname, context=None):
 
-        local_context = self.default_context_id
-        if context is not None:
-            local_context = context
-
+        if context is None:
+            context = self.default_context_id
         result = []
 
         # mvtodo: reimplement inheriting options from parent context -> @stashed-inherit-opts-from-ctx-vars
 
-        if not self._find_context(local_context, self._get_variable_helper, result):
-            return False, "Context [%s] does not exist." % local_context
+        if not self._find_context(context, self._get_variable_helper, result):
+            return False, "Context [%s] does not exist." % context
         return True, result
 
     def _rem_variable_helper(self, ptr, cb_data_rem):
@@ -886,14 +884,12 @@ class DSLType20:
 
     def rem_variable(self, var_name, context=None):
 
-        local_context = self.default_context_id
-        if context is not None:
-            local_context = context
-
+        if context is None:
+            context = self.default_context_id
         result = []
 
-        if not self._find_context(local_context, self._rem_variable_helper, (var_name, result)):
-            return False, "Context [%s] does not exist." % local_context
+        if not self._find_context(context, self._rem_variable_helper, (var_name, result)):
+            return False, "Context [%s] does not exist." % context
         return True, result
 
 def puaq():
