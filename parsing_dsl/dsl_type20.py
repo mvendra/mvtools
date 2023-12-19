@@ -816,9 +816,9 @@ class DSLType20:
         return True, None
 
     def get_all_variables(self, context=None):
-        return self.get_vars(None, context)
+        return self.get_variables(None, context)
 
-    def get_vars(self, varname, context=None):
+    def get_variables(self, varname, context=None):
 
         local_context = self.default_context_id
         if context is not None:
