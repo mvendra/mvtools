@@ -309,6 +309,50 @@ class DSLType20:
 
         return True, None
 
+    def add_variable(self, var_name, var_val, var_opts, context=None):
+
+        # convert incoming options from "neutral" format into options objects list
+        v, r = self._make_obj_opt_list(var_opts)
+        if not v:
+            return False, v
+        opts_obj_list = r
+
+        # add context to the default context if it does not preexist
+        if context is None:
+            context = self.default_context_id
+        else:
+            self.add_context(None, context, []) # mvtodo: wrong
+
+        # add new variable to internal data
+        if not self._find_context(context, self._add_variable_helper, (var_name, var_val, opts_obj_list)):
+            return False, "Context [%s] does not exist." % context
+        return True, None
+
+    def get_all_variables(self, context=None):
+        return self.get_variables(None, context)
+
+    def get_variables(self, varname, context=None):
+
+        if context is None:
+            context = self.default_context_id
+        result = []
+
+        # mvtodo: reimplement inheriting options from parent context -> @stashed-inherit-opts-from-ctx-vars
+
+        if not self._find_context(context, self._get_variable_helper, result):
+            return False, "Context [%s] does not exist." % context
+        return True, result
+
+    def rem_variable(self, var_name, context=None):
+
+        if context is None:
+            context = self.default_context_id
+        result = []
+
+        if not self._find_context(context, self._rem_variable_helper, (var_name, result)):
+            return False, "Context [%s] does not exist." % context
+        return True, result
+
     def _expand(self, str_input):
 
         if str_input is None:
@@ -817,28 +861,6 @@ class DSLType20:
         new_var = DSLType20_Variable(var_name, var_val, var_opts)
         ptr.add_entry(new_var)
 
-    def add_variable(self, var_name, var_val, var_opts, context=None):
-
-        # convert incoming options from "neutral" format into options objects list
-        v, r = self._make_obj_opt_list(var_opts)
-        if not v:
-            return False, v
-        opts_obj_list = r
-
-        # add context to the default context if it does not preexist
-        if context is None:
-            context = self.default_context_id
-        else:
-            self.add_context(None, context, []) # mvtodo: wrong
-
-        # add new variable to internal data
-        if not self._find_context(context, self._add_variable_helper, (var_name, var_val, opts_obj_list)):
-            return False, "Context [%s] does not exist." % context
-        return True, None
-
-    def get_all_variables(self, context=None):
-        return self.get_variables(None, context)
-
     def _get_variable_helper(self, ptr, cb_data_get):
 
         # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
@@ -846,18 +868,6 @@ class DSLType20:
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
                 cb_data_get.append(entry)
-
-    def get_variables(self, varname, context=None):
-
-        if context is None:
-            context = self.default_context_id
-        result = []
-
-        # mvtodo: reimplement inheriting options from parent context -> @stashed-inherit-opts-from-ctx-vars
-
-        if not self._find_context(context, self._get_variable_helper, result):
-            return False, "Context [%s] does not exist." % context
-        return True, result
 
     def _rem_variable_helper(self, ptr, cb_data_rem):
 
@@ -873,16 +883,6 @@ class DSLType20:
 
         entries_ptr.clear()
         entries_ptr = new_entries_list
-
-    def rem_variable(self, var_name, context=None):
-
-        if context is None:
-            context = self.default_context_id
-        result = []
-
-        if not self._find_context(context, self._rem_variable_helper, (var_name, result)):
-            return False, "Context [%s] does not exist." % context
-        return True, result
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
