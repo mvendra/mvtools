@@ -838,7 +838,7 @@ class DSLType20:
 
         if not self._find_context(local_context, self._get_variable_helper, result):
             return False, "Context [%s] does not exist." % local_context
-        return result
+        return True, result
 
     def rem_variable(self, var_name, index=None, context=None):
 
