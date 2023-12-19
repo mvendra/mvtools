@@ -606,10 +606,10 @@ class DSLType20:
 
         local_str_input = str_input.strip()
 
-        if self.variable_decorator != "":
-            if local_str_input.find(self.variable_decorator) != 0:
-                return False, "Can't parse variable: [%s]: Decorator [%s] not found." % (str_input, self.variable_decorator)
-            local_str_input = (local_str_input[len(self.variable_decorator):]).strip()
+        if self.configs.variable_decorator != "":
+            if local_str_input.find(self.configs.variable_decorator) != 0:
+                return False, "Can't parse variable: [%s]: Decorator [%s] not found." % (str_input, self.configs.variable_decorator)
+            local_str_input = (local_str_input[len(self.configs.variable_decorator):]).strip()
 
         local_context = self.default_context_id
         if context is not None:
@@ -834,7 +834,7 @@ class DSLType20:
 
         for y in self.data[context][1]:
 
-            cur_var = NEWLINE + self.variable_decorator + y[0] # variable's name
+            cur_var = NEWLINE + self.configs.variable_decorator + y[0] # variable's name
 
             # produce the options
             prod_opts = self._produce_options(y[2])
