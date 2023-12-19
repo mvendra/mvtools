@@ -416,6 +416,85 @@ class DSLType20:
         result += self._produce_context(self.data)
         return result.strip()
 
+    def _find_context(self, context_name, callback_func, callback_data):
+
+        if context_name is None:
+            context_name = self.default_context_id
+
+        ptr_match = None
+        ctx_to_nav = []
+        ctx_to_nav.append(self.data)
+
+        while (len(ctx_to_nav) > 0):
+
+            current = ctx_to_nav.pop()
+
+            if current.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                continue
+
+            if current.get_name() == context_name:
+                ptr_match = current
+                break
+
+            for entry in current.get_entries():
+                if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                    ctx_to_nav.append(entry)
+
+        if ptr_match is not None and callback_func is not None:
+            callback_func(ptr_match, callback_data)
+
+        return (ptr_match is not None)
+
+    def _add_ctx_helper(self, ptr, cb_data_ctx):
+
+        new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], cb_data_ctx[1])
+        ptr.add_entry(new_ctx)
+
+    def _get_sub_contexts_helper(self, ptr, cb_data_res):
+
+        for entry in ptr.get_entries():
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                cb_data_res.append(entry)
+
+    def _get_context_opts_helper(self, ptr, cb_data_res):
+
+        cb_data_res += ptr.get_options()
+
+    def _rem_context_helper(self, ptr, cb_data_rem):
+
+        cb_data_rem.append(ptr)
+
+    def _add_variable_helper(self, ptr, cb_data_add):
+
+        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
+
+        var_name, var_val, var_opts = cb_data_add
+        new_var = DSLType20_Variable(var_name, var_val, var_opts)
+        ptr.add_entry(new_var)
+
+    def _get_variable_helper(self, ptr, cb_data_get):
+
+        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
+
+        for entry in ptr.get_entries():
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                cb_data_get.append(entry)
+
+    def _rem_variable_helper(self, ptr, cb_data_rem):
+
+        var_name, result = cb_data_rem
+        new_entries_list = []
+        entries_ptr = ptr.get_entries()
+
+        for entry in entries_ptr:
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
+                result.append(entry.get_name()) # this is just to make it easy to tell how many entries were skipped (deleted)
+            else:
+                new_entries_list.append(entry)
+
+        entries_ptr.clear()
+        entries_ptr = new_entries_list
+
     def _expand(self, str_input):
 
         if str_input is None:
@@ -804,85 +883,6 @@ class DSLType20:
             return True, (opt_name, opt_val), local_str_input, False
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
-
-    def _find_context(self, context_name, callback_func, callback_data):
-
-        if context_name is None:
-            context_name = self.default_context_id
-
-        ptr_match = None
-        ctx_to_nav = []
-        ctx_to_nav.append(self.data)
-
-        while (len(ctx_to_nav) > 0):
-
-            current = ctx_to_nav.pop()
-
-            if current.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                continue
-
-            if current.get_name() == context_name:
-                ptr_match = current
-                break
-
-            for entry in current.get_entries():
-                if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                    ctx_to_nav.append(entry)
-
-        if ptr_match is not None and callback_func is not None:
-            callback_func(ptr_match, callback_data)
-
-        return (ptr_match is not None)
-
-    def _add_ctx_helper(self, ptr, cb_data_ctx):
-
-        new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], cb_data_ctx[1])
-        ptr.add_entry(new_ctx)
-
-    def _get_sub_contexts_helper(self, ptr, cb_data_res):
-
-        for entry in ptr.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                cb_data_res.append(entry)
-
-    def _get_context_opts_helper(self, ptr, cb_data_res):
-
-        cb_data_res += ptr.get_options()
-
-    def _rem_context_helper(self, ptr, cb_data_rem):
-
-        cb_data_rem.append(ptr)
-
-    def _add_variable_helper(self, ptr, cb_data_add):
-
-        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
-
-        var_name, var_val, var_opts = cb_data_add
-        new_var = DSLType20_Variable(var_name, var_val, var_opts)
-        ptr.add_entry(new_var)
-
-    def _get_variable_helper(self, ptr, cb_data_get):
-
-        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
-
-        for entry in ptr.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                cb_data_get.append(entry)
-
-    def _rem_variable_helper(self, ptr, cb_data_rem):
-
-        var_name, result = cb_data_rem
-        new_entries_list = []
-        entries_ptr = ptr.get_entries()
-
-        for entry in entries_ptr:
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
-                result.append(entry.get_name()) # this is just to make it easy to tell how many entries were skipped (deleted)
-            else:
-                new_entries_list.append(entry)
-
-        entries_ptr.clear()
-        entries_ptr = new_entries_list
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
