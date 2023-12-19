@@ -517,21 +517,6 @@ class DSLType20:
 
         return True, local_str_input
 
-    def _sanitize_line(self, line_in):
-
-        line_out = line_in.strip()
-        if line_out == "":
-            return ""
-
-        for c in COMMENTS:
-            line_out = miniparse.guarded_right_cut(line_out, list(c), QUOTE)
-            if line_out is None:
-                return None
-            if line_out == "":
-                return ""
-
-        return line_out.strip()
-
     def _make_obj_opt_list(self, options):
 
         result = []
@@ -555,6 +540,21 @@ class DSLType20:
             result.append(opt_obj)
 
         return True, result
+
+    def _sanitize_line(self, line_in):
+
+        line_out = line_in.strip()
+        if line_out == "":
+            return ""
+
+        for c in COMMENTS:
+            line_out = miniparse.guarded_right_cut(line_out, list(c), QUOTE)
+            if line_out is None:
+                return None
+            if line_out == "":
+                return ""
+
+        return line_out.strip()
 
     def _parse_context_name(self, str_input):
 
