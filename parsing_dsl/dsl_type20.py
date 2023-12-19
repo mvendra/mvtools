@@ -743,6 +743,14 @@ class DSLType20:
 
         return True, None
 
+    def _add_variable_helper(self, ptr, cb_data_add):
+
+        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
+
+        var_name, var_val, var_opts = cb_data_add
+        new_var = DSLType20_Variable(var_name, var_val, var_opts)
+        ptr.add_entry(new_var)
+
     def add_variable(self, var_name, var_val, var_opts, context=None):
 
         # validate var_name
@@ -802,22 +810,9 @@ class DSLType20:
         else:
             self.add_context(local_context, [])
 
-        # check for duplicates, if checking is enabled
-        if not self.allow_dupes:
-
-            # check for duplicated variable
-            for v in self.data[local_context][1]:
-                if v[0] == var_name:
-                    return False, "variable [%s] is duplicated" % v[0]
-
-            # check for duplicated option inside the provided options
-            for o in var_opts:
-                if count_occurrence_first_of_pair(var_opts, o[0]) > 1:
-                    return False, "option [%s] is duplicated" % o[0]
-
         # add new variable to internal data
-        self.data[local_context][1].append( (var_name, var_val, var_opts) )
-
+        if not self._find_context(context, self._add_variable_helper, (var_name, var_val, var_opts)):
+            return False, "Context [%s] does not exist." % context
         return True, None
 
     def get_all_vars(self, context=None):
