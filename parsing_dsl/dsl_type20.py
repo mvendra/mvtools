@@ -796,19 +796,19 @@ class DSLType20:
 
         # validate var_opts
         if not isinstance(var_opts, list):
-            return False, "variable's options are not a list"
+            return False, "Variable's options are not a list"
         for i in var_opts:
             if not isinstance(i, tuple):
-                return False, "variable's options are not tuples in a list"
+                return False, "Variable's options are not tuples in a list"
             if not len(i) == 2:
-                return  False, "variable's options are not pair of tuples in a list"
+                return  False, "Variable's options are not pair of tuples in a list"
             if not isinstance(i[0], str):
-                return False, "variable's options's identifier is not a string"
+                return False, "Variable's options's identifier is not a string"
             if not ( (isinstance(i[1], str)) or (i[1] is None) ):
-                return False, "variable's options's value is invalid"
+                return False, "Variable's options's value is invalid"
             if i[1] is not None:
                 if NEWLINE in i[1]:
-                    return False, "newlines are forbidden inside values"
+                    return False, "Newlines are forbidden inside values"
 
         # expand the option's value
         var_opts_pre = var_opts
@@ -821,7 +821,7 @@ class DSLType20:
 
             v, r = self._expand(o[1])
             if not v:
-                return False, "unable to expand variable's option value: [%s : %s]" % (o[0], o[1])
+                return False, "Unable to expand variable's option value: [%s : %s]" % (o[0], o[1])
             var_opts.append( (o[0], r) )
 
         if context is None:
