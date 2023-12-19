@@ -840,32 +840,32 @@ class DSLType20:
             return False, "Context [%s] does not exist." % local_context
         return True, result
 
-    def rem_variable(self, var_name, index=None, context=None):
+    def _rem_variable_helper(self, ptr, cb_data_rem):
+
+        var_name, result = cb_data_rem
+        new_entries_list = []
+        entries_ptr = ptr.get_entries()
+
+        for entry in entries_ptr:
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
+                result.append(entry.get_name()) # this is just to make it easy to tell how many entries were skipped (deleted)
+            else:
+                new_entries_list.append(entry)
+
+        entries_ptr.clear()
+        entries_ptr = new_entries_list
+
+    def rem_variable(self, var_name, context=None):
 
         local_context = self.default_context_id
         if context is not None:
             local_context = context
-        if not local_context in self.data:
-            return False
 
-        local_all_vars_new = []
-        local_all_vars = self.data[local_context][1]
+        result = []
 
-        for i in range(len(local_all_vars)):
-
-            if (local_all_vars[i])[0] == var_name:
-
-                if index is not None:
-                    if index == i:
-                        continue
-                else:
-                    continue
-
-            local_all_vars_new.append(local_all_vars[i])
-
-        self.data[local_context][1] = local_all_vars_new
-
-        return (len(local_all_vars) != len(local_all_vars_new))
+        if not self._find_context(local_context, self._rem_variable_helper, (var_name, result)):
+            return False, "Context [%s] does not exist." % local_context
+        return True, result
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
