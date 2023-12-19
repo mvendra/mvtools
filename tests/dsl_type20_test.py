@@ -985,15 +985,29 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertFalse(dsl.add_context(None, "ok", [("var1", "first line\nsecond line")])[0])
 
+    def testDslType20_TestAddVariable0(self): # mvtodo: fix indices
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
+        self.assertTrue(dsl.add_variable("var1", None, [ ] )[0])
+        var_obj = dsl.get_all_variables()[0]
+        self.assertEqual(var_obj.get_name(), "var1")
+        self.assertEqual(var_obj.get_value(), None)
+        self.assertEqual(var_obj.get_options(), [])
+
     def testDslType20_TestAddVariable1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_variable("var1", "", [ ] )[0])
-        self.assertEqual(dsl.get_all_variables(), [ ("var1", "", [ ]) ] )
+        var_obj = dsl.get_all_variables()[0]
+        self.assertEqual(var_obj.get_name(), "var1")
+        self.assertEqual(var_obj.get_value(), "")
+        self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestAddVariable2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_variable("var1", "val1", [ ] )[0])
-        self.assertEqual(dsl.get_all_variables(), [ ("var1", "val1", [ ]) ] )
+        var_obj = dsl.get_all_variables()[0]
+        self.assertEqual(var_obj.get_name(), "var1")
+        self.assertEqual(var_obj.get_value(), "val1")
+        self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestAddVariable3(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())

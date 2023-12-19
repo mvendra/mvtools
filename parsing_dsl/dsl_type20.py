@@ -818,32 +818,27 @@ class DSLType20:
     def get_all_variables(self, context=None):
         return self.get_variables(None, context)
 
+    def _get_variable_helper(self, ptr, cb_data_get):
+
+        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
+
+        for entry in ptr.get_entries():
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                cb_data_get.append(entry)
+
     def get_variables(self, varname, context=None):
 
         local_context = self.default_context_id
         if context is not None:
             local_context = context
-        if not local_context in self.data:
-            return None
 
-        ret = []
-        ctx_options_to_add = []
-        for v in self.data[local_context][1]:
-            if ((varname is not None) and (v[0] == varname)) or (varname is None):
+        result = []
 
-                # add context options to the return list, if the option is enabled
-                if self.vars_auto_ctx_options:
-                    if not self.allow_dupes: # variable options will override context options
-                        for co in self.data[local_context][0]:
-                            if count_occurrence_first_of_pair(v[2], co[0]) < 1:
-                                # var option and context option dupe. skip this context option - i.e. the var's option will effectively override this ctx opt
-                                ctx_options_to_add.append(co)
-                    else:
-                        ctx_options_to_add = self.data[local_context][0]
+        # mvtodo: reimplement inheriting options from parent context -> @stashed-inherit-opts-from-ctx-vars
 
-                ret.append( (v[0], v[1], ctx_options_to_add + v[2] ) )
-
-        return ret
+        if not self._find_context(local_context, self._get_variable_helper, result):
+            return False, "Context [%s] does not exist." % local_context
+        return result
 
     def rem_variable(self, var_name, index=None, context=None):
 
