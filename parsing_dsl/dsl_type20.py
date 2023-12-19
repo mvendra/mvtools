@@ -103,6 +103,10 @@ def count_occurrence_first_of_pair(list_target, first_value):
 class DSLType20_Variable:
     def __init__(self, name, value, options):
 
+        self.name = name
+        self.value = value
+        self.options = options
+
         # validate name
         if not isinstance(name, str):
             return False, "Variable's name is not a string"
@@ -124,10 +128,6 @@ class DSLType20_Variable:
                 return False, "Unable to expand variable's value: [%s]" % value
             value = r
 
-        self.name = name
-        self.value = value
-        self.options = options
-
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_VAR
 
@@ -144,6 +144,15 @@ class DSLType20_Option:
     def __init__(self, name, value):
         self.name = name
         self.value = value
+
+        # validate and expand
+        if self.value is not None:
+            if NEWLINE in self.value:
+                return False, "Newlines are forbidden inside values"
+            v, r = self._expand(self.value)
+            if not v:
+                return False, "Unable to expand option's value: [%s : %s]" % (self.name, self.value)
+            self.value = r
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_OPT
@@ -260,23 +269,6 @@ class DSLType20:
                 return False, "Options's identifier is not a string"
             if not ( (isinstance(i[1], str)) or (i[1] is None) ):
                 return False, "Options's value is invalid"
-            if i[1] is not None:
-                if NEWLINE in i[1]:
-                    return False, "Newlines are forbidden inside values"
-
-        # expand the option's value
-        options_pre = options
-        options = []
-        for o in options_pre:
-
-            if o[1] is None:
-                options.append( o )
-                continue
-
-            v, r = self._expand(o[1])
-            if not v:
-                return False, "Unable to expand option's value: [%s : %s]" % (o[0], o[1])
-            options.append( (o[0], r) )
 
         for opt in options:
             opt_name, opt_val = opt
