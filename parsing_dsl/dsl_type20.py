@@ -736,7 +736,11 @@ class DSLType20:
         if not entry_found:
             return False, "Context [%s] could not be removed (not found under its parent)" % context
 
-        del ctx_parent.get_entries()[idx]
+        try:
+            del ctx_parent.get_entries()[idx]
+        except:
+            return False, "Context [%s] could not be removed (unknown reason)" % context
+
         return True, None
 
     def add_variable(self, var_name, var_val, var_opts, context=None):
