@@ -845,7 +845,7 @@ class DSLType20:
 
         return ret
 
-    def rem_var(self, var_name, index=None, context=None):
+    def rem_variable(self, var_name, index=None, context=None):
 
         local_context = self.default_context_id
         if context is not None:
