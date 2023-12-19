@@ -209,8 +209,7 @@ class DSLType20:
     def produce(self):
 
         result = ""
-        for ctx in self.data:
-            result += self._produce_context(ctx)
+        result += self._produce_context(self.data)
         return result.strip()
 
     def _produce_context(self, context):
