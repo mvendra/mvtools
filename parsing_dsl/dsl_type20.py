@@ -690,9 +690,9 @@ class DSLType20:
 
     def _get_sub_contexts_helper(self, ptr, cb_data_res):
 
-        for ctxs in ptr.get_entries():
-            if ctxs.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                cb_data_res.append(ctxs.get_name())
+        for entry in ptr.get_entries():
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                cb_data_res.append(entry)
 
     def get_sub_contexts(self, parent_context):
 
