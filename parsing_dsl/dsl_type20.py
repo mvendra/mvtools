@@ -191,7 +191,7 @@ class DSLType20:
 
         return True, local_str_input
 
-    def sanitize_line(self, line_in):
+    def _sanitize_line(self, line_in):
 
         line_out = line_in.strip()
         if line_out == "":
@@ -289,7 +289,7 @@ class DSLType20:
         lines = contents.split(self.NEWLINE)
         for line in lines:
 
-            line_t = self.sanitize_line(line)
+            line_t = self._sanitize_line(line)
             if line_t is None:
                 return False, "Unable to sanitize line: [%s]" % line
             if line_t == "":
