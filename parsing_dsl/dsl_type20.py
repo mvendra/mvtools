@@ -100,6 +100,28 @@ def count_occurrence_first_of_pair(list_target, first_value):
             c += 1
     return c
 
+def expand(configs, str_input):
+
+    if str_input is None:
+        return False, str_input
+
+    if not isinstance(str_input, str):
+        return False, str_input
+
+    local_str_input = str_input
+
+    if configs.expand_envvars:
+        local_str_input = os.path.expandvars(local_str_input)
+        if "$" in local_str_input:
+            return False, str_input
+
+    if configs.expand_user:
+        local_str_input = os.path.expanduser(local_str_input)
+        if "~" in local_str_input:
+            return False, str_input
+
+    return True, local_str_input
+
 class DSLType20_Variable:
     def __init__(self, configs, name, value, options):
 
@@ -124,7 +146,7 @@ class DSLType20_Variable:
 
         # expand the variable's value
         if value is not None:
-            v, r = self._expand(value)
+            v, r = expand(self.configs, value)
             if not v:
                 return False, "Unable to expand variable's value: [%s]" % value
             value = r
@@ -152,7 +174,7 @@ class DSLType20_Option:
         if self.value is not None:
             if NEWLINE in self.value:
                 return False, "Newlines are forbidden inside values"
-            v, r = self._expand(self.value)
+            v, r = expand(self.configs, self.value)
             if not v:
                 return False, "Unable to expand option's value: [%s : %s]" % (self.name, self.value)
             self.value = r
@@ -495,28 +517,6 @@ class DSLType20:
 
         entries_ptr.clear()
         entries_ptr = new_entries_list
-
-    def _expand(self, str_input):
-
-        if str_input is None:
-            return False, str_input
-
-        if not isinstance(str_input, str):
-            return False, str_input
-
-        local_str_input = str_input
-
-        if self.expand_envvars:
-            local_str_input = os.path.expandvars(local_str_input)
-            if "$" in local_str_input:
-                return False, str_input
-
-        if self.expand_user:
-            local_str_input = os.path.expanduser(local_str_input)
-            if "~" in local_str_input:
-                return False, str_input
-
-        return True, local_str_input
 
     def _make_obj_opt_list(self, options):
 
