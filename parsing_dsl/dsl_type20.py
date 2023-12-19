@@ -250,6 +250,65 @@ class DSLType20:
 
         return True, None
 
+    def get_sub_contexts(self, parent_context):
+
+        if parent_context is None:
+            parent_context = self.default_context_id
+
+        result = []
+
+        if not self._find_context(parent_context, self._get_sub_contexts_helper, result):
+            return False, "Unable to return sub contexts of [%s] - context not found." % parent_context
+
+        return result
+
+    def get_context_options(self, context):
+
+        result = []
+
+        if context is None:
+            context = self.default_context_id
+
+        if not self._find_context(context, self._get_context_opts_helper, result):
+            return False, "Context [%s] does not exist." % context
+
+        return result
+
+    def rem_context(self, context):
+
+        ctx_info = []
+
+        if context is None or context == self.default_context_id:
+            return False, "Removing the default context is forbidden"
+
+        if not self._find_context(context, self._rem_context_helper, ctx_info):
+            return False, "Context [%s] does not exist." % context
+
+        if len(ctx_info) != 1:
+            return False, "Found more than one instance of context [%s]. Fatal error." % context
+
+        ctx_parent = ctx_info[0].get_ptr_parent()
+        if ctx_parent is None:
+            return False, "Context [%s] has no parent." % context
+
+        idx = 0
+        entry_found = False
+        for ctx in ctx_parent.get_entries():
+            if ctx.get_name() == context:
+                entry_found = True
+                break
+            idx += 1
+
+        if not entry_found:
+            return False, "Context [%s] could not be removed (not found under its parent)" % context
+
+        try:
+            del ctx_parent.get_entries()[idx]
+        except:
+            return False, "Context [%s] could not be removed (unknown reason)" % context
+
+        return True, None
+
     def _expand(self, str_input):
 
         if str_input is None:
@@ -742,72 +801,13 @@ class DSLType20:
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 cb_data_res.append(entry)
 
-    def get_sub_contexts(self, parent_context):
-
-        if parent_context is None:
-            parent_context = self.default_context_id
-
-        result = []
-
-        if not self._find_context(parent_context, self._get_sub_contexts_helper, result):
-            return False, "Unable to return sub contexts of [%s] - context not found." % parent_context
-
-        return result
-
     def _get_context_opts_helper(self, ptr, cb_data_res):
 
         cb_data_res += ptr.get_options()
 
-    def get_context_options(self, context):
-
-        result = []
-
-        if context is None:
-            context = self.default_context_id
-
-        if not self._find_context(context, self._get_context_opts_helper, result):
-            return False, "Context [%s] does not exist." % context
-
-        return result
-
     def _rem_context_helper(self, ptr, cb_data_rem):
 
         cb_data_rem.append(ptr)
-
-    def rem_context(self, context):
-
-        ctx_info = []
-
-        if context is None or context == self.default_context_id:
-            return False, "Removing the default context is forbidden"
-
-        if not self._find_context(context, self._rem_context_helper, ctx_info):
-            return False, "Context [%s] does not exist." % context
-
-        if len(ctx_info) != 1:
-            return False, "Found more than one instance of context [%s]. Fatal error." % context
-
-        ctx_parent = ctx_info[0].get_ptr_parent()
-        if ctx_parent is None:
-            return False, "Context [%s] has no parent." % context
-
-        idx = 0
-        entry_found = False
-        for ctx in ctx_parent.get_entries():
-            if ctx.get_name() == context:
-                entry_found = True
-                break
-            idx += 1
-
-        if not entry_found:
-            return False, "Context [%s] could not be removed (not found under its parent)" % context
-
-        try:
-            del ctx_parent.get_entries()[idx]
-        except:
-            return False, "Context [%s] could not be removed (unknown reason)" % context
-
-        return True, None
 
     def _add_variable_helper(self, ptr, cb_data_add):
 
