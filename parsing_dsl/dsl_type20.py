@@ -556,70 +556,6 @@ class DSLType20:
 
         return True, result
 
-    def _produce_context(self, context):
-
-        if context is None:
-            return None
-        if context not in self.data:
-            return None
-
-        result = ""
-        if context != self.default_context_id:
-            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
-
-        for y in self.data[context][1]:
-
-            cur_var = NEWLINE + self.variable_decorator + y[0] # variable's name
-
-            # produce the options
-            prod_opts = self._produce_options(y[2])
-            if len(prod_opts) > 0:
-                cur_var = ("%s %s" %  (cur_var, prod_opts))
-
-            # add the variable's value - if it has it
-            if y[1] is not None:
-                var_escaped_value = ""
-                if y[1] != "":
-                    v, r = miniparse.escape(y[1], BSLASH, [QUOTE])
-                    if not v:
-                        return None
-                    var_escaped_value = r
-
-                cur_var += SINGLESPACE + EQSIGN + SINGLESPACE + QUOTE + var_escaped_value + QUOTE
-
-            result += cur_var
-
-        if context != self.default_context_id:
-            result += NEWLINE + RBRACKET + NEWLINE
-
-        return result
-
-    def _produce_options(self, input_options):
-
-        options_result = ""
-        for o in range(len(input_options)):
-
-            if o == 0: # first option
-                options_result += LCBRACKET
-
-            options_result += input_options[o][0] # option's name
-            if input_options[o][1] is not None:
-                # option has value
-                opt_escaped_value = ""
-                if input_options[o][1] != "":
-                    v, r = miniparse.escape((input_options[o][1]), BSLASH, [QUOTE])
-                    if not v:
-                        return None
-                    opt_escaped_value = r
-                options_result += COLON + SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
-
-            if o == (len(input_options)-1): # last option
-                options_result += RCBRACKET
-            else:
-                options_result += SINGLESPACE + FSLASH + SINGLESPACE
-
-        return options_result
-
     def _parse_context_name(self, str_input):
 
         local_str_input = str_input.strip()
@@ -883,6 +819,70 @@ class DSLType20:
             return True, (opt_name, opt_val), local_str_input, False
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
+
+    def _produce_context(self, context):
+
+        if context is None:
+            return None
+        if context not in self.data:
+            return None
+
+        result = ""
+        if context != self.default_context_id:
+            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
+
+        for y in self.data[context][1]:
+
+            cur_var = NEWLINE + self.variable_decorator + y[0] # variable's name
+
+            # produce the options
+            prod_opts = self._produce_options(y[2])
+            if len(prod_opts) > 0:
+                cur_var = ("%s %s" %  (cur_var, prod_opts))
+
+            # add the variable's value - if it has it
+            if y[1] is not None:
+                var_escaped_value = ""
+                if y[1] != "":
+                    v, r = miniparse.escape(y[1], BSLASH, [QUOTE])
+                    if not v:
+                        return None
+                    var_escaped_value = r
+
+                cur_var += SINGLESPACE + EQSIGN + SINGLESPACE + QUOTE + var_escaped_value + QUOTE
+
+            result += cur_var
+
+        if context != self.default_context_id:
+            result += NEWLINE + RBRACKET + NEWLINE
+
+        return result
+
+    def _produce_options(self, input_options):
+
+        options_result = ""
+        for o in range(len(input_options)):
+
+            if o == 0: # first option
+                options_result += LCBRACKET
+
+            options_result += input_options[o][0] # option's name
+            if input_options[o][1] is not None:
+                # option has value
+                opt_escaped_value = ""
+                if input_options[o][1] != "":
+                    v, r = miniparse.escape((input_options[o][1]), BSLASH, [QUOTE])
+                    if not v:
+                        return None
+                    opt_escaped_value = r
+                options_result += COLON + SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
+
+            if o == (len(input_options)-1): # last option
+                options_result += RCBRACKET
+            else:
+                options_result += SINGLESPACE + FSLASH + SINGLESPACE
+
+        return options_result
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
