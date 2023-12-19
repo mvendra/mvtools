@@ -139,7 +139,7 @@ class DSLType20_Context:
     def add_entry(self, new_entry):
         self.entries.append(new_entry)
 
-class DSLType20_Options:
+class DSLType20_Config:
     def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
         self._expand_envvars = expand_envvars
         self._expand_user = expand_user
@@ -894,7 +894,7 @@ if __name__ == '__main__':
         puaq()
     file_to_parse = sys.argv[1]
 
-    dsl = DSLType20(DSLType20_Options())
+    dsl = DSLType20(DSLType20_Config())
 
     if not os.path.exists(file_to_parse):
         print("File [%s] does not exist." % file_to_parse)
