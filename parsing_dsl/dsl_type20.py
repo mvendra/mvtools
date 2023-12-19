@@ -353,6 +353,63 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, result
 
+    def parse(self, contents):
+
+        self.clear()
+
+        context = None # default context
+        context_options = []
+        expecting_context_name = False
+        expecting_context_closure = False
+
+        lines = contents.split(NEWLINE)
+        for line in lines:
+
+            line_t = self._sanitize_line(line)
+            if line_t is None:
+                return False, "Unable to sanitize line: [%s]" % line
+            if line_t == "":
+                continue
+
+            # context name, begin
+            if line_t == LBRACKET:
+                if expecting_context_name or context is not None:
+                    return False, "Failed parsing contents: nested contexts are not alllowed."
+                expecting_context_name = True
+                expecting_context_closure = True
+                continue
+
+            # context name, end
+            if line_t == RBRACKET:
+                if expecting_context_name:
+                    return False, "Last context name not specified."
+                context = None
+                expecting_context_closure = False
+                continue
+
+            # context name, the name itself
+            if expecting_context_name:
+                expecting_context_name = False
+
+                v, r = self._parse_context_name(line_t)
+                if not v:
+                    return v, r
+                context, context_options = r
+                v, r = self.add_context(context, context_options) # mvtodo: wrong
+                if not v:
+                    return False, "Failed creating new context: [%s]." % r
+                continue
+
+            # freestanding (default context) variable
+            v, r = self._parse_variable(line_t, context)
+            if not v:
+                return False, r
+
+        if expecting_context_closure:
+            return False, "Last context: [%s] was not closed." % printable_context(context) # mvtodo: replace with ctx.get_name() and ditch printable_context
+
+        return True, None
+
     def _expand(self, str_input):
 
         if str_input is None:
@@ -483,63 +540,6 @@ class DSLType20:
                 options_result += SINGLESPACE + FSLASH + SINGLESPACE
 
         return options_result
-
-    def parse(self, contents):
-
-        self.clear()
-
-        context = None # default context
-        context_options = []
-        expecting_context_name = False
-        expecting_context_closure = False
-
-        lines = contents.split(NEWLINE)
-        for line in lines:
-
-            line_t = self._sanitize_line(line)
-            if line_t is None:
-                return False, "Unable to sanitize line: [%s]" % line
-            if line_t == "":
-                continue
-
-            # context name, begin
-            if line_t == LBRACKET:
-                if expecting_context_name or context is not None:
-                    return False, "Failed parsing contents: nested contexts are not alllowed."
-                expecting_context_name = True
-                expecting_context_closure = True
-                continue
-
-            # context name, end
-            if line_t == RBRACKET:
-                if expecting_context_name:
-                    return False, "Last context name not specified."
-                context = None
-                expecting_context_closure = False
-                continue
-
-            # context name, the name itself
-            if expecting_context_name:
-                expecting_context_name = False
-
-                v, r = self._parse_context_name(line_t)
-                if not v:
-                    return v, r
-                context, context_options = r
-                v, r = self.add_context(context, context_options) # mvtodo: wrong
-                if not v:
-                    return False, "Failed creating new context: [%s]." % r
-                continue
-
-            # freestanding (default context) variable
-            v, r = self._parse_variable(line_t, context)
-            if not v:
-                return False, r
-
-        if expecting_context_closure:
-            return False, "Last context: [%s] was not closed." % printable_context(context) # mvtodo: replace with ctx.get_name() and ditch printable_context
-
-        return True, None
 
     def _parse_context_name(self, str_input):
 
