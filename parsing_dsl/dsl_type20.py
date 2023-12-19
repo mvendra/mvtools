@@ -489,7 +489,7 @@ class DSLType20:
 
     def _add_variable_helper(self, ptr, cb_data_add):
 
-        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
+        # mvtodo: check for dupes if enabled {if not self.configs.allow_dupes:} -> @stashed-sample
 
         var_name, var_val, var_opts = cb_data_add
         new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
@@ -497,7 +497,7 @@ class DSLType20:
 
     def _get_variable_helper(self, ptr, cb_data_get):
 
-        # mvtodo: check for dupes if enabled {if not self.allow_dupes:} -> @stashed-sample
+        # mvtodo: check for dupes if enabled {if not self.configs.allow_dupes:} -> @stashed-sample
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
