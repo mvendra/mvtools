@@ -649,37 +649,38 @@ class DSLType20:
 
     def add_context(self, parent_context, context_name, context_options):
 
+        # context_options: expected as a list of tuples ("neutral" format)
+
         if parent_context is None:
             parent_context = self.default_context_id
 
+        # precond validations
         if not isinstance(context_name, str):
-            return False, "Invalid parameter"
+            return False, "Invalid parameter (context_name): [%s]" % context_name
 
         if not isinstance(context_options, list):
-            return False, "Invalid parameter"
+            return False, "Invalid parameter (context_options): [%s]" % context_options
 
+        # validate context name
         v, r = miniparse.scan_and_slice_beginning(context_name, self.IDENTIFIER)
         if not v:
             return False, "Unable to parse context name: [%s]" % context_name
         if r[1] != "":
             return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
 
-        expanded_context_options = []
-        for co in context_options:
+        # resolve/expand options
+        obj_context_options = []
+        for ctx_opt in context_options:
 
-            if co[1] is None:
-                expanded_context_options.append( co )
-                continue
+            if not isinstance(ctx_opt, tuple) or len(ctx_opt) != 2:
+                return False, "Invalid parameter (option entry): [%s]" % ctx_opt
 
-            if self.NEWLINE in co[1]:
-                return False, "Unable to parse context name: [%s]. Newlines are forbidden inside option values." % (context_name)
+            ctx_opt_name, ctx_opt_val = ctx_opt
+            ctx_opt_obj = DSLType20_Option(ctx_opt_name, ctx_opt_val)
+            obj_context_options.append(ctx_opt_obj)
 
-            v, r = self._expand(co[1])
-            if not v:
-                return False, "Unable to expand context's option value: [%s : %s]" % (co[0], co[1])
-            expanded_context_options.append( (co[0], r) )
-
-        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, expanded_context_options)):
+        # add new context to the internal datastructure
+        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, obj_context_options)):
             return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
 
         return True, None
