@@ -333,7 +333,7 @@ class DSLType20:
                 if not v:
                     return v, r
                 context, context_options = r
-                v, r = self.add_context(context, context_options)
+                v, r = self.add_context(context, context_options) # mvtodo: wrong
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
@@ -826,7 +826,7 @@ class DSLType20:
         if local_context is None:
             local_context = self.default_context_id
         else:
-            self.add_context(local_context, [])
+            self.add_context(None, local_context, [])
 
         # add new variable to internal data
         if not self._find_context(context, self._add_variable_helper, (var_name, var_val, var_opts)):
