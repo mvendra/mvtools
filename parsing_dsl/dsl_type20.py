@@ -47,6 +47,28 @@ import miniparse
 # if allow_dupes is not set, then variable options take precedence over context options
 # freestanding variables (defined outside any explicit contexts) belong to the "default context"
 
+# string parsing
+IDENTIFIER = "[_\\-a-zA-Z0-9]+"
+ANYSPACE = "[ ]*"
+SINGLESPACE = " "
+COLON = ":"
+ATSIGN = "@"
+LBRACKET = "["
+RBRACKET = "]"
+LCBRACKET = "{"
+RCBRACKET = "}"
+EQSIGN = "="
+QUOTE = "\""
+NEWLINE = "\n"
+BSLASH = "\\"
+FSLASH = "/"
+COMMENTS = ["#", "//"]
+
+# basic types
+DSLTYPE20_ENTRY_TYPE_VAR = 1
+DSLTYPE20_ENTRY_TYPE_OPT = 2
+DSLTYPE20_ENTRY_TYPE_CTX = 3
+
 def getopts(var, optname):
     ret = []
     for o in var[2]:
@@ -78,12 +100,30 @@ def count_occurrence_first_of_pair(list_target, first_value):
             c += 1
     return c
 
-DSLTYPE20_ENTRY_TYPE_VAR = 1
-DSLTYPE20_ENTRY_TYPE_OPT = 2
-DSLTYPE20_ENTRY_TYPE_CTX = 3
-
 class DSLType20_Variable:
     def __init__(self, name, value, options):
+
+        # validate name
+        if not isinstance(name, str):
+            return False, "Variable's name is not a string"
+        v, r = miniparse.scan_and_slice_beginning(name, IDENTIFIER)
+        if not v:
+            return False, "Malformed variable"
+        if r[1] != "":
+            return False, "Malformed varialbe (invalid leftovers)"
+
+        # validate value
+        if value is not None:
+            if self.NEWLINE in value:
+                return False, "Newlines are forbidden inside values"
+
+        # expand the variable's value
+        if value is not None:
+            v, r = self._expand(value)
+            if not v:
+                return False, "Unable to expand variable's value: [%s]" % value
+            value = r
+
         self.name = name
         self.value = value
         self.options = options
@@ -155,23 +195,6 @@ class DSLType20:
         self.default_context_id = "default-context"
         self.max_number_options = 1024
         self.clear()
-
-        # string parsing
-        self.IDENTIFIER = "[_\\-a-zA-Z0-9]+"
-        self.ANYSPACE = "[ ]*"
-        self.SINGLESPACE = " "
-        self.COLON = ":"
-        self.ATSIGN = "@"
-        self.LBRACKET = "["
-        self.RBRACKET = "]"
-        self.LCBRACKET = "{"
-        self.RCBRACKET = "}"
-        self.EQSIGN = "="
-        self.QUOTE = "\""
-        self.NEWLINE = "\n"
-        self.BSLASH = "\\"
-        self.FSLASH = "/"
-        self.COMMENTS = ["#", "//"]
 
         # read options
         self.expand_envvars = _options._expand_envvars
@@ -354,7 +377,7 @@ class DSLType20:
         parsed_context_name = None
         parsed_opts = []
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.ATSIGN + self.ANYSPACE + self.IDENTIFIER)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.ATSIGN + self.ANYSPACE + IDENTIFIER)
         if not v:
             return False, "Malformed context name: [%s]." % str_input
         parsed_context_name = (r[0]).strip()
@@ -440,7 +463,7 @@ class DSLType20:
                 return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
             local_str_input = (r[1]).strip()
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.LCBRACKET)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + self.ANYSPACE + self.LCBRACKET)
         if v:
 
             # variable has options
@@ -467,7 +490,7 @@ class DSLType20:
 
             # variable has no options
 
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + self.ANYSPACE)
             if not v:
                 return False, "Malformed variable: [%s]: Can't parse variable name." % str_input
             var_name = (r[0]).strip()
@@ -523,7 +546,7 @@ class DSLType20:
             return False, "Invalid option input: [%s]" % str_input, None, None
 
         # start by parsing the option's name
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.COLON)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + self.ANYSPACE + self.COLON)
         if v:
 
             # option has value
@@ -582,13 +605,13 @@ class DSLType20:
             # option has no value
 
             rem_last_chr = self.FSLASH
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.FSLASH)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + self.ANYSPACE + self.FSLASH)
             more_options = v
             if not more_options:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, self.IDENTIFIER + self.ANYSPACE + self.RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + self.ANYSPACE + self.RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
@@ -661,7 +684,7 @@ class DSLType20:
             return False, "Invalid parameter (context_options): [%s]" % context_options
 
         # validate context name
-        v, r = miniparse.scan_and_slice_beginning(context_name, self.IDENTIFIER)
+        v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
         if not v:
             return False, "Unable to parse context name: [%s]" % context_name
         if r[1] != "":
@@ -771,20 +794,6 @@ class DSLType20:
 
     def add_variable(self, var_name, var_val, var_opts, context=None):
 
-        # validate var_name
-        if not isinstance(var_name, str):
-            return False, "variable's name is not a string"
-        v, r = miniparse.scan_and_slice_beginning(var_name, self.IDENTIFIER)
-        if not v:
-            return False, "malformed variable"
-        if r[1] != "":
-            return False, "malformed varialbe (invalid leftovers)"
-
-        # validate var_val
-        if var_val is not None:
-            if self.NEWLINE in var_val:
-                return False, "newlines are forbidden inside values"
-
         # validate var_opts
         if not isinstance(var_opts, list):
             return False, "variable's options are not a list"
@@ -800,13 +809,6 @@ class DSLType20:
             if i[1] is not None:
                 if self.NEWLINE in i[1]:
                     return False, "newlines are forbidden inside values"
-
-        # expand the variable's value
-        if var_val is not None:
-            v, r = self._expand(var_val)
-            if not v:
-                return False, "unable to expand variable's value: [%s]" % var_val
-            var_val = r
 
         # expand the option's value
         var_opts_pre = var_opts
