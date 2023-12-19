@@ -822,11 +822,10 @@ class DSLType20:
                 return False, "unable to expand variable's option value: [%s : %s]" % (o[0], o[1])
             var_opts.append( (o[0], r) )
 
-        local_context = context
-        if local_context is None:
-            local_context = self.default_context_id
+        if context is None:
+            context = self.default_context_id
         else:
-            self.add_context(None, local_context, [])
+            self.add_context(None, context, []) # mvtodo: wrong
 
         # add new variable to internal data
         if not self._find_context(context, self._add_variable_helper, (var_name, var_val, var_opts)):
