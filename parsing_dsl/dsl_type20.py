@@ -628,9 +628,9 @@ class DSLType20:
 
         return (len(list_matches) > 0)
 
-    def _add_ctx_helper(self, ptr, cb_data_ctx_opts):
+    def _add_ctx_helper(self, ptr, cb_data_ctx):
 
-        new_ctx = DSLType20_Context(ptr, cb_data_ctx_opts[0], cb_data_ctx_opts[1])
+        new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], cb_data_ctx[1])
         ptr.add_entry(new_ctx)
 
     def add_context(self, parent_context, context_name, context_options):
