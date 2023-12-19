@@ -259,7 +259,7 @@ class DSLType20:
 
         result = ""
         if context != self.default_context_id:
-            result = (self.NEWLINE + self.LBRACKET + self.NEWLINE + ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
+            result = (self.NEWLINE + LBRACKET + self.NEWLINE + ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
 
         for y in self.data[context][1]:
 
@@ -279,12 +279,12 @@ class DSLType20:
                         return None
                     var_escaped_value = r
 
-                cur_var += SINGLESPACE + self.EQSIGN + SINGLESPACE + self.QUOTE + var_escaped_value + self.QUOTE
+                cur_var += SINGLESPACE + EQSIGN + SINGLESPACE + self.QUOTE + var_escaped_value + self.QUOTE
 
             result += cur_var
 
         if context != self.default_context_id:
-            result += self.NEWLINE + self.RBRACKET + self.NEWLINE
+            result += self.NEWLINE + RBRACKET + self.NEWLINE
 
         return result
 
@@ -294,7 +294,7 @@ class DSLType20:
         for o in range(len(input_options)):
 
             if o == 0: # first option
-                options_result += self.LCBRACKET
+                options_result += LCBRACKET
 
             options_result += input_options[o][0] # option's name
             if input_options[o][1] is not None:
@@ -308,7 +308,7 @@ class DSLType20:
                 options_result += COLON + SINGLESPACE + self.QUOTE + opt_escaped_value + self.QUOTE
 
             if o == (len(input_options)-1): # last option
-                options_result += self.RCBRACKET
+                options_result += RCBRACKET
             else:
                 options_result += SINGLESPACE + self.FSLASH + SINGLESPACE
 
@@ -333,7 +333,7 @@ class DSLType20:
                 continue
 
             # context name, begin
-            if line_t == self.LBRACKET:
+            if line_t == LBRACKET:
                 if expecting_context_name or context is not None:
                     return False, "Failed parsing contents: nested contexts are not alllowed."
                 expecting_context_name = True
@@ -341,7 +341,7 @@ class DSLType20:
                 continue
 
             # context name, end
-            if line_t == self.RBRACKET:
+            if line_t == RBRACKET:
                 if expecting_context_name:
                     return False, "Last context name not specified."
                 context = None
@@ -385,7 +385,7 @@ class DSLType20:
 
         if not local_str_input == "": # there might be options
 
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, ANYSPACE + self.LCBRACKET)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, ANYSPACE + LCBRACKET)
 
             if v: # yes there are options
 
@@ -458,12 +458,12 @@ class DSLType20:
             local_str_input = (r[1]).strip()
 
             # remove equal sign just before the variable's value
-            v, r = miniparse.scan_and_slice_end(local_str_input, self.EQSIGN)
+            v, r = miniparse.scan_and_slice_end(local_str_input, EQSIGN)
             if not v:
                 return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
             local_str_input = (r[1]).strip()
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + ANYSPACE + self.LCBRACKET)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + ANYSPACE + LCBRACKET)
         if v:
 
             # variable has options
@@ -471,7 +471,7 @@ class DSLType20:
             var_name = r[0].strip()
             local_str_input = r[1].strip()
 
-            v, r = miniparse.remove_last_of(var_name, self.LCBRACKET)
+            v, r = miniparse.remove_last_of(var_name, LCBRACKET)
             if not v:
                 return False, "Malformed variable: [%s]: Failed removing left bracket from options." % str_input
             var_name = r.strip()
@@ -595,7 +595,7 @@ class DSLType20:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, self.RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
@@ -611,11 +611,11 @@ class DSLType20:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + ANYSPACE + self.RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + ANYSPACE + RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
-                rem_last_chr = self.RCBRACKET
+                rem_last_chr = RCBRACKET
 
             else:
                 local_str_input = (r[1]).strip()
