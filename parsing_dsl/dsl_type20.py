@@ -684,15 +684,21 @@ class DSLType20:
 
         return result
 
+    def _get_context_opts_helper(self, ptr, cb_data_res):
+
+        cb_data_res += ptr.get_options()
+
     def get_context_options(self, context):
 
-        if context is None or context == "" or not isinstance(context, str):
-            return False, "Context [%s] is invalid." % context
+        result = []
 
-        if not context in self.data:
+        if context is None:
+            context = self.default_context_id
+
+        if not self._find_context(context, self._get_context_opts_helper, result):
             return False, "Context [%s] does not exist." % context
 
-        return self.data[context][0]
+        return result
 
     def rem_context(self, context):
 
