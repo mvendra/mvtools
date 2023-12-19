@@ -114,7 +114,7 @@ class DSLType20_Variable:
 
         # validate value
         if value is not None:
-            if self.NEWLINE in value:
+            if NEWLINE in value:
                 return False, "Newlines are forbidden inside values"
 
         # expand the variable's value
@@ -235,8 +235,8 @@ class DSLType20:
         if line_out == "":
             return ""
 
-        for c in self.COMMENTS:
-            line_out = miniparse.guarded_right_cut(line_out, list(c), self.QUOTE)
+        for c in COMMENTS:
+            line_out = miniparse.guarded_right_cut(line_out, list(c), QUOTE)
             if line_out is None:
                 return None
             if line_out == "":
@@ -259,11 +259,11 @@ class DSLType20:
 
         result = ""
         if context != self.default_context_id:
-            result = (self.NEWLINE + LBRACKET + self.NEWLINE + ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
+            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
 
         for y in self.data[context][1]:
 
-            cur_var = self.NEWLINE + self.variable_decorator + y[0] # variable's name
+            cur_var = NEWLINE + self.variable_decorator + y[0] # variable's name
 
             # produce the options
             prod_opts = self._produce_options(y[2])
@@ -274,17 +274,17 @@ class DSLType20:
             if y[1] is not None:
                 var_escaped_value = ""
                 if y[1] != "":
-                    v, r = miniparse.escape(y[1], self.BSLASH, [self.QUOTE])
+                    v, r = miniparse.escape(y[1], BSLASH, [QUOTE])
                     if not v:
                         return None
                     var_escaped_value = r
 
-                cur_var += SINGLESPACE + EQSIGN + SINGLESPACE + self.QUOTE + var_escaped_value + self.QUOTE
+                cur_var += SINGLESPACE + EQSIGN + SINGLESPACE + QUOTE + var_escaped_value + QUOTE
 
             result += cur_var
 
         if context != self.default_context_id:
-            result += self.NEWLINE + RBRACKET + self.NEWLINE
+            result += NEWLINE + RBRACKET + NEWLINE
 
         return result
 
@@ -301,16 +301,16 @@ class DSLType20:
                 # option has value
                 opt_escaped_value = ""
                 if input_options[o][1] != "":
-                    v, r = miniparse.escape((input_options[o][1]), self.BSLASH, [self.QUOTE])
+                    v, r = miniparse.escape((input_options[o][1]), BSLASH, [QUOTE])
                     if not v:
                         return None
                     opt_escaped_value = r
-                options_result += COLON + SINGLESPACE + self.QUOTE + opt_escaped_value + self.QUOTE
+                options_result += COLON + SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
 
             if o == (len(input_options)-1): # last option
                 options_result += RCBRACKET
             else:
-                options_result += SINGLESPACE + self.FSLASH + SINGLESPACE
+                options_result += SINGLESPACE + FSLASH + SINGLESPACE
 
         return options_result
 
@@ -323,7 +323,7 @@ class DSLType20:
         expecting_context_name = False
         expecting_context_closure = False
 
-        lines = contents.split(self.NEWLINE)
+        lines = contents.split(NEWLINE)
         for line in lines:
 
             line_t = self._sanitize_line(line)
@@ -432,27 +432,27 @@ class DSLType20:
             return False, "Can't parse variable: [%s]: Context doesn't exist: [%s]." % (str_input, context)
 
         # start by parsing the variable's value - if it has it
-        v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
+        v, r = miniparse.scan_and_slice_end(local_str_input, QUOTE)
         if v:
-            if r[1][len(r[1])-1] == self.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
+            if r[1][len(r[1])-1] == BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
                 return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
             local_str_input = r[1]
 
             # find next nonescaped quote in reverse (beginning of the value)
-            v, r = miniparse.last_not_escaped_slice(local_str_input, self.QUOTE, self.BSLASH)
+            v, r = miniparse.last_not_escaped_slice(local_str_input, QUOTE, BSLASH)
             if not v:
                 return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
             local_str_input = (r[1]).strip()
             var_value = r[0]
 
             # descape the variable's value
-            v, r = miniparse.descape(var_value, self.BSLASH)
+            v, r = miniparse.descape(var_value, BSLASH)
             if not v:
                 return False, "Variable descaping failed: [%s]" % var_value
             var_value = r
 
             # remove first quote of value
-            v, r = miniparse.scan_and_slice_end(local_str_input, self.QUOTE)
+            v, r = miniparse.scan_and_slice_end(local_str_input, QUOTE)
             if not v:
                 return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
             local_str_input = (r[1]).strip()
@@ -561,32 +561,32 @@ class DSLType20:
             opt_name = r.strip()
 
             # find next quote (option's value - first)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.QUOTE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, QUOTE)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             local_str_input = r[1]
 
             # forward until closing quote is found (the next not escaped)
-            v, r = miniparse.next_not_escaped_slice(local_str_input, self.QUOTE, self.BSLASH)
+            v, r = miniparse.next_not_escaped_slice(local_str_input, QUOTE, BSLASH)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_val = r[0]
             local_str_input = (r[1]).strip()
 
             # find next quote (option's value - second)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.QUOTE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, QUOTE)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             local_str_input = (r[1]).strip()
 
             # descape the value, and its ready for storage
-            v, r = miniparse.descape(opt_val, self.BSLASH)
+            v, r = miniparse.descape(opt_val, BSLASH)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_val = r
 
             # need to advance past this option to look ahead for the next
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, self.FSLASH)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, FSLASH)
             more_options = v
 
             if more_options:
@@ -604,8 +604,8 @@ class DSLType20:
 
             # option has no value
 
-            rem_last_chr = self.FSLASH
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + ANYSPACE + self.FSLASH)
+            rem_last_chr = FSLASH
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, IDENTIFIER + ANYSPACE + FSLASH)
             more_options = v
             if not more_options:
 
@@ -807,7 +807,7 @@ class DSLType20:
             if not ( (isinstance(i[1], str)) or (i[1] is None) ):
                 return False, "variable's options's value is invalid"
             if i[1] is not None:
-                if self.NEWLINE in i[1]:
+                if NEWLINE in i[1]:
                     return False, "newlines are forbidden inside values"
 
         # expand the option's value
