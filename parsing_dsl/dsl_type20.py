@@ -100,13 +100,17 @@ class DSLType20_Variable:
         return self.options
 
 class DSLType20_Context:
-    def __init__(self, name, options):
+    def __init__(self, ptr_parent, name, options):
+        self.ptr_parent = ptr_parent
         self.name = name
         self.options = options
         self.entries = []
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_CTX
+
+    def get_ptr_parent(self):
+        return self.ptr_parent
 
     def get_name(self):
         return self.name
@@ -163,7 +167,7 @@ class DSLType20:
 
     def clear(self):
         self.data = None
-        self.data = DSLType20_Context(self.default_context_id, [])
+        self.data = DSLType20_Context(None, self.default_context_id, [])
 
     def _expand(self, str_input):
 
@@ -626,7 +630,7 @@ class DSLType20:
 
     def _add_ctx_helper(self, ptr, cb_data_ctx_opts):
 
-        new_ctx = DSLType20_Context(cb_data_ctx_opts[0], cb_data_ctx_opts[1])
+        new_ctx = DSLType20_Context(ptr, cb_data_ctx_opts[0], cb_data_ctx_opts[1])
         ptr.add_entry(new_ctx)
 
     def add_context(self, parent_context, context_name, context_options):
@@ -700,21 +704,40 @@ class DSLType20:
 
         return result
 
+    def _rem_context_helper(self, ptr, cb_data_rem):
+
+        cb_data_rem.append(ptr)
+
     def rem_context(self, context):
 
-        if context == self.default_context_id:
-            return False
-        if not isinstance(context, str):
-            return False
-        if not context in self.data:
-            return False
+        ctx_info = []
 
-        try:
-            del self.data[context]
-        except:
-            return False
+        if context is None or context == self.default_context_id:
+            return False, "Removing the default context is forbidden"
 
-        return True
+        if not self._find_context(context, self._rem_context_helper, ctx_info):
+            return False, "Context [%s] does not exist." % context
+
+        if len(ctx_info) != 1:
+            return False, "Found more than one instance of context [%s]. Fatal error." % context
+
+        ctx_parent = ctx_info[0].get_ptr_parent()
+        if ctx_parent is None:
+            return False, "Context [%s] has no parent." % context
+
+        idx = 0
+        entry_found = False
+        for ctx in ctx_parent.get_entries():
+            if ctx.get_name() == context:
+                entry_found = True
+                break
+            idx += 1
+
+        if not entry_found:
+            return False, "Context [%s] could not be removed (not found under its parent)" % context
+
+        del ctx_parent.get_entries()[idx]
+        return True, None
 
     def add_variable(self, var_name, var_val, var_opts, context=None):
 

@@ -1170,21 +1170,21 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestRemContext1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.rem_context(None))
+        self.assertFalse(dsl.rem_context(None)[0])
 
     def testDslType20_TestRemContext2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.rem_context(dsl.default_context_id))
+        self.assertFalse(dsl.rem_context(dsl.default_context_id)[0])
 
     def testDslType20_TestRemContext3(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
-        self.assertFalse(dsl.rem_context("ctx1"))
+        self.assertFalse(dsl.rem_context("ctx1")[0])
 
     def testDslType20_TestRemContext4(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Options())
         self.assertTrue(dsl.add_context(None, "ctx1", [])[0])
         self.assertTrue("ctx1" in dsl.get_sub_contexts(None) )
-        self.assertTrue(dsl.rem_context("ctx1"))
+        self.assertTrue(dsl.rem_context("ctx1")[0])
         self.assertFalse("ctx1" in dsl.get_sub_contexts(None) )
 
     def testDslType20_TestRemContext5(self):
@@ -1193,7 +1193,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl.add_context(None, "ctx2", [])[0])
         self.assertTrue("ctx1" in dsl.get_sub_contexts(None) )
         self.assertTrue("ctx2" in dsl.get_sub_contexts(None) )
-        self.assertTrue(dsl.rem_context("ctx1"))
+        self.assertTrue(dsl.rem_context("ctx1")[0])
         self.assertFalse("ctx1" in dsl.get_sub_contexts(None) )
         self.assertTrue("ctx2" in dsl.get_sub_contexts(None) )
 
