@@ -244,6 +244,47 @@ class DSLType20:
 
         return line_out.strip()
 
+    def _make_obj_opt_list(self, options):
+
+        result = []
+
+        # validate options
+        if not isinstance(options, list):
+            return False, "Options are not a list"
+        for i in options:
+            if not isinstance(i, tuple):
+                return False, "Options are not tuples in a list"
+            if not len(i) == 2:
+                return  False, "Options are not pair of tuples in a list"
+            if not isinstance(i[0], str):
+                return False, "Options's identifier is not a string"
+            if not ( (isinstance(i[1], str)) or (i[1] is None) ):
+                return False, "Options's value is invalid"
+            if i[1] is not None:
+                if NEWLINE in i[1]:
+                    return False, "Newlines are forbidden inside values"
+
+        # expand the option's value
+        options_pre = options
+        options = []
+        for o in options_pre:
+
+            if o[1] is None:
+                options.append( o )
+                continue
+
+            v, r = self._expand(o[1])
+            if not v:
+                return False, "Unable to expand option's value: [%s : %s]" % (o[0], o[1])
+            options.append( (o[0], r) )
+
+        for opt in options:
+            opt_name, opt_val = opt
+            opt_obj = DSLType20_Option(opt_name, opt_val)
+            result.append(opt_obj)
+
+        return True, result
+
     def produce(self):
 
         result = ""
@@ -794,43 +835,20 @@ class DSLType20:
 
     def add_variable(self, var_name, var_val, var_opts, context=None):
 
-        # validate var_opts
-        if not isinstance(var_opts, list):
-            return False, "Variable's options are not a list"
-        for i in var_opts:
-            if not isinstance(i, tuple):
-                return False, "Variable's options are not tuples in a list"
-            if not len(i) == 2:
-                return  False, "Variable's options are not pair of tuples in a list"
-            if not isinstance(i[0], str):
-                return False, "Variable's options's identifier is not a string"
-            if not ( (isinstance(i[1], str)) or (i[1] is None) ):
-                return False, "Variable's options's value is invalid"
-            if i[1] is not None:
-                if NEWLINE in i[1]:
-                    return False, "Newlines are forbidden inside values"
+        # convert incoming options from "neutral" format into options objects list
+        v, r = self._make_obj_opt_list(var_opts)
+        if not v:
+            return False, v
+        opts_obj_list = r
 
-        # expand the option's value
-        var_opts_pre = var_opts
-        var_opts = []
-        for o in var_opts_pre:
-
-            if o[1] is None:
-                var_opts.append( o )
-                continue
-
-            v, r = self._expand(o[1])
-            if not v:
-                return False, "Unable to expand variable's option value: [%s : %s]" % (o[0], o[1])
-            var_opts.append( (o[0], r) )
-
+        # add context to the default context if it does not preexist
         if context is None:
             context = self.default_context_id
         else:
             self.add_context(None, context, []) # mvtodo: wrong
 
         # add new variable to internal data
-        if not self._find_context(context, self._add_variable_helper, (var_name, var_val, var_opts)):
+        if not self._find_context(context, self._add_variable_helper, (var_name, var_val, opts_obj_list)):
             return False, "Context [%s] does not exist." % context
         return True, None
 
