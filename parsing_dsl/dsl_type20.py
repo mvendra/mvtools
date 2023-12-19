@@ -142,7 +142,9 @@ class DSLType20_Variable:
         return self.options
 
 class DSLType20_Option:
-    def __init__(self, name, value):
+    def __init__(self, configs, name, value):
+
+        self.configs = configs
         self.name = name
         self.value = value
 
@@ -166,6 +168,7 @@ class DSLType20_Option:
 
 class DSLType20_Context:
     def __init__(self, ptr_parent, name, options):
+
         self.ptr_parent = ptr_parent
         self.name = name
         self.options = options
@@ -191,6 +194,7 @@ class DSLType20_Context:
 
 class DSLType20_Config:
     def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
+
         self._expand_envvars = expand_envvars
         self._expand_user = expand_user
         self._allow_dupes = allow_dupes
@@ -533,7 +537,7 @@ class DSLType20:
 
         for opt in options:
             opt_name, opt_val = opt
-            opt_obj = DSLType20_Option(opt_name, opt_val)
+            opt_obj = DSLType20_Option(self.configs, opt_name, opt_val)
             result.append(opt_obj)
 
         return True, result
