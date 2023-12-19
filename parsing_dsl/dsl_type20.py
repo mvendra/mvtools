@@ -259,7 +259,7 @@ class DSLType20:
         # convert incoming options from "neutral" format into options objects list
         v, r = self._make_obj_opt_list(context_options)
         if not v:
-            return False, v
+            return False, r
         opts_obj_list = r
 
         # first check if the context doesn't already exist
