@@ -709,37 +709,29 @@ class DSLType20:
         if parent_context is None:
             parent_context = self.default_context_id
 
-        # precond validations
+        # precond validations # mvtodo: not here
         if not isinstance(context_name, str):
             return False, "Invalid parameter (context_name): [%s]" % context_name
 
-        if not isinstance(context_options, list):
-            return False, "Invalid parameter (context_options): [%s]" % context_options
-
-        # validate context name
+        # validate context name # mvtodo: also not here
         v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
         if not v:
             return False, "Unable to parse context name: [%s]" % context_name
         if r[1] != "":
             return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
 
-        # resolve/expand options
-        obj_context_options = []
-        for ctx_opt in context_options:
-
-            if not isinstance(ctx_opt, tuple) or len(ctx_opt) != 2:
-                return False, "Invalid parameter (option entry): [%s]" % ctx_opt
-
-            ctx_opt_name, ctx_opt_val = ctx_opt
-            ctx_opt_obj = DSLType20_Option(ctx_opt_name, ctx_opt_val)
-            obj_context_options.append(ctx_opt_obj)
+        # convert incoming options from "neutral" format into options objects list
+        v, r = self._make_obj_opt_list(context_options)
+        if not v:
+            return False, v
+        opts_obj_list = r
 
         # first check if the context doesn't already exist
         if self._find_context(context_name, None, None):
             return False, "Failed adding new context: [%s] already exists" % context_name
 
         # add new context to the internal datastructure
-        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, obj_context_options)):
+        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, opts_obj_list)):
             return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
 
         return True, None
