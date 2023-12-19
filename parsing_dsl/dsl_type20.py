@@ -216,6 +216,40 @@ class DSLType20:
         self.data = None
         self.data = DSLType20_Context(None, self.default_context_id, [])
 
+    def add_context(self, parent_context, context_name, context_options):
+
+        # context_options: expected as a list of tuples ("neutral" format)
+
+        if parent_context is None:
+            parent_context = self.default_context_id
+
+        # precond validations # mvtodo: not here
+        if not isinstance(context_name, str):
+            return False, "Invalid parameter (context_name): [%s]" % context_name
+
+        # validate context name # mvtodo: also not here
+        v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
+        if not v:
+            return False, "Unable to parse context name: [%s]" % context_name
+        if r[1] != "":
+            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
+
+        # convert incoming options from "neutral" format into options objects list
+        v, r = self._make_obj_opt_list(context_options)
+        if not v:
+            return False, v
+        opts_obj_list = r
+
+        # first check if the context doesn't already exist
+        if self._find_context(context_name, None, None):
+            return False, "Failed adding new context: [%s] already exists" % context_name
+
+        # add new context to the internal datastructure
+        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, opts_obj_list)):
+            return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
+
+        return True, None
+
     def _expand(self, str_input):
 
         if str_input is None:
@@ -701,40 +735,6 @@ class DSLType20:
 
         new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], cb_data_ctx[1])
         ptr.add_entry(new_ctx)
-
-    def add_context(self, parent_context, context_name, context_options):
-
-        # context_options: expected as a list of tuples ("neutral" format)
-
-        if parent_context is None:
-            parent_context = self.default_context_id
-
-        # precond validations # mvtodo: not here
-        if not isinstance(context_name, str):
-            return False, "Invalid parameter (context_name): [%s]" % context_name
-
-        # validate context name # mvtodo: also not here
-        v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
-        if not v:
-            return False, "Unable to parse context name: [%s]" % context_name
-        if r[1] != "":
-            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
-
-        # convert incoming options from "neutral" format into options objects list
-        v, r = self._make_obj_opt_list(context_options)
-        if not v:
-            return False, v
-        opts_obj_list = r
-
-        # first check if the context doesn't already exist
-        if self._find_context(context_name, None, None):
-            return False, "Failed adding new context: [%s] already exists" % context_name
-
-        # add new context to the internal datastructure
-        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, opts_obj_list)):
-            return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
-
-        return True, None
 
     def _get_sub_contexts_helper(self, ptr, cb_data_res):
 
