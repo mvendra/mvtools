@@ -141,7 +141,7 @@ def validate_variable(name, value):
 
     return True, None
 
-def validate_options(options):
+def validate_options_list(options):
 
     if options is None:
         return False, "Options are None"
@@ -182,7 +182,7 @@ def make_obj_opt_list(configs, options):
 
     result = []
 
-    v, r = validate_options(options)
+    v, r = validate_options_list(options)
     if not v:
         return False, r
 
@@ -315,7 +315,7 @@ class DSLType20:
             return False, r
 
         # pre-validate options
-        v, r = validate_options(ctx_options)
+        v, r = validate_options_list(ctx_options)
         if not v:
             return False, r
 
@@ -412,7 +412,7 @@ class DSLType20:
     def add_variable(self, var_name, var_val, var_opts, context = None):
 
         # pre-validate options
-        v, r = validate_options(var_opts)
+        v, r = validate_options_list(var_opts)
         if not v:
             return False, r
 
