@@ -402,10 +402,15 @@ class DSLType20:
 
     def add_variable(self, var_name, var_val, var_opts, context = None):
 
+        # pre-validate options
+        v, r = validate_options(var_opts)
+        if not v:
+            return False, r
+
         # convert incoming options from "neutral" format into options objects list
         v, r = make_obj_opt_list(self.configs, var_opts)
         if not v:
-            return False, v
+            return False, r
         opts_obj_list = r
 
         # add context to the default context if it does not preexist
