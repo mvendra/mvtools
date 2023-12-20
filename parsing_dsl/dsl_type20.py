@@ -101,10 +101,10 @@ def count_occurrence_first_of_pair(list_target, first_value):
             c += 1
     return c
 
-def expand(configs, str_input):
+def expand_value(configs, str_input):
 
     if str_input is None:
-        return False, str_input
+        return True, None
 
     if not isinstance(str_input, str):
         return False, str_input
@@ -221,11 +221,10 @@ class DSLType20_Variable:
             raise mvtools_exception.mvtools_exception(r)
 
         # expand the value
-        if self.value is not None:
-            v, r = expand(self.configs, self.value)
-            if not v:
-                raise mvtools_exception.mvtools_exception("Unable to expand variable's value: [%s : %s]" % (self.name, self.value))
-            self.value = r
+        v, r = expand_value(self.configs, self.value)
+        if not v:
+            raise mvtools_exception.mvtools_exception("Unable to expand variable's value: [%s : %s]" % (self.name, self.value))
+        self.value = r
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_VAR
@@ -251,11 +250,10 @@ class DSLType20_Option:
             raise mvtools_exception.mvtools_exception(r)
 
         # expand the value
-        if self.value is not None:
-            v, r = expand(self.configs, self.value)
-            if not v:
-                raise mvtools_exception.mvtools_exception("Unable to expand option's value: [%s : %s]" % (self.name, self.value))
-            self.value = r
+        v, r = expand_value(self.configs, self.value)
+        if not v:
+            raise mvtools_exception.mvtools_exception("Unable to expand option's value: [%s : %s]" % (self.name, self.value))
+        self.value = r
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_OPT
