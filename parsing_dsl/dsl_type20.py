@@ -37,7 +37,7 @@ import mvtools_exception
 # ]
 #
 # contexts can have options too - when variables that belong to such contexts are
-# requested, if vars_inherit_ctx_opts is set, then they are returned with the context's options
+# requested, if inherit_options is set, then they are returned with the context's options
 # in addition to their own:
 #
 # [
@@ -295,12 +295,12 @@ class DSLType20_Context:
         self.entries.append(new_entry)
 
 class DSLType20_Config:
-    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_inherit_ctx_opts = False, variable_decorator = ""):
+    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, inherit_options = False, variable_decorator = ""):
 
         self.expand_envvars = expand_envvars
         self.expand_user = expand_user
         self.allow_dupes = allow_dupes
-        self.vars_inherit_ctx_opts = vars_inherit_ctx_opts
+        self.inherit_options = inherit_options
         self.variable_decorator = variable_decorator
 
 class DSLType20:
