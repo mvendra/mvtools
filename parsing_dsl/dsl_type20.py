@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import miniparse
+import mvtools_exception
 
 # class for parsing "dsl type 20"
 # it is supposed to be a Create, Read and Delete - but not Update. (CRD, as in CRUD but without the U)
@@ -122,6 +123,20 @@ def expand(configs, str_input):
 
     return True, local_str_input
 
+def validate_context_name(context_name):
+
+    # validations
+    if not isinstance(context_name, str):
+        return False, "Invalid parameter (context_name): [%s]" % context_name
+
+    v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
+    if not v:
+        return False, "Unable to parse context name: [%s]" % context_name
+    if r[1] != "":
+        return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
+
+    return True, None
+
 class DSLType20_Variable:
     def __init__(self, configs, name, value, options):
 
@@ -196,15 +211,9 @@ class DSLType20_Context:
         self.options = options
         self.entries = []
 
-        # validations
-        if not isinstance(self.name, str):
-            return False, "Invalid parameter (context_name): [%s]" % self.name
-
-        v, r = miniparse.scan_and_slice_beginning(self.name, IDENTIFIER)
+        v, r = validate_context_name(self.name)
         if not v:
-            return False, "Unable to parse context name: [%s]" % self.name
-        if r[1] != "":
-            return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (self.name, r[1])
+            raise mvtools_exception.mvtools_exception(r)
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_CTX
