@@ -7,47 +7,6 @@ import path_utils
 import miniparse
 import mvtools_exception
 
-# class for parsing "dsl type 20"
-# it is supposed to be a Create, Read and Delete - but not Update. (CRD, as in CRUD but without the U)
-# updates are supposed to be done manually using text editors - to simplify the implementation.
-#
-# samples:
-# variable1 # variable defined but no value set (i.e. value-less variable)
-# variable1 = "value1" # quotes are mandatory for values
-# variable1 = "value \"1\"" # quotes inside values must be escaped with "\"
-# variable1 = "value \\2" # the escape character "\" itself has to be escaped
-# variable2 {option1} = "value2"
-# variable3 {option2 / option3: "value3"} = "value4"
-# variable4 {option4: "value \"3\""} = "value \"5\"" # again, escaping quotes is necessary wherever you have a value
-# newlines inside variable/option values are forbidden
-#
-# variables can be optionally decorated arbitrarily, by using the variable_decorator option during the DSL object construction
-# example of a decorated variable (where variable_decorator = "* "):
-# * variable1 = "value1"
-#
-# lines starting with "#" or "//" are skipped (treated as comment)
-# the comment character may come anywhere in the line
-# lines are string-trimmed (extra spaces are removed)
-# variable names and options can be repeated
-# variables can be grouped in "contexts", syntax is as follows:
-#
-# [
-# @context-name
-# var1 = "val1"
-# ]
-#
-# contexts can have options too - when variables that belong to such contexts are
-# requested, if inherit_options is set, then they are returned with the context's options
-# in addition to their own:
-#
-# [
-# @context-name {option1 / option2: "value1"}
-# var2 = "val3"
-# ]
-#
-# if allow_var_dupes is not set, then variable options take precedence over context options
-# freestanding variables (defined outside any explicit contexts) belong to the "default context"
-
 # string parsing
 IDENTIFIER = "[_\\-a-zA-Z0-9]+"
 ANYSPACE = "[ ]*"
