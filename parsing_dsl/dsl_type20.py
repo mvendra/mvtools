@@ -293,42 +293,42 @@ class DSLType20:
         self.data = None
         self.data = DSLType20_Context(None, self.default_context_id, [])
 
-    def add_context(self, parent_context, context_name, context_options):
+    def add_context(self, parent_ctx, ctx_name, ctx_options):
 
-        # context_options: expected as a list of tuples ("neutral" format)
+        # ctx_options: expected as a list of tuples ("neutral" format)
 
-        if parent_context is None:
-            parent_context = self.default_context_id
+        if parent_ctx is None:
+            parent_ctx = self.default_context_id
 
         # pre-validate context name
-        v, r = validate_context_name(context_name)
+        v, r = validate_context_name(ctx_name)
         if not v:
             return False, r
 
         # pre-validate options
-        v, r = validate_options(context_options)
+        v, r = validate_options(ctx_options)
         if not v:
             return False, r
 
         # convert incoming options from "neutral" format into options objects list
-        v, r = make_obj_opt_list(self.configs, context_options)
+        v, r = make_obj_opt_list(self.configs, ctx_options)
         if not v:
             return False, r
         opts_obj_list = r
 
         # first check if the context doesn't already exist
-        v, r = self._find_context(context_name, None, None)
+        v, r = self._find_context(ctx_name, None, None)
         if not v:
             return False, r
         if r:
-            return False, "Failed adding new context: [%s] already exists" % context_name
+            return False, "Failed adding new context: [%s] already exists" % ctx_name
 
         # add new context to the internal datastructure
-        v, r = self._find_context(parent_context, self._add_ctx_helper, (context_name, opts_obj_list))
+        v, r = self._find_context(parent_ctx, self._add_ctx_helper, (ctx_name, opts_obj_list))
         if not v:
             return False, r
         if not r:
-            return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
+            return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (ctx_name, parent_ctx)
 
         return True, None
 
