@@ -401,7 +401,10 @@ class DSLType20:
             context = self.default_context_id
         result = []
 
-        if not self._find_context(context, self._rem_variable_helper, (var_name, result)):
+        v, r = self._find_context(context, self._rem_variable_helper, (var_name, result))
+        if not v:
+            return False, r
+        if not r:
             return False, "Context [%s] does not exist." % context
         return True, result
 
