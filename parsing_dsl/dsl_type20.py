@@ -388,7 +388,10 @@ class DSLType20:
 
         # mvtodo: reimplement inheriting options from parent context -> @stashed-inherit-opts-from-ctx-vars
 
-        if not self._find_context(context, self._get_variable_helper, result):
+        v, r = self._find_context(context, self._get_variable_helper, result)
+        if not v:
+            return False, r
+        if not r:
             return False, "Context [%s] does not exist." % context
         return True, result
 
