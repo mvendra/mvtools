@@ -305,6 +305,11 @@ class DSLType20:
         if not v:
             return False, r
 
+        # pre-validate options
+        v, r = validate_options(context_options)
+        if not v:
+            return False, r
+
         # convert incoming options from "neutral" format into options objects list
         v, r = make_obj_opt_list(self.configs, context_options)
         if not v:
