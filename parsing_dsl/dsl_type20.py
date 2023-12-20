@@ -225,7 +225,7 @@ class DSLType20_Context:
         self.entries.append(new_entry)
 
 class DSLType20_Config:
-    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options=False, variable_decorator = ""):
+    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, vars_auto_ctx_options = False, variable_decorator = ""):
 
         self.expand_envvars = expand_envvars
         self.expand_user = expand_user
@@ -331,7 +331,7 @@ class DSLType20:
 
         return True, None
 
-    def add_variable(self, var_name, var_val, var_opts, context=None):
+    def add_variable(self, var_name, var_val, var_opts, context = None):
 
         # convert incoming options from "neutral" format into options objects list
         v, r = self._make_obj_opt_list(var_opts)
@@ -350,10 +350,10 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, None
 
-    def get_all_variables(self, context=None):
+    def get_all_variables(self, context = None):
         return self.get_variables(None, context)
 
-    def get_variables(self, varname, context=None):
+    def get_variables(self, varname, context = None):
 
         if context is None:
             context = self.default_context_id
@@ -365,7 +365,7 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, result
 
-    def rem_variable(self, var_name, context=None):
+    def rem_variable(self, var_name, context = None):
 
         if context is None:
             context = self.default_context_id
@@ -597,7 +597,7 @@ class DSLType20:
 
         return True, (parsed_context_name, parsed_opts)
 
-    def _parse_variable(self, str_input, context=None):
+    def _parse_variable(self, str_input, context = None):
 
         var_name = None
         var_value = None
