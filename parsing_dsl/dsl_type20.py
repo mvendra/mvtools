@@ -218,13 +218,13 @@ class DSLType20_Variable:
 
         v, r = validate_variable(self.name, self.value)
         if not v:
-            return False, "mvtodo: nope, exception rather"
+            raise mvtools_exception.mvtools_exception(r)
 
         # expand the value
         if self.value is not None:
             v, r = expand(self.configs, self.value)
             if not v:
-                return False, "Unable to expand variable's value: [%s]" % self.value # mvtodo: exception
+                raise mvtools_exception.mvtools_exception("Unable to expand variable's value: [%s : %s]" % (self.name, self.value))
             self.value = r
 
     def get_type(self):
@@ -248,13 +248,13 @@ class DSLType20_Option:
 
         v, r = validate_option(self.name, self.value)
         if not v:
-            return False, r
+            raise mvtools_exception.mvtools_exception(r)
 
         # expand the value
         if self.value is not None:
             v, r = expand(self.configs, self.value)
             if not v:
-                return False, "Unable to expand option's value: [%s : %s]" % (self.name, self.value) # mvtodo: exception
+                raise mvtools_exception.mvtools_exception("Unable to expand option's value: [%s : %s]" % (self.name, self.value))
             self.value = r
 
     def get_type(self):
