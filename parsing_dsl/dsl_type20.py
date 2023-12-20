@@ -294,10 +294,13 @@ class DSLType20:
 
         result = []
 
-        if not self._find_context(parent_context, self._get_sub_contexts_helper, result):
+        v, r = self._find_context(parent_context, self._get_sub_contexts_helper, result)
+        if not v:
+            return False, r
+        if not r:
             return False, "Unable to return sub contexts of [%s] - context not found." % parent_context
 
-        return result
+        return True, result
 
     def get_context_options(self, context):
 
