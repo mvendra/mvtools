@@ -141,6 +141,22 @@ def validate_variable(name, value):
 
     return True, None
 
+def validate_option(name, value):
+
+    if name is None:
+        return False, "Option name is none"
+
+    if not isinstance(name, str):
+        return False, "Option name is not a string"
+
+    if not ( (isinstance(value, str)) or (value is None) ):
+        return False, "Option value is invalid"
+
+    if NEWLINE in value:
+        return False, "Newlines are forbidden inside values"
+
+    return True, None
+
 def validate_options_list(options):
 
     if options is None:
@@ -149,18 +165,17 @@ def validate_options_list(options):
     if not isinstance(options, list):
         return False, "Options are not a list"
 
-    for i in options:
-        if not isinstance(i, tuple):
-            return False, "Options are not tuples in a list"
-        if not len(i) == 2:
-            return  False, "Options are not pair of tuples in a list"
-        if not isinstance(i[0], str):
-            return False, "Options's identifier is not a string"
-        if not ( (isinstance(i[1], str)) or (i[1] is None) ):
-            return False, "Options's value is invalid"
+    for opt in options:
 
-    if NEWLINE in self.value:
-        return False, "Newlines are forbidden inside values" # mvtodo: fix
+        if not isinstance(opt, tuple):
+            return False, "Options are not tuples in a list"
+
+        if not len(opt) == 2:
+            return False, "Options are not pair of tuples in a list"
+
+        v, r = validate_option(opt[0], opt[1])
+        if not v:
+            return False, r
 
     return True, None
 
@@ -230,6 +245,10 @@ class DSLType20_Option:
         self.configs = configs
         self.name = name
         self.value = value
+
+        v, r = validate_option(self.name, self.value)
+        if not v:
+            return False, r
 
         # expand the value
         if self.value is not None:
