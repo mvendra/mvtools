@@ -324,7 +324,10 @@ class DSLType20:
         if context is None or context == self.default_context_id:
             return False, "Removing the default context is forbidden"
 
-        if not self._find_context(context, self._rem_context_helper, ctx_info):
+        v, r = self._find_context(context, self._rem_context_helper, ctx_info)
+        if not v:
+            return False, r
+        if not r:
             return False, "Context [%s] does not exist." % context
 
         if len(ctx_info) != 1:
