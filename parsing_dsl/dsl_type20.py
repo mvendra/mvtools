@@ -143,6 +143,20 @@ def validate_options(options):
 
     return True, None
 
+def validate_context_name(context_name):
+
+    # validations
+    if not isinstance(context_name, str):
+        return False, "Invalid parameter (context_name): [%s]" % context_name
+
+    v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
+    if not v:
+        return False, "Unable to parse context name: [%s]" % context_name
+    if r[1] != "":
+        return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
+
+    return True, None
+
 def make_obj_opt_list(configs, options):
 
     result = []
@@ -157,20 +171,6 @@ def make_obj_opt_list(configs, options):
         result.append(opt_obj)
 
     return True, result
-
-def validate_context_name(context_name):
-
-    # validations
-    if not isinstance(context_name, str):
-        return False, "Invalid parameter (context_name): [%s]" % context_name
-
-    v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
-    if not v:
-        return False, "Unable to parse context name: [%s]" % context_name
-    if r[1] != "":
-        return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
-
-    return True, None
 
 class DSLType20_Variable:
     def __init__(self, configs, name, value, options):
