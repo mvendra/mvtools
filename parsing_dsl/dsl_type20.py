@@ -272,11 +272,17 @@ class DSLType20:
         opts_obj_list = r
 
         # first check if the context doesn't already exist
-        if self._find_context(context_name, None, None):
+        v, r = self._find_context(context_name, None, None)
+        if not v:
+            return False, r
+        if not r:
             return False, "Failed adding new context: [%s] already exists" % context_name
 
         # add new context to the internal datastructure
-        if not self._find_context(parent_context, self._add_ctx_helper, (context_name, opts_obj_list)):
+        v, r = self._find_context(parent_context, self._add_ctx_helper, (context_name, opts_obj_list))
+        if not v:
+            return False, r
+        if not r:
             return False, "Unable to add context [%s] to [%s] - the latter cannot be found." % (context_name, parent_context)
 
         return True, None
@@ -474,7 +480,7 @@ class DSLType20:
         if ptr_match is not None and callback_func is not None:
             callback_func(ptr_match, callback_data)
 
-        return (ptr_match is not None)
+        return True, (ptr_match is not None)
 
     def _add_ctx_helper(self, ptr, cb_data_ctx):
 
