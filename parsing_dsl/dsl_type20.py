@@ -309,10 +309,13 @@ class DSLType20:
         if context is None:
             context = self.default_context_id
 
-        if not self._find_context(context, self._get_context_opts_helper, result):
+        v, r = self._find_context(context, self._get_context_opts_helper, result)
+        if not v:
+            return False, r
+        if not r:
             return False, "Context [%s] does not exist." % context
 
-        return result
+        return True, result
 
     def rem_context(self, context):
 
