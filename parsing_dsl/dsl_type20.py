@@ -45,7 +45,7 @@ import mvtools_exception
 # var2 = "val3"
 # ]
 #
-# if allow_dupes is not set, then variable options take precedence over context options
+# if allow_var_dupes is not set, then variable options take precedence over context options
 # freestanding variables (defined outside any explicit contexts) belong to the "default context"
 
 # string parsing
@@ -295,11 +295,11 @@ class DSLType20_Context:
         self.entries.append(new_entry)
 
 class DSLType20_Config:
-    def __init__(self, expand_envvars = False, expand_user = False, allow_dupes = True, inherit_options = False, variable_decorator = ""):
+    def __init__(self, expand_envvars = False, expand_user = False, allow_var_dupes = True, inherit_options = False, variable_decorator = ""):
 
         self.expand_envvars = expand_envvars
         self.expand_user = expand_user
-        self.allow_dupes = allow_dupes
+        self.allow_var_dupes = allow_var_dupes
         self.inherit_options = inherit_options
         self.variable_decorator = variable_decorator
 
@@ -602,7 +602,7 @@ class DSLType20:
 
     def _add_variable_helper(self, ptr, cb_data_add):
 
-        # mvtodo: check for dupes if enabled {if not self.configs.allow_dupes:} -> @stashed-sample
+        # mvtodo: check for dupes if enabled {if not self.configs.allow_var_dupes:} -> @stashed-sample
 
         var_name, var_val, var_opts = cb_data_add
         new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
@@ -610,7 +610,7 @@ class DSLType20:
 
     def _get_variable_helper(self, ptr, cb_data_get):
 
-        # mvtodo: check for dupes if enabled {if not self.configs.allow_dupes:} -> @stashed-sample
+        # mvtodo: check for dupes if enabled {if not self.configs.allow_var_dupes:} -> @stashed-sample
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
