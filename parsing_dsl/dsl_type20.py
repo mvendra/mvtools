@@ -123,6 +123,24 @@ def expand(configs, str_input):
 
     return True, local_str_input
 
+def validate_variable(name, value):
+
+    # validate name
+    if not isinstance(name, str):
+        return False, "Variable's name is not a string"
+    v, r = miniparse.scan_and_slice_beginning(name, IDENTIFIER)
+    if not v:
+        return False, "Malformed variable"
+    if r[1] != "":
+        return False, "Malformed varialbe (invalid leftovers)"
+
+    # validate value
+    if value is not None:
+        if NEWLINE in value:
+            return False, "Newlines are forbidden inside values"
+
+    return True, None
+
 def validate_options(options):
 
     if options is None:
@@ -140,6 +158,9 @@ def validate_options(options):
             return False, "Options's identifier is not a string"
         if not ( (isinstance(i[1], str)) or (i[1] is None) ):
             return False, "Options's value is invalid"
+
+    if NEWLINE in self.value:
+        return False, "Newlines are forbidden inside values" # mvtodo: fix
 
     return True, None
 
@@ -180,26 +201,16 @@ class DSLType20_Variable:
         self.value = value
         self.options = options
 
-        # validate name
-        if not isinstance(name, str):
-            return False, "Variable's name is not a string"
-        v, r = miniparse.scan_and_slice_beginning(name, IDENTIFIER)
+        v, r = validate_variable(self.name, self.value)
         if not v:
-            return False, "Malformed variable"
-        if r[1] != "":
-            return False, "Malformed varialbe (invalid leftovers)"
+            return False, "mvtodo: nope, exception rather"
 
-        # validate value
-        if value is not None:
-            if NEWLINE in value:
-                return False, "Newlines are forbidden inside values"
-
-        # expand the variable's value
-        if value is not None:
-            v, r = expand(self.configs, value)
+        # expand the value
+        if self.value is not None:
+            v, r = expand(self.configs, self.value)
             if not v:
-                return False, "Unable to expand variable's value: [%s]" % value
-            value = r
+                return False, "Unable to expand variable's value: [%s]" % self.value # mvtodo: exception
+            self.value = r
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_VAR
@@ -220,13 +231,11 @@ class DSLType20_Option:
         self.name = name
         self.value = value
 
-        # validate and expand
+        # expand the value
         if self.value is not None:
-            if NEWLINE in self.value:
-                return False, "Newlines are forbidden inside values"
             v, r = expand(self.configs, self.value)
             if not v:
-                return False, "Unable to expand option's value: [%s : %s]" % (self.name, self.value)
+                return False, "Unable to expand option's value: [%s : %s]" % (self.name, self.value) # mvtodo: exception
             self.value = r
 
     def get_type(self):
