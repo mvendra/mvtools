@@ -275,7 +275,7 @@ class DSLType20:
         v, r = self._find_context(context_name, None, None)
         if not v:
             return False, r
-        if not r:
+        if r:
             return False, "Failed adding new context: [%s] already exists" % context_name
 
         # add new context to the internal datastructure
