@@ -265,6 +265,11 @@ class DSLType20:
         if parent_context is None:
             parent_context = self.default_context_id
 
+        # pre-validate context name
+        v, r = validate_context_name(context_name)
+        if not v:
+            return False, r
+
         # convert incoming options from "neutral" format into options objects list
         v, r = self._make_obj_opt_list(context_options)
         if not v:
