@@ -123,6 +123,41 @@ def expand(configs, str_input):
 
     return True, local_str_input
 
+def validate_options(options):
+
+    if options is None:
+        return False, "Options are None"
+
+    if not isinstance(options, list):
+        return False, "Options are not a list"
+
+    for i in options:
+        if not isinstance(i, tuple):
+            return False, "Options are not tuples in a list"
+        if not len(i) == 2:
+            return  False, "Options are not pair of tuples in a list"
+        if not isinstance(i[0], str):
+            return False, "Options's identifier is not a string"
+        if not ( (isinstance(i[1], str)) or (i[1] is None) ):
+            return False, "Options's value is invalid"
+
+    return True, None
+
+def make_obj_opt_list(configs, options):
+
+    result = []
+
+    v, r = validate_options(options)
+    if not v:
+        return False, r
+
+    for opt in options:
+        opt_name, opt_val = opt
+        opt_obj = DSLType20_Option(configs, opt_name, opt_val)
+        result.append(opt_obj)
+
+    return True, result
+
 def validate_context_name(context_name):
 
     # validations
@@ -271,7 +306,7 @@ class DSLType20:
             return False, r
 
         # convert incoming options from "neutral" format into options objects list
-        v, r = self._make_obj_opt_list(context_options)
+        v, r = make_obj_opt_list(self.configs, context_options)
         if not v:
             return False, r
         opts_obj_list = r
@@ -363,7 +398,7 @@ class DSLType20:
     def add_variable(self, var_name, var_val, var_opts, context = None):
 
         # convert incoming options from "neutral" format into options objects list
-        v, r = self._make_obj_opt_list(var_opts)
+        v, r = make_obj_opt_list(self.configs, var_opts)
         if not v:
             return False, v
         opts_obj_list = r
@@ -554,30 +589,6 @@ class DSLType20:
 
         entries_ptr.clear()
         entries_ptr = new_entries_list
-
-    def _make_obj_opt_list(self, options):
-
-        result = []
-
-        # validate options
-        if not isinstance(options, list):
-            return False, "Options are not a list"
-        for i in options:
-            if not isinstance(i, tuple):
-                return False, "Options are not tuples in a list"
-            if not len(i) == 2:
-                return  False, "Options are not pair of tuples in a list"
-            if not isinstance(i[0], str):
-                return False, "Options's identifier is not a string"
-            if not ( (isinstance(i[1], str)) or (i[1] is None) ):
-                return False, "Options's value is invalid"
-
-        for opt in options:
-            opt_name, opt_val = opt
-            opt_obj = DSLType20_Option(self.configs, opt_name, opt_val)
-            result.append(opt_obj)
-
-        return True, result
 
     def _sanitize_line(self, line_in):
 
