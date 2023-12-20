@@ -428,6 +428,11 @@ class DSLType20:
 
     def add_variable(self, var_name, var_val, var_opts, context = None):
 
+        # pre-validate variable
+        v, r = validate_variable(var_name, var_val)
+        if not v:
+            return False, r
+
         # pre-validate options
         v, r = validate_options_list(var_opts)
         if not v:
