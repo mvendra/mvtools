@@ -201,6 +201,21 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse(contents)
         return v
 
+    def testSanitizeLine(self):
+        self.assertEqual(dsl_type20.sanitize_line(""), "")
+        self.assertEqual(dsl_type20.sanitize_line("abc"), "abc")
+        self.assertEqual(dsl_type20.sanitize_line("#abc"), "")
+        self.assertEqual(dsl_type20.sanitize_line("abc//def"), "abc")
+        self.assertEqual(dsl_type20.sanitize_line("//abc def"), "")
+        self.assertEqual(dsl_type20.sanitize_line("abc#def"), "abc")
+        self.assertEqual(dsl_type20.sanitize_line("   abc   "), "abc")
+        self.assertEqual(dsl_type20.sanitize_line(" #   abc   "), "")
+        self.assertEqual(dsl_type20.sanitize_line("   abc   #"), "abc")
+        self.assertEqual(dsl_type20.sanitize_line("   abc   // def   # xyz"), "abc")
+        self.assertEqual(dsl_type20.sanitize_line("   abc   # def   // xyz"), "abc")
+        self.assertEqual(dsl_type20.sanitize_line("   abc   \"#\" def   // xyz"), "abc   \"#\" def")
+        self.assertEqual(dsl_type20.sanitize_line("   abc   \"//\" def   // xyz"), "abc   \"//\" def")
+
     def testValidateName(self):
         self.assertFalse(dsl_type20.validate_name(None))
         self.assertFalse(dsl_type20.validate_name([]))
@@ -290,22 +305,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
         self.assertEqual(r[1].get_value(), None)
-
-    def testDslType20_SanitizeLine(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertEqual(dsl._sanitize_line(""), "")
-        self.assertEqual(dsl._sanitize_line("abc"), "abc")
-        self.assertEqual(dsl._sanitize_line("#abc"), "")
-        self.assertEqual(dsl._sanitize_line("abc//def"), "abc")
-        self.assertEqual(dsl._sanitize_line("//abc def"), "")
-        self.assertEqual(dsl._sanitize_line("abc#def"), "abc")
-        self.assertEqual(dsl._sanitize_line("   abc   "), "abc")
-        self.assertEqual(dsl._sanitize_line(" #   abc   "), "")
-        self.assertEqual(dsl._sanitize_line("   abc   #"), "abc")
-        self.assertEqual(dsl._sanitize_line("   abc   // def   # xyz"), "abc")
-        self.assertEqual(dsl._sanitize_line("   abc   # def   // xyz"), "abc")
-        self.assertEqual(dsl._sanitize_line("   abc   \"#\" def   // xyz"), "abc   \"#\" def")
-        self.assertEqual(dsl._sanitize_line("   abc   \"//\" def   // xyz"), "abc   \"//\" def")
 
     def testDslType20_Parse1(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Config()))

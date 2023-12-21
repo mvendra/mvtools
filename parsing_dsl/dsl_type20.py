@@ -85,6 +85,21 @@ def expand_value(configs, str_input):
 
     return True, local_str_input
 
+def sanitize_line(line_in):
+
+    line_out = line_in.strip()
+    if line_out == "":
+        return ""
+
+    for c in COMMENTS:
+        line_out = miniparse.guarded_right_cut(line_out, list(c), QUOTE)
+        if line_out is None:
+            return None
+        if line_out == "":
+            return ""
+
+    return line_out.strip()
+
 def validate_name(name):
 
     if name is None:
@@ -488,7 +503,7 @@ class DSLType20:
         lines = contents.split(NEWLINE)
         for line in lines:
 
-            line_t = self._sanitize_line(line)
+            line_t = sanitize_line(line)
             if line_t is None:
                 return False, "Unable to sanitize line: [%s]" % line
             if line_t == "":
@@ -617,21 +632,6 @@ class DSLType20:
 
         entries_ptr.clear()
         entries_ptr = new_entries_list
-
-    def _sanitize_line(self, line_in):
-
-        line_out = line_in.strip()
-        if line_out == "":
-            return ""
-
-        for c in COMMENTS:
-            line_out = miniparse.guarded_right_cut(line_out, list(c), QUOTE)
-            if line_out is None:
-                return None
-            if line_out == "":
-                return ""
-
-        return line_out.strip()
 
     def _parse_context_name(self, str_input):
 
