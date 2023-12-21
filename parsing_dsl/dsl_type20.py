@@ -395,7 +395,7 @@ class DSLType20:
         if parent_context is None:
             parent_context = self.default_context_id
 
-        result_ptr = None
+        result_ptr = []
 
         v, r = self._find_context(parent_context, self._get_context_helper, (context_name, result_ptr))
         if not v:
@@ -403,6 +403,10 @@ class DSLType20:
         if not r:
             return False, "Unable to return context [%s] of [%s] - context not found." % (context_name, parent_context)
 
+        if len(result_ptr) == 0:
+            result_ptr = None
+        else:
+            result_ptr = result_ptr[0]
         return True, result_ptr
 
     def get_sub_contexts(self, parent_context):
@@ -639,7 +643,7 @@ class DSLType20:
         target_ctx_name, return_ptr = cb_data_ctx
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and entry.get_name() == target_ctx_name:
-                return_ptr = entry
+                return_ptr.append(entry)
                 break
 
     def _get_sub_contexts_helper(self, ptr, cb_data_res):

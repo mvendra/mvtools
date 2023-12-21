@@ -1344,6 +1344,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
         self.assertEqual(r, dsl.data)
+        self.assertEqual(len(r.get_entries()), 1)
 
     def testDslType20_TestGetContext2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
@@ -1355,6 +1356,41 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
         self.assertEqual(r, dsl.data)
+        self.assertEqual(len(r.get_entries()), 1)
+
+    def testDslType20_TestGetContext3(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [])
+        self.assertTrue(v)
+        v, r = dsl.get_context("ctx1")
+        self.assertTrue(v)
+        self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
+        self.assertEqual(r, dsl.data.get_entries()[0])
+        self.assertEqual(len(r.get_entries()), 1)
+
+    def testDslType20_TestGetContext4(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [])
+        self.assertTrue(v)
+        v, r = dsl.get_context("ctx2", "ctx1")
+        self.assertTrue(v)
+        self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
+        self.assertEqual(r, dsl.data.get_entries()[0].get_entries()[0])
+        self.assertEqual(len(r.get_entries()), 0)
+
+    def testDslType20_TestGetContext5(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [])
+        self.assertTrue(v)
+        v, r = dsl.get_context("ctx2")
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
     def testDslType20_TestGetSubContexts1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
