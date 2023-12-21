@@ -110,13 +110,8 @@ def validate_name(name):
 def validate_variable(name, value):
 
     # validate name
-    if not isinstance(name, str):
-        return False, "Variable's name is not a string"
-    v, r = miniparse.scan_and_slice_beginning(name, IDENTIFIER)
-    if not v:
-        return False, "Malformed variable"
-    if r[1] != "":
-        return False, "Malformed varialbe (invalid leftovers)"
+    if not validate_name(name):
+        return False, "Variable's name is invalid"
 
     # validate value
     if value is not None:
@@ -127,11 +122,9 @@ def validate_variable(name, value):
 
 def validate_option(name, value):
 
-    if name is None:
-        return False, "Option name is none"
-
-    if not isinstance(name, str):
-        return False, "Option name is not a string"
+    # validate name
+    if not validate_name(name):
+        return False, "Variable's name is invalid"
 
     if not ( (isinstance(value, str)) or (value is None) ):
         return False, "Option value is invalid"
