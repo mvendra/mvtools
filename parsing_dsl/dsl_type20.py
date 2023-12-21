@@ -173,6 +173,7 @@ def validate_options_list(options):
     if not isinstance(options, list):
         return False, "Options are not a list"
 
+    opt_name_map = {}
     for opt in options:
 
         if not isinstance(opt, tuple):
@@ -184,6 +185,10 @@ def validate_options_list(options):
         v, r = validate_option(opt[0], opt[1])
         if not v:
             return False, r
+
+        if opt[0] in opt_name_map:
+            return False, "Duplicated option: [%s]" % opt[0]
+        opt_name_map[opt[0]] = True
 
     return True, None
 
