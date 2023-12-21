@@ -634,8 +634,11 @@ class DSLType20:
 
     def _add_ctx_helper(self, ptr, cb_data_ctx):
 
-        inherited_options = inherit_options(ptr.get_options(), cb_data_ctx[1])
-        new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], inherited_options)
+        if self.configs.inherit_options:
+            final_options = inherit_options(ptr.get_options(), cb_data_ctx[1])
+        else:
+            final_options = cb_data_ctx[1]
+        new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], final_options)
         ptr.add_entry(new_ctx)
 
     def _get_context_helper(self, ptr, cb_data_ctx):
