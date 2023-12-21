@@ -341,6 +341,26 @@ class DSLType20Test(unittest.TestCase):
         except BaseException as ex:
             self.assertTrue(isinstance(ex, mvtools_exception.mvtools_exception))
 
+    def testDSLType20_Context1(self):
+        ctx_inst = dsl_type20.DSLType20_Context(None, "a", [])
+        self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
+        self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
+        self.assertEqual(ctx_inst.ptr_parent, None)
+        self.assertEqual(ctx_inst.get_ptr_parent(), None)
+        self.assertEqual(ctx_inst.name, "a")
+        self.assertEqual(ctx_inst.get_name(), "a")
+        self.assertEqual(ctx_inst.options, [])
+        self.assertEqual(ctx_inst.get_options(), [])
+        self.assertEqual(ctx_inst.entries, [])
+
+    def testDSLType20_Context2(self):
+        ex_flag = False
+        try:
+            ctx_inst = dsl_type20.DSLType20_Context(None, "", [])
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
     def testDslType20_Parse1(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Config()))
 
