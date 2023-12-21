@@ -439,41 +439,41 @@ class DSLType20:
 
         return True, result
 
-    def rem_context(self, context):
+    def rem_context(self, context_name):
 
         ctx_info = []
 
-        if context is None or context == self.default_context_id:
+        if context_name is None or context_name == self.default_context_id:
             return False, "Removing the default context is forbidden"
 
-        v, r = self._find_context(context, self._rem_context_helper, ctx_info)
+        v, r = self._find_context(context_name, self._rem_context_helper, ctx_info)
         if not v:
             return False, r
         if not r:
-            return False, "Context [%s] does not exist." % context
+            return False, "Context [%s] does not exist." % context_name
 
         if len(ctx_info) != 1:
-            return False, "Found more than one instance of context [%s]. Fatal error." % context
+            return False, "Found more than one instance of context [%s]. Fatal error." % context_name
 
         ctx_parent = ctx_info[0].get_ptr_parent()
         if ctx_parent is None:
-            return False, "Context [%s] has no parent." % context
+            return False, "Context [%s] has no parent." % context_name
 
         idx = 0
         entry_found = False
         for ctx in ctx_parent.get_entries():
-            if ctx.get_name() == context:
+            if ctx.get_name() == context_name:
                 entry_found = True
                 break
             idx += 1
 
         if not entry_found:
-            return False, "Context [%s] could not be removed (not found under its parent)" % context
+            return False, "Context [%s] could not be removed (not found under its parent)" % context_name
 
         try:
             del ctx_parent.get_entries()[idx]
         except:
-            return False, "Context [%s] could not be removed (unknown reason)" % context
+            return False, "Context [%s] could not be removed (unknown reason)" % context_name
 
         return True, None
 
