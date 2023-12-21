@@ -1679,8 +1679,8 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value(), "val1")
-        self.assertEqual(var_obj.get_options(), [("opt1", "val1"), ("opt2", "val3")])
+        self.assertEqual(var_obj.get_value(), "val2")
+        self.assertEqual([(x.get_name(), x.get_value()) for x in var_obj.get_options()], [("opt1", "val1"), ("opt2", "val3")])
 
     def testDslType20_TestAddVariable8(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True))

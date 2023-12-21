@@ -643,6 +643,7 @@ class DSLType20:
             final_options = inherit_options(ptr.get_options(), cb_data_ctx[1])
         else:
             final_options = cb_data_ctx[1]
+
         new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], final_options)
         ptr.add_entry(new_ctx)
 
@@ -670,10 +671,16 @@ class DSLType20:
 
     def _add_variable_helper(self, ptr, cb_data_add):
 
-        # mvtodo: check for dupes if enabled {if not self.configs.allow_var_dupes:} -> @stashed-sample
-
         var_name, var_val, var_opts = cb_data_add
-        new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
+
+        # mvtodo: check for dupes if enabled
+
+        if self.configs.inherit_options:
+            final_options = inherit_options(ptr.get_options(), var_opts)
+        else:
+            final_options = var_opts
+
+        new_var = DSLType20_Variable(self.configs, var_name, var_val, final_options)
         ptr.add_entry(new_var)
 
     def _get_variable_helper(self, ptr, cb_data_get):
