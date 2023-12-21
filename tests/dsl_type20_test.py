@@ -321,6 +321,86 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r.get_name(), "c")
 
+    def testInheritOptions1(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("1", "2") ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "b"), ("1", "2") ] )
+
+    def testInheritOptions2(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "2") ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "2") ] )
+
+    def testInheritOptions3(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "2") ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "2") ] )
+
+    def testInheritOptions4(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", None) ] )
+
+    def testInheritOptions5(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None), ("1", "2") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("1", "2") ] )
+
+    def testInheritOptions6(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None), ("1", "2") ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("1", "2") ] )
+
+    def testInheritOptions7(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", ""), ("1", "2") ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", ""), ("1", "2") ] )
+
+    def testInheritOptions8(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("1", "2"), ("3", "4") ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "b"), ("c", "d"), ("1", "2"), ("3", "4") ] )
+
     def testDSLType20_Variable1(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", None, [])
         self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))

@@ -217,6 +217,26 @@ def opt_list_has(options, name):
             return True, opt
     return False, None
 
+def inherit_options(parent_options, new_options):
+
+    result = []
+
+    # first pass: try to add everything from parent, unless its also present in the new
+    for p_opt in parent_options:
+        v, r = opt_list_has(new_options, p_opt.get_name())
+        if not v:
+            result.append(p_opt)
+
+    # second pass: add everything from new, except for doubletapped valueless options
+    for n_opt in new_options:
+        v, r = opt_list_has(parent_options, n_opt.get_name())
+        if v: # common option - let's look further
+            if r.get_value() is None and n_opt.get_value() is None:
+                continue # doubletapped, valueless option. drop/skip
+        result.append(n_opt)
+
+    return result
+
 class DSLType20_Variable:
     def __init__(self, configs, name, value, options):
 
