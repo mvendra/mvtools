@@ -1334,6 +1334,28 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.add_context("ctx1", "ctx1", [])
         self.assertFalse(v)
 
+    def testDslType20_TestGetContext1(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [])
+        self.assertTrue(v)
+        v, r = dsl.get_context(None)
+        self.assertTrue(v)
+        self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
+        self.assertEqual(r, dsl.data)
+
+    def testDslType20_TestGetContext2(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [])
+        self.assertTrue(v)
+        v, r = dsl.get_context("default-context")
+        self.assertTrue(v)
+        self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
+        self.assertEqual(r, dsl.data)
+
     def testDslType20_TestGetSubContexts1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl.add_context(None, "ctx1", [])[0])

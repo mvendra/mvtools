@@ -387,6 +387,24 @@ class DSLType20:
 
         return True, None
 
+    def get_context(self, context_name, parent_context = None):
+
+        if context_name is None or context_name == self.default_context_id:
+            return True, self.data
+
+        if parent_context is None:
+            parent_context = self.default_context_id
+
+        result_ptr = None
+
+        v, r = self._find_context(parent_context, self._get_context_helper, (context_name, result_ptr))
+        if not v:
+            return False, r
+        if not r:
+            return False, "Unable to return context [%s] of [%s] - context not found." % (context_name, parent_context)
+
+        return True, result_ptr
+
     def get_sub_contexts(self, parent_context):
 
         if parent_context is None:
@@ -615,6 +633,14 @@ class DSLType20:
         inherited_options = inherit_options(ptr.get_options(), cb_data_ctx[1])
         new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], inherited_options)
         ptr.add_entry(new_ctx)
+
+    def _get_context_helper(self, ptr, cb_data_ctx):
+
+        target_ctx_name, return_ptr = cb_data_ctx
+        for entry in ptr.get_entries():
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and entry.get_name() == target_ctx_name:
+                return_ptr = entry
+                break
 
     def _get_sub_contexts_helper(self, ptr, cb_data_res):
 
