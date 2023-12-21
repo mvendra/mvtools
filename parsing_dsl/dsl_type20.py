@@ -424,18 +424,18 @@ class DSLType20:
 
         return True, result
 
-    def get_context_options(self, context):
+    def get_context_options(self, context_name):
 
         result = []
 
-        if context is None:
-            context = self.default_context_id
+        if context_name is None:
+            context_name = self.default_context_id
 
-        v, r = self._find_context(context, self._get_context_opts_helper, result)
+        v, r = self._find_context(context_name, self._get_context_opts_helper, result)
         if not v:
             return False, r
         if not r:
-            return False, "Context [%s] does not exist." % context
+            return False, "Context [%s] does not exist." % context_name
 
         return True, result
 
