@@ -248,6 +248,24 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_option("a", [])[0])
         self.assertFalse(dsl_type20.validate_option("a", ())[0])
 
+    def testValidateOptionsList(self):
+        self.assertTrue(dsl_type20.validate_options_list( [  ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ [1] ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ [1, 2] ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ (1) ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ (1, 2) ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("a", 1) ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("", "a") ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ (None, "a") ] )[0])
+        self.assertTrue(dsl_type20.validate_options_list( [ ("a", "a") ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), ("a") ] )[0])
+        self.assertTrue(dsl_type20.validate_options_list( [ ("a", "a"), ("b", "b") ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (dsl_type20.NEWLINE, "b") ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (dsl_type20.NULL, "b") ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (dsl_type20.SPACE, "b") ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (dsl_type20.HTAB, "b") ] )[0])
+        self.assertTrue(dsl_type20.validate_options_list( [ ("a", None) ] )[0])
+
     def testValidateContext(self):
         self.assertFalse(dsl_type20.validate_context(None)[0])
         self.assertFalse(dsl_type20.validate_context([])[0])
