@@ -105,6 +105,9 @@ def validate_name(name):
     if HTAB in name:
         return False
 
+    if not len(name) >= 1:
+        return False
+
     return True
 
 def validate_value(value):
