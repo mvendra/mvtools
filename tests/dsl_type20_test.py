@@ -306,6 +306,17 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_name(), "c")
         self.assertEqual(r[1].get_value(), None)
 
+    def testDSLType20_Variable1(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", None, [])
+        self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
+        self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
+        self.assertEqual(var_inst.name, "a")
+        self.assertEqual(var_inst.get_name(), "a")
+        self.assertEqual(var_inst.value, None)
+        self.assertEqual(var_inst.get_value(), None)
+        self.assertEqual(var_inst.options, [])
+        self.assertEqual(var_inst.get_options(), [])
+
     def testDslType20_Parse1(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Config()))
 
