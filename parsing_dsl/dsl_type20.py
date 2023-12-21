@@ -111,7 +111,7 @@ def validate_variable(name, value):
 
     # validate name
     if not validate_name(name):
-        return False, "Variable's name is invalid"
+        return False, "Variable name is invalid"
 
     # validate value
     if value is not None:
@@ -124,7 +124,7 @@ def validate_option(name, value):
 
     # validate name
     if not validate_name(name):
-        return False, "Variable's name is invalid"
+        return False, "Option name is invalid"
 
     if not ( (isinstance(value, str)) or (value is None) ):
         return False, "Option value is invalid"
@@ -158,15 +158,9 @@ def validate_options_list(options):
 
 def validate_context(context_name):
 
-    # validations
-    if not isinstance(context_name, str):
-        return False, "Invalid parameter (context_name): [%s]" % context_name
-
-    v, r = miniparse.scan_and_slice_beginning(context_name, IDENTIFIER)
-    if not v:
-        return False, "Unable to parse context name: [%s]" % context_name
-    if r[1] != "":
-        return False, "Unable to parse context name: [%s]. Unexpected extra characters: [%s]" % (context_name, r[1])
+    # validate name
+    if not validate_name(context_name):
+        return False, "Context name is invalid"
 
     return True, None
 
