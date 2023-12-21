@@ -401,6 +401,16 @@ class DSLType20Test(unittest.TestCase):
         final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "b"), ("c", "d"), ("1", "2"), ("3", "4") ] )
 
+    def testInheritOptions9(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
+        self.assertTrue(v)
+        new_opts = r
+        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "b"), ("c", "d") ] )
+
     def testDSLType20_Variable1(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", None, [])
         self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
