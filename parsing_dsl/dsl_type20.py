@@ -130,9 +130,8 @@ def validate_variable(name, value):
         return False, "Variable name is invalid"
 
     # validate value
-    if value is not None:
-        if NEWLINE in value:
-            return False, "Newlines are forbidden inside values"
+    if not validate_value(value):
+        return False, "Variable value is invalid"
 
     return True, None
 
@@ -142,11 +141,9 @@ def validate_option(name, value):
     if not validate_name(name):
         return False, "Option name is invalid"
 
-    if not ( (isinstance(value, str)) or (value is None) ):
+    # validate value
+    if not validate_value(value):
         return False, "Option value is invalid"
-
-    if NEWLINE in value:
-        return False, "Newlines are forbidden inside values"
 
     return True, None
 
