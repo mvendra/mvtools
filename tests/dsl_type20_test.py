@@ -10,6 +10,7 @@ import path_utils
 import mvtools_envvars
 
 import dsl_type20
+import mvtools_exception
 
 def getcontents(filename):
     if not os.path.exists(filename):
@@ -316,6 +317,12 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.get_value(), None)
         self.assertEqual(var_inst.options, [])
         self.assertEqual(var_inst.get_options(), [])
+
+    def testDSLType20_Variable2(self):
+        try:
+            var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "", None, [])
+        except BaseException as ex:
+            self.assertTrue(isinstance(ex, mvtools_exception.mvtools_exception))
 
     def testDslType20_Parse1(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Config()))
