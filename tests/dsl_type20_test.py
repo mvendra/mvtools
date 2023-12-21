@@ -236,6 +236,18 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_variable("a", [])[0])
         self.assertFalse(dsl_type20.validate_variable("a", ())[0])
 
+    def testValidateOption(self):
+        self.assertTrue(dsl_type20.validate_option("a", "a")[0])
+        self.assertTrue(dsl_type20.validate_option("거물사냥꾼", "거물사냥꾼")[0])
+        self.assertFalse(dsl_type20.validate_option("", "a")[0])
+        self.assertFalse(dsl_type20.validate_option(None, "a")[0])
+        self.assertFalse(dsl_type20.validate_option([], "a")[0])
+        self.assertFalse(dsl_type20.validate_option((), "a")[0])
+        self.assertTrue(dsl_type20.validate_option("a", None)[0])
+        self.assertTrue(dsl_type20.validate_option("a", "")[0])
+        self.assertFalse(dsl_type20.validate_option("a", [])[0])
+        self.assertFalse(dsl_type20.validate_option("a", ())[0])
+
     def testDslType20_SanitizeLine(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertEqual(dsl._sanitize_line(""), "")
