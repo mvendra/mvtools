@@ -107,6 +107,22 @@ def validate_name(name):
 
     return True
 
+def validate_value(value):
+
+    if value is None:
+        return True
+
+    if not isinstance(value, str):
+        return False
+
+    if NEWLINE in value:
+        return False
+
+    if NULL in value:
+        return False
+
+    return True
+
 def validate_variable(name, value):
 
     # validate name
