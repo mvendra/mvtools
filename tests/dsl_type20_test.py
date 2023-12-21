@@ -1408,6 +1408,7 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl.add_context(None, "ctx1", [])[0])
         self.assertTrue(dsl.add_context(None, "ctx2", [])[0])
+        self.assertTrue(dsl.add_variable("var1", None, [])[0])
         self.assertFalse(dsl.add_context(None, "ctx 3", [])[0])
         self.assertTrue(dsl.add_context(None, "ctx4", [])[0])
         v, r = dsl.get_sub_contexts(None)
