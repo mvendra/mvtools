@@ -210,6 +210,13 @@ def make_obj_opt_list(configs, options):
 
     return True, result
 
+def opt_list_has(options, name):
+
+    for opt in options:
+        if opt.get_name() == name:
+            return True, opt
+    return False, None
+
 class DSLType20_Variable:
     def __init__(self, configs, name, value, options):
 

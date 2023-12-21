@@ -307,6 +307,20 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_name(), "c")
         self.assertEqual(r[1].get_value(), None)
 
+    def testOptListHas(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", None) ])
+        self.assertTrue(v)
+        options = r
+        v, r = dsl_type20.opt_list_has(options, "a")
+        self.assertTrue(v)
+        self.assertEqual(r.get_name(), "a")
+        v, r = dsl_type20.opt_list_has(options, "b")
+        self.assertFalse(v)
+        self.assertEqual(r, None)
+        v, r = dsl_type20.opt_list_has(options, "c")
+        self.assertTrue(v)
+        self.assertEqual(r.get_name(), "c")
+
     def testDSLType20_Variable1(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", None, [])
         self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
