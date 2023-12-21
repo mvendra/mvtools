@@ -20,6 +20,9 @@ RCBRACKET = "}"
 EQSIGN = "="
 QUOTE = "\""
 NEWLINE = "\n"
+NULL = "\x00"
+SPACE = " "
+HTAB = "\t"
 BSLASH = "\\"
 FSLASH = "/"
 COMMENTS = ["#", "//"]
@@ -81,6 +84,28 @@ def expand_value(configs, str_input):
             return False, str_input
 
     return True, local_str_input
+
+def validate_name(name):
+
+    if name is None:
+        return False
+
+    if not isinstance(name, str):
+        return False
+
+    if NEWLINE in name:
+        return False
+
+    if NULL in name:
+        return False
+
+    if SPACE in name:
+        return False
+
+    if HTAB in name:
+        return False
+
+    return True
 
 def validate_variable(name, value):
 

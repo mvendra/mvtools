@@ -201,6 +201,17 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse(contents)
         return v
 
+    def testValidateName(self):
+        self.assertFalse(dsl_type20.validate_name(None))
+        self.assertFalse(dsl_type20.validate_name([]))
+        self.assertFalse(dsl_type20.validate_name(()))
+        self.assertFalse(dsl_type20.validate_name("name\x0a"))
+        self.assertFalse(dsl_type20.validate_name("name\x00"))
+        self.assertFalse(dsl_type20.validate_name("name\x20"))
+        self.assertFalse(dsl_type20.validate_name("name\x09"))
+        self.assertTrue(dsl_type20.validate_name("a"))
+        self.assertTrue(dsl_type20.validate_name("거물사냥꾼"))
+
     def testDslType20_SanitizeLine(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertEqual(dsl._sanitize_line(""), "")
