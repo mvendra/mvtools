@@ -1755,6 +1755,23 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertEqual([x.get_name() for x in r], ["ctx2"])
 
+    def testDslType20_TestRemContext6(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_variable("ctx1", None, [])[0])
+        v, r = dsl.get_all_variables(None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertEqual([x.get_name() for x in r], ["ctx1"])
+        v, r = dsl.get_sub_contexts(None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
+        self.assertEqual([x.get_name() for x in r], [])
+        self.assertFalse(dsl.rem_context("ctx1")[0])
+        v, r = dsl.get_all_variables(None)
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        self.assertEqual([x.get_name() for x in r], ["ctx1"])
+
     def testDslType20_TestProduce1(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.add_variable("var1", "val1", [])[0])
