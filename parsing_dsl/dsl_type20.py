@@ -156,7 +156,7 @@ def validate_options_list(options):
 
     return True, None
 
-def validate_context_name(context_name):
+def validate_context(context_name):
 
     # validations
     if not isinstance(context_name, str):
@@ -249,7 +249,7 @@ class DSLType20_Context:
         self.options = options
         self.entries = []
 
-        v, r = validate_context_name(self.name)
+        v, r = validate_context(self.name)
         if not v:
             raise mvtools_exception.mvtools_exception(r)
 
@@ -304,7 +304,7 @@ class DSLType20:
             parent_ctx = self.default_context_id
 
         # pre-validate context name
-        v, r = validate_context_name(ctx_name)
+        v, r = validate_context(ctx_name)
         if not v:
             return False, r
 
