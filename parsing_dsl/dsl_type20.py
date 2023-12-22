@@ -1010,27 +1010,8 @@ class DSLType20:
 
         for entry in context.get_entries():
 
-            # mvtodo:if var then call func to produce var
-
-            cur_var = NEWLINE + self.configs.variable_decorator + entry.get_name()
-
-            # produce the options
-            prod_opts = self._produce_options(entry.get_options())
-            if len(prod_opts) > 0:
-                cur_var = ("%s %s" %  (cur_var, prod_opts))
-
-            # add the variable's value - if it has it
-            if entry.get_value() is not None:
-                var_escaped_value = ""
-                if entry.get_value() != "":
-                    v, r = miniparse.escape(entry.get_value(), BSLASH, [QUOTE])
-                    if not v:
-                        return None
-                    var_escaped_value = r
-
-                cur_var += SINGLESPACE + EQSIGN + SINGLESPACE + QUOTE + var_escaped_value + QUOTE
-
-            result += cur_var
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                result += self._produce_variable(entry)
 
         if context.get_name() != self.default_context_id:
             result += NEWLINE + RBRACKET + NEWLINE
@@ -1038,6 +1019,8 @@ class DSLType20:
         return result
 
     def _produce_options(self, input_options):
+
+        # mvtodo: wrong
 
         options_result = ""
         for o in range(len(input_options)):
@@ -1062,6 +1045,30 @@ class DSLType20:
                 options_result += SINGLESPACE + FSLASH + SINGLESPACE
 
         return options_result
+
+    def _produce_variable(self, input_variable):
+
+        variable_result = ""
+
+        variable_result = NEWLINE + self.configs.variable_decorator + input_variable.get_name()
+
+        # produce the options
+        prod_opts = self._produce_options(input_variable.get_options())
+        if len(prod_opts) > 0:
+            variable_result = ("%s %s" %  (variable_result, prod_opts))
+
+        # add the variable's value - if it has it
+        if input_variable.get_value() is not None:
+            var_escaped_value = ""
+            if input_variable.get_value() != "":
+                v, r = miniparse.escape(input_variable.get_value(), BSLASH, [QUOTE])
+                if not v:
+                    return None
+                var_escaped_value = r
+
+            variable_result += SINGLESPACE + EQSIGN + SINGLESPACE + QUOTE + var_escaped_value + QUOTE
+
+        return variable_result
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
