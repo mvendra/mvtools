@@ -49,13 +49,6 @@ def printable_context(context):
         return "(default context)"
     return context
 
-def count_occurrence_first_of_pair(list_target, first_value):
-    c = 0
-    for i in list_target:
-        if i[0] == first_value:
-            c += 1
-    return c
-
 def expand_value(configs, str_input):
 
     if str_input is None:
