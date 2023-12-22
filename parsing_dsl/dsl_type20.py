@@ -516,19 +516,6 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, result
 
-    def rem_variable(self, var_name, context = None):
-
-        if context is None:
-            context = self.default_context_id
-        result = []
-
-        v, r = self._find_context(context, self._rem_variable_helper, (var_name, result))
-        if not v:
-            return False, r
-        if not r:
-            return False, "Context [%s] does not exist." % context
-        return True, len(result)
-
     def rem_all_variables(self, context = None):
 
         if context is None:
@@ -541,6 +528,19 @@ class DSLType20:
         if not r:
             return False, "Context [%s] does not exist." % context
         return True, result
+
+    def rem_variable(self, var_name, context = None):
+
+        if context is None:
+            context = self.default_context_id
+        result = []
+
+        v, r = self._find_context(context, self._rem_variable_helper, (var_name, result))
+        if not v:
+            return False, r
+        if not r:
+            return False, "Context [%s] does not exist." % context
+        return True, len(result)
 
     def parse(self, contents):
 
