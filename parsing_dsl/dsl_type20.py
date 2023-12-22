@@ -617,7 +617,7 @@ class DSLType20:
     def produce(self):
 
         result = ""
-        result += self._produce_context(self.data)
+        result += self._produce_context(self.data.get_name())
         return result.strip()
 
     def _context_exists(self, ctx_name):
@@ -1003,27 +1003,32 @@ class DSLType20:
 
         if context is None:
             return None
-        if context not in self.data:
+
+        v, r = self.get_context(context)
+        if not v:
             return None
+        context_obj = r
 
         result = ""
         if context != self.default_context_id:
-            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context + (" %s" % (self._produce_options(self.data[context][0])) )).rstrip()
+            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context_obj.get_name() + (" %s" % ( self._produce_options(context_obj.get_options()) ) )).rstrip()
 
-        for y in self.data[context][1]:
+        for entry in context_obj.get_entries():
 
-            cur_var = NEWLINE + self.configs.variable_decorator + y[0] # variable's name
+            # mvtodo:if var then call func to produce var
+
+            cur_var = NEWLINE + self.configs.variable_decorator + entry.get_name()
 
             # produce the options
-            prod_opts = self._produce_options(y[2])
+            prod_opts = self._produce_options(entry.get_options())
             if len(prod_opts) > 0:
                 cur_var = ("%s %s" %  (cur_var, prod_opts))
 
             # add the variable's value - if it has it
-            if y[1] is not None:
+            if entry.get_value() is not None:
                 var_escaped_value = ""
-                if y[1] != "":
-                    v, r = miniparse.escape(y[1], BSLASH, [QUOTE])
+                if entry.get_value() != "":
+                    v, r = miniparse.escape(entry.get_value(), BSLASH, [QUOTE])
                     if not v:
                         return None
                     var_escaped_value = r
