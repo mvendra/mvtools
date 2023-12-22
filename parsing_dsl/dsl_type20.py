@@ -504,7 +504,7 @@ class DSLType20:
         if context is None:
             context = self.default_context_id
         else:
-            self.add_context(None, context, []) # mvtodo: wrong
+            self.add_context(None, context, [])
 
         # add new variable to internal data
         v, r = self._find_context(context, self._add_variable_helper, (var_name, var_val, opts_obj_list))
