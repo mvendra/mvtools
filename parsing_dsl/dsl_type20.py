@@ -560,6 +560,7 @@ class DSLType20:
 
         self.clear()
 
+        parent_context = None # default context
         context = None # default context
         context_options = []
         expecting_context_name = False
@@ -598,7 +599,7 @@ class DSLType20:
                 if not v:
                     return v, r
                 context, context_options = r
-                v, r = self.add_context(context, context_options) # mvtodo: wrong
+                v, r = self.add_context(parent_context, context, context_options)
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
@@ -618,6 +619,11 @@ class DSLType20:
         result = ""
         result += self._produce_context(self.data)
         return result.strip()
+
+    def _context_exists(self, ctx_name):
+
+        v, r = self._find_context(ctx_name, None, None)
+        return v
 
     def _find_context(self, context_name, callback_func, callback_data):
 
@@ -786,7 +792,7 @@ class DSLType20:
         local_context = self.default_context_id
         if context is not None:
             local_context = context
-        if not local_context in self.data:
+        if not self._context_exists(local_context):
             return False, "Can't parse variable: [%s]: Context doesn't exist: [%s]." % (str_input, context)
 
         # start by parsing the variable's value - if it has it
