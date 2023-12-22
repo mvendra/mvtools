@@ -1006,12 +1006,15 @@ class DSLType20:
 
         result = ""
         if context.get_name() != self.default_context_id:
-            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
+            result = (NEWLINE + NEWLINE + LBRACKET + NEWLINE + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
 
         for entry in context.get_entries():
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
                 result += self._produce_variable(entry)
+
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                result += self._produce_context(entry)
 
         if context.get_name() != self.default_context_id:
             result += NEWLINE + RBRACKET + NEWLINE
