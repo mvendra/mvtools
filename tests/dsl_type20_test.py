@@ -1165,8 +1165,8 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
         self.assertTrue(v)
-        self.assertEqual(dsl.get_all_variables("ctx1"), [("var1", "val1", [])])
-        self.assertEqual(dsl.get_all_variables("nonexistent context"), None)
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")[1]), [("var1", "val1", [])])
+        self.assertFalse(dsl.get_all_variables("nonexistent context")[0])
 
     def testDslType20_TestContextGetVariablesFail1(self):
 
@@ -1174,9 +1174,9 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
 
         self.assertTrue(v)
-        self.assertEqual(dsl.get_variables("var1", None), [])
-        self.assertEqual(dsl.get_variables("var1", "ctx1"), [("var1", "val1", [])])
-        self.assertEqual(dsl.get_variables("var1", "nonexistent context"), None)
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", None)[1]), [])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")[1]), [("var1", "val1", [])])
+        self.assertFalse(dsl.get_variables("var1", "nonexistent context")[0])
 
     def testDslType20_TestAddContext1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
