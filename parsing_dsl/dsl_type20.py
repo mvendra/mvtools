@@ -617,7 +617,7 @@ class DSLType20:
     def produce(self):
 
         result = ""
-        result += self._produce_context(self.data.get_name())
+        result += self._produce_context(self.data)
         return result.strip()
 
     def _context_exists(self, ctx_name):
@@ -1004,16 +1004,11 @@ class DSLType20:
         if context is None:
             return None
 
-        v, r = self.get_context(context)
-        if not v:
-            return None
-        context_obj = r
-
         result = ""
-        if context != self.default_context_id:
-            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context_obj.get_name() + (" %s" % ( self._produce_options(context_obj.get_options()) ) )).rstrip()
+        if context.get_name() != self.default_context_id:
+            result = (NEWLINE + LBRACKET + NEWLINE + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
 
-        for entry in context_obj.get_entries():
+        for entry in context.get_entries():
 
             # mvtodo:if var then call func to produce var
 
@@ -1037,7 +1032,7 @@ class DSLType20:
 
             result += cur_var
 
-        if context != self.default_context_id:
+        if context.get_name() != self.default_context_id:
             result += NEWLINE + RBRACKET + NEWLINE
 
         return result
