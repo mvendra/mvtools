@@ -2213,138 +2213,138 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestProduce6(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.add_variable("var1", "val1", [("opt1", "val2")], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "val1", [("opt1", "val2")])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "val1", [("opt1", "val2")])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 {opt1: \"val2\"} = \"val1\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce7(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.add_variable("var1", "val\"1\"", [("opt1", "val\"2\"")], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "val\"1\"", [("opt1", "val\"2\"")])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "val\"1\"", [("opt1", "val\"2\"")])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 {opt1: \"val\\\"2\\\"\"} = \"val\\\"1\\\"\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce8(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True))
         self.assertTrue(dsl_1.add_context(None, "ctx1", [("opt1", "val2")])[0])
         self.assertTrue(dsl_1.add_variable("var1", "val1", [], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "val1", [("opt1", "val2")])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "val1", [("opt1", "val2")])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1: \"val2\"}\nvar1 = \"val1\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce9(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True))
         self.assertTrue(dsl_1.add_context(None, "ctx1", [("opt1", "val1")])[0])
         self.assertTrue(dsl_1.add_variable("var1", "val2", [("opt1", "val3")], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "val2", [("opt1", "val1"), ("opt1", "val3")])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "val2", [("opt1", "val1"), ("opt1", "val3")])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1: \"val1\"}\nvar1 {opt1: \"val3\"} = \"val2\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce10(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         self.assertTrue(dsl_1.add_context(None, "ctx1", [("opt1", "val1")])[0])
         self.assertTrue(dsl_1.add_variable("var1", "val2", [("opt1", "val3")], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "val2", [("opt1", "val3")])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "val2", [("opt1", "val3")])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1: \"val1\"}\nvar1 {opt1: \"val3\"} = \"val2\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce11(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator="* "))
         self.assertTrue(dsl_1.add_variable("var1", "val1", [])[0])
-        self.assertEqual(dsl_1.get_all_variables(), [("var1", "val1", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), [("var1", "val1", [])])
         self.assertEqual(dsl_1.produce(), "* var1 = \"val1\"")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator="* "))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce12(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         self.assertTrue(dsl_1.add_context(None, "ctx1", [("opt1", "val1"), ("opt2", "val2")])[0])
         self.assertTrue(dsl_1.add_variable("var1", "val4", [("opt1", "val3")], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "val4", [("opt1", "val3")])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "val4", [("opt1", "val3")])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1: \"val1\" / opt2: \"val2\"}\nvar1 {opt1: \"val3\"} = \"val4\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce13(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         self.assertTrue(dsl_1.add_context(None, "ctx1", [])[0])
         self.assertTrue(dsl_1.add_variable("var1", "", [], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "", [])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 = \"\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce14(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         self.assertTrue(dsl_1.add_context(None, "ctx1", [])[0])
         self.assertTrue(dsl_1.add_variable("var1", "", [("opt1", None)], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "", [("opt1", None)])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "", [("opt1", None)])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 {opt1} = \"\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce15(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         self.assertTrue(dsl_1.add_context(None, "ctx1", [("opt1", None)])[0])
         self.assertTrue(dsl_1.add_variable("var1", "", [], "ctx1")[0])
-        self.assertEqual(dsl_1.get_all_variables("ctx1"), [("var1", "", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "", [])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1}\nvar1 = \"\"\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce16(self):
