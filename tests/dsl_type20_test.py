@@ -570,12 +570,12 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertEqual(var_fmt_helper(dsl.get_variables("var0")), [])
-        self.assertEqual(dsl.get_variables("var1"), [("var1", "val1", [])])
-        self.assertEqual(dsl.get_variables("var2"), [("var2", "val2", [("opt1", None)])])
-        self.assertEqual(dsl.get_variables("var3"), [("var3", "val4", [("opt2", "val3")])])
-        self.assertEqual(dsl.get_variables("var4"), [("var4", "val7", [("opt3", "val5"), ("opt4", "val6")])])
-        self.assertEqual(dsl.get_variables("var5"), [("var5", "val10", [("opt5", None), ("opt6", "val8"), ("opt7", "val9")])])
-        self.assertEqual(dsl.get_variables("var6"), [])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1")), [("var1", "val1", [])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var2")), [("var2", "val2", [("opt1", None)])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var3")), [("var3", "val4", [("opt2", "val3")])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var4")), [("var4", "val7", [("opt3", "val5"), ("opt4", "val6")])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var5")), [("var5", "val10", [("opt5", None), ("opt6", "val8"), ("opt7", "val9")])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var6")), [])
 
         self.assertTrue(dsl_type20.hasopt_var(dsl.get_variables("var2")[0], "opt1"))
         self.assertTrue(dsl_type20.hasopt_var(dsl.get_variables("var3")[0], "opt2"))

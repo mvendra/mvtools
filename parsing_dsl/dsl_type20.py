@@ -509,7 +509,7 @@ class DSLType20:
             context = self.default_context_id
         result = []
 
-        v, r = self._find_context(context, self._get_variable_helper, result)
+        v, r = self._find_context(context, self._get_variable_helper, (varname, result))
         if not v:
             return False, r
         if not r:
@@ -699,9 +699,11 @@ class DSLType20:
 
     def _get_variable_helper(self, ptr, cb_data_get):
 
+        var_name, list_ptr = cb_data_get
+
         for entry in ptr.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                cb_data_get.append(entry)
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
+                list_ptr.append(entry)
         return True, None
 
     def _rem_variable_helper(self, ptr, cb_data_rem):
