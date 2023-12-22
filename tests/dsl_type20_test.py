@@ -774,7 +774,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl2.parse(decorated_var)
         self.assertTrue(v)
 
-        self.assertEqual(dsl2.get_all_variables(), [("var1", "val1", [("opt1", None)])])
+        self.assertEqual(var_fmt_helper(dsl2.get_all_variables()[1]), [("var1", "val1", [("opt1", None)])])
 
     def testDslType20_TestParseDecoratedVar2(self):
 
@@ -818,7 +818,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1   {  _opt-1   :    \"val \\\\  =  \\\"1/2\\\"\" / opt2  :  \"val = \\\"2/4\\\"\" }     =  \"val = \\\"1\\\"\"  ")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val = \"1\"", [("_opt-1", "val \\  =  \"1/2\""), ("opt2", "val = \"2/4\"")])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val = \"1\"", [("_opt-1", "val \\  =  \"1/2\""), ("opt2", "val = \"2/4\"")])])
 
     def testDslType20_TestCommentInsideVarOptVal1(self):
 
@@ -826,7 +826,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 { remote_link : \"https://www.url.net/folder/whatever\" } = \"svn.py\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "svn.py", [("remote_link", "https://www.url.net/folder/whatever")])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "svn.py", [("remote_link", "https://www.url.net/folder/whatever")])])
 
     def testDslType20_TestBlankAndNoneOption(self):
 
@@ -834,7 +834,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"\" / opt2} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("opt1", ""), ("opt2", None)])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("opt1", ""), ("opt2", None)])])
 
     def testDslType20_TestSpacedOptionValueless1(self):
 
@@ -842,7 +842,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("    var1   {  the_option     }     =    \"val1\"  ")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("the_option", None)])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("the_option", None)])])
 
     def testDslType20_TestSpacedOptionValueless2(self):
 
@@ -850,7 +850,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("    var1   {  the_option1   /   the_option2    }     =    \"val1\"  ")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("the_option1", None), ("the_option2", None)])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("the_option1", None), ("the_option2", None)])])
 
     def testDslType20_TestOptionsAlternated1(self):
 
@@ -858,7 +858,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1 / opt2: \"val2\" / opt3 / opt4: \"val3\"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("opt1", None), ("opt2", "val2"), ("opt3", None), ("opt4", "val3")])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("opt1", None), ("opt2", "val2"), ("opt3", None), ("opt4", "val3")])])
 
     def testDslType20_TestOptionsAlternated2(self):
 
@@ -866,7 +866,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt2: \"val2\" / opt1 / opt4: \"val3\" / opt3} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("opt2", "val2"), ("opt1", None), ("opt4", "val3"), ("opt3", None)])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("opt2", "val2"), ("opt1", None), ("opt4", "val3"), ("opt3", None)])])
 
     def testDslType20_TestMalformedOptName(self):
 
