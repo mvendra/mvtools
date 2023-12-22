@@ -380,6 +380,9 @@ class DSLType20:
 
     def get_context(self, context_name, parent_context = None):
 
+        if context_name is None or context_name == self.default_context_id:
+            return True, self.data
+
         v, r = self._get_context_internal(context_name, parent_context)
         if not v:
             return False, r
