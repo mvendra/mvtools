@@ -378,7 +378,7 @@ class DSLType20:
 
         return True, None
 
-    def get_context(self, context_name, parent_context = None):
+    def get_sub_context(self, context_name, parent_context = None):
 
         if context_name is None or context_name == self.default_context_id:
             return True, self.data

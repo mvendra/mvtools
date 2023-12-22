@@ -1463,31 +1463,31 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.add_context(None, "@ok", [])
         self.assertTrue(v)
 
-    def testDslType20_TestGetContext1(self):
+    def testDslType20_TestGetSubContext1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context(None, "ctx1", [])
         self.assertTrue(v)
         v, r = dsl.add_context("ctx1", "ctx2", [])
         self.assertTrue(v)
-        v, r = dsl.get_context(None)
+        v, r = dsl.get_sub_context(None)
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
         self.assertEqual(r, dsl.data)
         self.assertEqual(len(r.get_entries()), 1)
 
-    def testDslType20_TestGetContext2(self):
+    def testDslType20_TestGetSubContext2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context(None, "ctx1", [])
         self.assertTrue(v)
         v, r = dsl.add_context("ctx1", "ctx2", [])
         self.assertTrue(v)
-        v, r = dsl.get_context("default-context")
+        v, r = dsl.get_sub_context("default-context")
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
         self.assertEqual(r, dsl.data)
         self.assertEqual(len(r.get_entries()), 1)
 
-    def testDslType20_TestGetContext3(self):
+    def testDslType20_TestGetSubContext3(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_variable("ctx1", None, [])
         self.assertTrue(v)
@@ -1495,32 +1495,32 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         v, r = dsl.add_context("ctx1", "ctx2", [])
         self.assertTrue(v)
-        v, r = dsl.get_context("ctx1")
+        v, r = dsl.get_sub_context("ctx1")
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
         self.assertEqual(r, dsl.data.get_entries()[1])
         self.assertEqual(len(r.get_entries()), 1)
         self.assertTrue("ctx2" in [x.get_name() for x in r.get_entries()] )
 
-    def testDslType20_TestGetContext4(self):
+    def testDslType20_TestGetSubContext4(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context(None, "ctx1", [])
         self.assertTrue(v)
         v, r = dsl.add_context("ctx1", "ctx2", [])
         self.assertTrue(v)
-        v, r = dsl.get_context("ctx2", "ctx1")
+        v, r = dsl.get_sub_context("ctx2", "ctx1")
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
         self.assertEqual(r, dsl.data.get_entries()[0].get_entries()[0])
         self.assertEqual(len(r.get_entries()), 0)
 
-    def testDslType20_TestGetContext5(self):
+    def testDslType20_TestGetSubContext5(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context(None, "ctx1", [])
         self.assertTrue(v)
         v, r = dsl.add_context("ctx1", "ctx2", [])
         self.assertTrue(v)
-        v, r = dsl.get_context("ctx2")
+        v, r = dsl.get_sub_context("ctx2")
         self.assertTrue(v)
         self.assertEqual(r, None)
 
