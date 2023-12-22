@@ -543,6 +543,19 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, len(result)
 
+    def rem_all_variables(self, context = None):
+
+        if context is None:
+            context = self.default_context_id
+        result = []
+
+        v, r = self._find_context(context, self._rem_variable_helper, (None, result))
+        if not v:
+            return False, r
+        if not r:
+            return False, "Context [%s] does not exist." % context
+        return True, result
+
     def parse(self, contents):
 
         self.clear()
@@ -706,8 +719,8 @@ class DSLType20:
         entries_ptr = ptr.get_entries()
 
         for entry in entries_ptr:
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
-                result.append(entry.get_name()) # this is just to make it easy to tell how many entries were skipped (deleted)
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
+                result.append(entry.get_name())
             else:
                 new_entries_list.append(entry)
 

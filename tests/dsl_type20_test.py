@@ -1872,7 +1872,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_obj.get_options(), [])
         v, r = dsl.rem_variable("var1")
         self.assertTrue(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, 1)
         v, r = dsl.get_all_variables()
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
@@ -1966,6 +1966,23 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
         self.assertEqual(r, [])
+
+    def testDslType20_TestRemAllVariables1(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_variable("var1", "val1", [])[0])
+        v, r = dsl.get_all_variables()
+        self.assertTrue(v)
+        self.assertEqual(len(r), 1)
+        var_obj = r[0]
+        self.assertEqual(var_obj.get_name(), "var1")
+        self.assertEqual(var_obj.get_value(), "val1")
+        self.assertEqual(var_obj.get_options(), [])
+        v, r = dsl.rem_all_variables()
+        self.assertTrue(v)
+        self.assertEqual(r, ["var1"])
+        v, r = dsl.get_all_variables()
+        self.assertTrue(v)
+        self.assertEqual(len(r), 0)
 
     def testDslType20_TestRemContext1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
