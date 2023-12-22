@@ -777,7 +777,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl2.parse(decorated_var)
         self.assertTrue(v)
 
-        self.assertEqual(var_fmt_helper(dsl2.get_all_variables()[1]), [("var1", "val1", [("opt1", None)])])
+        self.assertEqual(var_fmt_helper(dsl2.get_all_variables()), [("var1", "val1", [("opt1", None)])])
 
     def testDslType20_TestParseDecoratedVar2(self):
 
@@ -1031,7 +1031,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\nvar2 = \"val2\"\n]")
         self.assertTrue(v)
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val1", [])])
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")[1]), [("var2", "val2", [])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")), [("var2", "val2", [])])
 
     def testDslType20_TestNewContextVanilla3(self):
 
@@ -1039,7 +1039,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx1\nvar2 {opt1 / opt2} = \"val2\"\n]\nvar3 = \"val3\"\n[\n@ctx2\nvar4 = \"val4\"\n]")
         self.assertTrue(v)
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val1", []), ("var3", "val3", [])])
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")[1]), [("var2", "val2", [("opt1", None), ("opt2", None)])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")), [("var2", "val2", [("opt1", None), ("opt2", None)])])
         self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx2")[1]), [("var4", "val4", [])])
 
     def testDslType20_TestNewContextWithOptions1(self):
@@ -1168,7 +1168,7 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
         self.assertTrue(v)
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")[1]), [("var1", "val1", [])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")), [("var1", "val1", [])])
         self.assertFalse(dsl.get_all_variables("nonexistent context")[0])
 
     def testDslType20_TestContextGetVariablesFail1(self):
@@ -1177,8 +1177,8 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n]")
 
         self.assertTrue(v)
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", None)[1]), [])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")[1]), [("var1", "val1", [])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", None)), [])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")), [("var1", "val1", [])])
         self.assertFalse(dsl.get_variables("var1", "nonexistent context")[0])
 
     def testDslType20_TestAddContext1(self):
@@ -2145,28 +2145,28 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestProduce1(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.add_variable("var1", "val1", [])[0])
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), [("var1", "val1", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var1", "val1", [])])
         self.assertEqual(dsl_1.produce(), "var1 = \"val1\"")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce2(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.add_variable("var1", "val1", [])[0])
         self.assertTrue(dsl_1.add_variable("var2", "val2", [])[0])
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), [("var1", "val1", []), ("var2", "val2", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var1", "val1", []), ("var2", "val2", [])])
         self.assertEqual(dsl_1.produce(), "var1 = \"val1\"\nvar2 = \"val2\"")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce3(self):
@@ -2175,7 +2175,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_1.add_variable("var2", "val2", [])[0])
         self.assertTrue(dsl_1.add_variable("var1", "val1", [], "ctx2")[0])
         self.assertTrue(dsl_1.add_variable("var2", "val2", [], "ctx2")[0])
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), [("var2", "val2", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var2", "val2", [])])
         self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")[1]), [("var1", "val1", [])])
         self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx2")[1]), [("var1", "val1", []), ("var2", "val2", [])])
         self.assertEqual(dsl_1.produce(), "[\n@ctx1\nvar1 = \"val1\"\n]\n\nvar2 = \"val2\"\n\n[\n@ctx2\nvar1 = \"val1\"\nvar2 = \"val2\"\n]")
@@ -2184,7 +2184,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce4(self):
@@ -2197,7 +2197,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce5(self):
@@ -2210,7 +2210,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce6(self):
@@ -2223,7 +2223,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce7(self):
@@ -2236,7 +2236,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce8(self):
@@ -2250,7 +2250,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce9(self):
@@ -2264,7 +2264,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce10(self):
@@ -2278,20 +2278,20 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce11(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator="* "))
         self.assertTrue(dsl_1.add_variable("var1", "val1", [])[0])
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), [("var1", "val1", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var1", "val1", [])])
         self.assertEqual(dsl_1.produce(), "* var1 = \"val1\"")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator="* "))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce12(self):
@@ -2305,7 +2305,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce13(self):
@@ -2319,7 +2319,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce14(self):
@@ -2333,7 +2333,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce15(self):
@@ -2347,7 +2347,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce16(self):
@@ -2361,7 +2361,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce17(self):
@@ -2375,7 +2375,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce18(self):
@@ -2389,7 +2389,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce19(self):
@@ -2403,7 +2403,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce20(self):
@@ -2417,7 +2417,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce21(self):
@@ -2431,7 +2431,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce22(self):
@@ -2445,7 +2445,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce23(self):
@@ -2459,33 +2459,33 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce24(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.add_variable("var1", "#val1", [])[0])
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), [("var1", "#val1", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var1", "#val1", [])])
         self.assertEqual(dsl_1.produce(), "var1 = \"#val1\"")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce25(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.add_variable("var1", "//val1", [])[0])
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), [("var1", "//val1", [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var1", "//val1", [])])
         self.assertEqual(dsl_1.produce(), "var1 = \"//val1\"")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()[1]), var_fmt_helper(dsl_2.get_all_variables()[1]))
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce26(self):
