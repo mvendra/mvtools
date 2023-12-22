@@ -32,13 +32,6 @@ DSLTYPE20_ENTRY_TYPE_VAR = 1
 DSLTYPE20_ENTRY_TYPE_OPT = 2
 DSLTYPE20_ENTRY_TYPE_CTX = 3
 
-def getopts(var, optname):
-    ret = []
-    for o in var[2]:
-        if o[0] == optname:
-            ret.append(o)
-    return ret
-
 def hasopt_var(var, optname):
     for o in var[2]:
         if o[0] == optname:
