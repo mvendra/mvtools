@@ -1023,26 +1023,28 @@ class DSLType20:
 
     def _produce_options(self, input_options):
 
-        # mvtodo: wrong
-
         options_result = ""
-        for o in range(len(input_options)):
 
-            if o == 0: # first option
+        idx = 0
+        for opt in input_options:
+            idx += 1
+
+            if idx == 1:
                 options_result += LCBRACKET
 
-            options_result += input_options[o][0] # option's name
-            if input_options[o][1] is not None:
+            options_result += opt.get_name()
+
+            if opt.get_value() is not None:
                 # option has value
                 opt_escaped_value = ""
-                if input_options[o][1] != "":
-                    v, r = miniparse.escape((input_options[o][1]), BSLASH, [QUOTE])
+                if opt.get_value() != "":
+                    v, r = miniparse.escape(opt.get_value(), BSLASH, [QUOTE])
                     if not v:
                         return None
                     opt_escaped_value = r
                 options_result += COLON + SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
 
-            if o == (len(input_options)-1): # last option
+            if idx == len(input_options):
                 options_result += RCBRACKET
             else:
                 options_result += SINGLESPACE + FSLASH + SINGLESPACE
