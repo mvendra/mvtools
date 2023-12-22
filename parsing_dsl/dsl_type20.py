@@ -702,7 +702,7 @@ class DSLType20:
         var_name, list_ptr = cb_data_get
 
         for entry in ptr.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
                 list_ptr.append(entry)
         return True, None
 
