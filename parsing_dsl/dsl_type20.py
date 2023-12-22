@@ -631,7 +631,9 @@ class DSLType20:
                     ctx_to_nav.append(entry)
 
         if ptr_match is not None and callback_func is not None:
-            callback_func(ptr_match, callback_data)
+            v, r = callback_func(ptr_match, callback_data)
+            if not v:
+                return False, r
 
         return True, (ptr_match is not None)
 
@@ -644,6 +646,7 @@ class DSLType20:
 
         new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], final_options)
         ptr.add_entry(new_ctx)
+        return True, None
 
     def _get_context_helper(self, ptr, cb_data_ctx):
 
@@ -671,7 +674,10 @@ class DSLType20:
 
         var_name, var_val, var_opts = cb_data_add
 
-        # mvtodo: check for dupes if enabled
+        if not self.configs.allow_var_dupes:
+            for entry in ptr.get_entries():
+                if entry.get_name() == var_name:
+                    return False, "Variable [%s] already exists" % var_name
 
         if self.configs.inherit_options:
             final_options = inherit_options(ptr.get_options(), var_opts)
@@ -680,6 +686,7 @@ class DSLType20:
 
         new_var = DSLType20_Variable(self.configs, var_name, var_val, final_options)
         ptr.add_entry(new_var)
+        return True, None
 
     def _get_variable_helper(self, ptr, cb_data_get):
 

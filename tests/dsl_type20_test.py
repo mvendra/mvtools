@@ -1839,6 +1839,18 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl.add_variable("var1", "val1", [ ("opt1", None) ] )[0])
         self.assertTrue(dsl.add_variable("var2", "val1", [ ("opt1", None) ] )[0])
 
+    def testDslType20_TestDisallowDupes5(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
+        self.assertTrue(dsl.add_context(None, "ctx1", [])[0])
+        self.assertTrue(dsl.add_variable("var1", "val1", [], "ctx1")[0])
+        self.assertFalse(dsl.add_variable("var1", "val2", [], "ctx1")[0])
+
+    def testDslType20_TestDisallowDupes6(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
+        self.assertTrue(dsl.add_context(None, "ctx1", [])[0])
+        self.assertTrue(dsl.add_variable("var1", "val1", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var1", "val2", [], None)[0])
+
     def testDslType20_TestDisallowDupesParse1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes=False))
 
