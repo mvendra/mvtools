@@ -541,7 +541,7 @@ class DSLType20:
             return False, r
         if not r:
             return False, "Context [%s] does not exist." % context
-        return True, result
+        return True, len(result)
 
     def parse(self, contents):
 
@@ -712,7 +712,8 @@ class DSLType20:
                 new_entries_list.append(entry)
 
         entries_ptr.clear()
-        entries_ptr = new_entries_list
+        for n in new_entries_list:
+            entries_ptr.append(n)
         return True, None
 
     def _parse_context_name(self, str_input):
