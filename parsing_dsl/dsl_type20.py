@@ -644,12 +644,7 @@ class DSLType20:
 
     def _add_ctx_helper(self, ptr, cb_data_ctx):
 
-        if self.configs.inherit_options:
-            final_options = inherit_options(ptr.get_options(), cb_data_ctx[1])
-        else:
-            final_options = cb_data_ctx[1]
-
-        new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], final_options)
+        new_ctx = DSLType20_Context(ptr, cb_data_ctx[0], cb_data_ctx[1])
         ptr.add_entry(new_ctx)
         return True, None
 
@@ -688,22 +683,19 @@ class DSLType20:
                 if entry.get_name() == var_name:
                     return False, "Variable [%s] already exists" % var_name
 
-        if self.configs.inherit_options:
-            final_options = inherit_options(ptr.get_options(), var_opts)
-        else:
-            final_options = var_opts
-
-        new_var = DSLType20_Variable(self.configs, var_name, var_val, final_options)
+        new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
         ptr.add_entry(new_var)
         return True, None
 
     def _get_variable_helper(self, ptr, cb_data_get):
 
         var_name, list_ptr = cb_data_get
+        inherited_options = ptr.get_options() # mvtodo: not enough, must go up the entire stack
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
-                list_ptr.append(entry)
+                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), inherit_options(inherited_options, entry.get_options()))
+                list_ptr.append(var_copy)
         return True, None
 
     def _rem_variable_helper(self, ptr, cb_data_rem):
