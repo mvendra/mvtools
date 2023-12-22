@@ -656,13 +656,6 @@ class DSLType20:
                     break
         return True, None
 
-    def _get_sub_contexts_helper(self, ptr, cb_data_res):
-
-        for entry in ptr.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                cb_data_res.append(entry)
-        return True, None
-
     def _get_context_opts_helper(self, ptr, cb_data_res):
 
         cb_data_res += ptr.get_options()
