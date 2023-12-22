@@ -655,20 +655,24 @@ class DSLType20:
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and entry.get_name() == target_ctx_name:
                 return_ptr.append(entry)
                 break
+        return True, None
 
     def _get_sub_contexts_helper(self, ptr, cb_data_res):
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 cb_data_res.append(entry)
+        return True, None
 
     def _get_context_opts_helper(self, ptr, cb_data_res):
 
         cb_data_res += ptr.get_options()
+        return True, None
 
     def _rem_context_helper(self, ptr, cb_data_rem):
 
         cb_data_rem.append(ptr)
+        return True, None
 
     def _add_variable_helper(self, ptr, cb_data_add):
 
@@ -690,11 +694,10 @@ class DSLType20:
 
     def _get_variable_helper(self, ptr, cb_data_get):
 
-        # mvtodo: check for dupes if enabled {if not self.configs.allow_var_dupes:} -> @stashed-sample
-
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
                 cb_data_get.append(entry)
+        return True, None
 
     def _rem_variable_helper(self, ptr, cb_data_rem):
 
@@ -710,6 +713,7 @@ class DSLType20:
 
         entries_ptr.clear()
         entries_ptr = new_entries_list
+        return True, None
 
     def _parse_context_name(self, str_input):
 
