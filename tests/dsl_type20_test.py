@@ -70,8 +70,8 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_2 += "var2 = \"a/path/valid1\"\n"
         self.contents_cfg_test_ok_2 += "var3 {opt1 / opt2: \"a/path/valid2\"} = \"a/path/valid3\"\n"
         self.contents_cfg_test_ok_2 += "var4 = \"$SOME_ENV_VAR\"\n"
-        self.contents_cfg_test_ok_2 += "var5 {r1: \"\" / r1} = \"repeated1\"\n"
-        self.contents_cfg_test_ok_2 += "var5 {r2 / r2} = \"repeated2\"\n"
+        self.contents_cfg_test_ok_2 += "var5 {r1: \"\" / r2} = \"opts\"\n"
+        self.contents_cfg_test_ok_2 += "var5 {r1 / r2} = \"more-opts\"\n"
         self.cfg_test_ok_2 = path_utils.concat_path(self.test_dir, "test_ok_2.t20")
 
         self.contents_cfg_test_ok_3 = "var1 = \"val1\"\n"
