@@ -21,7 +21,10 @@ def getcontents(filename):
     return contents
 
 def var_fmt_helper(var_list):
-    return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_list]
+    v, r = var_list
+    if not v:
+        raise mvtools_exception.mvtools_exception("Failed test")
+    return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in r]
 
 class DSLType20Test(unittest.TestCase):
 
@@ -2488,14 +2491,14 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestProduce26(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl_1.parse("var1")[0])
-        self.assertEqual(dsl_1.get_all_variables(), [("var1", None, [])])
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var1", None, [])])
         self.assertEqual(dsl_1.produce(), "var1")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(dsl_1.get_all_variables(), dsl_2.get_all_variables())
+        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce27(self):
