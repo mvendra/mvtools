@@ -380,11 +380,25 @@ class DSLType20:
 
     def get_context(self, context_name, parent_context = None):
 
-        if context_name is None or context_name == self.default_context_id:
+        v, r = self._get_context_internal(context_name, parent_context)
+        if not v:
+            return False, r
+        if len(r) == 0:
+            r = None
+        else:
+            r = r[0]
+        return True, r
+
+    def _get_context_internal(self, context_name, parent_context = None):
+
+        if context_name == self.default_context_id:
             return True, self.data
 
         if parent_context is None:
             parent_context = self.default_context_id
+
+        if context_name == parent_context:
+            return False, "Context [%s] and [%s] are the same" % (context_name, parent_context)
 
         result_ptr = []
 
@@ -394,26 +408,10 @@ class DSLType20:
         if not r:
             return False, "Unable to return context [%s] of [%s] - context not found." % (context_name, parent_context)
 
-        if len(result_ptr) == 0:
-            result_ptr = None
-        else:
-            result_ptr = result_ptr[0]
         return True, result_ptr
 
     def get_sub_contexts(self, parent_context = None):
-
-        if parent_context is None:
-            parent_context = self.default_context_id
-
-        result = []
-
-        v, r = self._find_context(parent_context, self._get_sub_contexts_helper, result)
-        if not v:
-            return False, r
-        if not r:
-            return False, "Unable to return sub contexts of [%s] - context not found." % parent_context
-
-        return True, result
+        return self.get_context(None, parent_context)
 
     def get_context_options(self, context_name):
 
@@ -652,7 +650,7 @@ class DSLType20:
 
         target_ctx_name, return_ptr = cb_data_ctx
         for entry in ptr.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and entry.get_name() == target_ctx_name:
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
                 return_ptr.append(entry)
                 break
         return True, None
