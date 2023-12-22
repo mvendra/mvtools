@@ -411,7 +411,7 @@ class DSLType20:
         return True, result_ptr
 
     def get_sub_contexts(self, parent_context = None):
-        return self.get_context(None, parent_context)
+        return self._get_context_internal(None, parent_context)
 
     def get_context_options(self, context_name):
 
@@ -652,7 +652,8 @@ class DSLType20:
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
                 return_ptr.append(entry)
-                break
+                if target_ctx_name is not None:
+                    break
         return True, None
 
     def _get_sub_contexts_helper(self, ptr, cb_data_res):
