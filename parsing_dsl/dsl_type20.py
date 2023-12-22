@@ -400,7 +400,7 @@ class DSLType20:
             result_ptr = result_ptr[0]
         return True, result_ptr
 
-    def get_sub_contexts(self, parent_context):
+    def get_sub_contexts(self, parent_context = None):
 
         if parent_context is None:
             parent_context = self.default_context_id
