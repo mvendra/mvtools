@@ -892,7 +892,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"   val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "   val1", [])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "   val1", [])])
 
     def testDslType20_TestVarValueParsing2(self):
 
@@ -900,7 +900,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"val1   \"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1   ", [])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1   ", [])])
 
     def testDslType20_TestVarValueParsing3(self):
 
@@ -908,7 +908,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 = \"val1   val2\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1   val2", [])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1   val2", [])])
 
     def testDslType20_TestOptValueParsing1(self):
 
@@ -916,7 +916,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"   val2\"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("opt1", "   val2")])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("opt1", "   val2")])])
 
     def testDslType20_TestOptValueParsing2(self):
 
@@ -924,7 +924,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"val2   \"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("opt1", "val2   ")])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("opt1", "val2   ")])])
 
     def testDslType20_TestOptValueParsing3(self):
 
@@ -932,7 +932,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"val2   val3\"} = \"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("opt1", "val2   val3")])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("opt1", "val2   val3")])])
 
     def testDslType20_TestUnspacing(self):
 
@@ -940,7 +940,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1{opt1/opt2/opt3:\"val\\\"2\"}=\"val1\"")
         self.assertTrue(v)
 
-        self.assertEqual(dsl.get_all_variables(), [("var1", "val1", [("opt1", None), ("opt2", None), ("opt3", "val\"2")])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()[1]), [("var1", "val1", [("opt1", None), ("opt2", None), ("opt3", "val\"2")])])
 
     def testDslType20_TestLeftoversFail1(self):
 
