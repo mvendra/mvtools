@@ -26,6 +26,12 @@ def var_fmt_helper(var_list):
         raise mvtools_exception.mvtools_exception("Failed test")
     return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in r]
 
+def opt_fmt_helper(opt_list):
+    v, r = opt_list
+    if not v:
+        raise mvtools_exception.mvtools_exception("Failed test")
+    return [(x.get_name(), x.get_value()) for x in r]
+
 class DSLType20Test(unittest.TestCase):
 
     def setUp(self):
@@ -1262,12 +1268,8 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         v, r = dsl.add_context("ctx1", "ctx2", [("1", "2")])
         self.assertTrue(v)
-        v, r = dsl.get_context_options("ctx1")
-        self.assertTrue(v)
-        self.assertEqual([ (x.get_name(), x.get_value()) for x in r], [ ("a", "b") ])
-        v, r = dsl.get_context_options("ctx2")
-        self.assertTrue(v)
-        self.assertEqual([ (x.get_name(), x.get_value()) for x in r], [ ("1", "2") ])
+        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx1")), [ ("a", "b") ])
+        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx2")), [ ("1", "2") ])
 
     def testDslType20_TestAddContext8(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
