@@ -673,7 +673,8 @@ class DSLType20:
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
-                return_ptr.append(entry)
+                ctx_copy = DSLType20_Context(ptr, entry.get_name(), entry.get_options())
+                return_ptr.append(ctx_copy)
                 if target_ctx_name is not None:
                     break
 
