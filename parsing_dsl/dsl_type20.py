@@ -378,12 +378,26 @@ class DSLType20:
 
         return True, None
 
+    def get_context(self, context_name):
+
+        if context_name is None or context_name == self.default_context_id:
+            return True, self.data
+
+        v, r = self._get_context_internal(context_name, True, None)
+        if not v:
+            return False, r
+        if len(r) == 0:
+            r = None
+        else:
+            r = r[0]
+        return True, r
+
     def get_sub_context(self, context_name, parent_context = None):
 
         if context_name is None or context_name == self.default_context_id:
             return True, self.data
 
-        v, r = self._get_context_internal(context_name, parent_context)
+        v, r = self._get_context_internal(context_name, False, parent_context)
         if not v:
             return False, r
         if len(r) == 0:
@@ -393,7 +407,7 @@ class DSLType20:
         return True, r
 
     def get_sub_contexts(self, parent_context = None):
-        return self._get_context_internal(None, parent_context)
+        return self._get_context_internal(None, False, parent_context)
 
     def get_context_options(self, context_name):
 
@@ -586,7 +600,7 @@ class DSLType20:
         result += self._produce_context(self.data)
         return result.strip()
 
-    def _get_context_internal(self, context_name, parent_context = None):
+    def _get_context_internal(self, context_name, find_itself, parent_context = None):
 
         if context_name == self.default_context_id:
             return True, self.data
@@ -599,7 +613,10 @@ class DSLType20:
 
         result_ptr = []
 
-        v, r = self._find_context(parent_context, self._get_context_helper, (context_name, result_ptr))
+        if find_itself:
+            parent_context = context_name
+
+        v, r = self._find_context(parent_context, self._get_context_helper, (context_name, result_ptr, find_itself))
         if not v:
             return False, r
         if not r:
@@ -651,12 +668,18 @@ class DSLType20:
 
     def _get_context_helper(self, ptr, cb_data_ctx):
 
-        target_ctx_name, return_ptr = cb_data_ctx
+        target_ctx_name, return_ptr, get_itself = cb_data_ctx
+
+        if get_itself:
+            return_ptr.append(ptr)
+            return True, None
+
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
                 return_ptr.append(entry)
                 if target_ctx_name is not None:
                     break
+
         return True, None
 
     def _get_context_opts_helper(self, ptr, cb_data_res):
