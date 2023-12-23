@@ -1526,7 +1526,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.get_sub_context("ctx1")
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
-        self.assertEqual(r, dsl.data.get_entries()[1])
+        self.assertEqual(r.get_name(), dsl.data.get_entries()[1].get_name())
         self.assertEqual(len(r.get_entries()), 1)
         self.assertTrue("ctx2" in [x.get_name() for x in r.get_entries()] )
 

@@ -668,14 +668,12 @@ class DSLType20:
         target_ctx_name, return_ptr, get_itself = cb_data_ctx
 
         if get_itself:
-            ctx_copy = DSLType20_Context(ptr.get_parent_ptr(), ptr.get_name(), self._inherit_options(ptr.get_parent_ptr(), ptr))
-            return_ptr.append(ctx_copy)
+            return_ptr.append(self._ctx_deep_copy(ptr.get_parent_ptr(), ptr))
             return True, None
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
-                ctx_copy = DSLType20_Context(ptr, entry.get_name(), self._inherit_options(ptr, entry))
-                return_ptr.append(ctx_copy)
+                return_ptr.append(self._ctx_deep_copy(ptr, entry))
                 if target_ctx_name is not None:
                     break
 
@@ -685,6 +683,12 @@ class DSLType20:
 
         cb_data_res += ptr.get_options()
         return True, None
+
+    def _ctx_deep_copy(self, parent_ptr, ctx_ptr):
+
+        ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._inherit_options(parent_ptr, ctx_ptr))
+        # mvtodo: properly implement
+        return ctx_copy
 
     def _rem_context_helper(self, ptr, cb_data_rem):
 
