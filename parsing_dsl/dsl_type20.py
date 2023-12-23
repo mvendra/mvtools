@@ -32,18 +32,6 @@ DSLTYPE20_ENTRY_TYPE_VAR = 1
 DSLTYPE20_ENTRY_TYPE_OPT = 2
 DSLTYPE20_ENTRY_TYPE_CTX = 3
 
-def hasopt_var(var, optname):
-    for o in var[2]:
-        if o[0] == optname:
-            return True
-    return False
-
-def hasopt_opts(opts, optname):
-    for o in opts:
-        if o[0] == optname:
-            return True
-    return False
-
 def printable_context(context):
     if context is None:
         return "(default context)"
