@@ -332,94 +332,94 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r.get_name(), "c")
 
-    def testInheritOptions1(self):
+    def testInheritOptionsHelper1(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "b"), ("1", "2") ] )
 
-    def testInheritOptions2(self):
+    def testInheritOptionsHelper2(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "2") ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "2") ] )
 
-    def testInheritOptions3(self):
+    def testInheritOptionsHelper3(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "2") ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "2") ] )
 
-    def testInheritOptions4(self):
+    def testInheritOptionsHelper4(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", None) ] )
 
-    def testInheritOptions5(self):
+    def testInheritOptionsHelper5(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None), ("1", "2") ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("1", "2") ] )
 
-    def testInheritOptions6(self):
+    def testInheritOptionsHelper6(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None) ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", None), ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("1", "2") ] )
 
-    def testInheritOptions7(self):
+    def testInheritOptionsHelper7(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "") ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", ""), ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", ""), ("1", "2") ] )
 
-    def testInheritOptions8(self):
+    def testInheritOptionsHelper8(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("1", "2"), ("3", "4") ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "b"), ("c", "d"), ("1", "2"), ("3", "4") ] )
 
-    def testInheritOptions9(self):
+    def testInheritOptionsHelper9(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         new_opts = r
-        final_opts = dsl_type20.inherit_options(parent_opts, new_opts)
+        final_opts = dsl_type20.inherit_options_helper(parent_opts, new_opts)
         self.assertEqual( [ (x.get_name(), x.get_value()) for x in final_opts ], [ ("a", "b"), ("c", "d") ] )
 
     def testDSLType20_Variable1(self):
@@ -465,7 +465,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
         self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
         self.assertEqual(ctx_inst.ptr_parent, None)
-        self.assertEqual(ctx_inst.get_ptr_parent(), None)
+        self.assertEqual(ctx_inst.get_parent_ptr(), None)
         self.assertEqual(ctx_inst.name, "a")
         self.assertEqual(ctx_inst.get_name(), "a")
         self.assertEqual(ctx_inst.options, [])

@@ -196,7 +196,7 @@ def opt_list_has(options, name):
             return True, opt
     return False, None
 
-def inherit_options(parent_options, new_options):
+def inherit_options_helper(parent_options, new_options):
 
     result = []
 
@@ -287,7 +287,7 @@ class DSLType20_Context:
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_CTX
 
-    def get_ptr_parent(self):
+    def get_parent_ptr(self):
         return self.ptr_parent
 
     def get_name(self):
@@ -428,7 +428,7 @@ class DSLType20:
         if len(ctx_info) != 1:
             return False, "Found more than one instance of context [%s]. Fatal error." % context_name
 
-        ctx_parent = ctx_info[0].get_ptr_parent()
+        ctx_parent = ctx_info[0].get_parent_ptr()
         if ctx_parent is None:
             return False, "Context [%s] has no parent." % context_name
 
@@ -569,6 +569,32 @@ class DSLType20:
         result += self._produce_context(self.data)
         return result.strip()
 
+    def _inherit_options(self, parent_ptr, child_ptr):
+
+        aggregate_opts_list = []
+        final_opts_list = []
+
+        # aggregate al parents options up to root level
+        current_parent_ptr = parent_ptr
+        while (current_parent_ptr != None):
+            aggregate_opts_list.append(current_parent_ptr.get_options())
+            current_parent_ptr = current_parent_ptr.get_parent_ptr()
+
+        # drop down inheriting options
+        aggregate_opts_list.reverse()
+        previous = None
+        for opt_list_entry in aggregate_opts_list:
+            if previous is None:
+                previous = opt_list_entry
+            else:
+                final_opts_list = inherit_options_helper(previous, opt_list_entry)
+                previous = None
+
+        # mvtodo: check for leftovers (if previous is not None)
+        # mvtodo: and also combine the childs own options
+
+        return final_opts_list
+
     def _get_context_internal(self, context_name, find_itself, parent_context = None):
 
         if context_name == self.default_context_id:
@@ -691,12 +717,12 @@ class DSLType20:
     def _get_variable_helper(self, ptr, cb_data_get):
 
         var_name, list_ptr = cb_data_get
-        inherited_options = ptr.get_options() # mvtodo: not enough, must go up the entire stack
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
-                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), inherit_options(inherited_options, entry.get_options()))
+                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), self._inherit_options(ptr, entry))
                 list_ptr.append(var_copy)
+
         return True, None
 
     def _rem_variable_helper(self, ptr, cb_data_rem):
