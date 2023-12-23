@@ -594,9 +594,8 @@ class DSLType20:
                 previous = None
 
         # mvtodo: check for leftovers (if previous is not None)
-        # mvtodo: and also combine the childs own options
 
-        return final_opts_list
+        return inherit_options_helper(final_opts_list, child_ptr.get_options())
 
     def _get_context_internal(self, context_name, find_itself, parent_context = None):
 
