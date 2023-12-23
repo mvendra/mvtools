@@ -392,27 +392,6 @@ class DSLType20:
             r = r[0]
         return True, r
 
-    def _get_context_internal(self, context_name, parent_context = None):
-
-        if context_name == self.default_context_id:
-            return True, self.data
-
-        if parent_context is None:
-            parent_context = self.default_context_id
-
-        if context_name == parent_context:
-            return False, "Context [%s] and [%s] are the same" % (context_name, parent_context)
-
-        result_ptr = []
-
-        v, r = self._find_context(parent_context, self._get_context_helper, (context_name, result_ptr))
-        if not v:
-            return False, r
-        if not r:
-            return False, "Unable to return context [%s] of [%s] - context not found." % (context_name, parent_context)
-
-        return True, result_ptr
-
     def get_sub_contexts(self, parent_context = None):
         return self._get_context_internal(None, parent_context)
 
@@ -606,6 +585,27 @@ class DSLType20:
         result = ""
         result += self._produce_context(self.data)
         return result.strip()
+
+    def _get_context_internal(self, context_name, parent_context = None):
+
+        if context_name == self.default_context_id:
+            return True, self.data
+
+        if parent_context is None:
+            parent_context = self.default_context_id
+
+        if context_name == parent_context:
+            return False, "Context [%s] and [%s] are the same" % (context_name, parent_context)
+
+        result_ptr = []
+
+        v, r = self._find_context(parent_context, self._get_context_helper, (context_name, result_ptr))
+        if not v:
+            return False, r
+        if not r:
+            return False, "Unable to return context [%s] of [%s] - context not found." % (context_name, parent_context)
+
+        return True, result_ptr
 
     def _context_exists(self, ctx_name):
 
