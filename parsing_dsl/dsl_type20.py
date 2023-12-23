@@ -585,17 +585,8 @@ class DSLType20:
 
         # drop down inheriting options
         aggregate_opts_list.reverse()
-        previous = None
         for opt_list_entry in aggregate_opts_list:
-            if previous is None:
-                previous = opt_list_entry
-            else:
-                final_opts_list = inherit_options_helper(previous, opt_list_entry)
-                previous = None
-
-        # add the odd leftover, if present
-        if previous is not None:
-            final_opts_list = inherit_options_helper(final_opts_list, previous)
+            final_opts_list = inherit_options_helper(final_opts_list, opt_list_entry)
 
         # and finally return whilst also combining in the child's own options
         return inherit_options_helper(final_opts_list, child_ptr.get_options())
