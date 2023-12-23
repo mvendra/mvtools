@@ -594,10 +594,11 @@ class DSLType20:
 
         result_ptr = []
 
+        local_parent_context = parent_context
         if find_itself:
-            parent_context = context_name
+            local_parent_context = context_name
 
-        v, r = self._find_context(parent_context, self._get_context_helper, (context_name, result_ptr, find_itself))
+        v, r = self._find_context(local_parent_context, self._get_context_helper, (context_name, result_ptr, find_itself))
         if not v:
             return False, r
         if not r:
