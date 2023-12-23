@@ -571,6 +571,9 @@ class DSLType20:
 
     def _inherit_options(self, parent_ptr, child_ptr):
 
+        if not self.configs.inherit_options:
+            return child_ptr.get_options()
+
         aggregate_opts_list = []
         final_opts_list = []
 
