@@ -668,12 +668,13 @@ class DSLType20:
         target_ctx_name, return_ptr, get_itself = cb_data_ctx
 
         if get_itself:
-            return_ptr.append(ptr)
+            ctx_copy = DSLType20_Context(ptr.get_parent_ptr(), ptr.get_name(), self._inherit_options(ptr.get_parent_ptr(), ptr))
+            return_ptr.append(ctx_copy)
             return True, None
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
-                ctx_copy = DSLType20_Context(ptr, entry.get_name(), entry.get_options())
+                ctx_copy = DSLType20_Context(ptr, entry.get_name(), self._inherit_options(ptr, entry))
                 return_ptr.append(ctx_copy)
                 if target_ctx_name is not None:
                     break
