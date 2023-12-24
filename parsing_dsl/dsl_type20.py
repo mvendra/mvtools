@@ -318,6 +318,7 @@ class DSLType20:
         self.data = None
         self.root_context_id = "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"
         self.max_number_options = 1024
+        self.indent = ""
         self.clear()
 
         # read configs
@@ -558,10 +559,10 @@ class DSLType20:
 
         return True, None
 
-    def produce(self, _ctx_end_comment = False):
+    def produce(self, _ctx_end_comment = False, _ctx_end_indent = False):
 
         result = ""
-        result += self._produce_context(self.data, _ctx_end_comment)
+        result += self._produce_context(self.data, _ctx_end_comment, _ctx_end_indent)
         return result.strip()
 
     def _inherit_options(self, parent_ptr, child_ptr):
@@ -1023,7 +1024,7 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def _produce_context(self, context, _ctx_end_comment):
+    def _produce_context(self, context, _ctx_end_comment, _ctx_end_indent):
 
         if context is None:
             return None
@@ -1041,7 +1042,7 @@ class DSLType20:
                 result += self._produce_variable(entry)
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                result += self._produce_context(entry, _ctx_end_comment)
+                result += self._produce_context(entry, _ctx_end_comment, _ctx_end_indent)
 
         if context.get_name() != self.root_context_id:
             result += NEWLINE + RBRACKET + end_comment + NEWLINE
@@ -1101,6 +1102,13 @@ class DSLType20:
             variable_result += SINGLESPACE + EQSIGN + SINGLESPACE + QUOTE + var_escaped_value + QUOTE
 
         return variable_result
+
+    def _inc_indent(self):
+        self.indent += "    "
+
+    def _dec_indent(self):
+        if len(self.indent) > 0:
+            self.indent = self.indent[:-4]
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
