@@ -684,6 +684,9 @@ class DSLType20:
         cb_data_res += ptr.get_options()
         return True, None
 
+    def _var_copy(self, var_ptr):
+        return DSLType20_Variable(self.configs, var_ptr.get_name(), var_ptr.get_value(), var_ptr.get_options())
+
     def _ctx_hollow_copy(self, parent_ptr, ctx_ptr):
         return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), ctx_ptr.get_options())
 
@@ -694,8 +697,7 @@ class DSLType20:
         ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._inherit_options(parent_ptr, ctx_ptr))
         for ent in ctx_ptr.get_entries():
             if ent.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                ent_var_copy = DSLType20_Variable(self.configs, ent.get_name(), ent.get_value(), ent.get_options())
-                ctx_copy.add_entry(ent_var_copy)
+                ctx_copy.add_entry(self._var_copy(ent))
             elif ent.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 ctx_copy.add_entry(self._ctx_hollow_copy(ctx_copy, ent))
         return ctx_copy
