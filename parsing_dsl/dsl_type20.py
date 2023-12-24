@@ -402,7 +402,7 @@ class DSLType20:
         v, r = self.get_context(context_name)
         if not v:
             return False, r
-        return True, self._opt_copy(r.get_options())
+        return True, self._opt_list_copy(r.get_options())
 
     def rem_context(self, context_name):
 
@@ -690,8 +690,14 @@ class DSLType20:
     def _ctx_hollow_copy(self, parent_ptr, ctx_ptr):
         return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), ctx_ptr.get_options())
 
-    def _opt_copy(self, opt_ptr_list):
-        return opt_ptr_list
+    def _opt_copy(self, opt_ptr):
+        return opt_ptr
+
+    def _opt_list_copy(self, opt_ptr_list):
+        result = []
+        for opt in opt_ptr_list:
+            result.append(self._opt_copy(opt))
+        return result
 
     def _ctx_shallow_copy(self, parent_ptr, ctx_ptr):
 
