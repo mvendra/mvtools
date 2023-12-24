@@ -316,7 +316,7 @@ class DSLType20:
 
         # internal
         self.data = None
-        self.default_context_id = "default-context"
+        self.root_context_id = "default-context"
         self.max_number_options = 1024
         self.clear()
 
@@ -325,14 +325,14 @@ class DSLType20:
 
     def clear(self):
         self.data = None
-        self.data = DSLType20_Context(None, self.default_context_id, [])
+        self.data = DSLType20_Context(None, self.root_context_id, [])
 
     def add_context(self, parent_ctx, ctx_name, ctx_options):
 
         # ctx_options: expected as a list of tuples ("neutral" format)
 
         if parent_ctx is None:
-            parent_ctx = self.default_context_id
+            parent_ctx = self.root_context_id
 
         # pre-validate context name
         v, r = validate_context(ctx_name)
@@ -368,7 +368,7 @@ class DSLType20:
 
     def get_context(self, context_name):
 
-        if context_name is None or context_name == self.default_context_id:
+        if context_name is None or context_name == self.root_context_id:
             return True, self._ctx_shallow_copy(None, self.data)
 
         v, r = self._get_context_internal(context_name, True, None)
@@ -382,7 +382,7 @@ class DSLType20:
 
     def get_sub_context(self, context_name, parent_context = None):
 
-        if context_name is None or context_name == self.default_context_id:
+        if context_name is None or context_name == self.root_context_id:
             return True, self._ctx_shallow_copy(None, self.data)
 
         v, r = self._get_context_internal(context_name, False, parent_context)
@@ -408,7 +408,7 @@ class DSLType20:
 
         ctx_info = []
 
-        if context_name is None or context_name == self.default_context_id:
+        if context_name is None or context_name == self.root_context_id:
             return False, "Removing the default context is forbidden"
 
         v, r = self._find_context(context_name, self._rem_context_helper, ctx_info)
@@ -462,7 +462,7 @@ class DSLType20:
 
         # add context to the default context if it does not preexist
         if context is None:
-            context = self.default_context_id
+            context = self.root_context_id
         else:
             self.add_context(None, context, [])
 
@@ -480,7 +480,7 @@ class DSLType20:
     def get_variables(self, varname, context = None):
 
         if context is None:
-            context = self.default_context_id
+            context = self.root_context_id
         result = []
 
         v, r = self._find_context(context, self._get_variable_helper, (varname, result))
@@ -586,7 +586,7 @@ class DSLType20:
     def _get_context_internal(self, context_name, find_itself, parent_context = None):
 
         if parent_context is None:
-            parent_context = self.default_context_id
+            parent_context = self.root_context_id
 
         if context_name == parent_context:
             return False, "Context [%s] and [%s] are the same" % (context_name, parent_context)
@@ -608,7 +608,7 @@ class DSLType20:
     def _rem_variable_internal(self, var_name, context = None):
 
         if context is None:
-            context = self.default_context_id
+            context = self.root_context_id
         result = []
 
         v, r = self._find_context(context, self._rem_variable_helper, (var_name, result))
@@ -626,7 +626,7 @@ class DSLType20:
     def _find_context(self, context_name, callback_func, callback_data):
 
         if context_name is None:
-            context_name = self.default_context_id
+            context_name = self.root_context_id
 
         ptr_match = None
         ctx_to_nav = []
@@ -810,7 +810,7 @@ class DSLType20:
                 return False, "Can't parse variable: [%s]: Decorator [%s] not found." % (str_input, self.configs.variable_decorator)
             local_str_input = (local_str_input[len(self.configs.variable_decorator):]).strip()
 
-        local_context = self.default_context_id
+        local_context = self.root_context_id
         if context is not None:
             local_context = context
         if not self._context_exists(local_context):
@@ -1026,7 +1026,7 @@ class DSLType20:
             return None
 
         result = ""
-        if context.get_name() != self.default_context_id:
+        if context.get_name() != self.root_context_id:
             result = (NEWLINE + NEWLINE + LBRACKET + NEWLINE + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
 
         for entry in context.get_entries():
@@ -1037,7 +1037,7 @@ class DSLType20:
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 result += self._produce_context(entry)
 
-        if context.get_name() != self.default_context_id:
+        if context.get_name() != self.root_context_id:
             result += NEWLINE + RBRACKET + NEWLINE
 
         return result
