@@ -679,16 +679,11 @@ class DSLType20:
 
         return True, None
 
-    def _get_context_opts_helper(self, ptr, cb_data_res):
-
-        cb_data_res += ptr.get_options()
-        return True, None
-
     def _var_copy(self, var_ptr):
-        return DSLType20_Variable(self.configs, var_ptr.get_name(), var_ptr.get_value(), var_ptr.get_options())
+        return DSLType20_Variable(self.configs, var_ptr.get_name(), var_ptr.get_value(), var_ptr.get_options()) # mvtodo: maybe
 
     def _ctx_hollow_copy(self, parent_ptr, ctx_ptr):
-        return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), ctx_ptr.get_options())
+        return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), ctx_ptr.get_options()) # mvtodo: maybe
 
     def _opt_copy(self, opt_ptr):
         return DSLType20_Option(self.configs, opt_ptr.get_name(), opt_ptr.get_value())
@@ -703,7 +698,7 @@ class DSLType20:
 
         # creates a "shallow-ish" copy - child contexts are also copied, but hollowed
 
-        ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._inherit_options(parent_ptr, ctx_ptr))
+        ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._inherit_options(parent_ptr, ctx_ptr)) # mvtodo: maybe
         for ent in ctx_ptr.get_entries():
             if ent.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
                 ctx_copy.add_entry(self._var_copy(ent))
@@ -735,7 +730,7 @@ class DSLType20:
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
-                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), self._inherit_options(ptr, entry))
+                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), self._inherit_options(ptr, entry)) # mvtodo: maybe
                 list_ptr.append(var_copy)
 
         return True, None
