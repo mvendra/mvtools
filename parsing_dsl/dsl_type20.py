@@ -698,7 +698,7 @@ class DSLType20:
 
         # creates a "shallow-ish" copy - child contexts are also copied, but hollowed
 
-        ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._inherit_options(parent_ptr, ctx_ptr)) # mvtodo: maybe
+        ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(parent_ptr, ctx_ptr)))
         for ent in ctx_ptr.get_entries():
             if ent.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
                 ctx_copy.add_entry(self._var_copy(ent))
