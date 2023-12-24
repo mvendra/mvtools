@@ -607,6 +607,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.get_variables("var1", "ctx1")
         self.assertTrue(v)
         self.assertEqual(r[0].get_name(), dsl.data.entries[0].entries[0].get_name())
+        self.assertNotEqual(r[0], dsl.data.entries[0].entries[0])
         self.assertNotEqual(r[0].options[1], dsl.data.entries[0].entries[0].options[0])
 
     def testDslType20_GetAllVariables1(self):
