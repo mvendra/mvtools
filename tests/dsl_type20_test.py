@@ -1702,6 +1702,30 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertEqual([x.get_name() for x in r], ["ctx3"])
 
+    def testDslType20_TestGetSubContexts5(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
+        self.assertTrue(dsl.add_context(None, "ctx1", [("opt1", "val1")])[0])
+        self.assertTrue(dsl.add_context("ctx1", "ctx2", [("opt2", "val2")])[0])
+        v, r = dsl.get_sub_contexts("ctx1")
+        self.assertTrue(v)
+        self.assertEqual(opt_fmt_helper_simple(r[0].get_options()), [("opt1", "val1"), ("opt2", "val2")])
+
+    def testDslType20_TestGetSubContexts6(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
+        self.assertTrue(dsl.add_context(None, "ctx1", [("opt1", "val1")])[0])
+        self.assertTrue(dsl.add_context("ctx1", "ctx2", [("opt1", "val2")])[0])
+        v, r = dsl.get_sub_contexts("ctx1")
+        self.assertTrue(v)
+        self.assertEqual(opt_fmt_helper_simple(r[0].get_options()), [("opt1", "val2")])
+
+    def testDslType20_TestGetSubContexts7(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
+        self.assertTrue(dsl.add_context(None, "ctx1", [("opt1", None)])[0])
+        self.assertTrue(dsl.add_context("ctx1", "ctx2", [("opt1", None)])[0])
+        v, r = dsl.get_sub_contexts("ctx1")
+        self.assertTrue(v)
+        self.assertEqual(opt_fmt_helper_simple(r[0].get_options()), [])
+
     def testDslType20_TestAddContextFail1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context(None, [], [])
