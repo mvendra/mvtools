@@ -694,9 +694,11 @@ class DSLType20:
                 ent_var_copy = DSLType20_Variable(self.configs, ent.get_name(), ent.get_value(), ent.get_options())
                 ctx_copy.add_entry(ent_var_copy)
             elif ent.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                ent_ctx_copy = DSLType20_Context(ctx_copy, ent.get_name(), ent.get_options()) # mvtodo: facilitate: "hollow" ctx copy
-                ctx_copy.add_entry(ent_ctx_copy)
+                ctx_copy.add_entry(self._ctx_hollow_copy(ctx_copy, ent))
         return ctx_copy
+
+    def _ctx_hollow_copy(self, parent_ptr, ctx_ptr):
+        return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), ctx_ptr.get_options())
 
     def _rem_context_helper(self, ptr, cb_data_rem):
 
