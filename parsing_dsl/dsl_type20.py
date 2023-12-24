@@ -680,8 +680,7 @@ class DSLType20:
         return True, None
 
     def _config_copy(self):
-        # mvtodo
-        return self.configs
+        return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.variable_decorator)
 
     def _var_copy(self, var_ptr):
         return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options()))
