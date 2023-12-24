@@ -32,6 +32,12 @@ DSLTYPE20_ENTRY_TYPE_VAR = 1
 DSLTYPE20_ENTRY_TYPE_OPT = 2
 DSLTYPE20_ENTRY_TYPE_CTX = 3
 
+def list_prev(target_list):
+    return target_list[len(target_list)-2]
+
+def list_top(target_list):
+    return target_list[len(target_list)-1]
+
 def printable_context(context):
     if context is None:
         return "(default context)"
@@ -505,9 +511,9 @@ class DSLType20:
 
         self.clear()
 
-        parent_context = None # root context
-        context = None # root context
-        context_options = []
+        context_stack = [None]
+        parsed_context = None
+        parsed_context_options = []
         expecting_context_name = False
         expecting_context_closure = False
 
@@ -522,8 +528,6 @@ class DSLType20:
 
             # context name, begin
             if line_t == LBRACKET:
-                if expecting_context_name or context is not None:
-                    return False, "Failed parsing contents: nested contexts are not alllowed."
                 expecting_context_name = True
                 expecting_context_closure = True
                 continue
@@ -532,7 +536,7 @@ class DSLType20:
             if line_t == RBRACKET:
                 if expecting_context_name:
                     return False, "Last context name not specified."
-                context = None
+                context_stack.pop() # mvtodo: careful
                 expecting_context_closure = False
                 continue
 
@@ -543,19 +547,20 @@ class DSLType20:
                 v, r = self._parse_context_name(line_t)
                 if not v:
                     return v, r
-                context, context_options = r
-                v, r = self.add_context(parent_context, context, context_options)
+                parsed_context, parsed_context_options = r
+                context_stack.append(parsed_context)
+                v, r = self.add_context(list_prev(context_stack), list_top(context_stack), parsed_context_options) # mvtodo
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
 
-            # freestanding (root context) variable
-            v, r = self._parse_variable(line_t, context)
+            # variable
+            v, r = self._parse_variable(line_t, list_top(context_stack))
             if not v:
                 return False, r
 
         if expecting_context_closure:
-            return False, "Last context: [%s] was not closed." % printable_context(context) # mvtodo: replace with ctx.get_name() and ditch printable_context
+            return False, "Last context: [%s] was not closed." % list_top(context_stack) # mvtodo: replace with ctx.get_name() and ditch printable_context
 
         return True, None
 
