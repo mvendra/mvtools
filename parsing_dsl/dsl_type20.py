@@ -680,7 +680,7 @@ class DSLType20:
         return True, None
 
     def _var_copy(self, var_ptr):
-        return DSLType20_Variable(self.configs, var_ptr.get_name(), var_ptr.get_value(), var_ptr.get_options()) # mvtodo: maybe
+        return DSLType20_Variable(self.configs, var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options()))
 
     def _ctx_hollow_copy(self, parent_ptr, ctx_ptr):
         return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), ctx_ptr.get_options()) # mvtodo: maybe
