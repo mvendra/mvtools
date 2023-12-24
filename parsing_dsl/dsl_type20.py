@@ -562,7 +562,8 @@ class DSLType20:
     def produce(self, _ctx_end_comment = False, _ctx_lvl_indent = False):
 
         result = ""
-        result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent)
+        self._clear_indent()
+        result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
         return result.strip()
 
     def _inherit_options(self, parent_ptr, child_ptr):
@@ -1024,28 +1025,37 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent):
+    def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent, _indent_skip = False):
 
         if context is None:
             return None
 
         end_comment = ""
         result = ""
+        local_indent = ""
+
+        if _ctx_lvl_indent and context.get_name() != self.root_context_id and not _indent_skip:
+            self._inc_indent()
+            local_indent = self.indent
+
         if context.get_name() != self.root_context_id:
-            result = (NEWLINE + NEWLINE + LBRACKET + NEWLINE + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
+            result += (NEWLINE + local_indent + LBRACKET + NEWLINE + local_indent + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
                 end_comment = "%s%s%s%s" % (SPACE, COMMENTS[0], SPACE, context.get_name())
 
         for entry in context.get_entries():
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                result += self._produce_variable(entry)
+                result += local_indent + self._produce_variable(entry)
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                result += self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent)
+                result += NEWLINE + self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent, (context.get_name() == self.root_context_id))
 
         if context.get_name() != self.root_context_id:
-            result += NEWLINE + RBRACKET + end_comment + NEWLINE
+            result += NEWLINE + local_indent + RBRACKET + end_comment + NEWLINE
+
+        if _ctx_lvl_indent:
+            self._dec_indent()
 
         return result
 
@@ -1109,6 +1119,9 @@ class DSLType20:
     def _dec_indent(self):
         if len(self.indent) > 0:
             self.indent = self.indent[:-4]
+
+    def _clear_indent(self):
+        self.indent = ""
 
 def puaq():
     print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
