@@ -694,16 +694,20 @@ class DSLType20:
             result.append(self._opt_copy(opt))
         return result
 
+    def _generic_copy_helper(self, parent_ptr, entry_ptr):
+
+        if entry_ptr.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+            return self._var_copy(entry_ptr)
+        elif entry_ptr.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+            return self._ctx_hollow_copy(parent_ptr, entry_ptr)
+
     def _ctx_shallow_copy(self, parent_ptr, ctx_ptr):
 
         # creates a "shallow-ish" copy - child contexts are also copied, but hollowed
 
         ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(parent_ptr, ctx_ptr)))
         for ent in ctx_ptr.get_entries():
-            if ent.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                ctx_copy.add_entry(self._var_copy(ent))
-            elif ent.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                ctx_copy.add_entry(self._ctx_hollow_copy(ctx_copy, ent))
+            ctx_copy.add_entry(self._generic_copy_helper(ctx_copy, ent))
         return ctx_copy
 
     def _rem_context_helper(self, ptr, cb_data_rem):
