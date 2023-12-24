@@ -331,6 +331,9 @@ class DSLType20:
 
         # ctx_options: expected as a list of tuples ("neutral" format)
 
+        if ctx_name == self.root_context_id:
+            return False, "Tried to add context: [%s] - error. This is a reserved context name" % (self.root_context_id)
+
         if parent_ctx is None:
             parent_ctx = self.root_context_id
 
@@ -409,7 +412,7 @@ class DSLType20:
         ctx_info = []
 
         if context_name is None or context_name == self.root_context_id:
-            return False, "Removing the default context is forbidden"
+            return False, "Removing the root context is forbidden"
 
         v, r = self._find_context(context_name, self._rem_context_helper, ctx_info)
         if not v:
@@ -460,7 +463,7 @@ class DSLType20:
             return False, r
         opts_obj_list = r
 
-        # add context to the default context if it does not preexist
+        # add context to the root context if it does not preexist
         if context is None:
             context = self.root_context_id
         else:
@@ -501,8 +504,8 @@ class DSLType20:
 
         self.clear()
 
-        parent_context = None # default context
-        context = None # default context
+        parent_context = None # root context
+        context = None # root context
         context_options = []
         expecting_context_name = False
         expecting_context_closure = False
@@ -545,7 +548,7 @@ class DSLType20:
                     return False, "Failed creating new context: [%s]." % r
                 continue
 
-            # freestanding (default context) variable
+            # freestanding (root context) variable
             v, r = self._parse_variable(line_t, context)
             if not v:
                 return False, r
