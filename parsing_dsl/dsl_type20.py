@@ -730,7 +730,7 @@ class DSLType20:
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
-                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), self._inherit_options(ptr, entry)) # mvtodo: maybe
+                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(ptr, entry)))
                 list_ptr.append(var_copy)
 
         return True, None
