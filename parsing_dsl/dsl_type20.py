@@ -511,6 +511,7 @@ class DSLType20:
 
         self.clear()
 
+        bracket_stack = []
         context_stack = [None]
         parsed_context = None
         parsed_context_options = []
@@ -528,12 +529,14 @@ class DSLType20:
 
             # context name, begin
             if line_t == LBRACKET:
+                bracket_stack.append(True)
                 expecting_context_name = True
                 expecting_context_closure = True
                 continue
 
             # context name, end
             if line_t == RBRACKET:
+                bracket_stack.pop() # mvtodo: careful
                 if expecting_context_name:
                     return False, "Last context name not specified."
                 context_stack.pop() # mvtodo: careful
@@ -558,6 +561,9 @@ class DSLType20:
             v, r = self._parse_variable(line_t, list_top(context_stack))
             if not v:
                 return False, r
+
+        if len(bracket_stack) > 0:
+            return False, "Unterminated context"
 
         if expecting_context_closure:
             return False, "Last context: [%s] was not closed." % list_top(context_stack) # mvtodo: replace with ctx.get_name() and ditch printable_context
