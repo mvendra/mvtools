@@ -316,7 +316,7 @@ class DSLType20:
 
         # internal
         self.data = None
-        self.root_context_id = "default-context"
+        self.root_context_id = "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"
         self.max_number_options = 1024
         self.clear()
 
