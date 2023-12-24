@@ -1046,7 +1046,7 @@ class DSLType20:
         for entry in context.get_entries():
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                result += local_indent + self._produce_variable(entry)
+                result += NEWLINE + local_indent + self._produce_variable(entry)
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 result += NEWLINE + self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent, (context.get_name() == self.root_context_id))
@@ -1093,7 +1093,7 @@ class DSLType20:
 
         variable_result = ""
 
-        variable_result = NEWLINE + self.configs.variable_decorator + input_variable.get_name()
+        variable_result = self.configs.variable_decorator + input_variable.get_name()
 
         # produce the options
         prod_opts = self._produce_options(input_variable.get_options())
