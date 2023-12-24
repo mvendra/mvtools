@@ -2627,18 +2627,20 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestGetContextOptions1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl.add_context(None, "ctx1", [("opt1", "val1")])[0])
-        v, r = dsl.get_context_options("ctx1")
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertEqual([(x.get_name(), x.get_value()) for x in r], [("opt1", "val1")])
+        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx1")), [("opt1", "val1")])
 
     def testDslType20_TestGetContextOptions2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertTrue(dsl.add_context(None, "ctx1", [("opt1", "val1"), ("opt2", "val2")])[0])
+        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx1")), [("opt1", "val1"), ("opt2", "val2")])
+
+    def testDslType20_TestGetContextOptions3(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_context(None, "ctx1", [("opt1", "val1")])[0])
         v, r = dsl.get_context_options("ctx1")
         self.assertTrue(v)
-        self.assertEqual(len(r), 2)
-        self.assertEqual([(x.get_name(), x.get_value()) for x in r], [("opt1", "val1"), ("opt2", "val2")])
+        self.assertEqual(len(r), 1)
+        self.assertEqual(r[0], dsl.data.entries[0].options[0])
 
 if __name__ == '__main__':
     unittest.main()
