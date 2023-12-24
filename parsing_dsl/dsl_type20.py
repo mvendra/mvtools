@@ -585,9 +585,6 @@ class DSLType20:
 
     def _get_context_internal(self, context_name, find_itself, parent_context = None):
 
-        if context_name == self.default_context_id:
-            return True, self.data
-
         if parent_context is None:
             parent_context = self.default_context_id
 
