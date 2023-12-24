@@ -1566,6 +1566,34 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(opt_fmt_helper_simple(r.get_options()), [])
 
+    def testDslType20_TestGetContext10(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [])
+        self.assertTrue(v)
+        self.assertTrue(dsl.add_variable("var1", "val1", [], None)[0])
+        self.assertTrue(dsl.add_variable("var2", "val2", [], "ctx1")[0])
+        v, r = dsl.get_context(None)
+        self.assertTrue(v)
+        self.assertEqual(len(r.get_entries()), 2)
+        self.assertEqual(r.get_entries()[0].get_name(), "ctx1")
+        self.assertEqual(len(r.get_entries()[0].get_entries()), 0)
+
+    def testDslType20_TestGetContext11(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx2", "ctx3", [])
+        self.assertTrue(v)
+        self.assertTrue(dsl.add_variable("var1", "val1", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var2", "val2", [], "ctx2")[0])
+        v, r = dsl.get_context("ctx1")
+        self.assertTrue(v)
+        self.assertEqual(len(r.get_entries()), 2)
+        self.assertEqual(r.get_entries()[0].get_name(), "ctx2")
+        self.assertEqual(len(r.get_entries()[0].get_entries()), 0)
+
     def testDslType20_TestGetSubContext1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context(None, "ctx1", [])
