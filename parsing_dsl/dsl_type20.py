@@ -369,7 +369,7 @@ class DSLType20:
     def get_context(self, context_name):
 
         if context_name is None or context_name == self.default_context_id:
-            return True, self.data
+            return True, self._ctx_shallow_copy(None, self.data)
 
         v, r = self._get_context_internal(context_name, True, None)
         if not v:
@@ -383,7 +383,7 @@ class DSLType20:
     def get_sub_context(self, context_name, parent_context = None):
 
         if context_name is None or context_name == self.default_context_id:
-            return True, self.data
+            return True, self._ctx_shallow_copy(None, self.data)
 
         v, r = self._get_context_internal(context_name, False, parent_context)
         if not v:
