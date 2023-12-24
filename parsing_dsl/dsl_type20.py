@@ -559,10 +559,10 @@ class DSLType20:
 
         return True, None
 
-    def produce(self, _ctx_end_comment = False, _ctx_end_indent = False):
+    def produce(self, _ctx_end_comment = False, _ctx_lvl_indent = False):
 
         result = ""
-        result += self._produce_context(self.data, _ctx_end_comment, _ctx_end_indent)
+        result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent)
         return result.strip()
 
     def _inherit_options(self, parent_ptr, child_ptr):
@@ -1024,7 +1024,7 @@ class DSLType20:
 
         return False, "Failed parsing options: [%s]" % str_input, None, None
 
-    def _produce_context(self, context, _ctx_end_comment, _ctx_end_indent):
+    def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent):
 
         if context is None:
             return None
@@ -1034,7 +1034,7 @@ class DSLType20:
         if context.get_name() != self.root_context_id:
             result = (NEWLINE + NEWLINE + LBRACKET + NEWLINE + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
-                end_comment = "%s%s%s" % (SPACE, COMMENTS[0], context.get_name())
+                end_comment = "%s%s%s%s" % (SPACE, COMMENTS[0], SPACE, context.get_name())
 
         for entry in context.get_entries():
 
@@ -1042,7 +1042,7 @@ class DSLType20:
                 result += self._produce_variable(entry)
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                result += self._produce_context(entry, _ctx_end_comment, _ctx_end_indent)
+                result += self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent)
 
         if context.get_name() != self.root_context_id:
             result += NEWLINE + RBRACKET + end_comment + NEWLINE
