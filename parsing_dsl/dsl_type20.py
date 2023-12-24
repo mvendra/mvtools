@@ -668,12 +668,12 @@ class DSLType20:
         target_ctx_name, return_ptr, get_itself = cb_data_ctx
 
         if get_itself:
-            return_ptr.append(self._ctx_deep_copy(ptr.get_parent_ptr(), ptr))
+            return_ptr.append(self._ctx_shallow_copy(ptr.get_parent_ptr(), ptr))
             return True, None
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
-                return_ptr.append(self._ctx_deep_copy(ptr, entry))
+                return_ptr.append(self._ctx_shallow_copy(ptr, entry))
                 if target_ctx_name is not None:
                     break
 
@@ -684,10 +684,18 @@ class DSLType20:
         cb_data_res += ptr.get_options()
         return True, None
 
-    def _ctx_deep_copy(self, parent_ptr, ctx_ptr):
+    def _ctx_shallow_copy(self, parent_ptr, ctx_ptr):
+
+        # creates a "shallow-ish" copy - child contexts are also copied, but hollowed
 
         ctx_copy = DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._inherit_options(parent_ptr, ctx_ptr))
-        # mvtodo: properly implement
+        for ent in ctx_ptr.get_entries():
+            if ent.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                ent_var_copy = DSLType20_Variable(self.configs, ent.get_name(), ent.get_value(), ent.get_options())
+                ctx_copy.add_entry(ent_var_copy)
+            elif ent.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                ent_ctx_copy = DSLType20_Context(ctx_copy, ent.get_name(), ent.get_options()) # mvtodo: facilitate: "hollow" ctx copy
+                ctx_copy.add_entry(ent_ctx_copy)
         return ctx_copy
 
     def _rem_context_helper(self, ptr, cb_data_rem):
