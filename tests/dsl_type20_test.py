@@ -1432,14 +1432,8 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         v, r = dsl.add_variable("var4", None, [], "ctx2")
         self.assertTrue(v)
-        v, r = dsl.get_all_variables("ctx1")
-        self.assertTrue(v)
-        self.assertEqual(len(r), 2)
-        self.assertEqual([x.get_name() for x in r], ["var1", "var2"])
-        v, r = dsl.get_all_variables("ctx2")
-        self.assertTrue(v)
-        self.assertEqual(len(r), 2)
-        self.assertEqual([x.get_name() for x in r], ["var3", "var4"])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")), [("var1", None, []), ("var2", None, [])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx2")), [("var3", None, []), ("var4", None, [])])
 
     def testDslType20_TestAddContext24(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
