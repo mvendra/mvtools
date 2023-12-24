@@ -679,14 +679,18 @@ class DSLType20:
 
         return True, None
 
+    def _config_copy(self):
+        # mvtodo
+        return self.configs
+
     def _var_copy(self, var_ptr):
-        return DSLType20_Variable(self.configs, var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options()))
+        return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options()))
 
     def _ctx_hollow_copy(self, parent_ptr, ctx_ptr):
         return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._opt_list_copy(ctx_ptr.get_options()))
 
     def _opt_copy(self, opt_ptr):
-        return DSLType20_Option(self.configs, opt_ptr.get_name(), opt_ptr.get_value())
+        return DSLType20_Option(self._config_copy(), opt_ptr.get_name(), opt_ptr.get_value())
 
     def _opt_list_copy(self, opt_ptr_list):
         result = []
@@ -734,7 +738,7 @@ class DSLType20:
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
-                var_copy = DSLType20_Variable(self.configs, entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(ptr, entry)))
+                var_copy = DSLType20_Variable(self._config_copy(), entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(ptr, entry)))
                 list_ptr.append(var_copy)
 
         return True, None
