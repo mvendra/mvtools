@@ -2640,7 +2640,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.get_context_options("ctx1")
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
-        self.assertEqual(r[0], dsl.data.entries[0].options[0])
+        self.assertNotEqual(r[0], dsl.data.entries[0].options[0])
 
 if __name__ == '__main__':
     unittest.main()
