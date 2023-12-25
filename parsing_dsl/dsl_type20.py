@@ -524,50 +524,7 @@ class DSLType20:
             if line_t == "":
                 continue
 
-            # context name, begin
-            if line_t == LBRACKET:
-                ipc.bracket_stack.append(1) # start by assuming this is going to be a pseudo context
-                continue
-
-            # context name, end
-            if line_t == RBRACKET:
-                if len(ipc.bracket_stack) == 0:
-                    return False, "Unstarted context"
-                if read_list_top(ipc.bracket_stack) == 3: # only destack the TOS context if this was a named/regular context
-                    ipc.context_stack.pop()
-                ipc.bracket_stack.pop()
-                continue
-
-            # context name, the name itself
-            if line[0] == ATSIGN:
-
-                if len(ipc.bracket_stack) == 0:
-                    return False, "Unstarted context: [%s]" % line
-
-                if read_list_top(ipc.bracket_stack) == 2: # too late to define a name for this context
-                    return False, "Context name must appear just after the opening bracket"
-
-                if read_list_top(ipc.bracket_stack) == 3: # name already defined for this context
-                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(ipc.context_stack), line)
-
-                write_list_top(ipc.bracket_stack, 3) # TOS is now a named/regular context
-
-                v, r = self._parse_context_name(line_t)
-                if not v:
-                    return v, r
-                parsed_context, parsed_context_options = r
-                ipc.context_stack.append(parsed_context)
-                v, r = self.add_context(read_list_top_prev(ipc.context_stack), read_list_top(ipc.context_stack), parsed_context_options)
-                if not v:
-                    return False, "Failed creating new context: [%s]." % r
-                continue
-
-            if len(ipc.bracket_stack) > 0: # skip root
-                if read_list_top(ipc.bracket_stack) == 1:
-                    write_list_top(ipc.bracket_stack, 2) # TOS is now surely a pseudo context
-
-            # variable
-            v, r = self._parse_variable(line_t, read_list_top(ipc.context_stack))
+            v, r = self._parse_line_delegate(ipc, line_t)
             if not v:
                 return False, r
 
@@ -582,6 +539,57 @@ class DSLType20:
         self._clear_indent()
         result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
         return result.strip()
+
+    def _parse_line_delegate(self, ipc, current_line):
+
+        # context name, begin
+        if current_line == LBRACKET:
+            ipc.bracket_stack.append(1) # start by assuming this is going to be a pseudo context
+            return True, None
+
+        # context name, end
+        if current_line == RBRACKET:
+            if len(ipc.bracket_stack) == 0:
+                return False, "Unstarted context"
+            if read_list_top(ipc.bracket_stack) == 3: # only destack the TOS context if this was a named/regular context
+                ipc.context_stack.pop()
+            ipc.bracket_stack.pop()
+            return True, None
+
+        # context name, the name itself
+        if current_line[0] == ATSIGN:
+
+            if len(ipc.bracket_stack) == 0:
+                return False, "Unstarted context: [%s]" % current_line
+
+            if read_list_top(ipc.bracket_stack) == 2: # too late to define a name for this context
+                return False, "Context name must appear just after the opening bracket"
+
+            if read_list_top(ipc.bracket_stack) == 3: # name already defined for this context
+                return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(ipc.context_stack), current_line)
+
+            write_list_top(ipc.bracket_stack, 3) # TOS is now a named/regular context
+
+            v, r = self._parse_context_name(current_line)
+            if not v:
+                return v, r
+            parsed_context, parsed_context_options = r
+            ipc.context_stack.append(parsed_context)
+            v, r = self.add_context(read_list_top_prev(ipc.context_stack), read_list_top(ipc.context_stack), parsed_context_options)
+            if not v:
+                return False, "Failed creating new context: [%s]." % r
+            return True, None
+
+        if len(ipc.bracket_stack) > 0: # skip root
+            if read_list_top(ipc.bracket_stack) == 1:
+                write_list_top(ipc.bracket_stack, 2) # TOS is now surely a pseudo context
+
+        # variable
+        v, r = self._parse_variable(current_line, read_list_top(ipc.context_stack))
+        if not v:
+            return False, r
+
+        return True, None
 
     def _inherit_options(self, parent_ptr, child_ptr):
 
