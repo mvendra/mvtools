@@ -87,19 +87,10 @@ def validate_name(name):
     if not isinstance(name, str):
         return False
 
-    if NEWLINE in name:
-        return False
-
-    if NULL in name:
-        return False
-
-    if SPACE in name:
-        return False
-
-    if HTAB in name:
-        return False
-
     if not len(name) >= 1:
+        return False
+
+    if not miniparse.scan_simple(name, IDENTIFIER):
         return False
 
     return True

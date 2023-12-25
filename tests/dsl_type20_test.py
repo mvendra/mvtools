@@ -240,6 +240,24 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_name("name\x00"))
         self.assertFalse(dsl_type20.validate_name("name\x20"))
         self.assertFalse(dsl_type20.validate_name("name\x09"))
+        self.assertFalse(dsl_type20.validate_name("name\x5b"))
+        self.assertFalse(dsl_type20.validate_name("name\x5d"))
+        self.assertFalse(dsl_type20.validate_name("name\x7b"))
+        self.assertFalse(dsl_type20.validate_name("name\x7d"))
+        self.assertFalse(dsl_type20.validate_name("name\x28"))
+        self.assertFalse(dsl_type20.validate_name("name\x29"))
+        self.assertFalse(dsl_type20.validate_name("name\x3d"))
+        self.assertFalse(dsl_type20.validate_name("name\x2f"))
+        self.assertFalse(dsl_type20.validate_name("name\x5c"))
+        self.assertFalse(dsl_type20.validate_name("name\x24"))
+        self.assertFalse(dsl_type20.validate_name("name\x7e"))
+        self.assertFalse(dsl_type20.validate_name("name\x40"))
+        self.assertFalse(dsl_type20.validate_name("name\x22"))
+        self.assertFalse(dsl_type20.validate_name("name\x3a"))
+        self.assertFalse(dsl_type20.validate_name("name\x3b"))
+        self.assertFalse(dsl_type20.validate_name("name\x2a"))
+        self.assertFalse(dsl_type20.validate_name("name\x2c"))
+        self.assertFalse(dsl_type20.validate_name("name\x23"))
         self.assertFalse(dsl_type20.validate_name(""))
         self.assertTrue(dsl_type20.validate_name("a"))
         self.assertTrue(dsl_type20.validate_name("거물사냥꾼"))
@@ -1511,11 +1529,6 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestAddContext26(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.add_context(None, "@ok", [])
-        self.assertTrue(v)
-
-    def testDslType20_TestAddContext27(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context(None, "ctx1", [])
         self.assertTrue(v)
         v, r = dsl.add_context("ctx1", dsl.root_context_id, [])
@@ -1856,6 +1869,11 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestAddContextFail7(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertFalse(dsl.add_context(None, "ok", [("var1", "first line\nsecond line")])[0])
+
+    def testDslType20_TestAddContextFail8(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "@ok", [])
+        self.assertFalse(v)
 
     def testDslType20_TestAddVariable1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
