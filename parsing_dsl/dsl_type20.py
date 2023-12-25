@@ -536,7 +536,9 @@ class DSLType20:
 
             # context name, end
             if line_t == RBRACKET:
-                bracket_stack.pop() # mvtodo: careful
+                if len(bracket_stack) == 0:
+                    return False, "Unstarted context"
+                bracket_stack.pop()
                 if expecting_context_name:
                     return False, "Last context name not specified."
                 context_stack.pop() # mvtodo: careful
