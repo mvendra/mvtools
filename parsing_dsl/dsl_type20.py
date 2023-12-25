@@ -509,7 +509,7 @@ class DSLType20:
 
         self.clear()
 
-        bracket_stack = []
+        bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
         context_stack = [None]
         parsed_context = None
         parsed_context_options = []
@@ -525,14 +525,14 @@ class DSLType20:
 
             # context name, begin
             if line_t == LBRACKET:
-                bracket_stack.append(True) # True means the context is a pseudo context (until proven otherwise)
+                bracket_stack.append(1) # start by assuming this is going to be a pseudo context
                 continue
 
             # context name, end
             if line_t == RBRACKET:
                 if len(bracket_stack) == 0:
                     return False, "Unstarted context"
-                if not read_list_top(bracket_stack): # dont destack the TOS context if this was a pseudo context
+                if read_list_top(bracket_stack) == 3: # only destack the TOS context if this was a named/regular context
                     context_stack.pop()
                 bracket_stack.pop()
                 continue
@@ -540,15 +540,16 @@ class DSLType20:
             # context name, the name itself
             if line[0] == ATSIGN:
 
-                if not read_list_top(bracket_stack): # can only define contexts that were presumed to be pseudo contexts until now
-                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(context_stack), line)
-
                 if len(bracket_stack) == 0:
                     return False, "Unstarted context: [%s]" % line
-                write_list_top(bracket_stack, False) # TOS is no longer a pseudo context
 
-                #if not read_list_top(bracket_stack): # mvtodo nope, not like this
-                    #return False, "Context name must appear just after the opening bracket"
+                if read_list_top(bracket_stack) == 2: # too late to define a name for this context
+                    return False, "Context name must appear just after the opening bracket"
+
+                if read_list_top(bracket_stack) == 3: # name already defined for this context
+                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(context_stack), line)
+
+                write_list_top(bracket_stack, 3) # TOS is now a named/regular context
 
                 v, r = self._parse_context_name(line_t)
                 if not v:
@@ -559,6 +560,8 @@ class DSLType20:
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
+
+            write_list_top(bracket_stack, 2) # TOS is now surely a pseudo context
 
             # variable
             v, r = self._parse_variable(line_t, read_list_top(context_stack))
