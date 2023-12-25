@@ -20,6 +20,7 @@ RCBRACKET = "}"
 EQSIGN = "="
 QUOTE = "\""
 NEWLINE = "\n"
+WIN_NEWLINE = "\r\n"
 NULL = "\x00"
 SPACE = " "
 HTAB = "\t"
@@ -514,7 +515,7 @@ class DSLType20:
 
         self.clear()
         ipc = _internal_parse_context()
-        lines = contents.split(NEWLINE)
+        lines = contents.replace(WIN_NEWLINE, NEWLINE).split(NEWLINE)
 
         line_num = 0
         for line in lines:
