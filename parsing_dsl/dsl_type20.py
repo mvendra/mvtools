@@ -38,6 +38,9 @@ def list_prev(target_list):
 def list_top(target_list):
     return target_list[len(target_list)-1]
 
+def write_list_top(target_list, val):
+    target_list[len(target_list)-1] = val
+
 def expand_value(configs, str_input):
 
     if str_input is None:
@@ -506,7 +509,7 @@ class DSLType20:
 
         self.clear()
 
-        bracket_stack = [] # True means the context is a pseudo context (until proven otherwise)
+        bracket_stack = []
         context_stack = [None]
         parsed_context = None
         parsed_context_options = []
@@ -522,14 +525,14 @@ class DSLType20:
 
             # context name, begin
             if line_t == LBRACKET:
-                bracket_stack.append(True)
+                bracket_stack.append(True) # True means the context is a pseudo context (until proven otherwise)
                 continue
 
             # context name, end
             if line_t == RBRACKET:
                 if len(bracket_stack) == 0:
                     return False, "Unstarted context"
-                if not list_top(bracket_stack):
+                if not list_top(bracket_stack): # dont destack the TOS context if this was a pseudo context
                     context_stack.pop()
                 bracket_stack.pop()
                 continue
@@ -537,9 +540,12 @@ class DSLType20:
             # context name, the name itself
             if line[0] == ATSIGN:
 
+                if not list_top(bracket_stack): # can only define contexts that were presumed to be pseudo contexts until now
+                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, list_top(context_stack), line)
+
                 if len(bracket_stack) == 0:
                     return False, "Unstarted context: [%s]" % line
-                bracket_stack[len(bracket_stack)-1] = False # TOS is no longer a pseudo context
+                write_list_top(bracket_stack, False) # TOS is no longer a pseudo context
 
                 #if not list_top(bracket_stack): # mvtodo nope, not like this
                     #return False, "Context name must appear just after the opening bracket"
