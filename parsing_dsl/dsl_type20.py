@@ -562,7 +562,8 @@ class DSLType20:
                 continue
 
             if len(bracket_stack) > 0: # skip root
-                write_list_top(bracket_stack, 2) # TOS is now surely a pseudo context
+                if read_list_top(bracket_stack) == 1:
+                    write_list_top(bracket_stack, 2) # TOS is now surely a pseudo context
 
             # variable
             v, r = self._parse_variable(line_t, read_list_top(context_stack))
