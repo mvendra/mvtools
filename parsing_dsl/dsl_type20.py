@@ -516,7 +516,10 @@ class DSLType20:
         ipc = _internal_parse_context()
         lines = contents.split(NEWLINE)
 
+        line_num = 0
         for line in lines:
+
+            line_num += 1
 
             line_t = sanitize_line(line)
             if line_t is None:
@@ -524,7 +527,7 @@ class DSLType20:
             if line_t == "":
                 continue
 
-            v, r = self._parse_line_delegate(ipc, line_t)
+            v, r = self._parse_line_delegate(ipc, line_t, line_num)
             if not v:
                 return False, r
 
@@ -540,7 +543,7 @@ class DSLType20:
         result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
         return result.strip()
 
-    def _parse_line_delegate(self, ipc, current_line):
+    def _parse_line_delegate(self, ipc, current_line, current_line_number):
 
         # context name, begin
         if current_line == LBRACKET:
@@ -550,7 +553,7 @@ class DSLType20:
         # context name, end
         if current_line == RBRACKET:
             if len(ipc.bracket_stack) == 0:
-                return False, "Unstarted context"
+                return False, "[%s]: Unstarted context" % current_line_number
             if read_list_top(ipc.bracket_stack) == 3: # only destack the TOS context if this was a named/regular context
                 ipc.context_stack.pop()
             ipc.bracket_stack.pop()
@@ -560,24 +563,24 @@ class DSLType20:
         if current_line[0] == ATSIGN:
 
             if len(ipc.bracket_stack) == 0:
-                return False, "Unstarted context: [%s]" % current_line
+                return False, "[%s]: Unstarted context: [%s]" % (current_line_number, current_line)
 
             if read_list_top(ipc.bracket_stack) == 2: # too late to define a name for this context
-                return False, "Context name must appear just after the opening bracket"
+                return False, "[%s]: Context name must appear just after the opening bracket" % current_line_number
 
             if read_list_top(ipc.bracket_stack) == 3: # name already defined for this context
-                return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(ipc.context_stack), current_line)
+                return False, "[%s]: Context name is already defined - tried redefining [%s%s] with [%s]" % (current_line_number, ATSIGN, read_list_top(ipc.context_stack), current_line)
 
             write_list_top(ipc.bracket_stack, 3) # TOS is now a named/regular context
 
             v, r = self._parse_context_name(current_line)
             if not v:
-                return v, r
+                return False, "[%s]: %s" % (current_line_number, r)
             parsed_context, parsed_context_options = r
             ipc.context_stack.append(parsed_context)
             v, r = self.add_context(read_list_top_prev(ipc.context_stack), read_list_top(ipc.context_stack), parsed_context_options)
             if not v:
-                return False, "Failed creating new context: [%s]." % r
+                return False, "[%s]: Failed creating new context: [%s]." % (current_line_number, r)
             return True, None
 
         if len(ipc.bracket_stack) > 0: # skip root
@@ -587,7 +590,7 @@ class DSLType20:
         # variable
         v, r = self._parse_variable(current_line, read_list_top(ipc.context_stack))
         if not v:
-            return False, r
+            return False, "[%s]: %s" % (current_line_number, r)
 
         return True, None
 
