@@ -513,10 +513,9 @@ class DSLType20:
     def parse(self, contents):
 
         self.clear()
-
         ipc = _internal_parse_context()
-
         lines = contents.split(NEWLINE)
+
         for line in lines:
 
             line_t = sanitize_line(line)
