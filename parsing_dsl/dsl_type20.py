@@ -511,8 +511,6 @@ class DSLType20:
 
         bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
         context_stack = [None]
-        parsed_context = None
-        parsed_context_options = []
 
         lines = contents.split(NEWLINE)
         for line in lines:
