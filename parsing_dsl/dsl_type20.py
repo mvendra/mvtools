@@ -556,7 +556,7 @@ class DSLType20:
                     return v, r
                 parsed_context, parsed_context_options = r
                 context_stack.append(parsed_context)
-                v, r = self.add_context(read_list_top_prev(context_stack), read_list_top(context_stack), parsed_context_options) # mvtodo
+                v, r = self.add_context(read_list_top_prev(context_stack), read_list_top(context_stack), parsed_context_options)
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
