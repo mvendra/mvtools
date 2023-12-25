@@ -2035,7 +2035,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.get_all_variables()
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
-        self.assertEqual([ ((x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) ) for x in r], [ ("var1", "val1", [("opt1", None)]) ]) # mvtodo
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [ ("var1", "val1", [("opt1", None)]) ])
 
     def testDslType20_TestAddVariable10(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
