@@ -1096,6 +1096,20 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")), [("var2", "val2", [("opt1", None), ("opt2", None)])])
         self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx2")), [("var4", "val4", [])])
 
+    def testDslType20_TestNewContextVanilla4(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("var1 = \"val1\"\n[\n]")
+        self.assertTrue(v)
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val1", [])])
+
+    def testDslType20_TestNewContextVanilla5(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("\n[\n]\n")
+        self.assertTrue(v)
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [])
+
     def testDslType20_TestNewContextWithOptions1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True))
@@ -1166,43 +1180,31 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_TestNewContextFail3(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.parse("var1 = \"val1\"\n[\n]")
+        v, r = dsl.parse("var1 = \"val1\"\n[\n")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail4(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.parse("var1 = \"val1\"\n[\n")
+        v, r = dsl.parse("var1 = \"val1\"\n[\n@@ctx1\n]")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail5(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.parse("var1 = \"val1\"\n[\n@@ctx1\n]")
+        v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx 1\n]")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail6(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.parse("var1 = \"val1\"\n[\n@ctx 1\n]")
+        v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n")
         self.assertFalse(v)
 
     def testDslType20_TestNewContextFail7(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n")
-        self.assertFalse(v)
-
-    def testDslType20_TestNewContextFail8(self):
-
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.parse("\n[\nvar1 = \"val1\"\n]\n")
-        self.assertFalse(v)
-
-    def testDslType20_TestNewContextFail9(self):
-
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.parse("\n[\n]\n")
         self.assertFalse(v)
 
     def testDslType20_TestContextFail1(self):
