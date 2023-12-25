@@ -516,7 +516,6 @@ class DSLType20:
         parsed_context = None
         parsed_context_options = []
         expecting_context_name = False
-        expecting_context_closure = False
 
         lines = contents.split(NEWLINE)
         for line in lines:
@@ -531,7 +530,6 @@ class DSLType20:
             if line_t == LBRACKET:
                 bracket_stack.append(True)
                 expecting_context_name = True
-                expecting_context_closure = True
                 continue
 
             # context name, end
@@ -542,7 +540,6 @@ class DSLType20:
                 if expecting_context_name:
                     return False, "Last context name not specified."
                 context_stack.pop() # mvtodo: careful
-                expecting_context_closure = False
                 continue
 
             # context name, the name itself
@@ -566,9 +563,6 @@ class DSLType20:
 
         if len(bracket_stack) > 0:
             return False, "Unterminated context"
-
-        if expecting_context_closure:
-            return False, "Last context: [%s] was not closed." % list_top(context_stack) # mvtodo: replace with ctx.get_name() and ditch printable_context
 
         return True, None
 
