@@ -8,7 +8,7 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-IDENTIFIER = "[_\\-a-zA-Z0-9]+"
+IDENTIFIER = "[^\x00\x0a\x09\x20]+"
 ANYSPACE = "[ ]*"
 SINGLESPACE = " "
 COLON = ":"
@@ -519,7 +519,6 @@ class DSLType20:
 
         line_num = 0
         for line in lines:
-
             line_num += 1
 
             line_t = sanitize_line(line)
