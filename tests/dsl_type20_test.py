@@ -1110,6 +1110,13 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [])
 
+    def testDslType20_TestNewContextVanilla6(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("\n[\nvar1 = \"val1\"\n]\n")
+        self.assertTrue(v)
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val1", [])])
+
     def testDslType20_TestNewContextWithOptions1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True))
@@ -1199,12 +1206,6 @@ class DSLType20Test(unittest.TestCase):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.parse("[\n@ctx1\nvar1 = \"val1\"\n")
-        self.assertFalse(v)
-
-    def testDslType20_TestNewContextFail7(self):
-
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.parse("\n[\nvar1 = \"val1\"\n]\n")
         self.assertFalse(v)
 
     def testDslType20_TestContextFail1(self):
