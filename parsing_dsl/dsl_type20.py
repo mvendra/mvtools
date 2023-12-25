@@ -32,10 +32,10 @@ DSLTYPE20_ENTRY_TYPE_VAR = 1
 DSLTYPE20_ENTRY_TYPE_OPT = 2
 DSLTYPE20_ENTRY_TYPE_CTX = 3
 
-def list_prev(target_list):
+def read_list_top_prev(target_list):
     return target_list[len(target_list)-2]
 
-def list_top(target_list):
+def read_list_top(target_list):
     return target_list[len(target_list)-1]
 
 def write_list_top(target_list, val):
@@ -532,7 +532,7 @@ class DSLType20:
             if line_t == RBRACKET:
                 if len(bracket_stack) == 0:
                     return False, "Unstarted context"
-                if not list_top(bracket_stack): # dont destack the TOS context if this was a pseudo context
+                if not read_list_top(bracket_stack): # dont destack the TOS context if this was a pseudo context
                     context_stack.pop()
                 bracket_stack.pop()
                 continue
@@ -540,14 +540,14 @@ class DSLType20:
             # context name, the name itself
             if line[0] == ATSIGN:
 
-                if not list_top(bracket_stack): # can only define contexts that were presumed to be pseudo contexts until now
-                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, list_top(context_stack), line)
+                if not read_list_top(bracket_stack): # can only define contexts that were presumed to be pseudo contexts until now
+                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(context_stack), line)
 
                 if len(bracket_stack) == 0:
                     return False, "Unstarted context: [%s]" % line
                 write_list_top(bracket_stack, False) # TOS is no longer a pseudo context
 
-                #if not list_top(bracket_stack): # mvtodo nope, not like this
+                #if not read_list_top(bracket_stack): # mvtodo nope, not like this
                     #return False, "Context name must appear just after the opening bracket"
 
                 v, r = self._parse_context_name(line_t)
@@ -555,13 +555,13 @@ class DSLType20:
                     return v, r
                 parsed_context, parsed_context_options = r
                 context_stack.append(parsed_context)
-                v, r = self.add_context(list_prev(context_stack), list_top(context_stack), parsed_context_options) # mvtodo
+                v, r = self.add_context(read_list_top_prev(context_stack), read_list_top(context_stack), parsed_context_options) # mvtodo
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
 
             # variable
-            v, r = self._parse_variable(line_t, list_top(context_stack))
+            v, r = self._parse_variable(line_t, read_list_top(context_stack))
             if not v:
                 return False, r
 
