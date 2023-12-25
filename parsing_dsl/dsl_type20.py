@@ -315,6 +315,11 @@ class DSLType20_Config:
         self.inherit_options = inherit_options
         self.variable_decorator = variable_decorator
 
+class _internal_parse_context:
+    def __init__(self):
+        self.bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
+        self.context_stack = [None]
+
 class DSLType20:
     def __init__(self, _configs):
 
@@ -509,8 +514,7 @@ class DSLType20:
 
         self.clear()
 
-        bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
-        context_stack = [None]
+        ipc = _internal_parse_context()
 
         lines = contents.split(NEWLINE)
         for line in lines:
@@ -523,52 +527,52 @@ class DSLType20:
 
             # context name, begin
             if line_t == LBRACKET:
-                bracket_stack.append(1) # start by assuming this is going to be a pseudo context
+                ipc.bracket_stack.append(1) # start by assuming this is going to be a pseudo context
                 continue
 
             # context name, end
             if line_t == RBRACKET:
-                if len(bracket_stack) == 0:
+                if len(ipc.bracket_stack) == 0:
                     return False, "Unstarted context"
-                if read_list_top(bracket_stack) == 3: # only destack the TOS context if this was a named/regular context
-                    context_stack.pop()
-                bracket_stack.pop()
+                if read_list_top(ipc.bracket_stack) == 3: # only destack the TOS context if this was a named/regular context
+                    ipc.context_stack.pop()
+                ipc.bracket_stack.pop()
                 continue
 
             # context name, the name itself
             if line[0] == ATSIGN:
 
-                if len(bracket_stack) == 0:
+                if len(ipc.bracket_stack) == 0:
                     return False, "Unstarted context: [%s]" % line
 
-                if read_list_top(bracket_stack) == 2: # too late to define a name for this context
+                if read_list_top(ipc.bracket_stack) == 2: # too late to define a name for this context
                     return False, "Context name must appear just after the opening bracket"
 
-                if read_list_top(bracket_stack) == 3: # name already defined for this context
-                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(context_stack), line)
+                if read_list_top(ipc.bracket_stack) == 3: # name already defined for this context
+                    return False, "Context name is already defined - tried redefining [%s%s] with [%s]" % (ATSIGN, read_list_top(ipc.context_stack), line)
 
-                write_list_top(bracket_stack, 3) # TOS is now a named/regular context
+                write_list_top(ipc.bracket_stack, 3) # TOS is now a named/regular context
 
                 v, r = self._parse_context_name(line_t)
                 if not v:
                     return v, r
                 parsed_context, parsed_context_options = r
-                context_stack.append(parsed_context)
-                v, r = self.add_context(read_list_top_prev(context_stack), read_list_top(context_stack), parsed_context_options)
+                ipc.context_stack.append(parsed_context)
+                v, r = self.add_context(read_list_top_prev(ipc.context_stack), read_list_top(ipc.context_stack), parsed_context_options)
                 if not v:
                     return False, "Failed creating new context: [%s]." % r
                 continue
 
-            if len(bracket_stack) > 0: # skip root
-                if read_list_top(bracket_stack) == 1:
-                    write_list_top(bracket_stack, 2) # TOS is now surely a pseudo context
+            if len(ipc.bracket_stack) > 0: # skip root
+                if read_list_top(ipc.bracket_stack) == 1:
+                    write_list_top(ipc.bracket_stack, 2) # TOS is now surely a pseudo context
 
             # variable
-            v, r = self._parse_variable(line_t, read_list_top(context_stack))
+            v, r = self._parse_variable(line_t, read_list_top(ipc.context_stack))
             if not v:
                 return False, r
 
-        if len(bracket_stack) > 0:
+        if len(ipc.bracket_stack) > 0:
             return False, "Unterminated context"
 
         return True, None
