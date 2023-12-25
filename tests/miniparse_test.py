@@ -891,6 +891,11 @@ class MiniparseTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "aaabbb  -")
 
+    def testScanSimple(self):
+        self.assertTrue(miniparse.scan_simple("abc", "[^d]+"))
+        self.assertFalse(miniparse.scan_simple("abd", "[^d]+"))
+        self.assertFalse(miniparse.scan_simple("d", "[^d]+"))
+
     def testDescape1(self):
         v, r = miniparse.descape(None, "s")
         self.assertFalse(v)

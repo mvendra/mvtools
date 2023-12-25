@@ -390,6 +390,13 @@ def slice_left_strip(thestr, find_char):
 
     return True, (thestr[0:n]).strip()
 
+def scan_simple(thestr, theregex):
+
+    result = re.match(theregex, thestr)
+    if result is None:
+        return False
+    return len(result[0]) == len(thestr)
+
 def descape(thestr, escape_char):
 
     if thestr is None:
