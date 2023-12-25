@@ -38,11 +38,6 @@ def list_prev(target_list):
 def list_top(target_list):
     return target_list[len(target_list)-1]
 
-def printable_context(context):
-    if context is None:
-        return "(default context)"
-    return context
-
 def expand_value(configs, str_input):
 
     if str_input is None:
