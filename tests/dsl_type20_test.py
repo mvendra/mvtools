@@ -186,6 +186,26 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_20 += "]\n"
         self.cfg_test_ok_20 = path_utils.concat_path(self.test_dir, "test_ok_20.t20")
 
+        self.contents_cfg_test_ok_21 = "[\n"
+        self.contents_cfg_test_ok_21 += "]\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "[\n"
+        self.contents_cfg_test_ok_21 += "]\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "[\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "    [\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "        [\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "        ]\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "    ]\n"
+        self.contents_cfg_test_ok_21 += "\n"
+        self.contents_cfg_test_ok_21 += "]\n"
+        self.cfg_test_ok_21 = path_utils.concat_path(self.test_dir, "test_ok_21.t20")
+
         self.contents_cfg_test_fail_1 = "var1 = val1\n"
         self.cfg_test_fail_1 = path_utils.concat_path(self.test_dir, "test_fail_1.t20")
 
@@ -218,6 +238,7 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_ok_18, self.contents_cfg_test_ok_18)
         create_and_write_file.create_file_contents(self.cfg_test_ok_19, self.contents_cfg_test_ok_19)
         create_and_write_file.create_file_contents(self.cfg_test_ok_20, self.contents_cfg_test_ok_20)
+        create_and_write_file.create_file_contents(self.cfg_test_ok_21, self.contents_cfg_test_ok_21)
         create_and_write_file.create_file_contents(self.cfg_test_fail_1, self.contents_cfg_test_fail_1)
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
@@ -611,7 +632,10 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_Parse24(self):
         self.assertTrue(self.parse_test_aux(self.cfg_test_ok_20, dsl_type20.DSLType20_Config()))
 
-    def testDslType20_Parse24(self):
+    def testDslType20_Parse25(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_21, dsl_type20.DSLType20_Config()))
+
+    def testDslType20_Parse26(self):
 
         blanksub = path_utils.concat_path(self.test_dir, " ")
         self.assertFalse(os.path.exists(blanksub))
