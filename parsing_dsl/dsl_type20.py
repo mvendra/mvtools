@@ -506,11 +506,10 @@ class DSLType20:
 
         self.clear()
 
-        bracket_stack = []
+        bracket_stack = [] # True means the context is a pseudo context (until proven otherwise)
         context_stack = [None]
         parsed_context = None
         parsed_context_options = []
-        expecting_context_name = False
 
         lines = contents.split(NEWLINE)
         for line in lines:
@@ -524,21 +523,26 @@ class DSLType20:
             # context name, begin
             if line_t == LBRACKET:
                 bracket_stack.append(True)
-                expecting_context_name = True
                 continue
 
             # context name, end
             if line_t == RBRACKET:
                 if len(bracket_stack) == 0:
                     return False, "Unstarted context"
+                if not list_top(bracket_stack):
+                    context_stack.pop()
                 bracket_stack.pop()
-                if not expecting_context_name:
-                    context_stack.pop() # mvtodo: careful
                 continue
 
             # context name, the name itself
-            if expecting_context_name:
-                expecting_context_name = False
+            if line[0] == ATSIGN:
+
+                if len(bracket_stack) == 0:
+                    return False, "Unstarted context: [%s]" % line
+                bracket_stack[len(bracket_stack)-1] = False # TOS is no longer a pseudo context
+
+                #if not list_top(bracket_stack): # mvtodo nope, not like this
+                    #return False, "Context name must appear just after the opening bracket"
 
                 v, r = self._parse_context_name(line_t)
                 if not v:
