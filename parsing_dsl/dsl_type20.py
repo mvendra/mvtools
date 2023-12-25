@@ -22,8 +22,6 @@ QUOTE = "\""
 NEWLINE = "\n"
 WIN_NEWLINE = "\r\n"
 NULL = "\x00"
-SPACE = " "
-HTAB = "\t"
 BSLASH = "\\"
 FSLASH = "/"
 COMMENTS = ["#", "//"]
@@ -1060,7 +1058,7 @@ class DSLType20:
         if context.get_name() != self.root_context_id:
             result += (NEWLINE + local_indent + LBRACKET + NEWLINE + local_indent + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
-                end_comment = "%s%s%s%s" % (SPACE, COMMENTS[0], SPACE, context.get_name())
+                end_comment = "%s%s%s%s" % (SINGLESPACE, COMMENTS[0], SINGLESPACE, context.get_name())
 
         for entry in context.get_entries():
 
