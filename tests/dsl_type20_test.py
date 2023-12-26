@@ -690,6 +690,48 @@ class DSLType20Test(unittest.TestCase):
         self.assertNotEqual(r[0], dsl.data.entries[0].entries[0])
         self.assertNotEqual(r[0].options[1], dsl.data.entries[0].entries[0].options[0])
 
+    def testDslType20_GetVariables4(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
+        v, r = dsl.add_context(None, "ctx1", [("opt1", "val1")])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [("opt2", "val2")])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx2", "ctx3", [("opt3", "val3")])
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var1", "val9", [("opt4", "val4")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var2", "val10", [("opt5", "val5")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var3", "val11", [("opt6", "val6")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var1", "val12", [("opt7", "val7")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var1", "val13", [("opt8", "val8")], "ctx3")
+        self.assertTrue(v)
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx3")), [("var1", "val9", [("opt1", "val1"), ("opt2", "val2"), ("opt3", "val3"), ("opt4", "val4")]), ("var1", "val12", [("opt1", "val1"), ("opt2", "val2"), ("opt3", "val3"), ("opt7", "val7")]), ("var1", "val13", [("opt1", "val1"), ("opt2", "val2"), ("opt3", "val3"), ("opt8", "val8")])])
+
+    def testDslType20_GetVariables5(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context(None, "ctx1", [("opt1", "val1")])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx1", "ctx2", [("opt2", "val2")])
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx2", "ctx3", [("opt3", "val3")])
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var1", "val9", [("opt4", "val4")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var2", "val10", [("opt5", "val5")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var3", "val11", [("opt6", "val6")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var1", "val12", [("opt7", "val7")], "ctx3")
+        self.assertTrue(v)
+        v, r = dsl.add_variable("var1", "val13", [("opt8", "val8")], "ctx3")
+        self.assertTrue(v)
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx3")), [("var1", "val9", [("opt4", "val4")]), ("var1", "val12", [("opt7", "val7")]), ("var1", "val13", [("opt8", "val8")])])
+
     def testDslType20_GetAllVariables1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
