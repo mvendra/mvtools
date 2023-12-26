@@ -311,7 +311,7 @@ class DSLType20:
         self.data = None
         self.data = DSLType20_Context(None, self.root_context_id, [])
 
-    def add_context(self, parent_ctx, ctx_name, ctx_options):
+    def add_context(self, ctx_name, ctx_options, parent_ctx = None):
 
         # ctx_options: expected as a list of tuples ("neutral" format)
 
@@ -451,7 +451,7 @@ class DSLType20:
         if context is None:
             context = self.root_context_id
         else:
-            self.add_context(None, context, [])
+            self.add_context(context, [], None)
 
         # add new variable to internal data
         v, r = self._find_context(context, self._add_variable_helper, (var_name, var_val, opts_obj_list))
@@ -551,7 +551,7 @@ class DSLType20:
                 return False, "[%s]: %s" % (current_line_number, r)
             parsed_context, parsed_context_options = r
             ipc.context_stack.append(parsed_context)
-            v, r = self.add_context(read_list_top_prev(ipc.context_stack), read_list_top(ipc.context_stack), parsed_context_options)
+            v, r = self.add_context(read_list_top(ipc.context_stack), parsed_context_options, read_list_top_prev(ipc.context_stack))
             if not v:
                 return False, "[%s]: Failed creating new context: [%s]." % (current_line_number, r)
             return True, None
