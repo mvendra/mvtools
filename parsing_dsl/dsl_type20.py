@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-COLON = ":"
 ATSIGN = "@"
 LBRACKET = "["
 RBRACKET = "]"
@@ -950,7 +949,7 @@ class DSLType20:
             return False, "Invalid option input: [%s]" % str_input, None, None
 
         # start by parsing the option's name
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + COLON)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + miniparse.COLON)
         if v:
 
             # option has value
@@ -959,7 +958,7 @@ class DSLType20:
             local_str_input = (r[1]).strip()
 
             # remove the colon off the option's name
-            v, r = miniparse.remove_last_of(opt_name, COLON)
+            v, r = miniparse.remove_last_of(opt_name, miniparse.COLON)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_name = r.strip()
@@ -1094,7 +1093,7 @@ class DSLType20:
                     if not v:
                         return None
                     opt_escaped_value = r
-                options_result += COLON + miniparse.SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
+                options_result += miniparse.COLON + miniparse.SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
 
             if idx == len(input_options):
                 options_result += RCBRACKET
