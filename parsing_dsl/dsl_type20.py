@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-QUOTE = "\""
 NEWLINE = "\n"
 WIN_NEWLINE = "\r\n"
 NULL = "\x00"
@@ -59,7 +58,7 @@ def sanitize_line(line_in):
         return ""
 
     for c in COMMENTS:
-        line_out = miniparse.guarded_right_cut(line_out, list(c), QUOTE)
+        line_out = miniparse.guarded_right_cut(line_out, list(c), miniparse.QUOTE)
         if line_out is None:
             return None
         if line_out == "":
@@ -829,14 +828,14 @@ class DSLType20:
             return False, "Can't parse variable: [%s]: Context doesn't exist: [%s]." % (str_input, context)
 
         # start by parsing the variable's value - if it has it
-        v, r = miniparse.scan_and_slice_end(local_str_input, QUOTE)
+        v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
         if v:
             if r[1][len(r[1])-1] == BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
                 return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
             local_str_input = r[1]
 
             # find next nonescaped quote in reverse (beginning of the value)
-            v, r = miniparse.last_not_escaped_slice(local_str_input, QUOTE, BSLASH)
+            v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, BSLASH)
             if not v:
                 return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
             local_str_input = (r[1]).strip()
@@ -849,7 +848,7 @@ class DSLType20:
             var_value = r
 
             # remove first quote of value
-            v, r = miniparse.scan_and_slice_end(local_str_input, QUOTE)
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
             if not v:
                 return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
             local_str_input = (r[1]).strip()
@@ -958,20 +957,20 @@ class DSLType20:
             opt_name = r.strip()
 
             # find next quote (option's value - first)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, QUOTE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             local_str_input = r[1]
 
             # forward until closing quote is found (the next not escaped)
-            v, r = miniparse.next_not_escaped_slice(local_str_input, QUOTE, BSLASH)
+            v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, BSLASH)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_val = r[0]
             local_str_input = (r[1]).strip()
 
             # find next quote (option's value - second)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, QUOTE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             local_str_input = (r[1]).strip()
@@ -1083,11 +1082,11 @@ class DSLType20:
                 # option has value
                 opt_escaped_value = ""
                 if opt.get_value() != "":
-                    v, r = miniparse.escape(opt.get_value(), BSLASH, [QUOTE])
+                    v, r = miniparse.escape(opt.get_value(), BSLASH, [miniparse.QUOTE])
                     if not v:
                         return None
                     opt_escaped_value = r
-                options_result += miniparse.COLON + miniparse.SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
+                options_result += miniparse.COLON + miniparse.SINGLESPACE + miniparse.QUOTE + opt_escaped_value + miniparse.QUOTE
 
             if idx == len(input_options):
                 options_result += miniparse.RCBRACKET
@@ -1111,12 +1110,12 @@ class DSLType20:
         if input_variable.get_value() is not None:
             var_escaped_value = ""
             if input_variable.get_value() != "":
-                v, r = miniparse.escape(input_variable.get_value(), BSLASH, [QUOTE])
+                v, r = miniparse.escape(input_variable.get_value(), BSLASH, [miniparse.QUOTE])
                 if not v:
                     return None
                 var_escaped_value = r
 
-            variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE + QUOTE + var_escaped_value + QUOTE
+            variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE + miniparse.QUOTE + var_escaped_value + miniparse.QUOTE
 
         return variable_result
 

@@ -16,6 +16,7 @@ RBRACKET = "]"
 LCBRACKET = "{"
 RCBRACKET = "}"
 EQSIGN = "="
+QUOTE = "\""
 
 def delete_indices_from_string(thestr, list_indices):
 
