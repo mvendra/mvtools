@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-RBRACKET = "]"
 LCBRACKET = "{"
 RCBRACKET = "}"
 EQSIGN = "="
@@ -534,7 +533,7 @@ class DSLType20:
             return True, None
 
         # context name, end
-        if current_line == RBRACKET:
+        if current_line == miniparse.RBRACKET:
             if len(ipc.bracket_stack) == 0:
                 return False, "[%s]: Unstarted context" % current_line_number
             if read_list_top(ipc.bracket_stack) == 3: # only destack the TOS context if this was a named/regular context
@@ -1063,7 +1062,7 @@ class DSLType20:
                 result += NEWLINE + self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent, (context.get_name() == self.root_context_id))
 
         if context.get_name() != self.root_context_id:
-            result += NEWLINE + local_indent + RBRACKET + end_comment + NEWLINE
+            result += NEWLINE + local_indent + miniparse.RBRACKET + end_comment + NEWLINE
 
         if _ctx_lvl_indent:
             self._dec_indent()
