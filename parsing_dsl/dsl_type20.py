@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-SINGLESPACE = " "
 COLON = ":"
 ATSIGN = "@"
 LBRACKET = "["
@@ -1056,7 +1055,7 @@ class DSLType20:
         if context.get_name() != self.root_context_id:
             result += (NEWLINE + local_indent + LBRACKET + NEWLINE + local_indent + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
-                end_comment = "%s%s%s%s" % (SINGLESPACE, COMMENTS[0], SINGLESPACE, context.get_name())
+                end_comment = "%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, context.get_name())
 
         for entry in context.get_entries():
 
@@ -1095,12 +1094,12 @@ class DSLType20:
                     if not v:
                         return None
                     opt_escaped_value = r
-                options_result += COLON + SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
+                options_result += COLON + miniparse.SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
 
             if idx == len(input_options):
                 options_result += RCBRACKET
             else:
-                options_result += SINGLESPACE + FSLASH + SINGLESPACE
+                options_result += miniparse.SINGLESPACE + FSLASH + miniparse.SINGLESPACE
 
         return options_result
 
@@ -1124,7 +1123,7 @@ class DSLType20:
                     return None
                 var_escaped_value = r
 
-            variable_result += SINGLESPACE + EQSIGN + SINGLESPACE + QUOTE + var_escaped_value + QUOTE
+            variable_result += miniparse.SINGLESPACE + EQSIGN + miniparse.SINGLESPACE + QUOTE + var_escaped_value + QUOTE
 
         return variable_result
 

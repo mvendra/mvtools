@@ -10,6 +10,7 @@ import path_utils
 import mvtools_envvars
 
 import dsl_type20
+import miniparse
 import mvtools_exception
 
 def getcontents(filename):
@@ -355,7 +356,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_type20.validate_options_list( [ ("a", "a"), ("b", "b") ] )[0])
         self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (dsl_type20.NEWLINE, "b") ] )[0])
         self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (dsl_type20.NULL, "b") ] )[0])
-        self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (dsl_type20.SINGLESPACE, "b") ] )[0])
+        self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), (miniparse.SINGLESPACE, "b") ] )[0])
         self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), ("\x09", "b") ] )[0])
         self.assertTrue(dsl_type20.validate_options_list( [ ("a", None) ] )[0])
         self.assertFalse(dsl_type20.validate_options_list( [ ("a", "a"), ("a", "b") ] )[0])
