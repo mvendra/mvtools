@@ -20,6 +20,7 @@ QUOTE = "\""
 NEWLINE = "\n"
 WIN_NEWLINE = "\r\n"
 NULL = "\x00"
+BSLASH = "\\"
 
 def delete_indices_from_string(thestr, list_indices):
 

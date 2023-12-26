@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-BSLASH = "\\"
 FSLASH = "/"
 COMMENTS = ["#", "//"]
 
@@ -827,19 +826,19 @@ class DSLType20:
         # start by parsing the variable's value - if it has it
         v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
         if v:
-            if r[1][len(r[1])-1] == BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
+            if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
                 return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
             local_str_input = r[1]
 
             # find next nonescaped quote in reverse (beginning of the value)
-            v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, BSLASH)
+            v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
             if not v:
                 return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
             local_str_input = (r[1]).strip()
             var_value = r[0]
 
             # descape the variable's value
-            v, r = miniparse.descape(var_value, BSLASH)
+            v, r = miniparse.descape(var_value, miniparse.BSLASH)
             if not v:
                 return False, "Variable descaping failed: [%s]" % var_value
             var_value = r
@@ -960,7 +959,7 @@ class DSLType20:
             local_str_input = r[1]
 
             # forward until closing quote is found (the next not escaped)
-            v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, BSLASH)
+            v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_val = r[0]
@@ -973,7 +972,7 @@ class DSLType20:
             local_str_input = (r[1]).strip()
 
             # descape the value, and its ready for storage
-            v, r = miniparse.descape(opt_val, BSLASH)
+            v, r = miniparse.descape(opt_val, miniparse.BSLASH)
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_val = r
@@ -1079,7 +1078,7 @@ class DSLType20:
                 # option has value
                 opt_escaped_value = ""
                 if opt.get_value() != "":
-                    v, r = miniparse.escape(opt.get_value(), BSLASH, [miniparse.QUOTE])
+                    v, r = miniparse.escape(opt.get_value(), miniparse.BSLASH, [miniparse.QUOTE])
                     if not v:
                         return None
                     opt_escaped_value = r
@@ -1107,7 +1106,7 @@ class DSLType20:
         if input_variable.get_value() is not None:
             var_escaped_value = ""
             if input_variable.get_value() != "":
-                v, r = miniparse.escape(input_variable.get_value(), BSLASH, [miniparse.QUOTE])
+                v, r = miniparse.escape(input_variable.get_value(), miniparse.BSLASH, [miniparse.QUOTE])
                 if not v:
                     return None
                 var_escaped_value = r
