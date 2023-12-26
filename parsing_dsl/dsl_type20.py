@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-LCBRACKET = "{"
 RCBRACKET = "}"
 EQSIGN = "="
 QUOTE = "\""
@@ -785,7 +784,7 @@ class DSLType20:
 
         if not local_str_input == "": # there might be options
 
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ANYSPACE + LCBRACKET)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ANYSPACE + miniparse.LCBRACKET)
 
             if v: # yes there are options
 
@@ -863,7 +862,7 @@ class DSLType20:
                 return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
             local_str_input = (r[1]).strip()
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + LCBRACKET)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + miniparse.LCBRACKET)
         if v:
 
             # variable has options
@@ -871,7 +870,7 @@ class DSLType20:
             var_name = r[0].strip()
             local_str_input = r[1].strip()
 
-            v, r = miniparse.remove_last_of(var_name, LCBRACKET)
+            v, r = miniparse.remove_last_of(var_name, miniparse.LCBRACKET)
             if not v:
                 return False, "Malformed variable: [%s]: Failed removing left bracket from options." % str_input
             var_name = r.strip()
@@ -1078,7 +1077,7 @@ class DSLType20:
             idx += 1
 
             if idx == 1:
-                options_result += LCBRACKET
+                options_result += miniparse.LCBRACKET
 
             options_result += opt.get_name()
 
