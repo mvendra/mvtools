@@ -36,6 +36,19 @@ def opt_fmt_helper_call(opt_list):
         raise mvtools_exception.mvtools_exception("Failed test")
     return opt_fmt_helper_simple(r)
 
+def find_context_callback_positive(node_ptr, node_data):
+
+    if node_ptr is None:
+        raise mvtools_exception.mvtools_exception("Failed test")
+
+    if node_data != "dummy-data":
+        raise mvtools_exception.mvtools_exception("Failed test")
+
+    return True, None
+
+def find_context_callback_negative(node_ptr, node_data):
+    return False, "Test error"
+
 class DSLType20Test(unittest.TestCase):
 
     def setUp(self):
@@ -3145,6 +3158,38 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         self.assertNotEqual(r[0], dsl.data.entries[0].options[0])
+
+    def testDslType20_TestFindContext1(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
+        v, r = dsl._find_context("ctx1", None, None)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+    def testDslType20_TestFindContext2(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
+        v, r = dsl._find_context("no-ctx", None, None)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testDslType20_TestFindContext3(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
+        v, r = dsl._find_context("ctx1", find_context_callback_positive, "dummy-data")
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+    def testDslType20_TestFindContext4(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
+        v, r = dsl._find_context("ctx1", find_context_callback_negative, "dummy-data")
+        self.assertFalse(v)
+        self.assertEqual(r, "Test error")
 
 if __name__ == '__main__':
     unittest.main()
