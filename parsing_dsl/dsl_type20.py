@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-EQSIGN = "="
 QUOTE = "\""
 NEWLINE = "\n"
 WIN_NEWLINE = "\r\n"
@@ -856,7 +855,7 @@ class DSLType20:
             local_str_input = (r[1]).strip()
 
             # remove equal sign just before the variable's value
-            v, r = miniparse.scan_and_slice_end(local_str_input, EQSIGN)
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
             if not v:
                 return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
             local_str_input = (r[1]).strip()
@@ -1117,7 +1116,7 @@ class DSLType20:
                     return None
                 var_escaped_value = r
 
-            variable_result += miniparse.SINGLESPACE + EQSIGN + miniparse.SINGLESPACE + QUOTE + var_escaped_value + QUOTE
+            variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE + QUOTE + var_escaped_value + QUOTE
 
         return variable_result
 
