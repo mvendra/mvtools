@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-RCBRACKET = "}"
 EQSIGN = "="
 QUOTE = "\""
 NEWLINE = "\n"
@@ -994,7 +993,7 @@ class DSLType20:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
@@ -1010,11 +1009,11 @@ class DSLType20:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + miniparse.RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
-                rem_last_chr = RCBRACKET
+                rem_last_chr = miniparse.RCBRACKET
 
             else:
                 local_str_input = (r[1]).strip()
@@ -1092,7 +1091,7 @@ class DSLType20:
                 options_result += miniparse.COLON + miniparse.SINGLESPACE + QUOTE + opt_escaped_value + QUOTE
 
             if idx == len(input_options):
-                options_result += RCBRACKET
+                options_result += miniparse.RCBRACKET
             else:
                 options_result += miniparse.SINGLESPACE + FSLASH + miniparse.SINGLESPACE
 

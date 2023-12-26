@@ -14,6 +14,7 @@ ATSIGN = "@"
 LBRACKET = "["
 RBRACKET = "]"
 LCBRACKET = "{"
+RCBRACKET = "}"
 
 def delete_indices_from_string(thestr, list_indices):
 
