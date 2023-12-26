@@ -607,7 +607,7 @@ class DSLType20:
         if not v:
             return False, r
         if not r:
-            return False, "Unable to return context [%s] of [%s] - context not found." % (context_name, parent_context)
+            return False, "Unable to return context [%s] of/from [%s] - context not found." % (context_name, parent_context)
 
         return True, result_ptr
 
