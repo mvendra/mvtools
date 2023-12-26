@@ -1045,7 +1045,7 @@ class DSLType20:
         if context.get_name() != self.root_context_id:
             result += (miniparse.NEWLINE + local_indent + miniparse.LBRACKET + miniparse.NEWLINE + local_indent + miniparse.ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
-                end_comment = "%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, context.get_name())
+                end_comment = "%s%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, miniparse.ATSIGN, context.get_name())
 
         for entry in context.get_entries():
 
