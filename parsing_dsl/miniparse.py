@@ -10,6 +10,7 @@ IDENTIFIER = "[^\\\x00\\\x0a\\\x09\\\x20\\\x5b\\\x5d\\\x7b\\\x7d\\\x28\\\x29\\\x
 ANYSPACE = "[ ]*"
 SINGLESPACE = " "
 COLON = ":"
+ATSIGN = "@"
 
 def delete_indices_from_string(thestr, list_indices):
 

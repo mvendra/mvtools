@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-ATSIGN = "@"
 LBRACKET = "["
 RBRACKET = "]"
 LCBRACKET = "{"
@@ -545,7 +544,7 @@ class DSLType20:
             return True, None
 
         # context name, the name itself
-        if current_line[0] == ATSIGN:
+        if current_line[0] == miniparse.ATSIGN:
 
             if len(ipc.bracket_stack) == 0:
                 return False, "[%s]: Unstarted context: [%s]" % (current_line_number, current_line)
@@ -554,7 +553,7 @@ class DSLType20:
                 return False, "[%s]: Context name must appear just after the opening bracket" % current_line_number
 
             if read_list_top(ipc.bracket_stack) == 3: # name already defined for this context
-                return False, "[%s]: Context name is already defined - tried redefining [%s%s] with [%s]" % (current_line_number, ATSIGN, read_list_top(ipc.context_stack), current_line)
+                return False, "[%s]: Context name is already defined - tried redefining [%s%s] with [%s]" % (current_line_number, miniparse.ATSIGN, read_list_top(ipc.context_stack), current_line)
 
             write_list_top(ipc.bracket_stack, 3) # TOS is now a named/regular context
 
@@ -780,7 +779,7 @@ class DSLType20:
         parsed_context_name = None
         parsed_opts = []
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, ATSIGN + miniparse.ANYSPACE + miniparse.IDENTIFIER)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ATSIGN + miniparse.ANYSPACE + miniparse.IDENTIFIER)
         if not v:
             return False, "Malformed context name: [%s]." % str_input
         parsed_context_name = (r[0]).strip()
@@ -808,7 +807,7 @@ class DSLType20:
                 return False, "Malformed context name: [%s]." % str_input
 
         # remove the at ("@") sign
-        v, r = miniparse.remove_next_of(parsed_context_name, ATSIGN)
+        v, r = miniparse.remove_next_of(parsed_context_name, miniparse.ATSIGN)
         if not v:
             return False, "Malformed context name: [%s]." % parsed_context_name
         parsed_context_name = r.strip()
@@ -1052,7 +1051,7 @@ class DSLType20:
             local_indent = self.indent
 
         if context.get_name() != self.root_context_id:
-            result += (NEWLINE + local_indent + LBRACKET + NEWLINE + local_indent + ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
+            result += (NEWLINE + local_indent + LBRACKET + NEWLINE + local_indent + miniparse.ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
                 end_comment = "%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, context.get_name())
 
