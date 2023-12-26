@@ -367,6 +367,9 @@ class DSLType20:
             r = r[0]
         return True, r
 
+    def get_all_sub_contexts(self, parent_context = None):
+        return self._get_context_internal(None, False, parent_context)
+
     def get_sub_context(self, context_name, parent_context = None):
 
         if context_name is None or context_name == self.root_context_id:
@@ -380,9 +383,6 @@ class DSLType20:
         else:
             r = r[0]
         return True, r
-
-    def get_all_sub_contexts(self, parent_context = None):
-        return self._get_context_internal(None, False, parent_context)
 
     def get_context_options(self, context_name = None):
 
