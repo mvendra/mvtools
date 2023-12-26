@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-ANYSPACE = "[ ]*"
 SINGLESPACE = " "
 COLON = ":"
 ATSIGN = "@"
@@ -783,7 +782,7 @@ class DSLType20:
         parsed_context_name = None
         parsed_opts = []
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, ATSIGN + ANYSPACE + miniparse.IDENTIFIER)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, ATSIGN + miniparse.ANYSPACE + miniparse.IDENTIFIER)
         if not v:
             return False, "Malformed context name: [%s]." % str_input
         parsed_context_name = (r[0]).strip()
@@ -791,7 +790,7 @@ class DSLType20:
 
         if not local_str_input == "": # there might be options
 
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, ANYSPACE + LCBRACKET)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ANYSPACE + LCBRACKET)
 
             if v: # yes there are options
 
@@ -869,7 +868,7 @@ class DSLType20:
                 return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
             local_str_input = (r[1]).strip()
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + ANYSPACE + LCBRACKET)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + LCBRACKET)
         if v:
 
             # variable has options
@@ -896,7 +895,7 @@ class DSLType20:
 
             # variable has no options
 
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + ANYSPACE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE)
             if not v:
                 return False, "Malformed variable: [%s]: Can't parse variable name." % str_input
             var_name = (r[0]).strip()
@@ -952,7 +951,7 @@ class DSLType20:
             return False, "Invalid option input: [%s]" % str_input, None, None
 
         # start by parsing the option's name
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + ANYSPACE + COLON)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + COLON)
         if v:
 
             # option has value
@@ -1011,13 +1010,13 @@ class DSLType20:
             # option has no value
 
             rem_last_chr = FSLASH
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + ANYSPACE + FSLASH)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + FSLASH)
             more_options = v
             if not more_options:
 
                 # there are no other options
 
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + ANYSPACE + RCBRACKET)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + RCBRACKET)
                 if not v:
                     return False, "Parsing option failed: [%s]" % str_input, None, None
                 local_str_input = (r[1]).strip()
