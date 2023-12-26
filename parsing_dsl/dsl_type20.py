@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-FSLASH = "/"
 COMMENTS = ["#", "//"]
 
 # basic types
@@ -978,7 +977,7 @@ class DSLType20:
             opt_val = r
 
             # need to advance past this option to look ahead for the next
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, FSLASH)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.FSLASH)
             more_options = v
 
             if more_options:
@@ -996,8 +995,8 @@ class DSLType20:
 
             # option has no value
 
-            rem_last_chr = FSLASH
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + FSLASH)
+            rem_last_chr = miniparse.FSLASH
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + miniparse.FSLASH)
             more_options = v
             if not more_options:
 
@@ -1087,7 +1086,7 @@ class DSLType20:
             if idx == len(input_options):
                 options_result += miniparse.RCBRACKET
             else:
-                options_result += miniparse.SINGLESPACE + FSLASH + miniparse.SINGLESPACE
+                options_result += miniparse.SINGLESPACE + miniparse.FSLASH + miniparse.SINGLESPACE
 
         return options_result
 
