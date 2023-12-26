@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-LBRACKET = "["
 RBRACKET = "]"
 LCBRACKET = "{"
 RCBRACKET = "}"
@@ -530,7 +529,7 @@ class DSLType20:
     def _parse_line_delegate(self, ipc, current_line, current_line_number):
 
         # context name, begin
-        if current_line == LBRACKET:
+        if current_line == miniparse.LBRACKET:
             ipc.bracket_stack.append(1) # start by assuming this is going to be a pseudo context
             return True, None
 
@@ -1051,7 +1050,7 @@ class DSLType20:
             local_indent = self.indent
 
         if context.get_name() != self.root_context_id:
-            result += (NEWLINE + local_indent + LBRACKET + NEWLINE + local_indent + miniparse.ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
+            result += (NEWLINE + local_indent + miniparse.LBRACKET + NEWLINE + local_indent + miniparse.ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
                 end_comment = "%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, context.get_name())
 
