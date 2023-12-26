@@ -353,7 +353,7 @@ class DSLType20:
 
         return True, None
 
-    def get_context(self, context_name):
+    def get_context(self, context_name = None):
 
         if context_name is None or context_name == self.root_context_id:
             return True, self._ctx_shallow_copy(None, self.data)
@@ -384,7 +384,7 @@ class DSLType20:
     def get_sub_contexts(self, parent_context = None):
         return self._get_context_internal(None, False, parent_context)
 
-    def get_context_options(self, context_name):
+    def get_context_options(self, context_name = None):
 
         v, r = self.get_context(context_name)
         if not v:
