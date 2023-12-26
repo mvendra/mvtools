@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-NULL = "\x00"
 BSLASH = "\\"
 FSLASH = "/"
 COMMENTS = ["#", "//"]
@@ -91,7 +90,7 @@ def validate_value(value):
     if miniparse.NEWLINE in value:
         return False
 
-    if NULL in value:
+    if miniparse.NULL in value:
         return False
 
     return True
