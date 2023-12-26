@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-NEWLINE = "\n"
 WIN_NEWLINE = "\r\n"
 NULL = "\x00"
 BSLASH = "\\"
@@ -90,7 +89,7 @@ def validate_value(value):
     if not isinstance(value, str):
         return False
 
-    if NEWLINE in value:
+    if miniparse.NEWLINE in value:
         return False
 
     if NULL in value:
@@ -493,7 +492,7 @@ class DSLType20:
 
         self.clear()
         ipc = _internal_parse_context()
-        lines = contents.replace(WIN_NEWLINE, NEWLINE).split(NEWLINE)
+        lines = contents.replace(WIN_NEWLINE, miniparse.NEWLINE).split(miniparse.NEWLINE)
 
         line_num = 0
         for line in lines:
@@ -1045,20 +1044,20 @@ class DSLType20:
             local_indent = self.indent
 
         if context.get_name() != self.root_context_id:
-            result += (NEWLINE + local_indent + miniparse.LBRACKET + NEWLINE + local_indent + miniparse.ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
+            result += (miniparse.NEWLINE + local_indent + miniparse.LBRACKET + miniparse.NEWLINE + local_indent + miniparse.ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
                 end_comment = "%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, context.get_name())
 
         for entry in context.get_entries():
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                result += NEWLINE + local_indent + self._produce_variable(entry)
+                result += miniparse.NEWLINE + local_indent + self._produce_variable(entry)
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                result += NEWLINE + self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent, (context.get_name() == self.root_context_id))
+                result += miniparse.NEWLINE + self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent, (context.get_name() == self.root_context_id))
 
         if context.get_name() != self.root_context_id:
-            result += NEWLINE + local_indent + miniparse.RBRACKET + end_comment + NEWLINE
+            result += miniparse.NEWLINE + local_indent + miniparse.RBRACKET + end_comment + miniparse.NEWLINE
 
         if _ctx_lvl_indent:
             self._dec_indent()
