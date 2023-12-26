@@ -626,6 +626,9 @@ class DSLType20:
 
     def _context_exists(self, ctx_name):
 
+        if ctx_name is None:
+            ctx_name = self.root_context_id
+
         v, r = self._find_context(ctx_name, None, None)
         return v
 
