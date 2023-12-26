@@ -36,6 +36,25 @@ def opt_fmt_helper_call(opt_list):
         raise mvtools_exception.mvtools_exception("Failed test")
     return opt_fmt_helper_simple(r)
 
+def find_context_callback_report_chain(node_ptr, node_data):
+
+    if node_ptr is None:
+        raise mvtools_exception.mvtools_exception("Failed test")
+
+    if not isinstance(node_data, list):
+        raise mvtools_exception.mvtools_exception("Failed test")
+
+    sentinel = 0
+    current = node_ptr
+    while (current != None):
+        sentinel += 1
+        if sentinel > 100:
+            break
+        node_data.append(current.get_name())
+        current = current.get_parent_ptr()
+
+    return True, None
+
 def find_context_callback_positive(node_ptr, node_data):
 
     if node_ptr is None:
@@ -3190,6 +3209,49 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl._find_context("ctx1", find_context_callback_negative, "dummy-data")
         self.assertFalse(v)
         self.assertEqual(r, "Test error")
+
+    def testDslType20_TestFindContext5(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_context("ctx1", [], None)[0])
+        self.assertTrue(dsl.add_context("ctx2", [], None)[0])
+        self.assertTrue(dsl.add_context("ctx3", [], None)[0])
+
+        self.assertTrue(dsl.add_context("ctx4", [], "ctx1")[0])
+        self.assertTrue(dsl.add_context("ctx5", [], "ctx1")[0])
+
+        self.assertTrue(dsl.add_context("ctx6", [], "ctx2")[0])
+        self.assertTrue(dsl.add_context("ctx7", [], "ctx2")[0])
+
+        self.assertTrue(dsl.add_context("ctx8", [], "ctx3")[0])
+        self.assertTrue(dsl.add_context("ctx9", [], "ctx3")[0])
+
+        self.assertTrue(dsl.add_context("ctx10", [], "ctx4")[0])
+        self.assertTrue(dsl.add_context("ctx11", [], "ctx5")[0])
+
+        names_chain = []
+        v, r = dsl._find_context("ctx10", find_context_callback_report_chain, names_chain)
+        self.assertTrue(v)
+        self.assertTrue(r)
+        self.assertEqual(names_chain, ["ctx10", "ctx4", "ctx1", "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"])
+
+        names_chain.clear()
+        v, r = dsl._find_context("ctx11", find_context_callback_report_chain, names_chain)
+        self.assertTrue(v)
+        self.assertTrue(r)
+        self.assertEqual(names_chain, ["ctx11", "ctx5", "ctx1", "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"])
+
+        names_chain.clear()
+        v, r = dsl._find_context("ctx9", find_context_callback_report_chain, names_chain)
+        self.assertTrue(v)
+        self.assertTrue(r)
+        self.assertEqual(names_chain, ["ctx9", "ctx3", "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"])
+
+        names_chain.clear()
+        v, r = dsl._find_context("ctx6", find_context_callback_report_chain, names_chain)
+        self.assertTrue(v)
+        self.assertTrue(r)
+        self.assertEqual(names_chain, ["ctx6", "ctx2", "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"])
 
 if __name__ == '__main__':
     unittest.main()
