@@ -8,7 +8,6 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-WIN_NEWLINE = "\r\n"
 NULL = "\x00"
 BSLASH = "\\"
 FSLASH = "/"
@@ -492,7 +491,7 @@ class DSLType20:
 
         self.clear()
         ipc = _internal_parse_context()
-        lines = contents.replace(WIN_NEWLINE, miniparse.NEWLINE).split(miniparse.NEWLINE)
+        lines = contents.replace(miniparse.WIN_NEWLINE, miniparse.NEWLINE).split(miniparse.NEWLINE)
 
         line_num = 0
         for line in lines:

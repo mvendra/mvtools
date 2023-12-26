@@ -18,6 +18,7 @@ RCBRACKET = "}"
 EQSIGN = "="
 QUOTE = "\""
 NEWLINE = "\n"
+WIN_NEWLINE = "\r\n"
 
 def delete_indices_from_string(thestr, list_indices):
 
