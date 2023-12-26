@@ -496,7 +496,7 @@ class DSLType20:
     def rem_all_variables(self, context = None):
         return self._rem_variable_internal(None, context)
 
-    def rem_variable(self, var_name, context = None):
+    def rem_variables(self, var_name, context = None):
         v, r = self._rem_variable_internal(var_name, context)
         return v, len(r)
 
