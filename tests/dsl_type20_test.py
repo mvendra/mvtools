@@ -2189,6 +2189,12 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(opt_fmt_helper_simple(var_obj.get_options()), [])
 
+    def testDslType20_TestAddVariable17(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes = False))
+        self.assertTrue(dsl.add_context("var1", [], None)[0])
+        self.assertTrue(dsl.add_variable("var1", None, [])[0])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", None, [])])
+
     def testDslType20_TestAddVariableFail1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         self.assertFalse(dsl.add_variable("var1", [], [ ] )[0])

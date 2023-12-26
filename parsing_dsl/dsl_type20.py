@@ -730,7 +730,7 @@ class DSLType20:
 
         if not self.configs.allow_var_dupes:
             for entry in ptr.get_entries():
-                if entry.get_name() == var_name:
+                if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
                     return False, "Variable [%s] already exists" % var_name
 
         new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
