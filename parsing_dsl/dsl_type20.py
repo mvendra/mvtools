@@ -1137,16 +1137,21 @@ class DSLType20:
         self.indent = ""
 
 def puaq():
-    print("Usage: %s file_to_parse.t20" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--decorator the-deco] file_to_parse.t20" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == '__main__':
 
     if len(sys.argv) < 2:
         puaq()
-    file_to_parse = sys.argv[1]
 
-    dsl = DSLType20(DSLType20_Config())
+    the_deco = ""
+    file_to_parse = sys.argv[1]
+    if file_to_parse == "--decorator":
+        the_deco = sys.argv[2]
+        file_to_parse = sys.argv[3]
+
+    dsl = DSLType20(DSLType20_Config(expand_envvars=True, expand_user=True, allow_var_dupes=True, inherit_options=True, variable_decorator=the_deco))
 
     if not os.path.exists(file_to_parse):
         print("File [%s] does not exist." % file_to_parse)
