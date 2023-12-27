@@ -1047,13 +1047,22 @@ class DSLType20:
             if _ctx_end_comment:
                 end_comment = "%s%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, miniparse.ATSIGN, context.get_name())
 
+        ctx_prev = False
+        idx = 0
         for entry in context.get_entries():
+            idx += 1
+
+            ctx_newline_maybe = miniparse.NEWLINE
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
                 result += miniparse.NEWLINE + local_indent + self._produce_variable(entry)
+                ctx_prev = False
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                result += miniparse.NEWLINE + self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent, (context.get_name() == self.root_context_id))
+                if idx > 1 and ctx_prev:
+                    ctx_newline_maybe = ""
+                result += ctx_newline_maybe + self._produce_context(entry, _ctx_end_comment, _ctx_lvl_indent, (context.get_name() == self.root_context_id))
+                ctx_prev = True
 
         if context.get_name() != self.root_context_id:
             result += miniparse.NEWLINE + local_indent + miniparse.RBRACKET + end_comment + miniparse.NEWLINE
