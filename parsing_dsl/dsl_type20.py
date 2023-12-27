@@ -294,6 +294,13 @@ class _internal_parse_context:
         self.bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
         self.context_stack = [None]
 
+INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX = 200
+class internal_dfs_context:
+    def __init__(self, init_node):
+        self.current_node = init_node
+        self.vars = []
+        self.depth_sentinel = 0
+
 class DSLType20:
     def __init__(self, _configs):
 
@@ -461,6 +468,13 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, None
 
+    def get_all_variables_dfs(self):
+
+        dfs_ctx = internal_dfs_context(self.data)
+        if not self._get_all_variables_dfs(dfs_ctx):
+            return False, "Recursive traversal failed"
+        return True, dfs_ctx.vars
+
     def get_all_variables(self, context = None):
         return self.get_variables(None, context)
 
@@ -515,6 +529,24 @@ class DSLType20:
         self._clear_indent()
         result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
         return result.strip()
+
+    def _get_all_variables_dfs(self, ctx):
+
+        ctx.depth_sentinel += 1
+        if ctx.depth_sentinel == INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX:
+            return False
+
+        this_current_node = ctx.current_node
+        for entry in this_current_node.get_entries():
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                ctx.vars.append(DSLType20_Variable(self._config_copy(), entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(this_current_node, entry))))
+            elif entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                ctx.current_node = entry
+                if not self._get_all_variables_dfs(ctx):
+                    return False
+                ctx.depth_sentinel -= 1
+
+        return True
 
     def _parse_line_delegate(self, ipc, current_line, current_line_number):
 

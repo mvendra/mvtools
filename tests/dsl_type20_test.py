@@ -682,6 +682,86 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(self.parse_test_aux(blankfile, dsl_type20.DSLType20_Config()))
 
+    def testDslType20_GetAllVariablesDFS1(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+
+        self.assertTrue(dsl.add_context("ctx1", [])[0])
+        self.assertTrue(dsl.add_context("ctx2", [])[0])
+        self.assertTrue(dsl.add_context("ctx3", [])[0])
+        self.assertTrue(dsl.add_context("ctx4", [], "ctx1")[0])
+        self.assertTrue(dsl.add_context("ctx5", [], "ctx2")[0])
+        self.assertTrue(dsl.add_context("ctx6", [], "ctx3")[0])
+        self.assertTrue(dsl.add_context("ctx7", [], "ctx4")[0])
+        self.assertTrue(dsl.add_context("ctx8", [], "ctx4")[0])
+        self.assertTrue(dsl.add_context("ctx9", [], "ctx5")[0])
+
+        self.assertTrue(dsl.add_variable("var1", "val1", [])[0])
+        self.assertTrue(dsl.add_variable("var2", "val2", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var3", "val3", [], "ctx2")[0])
+        self.assertTrue(dsl.add_variable("var4", "val4", [], "ctx3")[0])
+        self.assertTrue(dsl.add_variable("var5", "val5", [], "ctx4")[0])
+        self.assertTrue(dsl.add_variable("var6", "val6", [], "ctx5")[0])
+        self.assertTrue(dsl.add_variable("var7", "val7", [], "ctx6")[0])
+        self.assertTrue(dsl.add_variable("var8", "val8", [], "ctx7")[0])
+        self.assertTrue(dsl.add_variable("var9", "val9", [], "ctx8")[0])
+        self.assertTrue(dsl.add_variable("var10", "val10", [], "ctx9")[0])
+
+        self.assertTrue(dsl.add_variable("var11", "val11", [])[0])
+        self.assertTrue(dsl.add_variable("var12", "val12", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var13", "val13", [], "ctx2")[0])
+        self.assertTrue(dsl.add_variable("var14", "val14", [], "ctx3")[0])
+        self.assertTrue(dsl.add_variable("var15", "val15", [])[0])
+        self.assertTrue(dsl.add_variable("var16", "val16", [], "ctx4")[0])
+        self.assertTrue(dsl.add_variable("var17", "val17", [], "ctx5")[0])
+        self.assertTrue(dsl.add_variable("var18", "val18", [], "ctx6")[0])
+        self.assertTrue(dsl.add_variable("var19", "val19", [])[0])
+        self.assertTrue(dsl.add_variable("var20", "val20", [], "ctx7")[0])
+        self.assertTrue(dsl.add_variable("var21", "val21", [], "ctx8")[0])
+        self.assertTrue(dsl.add_variable("var22", "val22", [], "ctx9")[0])
+
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables_dfs()), [("var8", "val8", []), ("var20", "val20", []), ("var9", "val9", []), ("var21", "val21", []), ("var5", "val5", []), ("var16", "val16", []), ("var2", "val2", []), ("var12", "val12", []), ("var10", "val10", []), ("var22", "val22", []), ("var6", "val6", []), ("var17", "val17", []), ("var3", "val3", []), ("var13", "val13", []), ("var7", "val7", []), ("var18", "val18", []), ("var4", "val4", []), ("var14", "val14", []), ("var1", "val1", []), ("var11", "val11", []), ("var15", "val15", []), ("var19", "val19", [])])
+
+    def testDslType20_GetAllVariablesDFS2(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
+
+        self.assertTrue(dsl.add_context("ctx1", [("opt1", "optval1")])[0])
+        self.assertTrue(dsl.add_context("ctx2", [])[0])
+        self.assertTrue(dsl.add_context("ctx3", [])[0])
+        self.assertTrue(dsl.add_context("ctx4", [("opt2", "optval2")], "ctx1")[0])
+        self.assertTrue(dsl.add_context("ctx5", [], "ctx2")[0])
+        self.assertTrue(dsl.add_context("ctx6", [], "ctx3")[0])
+        self.assertTrue(dsl.add_context("ctx7", [], "ctx4")[0])
+        self.assertTrue(dsl.add_context("ctx8", [], "ctx4")[0])
+        self.assertTrue(dsl.add_context("ctx9", [], "ctx5")[0])
+
+        self.assertTrue(dsl.add_variable("var1", "val1", [])[0])
+        self.assertTrue(dsl.add_variable("var2", "val2", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var3", "val3", [], "ctx2")[0])
+        self.assertTrue(dsl.add_variable("var4", "val4", [], "ctx3")[0])
+        self.assertTrue(dsl.add_variable("var5", "val5", [("opt3", "optval3")], "ctx4")[0])
+        self.assertTrue(dsl.add_variable("var6", "val6", [], "ctx5")[0])
+        self.assertTrue(dsl.add_variable("var7", "val7", [], "ctx6")[0])
+        self.assertTrue(dsl.add_variable("var8", "val8", [], "ctx7")[0])
+        self.assertTrue(dsl.add_variable("var9", "val9", [], "ctx8")[0])
+        self.assertTrue(dsl.add_variable("var10", "val10", [], "ctx9")[0])
+
+        self.assertTrue(dsl.add_variable("var11", "val11", [])[0])
+        self.assertTrue(dsl.add_variable("var12", "val12", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var13", "val13", [], "ctx2")[0])
+        self.assertTrue(dsl.add_variable("var14", "val14", [], "ctx3")[0])
+        self.assertTrue(dsl.add_variable("var15", "val15", [])[0])
+        self.assertTrue(dsl.add_variable("var16", "val16", [], "ctx4")[0])
+        self.assertTrue(dsl.add_variable("var17", "val17", [], "ctx5")[0])
+        self.assertTrue(dsl.add_variable("var18", "val18", [], "ctx6")[0])
+        self.assertTrue(dsl.add_variable("var19", "val19", [])[0])
+        self.assertTrue(dsl.add_variable("var20", "val20", [], "ctx7")[0])
+        self.assertTrue(dsl.add_variable("var21", "val21", [], "ctx8")[0])
+        self.assertTrue(dsl.add_variable("var22", "val22", [], "ctx9")[0])
+
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables_dfs()), [("var8", "val8", [("opt1", "optval1"), ("opt2", "optval2")]), ("var20", "val20", [("opt1", "optval1"), ("opt2", "optval2")]), ("var9", "val9", [("opt1", "optval1"), ("opt2", "optval2")]), ("var21", "val21", [("opt1", "optval1"), ("opt2", "optval2")]), ("var5", "val5", [("opt1", "optval1"), ("opt2", "optval2"), ("opt3", "optval3")]), ("var16", "val16", [("opt1", "optval1"), ("opt2", "optval2")]), ("var2", "val2", [("opt1", "optval1")]), ("var12", "val12", [("opt1", "optval1")]), ("var10", "val10", []), ("var22", "val22", []), ("var6", "val6", []), ("var17", "val17", []), ("var3", "val3", []), ("var13", "val13", []), ("var7", "val7", []), ("var18", "val18", []), ("var4", "val4", []), ("var14", "val14", []), ("var1", "val1", []), ("var11", "val11", []), ("var15", "val15", []), ("var19", "val19", [])])
+
     def testDslType20_GetVariables1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
