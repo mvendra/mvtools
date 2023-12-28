@@ -1143,11 +1143,34 @@ class DSLType20:
 
         opt_val = None
 
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.LPARENT)
+        if v:
+
+            # option value is a stringlist
+            local_str_input = (r[1]).strip()
+
+            while True:
+                break # mvtodo
+
+        else:
+
+            v, r = self._parse_value_single(str_input, local_str_input)
+            if not v:
+                return False, r
+            local_str_input = (r[0]).strip()
+            opt_val = r[1]
+
+        return True, (local_str_input, opt_val)
+
+    def _parse_value_single(self, str_input, local_str_input):
+
+        opt_val = None
+
         # find next quote (option's value - first)
         v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
         if not v:
             return False, "Failed parsing options: [%s]" % str_input
-        local_str_input = r[1]
+        local_str_input = (r[1]).strip()
 
         # forward until closing quote is found (the next not escaped)
         v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
