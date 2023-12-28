@@ -955,7 +955,12 @@ class DSLType20:
             local_str_input = (r[1]).strip()
             eqsign_expected = True
 
+            while_sentinel = 0
             while True:
+                while_sentinel += 1
+
+                if while_sentinel == 500:
+                    return False, "Unable to finish parsing variable: [%s] has too many values" % whole_str_input
 
                 # try to parse next value, if present
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
@@ -1152,7 +1157,12 @@ class DSLType20:
             local_str_input = (r[1]).strip()
 
             r_paren_allowed = True
+            while_sentinel = 0
             while True:
+                while_sentinel += 1
+
+                if while_sentinel == 500:
+                    return False, "Failed parsing options: [%s]" % str_input
 
                 # checks if the right parenthesis has been reached
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.RPARENT)
