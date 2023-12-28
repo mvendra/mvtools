@@ -378,7 +378,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_option((), "a")[0])
         self.assertTrue(dsl_type20.validate_option("a", None)[0])
         self.assertTrue(dsl_type20.validate_option("a", "")[0])
-        self.assertFalse(dsl_type20.validate_option("a", [])[0])
+        self.assertTrue(dsl_type20.validate_option("a", [])[0])
+        self.assertTrue(dsl_type20.validate_option("a", ["abc"])[0])
+        self.assertFalse(dsl_type20.validate_option("a", ["abc", 1])[0])
         self.assertFalse(dsl_type20.validate_option("a", ())[0])
 
     def testValidateOptionsList(self):
