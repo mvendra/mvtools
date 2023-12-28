@@ -589,6 +589,14 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.get_options(), [])
 
     def testDSLType20_Option1(self):
+        ex_flag = False
+        try:
+            obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "", None)
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Option2(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a", None)
         self.assertTrue(isinstance(obj_inst, dsl_type20.DSLType20_Option))
         self.assertTrue(isinstance(obj_inst.configs, dsl_type20.DSLType20_Config))
@@ -597,14 +605,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(obj_inst.get_name(), "a")
         self.assertEqual(obj_inst.value, None)
         self.assertEqual(obj_inst.get_value(), None)
-
-    def testDSLType20_Option2(self):
-        ex_flag = False
-        try:
-            obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "", None)
-        except BaseException as ex:
-            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
-        self.assertTrue(ex_flag)
 
     def testDSLType20_Context1(self):
         ctx_inst = dsl_type20.DSLType20_Context(None, "a", [])
