@@ -1163,6 +1163,8 @@ class DSLType20:
                     return False, r
                 local_str_input = (r[0]).strip()
                 local_opt_val = r[1]
+                if local_opt_val is None:
+                    return False, "Failed parsing options: [%s]" % str_input
                 opt_val.append(local_opt_val)
 
         else:
