@@ -1069,7 +1069,6 @@ class DSLType20:
 
         opt_name = None
         opt_val = None
-
         more_options = None
 
         local_str_input = str_input.strip()
@@ -1157,14 +1156,7 @@ class DSLType20:
                 return False, "Parsing option failed: [%s]" % str_input, None, None
             opt_name = r.strip()
 
-        if more_options:
-            # there are more options. signal for continuation
-            return True, (opt_name, opt_val), local_str_input, True
-        else:
-            # there are no more options. signal for termination
-            return True, (opt_name, opt_val), local_str_input, False
-
-        return False, "Failed parsing options: [%s]" % str_input, None, None
+        return True, (opt_name, opt_val), local_str_input, more_options
 
     def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent, _indent_skip = False):
 
