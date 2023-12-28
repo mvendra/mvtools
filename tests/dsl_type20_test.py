@@ -606,6 +606,46 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(obj_inst.value, None)
         self.assertEqual(obj_inst.get_value(), None)
 
+    def testDSLType20_Option3(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a", [])
+        self.assertTrue(isinstance(obj_inst, dsl_type20.DSLType20_Option))
+        self.assertTrue(isinstance(obj_inst.configs, dsl_type20.DSLType20_Config))
+        self.assertEqual(obj_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
+        self.assertEqual(obj_inst.name, "a")
+        self.assertEqual(obj_inst.get_name(), "a")
+        self.assertEqual(obj_inst.value, [])
+        self.assertEqual(obj_inst.get_value(), [])
+
+    def testDSLType20_Option4(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a", "")
+        self.assertTrue(isinstance(obj_inst, dsl_type20.DSLType20_Option))
+        self.assertTrue(isinstance(obj_inst.configs, dsl_type20.DSLType20_Config))
+        self.assertEqual(obj_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
+        self.assertEqual(obj_inst.name, "a")
+        self.assertEqual(obj_inst.get_name(), "a")
+        self.assertEqual(obj_inst.value, "")
+        self.assertEqual(obj_inst.get_value(), "")
+
+    def testDSLType20_Option5(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a", ["one"])
+        self.assertTrue(isinstance(obj_inst, dsl_type20.DSLType20_Option))
+        self.assertTrue(isinstance(obj_inst.configs, dsl_type20.DSLType20_Config))
+        self.assertEqual(obj_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
+        self.assertEqual(obj_inst.name, "a")
+        self.assertEqual(obj_inst.get_name(), "a")
+        self.assertEqual(obj_inst.value, ["one"])
+        self.assertEqual(obj_inst.get_value(), ["one"])
+
+    def testDSLType20_Option6(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a", "two")
+        self.assertTrue(isinstance(obj_inst, dsl_type20.DSLType20_Option))
+        self.assertTrue(isinstance(obj_inst.configs, dsl_type20.DSLType20_Config))
+        self.assertEqual(obj_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
+        self.assertEqual(obj_inst.name, "a")
+        self.assertEqual(obj_inst.get_name(), "a")
+        self.assertEqual(obj_inst.value, "two")
+        self.assertEqual(obj_inst.get_value(), "two")
+
     def testDSLType20_Context1(self):
         ctx_inst = dsl_type20.DSLType20_Context(None, "a", [])
         self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
