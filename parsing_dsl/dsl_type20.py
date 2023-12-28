@@ -1170,7 +1170,7 @@ class DSLType20:
         v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
         if not v:
             return False, "Failed parsing options: [%s]" % str_input
-        local_str_input = (r[1]).strip()
+        local_str_input = r[1]
 
         # forward until closing quote is found (the next not escaped)
         v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
