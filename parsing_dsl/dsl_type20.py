@@ -1146,11 +1146,24 @@ class DSLType20:
         v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.LPARENT)
         if v:
 
+            opt_val = []
+
             # option value is a stringlist
             local_str_input = (r[1]).strip()
 
             while True:
-                break # mvtodo
+
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.RPARENT)
+                if v:
+                    local_str_input = (r[1]).strip()
+                    break
+
+                v, r = self._parse_value_single(str_input, local_str_input)
+                if not v:
+                    return False, r
+                local_str_input = (r[0]).strip()
+                local_opt_val = r[1]
+                opt_val.append(local_opt_val)
 
         else:
 
