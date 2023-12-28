@@ -77,19 +77,33 @@ def validate_name(name):
 
     return True
 
+def _validate_value_single(value_str):
+
+    if not isinstance(value_str, str):
+        return False
+
+    if miniparse.NEWLINE in value_str:
+        return False
+
+    if miniparse.NULL in value_str:
+        return False
+
+    return True
+
 def validate_value(value):
 
     if value is None:
         return True
 
-    if not isinstance(value, str):
+    if isinstance(value, str):
+        return _validate_value_single(value)
+
+    if not isinstance(value, list):
         return False
 
-    if miniparse.NEWLINE in value:
-        return False
-
-    if miniparse.NULL in value:
-        return False
+    for entry in value:
+        if not _validate_value_single(entry):
+            return False
 
     return True
 

@@ -341,7 +341,6 @@ class DSLType20Test(unittest.TestCase):
 
     def testValidateValue(self):
         self.assertTrue(dsl_type20.validate_value(None))
-        self.assertFalse(dsl_type20.validate_value([]))
         self.assertFalse(dsl_type20.validate_value(()))
         self.assertFalse(dsl_type20.validate_value("value\x0a"))
         self.assertFalse(dsl_type20.validate_value("value\x00"))
@@ -349,6 +348,12 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_type20.validate_value("name\x09"))
         self.assertTrue(dsl_type20.validate_value("a"))
         self.assertTrue(dsl_type20.validate_value("거물사냥꾼"))
+        self.assertTrue(dsl_type20.validate_value(""))
+        self.assertTrue(dsl_type20.validate_value([]))
+        self.assertTrue(dsl_type20.validate_value(["first"]))
+        self.assertTrue(dsl_type20.validate_value(["first", "second"]))
+        self.assertFalse(dsl_type20.validate_value(["first", 1]))
+        self.assertFalse(dsl_type20.validate_value(["first", ["second"]]))
 
     def testValidateVariable(self):
         self.assertTrue(dsl_type20.validate_variable("a", "a")[0])
