@@ -974,16 +974,23 @@ class DSLType20:
             var_value.reverse()
             return True, (local_str_input, var_value)
 
+        return self._parse_value_end_single(whole_str_input)
+
+    def _parse_value_end_single(self, str_input):
+
+        local_str_input = str_input
+        var_value = None
+
         v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
         if v:
             if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
-                return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % whole_str_input
+                return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
             local_str_input = r[1]
 
             # find next nonescaped quote in reverse (beginning of the value)
             v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
             if not v:
-                return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % whole_str_input
+                return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
             local_str_input = (r[1]).strip()
             var_value = r[0]
 
@@ -996,13 +1003,13 @@ class DSLType20:
             # remove first quote of value
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
             if not v:
-                return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % whole_str_input
+                return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
             local_str_input = (r[1]).strip()
 
             # remove equal sign just before the variable's value
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
             if not v:
-                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % whole_str_input
+                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
             local_str_input = (r[1]).strip()
 
         return True, (local_str_input, var_value)
