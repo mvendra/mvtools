@@ -1153,11 +1153,13 @@ class DSLType20:
 
             while True:
 
+                # checks if the right parenthesis has been reached
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.RPARENT)
                 if v:
                     local_str_input = (r[1]).strip()
                     break
 
+                # read out current value
                 v, r = self._parse_value_single(str_input, local_str_input)
                 if not v:
                     return False, r
@@ -1166,6 +1168,11 @@ class DSLType20:
                 if local_opt_val is None:
                     return False, "Failed parsing options: [%s]" % str_input
                 opt_val.append(local_opt_val)
+
+                # try to parse comma, if present
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.COMMA)
+                if v:
+                    local_str_input = (r[1]).strip()
 
         else:
 

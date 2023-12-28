@@ -3658,5 +3658,21 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[0], "}")
         self.assertEqual(r[1], ["abc"])
 
+    def testDslType20_TestParseValue7(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl._parse_value("opt1: (\"\", \"\")}", "(\"\", \"\")}")
+        self.assertTrue(v)
+        self.assertEqual(r[0], "}")
+        self.assertEqual(r[1], ["", ""])
+
+    def testDslType20_TestParseValue8(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl._parse_value("opt1: (\"abc\", \"def\")}", "(\"abc\", \"def\")}")
+        self.assertTrue(v)
+        self.assertEqual(r[0], "}")
+        self.assertEqual(r[1], ["abc", "def"])
+
 if __name__ == '__main__':
     unittest.main()
