@@ -948,6 +948,7 @@ class DSLType20:
 
         v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.RPARENT)
         if v:
+
             # value is a string list
             var_value = []
             local_str_input = (r[1]).strip()
@@ -972,9 +973,17 @@ class DSLType20:
             local_str_input = (r[1]).strip()
 
             var_value.reverse()
-            return True, (local_str_input, var_value)
 
-        return self._parse_value_end_single(whole_str_input)
+        else:
+
+            # value is either None/NULL (valueless) or a single string
+            v, r = self._parse_value_end_single(whole_str_input)
+            if not v:
+                return False, r
+            local_str_input = (r[0]).strip()
+            var_value = r[1]
+
+        return True, (local_str_input, var_value)
 
     def _parse_value_end_single(self, str_input):
 
