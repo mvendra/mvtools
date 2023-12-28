@@ -946,6 +946,34 @@ class DSLType20:
         local_str_input = whole_str_input
         var_value = None
 
+        v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.RPARENT)
+        if v:
+            # value is a string list
+            var_value = []
+            local_str_input = (r[1]).strip()
+
+            while True:
+
+                # try to parse next value, if present
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
+                if not v:
+                    break
+
+            # remove enclosing left parenthesis
+            v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.LPARENT)
+            if not v:
+                return False, "Malformed variable: [%s]: string-list value must be be enclosed with parentheses (failed at the second/left parenthesis)." % whole_str_input
+            local_str_input = (r[1]).strip()
+
+            # remove equal sign just before the variable's value
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
+            if not v:
+                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % whole_str_input
+            local_str_input = (r[1]).strip()
+
+            var_value.reverse()
+            return True, (local_str_input, var_value)
+
         v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
         if v:
             if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
