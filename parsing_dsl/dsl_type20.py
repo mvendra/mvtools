@@ -962,12 +962,14 @@ class DSLType20:
                 if not v:
                     break
 
-                v, r = self._parse_value_end_single(local_str_input) # mvtodo: remember cant accept None coming from single here
+                v, r = self._parse_value_end_single(local_str_input)
                 if not v:
                     return False, r
                 local_str_input = (r[0]).strip()
                 local_var_value = r[1]
                 local_eqsign_expected = r[2]
+                if not local_eqsign_expected or local_var_value is None:
+                    return False, "Malformed variable: [%s]: failed parsing string item of string-list." % whole_str_input
                 var_value.append(local_var_value)
 
                 # try to parse comma, if present
