@@ -24,7 +24,7 @@ def read_list_top(target_list):
 def write_list_top(target_list, val):
     target_list[len(target_list)-1] = val
 
-def expand_value(configs, str_input):
+def expand_value_single(configs, str_input):
 
     if str_input is None:
         return True, None
@@ -45,6 +45,23 @@ def expand_value(configs, str_input):
             return False, str_input
 
     return True, local_str_input
+
+def expand_value(configs, input):
+
+    if not isinstance(input, list):
+        return expand_value_single(configs, input)
+    else:
+
+        idx = 0
+        for entry in input:
+
+            v, r = expand_value_single(configs, entry)
+            if not v:
+                return False, r
+            input[idx] = r
+            idx += 1
+
+        return True, input
 
 def sanitize_line(line_in):
 
