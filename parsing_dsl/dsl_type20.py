@@ -945,6 +945,7 @@ class DSLType20:
 
         local_str_input = whole_str_input
         var_value = None
+        eqsign_expected = False
 
         v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.RPARENT)
         if v:
@@ -952,6 +953,7 @@ class DSLType20:
             # value is a string list
             var_value = []
             local_str_input = (r[1]).strip()
+            eqsign_expected = True
 
             while True:
 
@@ -960,16 +962,12 @@ class DSLType20:
                 if not v:
                     break
 
+                # mvtodo: remember cant accept None coming from single here
+
             # remove enclosing left parenthesis
             v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.LPARENT)
             if not v:
                 return False, "Malformed variable: [%s]: string-list value must be be enclosed with parentheses (failed at the second/left parenthesis)." % whole_str_input
-            local_str_input = (r[1]).strip()
-
-            # remove equal sign just before the variable's value
-            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
-            if not v:
-                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % whole_str_input
             local_str_input = (r[1]).strip()
 
             var_value.reverse()
@@ -982,6 +980,14 @@ class DSLType20:
                 return False, r
             local_str_input = (r[0]).strip()
             var_value = r[1]
+            eqsign_expected = r[2]
+
+        # remove equal sign just before the variable's value
+        if eqsign_expected:
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
+            if not v:
+                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % whole_str_input
+            local_str_input = (r[1]).strip()
 
         return True, (local_str_input, var_value)
 
@@ -989,9 +995,12 @@ class DSLType20:
 
         local_str_input = str_input
         var_value = None
+        eqsign_expected = False
 
         v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
         if v:
+            eqsign_expected = True
+
             if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
                 return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
             local_str_input = r[1]
@@ -1015,13 +1024,7 @@ class DSLType20:
                 return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
             local_str_input = (r[1]).strip()
 
-            # remove equal sign just before the variable's value
-            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
-            if not v:
-                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
-            local_str_input = (r[1]).strip()
-
-        return True, (local_str_input, var_value)
+        return True, (local_str_input, var_value, eqsign_expected)
 
     def _parse_options(self, str_input):
 
