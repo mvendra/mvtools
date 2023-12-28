@@ -1090,30 +1090,11 @@ class DSLType20:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_name = r.strip()
 
-            # find next quote (option's value - first)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
+            v, r = self._parse_value(str_input, local_str_input)
             if not v:
-                return False, "Failed parsing options: [%s]" % str_input, None, None
-            local_str_input = r[1]
-
-            # forward until closing quote is found (the next not escaped)
-            v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
-            if not v:
-                return False, "Failed parsing options: [%s]" % str_input, None, None
-            opt_val = r[0]
-            local_str_input = (r[1]).strip()
-
-            # find next quote (option's value - second)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
-            if not v:
-                return False, "Failed parsing options: [%s]" % str_input, None, None
-            local_str_input = (r[1]).strip()
-
-            # descape the value, and its ready for storage
-            v, r = miniparse.descape(opt_val, miniparse.BSLASH)
-            if not v:
-                return False, "Failed parsing options: [%s]" % str_input, None, None
-            opt_val = r
+                return False, r, None, None
+            local_str_input = (r[0]).strip()
+            opt_val = r[1]
 
             # need to advance past this option to look ahead for the next
             v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.FSLASH)
@@ -1157,6 +1138,37 @@ class DSLType20:
             opt_name = r.strip()
 
         return True, (opt_name, opt_val), local_str_input, more_options
+
+    def _parse_value(self, str_input, local_str_input):
+
+        opt_val = None
+
+        # find next quote (option's value - first)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
+        if not v:
+            return False, "Failed parsing options: [%s]" % str_input
+        local_str_input = r[1]
+
+        # forward until closing quote is found (the next not escaped)
+        v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
+        if not v:
+            return False, "Failed parsing options: [%s]" % str_input
+        opt_val = r[0]
+        local_str_input = (r[1]).strip()
+
+        # find next quote (option's value - second)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
+        if not v:
+            return False, "Failed parsing options: [%s]" % str_input
+        local_str_input = (r[1]).strip()
+
+        # descape the value, and its ready for storage
+        v, r = miniparse.descape(opt_val, miniparse.BSLASH)
+        if not v:
+            return False, "Failed parsing options: [%s]" % str_input
+        opt_val = r
+
+        return True, (local_str_input, opt_val)
 
     def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent, _indent_skip = False):
 
