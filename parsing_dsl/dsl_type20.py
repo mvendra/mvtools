@@ -889,36 +889,11 @@ class DSLType20:
             return False, "Can't parse variable: [%s]: Context doesn't exist: [%s]." % (str_input, context)
 
         # start by parsing the variable's value - if it has it
-        v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
-        if v:
-            if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
-                return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
-            local_str_input = r[1]
-
-            # find next nonescaped quote in reverse (beginning of the value)
-            v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
-            if not v:
-                return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
-            local_str_input = (r[1]).strip()
-            var_value = r[0]
-
-            # descape the variable's value
-            v, r = miniparse.descape(var_value, miniparse.BSLASH)
-            if not v:
-                return False, "Variable descaping failed: [%s]" % var_value
-            var_value = r
-
-            # remove first quote of value
-            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
-            if not v:
-                return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
-            local_str_input = (r[1]).strip()
-
-            # remove equal sign just before the variable's value
-            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
-            if not v:
-                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % str_input
-            local_str_input = (r[1]).strip()
+        v, r = self._parse_value_end(local_str_input)
+        if not v:
+            return False, "Can't parse variable: [%s]: [%s]." % (str_input, r)
+        local_str_input = r[0]
+        var_value = r[1]
 
         v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + miniparse.LCBRACKET)
         if v:
@@ -965,6 +940,44 @@ class DSLType20:
             return False, "Unable to add variable [%s]: [%s]" % (var_name, r)
 
         return True, None
+
+    def _parse_value_end(self, whole_str_input):
+
+        local_str_input = whole_str_input
+        var_value = None
+
+        v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
+        if v:
+            if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
+                return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % whole_str_input
+            local_str_input = r[1]
+
+            # find next nonescaped quote in reverse (beginning of the value)
+            v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
+            if not v:
+                return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % whole_str_input
+            local_str_input = (r[1]).strip()
+            var_value = r[0]
+
+            # descape the variable's value
+            v, r = miniparse.descape(var_value, miniparse.BSLASH)
+            if not v:
+                return False, "Variable descaping failed: [%s]" % var_value
+            var_value = r
+
+            # remove first quote of value
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
+            if not v:
+                return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % whole_str_input
+            local_str_input = (r[1]).strip()
+
+            # remove equal sign just before the variable's value
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EQSIGN)
+            if not v:
+                return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % whole_str_input
+            local_str_input = (r[1]).strip()
+
+        return True, (local_str_input, var_value)
 
     def _parse_options(self, str_input):
 
