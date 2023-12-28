@@ -1118,7 +1118,10 @@ class DSLType20:
             ctx_newline_maybe = miniparse.NEWLINE
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                result += miniparse.NEWLINE + local_indent + self._produce_variable(entry)
+                var_prod = self._produce_variable(entry)
+                if var_prod is None:
+                    return None
+                result += miniparse.NEWLINE + local_indent + var_prod
                 ctx_prev = False
 
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
@@ -1168,7 +1171,6 @@ class DSLType20:
     def _produce_variable(self, input_variable):
 
         variable_result = ""
-
         variable_result = self.configs.variable_decorator + input_variable.get_name()
 
         # produce the options
@@ -1178,16 +1180,49 @@ class DSLType20:
 
         # add the variable's value - if it has it
         if input_variable.get_value() is not None:
+
+            variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
+
+            if isinstance(input_variable.get_value(), list):
+                variable_result += miniparse.LPARENT
+
+            # add escaped value(s)
+            new_val = self._produce_values(input_variable.get_value())
+            if new_val is None:
+                return None
+            variable_result += new_val
+
+            if isinstance(input_variable.get_value(), list):
+                variable_result += miniparse.RPARENT
+
+        return variable_result
+
+    def _produce_values(self, input_val):
+
+        result = ""
+        local_input_val = []
+
+        if isinstance(input_val, list):
+            local_input_val = input_val
+        else:
+            local_input_val.append(input_val)
+
+        idx = 0
+        for iv in local_input_val:
+            idx += 1
+
             var_escaped_value = ""
-            if input_variable.get_value() != "":
-                v, r = miniparse.escape(input_variable.get_value(), miniparse.BSLASH, [miniparse.QUOTE])
+            if iv != "":
+                v, r = miniparse.escape(iv, miniparse.BSLASH, [miniparse.QUOTE])
                 if not v:
                     return None
                 var_escaped_value = r
 
-            variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE + miniparse.QUOTE + var_escaped_value + miniparse.QUOTE
+            result += miniparse.QUOTE + var_escaped_value + miniparse.QUOTE
+            if idx < len(local_input_val):
+                result += miniparse.COMMA + miniparse.SINGLESPACE
 
-        return variable_result
+        return result
 
     def _inc_indent(self):
         self.indent += "    "

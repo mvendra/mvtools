@@ -3476,5 +3476,45 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(r)
         self.assertEqual(names_chain, ["ctx6", "ctx2", "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"])
 
+    def testDslType20_TestProduceValues1(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values(""), "\"\"")
+
+    def testDslType20_TestProduceValues2(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values("abc"), "\"abc\"")
+
+    def testDslType20_TestProduceValues3(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values("a\"c"), "\"a\\\"c\"")
+
+    def testDslType20_TestProduceValues4(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values([]), "")
+
+    def testDslType20_TestProduceValues5(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values([""]), "\"\"")
+
+    def testDslType20_TestProduceValues6(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values(["abc"]), "\"abc\"")
+
+    def testDslType20_TestProduceValues7(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values(["abc", "def"]), "\"abc\", \"def\"")
+
+    def testDslType20_TestProduceValues8(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertEqual(dsl._produce_values(["abc", "def", "xyz", "123"]), "\"abc\", \"def\", \"xyz\", \"123\"")
+
 if __name__ == '__main__':
     unittest.main()
