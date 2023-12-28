@@ -433,6 +433,10 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_type20.validate_context("거물사냥꾼")[0])
 
     def testMakeObjOptList1(self):
+        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("a", "b") ])
+        self.assertFalse(v)
+
+    def testMakeObjOptList2(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", None) ])
         self.assertTrue(v)
         self.assertTrue(isinstance(r, list))
@@ -444,10 +448,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
         self.assertEqual(r[1].get_value(), None)
-
-    def testMakeObjOptList2(self):
-        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("a", "b") ])
-        self.assertFalse(v)
 
     def testOptListHas(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", None) ])
