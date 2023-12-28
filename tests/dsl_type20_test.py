@@ -364,7 +364,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_variable((), "a")[0])
         self.assertTrue(dsl_type20.validate_variable("a", None)[0])
         self.assertTrue(dsl_type20.validate_variable("a", "")[0])
-        self.assertFalse(dsl_type20.validate_variable("a", [])[0])
+        self.assertTrue(dsl_type20.validate_variable("a", [])[0])
+        self.assertTrue(dsl_type20.validate_variable("a", ["more"])[0])
+        self.assertFalse(dsl_type20.validate_variable("a", ["more", 1])[0])
         self.assertFalse(dsl_type20.validate_variable("a", ())[0])
 
     def testValidateOption(self):
@@ -2304,9 +2306,20 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl.add_variable("var1", None, [])[0])
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", None, [])])
 
-    def testDslType20_TestAddVariableFail1(self):
+    def testDslType20_TestAddVariable18(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertFalse(dsl.add_variable("var1", [], [ ] )[0])
+        self.assertTrue(dsl.add_variable("var1", [], [])[0])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", [], [])])
+
+    def testDslType20_TestAddVariable19(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_variable("var1", ["one"], [])[0])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", ["one"], [])])
+
+    def testDslType20_TestAddVariable20(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        self.assertTrue(dsl.add_variable("var1", ["one", "two"], [])[0])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", ["one", "two"], [])])
 
     def testDslType20_TestAddVariableFail2(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
