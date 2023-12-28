@@ -3610,6 +3610,13 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl._parse_value_end("var1 = (\"abc\", )")
         self.assertFalse(v)
 
+    def testDslType20_TestParseValueEnd12(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl._parse_value_end("var1 = (\"   abc  \", \"  def   \")")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var1", ["   abc  ", "  def   "]))
+
     def testDslType20_TestParseValue1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
@@ -3679,6 +3686,14 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl._parse_value("opt1: (\"abc\", \"def\",)}", "(\"abc\", \"def\",)}")
         self.assertFalse(v)
+
+    def testDslType20_TestParseValue10(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl._parse_value("opt1: (\"   abc  \", \"  def   \")}", "(\"   abc  \", \"  def   \")}")
+        self.assertTrue(v)
+        self.assertEqual(r[0], "}")
+        self.assertEqual(r[1], ["   abc  ", "  def   "])
 
 if __name__ == '__main__':
     unittest.main()
