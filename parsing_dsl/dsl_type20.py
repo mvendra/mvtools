@@ -1152,14 +1152,21 @@ class DSLType20:
             options_result += opt.get_name()
 
             if opt.get_value() is not None:
+
                 # option has value
-                opt_escaped_value = ""
-                if opt.get_value() != "":
-                    v, r = miniparse.escape(opt.get_value(), miniparse.BSLASH, [miniparse.QUOTE])
-                    if not v:
-                        return None
-                    opt_escaped_value = r
-                options_result += miniparse.COLON + miniparse.SINGLESPACE + miniparse.QUOTE + opt_escaped_value + miniparse.QUOTE
+                options_result += miniparse.COLON + miniparse.SINGLESPACE
+
+                if isinstance(opt.get_value(), list):
+                    options_result += miniparse.LPARENT
+
+                # add escaped value(s)
+                new_val = self._produce_values(opt.get_value())
+                if new_val is None:
+                    return None
+                options_result += new_val
+
+                if isinstance(opt.get_value(), list):
+                    options_result += miniparse.RPARENT
 
             if idx == len(input_options):
                 options_result += miniparse.RCBRACKET
