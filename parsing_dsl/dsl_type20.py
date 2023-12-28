@@ -970,6 +970,12 @@ class DSLType20:
                 local_eqsign_expected = r[2]
                 var_value.append(local_var_value)
 
+                # try to parse comma, if present
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.COMMA)
+                if not v:
+                    break
+                local_str_input = (r[1]).strip()
+
             # remove enclosing left parenthesis
             v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.LPARENT)
             if not v:
