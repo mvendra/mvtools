@@ -1151,11 +1151,14 @@ class DSLType20:
             # option value is a stringlist
             local_str_input = (r[1]).strip()
 
+            r_paren_allowed = True
             while True:
 
                 # checks if the right parenthesis has been reached
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.RPARENT)
                 if v:
+                    if not r_paren_allowed:
+                        return False, "Failed parsing options: [%s]" % str_input
                     local_str_input = (r[1]).strip()
                     break
 
@@ -1173,6 +1176,7 @@ class DSLType20:
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.COMMA)
                 if v:
                     local_str_input = (r[1]).strip()
+                r_paren_allowed = not v
 
         else:
 
