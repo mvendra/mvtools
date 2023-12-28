@@ -962,7 +962,13 @@ class DSLType20:
                 if not v:
                     break
 
-                # mvtodo: remember cant accept None coming from single here
+                v, r = self._parse_value_end_single(local_str_input) # mvtodo: remember cant accept None coming from single here
+                if not v:
+                    return False, r
+                local_str_input = (r[0]).strip()
+                local_var_value = r[1]
+                local_eqsign_expected = r[2]
+                var_value.append(local_var_value)
 
             # remove enclosing left parenthesis
             v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.LPARENT)
