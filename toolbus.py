@@ -192,7 +192,10 @@ def get_all_tables(_db_name):
         return False, r
     _db_handle = r
 
-    return True, _db_handle.get_all_contexts() # mvtodo
+    v, r = _db_handle.get_all_contexts()
+    if not v:
+        return False, "Unable to fetch all tables: [%s] (database: [%s])" % (r, _db_name)
+    return True, [x.get_name() for x in r]
 
 def get_all_fields(_db_name, _context):
 
