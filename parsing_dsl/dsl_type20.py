@@ -546,7 +546,9 @@ class DSLType20:
 
     def rem_variables(self, var_name, context = None):
         v, r = self._rem_variable_internal(var_name, context)
-        return v, len(r)
+        if not v:
+            return False, r
+        return True, len(r)
 
     def parse(self, contents):
 
