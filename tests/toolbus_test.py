@@ -280,6 +280,19 @@ class ToolbusTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, ("var5", "val5", [("a", "1")]))
 
+    def testSetField8(self):
+
+        v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var3")
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        v, r = toolbus.set_field(self.db_test_ok_2, "ctx1", "var3", ["abc", "def"], [("opt1", ["xyz", "123"])])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var3")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var3", ["abc", "def"], [("opt1", ["xyz", "123"])]))
+
     def testGetSignal1(self):
         self.assertFalse(os.path.exists( self.db_test_internal_database ))
         v, r = toolbus.get_signal("novar")
