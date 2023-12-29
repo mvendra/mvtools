@@ -415,6 +415,20 @@ class ToolbusTest(unittest.TestCase):
         v, r = toolbus.get_field(self.db_test_empty, "ctx1", "var1")
         self.assertTrue(v)
 
+    def testRemoveField4(self):
+
+        v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val2", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_empty, "ctx1", "var1")
+        self.assertTrue(v)
+
+        v, r = toolbus.remove_field(self.db_test_empty, "ctx2", "var2")
+        self.assertFalse(v)
+
+        v, r = toolbus.get_field(self.db_test_empty, "ctx1", "var1")
+        self.assertTrue(v)
+
     def testRemoveTable1(self):
 
         v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val1", [])
@@ -453,6 +467,21 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_field(self.db_test_empty, "ctx2", "var2")
         self.assertTrue(v)
+
+    def testRemoveTable3(self):
+
+        v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val1", [])
+        self.assertTrue(v)
+
+        v, r = toolbus.get_field(self.db_test_empty, "ctx1", "var1")
+        self.assertTrue(v)
+
+        v, r = toolbus.remove_table(self.db_test_empty, "ctx2")
+        self.assertFalse(v)
+
+        v, r = toolbus.get_field(self.db_test_empty, "ctx1", "var1")
+        self.assertTrue(v)
+        self.assertEqual(r, ("var1", "val1", []))
 
     def testGetAllTables1(self):
 
