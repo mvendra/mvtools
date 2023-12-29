@@ -197,7 +197,10 @@ def get_all_fields(_db_name, _context):
         return False, r
     _db_handle = r
 
-    return True, _db_handle.get_all_vars(_context)
+    v, r = _db_handle.get_all_variables(_context)
+    if not v:
+        return False, "Unable to fetch all fields from table [%s] - internal error: [%s] (database: [%s])" % (_context, r, _db_name)
+    return True, dsl_type20.convert_var_obj_list_to_neutral_format(r)
 
 def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
