@@ -25,7 +25,7 @@ def var_fmt_helper(var_list):
     v, r = var_list
     if not v:
         raise mvtools_exception.mvtools_exception("Failed test")
-    return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in r]
+    return dsl_type20.convert_var_obj_list_to_neutral_format(r)
 
 def opt_fmt_helper_simple(opt_list):
     return [(x.get_name(), x.get_value()) for x in opt_list]
