@@ -122,7 +122,7 @@ def get_signal(_sig_name, probe_only=False):
         v, r = _db_handle.rem_variables(_sig_name, TOOLBUS_SIGNAL_CONTEXT):
         if not v:
             return False, "Unable to remove variable (internal error): [%s] (signal: [%s], database: [%s], context: [%s])" % (r, _sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
-        if len(r) == 0:
+        if r == 0:
             return False, "Unable to remove variable (already used signal) [%s] (database: [%s], context: [%s])" % (_sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
 
         new_contents = _db_handle.produce()
@@ -148,7 +148,10 @@ def remove_field(_db_name, _context, _var):
         return False, r
     _db_handle = r
 
-    if not _db_handle.rem_var(_var, None, _context):
+    v, r = _db_handle.rem_variables(_var, _context):
+    if not v:
+        return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])." % (_var, r, _db_name, _context)
+    if r == 0:
         return False, "Unable to remove variable [%s] (database: [%s], context: [%s])." % (_var, _db_name, _context)
 
     new_contents = _db_handle.produce()
