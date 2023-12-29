@@ -330,6 +330,7 @@ class internal_dfs_context:
     def __init__(self, init_node):
         self.current_node = init_node
         self.vars = []
+        self.ctxs = []
         self.depth_sentinel = 0
 
 class DSLType20:
