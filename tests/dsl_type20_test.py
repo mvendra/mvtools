@@ -729,6 +729,48 @@ class DSLType20Test(unittest.TestCase):
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
 
+    def testDslType20_GetEntireDFS1(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+
+        self.assertTrue(dsl.add_context("ctx1", [])[0])
+        self.assertTrue(dsl.add_context("ctx2", [])[0])
+        self.assertTrue(dsl.add_context("ctx3", [])[0])
+        self.assertTrue(dsl.add_context("ctx4", [], "ctx1")[0])
+        self.assertTrue(dsl.add_context("ctx5", [], "ctx2")[0])
+        self.assertTrue(dsl.add_context("ctx6", [], "ctx3")[0])
+        self.assertTrue(dsl.add_context("ctx7", [], "ctx4")[0])
+        self.assertTrue(dsl.add_context("ctx8", [], "ctx4")[0])
+        self.assertTrue(dsl.add_context("ctx9", [], "ctx5")[0])
+
+        self.assertTrue(dsl.add_variable("var1", "val1", [])[0])
+        self.assertTrue(dsl.add_variable("var2", "val2", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var3", "val3", [], "ctx2")[0])
+        self.assertTrue(dsl.add_variable("var4", "val4", [], "ctx3")[0])
+        self.assertTrue(dsl.add_variable("var5", "val5", [], "ctx4")[0])
+        self.assertTrue(dsl.add_variable("var6", "val6", [], "ctx5")[0])
+        self.assertTrue(dsl.add_variable("var7", "val7", [], "ctx6")[0])
+        self.assertTrue(dsl.add_variable("var8", "val8", [], "ctx7")[0])
+        self.assertTrue(dsl.add_variable("var9", "val9", [], "ctx8")[0])
+        self.assertTrue(dsl.add_variable("var10", "val10", [], "ctx9")[0])
+
+        self.assertTrue(dsl.add_variable("var11", "val11", [])[0])
+        self.assertTrue(dsl.add_variable("var12", "val12", [], "ctx1")[0])
+        self.assertTrue(dsl.add_variable("var13", "val13", [], "ctx2")[0])
+        self.assertTrue(dsl.add_variable("var14", "val14", [], "ctx3")[0])
+        self.assertTrue(dsl.add_variable("var15", "val15", [])[0])
+        self.assertTrue(dsl.add_variable("var16", "val16", [], "ctx4")[0])
+        self.assertTrue(dsl.add_variable("var17", "val17", [], "ctx5")[0])
+        self.assertTrue(dsl.add_variable("var18", "val18", [], "ctx6")[0])
+        self.assertTrue(dsl.add_variable("var19", "val19", [])[0])
+        self.assertTrue(dsl.add_variable("var20", "val20", [], "ctx7")[0])
+        self.assertTrue(dsl.add_variable("var21", "val21", [], "ctx8")[0])
+        self.assertTrue(dsl.add_variable("var22", "val22", [], "ctx9")[0])
+
+        v, r = dsl.get_entire_dfs()
+        self.assertTrue(v)
+        self.assertEqual([x.get_name() for x in r], [dsl.root_context_id, "ctx1", "ctx4", "ctx7", "var8", "var20", "ctx8", "var9", "var21", "var5", "var16", "var2", "var12", "ctx2", "ctx5", "ctx9", "var10", "var22", "var6", "var17", "var3", "var13", "ctx3", "ctx6", "var7", "var18", "var4", "var14", "var1", "var11", "var15", "var19"])
+
     def testDslType20_Parse1(self):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_1, dsl_type20.DSLType20_Config()))
 
