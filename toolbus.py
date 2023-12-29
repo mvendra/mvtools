@@ -215,7 +215,7 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
                 return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # add/set new variable
-    v, r = _dh_handle.add_var(_var, _val, _opts, _context)
+    v, r = _dh_handle.add_variable(_var, _val, _opts, _context)
     if not v:
         return False, "Unable to add variable [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
 
