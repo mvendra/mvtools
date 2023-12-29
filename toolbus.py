@@ -101,7 +101,10 @@ def _get_internal(_dh_handle, _db_name, _context, _var):
     if len(vars) == 0:
         return True, None
 
-    return True, vars[0]
+    if len(vars) != 1:
+        return False, "Unable to get variables: [%s] (variable: [%s], database: [%s], context: [%s]): More than one match found." % (_var, _db_name, _context)
+
+    return True, dsl_type20.convert_var_obj_list_to_neutral_format(vars)[0]
 
 def get_signal(_sig_name, probe_only=False):
 
@@ -189,7 +192,7 @@ def get_all_tables(_db_name):
         return False, r
     _db_handle = r
 
-    return True, _db_handle.get_all_contexts()
+    return True, _db_handle.get_all_contexts() # mvtodo
 
 def get_all_fields(_db_name, _context):
 
