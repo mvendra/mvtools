@@ -205,19 +205,22 @@ def get_all_fields(_db_name, _context):
 
 def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
-    vars = _dh_handle.get_vars(_var, _context)
-    if vars is not None:
-        if len(vars) != 0:
+    v, r = _dh_handle.get_variables(_var, _context)
+    if not v:
+        return False, "Unable to get variables [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
+    vars = r
 
-            if not allow_overwrite:
-                return False, "Setting variable [%s] failed - overwrites are not allowed (database: [%s], context: [%s])" % (_var, _db_name, _context)
+    if len(vars) != 0:
 
-            # var already exists. must be removed first so it can then be recreated with new value.
-            v, r = _db_handle.rem_variables(_var, _context)
-            if not v:
-                return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])" % (_var, r, _db_name, _context)
-            if r == 0:
-                return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
+        if not allow_overwrite:
+            return False, "Setting variable [%s] failed - overwrites are not allowed (database: [%s], context: [%s])" % (_var, _db_name, _context)
+
+        # var already exists. must be removed first so it can then be recreated with the new value.
+        v, r = _db_handle.rem_variables(_var, _context)
+        if not v:
+            return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])" % (_var, r, _db_name, _context)
+        if r == 0:
+            return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # add/set new variable
     v, r = _dh_handle.add_variable(_var, _val, _opts, _context)
