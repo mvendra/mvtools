@@ -208,7 +208,10 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
                 return False, "Setting variable [%s] failed - overwrites are not allowed (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
             # var already exists. must be removed first so it can then be recreated with new value.
-            if not _dh_handle.rem_var(_var, None, _context):
+            v, r = _db_handle.rem_variables(_var, _context):
+            if not v:
+                return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])" % (_var, r, _db_name, _context)
+            if r == 0:
                 return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # add/set new variable
