@@ -93,6 +93,11 @@ def get_handle_custom_db(_db_name):
 
 def _get_internal(_dh_handle, _db_name, _context, _var):
 
+    # ensure the context exists
+    v, r = _dh_handle.get_context(_context)
+    if not v:
+        return True, None
+
     v, r = _dh_handle.get_variables(_var, _context)
     if not v:
         return False, "Unable to get variables: [%s] (variable: [%s], database: [%s], context: [%s])" % (r, _var, _db_name, _context)
