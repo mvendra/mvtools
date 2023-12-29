@@ -114,11 +114,15 @@ def get_signal(_sig_name, probe_only=False):
         return False, r
     if r is None:
         return True, None
+    sig_val = r[1]
 
     if not probe_only: # signal consumed
 
         # delete the consumed variable
-        if not _db_handle.rem_var(_sig_name, None, TOOLBUS_SIGNAL_CONTEXT):
+        v, r = _db_handle.rem_variables(_sig_name, TOOLBUS_SIGNAL_CONTEXT):
+        if not v:
+            return False, "Unable to remove variable (internal error): [%s] (signal: [%s], database: [%s], context: [%s])" % (r, _sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
+        if len(r) == 0:
             return False, "Unable to remove variable (already used signal) [%s] (database: [%s], context: [%s])" % (_sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
 
         new_contents = _db_handle.produce()
@@ -127,7 +131,7 @@ def get_signal(_sig_name, probe_only=False):
         if not sync_write_file.sync_write_file(ext, new_contents):
             return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (ext, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
 
-    return True, r[1]
+    return True, sig_val
 
 def get_field(_db_name, _context, _var):
 
