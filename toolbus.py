@@ -216,22 +216,28 @@ def get_all_fields(_db_name, _context):
 
 def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
-    v, r = _dh_handle.get_variables(_var, _context)
-    if not v:
-        return False, "Unable to get variables [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
-    vars = r
+    # avoid checking pre-existence if the context does not exist
+    v, r = _dh_handle.get_context(_context)
+    ctx_already_exists = v
 
-    if len(vars) != 0:
+    if ctx_already_exists:
 
-        if not allow_overwrite:
-            return False, "Setting variable [%s] failed - overwrites are not allowed (database: [%s], context: [%s])" % (_var, _db_name, _context)
-
-        # var already exists. must be removed first so it can then be recreated with the new value.
-        v, r = _dh_handle.rem_variables(_var, _context)
+        v, r = _dh_handle.get_variables(_var, _context)
         if not v:
-            return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])" % (_var, r, _db_name, _context)
-        if r == 0:
-            return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
+            return False, "Unable to get variables [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
+        vars = r
+
+        if len(vars) != 0:
+
+            if not allow_overwrite:
+                return False, "Setting variable [%s] failed - overwrites are not allowed (database: [%s], context: [%s])" % (_var, _db_name, _context)
+
+            # var already exists. must be removed first so it can then be recreated with the new value.
+            v, r = _dh_handle.rem_variables(_var, _context)
+            if not v:
+                return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])" % (_var, r, _db_name, _context)
+            if r == 0:
+                return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # add/set new variable
     v, r = _dh_handle.add_variable(_var, _val, _opts, _context)
