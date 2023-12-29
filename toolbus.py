@@ -197,7 +197,7 @@ def get_all_tables(_db_name):
         return False, r
     _db_handle = r
 
-    v, r = _db_handle.get_all_contexts()
+    v, r = _db_handle.get_all_sub_contexts()
     if not v:
         return False, "Unable to fetch all tables: [%s] (database: [%s])" % (r, _db_name)
     return True, [x.get_name() for x in r]
