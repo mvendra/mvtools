@@ -169,8 +169,9 @@ def remove_table(_db_name, _context):
         return False, r
     _db_handle = r
 
-    if not _db_handle.rem_ctx(_context):
-        return False, "Unable to remove context [%s] (database: [%s])." % (_context, _db_name)
+    v, r = _db_handle.rem_context(_context)
+    if not v:
+        return False, "Unable to remove context [%s] (database: [%s]): [%s]." % (_context, _db_name, r)
 
     new_contents = _db_handle.produce()
 
