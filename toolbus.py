@@ -119,7 +119,7 @@ def get_signal(_sig_name, probe_only=False):
     if not probe_only: # signal consumed
 
         # delete the consumed variable
-        v, r = _db_handle.rem_variables(_sig_name, TOOLBUS_SIGNAL_CONTEXT):
+        v, r = _db_handle.rem_variables(_sig_name, TOOLBUS_SIGNAL_CONTEXT)
         if not v:
             return False, "Unable to remove variable (internal error): [%s] (signal: [%s], database: [%s], context: [%s])" % (r, _sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
         if r == 0:
@@ -148,7 +148,7 @@ def remove_field(_db_name, _context, _var):
         return False, r
     _db_handle = r
 
-    v, r = _db_handle.rem_variables(_var, _context):
+    v, r = _db_handle.rem_variables(_var, _context)
     if not v:
         return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])." % (_var, r, _db_name, _context)
     if r == 0:
@@ -208,7 +208,7 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
                 return False, "Setting variable [%s] failed - overwrites are not allowed (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
             # var already exists. must be removed first so it can then be recreated with new value.
-            v, r = _db_handle.rem_variables(_var, _context):
+            v, r = _db_handle.rem_variables(_var, _context)
             if not v:
                 return False, "Unable to remove variable [%s] - internal error: [%s] (database: [%s], context: [%s])" % (_var, r, _db_name, _context)
             if r == 0:
