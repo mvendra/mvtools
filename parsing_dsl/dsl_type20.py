@@ -406,6 +406,13 @@ class DSLType20:
             r = r[0]
         return True, r
 
+    def get_all_contexts_dfs(self):
+
+        dfs_ctx = internal_dfs_context(self.data)
+        if not self._get_all_contexts_dfs(dfs_ctx):
+            return False, "Recursive traversal failed"
+        return True, dfs_ctx.ctxs
+
     def get_all_sub_contexts(self, parent_context = None):
         return self._get_context_internal(None, False, parent_context)
 
@@ -561,6 +568,23 @@ class DSLType20:
         self._clear_indent()
         result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
         return result.strip()
+
+    def _get_all_contexts_dfs(self, ctx):
+
+        ctx.depth_sentinel += 1
+        if ctx.depth_sentinel == INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX:
+            return False
+
+        this_current_node = ctx.current_node
+        ctx.ctxs.append(self._ctx_shallow_copy(this_current_node.get_parent_ptr(), this_current_node))
+        for entry in this_current_node.get_entries():
+            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                ctx.current_node = entry
+                if not self._get_all_contexts_dfs(ctx):
+                    return False
+                ctx.depth_sentinel -= 1
+
+        return True
 
     def _get_all_variables_dfs(self, ctx):
 
