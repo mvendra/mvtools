@@ -60,15 +60,6 @@ def _merge_params_downwards(p_parent, p_child):
 
     return result
 
-class BaseTask:
-    def __init__(self, name=None, params=None):
-        self.name = name
-        self.params = params
-    def get_desc(self):
-        return "Generic base task"
-    def run_task(self, feedback_object, execution_name=None):
-        return False, "Not implemented"
-
 class BaseJob:
     def __init__(self, name=None, params=None):
         self.name = name
@@ -80,6 +71,15 @@ class BaseJob:
         return False, None
     def run_job(self, feedback_object, execution_name=None):
         return False, None
+
+class BaseTask:
+    def __init__(self, name=None, params=None):
+        self.name = name
+        self.params = params
+    def get_desc(self):
+        return "Generic base task"
+    def run_task(self, feedback_object, execution_name=None):
+        return False, "Not implemented"
 
 def _setup_toolbus(execution_name):
 
