@@ -450,7 +450,10 @@ class RecipeProcessor:
 
     def _get_exec_name_from_recipe(self, dsl):
 
-        var_rn = dsl.get_vars("execution-name")
+        v, r = dsl.get_variables("execution-name")
+        if not v:
+            return False, "Failed retrieving execution-name: [%s]" % r
+        var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
         if len(var_rn) > 1:
             return False, "Recipe's execution-name has been specified more than once."
         elif len(var_rn) == 1:
