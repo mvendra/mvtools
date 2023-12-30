@@ -340,7 +340,12 @@ class RecipeProcessor:
                 return False, r
             new_job = r(ctx.get_name(), job_params)
 
-            for var in dsl.get_all_vars(ctx.get_name()):
+            v, r = dsl.get_all_variables(ctx.get_name())
+            if not v:
+                return False, "Failed attempting to retrieve variables from context [%s]: [%s]" % (ctx.get_name(), r)
+            subvars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+
+            for var in subvars:
 
                 task_params = _convert_dsl_opts_into_py_map(var[2])
 
