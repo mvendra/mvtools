@@ -315,7 +315,7 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.recipe_test_file28, recipe_test_contents28)
 
         recipe_test_contents29 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents29 += "[\n@test-job\n* task1 {test: \"val1\" / test: \"val2\"} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_repeated_params_script_file_namespace1)
+        recipe_test_contents29 += "[\n@test-job\n* task1 {test: (\"val1\", \"val2\")} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_repeated_params_script_file_namespace1)
         self.recipe_test_file29 = path_utils.concat_path(self.test_dir, "recipe_test29.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file29, recipe_test_contents29)
 
@@ -474,7 +474,7 @@ class RecipeProcessorTest(unittest.TestCase):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file27)
         self.assertFalse(v)
 
-    def testRecipeProcessorRepeatedParams(self):
+    def testRecipeProcessorStringlistParam(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file29)
         self.assertTrue(v)
 
