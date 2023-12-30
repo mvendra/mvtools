@@ -327,15 +327,20 @@ class RecipeProcessor:
                 return False, r
             jobs += r
 
-        for ctx in dsl.get_all_contexts():
+        v, r = dsl.get_all_sub_contexts()
+        if not v:
+            return False, "Failed attempting to retrieve subcontexts: [%s]" % r
+        ctxs = r
 
-            job_params = _convert_dsl_opts_into_py_map(dsl.get_context_options(ctx))
+        for ctx in ctxs:
+
+            job_params = _convert_dsl_opts_into_py_map(dsl.get_context_options(ctx.get_name()))
             v, r = _get_job_instance(job_params, namespace)
             if not v:
                 return False, r
-            new_job = r(ctx, job_params)
+            new_job = r(ctx.get_name(), job_params)
 
-            for var in dsl.get_all_vars(ctx):
+            for var in dsl.get_all_vars(ctx.get_name()):
 
                 task_params = _convert_dsl_opts_into_py_map(var[2])
 
