@@ -334,7 +334,12 @@ class RecipeProcessor:
 
         for ctx in ctxs:
 
-            job_params = _convert_dsl_opts_into_py_map(dsl.get_context_options(ctx.get_name()))
+            v, r = dsl.get_context_options(ctx.get_name())
+            if not v:
+                return False, "Failed attempting to retrieve options from context [%s]: [%s]" % (ctx.get_name(), r)
+            ctx_opts = dsl_type20.convert_opt_obj_list_to_neutral_format(r)
+
+            job_params = _convert_dsl_opts_into_py_map(ctx_opts)
             v, r = _get_job_instance(job_params, namespace)
             if not v:
                 return False, r
