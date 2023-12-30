@@ -314,8 +314,12 @@ class RecipeProcessor:
             namespace = (namespace_path, namespace_opt_v)
 
         # recipe includes
-        for var_ir in dsl.get_vars("include_recipe"):
-            v, r = self._bootstrap_dsl_object(var_ir[1])
+        v, r = dsl.get_variables("include_recipe")
+        if not v:
+            return False, "Failed attempting to retrieve include_recipe entries: [%s]" % r
+        var_ir = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+        for var_ir_entry in var_ir:
+            v, r = self._bootstrap_dsl_object(var_ir_entry[1])
             if not v:
                 return False, r
             v, r = self._translate_dsl_into_jobs(r)
