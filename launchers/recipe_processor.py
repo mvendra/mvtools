@@ -366,7 +366,10 @@ class RecipeProcessor:
 
         local_option = None
 
-        var_rn = dsl.get_vars(option)
+        v, r = dsl.get_variables(option)
+        if not v:
+            return False, "Unable to fetch option [%s]: [%s]." % (option, r)
+        var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
         if len(var_rn) > 1: # has been specified more than once. fail.
             return False, "Recipe's %s option has been specified more than once." % option
         elif len(var_rn) == 1: # has been specified once in the recipe file
