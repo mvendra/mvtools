@@ -298,7 +298,10 @@ class RecipeProcessor:
         jobs = []
 
         # recipe namespace (for tasks/plugins)
-        var_rn = dsl.get_vars("recipe_namespace")
+        v, r = dsl.get_variables("recipe_namespace")
+        if not v:
+            return False, "Failed attempting to retrieve recipe_namespace entries: [%s]" % r
+        var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
         if len(var_rn) > 1:
             return False, "Recipe's recipe_namespace has been specified multiple times."
         elif len(var_rn) == 1:
