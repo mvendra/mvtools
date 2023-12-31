@@ -7,7 +7,6 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
     def get_desc(self):
         return "Standard job"
     def add_task(self, task):
-        task.params = launch_jobs._merge_params_downwards(self.params, task.params)
         self.task_list.append(task)
         return True, None
     def run_job(self, feedback_object, execution_name=None):

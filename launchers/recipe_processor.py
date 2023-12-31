@@ -20,17 +20,16 @@ import mvtools_envvars
 # dsltype20-based recipes are supported, syntax as follows:
 #
 # [
-# @job1 {options_base}
-# * task1 {options_custom} = "sample_echo_true.py"
+# @job1 {job_options}
+# * task1 {task_options} = "sample_echo_true.py"
 # ]
 #
 # this would be a recipe file with only one job, which itself has only one task (task1)
-# job options (options_base in the example above) are inherited/merged downwards
-# onto the job's tasks. task options take precedence whenever there are duplications.
+# job options (job_options in the example above) are inherited/merged downwards onto the job's tasks.
 # a recipe is deemed successful if (and only if) every single task in every single job
 # succeeded (some exceptions may apply - see below)
 #
-# by default, task scripts are searched inside MVTOOLS/launchers/launch_jobs_plugins/tasks
+# by default, task scripts are searched for inside MVTOOLS/launchers/launch_jobs_plugins/tasks
 # this can be changed by adding the following freestanding (i.e. outside any context) variable:
 # * recipe_namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
 # it operates in two modes: exclusive mode (which is the default) and inclusive mode.
@@ -272,7 +271,7 @@ class RecipeProcessor:
         if file_contents is None or file_contents == "":
             return False, "Recipe file [%s]'s contents are invalid." % local_recipe
 
-        dsl_opts = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True, inherit_options = False, variable_decorator = "* ")
+        dsl_opts = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True, inherit_options = True, variable_decorator = "* ")
         dsl = dsl_type20.DSLType20(dsl_opts)
 
         v, r = dsl.parse(file_contents)

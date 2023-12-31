@@ -40,28 +40,8 @@ def _format_task_warning_msg(task, detail):
 def _format_task_warning_msg_console_output(task, detail):
     return "%s%s%s." % (terminal_colors.TTY_YELLOW, _format_task_warning_msg(task, detail), terminal_colors.get_standard_color())
 
-def _merge_params_downwards(p_parent, p_child):
-
-    result = {}
-
-    if p_parent is None and p_child is None:
-        return None
-    if p_parent is None and p_child is not None:
-        return p_child
-    if p_parent is not None and p_child is None:
-        return p_parent
-
-    for k in p_parent:
-        if not k in p_child:
-            result[k] = p_parent[k]
-
-    for k in p_child:
-        result[k] = p_child[k]
-
-    return result
-
 class BaseJob:
-    def __init__(self, name=None, params=None):
+    def __init__(self, name=None, params={}):
         self.name = name
         self.params = params
         self.task_list = []
@@ -73,7 +53,7 @@ class BaseJob:
         return False, None
 
 class BaseTask:
-    def __init__(self, name=None, params=None):
+    def __init__(self, name=None, params={}):
         self.name = name
         self.params = params
     def get_desc(self):

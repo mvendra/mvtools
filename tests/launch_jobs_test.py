@@ -12,6 +12,22 @@ import toolbus
 import standard_job
 import launch_jobs
 
+class CustomJob(launch_jobs.BaseJob):
+    def add_task(self, task):
+        add_list = []
+        for k in self.params:
+            if k not in task.params:
+                add_list.append(k)
+        for k in add_list:
+            task.params[k] = self.params[k]
+        self.task_list.append(task)
+        return True, None
+    def run_job(self, feedback_object, execution_name=None):
+        res = True
+        for t in self.task_list:
+            res &= (t.run_task(feedback_object, execution_name))[0]
+        return res, None
+
 class CustomTaskTrue(launch_jobs.BaseTask):
     def run_task(self, feedback_object, execution_name=None):
         return True, None
@@ -38,17 +54,6 @@ class CustomTaskException(launch_jobs.BaseTask):
     def run_task(self, feedback_object, execution_name=None):
         raise mvtools_exception.mvtools_exception("test-showstopper")
         return True, None
-
-class CustomJob(launch_jobs.BaseJob):
-    def add_task(self, task):
-        task.params = launch_jobs._merge_params_downwards(self.params, task.params)
-        self.task_list.append(task)
-        return True, None
-    def run_job(self, feedback_object, execution_name=None):
-        res = True
-        for t in self.task_list:
-            res &= (t.run_task(feedback_object, execution_name))[0]
-        return res, None
 
 class LaunchJobsTest(unittest.TestCase):
 
