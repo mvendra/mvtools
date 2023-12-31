@@ -336,7 +336,8 @@ class RecipeProcessor:
             v, r = _get_job_instance(job_params, namespace)
             if not v:
                 return False, r
-            new_job = r(ctx.get_name(), job_params)
+            new_job = r(ctx.get_name())
+            new_job.params = job_params
 
             v, r = dsl.get_all_variables(ctx.get_name())
             if not v:
@@ -351,7 +352,8 @@ class RecipeProcessor:
                 if not v:
                     return False, r
 
-                new_task = r(var[0], task_params)
+                new_task = r(var[0])
+                new_task.params = task_params
                 new_job.add_task(new_task)
 
             jobs.append(new_job)

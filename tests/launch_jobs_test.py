@@ -115,7 +115,8 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams1(self):
 
-        job1 = CustomJob(params={"test": True})
+        job1 = CustomJob()
+        job1.params["test"] = True
         job1.add_task(CustomTaskParams())
 
         v, r = launch_jobs.run_job_list([job1], print)
@@ -123,7 +124,8 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams2(self):
 
-        job1 = CustomJob(params={"test": False})
+        job1 = CustomJob()
+        job1.params["test"] = False
         job1.add_task(CustomTaskParams())
 
         v, r = launch_jobs.run_job_list([job1], print)
@@ -131,7 +133,8 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams3(self):
 
-        job1 = CustomJob(params={"cause-except": True})
+        job1 = CustomJob()
+        job1.params["cause-except"] = True
         job1.add_task(CustomTaskParams())
 
         try:
@@ -143,16 +146,22 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsCustomTaskParams4(self):
 
-        job1 = CustomJob(params={"test1": True})
-        job1.add_task(CustomTaskParams1And2(params={"test2": True}))
+        job1 = CustomJob()
+        job1.params["test1"] = True
+        task1 = CustomTaskParams1And2()
+        task1.params["test2"] = True
+        job1.add_task(task1)
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertTrue(v)
 
     def testLaunchJobsCustomTaskParams5(self):
 
-        job1 = CustomJob(params={"test": True})
-        job1.add_task(CustomTaskParams(params={"test": False}))
+        job1 = CustomJob()
+        job1.params["test"] = True
+        task1 = CustomTaskParams()
+        task1.params["test"] = False
+        job1.add_task(task1)
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertFalse(v)

@@ -41,9 +41,9 @@ def _format_task_warning_msg_console_output(task, detail):
     return "%s%s%s." % (terminal_colors.TTY_YELLOW, _format_task_warning_msg(task, detail), terminal_colors.get_standard_color())
 
 class BaseJob:
-    def __init__(self, name=None, params={}):
+    def __init__(self, name = None):
         self.name = name
-        self.params = params
+        self.params = {}
         self.task_list = []
     def get_desc(self):
         return "Base job"
@@ -53,9 +53,9 @@ class BaseJob:
         return False, None
 
 class BaseTask:
-    def __init__(self, name=None, params={}):
+    def __init__(self, name = None):
         self.name = name
-        self.params = params
+        self.params = {}
     def get_desc(self):
         return "Generic base task"
     def run_task(self, feedback_object, execution_name=None):
