@@ -15,6 +15,12 @@ DSLTYPE20_ENTRY_TYPE_VAR = 1
 DSLTYPE20_ENTRY_TYPE_OPT = 2
 DSLTYPE20_ENTRY_TYPE_CTX = 3
 
+def hasopt_opts(opts, optname):
+    for o in opts:
+        if o[0] == optname:
+            return True
+    return False
+
 def convert_var_obj_list_to_neutral_format(var_obj_list):
     return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
 

@@ -89,7 +89,10 @@ class BackupPreparation:
     def setup_configuration(self):
 
         # does the first pass to setup the configuration
-        vars = self.dsl.get_all_vars()
+        v, r = self.dsl.get_all_variables()
+        if not v:
+            raise BackupPreparationException("Failed during setup: [%s]" % r)
+        vars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
         for v in vars:
             p = self.proc_single_config(v[0], v[1], v[2])
             if not p:
