@@ -119,7 +119,10 @@ def read_config(config_file):
             BKPREPARATION = var_value
             for o in var_options:
                 if o[0] == "param":
-                    BKPREPARATION_PARAMS.append(o[1])
+                    if isinstance(o[1], list):
+                        BKPREPARATION_PARAMS += o[1]
+                    else:
+                        BKPREPARATION_PARAMS.append(o[1])
 
         elif var_name == "BKSOURCE":
             BKSOURCE_EXCEPTIONS = []

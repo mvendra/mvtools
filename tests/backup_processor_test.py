@@ -383,7 +383,7 @@ class BackupProcessorTest(unittest.TestCase):
 
         # config file, BKPREPARATION that receives params, specified with an envvar
         cfg_file_contents_prep_param = ""
-        cfg_file_contents_prep_param += ("BKPREPARATION {param: \"%s\" / param: \"%s\"} = \"%s\"" + os.linesep) % (self.reserved_test_env_var, self.prep_generated_param_test_content, self.prep_param_filename)
+        cfg_file_contents_prep_param += ("BKPREPARATION {param: (\"%s\", \"%s\")} = \"%s\"" + os.linesep) % (self.reserved_test_env_var, self.prep_generated_param_test_content, self.prep_param_filename)
         cfg_file_contents_prep_param += ("BKWARNING_EACH {abort} = \"%s\"" + os.linesep) % (self.warn_each_2)
         cfg_file_contents_prep_param += ("BKWARNING_FINAL {abort} = \"%s\"" + os.linesep) % (self.warn_final_2)
         cfg_file_contents_prep_param += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder
