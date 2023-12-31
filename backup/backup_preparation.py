@@ -364,7 +364,10 @@ class BackupPreparation:
             if opt_name == "subfilter-exclude":
                 if opt_val is None or opt_val == "":
                     raise BackupPreparationException("Invalid RUN_COLLECT_PATCHES options (can't parse \"subfilter-exclude\"): [%s]. Aborting." % (var_options))
-                subfilter_excludes.append(opt_val)
+                if isinstance(opt_val, list):
+                    subfilter_excludes += opt_val
+                else:
+                    subfilter_excludes.append(opt_val)
 
             # collection options
             if opt_name == "head":

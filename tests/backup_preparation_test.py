@@ -1484,11 +1484,14 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(v)
         with open(second_repo_file1, "a") as f:
             f.write("additional contents, r2-f1")
+        second_repo_file101 = path_utils.concat_path(self.second_repo, "file101.txt")
+        with open(second_repo_file101, "w") as f:
+            f.write("initial contents, r2-f101")
 
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("unversioned", ""), ("default-subfilter-include", ""), ("subfilter-exclude", "*/file1.txt")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("unversioned", ""), ("default-subfilter-include", ""), ("subfilter-exclude", ["*/file1.txt", "*/file101.txt"])])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_first_repo_head_patch = path_utils.concat_path(collected_first_repo, "head.patch")
@@ -1502,6 +1505,8 @@ class BackupPreparationTest(unittest.TestCase):
 
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
         collected_second_repo_head_patch = path_utils.concat_path(collected_second_repo, "head.patch")
+        collected_second_repo_unversioned = path_utils.concat_path(collected_second_repo, "unversioned")
+        collected_second_repo_unversioned_file101 = path_utils.concat_path(collected_second_repo_unversioned, path_utils.basename_filtered(second_repo_file101))
 
         self.assertTrue(os.path.exists(collected_first_repo))
         self.assertFalse(os.path.exists(collected_first_repo_head_patch))
@@ -1514,6 +1519,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(os.path.exists(collected_first_repo_unversioned_another_file13))
         self.assertTrue(os.path.exists(collected_second_repo))
         self.assertFalse(os.path.exists(collected_second_repo_head_patch))
+        self.assertFalse(os.path.exists(collected_second_repo_unversioned_file101))
 
     def testBackupPreparation1(self):
         self.assertTrue(backup_preparation.backup_preparation(self.test_config_file1))
