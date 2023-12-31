@@ -21,6 +21,12 @@ def hasopt_opts(opts, optname):
             return True
     return False
 
+def hasopt_var(var, optname):
+    for o in var[2]:
+        if o[0] == optname:
+            return True
+    return False
+
 def convert_var_obj_list_to_neutral_format(var_obj_list):
     return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
 

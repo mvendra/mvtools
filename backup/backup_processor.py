@@ -100,7 +100,11 @@ def read_config(config_file):
     BKWARNING_EACH = (None, None)
     BKWARNING_FINAL = (None, None)
 
-    vars = dsl.get_all_vars()
+    v, r = dsl.get_all_variables()
+    if not v:
+        print("%sFailed fetching variables from config file [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.TTY_WHITE))
+        return False, ()
+    vars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
     for v in vars:
 
         var_name = v[0]
