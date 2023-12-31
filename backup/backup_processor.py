@@ -93,8 +93,8 @@ def read_config(config_file):
     # define toplevel vars
     BKPREPARATION = ""
     BKPREPARATION_PARAMS = []
-    BKSOURCE = [] # mvtodo
-    BKTARGETS_ROOT = [] # mvtodo
+    BKSOURCE = []
+    BKTARGETS_ROOT = []
     BKTEMP = ""
     BKTARGETS_BASEDIR = ""
     BKWARNING_EACH = (None, None)

@@ -2,16 +2,17 @@
 # Backup processor configuration template
 # Format is: VARIABLE {option1: "option_value" / option2: "option_value"} = "variable_value"
 # Environment variables are accepted as values. Values must be wrapped around quotes (even for options)
-# Commentaries are allowed, as per this line (python-style)
+# Comments are allowed, as per this line (Python-style. C-style comments are also accepted)
+# Refer to dsl_type20 for the full syntax
 
 #################################################################################
 
 # This is a script to be run before the actual backup is carried out. if it fails (i.e. returns a nonzero), then
-# the backup is aborted and a message is printed. it is optional however. This script can be used for collecting
+# the backup is aborted and a message is printed. It is optional, however. This script can be used for collecting
 # stuff from a home folder, for example - you'd want to have it copy files into another folder that will be marked
-# for backing up. You can pass parameters to this script using the "param" option. Multiple params can be specified.
+# for backing up. You can pass parameters to this script using the "param" option. Multiple values can be specified as params.
 
-BKPREPARATION {param: "$HOME/infra/prepconfig.t20"} = "$HOME/infra/prepbackup.py"
+BKPREPARATION {param: ("$HOME/infra/prepconfig_first.t20", "$HOME/infra/prepconfig_second.t20")} = "$HOME/infra/prepbackup.py"
 
 # If any given source is bigger than the specified size, a warning is issued. If the
 # option "abort" is specified, then the backup will also stop and fail. Sizes can
@@ -38,7 +39,7 @@ BKWARNING_FINAL {abort} = "1024Mb"
 
 BKSOURCE = "$BACKUP_BASE_FOLDER/local_folder"
 BKSOURCE {descend} = "$BACKUP_BASE_FOLDER/local_folder"
-BKSOURCE {ex: "excluded1" / ex: "excluded2"} = "/some/local/folder1"
+BKSOURCE {ex: ("excluded1", "excluded2")} = "/some/local/folder1"
 BKSOURCE {ex: "excluded_another" / descend} = "/some/local/folder2"
 BKSOURCE {abort / warn_size: "4Gb" / warn_abort} = "/some/local/folder3"
 
