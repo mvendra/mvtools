@@ -1019,7 +1019,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", "*/second"), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-exclude", ""), ("include", ["*/second"]), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
@@ -1130,7 +1130,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", "*/third"), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("exclude", ["*/third"]), ("default-subfilter-include", ""), ("head", ""), ("head-id", ""), ("staged", ""), ("unversioned", ""), ("stash", "-1"), ("previous", "1")])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_second_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.second_repo)
