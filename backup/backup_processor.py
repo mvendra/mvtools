@@ -93,8 +93,8 @@ def read_config(config_file):
     # define toplevel vars
     BKPREPARATION = ""
     BKPREPARATION_PARAMS = []
-    BKSOURCE = []
-    BKTARGETS_ROOT = []
+    BKSOURCE = [] # mvtodo
+    BKTARGETS_ROOT = [] # mvtodo
     BKTEMP = ""
     BKTARGETS_BASEDIR = ""
     BKWARNING_EACH = (None, None)
@@ -132,7 +132,10 @@ def read_config(config_file):
             warn_abort = None
             for o in var_options:
                 if o[0] == "ex":
-                    BKSOURCE_EXCEPTIONS.append(o[1])
+                    if isinstance(o[1], list):
+                        BKSOURCE_EXCEPTIONS += o[1]
+                    else:
+                        BKSOURCE_EXCEPTIONS.append(o[1])
                 elif o[0] == "descend":
                     descend = True
                 elif o[0] == "abort":

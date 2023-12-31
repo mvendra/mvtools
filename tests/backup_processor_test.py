@@ -240,7 +240,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.cfg_file_contents += ("BKWARNING_EACH = \"%s\"" + os.linesep) % (self.warn_each_1)
         self.cfg_file_contents += ("BKWARNING_FINAL = \"%s\"" + os.linesep) % (self.warn_final_1)
         self.cfg_file_contents += ("BKSOURCE {descend} = \"%s\"" + os.linesep) % self.test_source_folder
-        self.cfg_file_contents += ("BKSOURCE {descend / ex: \"%s\" / ex: \"%s\"} = \"%s\"" + os.linesep) % (".file01.txt", "folder5", self.test_source_alt_folder)
+        self.cfg_file_contents += ("BKSOURCE {descend / ex: (\"%s\", \"%s\")} = \"%s\"" + os.linesep) % (".file01.txt", "folder5", self.test_source_alt_folder)
         self.cfg_file_contents += ("BKSOURCE = \"%s\"" + os.linesep) % self.test_source_folder_another
         self.cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_1_folder
         self.cfg_file_contents += ("BKTARGETS_ROOT {nocheckmount} = \"%s\"" + os.linesep) % self.test_target_2_folder
