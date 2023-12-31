@@ -1413,7 +1413,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("unversioned", ""), ("default-subfilter-exclude", ""), ("subfilter-include", "*/another/*"), ("subfilter-include", "*/file1.txt")])
+        bkprep.proc_run_collect_patches(self.repo_src_folder, [("storage-base", "collected_patches"), ("git", ""), ("default-include", ""), ("head", ""), ("unversioned", ""), ("default-subfilter-exclude", ""), ("subfilter-include", ["*/another/*", "*/file1.txt"])])
 
         collected_first_repo = path_utils.concat_path(self.prep_target, "collected_patches", self.first_repo)
         collected_first_repo_head_patch = path_utils.concat_path(collected_first_repo, "head.patch")
