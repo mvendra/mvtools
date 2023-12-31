@@ -68,16 +68,15 @@ COPY_TREE_OUT {abort} = "/home/user/folder2"
 # The options "default-include" and "default-exclude" are mutually exclusive - only
 # the last will be taken into account.
 #
-# The options "include" and "exclude" can be freely repeated as many times as
-# necessary. For details about what kind of filtering these are able to do,
-# see the implementation of collect_patches.py.
+# The options "include" and "exclude" can either be set with a list of strings, if necessary.
+# For details about what kind of filtering these are able to do, see the implementation of collect_patches.py.
 #
 # Like the above, there are also the "default-subfilter-include" and the "default-subfilter-exclude"
 # options that will (mutually exclusively) set the default subfiltering method. Subfiltering is the
 # filtering configuration that is passed down to the backend patch tools as their standard filtering.
 #
 # The corresponding options for including / excluding items for subfiltering are "subfilter-include"
-# and "subfilter-exclude", respectively.
+# and "subfilter-exclude", respectively. These can also be lists of strings.
 #
 # The options "head", "head-id", "staged", "unversioned", "stash", "previous" and
 # "cherry-pick-previous" are idependent from each other and can be used as wanted, as per
