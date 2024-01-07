@@ -93,7 +93,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_entry(launch_jobs.BaseTask())
 
-        v, r = launch_jobs.begin_execution([job1], print)
+        v, r = launch_jobs.begin_execution(job1, print)
         self.assertFalse(v)
 
     def testLaunchJobsCustomTask1(self):
@@ -101,7 +101,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_entry(CustomTaskTrue())
 
-        v, r = launch_jobs.begin_execution([job1], print)
+        v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
 
     def testLaunchJobsCustomTask2(self):
@@ -110,7 +110,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.add_entry(CustomTaskTrue())
         job1.add_entry(CustomTaskFalse())
 
-        v, r = launch_jobs.begin_execution([job1], print)
+        v, r = launch_jobs.begin_execution(job1, print)
         self.assertFalse(v)
 
     def testLaunchJobsCustomTaskParams1(self):
@@ -119,7 +119,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.params["test"] = True
         job1.add_entry(CustomTaskParams())
 
-        v, r = launch_jobs.begin_execution([job1], print)
+        v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
 
     def testLaunchJobsCustomTaskParams2(self):
@@ -128,7 +128,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.params["test"] = False
         job1.add_entry(CustomTaskParams())
 
-        v, r = launch_jobs.begin_execution([job1], print)
+        v, r = launch_jobs.begin_execution(job1, print)
         self.assertFalse(v)
 
     def testLaunchJobsCustomTaskParams3(self):
@@ -138,7 +138,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.add_entry(CustomTaskParams())
 
         try:
-            v, r = launch_jobs.begin_execution([job1], print)
+            v, r = launch_jobs.begin_execution(job1, print)
         except KeyError:
             pass
         except:
@@ -152,7 +152,7 @@ class LaunchJobsTest(unittest.TestCase):
         task1.params["test2"] = True
         job1.add_entry(task1)
 
-        v, r = launch_jobs.begin_execution([job1], print)
+        v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
 
     def testLaunchJobsCustomTaskParams5(self):
@@ -163,7 +163,7 @@ class LaunchJobsTest(unittest.TestCase):
         task1.params["test"] = False
         job1.add_entry(task1)
 
-        v, r = launch_jobs.begin_execution([job1], print)
+        v, r = launch_jobs.begin_execution(job1, print)
         self.assertFalse(v)
 
     def testLaunchJobsTaskException1(self):
@@ -171,7 +171,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = standard_job.StandardJob("test job")
         job1.add_entry(CustomTaskException("test task"))
 
-        v, r = launch_jobs.begin_execution([job1], print, "test-exec")
+        v, r = launch_jobs.begin_execution(job1, print, "test-exec")
         self.assertFalse(v)
 
     def testLaunchJobsRunOptions1(self):

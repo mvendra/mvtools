@@ -272,35 +272,30 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
 def run_job(target_job, report, feedback_object, execution_name, options):
 
-    for j in target_job:
+    feedback_object(_format_job_info_msg_started(target_job))
 
-        feedback_object(_format_job_info_msg_started(j))
+    target_job_msg = ""
+    v, r = _wait_if_paused(feedback_object, execution_name)
+    if not v:
+        target_job_msg = _format_job_info_msg_pause_failed(target_job, r)
+    else:
 
-        j_msg = ""
-        v, r = _wait_if_paused(feedback_object, execution_name)
-        if not v:
-            j_msg = _format_job_info_msg_pause_failed(j, r)
+        try:
+            v, r = target_job.run_job(feedback_object, execution_name)
+        except mvtools_exception.mvtools_exception as mvtex:
+            return False, ["Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)]
+        except Exception as ex:
+            return False, ["Job [%s][%s] caused an exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), ex)]
+        except:
+            return False, ["Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())]
+
+        if v:
+            target_job_msg = _format_job_info_msg_succeeded(target_job)
         else:
+            target_job_msg = _format_job_info_msg_failed(target_job, r)
 
-            try:
-                v, r = j.run_job(feedback_object, execution_name)
-            except mvtools_exception.mvtools_exception as mvtex:
-                return False, ["Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (j.name, j.get_desc(), mvtex)]
-            except Exception as ex:
-                return False, ["Job [%s][%s] caused an exception. Aborting: [%s]" % (j.name, j.get_desc(), ex)]
-            except:
-                return False, ["Job [%s][%s] caused an unknown exception. Aborting." % (j.name, j.get_desc())]
-
-            if v:
-                j_msg = _format_job_info_msg_succeeded(j)
-            else:
-                j_msg = _format_job_info_msg_failed(j, r)
-
-        report.append((v, j_msg))
-        feedback_object(j_msg)
-
-        if not v and options.early_abort:
-            break
+    report.append((v, target_job_msg))
+    feedback_object(target_job_msg)
 
     return True, None
 
