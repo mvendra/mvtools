@@ -25,7 +25,8 @@ class CustomJob(launch_jobs.BaseJob):
     def run_job(self, feedback_object, execution_name=None):
         res = True
         for t in self.entries_list:
-            res &= (t.run_task(feedback_object, execution_name))[0]
+            if t.get_type() == launch_jobs.BASE_TYPE_TASK: # UT's CustomJob impl does not support nested jobs (yet)
+                res &= (t.run_task(feedback_object, execution_name))[0]
         return res, None
 
 class CustomTaskTrue(launch_jobs.BaseTask):
@@ -95,6 +96,19 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertFalse(v)
+
+    def testLaunchJobsVanillaNestedCustomJob(self):
+
+        job1 = CustomJob()
+        job2 = CustomJob()
+
+        job1.add_entry(CustomTaskTrue())
+        job2.add_entry(CustomTaskTrue())
+
+        job1.add_entry(job2)
+
+        v, r = launch_jobs.begin_execution(job1, print)
+        self.assertTrue(v)
 
     def testLaunchJobsCustomTask1(self):
 
