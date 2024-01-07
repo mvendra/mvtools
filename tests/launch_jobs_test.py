@@ -13,7 +13,7 @@ import standard_job
 import launch_jobs
 
 class CustomJob(launch_jobs.BaseJob):
-    def add_task(self, task):
+    def add_entry(self, task):
         add_list = []
         for k in self.params:
             if k not in task.params:
@@ -91,7 +91,7 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsVanilla(self):
 
         job1 = CustomJob()
-        job1.add_task(launch_jobs.BaseTask())
+        job1.add_entry(launch_jobs.BaseTask())
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertFalse(v)
@@ -99,7 +99,7 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsCustomTask1(self):
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskTrue())
+        job1.add_entry(CustomTaskTrue())
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertTrue(v)
@@ -107,8 +107,8 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsCustomTask2(self):
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskTrue())
-        job1.add_task(CustomTaskFalse())
+        job1.add_entry(CustomTaskTrue())
+        job1.add_entry(CustomTaskFalse())
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertFalse(v)
@@ -117,7 +117,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         job1 = CustomJob()
         job1.params["test"] = True
-        job1.add_task(CustomTaskParams())
+        job1.add_entry(CustomTaskParams())
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertTrue(v)
@@ -126,7 +126,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         job1 = CustomJob()
         job1.params["test"] = False
-        job1.add_task(CustomTaskParams())
+        job1.add_entry(CustomTaskParams())
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertFalse(v)
@@ -135,7 +135,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         job1 = CustomJob()
         job1.params["cause-except"] = True
-        job1.add_task(CustomTaskParams())
+        job1.add_entry(CustomTaskParams())
 
         try:
             v, r = launch_jobs.run_job_list([job1], print)
@@ -150,7 +150,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.params["test1"] = True
         task1 = CustomTaskParams1And2()
         task1.params["test2"] = True
-        job1.add_task(task1)
+        job1.add_entry(task1)
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertTrue(v)
@@ -161,7 +161,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1.params["test"] = True
         task1 = CustomTaskParams()
         task1.params["test"] = False
-        job1.add_task(task1)
+        job1.add_entry(task1)
 
         v, r = launch_jobs.run_job_list([job1], print)
         self.assertFalse(v)
@@ -169,7 +169,7 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsTaskException1(self):
 
         job1 = standard_job.StandardJob("test job")
-        job1.add_task(CustomTaskException("test task"))
+        job1.add_entry(CustomTaskException("test task"))
 
         v, r = launch_jobs.run_job_list([job1], print, "test-exec")
         self.assertFalse(v)
@@ -177,10 +177,10 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsRunOptions1(self):
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskFalse())
+        job1.add_entry(CustomTaskFalse())
 
         job2 = CustomJob()
-        job2.add_task(CustomTaskFalse())
+        job2.add_entry(CustomTaskFalse())
 
         job_list = [job1, job2]
 
@@ -191,10 +191,10 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsRunOptionsEarlyAbort1(self):
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskFalse())
+        job1.add_entry(CustomTaskFalse())
 
         job2 = CustomJob()
-        job2.add_task(CustomTaskFalse())
+        job2.add_entry(CustomTaskFalse())
 
         job_list = [job1, job2]
 
@@ -205,10 +205,10 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsRunOptionsEarlyAbort2(self):
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskTrue())
+        job1.add_entry(CustomTaskTrue())
 
         job2 = CustomJob()
-        job2.add_task(CustomTaskTrue())
+        job2.add_entry(CustomTaskTrue())
 
         job_list = [job1, job2]
 
@@ -219,7 +219,7 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsRunOptionsTimeDelay1(self):
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskTrue())
+        job1.add_entry(CustomTaskTrue())
 
         job_list = [job1]
 
@@ -229,7 +229,7 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsRunOptionsSignalDelay1(self):
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskTrue())
+        job1.add_entry(CustomTaskTrue())
 
         job_list = [job1]
 
@@ -244,7 +244,7 @@ class LaunchJobsTest(unittest.TestCase):
         first_exec = "first-exec"
 
         job1 = CustomJob()
-        job1.add_task(CustomTaskTrue())
+        job1.add_entry(CustomTaskTrue())
 
         job_list = [job1]
 

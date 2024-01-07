@@ -6,7 +6,7 @@ import mvtools_exception
 class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class named CustomJob
     def get_desc(self):
         return "Standard job"
-    def add_task(self, task):
+    def add_entry(self, task):
         self.entries_list.append(task)
         return True, None
     def run_job(self, feedback_object, execution_name=None):

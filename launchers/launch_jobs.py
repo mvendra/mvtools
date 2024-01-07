@@ -47,7 +47,7 @@ class BaseJob:
         self.entries_list = []
     def get_desc(self):
         return "Base job"
-    def add_task(self, task):
+    def add_entry(self, task):
         return False, None
     def run_job(self, feedback_object, execution_name=None):
         return False, None

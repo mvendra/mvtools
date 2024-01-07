@@ -354,7 +354,7 @@ class RecipeProcessor:
 
                 new_task = r(var[0])
                 new_task.params = task_params
-                new_job.add_task(new_task)
+                new_job.add_entry(new_task)
 
             jobs.append(new_job)
 
