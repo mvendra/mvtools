@@ -231,13 +231,13 @@ def begin_execution(main_job, feedback_object, execution_name=None, options=None
     # setup toolbus
     v, r = _setup_toolbus(execution_name)
     if not v:
-        return False, [r]
+        return False, r
 
     job_v, job_r = begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
     v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
     if not v:
-        return False, ["Unable to remove execution named [%s] from toolbus database." % execution_name] + job_r
+        return False, "Unable to remove execution named [%s] from toolbus database: [%s]" % (execution_name, r)
 
     return job_v, job_r
 
@@ -246,19 +246,19 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
     # delayed start if configured
     v, r = _handle_delayed_start(feedback_object, execution_name, options.time_delay, options.signal_delay, options.execution_delay)
     if not v:
-        return False, [r]
+        return False, r
 
     # setup the status of the soon-to-start execution
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status", "running", [])
     if not v:
-        return False, ["Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
+        return False, "Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
     begin_timestamp = maketimestamp.get_timestamp_now()
 
     # register timestamp in the execution context
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "begin-timestamp", begin_timestamp, [])
     if not v:
-        return False, ["Unable to start execution: execution name [%s]'s begin-timestamp couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)]
+        return False, "Unable to start execution: execution name [%s]'s begin-timestamp couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
     feedback_object("Execution context [%s] will begin running at [%s]" % (execution_name, begin_timestamp))
 
