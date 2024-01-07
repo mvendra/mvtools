@@ -14,11 +14,12 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             if entry.get_type() == launch_jobs.BASE_TYPE_JOB:
                 report = []
                 v, r = launch_jobs.run_job(entry, report, feedback_object, execution_name, options)
-                # mvtodo: must check and properly accumulate the result of running the job itself
-                # mvtodo: how to bubble up report?
                 # mvtodo: and must make use of options here also
+                # mvtodo: how to bubble up report?
                 if not v:
                     return False, r[0]
+                if launch_jobs._has_any_job_failed(report):
+                    return False, "Failed job"
                 continue
             v, r = launch_jobs._wait_if_paused(feedback_object, execution_name)
             if not v:
