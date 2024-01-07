@@ -22,7 +22,7 @@ class CustomJob(launch_jobs.BaseJob):
             task.params[k] = self.params[k]
         self.entries_list.append(task)
         return True, None
-    def run_job(self, feedback_object, execution_name=None):
+    def run_job(self, feedback_object, execution_name=None, options=None):
         res = True
         for t in self.entries_list:
             if t.get_type() == launch_jobs.BASE_TYPE_TASK: # UT's CustomJob impl does not support nested jobs (yet)

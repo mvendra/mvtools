@@ -135,7 +135,7 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_job_script_contents += "        return \"CustomJob\"\n"
         sample_custom_job_script_contents += "    def add_entry(self, task):\n"
         sample_custom_job_script_contents += "        self.entries_list.append(task)\n"
-        sample_custom_job_script_contents += "    def run_job(self, feedback_object, execution_name=None):\n"
+        sample_custom_job_script_contents += "    def run_job(self, feedback_object, execution_name=None, options=None):\n"
         sample_custom_job_script_contents += "        if len(self.entries_list) % 2 == 0:\n"
         sample_custom_job_script_contents += "            return True, None\n"
         sample_custom_job_script_contents += "        else:\n"

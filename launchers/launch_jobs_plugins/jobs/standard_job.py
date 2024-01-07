@@ -9,7 +9,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
     def add_entry(self, task):
         self.entries_list.append(task)
         return True, None
-    def run_job(self, feedback_object, execution_name=None):
+    def run_job(self, feedback_object, execution_name=None, options=None):
         for entry in self.entries_list:
             v, r = launch_jobs._wait_if_paused(feedback_object, execution_name)
             if not v:

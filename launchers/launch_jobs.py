@@ -54,7 +54,7 @@ class BaseJob:
         return "Base job"
     def add_entry(self, task):
         return False, None
-    def run_job(self, feedback_object, execution_name=None):
+    def run_job(self, feedback_object, execution_name=None, options=None):
         return False, None
 
 class BaseTask:
@@ -281,7 +281,7 @@ def run_job(target_job, report, feedback_object, execution_name, options):
     else:
 
         try:
-            v, r = target_job.run_job(feedback_object, execution_name)
+            v, r = target_job.run_job(feedback_object, execution_name, options)
         except mvtools_exception.mvtools_exception as mvtex:
             return False, ["Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)]
         except Exception as ex:
