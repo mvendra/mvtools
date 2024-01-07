@@ -264,13 +264,13 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
     report = []
 
-    v, r = run_job(main_job, report, feedback_object, execution_name, options)
+    v, r = run_single_job(main_job, report, feedback_object, execution_name, options)
     if not v:
         return False, r
 
     return (not _has_any_job_failed(report)), report
 
-def run_job(target_job, report, feedback_object, execution_name, options):
+def run_single_job(target_job, report, feedback_object, execution_name, options):
 
     feedback_object(_format_job_info_msg_started(target_job))
 
