@@ -17,7 +17,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                 # mvtodo: and must make use of options here also
                 # mvtodo: how to bubble up report?
                 if not v:
-                    return False, r[0]
+                    return False, r
                 if launch_jobs._has_any_job_failed(report):
                     return False, "Failed job"
                 continue

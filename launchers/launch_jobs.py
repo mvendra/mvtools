@@ -283,11 +283,11 @@ def run_single_job(target_job, report, feedback_object, execution_name, options)
         try:
             v, r = target_job.run_job(feedback_object, execution_name, options)
         except mvtools_exception.mvtools_exception as mvtex:
-            return False, ["Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)]
+            return False, "Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)
         except Exception as ex:
-            return False, ["Job [%s][%s] caused an exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), ex)]
+            return False, "Job [%s][%s] caused an exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), ex)
         except:
-            return False, ["Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())]
+            return False, "Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())
 
         if v:
             target_job_msg = _format_job_info_msg_succeeded(target_job)
