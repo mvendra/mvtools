@@ -233,7 +233,7 @@ def begin_execution(job_list, feedback_object, execution_name=None, options=None
     if not v:
         return False, [r]
 
-    job_v, job_r = run_job_list_delegate(job_list, feedback_object, execution_name, options)
+    job_v, job_r = begin_execution_delegate(job_list, feedback_object, execution_name, options)
 
     v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
     if not v:
@@ -241,7 +241,7 @@ def begin_execution(job_list, feedback_object, execution_name=None, options=None
 
     return job_v, job_r
 
-def run_job_list_delegate(job_list, feedback_object, execution_name, options):
+def begin_execution_delegate(job_list, feedback_object, execution_name, options):
 
     # delayed start if configured
     v, r = _handle_delayed_start(feedback_object, execution_name, options.time_delay, options.signal_delay, options.execution_delay)
