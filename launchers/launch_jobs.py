@@ -220,7 +220,7 @@ def _has_any_job_failed(job_result):
             return True
     return False
 
-def begin_execution(job_list, feedback_object, execution_name=None, options=None):
+def begin_execution(main_job, feedback_object, execution_name=None, options=None):
 
     if execution_name is None:
         execution_name = "launch_jobs_%d" % os.getpid()
@@ -233,7 +233,7 @@ def begin_execution(job_list, feedback_object, execution_name=None, options=None
     if not v:
         return False, [r]
 
-    job_v, job_r = begin_execution_delegate(job_list, feedback_object, execution_name, options)
+    job_v, job_r = begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
     v, r = toolbus.remove_table(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name)
     if not v:
@@ -241,7 +241,7 @@ def begin_execution(job_list, feedback_object, execution_name=None, options=None
 
     return job_v, job_r
 
-def begin_execution_delegate(job_list, feedback_object, execution_name, options):
+def begin_execution_delegate(main_job, feedback_object, execution_name, options):
 
     # delayed start if configured
     v, r = _handle_delayed_start(feedback_object, execution_name, options.time_delay, options.signal_delay, options.execution_delay)
@@ -263,7 +263,14 @@ def begin_execution_delegate(job_list, feedback_object, execution_name, options)
     feedback_object("Execution context [%s] will begin running at [%s]" % (execution_name, begin_timestamp))
 
     report = []
-    for j in job_list:
+
+    run_job(main_job, report, feedback_object, execution_name, options)
+
+    return (not _has_any_job_failed(report)), report
+
+def run_job(target_job, report, feedback_object, execution_name, options):
+
+    for j in target_job:
 
         feedback_object(_format_job_info_msg_started(j))
 
@@ -292,8 +299,6 @@ def begin_execution_delegate(job_list, feedback_object, execution_name, options)
 
         if not v and options.early_abort:
             break
-
-    return (not _has_any_job_failed(report)), report
 
 def get_current_executions():
 
