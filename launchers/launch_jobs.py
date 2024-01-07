@@ -220,7 +220,7 @@ def _has_any_job_failed(job_result):
             return True
     return False
 
-def run_job_list(job_list, feedback_object, execution_name=None, options=None):
+def begin_execution(job_list, feedback_object, execution_name=None, options=None):
 
     if execution_name is None:
         execution_name = "launch_jobs_%d" % os.getpid()
