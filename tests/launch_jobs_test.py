@@ -20,11 +20,11 @@ class CustomJob(launch_jobs.BaseJob):
                 add_list.append(k)
         for k in add_list:
             task.params[k] = self.params[k]
-        self.task_list.append(task)
+        self.entries_list.append(task)
         return True, None
     def run_job(self, feedback_object, execution_name=None):
         res = True
-        for t in self.task_list:
+        for t in self.entries_list:
             res &= (t.run_task(feedback_object, execution_name))[0]
         return res, None
 

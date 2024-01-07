@@ -44,7 +44,7 @@ class BaseJob:
     def __init__(self, name = None):
         self.name = name
         self.params = {}
-        self.task_list = []
+        self.entries_list = []
     def get_desc(self):
         return "Base job"
     def add_task(self, task):
