@@ -264,7 +264,9 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
     report = []
 
-    run_job(main_job, report, feedback_object, execution_name, options)
+    v, r = run_job(main_job, report, feedback_object, execution_name, options)
+    if not v:
+        return False, r
 
     return (not _has_any_job_failed(report)), report
 
@@ -299,6 +301,8 @@ def run_job(target_job, report, feedback_object, execution_name, options):
 
         if not v and options.early_abort:
             break
+
+    return True, None
 
 def get_current_executions():
 
