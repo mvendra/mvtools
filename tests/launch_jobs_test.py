@@ -110,6 +110,19 @@ class LaunchJobsTest(unittest.TestCase):
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
 
+    def testLaunchJobsVanillaNestedStandard(self):
+
+        job1 = standard_job.StandardJob()
+        job2 = standard_job.StandardJob()
+
+        job1.add_entry(CustomTaskTrue())
+        job2.add_entry(CustomTaskTrue())
+
+        job1.add_entry(job2)
+
+        v, r = launch_jobs.begin_execution(job1, print)
+        self.assertTrue(v)
+
     def testLaunchJobsCustomTask1(self):
 
         job1 = CustomJob()
