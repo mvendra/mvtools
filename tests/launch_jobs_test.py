@@ -226,7 +226,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job_list, print)
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(len(r), 1) # mvtodo: fix
 
     def testLaunchJobsRunOptionsEarlyAbort1(self):
 
@@ -240,7 +240,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job_list, print, options=launch_jobs.RunOptions(early_abort=False))
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(len(r), 2) # mvtodo: fix
 
     def testLaunchJobsRunOptionsEarlyAbort2(self):
 
@@ -254,7 +254,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job_list, print, options=launch_jobs.RunOptions(early_abort=False))
         self.assertTrue(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(len(r), 2) # mvtodo: fix
 
     def testLaunchJobsRunOptionsTimeDelay1(self):
 
