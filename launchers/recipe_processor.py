@@ -212,7 +212,7 @@ class RecipeProcessor:
             return False, r
         dsl = r
 
-        v, r = self._translate_dsl_into_jobs(dsl)
+        v, r = self._translate_dsl_into_jobtree(dsl)
         if not v:
             return False, r
         jobs = r
@@ -247,11 +247,11 @@ class RecipeProcessor:
         if not v:
             return False, r
 
-        jobs = r[0]
+        mainjob = r[0]
         options = r[1]
         exec_name = r[2]
 
-        v, r = launch_jobs.begin_execution(jobs, print, exec_name, options)
+        v, r = launch_jobs.begin_execution(mainjob, print, exec_name, options)
         if not v:
             return False, r
 
@@ -281,14 +281,14 @@ class RecipeProcessor:
         self.circular_tracker.append(path_utils.basename_filtered(local_recipe))
         return True, dsl
 
-    def _translate_dsl_into_jobs(self, dsl):
+    def _translate_dsl_into_jobtree(self, dsl):
 
         self.depth_counter += 1
         if self.depth_counter > RECIPE_INCLUDES_DEPTH_LIMITER:
             return False, "Base recipe file [%s]: depth limit exceeded." % self.recipe
 
         namespace = None
-        jobs = []
+        root_job = standard_job.StandardJob() # mvtodo
 
         # recipe namespace (for tasks/plugins)
         v, r = dsl.get_variables("recipe_namespace")
@@ -315,10 +315,10 @@ class RecipeProcessor:
             v, r = self._bootstrap_dsl_object(var_ir_entry[1])
             if not v:
                 return False, r
-            v, r = self._translate_dsl_into_jobs(r)
+            v, r = self._translate_dsl_into_jobtree(r)
             if not v:
                 return False, r
-            jobs += r
+            root_job.add_entry(r) # mvtodo: this is just carelessly adding anywhere in the tree. wrong.
 
         v, r = dsl.get_all_sub_contexts()
         if not v:
@@ -356,10 +356,10 @@ class RecipeProcessor:
                 new_task.params = task_params
                 new_job.add_entry(new_task)
 
-            jobs.append(new_job)
+            root_job.add_entry(new_job)
 
         self.depth_counter -= 1
-        return True, jobs
+        return True, root_job
 
     def _lowercase_str_option_value_filter(self, opt_val):
         return opt_val.lower()
