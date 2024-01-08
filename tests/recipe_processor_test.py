@@ -415,8 +415,8 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorRecipeNoEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
-        self.assertEqual(len(r), 2) # two job executions
         self.assertFalse(v)
+        self.assertTrue("Intermediary failures" in r) # currently, this is the only way to detect multiple job executions
 
     def testRecipeProcessorRecipeDoubleEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
