@@ -274,10 +274,9 @@ def run_single_job(target_job, report, feedback_object, execution_name, options)
 
     feedback_object(_format_job_info_msg_started(target_job))
 
-    target_job_msg = ""
     v, r = _wait_if_paused(feedback_object, execution_name)
     if not v:
-        target_job_msg = _format_job_info_msg_pause_failed(target_job, r)
+        feedback_object(_format_job_info_msg_pause_failed(target_job, r))
     else:
 
         try:
@@ -290,14 +289,13 @@ def run_single_job(target_job, report, feedback_object, execution_name, options)
             return False, "Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())
 
         if v:
-            target_job_msg = _format_job_info_msg_succeeded(target_job)
+            feedback_object(_format_job_info_msg_succeeded(target_job))
         else:
-            target_job_msg = _format_job_info_msg_failed(target_job, r)
+            feedback_object(_format_job_info_msg_failed(target_job, r))
 
-    report.append((v, target_job_msg))
-    feedback_object(target_job_msg)
+    report.append((v, "mvtodo ditch"))
 
-    return True, None
+    return True, True
 
 def get_current_executions():
 
