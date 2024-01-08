@@ -44,8 +44,11 @@ class BaseTask:
 def _format_job_info_msg_task(job, task):
     return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), task.name, task.get_desc())
 
-def _format_job_info_msg_started(job, parent_job_name): # mvtodo
-    return "Job:  [%s][%s][%s]: started." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
+def _format_job_info_msg_started(job, parent_job_name):
+    p_str = ""
+    if parent_job_name is not None:
+        p_str = "(child of [%s])" % parent_job_name
+    return "Job:  [%s][%s][%s]%s: started." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), p_str)
 
 def _format_job_info_msg_pause_failed(job, detail):
     return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
