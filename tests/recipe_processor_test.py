@@ -319,10 +319,6 @@ class RecipeProcessorTest(unittest.TestCase):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file4)
         self.assertTrue(v)
 
-    def testRecipeProcessorCustomTaskUseExecutionName(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file28)
-        self.assertTrue(v)
-
     def testRecipeProcessor2JobsBothSucceed(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file5)
         self.assertTrue(v)
@@ -395,6 +391,10 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorExecutionDelay2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file21)
         self.assertFalse(v)
+
+    def testRecipeProcessorCustomTaskUseExecutionName(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file28)
+        self.assertTrue(v)
 
     def testRecipeProcessorStringlistParam(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file29)
