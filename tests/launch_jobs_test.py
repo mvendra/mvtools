@@ -296,9 +296,7 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_entry(CustomTaskTrue())
 
-        job_list = [job1]
-
-        v, r = launch_jobs.begin_execution(job_list, print, options=launch_jobs.RunOptions(time_delay="2s"))
+        v, r = launch_jobs.begin_execution(job1, print, options=launch_jobs.RunOptions(time_delay="2s"))
         self.assertTrue(v)
 
     def testLaunchJobsRunOptionsSignalDelay1(self):
@@ -306,12 +304,10 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_entry(CustomTaskTrue())
 
-        job_list = [job1]
-
         v, r = toolbus.set_signal("mvtools-launch-jobs-test-signal-delay-option", "set")
         self.assertTrue(v)
 
-        v, r = launch_jobs.begin_execution(job_list, print, options=launch_jobs.RunOptions(signal_delay="mvtools-launch-jobs-test-signal-delay-option"))
+        v, r = launch_jobs.begin_execution(job1, print, options=launch_jobs.RunOptions(signal_delay="mvtools-launch-jobs-test-signal-delay-option"))
         self.assertTrue(v)
 
     def testLaunchJobsRunOptionsExecutionDelay1(self):
@@ -321,12 +317,10 @@ class LaunchJobsTest(unittest.TestCase):
         job1 = CustomJob()
         job1.add_entry(CustomTaskTrue())
 
-        job_list = [job1]
-
-        v, r = launch_jobs.begin_execution(job_list, print, first_exec)
+        v, r = launch_jobs.begin_execution(job1, print, first_exec)
         self.assertTrue(v)
 
-        v, r = launch_jobs.begin_execution(job_list, print, options=launch_jobs.RunOptions(execution_delay=first_exec))
+        v, r = launch_jobs.begin_execution(job1, print, options=launch_jobs.RunOptions(execution_delay=first_exec))
         self.assertTrue(v)
 
 if __name__ == '__main__':
