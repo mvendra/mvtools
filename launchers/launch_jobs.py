@@ -44,16 +44,16 @@ class BaseTask:
 def _format_job_info_msg_task(job, task):
     return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), task.name, task.get_desc())
 
-def _format_job_info_msg_started(job):
+def _format_job_info_msg_started(job, parent_job_name): # mvtodo
     return "Job:  [%s][%s][%s]: started." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
 
 def _format_job_info_msg_pause_failed(job, detail):
     return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
 
-def _format_job_info_msg_succeeded(job):
+def _format_job_info_msg_succeeded(job, parent_job_name): # mvtodo
     return "Job:  [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
 
-def _format_job_info_msg_failed(job, detail):
+def _format_job_info_msg_failed(job, parent_job_name, detail): # mvtodo
     return "Job:  [%s][%s][%s]: failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
 
 def _format_task_info_msg(task, detail):
@@ -256,14 +256,14 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
     feedback_object("Execution context [%s] will begin running at [%s]" % (execution_name, begin_timestamp))
 
-    v, r = run_single_job(main_job, feedback_object, execution_name, options)
+    v, r = run_single_job(main_job, None, feedback_object, execution_name, options)
     if not v:
         return False, r
     return True, None
 
-def run_single_job(target_job, feedback_object, execution_name, options):
+def run_single_job(target_job, parent_job_name, feedback_object, execution_name, options):
 
-    feedback_object(_format_job_info_msg_started(target_job))
+    feedback_object(_format_job_info_msg_started(target_job, parent_job_name)) # mvtodo
 
     v, r = _wait_if_paused(feedback_object, execution_name)
     if not v:
@@ -280,11 +280,11 @@ def run_single_job(target_job, feedback_object, execution_name, options):
         return False, "Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())
 
     if not v:
-        err_msg = _format_job_info_msg_failed(target_job, r)
+        err_msg = _format_job_info_msg_failed(target_job, parent_job_name, r) # mvtodo
         feedback_object(err_msg)
         return False, err_msg
 
-    feedback_object(_format_job_info_msg_succeeded(target_job))
+    feedback_object(_format_job_info_msg_succeeded(target_job, parent_job_name)) # mvtodo
     return True, None
 
 def get_current_executions():

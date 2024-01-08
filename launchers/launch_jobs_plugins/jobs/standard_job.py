@@ -19,7 +19,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
 
             if entry.get_type() == launch_jobs.BASE_TYPE_JOB:
 
-                v, r = launch_jobs.run_single_job(entry, feedback_object, execution_name, options)
+                v, r = launch_jobs.run_single_job(entry, self.name, feedback_object, execution_name, options)
                 if not v:
                     if options.early_abort:
                         return False, "Failed job"
