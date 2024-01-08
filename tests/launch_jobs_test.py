@@ -39,6 +39,11 @@ class CustomTaskTrue(launch_jobs.BaseTask):
 
 class CustomTaskFalse(launch_jobs.BaseTask):
     def run_task(self, feedback_object, execution_name=None):
+        if "internal_testing_context" in self.params:
+            test_ctx = self.params["internal_testing_context"]
+            if not "CustomTaskFalse.run_task" in test_ctx.call_counter:
+                test_ctx.call_counter["CustomTaskFalse.run_task"] = 0
+            test_ctx.call_counter["CustomTaskFalse.run_task"] += 1
         return False, None
 
 class CustomTaskParams(launch_jobs.BaseTask):
@@ -221,36 +226,45 @@ class LaunchJobsTest(unittest.TestCase):
     def testLaunchJobsRunOptions1(self):
 
         main_job = standard_job.StandardJob()
+        test_ctx = aux_test_context()
+
+        task1 = CustomTaskFalse()
+        task1.params["internal_testing_context"] = test_ctx
 
         job1 = standard_job.StandardJob()
-        job1.add_entry(CustomTaskFalse())
+        job1.add_entry(task1)
 
         job2 = standard_job.StandardJob()
-        job2.add_entry(CustomTaskFalse())
+        job2.add_entry(task1)
 
         main_job.add_entry(job1)
         main_job.add_entry(job2)
 
         v, r = launch_jobs.begin_execution(main_job, print)
         self.assertFalse(v)
-        # mvtodo: but one time
+        self.assertEqual(test_ctx.call_counter["CustomTaskFalse.run_task"], 1)
 
     def testLaunchJobsRunOptionsEarlyAbort1(self):
 
         main_job = standard_job.StandardJob()
+        test_ctx = aux_test_context()
+
+        task1 = CustomTaskFalse()
+        task1.params["internal_testing_context"] = test_ctx
 
         job1 = standard_job.StandardJob()
-        job1.add_entry(CustomTaskFalse())
+        job1.add_entry(task1)
 
         job2 = standard_job.StandardJob()
-        job2.add_entry(CustomTaskFalse())
+        job2.add_entry(task1)
 
         main_job.add_entry(job1)
         main_job.add_entry(job2)
 
         v, r = launch_jobs.begin_execution(main_job, print, options=launch_jobs.RunOptions(early_abort=False))
         self.assertFalse(v)
-        # mvtodo: but two times
+        print("mvdebug: %s" % test_ctx.call_counter["CustomTaskFalse.run_task"])
+        self.assertEqual(test_ctx.call_counter["CustomTaskFalse.run_task"], 2)
 
     def testLaunchJobsRunOptionsEarlyAbort2(self):
 
