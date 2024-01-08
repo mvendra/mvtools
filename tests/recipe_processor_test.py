@@ -177,13 +177,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
 
-        self.recipe_test_file8_1 = path_utils.concat_path(self.test_dir, "recipe_test8_1.t20")
         self.recipe_test_file8_2 = path_utils.concat_path(self.test_dir, "recipe_test8_2.t20")
         self.recipe_test_file8_3 = path_utils.concat_path(self.test_dir, "recipe_test8_3.t20")
-
-        recipe_test_contents8_1 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_2
-        recipe_test_contents8_1 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        create_and_write_file.create_file_contents(self.recipe_test_file8_1, recipe_test_contents8_1)
 
         recipe_test_contents8_2 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_3
         recipe_test_contents8_2 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
@@ -378,28 +373,6 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorIncludesOneFalse(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file7)
         self.assertFalse(v)
-
-    def testRecipeProcessorCircularDependency(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file8_1)
-        self.assertFalse(v)
-
-    def testRecipeProcessorDepthLimit_BreadthTest(self):
-        ridl = recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER
-        try:
-            recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = 2
-            v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file9)
-            self.assertTrue(v)
-        finally:
-            recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
-
-    def testRecipeProcessorDepthLimit_DepthTest(self):
-        ridl = recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER
-        try:
-            recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = 2
-            v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file10)
-            self.assertFalse(v)
-        finally:
-            recipe_processor.RECIPE_INCLUDES_DEPTH_LIMITER = ridl
 
     def testRecipeProcessorThirdDegreeFalse(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file11)

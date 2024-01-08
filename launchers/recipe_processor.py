@@ -62,10 +62,6 @@ import mvtools_envvars
 # to be waited for before starting this execution. this will cause this execution to be delayed *until*
 # the defined execution name is concluded (i.e. has bee removed from launch_jobs's toolbus database)
 #
-# a recipe may include other recipes using the following freestanding variable:
-# * include_recipe = "/home/user/other_recipe.t20"
-# includes are recursive. included recipes can have their own namespaces.
-#
 # it is possible to override the standard job (jobs/standard_job.py) default implementation
 # by using the following syntax:
 #
@@ -76,8 +72,6 @@ import mvtools_envvars
 #
 # which makes the option "mvtools_recipe_processor_plugin_job" not available for
 # custom/general use (i.e. not usable by task plugins)
-
-RECIPE_INCLUDES_DEPTH_LIMITER = 100 # disallow more than 100 recursive includes
 
 def _conditional_write(source1, source2):
     if source2 is not None:
@@ -197,15 +191,8 @@ class RecipeProcessor:
     def __init__(self, recipe, requested_options):
         self.recipe = recipe
         self.requested_options = requested_options
-        self._clear()
-
-    def _clear(self):
-        self.depth_counter = 0
-        self.circular_tracker = []
 
     def test(self, requested_execution_name=None):
-
-        self._clear()
 
         v, r = self._bootstrap_dsl_object(self.recipe)
         if not v:
@@ -241,8 +228,6 @@ class RecipeProcessor:
 
     def run(self, requested_execution_name=None):
 
-        self._clear()
-
         v, r = self.test(requested_execution_name)
         if not v:
             return False, r
@@ -258,9 +243,6 @@ class RecipeProcessor:
         return True, None
 
     def _bootstrap_dsl_object(self, local_recipe):
-
-        if (path_utils.basename_filtered(local_recipe)) in self.circular_tracker:
-            return False, "Recipe file [%s]: circular inclusion detected while including [%s]." % (self.recipe, local_recipe)
 
         if not os.path.exists(local_recipe):
             return False, "Recipe file [%s] does not exist." % local_recipe
@@ -278,15 +260,9 @@ class RecipeProcessor:
         if not v:
             return False, r
 
-        self.circular_tracker.append(path_utils.basename_filtered(local_recipe))
         return True, dsl
 
     def _translate_dsl_into_jobtree(self, dsl):
-
-        # check depth counter
-        self.depth_counter += 1
-        if self.depth_counter > RECIPE_INCLUDES_DEPTH_LIMITER:
-            return False, "Base recipe file [%s]: depth limit exceeded." % self.recipe
 
         namespace = None
         root_job = standard_job.StandardJob() # mvtodo
@@ -360,7 +336,6 @@ class RecipeProcessor:
 
             root_job.add_entry(new_job)
 
-        self.depth_counter -= 1
         return True, root_job
 
     def _lowercase_str_option_value_filter(self, opt_val):
