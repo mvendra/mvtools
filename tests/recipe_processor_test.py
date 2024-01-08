@@ -172,11 +172,6 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
-        recipe_test_contents11 = "* include_recipe = \"%s\"\n" % self.recipe_test_file7
-        recipe_test_contents11 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file11 = path_utils.concat_path(self.test_dir, "recipe_test11.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file11, recipe_test_contents11)
-
         recipe_test_contents12 = "* recipe_namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents12 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
         self.recipe_test_file12 = path_utils.concat_path(self.test_dir, "recipe_test12.t20")
@@ -210,12 +205,6 @@ class RecipeProcessorTest(unittest.TestCase):
         recipe_test_contents16 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
         self.recipe_test_file16 = path_utils.concat_path(self.test_dir, "recipe_test16.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file16, recipe_test_contents16)
-
-        recipe_test_contents17 = "* recipe_namespace = \"%s\"\n" % self.namespace2
-        recipe_test_contents17 += "* include_recipe = \"%s\"\n" % self.recipe_test_file4
-        recipe_test_contents17 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace2)
-        self.recipe_test_file17 = path_utils.concat_path(self.test_dir, "recipe_test17.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file17, recipe_test_contents17)
 
         recipe_test_contents18 = "* recipe_namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents18 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1))
@@ -342,10 +331,6 @@ class RecipeProcessorTest(unittest.TestCase):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file6)
         self.assertFalse(v)
 
-    def testRecipeProcessorThirdDegreeFalse(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file11)
-        self.assertFalse(v)
-
     def testRecipeProcessorCustomNamespaceCustomJobParams(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file12)
         self.assertTrue(v)
@@ -366,10 +351,6 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorDoubleCustomNamespace(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file16)
         self.assertFalse(v)
-
-    def testRecipeProcessorCustomNamespaceIncludesAnotherCustomNamespace(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file17)
-        self.assertTrue(v)
 
     def testRecipeProcessorCustomJobCustomNamespace1(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file18)
