@@ -263,7 +263,7 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
 def run_single_job(target_job, parent_job_name, feedback_object, execution_name, options):
 
-    feedback_object(_format_job_info_msg_started(target_job, parent_job_name)) # mvtodo
+    feedback_object(_format_job_info_msg_started(target_job, parent_job_name))
 
     v, r = _wait_if_paused(feedback_object, execution_name)
     if not v:
@@ -280,11 +280,11 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
         return False, "Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())
 
     if not v:
-        err_msg = _format_job_info_msg_failed(target_job, parent_job_name, r) # mvtodo
+        err_msg = _format_job_info_msg_failed(target_job, parent_job_name, r)
         feedback_object(err_msg)
         return False, err_msg
 
-    feedback_object(_format_job_info_msg_succeeded(target_job, parent_job_name)) # mvtodo
+    feedback_object(_format_job_info_msg_succeeded(target_job, parent_job_name))
     return True, None
 
 def get_current_executions():

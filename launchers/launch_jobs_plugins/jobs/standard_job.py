@@ -25,7 +25,6 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                         return False, "Failed job"
                     else:
                         intermediary_failure = True
-                        feedback_object(launch_jobs._format_job_info_msg_failed(entry, r))
 
                 continue
 
