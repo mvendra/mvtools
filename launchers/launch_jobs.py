@@ -53,7 +53,7 @@ class BaseJob:
     def get_desc(self):
         return "Base job"
     def add_entry(self, task):
-        return False, None
+        return False, "Not implemented"
     def run_job(self, feedback_object, execution_name=None, options=None):
         return False, "Not implemented"
 
@@ -64,7 +64,7 @@ class BaseTask:
     def get_type(self):
         return BASE_TYPE_TASK
     def get_desc(self):
-        return "Generic base task"
+        return "Base task"
     def run_task(self, feedback_object, execution_name=None):
         return False, "Not implemented"
 
