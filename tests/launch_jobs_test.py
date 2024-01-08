@@ -263,7 +263,6 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(main_job, print, options=launch_jobs.RunOptions(early_abort=False))
         self.assertFalse(v)
-        print("mvdebug: %s" % test_ctx.call_counter["CustomTaskFalse.run_task"])
         self.assertEqual(test_ctx.call_counter["CustomTaskFalse.run_task"], 2)
 
     def testLaunchJobsRunOptionsEarlyAbort2(self):

@@ -14,14 +14,19 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
 
     def run_job(self, feedback_object, execution_name=None, options=None):
 
+        intermediary_failure = False
         for entry in self.entries_list:
 
             if entry.get_type() == launch_jobs.BASE_TYPE_JOB:
 
                 v, r = launch_jobs.run_single_job(entry, feedback_object, execution_name, options)
-                # mvtodo: and must make use of options here also
                 if not v:
-                    return False, "Failed job"
+                    if options.early_abort:
+                        return False, "Failed job"
+                    else:
+                        intermediary_failure = True
+                        feedback_object(launch_jobs._format_job_info_msg_failed(entry, r))
+
                 continue
 
             v, r = launch_jobs._wait_if_paused(feedback_object, execution_name)
@@ -47,4 +52,6 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             else:
                 feedback_object(launch_jobs._format_task_info_msg(entry, r))
 
+        if intermediary_failure:
+            return False, "Intermediary failures"
         return True, None
