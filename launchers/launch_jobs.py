@@ -214,12 +214,6 @@ class RunOptions:
         self.signal_delay = signal_delay # wait for the given toolbus signal before starting this execution
         self.execution_delay = execution_delay # wait for the given execution to end before starting this execution
 
-def _has_any_job_failed(job_result):
-    for jr in job_result:
-        if not jr[0]:
-            return True
-    return False
-
 def begin_execution(main_job, feedback_object, execution_name=None, options=None):
 
     if execution_name is None:
@@ -262,15 +256,12 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
     feedback_object("Execution context [%s] will begin running at [%s]" % (execution_name, begin_timestamp))
 
-    report = []
-
-    v, r = run_single_job(main_job, report, feedback_object, execution_name, options)
+    v, r = run_single_job(main_job, feedback_object, execution_name, options)
     if not v:
         return False, r
+    return True, None
 
-    return (not _has_any_job_failed(report)), report
-
-def run_single_job(target_job, report, feedback_object, execution_name, options):
+def run_single_job(target_job, feedback_object, execution_name, options):
 
     feedback_object(_format_job_info_msg_started(target_job))
 

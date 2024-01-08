@@ -18,10 +18,8 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
 
             if entry.get_type() == launch_jobs.BASE_TYPE_JOB:
 
-                report = []
-                v, r = launch_jobs.run_single_job(entry, report, feedback_object, execution_name, options)
+                v, r = launch_jobs.run_single_job(entry, feedback_object, execution_name, options)
                 # mvtodo: and must make use of options here also
-                # mvtodo: how to bubble up report?
                 if not v:
                     return False, "Failed job"
                 continue
