@@ -283,6 +283,7 @@ class RecipeProcessor:
 
     def _translate_dsl_into_jobtree(self, dsl):
 
+        # check depth counter
         self.depth_counter += 1
         if self.depth_counter > RECIPE_INCLUDES_DEPTH_LIMITER:
             return False, "Base recipe file [%s]: depth limit exceeded." % self.recipe
@@ -320,6 +321,7 @@ class RecipeProcessor:
                 return False, r
             root_job.add_entry(r) # mvtodo: this is just carelessly adding anywhere in the tree. wrong.
 
+        # jobs (contexts)
         v, r = dsl.get_all_sub_contexts()
         if not v:
             return False, "Failed attempting to retrieve subcontexts: [%s]" % r
