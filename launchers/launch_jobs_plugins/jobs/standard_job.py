@@ -25,7 +25,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                 if not v:
                     return False, r
 
-                if launch_jobs._has_any_job_failed(report):
+                if not r: # mvtodo: sync with run_single_job api return
                     return False, "Failed job"
 
                 continue
@@ -33,8 +33,8 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             v, r = launch_jobs._wait_if_paused(feedback_object, execution_name)
             if not v:
                 return False, r
-            feedback_object(launch_jobs._format_job_info_msg_task(self, entry))
 
+            feedback_object(launch_jobs._format_job_info_msg_task(self, entry))
             try:
                 v, r = entry.run_task(feedback_object, execution_name)
             except mvtools_exception.mvtools_exception as mvtex:
@@ -46,11 +46,13 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
 
             if not v:
                 feedback_object(launch_jobs._format_task_error_msg(entry, r))
-                return False, "Failed task"
+                return False, "Task [%s][%s] failed abruptly: [%s]." % (entry.name, entry.get_desc(), r)
 
+            final_ret = True
             if r is not None:
                 feedback_object(launch_jobs._format_task_warning_msg_console_output(entry, r))
-            if v:
+                final_ret = False
+            else:
                 feedback_object(launch_jobs._format_task_info_msg(entry, r))
 
-        return True, True
+        return True, final_ret
