@@ -223,8 +223,10 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
 
-        recipe_test_contents15 = "* execution_name = \"test-exec-name1\"\n"
+        recipe_test_contents15 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents15 += "* execution_name = \"test-exec-name1\"\n"
         recipe_test_contents15 += "* execution_name = \"test-exec-name2\"\n"
+        recipe_test_contents15 += "]\n"
         recipe_test_contents15 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
