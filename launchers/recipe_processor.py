@@ -73,6 +73,17 @@ import mvtools_envvars
 # which makes the option "mvtools_recipe_processor_plugin_job" not available for
 # custom/general use (i.e. not usable by task plugins)
 
+def _lowercase_str_option_value_filter(opt_val):
+    return opt_val.lower()
+
+def _lowercase_bool_option_value_filter(opt_val):
+    local_opt_val = opt_val.lower()
+    if local_opt_val == "yes":
+        return True
+    elif local_opt_val == "no":
+        return False
+    return None
+
 def _conditional_write(source1, source2):
     if source2 is not None:
         return source2
@@ -324,17 +335,6 @@ class RecipeProcessor:
 
         return True, root_job
 
-    def _lowercase_str_option_value_filter(self, opt_val):
-        return opt_val.lower()
-
-    def _lowercase_bool_option_value_filter(self, opt_val):
-        local_opt_val = opt_val.lower()
-        if local_opt_val == "yes":
-            return True
-        elif local_opt_val == "no":
-            return False
-        return None
-
     def _get_launch_options_helper(self, dsl, option, valid_values, value_filter_function):
 
         local_option = None
@@ -363,25 +363,25 @@ class RecipeProcessor:
         local_execution_delay = None
 
         # early abort option
-        v, r = self._get_launch_options_helper(dsl, "early-abort", [True, False], self._lowercase_bool_option_value_filter)
+        v, r = self._get_launch_options_helper(dsl, "early-abort", [True, False], _lowercase_bool_option_value_filter)
         if not v:
             return False, r
         local_early_abort = r
 
         # time delay option
-        v, r = self._get_launch_options_helper(dsl, "time-delay", None, self._lowercase_str_option_value_filter)
+        v, r = self._get_launch_options_helper(dsl, "time-delay", None, _lowercase_str_option_value_filter)
         if not v:
             return False, r
         local_time_delay = r
 
         # signal delay option
-        v, r = self._get_launch_options_helper(dsl, "signal-delay", None, self._lowercase_str_option_value_filter)
+        v, r = self._get_launch_options_helper(dsl, "signal-delay", None, _lowercase_str_option_value_filter)
         if not v:
             return False, r
         local_signal_delay = r
 
         # execution delay option
-        v, r = self._get_launch_options_helper(dsl, "execution-delay", None, self._lowercase_str_option_value_filter)
+        v, r = self._get_launch_options_helper(dsl, "execution-delay", None, _lowercase_str_option_value_filter)
         if not v:
             return False, r
         local_execution_delay = r
