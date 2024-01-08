@@ -13,33 +13,6 @@ import mvtools_exception
 
 LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
 
-def _format_job_info_msg_task(job, task):
-    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), task.name, task.get_desc())
-
-def _format_job_info_msg_started(job):
-    return "Job:  [%s][%s][%s]: started." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
-
-def _format_job_info_msg_pause_failed(job, detail):
-    return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
-
-def _format_job_info_msg_succeeded(job):
-    return "Job:  [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
-
-def _format_job_info_msg_failed(job, detail):
-    return "Job:  [%s][%s][%s]: failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
-
-def _format_task_info_msg(task, detail):
-    return "Task: [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), task.name, task.get_desc())
-
-def _format_task_error_msg(task, detail):
-    return "Task: [%s][%s][%s]: failed: [%s]" % (maketimestamp.get_timestamp_now(), task.name, task.get_desc(), detail)
-
-def _format_task_warning_msg(task, detail):
-    return "Task: [%s][%s][%s]: warns: [%s]" % (maketimestamp.get_timestamp_now(), task.name, task.get_desc(), detail)
-
-def _format_task_warning_msg_console_output(task, detail):
-    return "%s%s%s." % (terminal_colors.TTY_YELLOW, _format_task_warning_msg(task, detail), terminal_colors.get_standard_color())
-
 BASE_TYPE_JOB = 1
 BASE_TYPE_TASK = 2
 
@@ -67,6 +40,33 @@ class BaseTask:
         return "Base task"
     def run_task(self, feedback_object, execution_name=None):
         return False, "Not implemented"
+
+def _format_job_info_msg_task(job, task):
+    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), task.name, task.get_desc())
+
+def _format_job_info_msg_started(job):
+    return "Job:  [%s][%s][%s]: started." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
+
+def _format_job_info_msg_pause_failed(job, detail):
+    return "Job:  [%s][%s][%s]: pausing failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
+
+def _format_job_info_msg_succeeded(job):
+    return "Job:  [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), job.name, job.get_desc())
+
+def _format_job_info_msg_failed(job, detail):
+    return "Job:  [%s][%s][%s]: failed: [%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), detail)
+
+def _format_task_info_msg(task, detail):
+    return "Task: [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), task.name, task.get_desc())
+
+def _format_task_error_msg(task, detail):
+    return "Task: [%s][%s][%s]: failed: [%s]" % (maketimestamp.get_timestamp_now(), task.name, task.get_desc(), detail)
+
+def _format_task_warning_msg(task, detail):
+    return "Task: [%s][%s][%s]: warns: [%s]" % (maketimestamp.get_timestamp_now(), task.name, task.get_desc(), detail)
+
+def _format_task_warning_msg_console_output(task, detail):
+    return "%s%s%s." % (terminal_colors.TTY_YELLOW, _format_task_warning_msg(task, detail), terminal_colors.get_standard_color())
 
 def _setup_toolbus(execution_name):
 
