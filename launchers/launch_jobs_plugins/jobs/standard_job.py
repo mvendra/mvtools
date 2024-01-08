@@ -40,4 +40,4 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                 feedback_object(launch_jobs._format_task_warning_msg_console_output(entry, r))
             if v:
                 feedback_object(launch_jobs._format_task_info_msg(entry, r))
-        return True, None
+        return True, True

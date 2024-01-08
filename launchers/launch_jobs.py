@@ -55,7 +55,7 @@ class BaseJob:
     def add_entry(self, task):
         return False, None
     def run_job(self, feedback_object, execution_name=None, options=None):
-        return False, None
+        return False, "Not implemented"
 
 class BaseTask:
     def __init__(self, name = None):
