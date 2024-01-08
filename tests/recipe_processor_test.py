@@ -280,20 +280,20 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file24 = path_utils.concat_path(self.test_dir, "recipe_test24.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file24, recipe_test_contents24)
 
-        recipe_test_contents31 = "* recipe_namespace {inclusive} = \"%s\"\n" % self.namespace2
-        recipe_test_contents31 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file31 = path_utils.concat_path(self.test_dir, "recipe_test31.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file31, recipe_test_contents31)
+        recipe_test_contents25 = "* recipe_namespace {inclusive} = \"%s\"\n" % self.namespace2
+        recipe_test_contents25 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
 
-        recipe_test_contents32 = "* recipe_namespace = \"%s\"\n" % self.namespace2
-        recipe_test_contents32 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file32 = path_utils.concat_path(self.test_dir, "recipe_test32.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file32, recipe_test_contents32)
+        recipe_test_contents26 = "* recipe_namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents26 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file26 = path_utils.concat_path(self.test_dir, "recipe_test26.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file26, recipe_test_contents26)
 
-        recipe_test_contents33 = "* recipe_namespace = \"%s\"\n" % self.namespace2
-        recipe_test_contents33 += "[\n@test-job\n* task1 {dupe-check} = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file33 = path_utils.concat_path(self.test_dir, "recipe_test33.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file33, recipe_test_contents33)
+        recipe_test_contents27 = "* recipe_namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents27 += "[\n@test-job\n* task1 {dupe-check} = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file27 = path_utils.concat_path(self.test_dir, "recipe_test27.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file27, recipe_test_contents27)
 
         return True, ""
 
@@ -405,15 +405,15 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testRecipeProcessorNamespaceInclusiveIsFoundAtBuiltInsFirst(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file31)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file25)
         self.assertTrue(v)
 
     def testRecipeProcessorNamespaceExclusiveIsFoundButFails(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file32)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file26)
         self.assertFalse(v)
 
     def testRecipeProcessorNamespaceExclusiveIsFoundAndDoesWork(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file33)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file27)
         self.assertTrue(v)
 
     def testRecipeProcessorBlankFilename(self):
