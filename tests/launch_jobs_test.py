@@ -35,6 +35,11 @@ class CustomJob(launch_jobs.BaseJob):
 
 class CustomTaskTrue(launch_jobs.BaseTask):
     def run_task(self, feedback_object, execution_name=None):
+        if "internal_testing_context" in self.params:
+            test_ctx = self.params["internal_testing_context"]
+            if not "CustomTaskTrue.run_task" in test_ctx.call_counter:
+                test_ctx.call_counter["CustomTaskTrue.run_task"] = 0
+            test_ctx.call_counter["CustomTaskTrue.run_task"] += 1
         return True, None
 
 class CustomTaskFalse(launch_jobs.BaseTask):
@@ -267,17 +272,24 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsRunOptionsEarlyAbort2(self):
 
-        job1 = CustomJob()
-        job1.add_entry(CustomTaskTrue())
+        main_job = standard_job.StandardJob()
+        test_ctx = aux_test_context()
 
-        job2 = CustomJob()
-        job2.add_entry(CustomTaskTrue())
+        task1 = CustomTaskTrue()
+        task1.params["internal_testing_context"] = test_ctx
 
-        job_list = [job1, job2]
+        job1 = standard_job.StandardJob()
+        job1.add_entry(task1)
 
-        v, r = launch_jobs.begin_execution(job_list, print, options=launch_jobs.RunOptions(early_abort=False))
+        job2 = standard_job.StandardJob()
+        job2.add_entry(task1)
+
+        main_job.add_entry(job1)
+        main_job.add_entry(job2)
+
+        v, r = launch_jobs.begin_execution(main_job, print, options=launch_jobs.RunOptions(early_abort=False))
         self.assertTrue(v)
-        self.assertEqual(len(r), 2) # mvtodo: fix
+        self.assertEqual(test_ctx.call_counter["CustomTaskTrue.run_task"], 2)
 
     def testLaunchJobsRunOptionsTimeDelay1(self):
 
