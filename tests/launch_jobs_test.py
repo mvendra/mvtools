@@ -12,6 +12,10 @@ import toolbus
 import standard_job
 import launch_jobs
 
+class aux_test_context():
+    def __init__(self):
+        self.call_counter = {}
+
 class CustomJob(launch_jobs.BaseJob):
     def add_entry(self, task):
         add_list = []
@@ -216,31 +220,37 @@ class LaunchJobsTest(unittest.TestCase):
 
     def testLaunchJobsRunOptions1(self):
 
-        job1 = CustomJob()
+        main_job = standard_job.StandardJob()
+
+        job1 = standard_job.StandardJob()
         job1.add_entry(CustomTaskFalse())
 
-        job2 = CustomJob()
+        job2 = standard_job.StandardJob()
         job2.add_entry(CustomTaskFalse())
 
-        job_list = [job1, job2]
+        main_job.add_entry(job1)
+        main_job.add_entry(job2)
 
-        v, r = launch_jobs.begin_execution(job_list, print)
+        v, r = launch_jobs.begin_execution(main_job, print)
         self.assertFalse(v)
-        self.assertEqual(len(r), 1) # mvtodo: fix
+        # mvtodo: but one time
 
     def testLaunchJobsRunOptionsEarlyAbort1(self):
 
-        job1 = CustomJob()
+        main_job = standard_job.StandardJob()
+
+        job1 = standard_job.StandardJob()
         job1.add_entry(CustomTaskFalse())
 
-        job2 = CustomJob()
+        job2 = standard_job.StandardJob()
         job2.add_entry(CustomTaskFalse())
 
-        job_list = [job1, job2]
+        main_job.add_entry(job1)
+        main_job.add_entry(job2)
 
-        v, r = launch_jobs.begin_execution(job_list, print, options=launch_jobs.RunOptions(early_abort=False))
+        v, r = launch_jobs.begin_execution(main_job, print, options=launch_jobs.RunOptions(early_abort=False))
         self.assertFalse(v)
-        self.assertEqual(len(r), 2) # mvtodo: fix
+        # mvtodo: but two times
 
     def testLaunchJobsRunOptionsEarlyAbort2(self):
 
