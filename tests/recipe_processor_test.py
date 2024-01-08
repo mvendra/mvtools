@@ -172,54 +172,54 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
+        recipe_test_contents7 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents7 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
+        self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
+
+        recipe_test_contents8 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents8 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
+        self.recipe_test_file8 = path_utils.concat_path(self.test_dir, "recipe_test8.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file8, recipe_test_contents8)
+
+        recipe_test_contents9 = "* early-abort = \"no\"\n"
+        recipe_test_contents9 += "[\n@test-job-1\n"
+        recipe_test_contents9 += "* task1 = \"sample_echo_false_plugin.py\"\n"
+        recipe_test_contents9 += "]\n"
+        recipe_test_contents9 += "[\n@test-job-2\n"
+        recipe_test_contents9 += "* task1 = \"sample_echo_false_plugin.py\"\n"
+        recipe_test_contents9 += "]"
+        self.recipe_test_file9 = path_utils.concat_path(self.test_dir, "recipe_test9.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file9, recipe_test_contents9)
+
+        recipe_test_contents10 = "* early-abort = \"yes\"\n"
+        recipe_test_contents10 += "* early-abort = \"no\"\n"
+        recipe_test_contents10 += "[\n@test-job-1\n"
+        recipe_test_contents10 += "* task1 = \"sample_echo_true_plugin.py\"\n"
+        recipe_test_contents10 += "]"
+        self.recipe_test_file10 = path_utils.concat_path(self.test_dir, "recipe_test10.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file10, recipe_test_contents10)
+
+        recipe_test_contents11 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents11 += "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents11 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
+        self.recipe_test_file11 = path_utils.concat_path(self.test_dir, "recipe_test11.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file11, recipe_test_contents11)
+
         recipe_test_contents12 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents12 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
+        recipe_test_contents12 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1))
         self.recipe_test_file12 = path_utils.concat_path(self.test_dir, "recipe_test12.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file12, recipe_test_contents12)
 
-        recipe_test_contents13 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents13 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
+        recipe_test_contents13 = "* recipe_namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents13 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
         self.recipe_test_file13 = path_utils.concat_path(self.test_dir, "recipe_test13.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file13, recipe_test_contents13)
 
-        recipe_test_contents14 = "* early-abort = \"no\"\n"
-        recipe_test_contents14 += "[\n@test-job-1\n"
-        recipe_test_contents14 += "* task1 = \"sample_echo_false_plugin.py\"\n"
-        recipe_test_contents14 += "]\n"
-        recipe_test_contents14 += "[\n@test-job-2\n"
-        recipe_test_contents14 += "* task1 = \"sample_echo_false_plugin.py\"\n"
-        recipe_test_contents14 += "]"
+        recipe_test_contents14 = "* execution-name = \"test-exec-name\"\n"
+        recipe_test_contents14 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
-
-        recipe_test_contents15 = "* early-abort = \"yes\"\n"
-        recipe_test_contents15 += "* early-abort = \"no\"\n"
-        recipe_test_contents15 += "[\n@test-job-1\n"
-        recipe_test_contents15 += "* task1 = \"sample_echo_true_plugin.py\"\n"
-        recipe_test_contents15 += "]"
-        self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
-
-        recipe_test_contents16 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents16 += "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents16 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
-        self.recipe_test_file16 = path_utils.concat_path(self.test_dir, "recipe_test16.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file16, recipe_test_contents16)
-
-        recipe_test_contents18 = "* recipe_namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents18 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1))
-        self.recipe_test_file18 = path_utils.concat_path(self.test_dir, "recipe_test18.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file18, recipe_test_contents18)
-
-        recipe_test_contents19 = "* recipe_namespace = \"%s\"\n" % self.namespace2
-        recipe_test_contents19 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
-        self.recipe_test_file19 = path_utils.concat_path(self.test_dir, "recipe_test19.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file19, recipe_test_contents19)
-
-        recipe_test_contents20 = "* execution-name = \"test-exec-name\"\n"
-        recipe_test_contents20 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file20 = path_utils.concat_path(self.test_dir, "recipe_test20.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file20, recipe_test_contents20)
 
         recipe_test_contents21 = "* execution-name = \"test-exec-name1\"\n"
         recipe_test_contents21 += "* execution-name = \"test-exec-name2\"\n"
@@ -332,36 +332,36 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testRecipeProcessorCustomNamespaceCustomJobParams(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file12)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file7)
         self.assertTrue(v)
 
     def testRecipeProcessorCustomNamespaceCustomTaskParams(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file13)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file8)
         self.assertTrue(v)
 
     def testRecipeProcessorRecipeNoEarlyAbort(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file9)
         self.assertFalse(v)
         self.assertTrue("Intermediary failures" in r) # currently, this is the only way to detect multiple job executions
 
     def testRecipeProcessorRecipeDoubleEarlyAbort(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file10)
         self.assertFalse(v)
 
     def testRecipeProcessorDoubleCustomNamespace(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file16)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file11)
         self.assertFalse(v)
 
     def testRecipeProcessorCustomJobCustomNamespace1(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file18)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file12)
         self.assertFalse(v)
 
     def testRecipeProcessorCustomJobCustomNamespace2(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file19)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file13)
         self.assertTrue(v)
 
     def testRecipeProcessorCustomExecutionName1(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file20)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
         self.assertTrue(v)
 
     def testRecipeProcessorCustomExecutionName2(self):
@@ -387,7 +387,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testRecipeProcessorExecutionDelay1(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file20)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
         self.assertTrue(v)
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file26)
         self.assertTrue(v)
