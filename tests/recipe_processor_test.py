@@ -172,11 +172,6 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
-        recipe_test_contents7 = "* include_recipe = \"%s\"\n" % self.recipe_test_file3
-        recipe_test_contents7 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
-
         self.recipe_test_file8_2 = path_utils.concat_path(self.test_dir, "recipe_test8_2.t20")
         self.recipe_test_file8_3 = path_utils.concat_path(self.test_dir, "recipe_test8_3.t20")
 
@@ -368,10 +363,6 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessor2JobsOneFails(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file6)
-        self.assertFalse(v)
-
-    def testRecipeProcessorIncludesOneFalse(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file7)
         self.assertFalse(v)
 
     def testRecipeProcessorThirdDegreeFalse(self):

@@ -283,20 +283,6 @@ class RecipeProcessor:
                     namespace_opt_v = False # disable exclusive mode
             namespace = (namespace_path, namespace_opt_v)
 
-        # recipe includes
-        v, r = dsl.get_variables("include_recipe")
-        if not v:
-            return False, "Failed attempting to retrieve include_recipe entries: [%s]" % r
-        var_ir = dsl_type20.convert_var_obj_list_to_neutral_format(r)
-        for var_ir_entry in var_ir:
-            v, r = self._bootstrap_dsl_object(var_ir_entry[1])
-            if not v:
-                return False, r
-            v, r = self._translate_dsl_into_jobtree(r)
-            if not v:
-                return False, r
-            root_job.add_entry(r) # mvtodo: this is just carelessly adding anywhere in the tree. wrong.
-
         # jobs (contexts)
         v, r = dsl.get_all_sub_contexts()
         if not v:
