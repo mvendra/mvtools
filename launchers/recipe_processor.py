@@ -45,7 +45,7 @@ import mvtools_envvars
 # arguments (requested options) or using freestanding variables inside the recipe (which
 # will overwrite the commandline options when specified):
 #
-# * execution name = "exec-name" # this will define the execution name that will be written
+# * execution_name = "exec-name" # this will define the execution name that will be written
 # to the launch_jobs toolbus database
 #
 # * early_abort = "true" # "true" or "false" are accepted - exclusively
@@ -72,6 +72,8 @@ import mvtools_envvars
 #
 # which makes the option "mvtools_recipe_processor_plugin_job" not available for
 # custom/general use (i.e. not usable by task plugins)
+
+RECIPE_PROCESSOR_CONFIG_METAJOB = "mvtools_recipe_processor_config"
 
 def _lowercase_str_option_value_filter(opt_val):
     return opt_val.lower()
@@ -302,6 +304,9 @@ class RecipeProcessor:
 
         for ctx in ctxs:
 
+            if ctx.get_name() == RECIPE_PROCESSOR_CONFIG_METAJOB:
+                continue
+
             v, r = dsl.get_context_options(ctx.get_name())
             if not v:
                 return False, "Failed attempting to retrieve options from context [%s]: [%s]" % (ctx.get_name(), r)
@@ -426,14 +431,20 @@ class RecipeProcessor:
 
     def _get_exec_name_from_recipe(self, dsl):
 
-        v, r = dsl.get_variables("execution-name")
+        v, r = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if not v:
-            return False, "Failed retrieving execution-name: [%s]" % r
+            return True, None
+
+        v, r = dsl.get_variables("execution_name", RECIPE_PROCESSOR_CONFIG_METAJOB)
+        if not v:
+            return False, "Failed retrieving execution_name: [%s]" % r
         var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+
         if len(var_rn) > 1:
-            return False, "Recipe's execution-name has been specified more than once."
+            return False, "Recipe's execution_name has been specified more than once."
         elif len(var_rn) == 1:
             return True, (var_rn[0][1])
+
         return True, None
 
     def _resolve_exec_name(self, requested_execution_name, recipe_execution_name):
@@ -444,7 +455,7 @@ class RecipeProcessor:
         local_exec_name = _conditional_write(local_exec_name, recipe_execution_name)
 
         if requested_execution_name is not None and recipe_execution_name is not None:
-            print("%sWarning: the [execution-name] has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_exec_name, terminal_colors.TTY_WHITE))
+            print("%sWarning: the [execution_name] has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_exec_name, terminal_colors.TTY_WHITE))
 
         return True, local_exec_name
 
