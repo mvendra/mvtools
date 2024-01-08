@@ -14,6 +14,7 @@ import launch_jobs
 
 class aux_test_context():
     def __init__(self):
+        self.call_stack = []
         self.call_counter = {}
 
 class CustomJob(launch_jobs.BaseJob):
@@ -37,6 +38,7 @@ class CustomTaskTrue(launch_jobs.BaseTask):
     def run_task(self, feedback_object, execution_name=None):
         if "internal_testing_context" in self.params:
             test_ctx = self.params["internal_testing_context"]
+            test_ctx.call_stack.append("CustomTaskTrue.run_task,%s" % self.name)
             if not "CustomTaskTrue.run_task" in test_ctx.call_counter:
                 test_ctx.call_counter["CustomTaskTrue.run_task"] = 0
             test_ctx.call_counter["CustomTaskTrue.run_task"] += 1
@@ -46,6 +48,7 @@ class CustomTaskFalse(launch_jobs.BaseTask):
     def run_task(self, feedback_object, execution_name=None):
         if "internal_testing_context" in self.params:
             test_ctx = self.params["internal_testing_context"]
+            test_ctx.call_stack.append("CustomTaskFalse.run_task,%s" % self.name)
             if not "CustomTaskFalse.run_task" in test_ctx.call_counter:
                 test_ctx.call_counter["CustomTaskFalse.run_task"] = 0
             test_ctx.call_counter["CustomTaskFalse.run_task"] += 1
@@ -149,6 +152,38 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertFalse(v)
+
+    def testLaunchJobsBigNestedStandard(self):
+
+        test_ctx = aux_test_context()
+        main_job = standard_job.StandardJob("main_job")
+
+        job1 = standard_job.StandardJob("job1")
+        job2 = standard_job.StandardJob("job2")
+        job3 = standard_job.StandardJob("job3")
+
+        task1 = CustomTaskTrue("task1")
+        task2 = CustomTaskTrue("task2")
+        task3 = CustomTaskTrue("task3")
+        task4 = CustomTaskTrue("task4")
+
+        task1.params["internal_testing_context"] = test_ctx
+        task2.params["internal_testing_context"] = test_ctx
+        task3.params["internal_testing_context"] = test_ctx
+        task4.params["internal_testing_context"] = test_ctx
+
+        main_job.add_entry(task1)
+        job1.add_entry(task2)
+        job2.add_entry(task3)
+        job3.add_entry(task4)
+
+        job2.add_entry(job3)
+        main_job.add_entry(job1)
+        main_job.add_entry(job2)
+
+        v, r = launch_jobs.begin_execution(main_job, print)
+        self.assertTrue(v)
+        self.assertEqual(test_ctx.call_stack, ["CustomTaskTrue.run_task,task1", "CustomTaskTrue.run_task,task2", "CustomTaskTrue.run_task,task3", "CustomTaskTrue.run_task,task4"])
 
     def testLaunchJobsCustomTask1(self):
 
