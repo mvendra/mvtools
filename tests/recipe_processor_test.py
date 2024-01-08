@@ -172,17 +172,6 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
-        self.recipe_test_file8_2 = path_utils.concat_path(self.test_dir, "recipe_test8_2.t20")
-        self.recipe_test_file8_3 = path_utils.concat_path(self.test_dir, "recipe_test8_3.t20")
-
-        recipe_test_contents8_2 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_3
-        recipe_test_contents8_2 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        create_and_write_file.create_file_contents(self.recipe_test_file8_2, recipe_test_contents8_2)
-
-        recipe_test_contents8_3 = "* include_recipe = \"%s\"\n" % self.recipe_test_file8_2
-        recipe_test_contents8_3 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        create_and_write_file.create_file_contents(self.recipe_test_file8_3, recipe_test_contents8_3)
-
         recipe_test_contents9 = "* include_recipe = \"%s\"\n" % self.recipe_test_file1
         recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file4
         recipe_test_contents9 += "* include_recipe = \"%s\"\n" % self.recipe_test_file5
