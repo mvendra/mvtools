@@ -178,6 +178,30 @@ class LaunchJobsTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(test_ctx.call_stack, ["CustomTaskTrue.run_task,task1", "CustomTaskTrue.run_task,task2", "CustomTaskTrue.run_task,task3", "CustomTaskTrue.run_task,task4"])
 
+    def testLaunchJobsNestedStandardFailed(self):
+
+        test_ctx = aux_test_context()
+        main_job = standard_job.StandardJob("main_job")
+
+        job1 = standard_job.StandardJob("job1")
+        job2 = standard_job.StandardJob("job2")
+
+        task1 = CustomTaskTrue("task1")
+        task2 = CustomTaskFalse("task2")
+
+        task1.params["internal_testing_context"] = test_ctx
+        task2.params["internal_testing_context"] = test_ctx
+
+        job1.add_entry(task1)
+        job2.add_entry(task2)
+
+        main_job.add_entry(job1)
+        main_job.add_entry(job2)
+
+        v, r = launch_jobs.begin_execution(main_job, print)
+        self.assertFalse(v)
+        self.assertEqual(test_ctx.call_stack, ["CustomTaskTrue.run_task,task1", "CustomTaskFalse.run_task,task2"])
+
     def testLaunchJobsCustomTask1(self):
 
         job1 = CustomJob()
