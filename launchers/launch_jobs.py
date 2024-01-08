@@ -277,21 +277,21 @@ def run_single_job(target_job, report, feedback_object, execution_name, options)
     v, r = _wait_if_paused(feedback_object, execution_name)
     if not v:
         feedback_object(_format_job_info_msg_pause_failed(target_job, r))
+        return False, "Job [%s][%s]: Failed attempting to wait: [%s]" % (target_job.name, target_job.get_desc(), r)
+
+    try:
+        v, r = target_job.run_job(feedback_object, execution_name, options)
+    except mvtools_exception.mvtools_exception as mvtex:
+        return False, "Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)
+    except Exception as ex:
+        return False, "Job [%s][%s] caused an exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), ex)
+    except:
+        return False, "Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())
+
+    if v:
+        feedback_object(_format_job_info_msg_succeeded(target_job))
     else:
-
-        try:
-            v, r = target_job.run_job(feedback_object, execution_name, options)
-        except mvtools_exception.mvtools_exception as mvtex:
-            return False, "Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)
-        except Exception as ex:
-            return False, "Job [%s][%s] caused an exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), ex)
-        except:
-            return False, "Job [%s][%s] caused an unknown exception. Aborting." % (target_job.name, target_job.get_desc())
-
-        if v:
-            feedback_object(_format_job_info_msg_succeeded(target_job))
-        else:
-            feedback_object(_format_job_info_msg_failed(target_job, r))
+        feedback_object(_format_job_info_msg_failed(target_job, r))
 
     report.append((v, "mvtodo ditch"))
 
