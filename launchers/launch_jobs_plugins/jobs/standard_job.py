@@ -23,11 +23,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                 # mvtodo: and must make use of options here also
                 # mvtodo: how to bubble up report?
                 if not v:
-                    return False, r
-
-                if not r: # mvtodo: sync with run_single_job api return
                     return False, "Failed job"
-
                 continue
 
             v, r = launch_jobs._wait_if_paused(feedback_object, execution_name)
@@ -46,13 +42,11 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
 
             if not v:
                 feedback_object(launch_jobs._format_task_error_msg(entry, r))
-                return False, "Task [%s][%s] failed abruptly: [%s]." % (entry.name, entry.get_desc(), r)
+                return False, "Failed task"
 
-            final_ret = True
             if r is not None:
                 feedback_object(launch_jobs._format_task_warning_msg_console_output(entry, r))
-                final_ret = False
             else:
                 feedback_object(launch_jobs._format_task_info_msg(entry, r))
 
-        return True, final_ret
+        return True, None
