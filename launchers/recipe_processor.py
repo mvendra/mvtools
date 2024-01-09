@@ -48,7 +48,7 @@ import mvtools_envvars
 # * execution_name = "exec-name" # this will define the execution name that will be written
 # to the launch_jobs toolbus database
 #
-# * early_abort = "true" # "true" or "false" are accepted - exclusively
+# * early-abort = "true" # "true" or "false" are accepted - exclusively
 # this will specify whether an execution should be aborted whenever any job fails. the execution
 # itself will be deemed a failure upon any job failure, but with this option enabled, the execution
 # will nonetheless continue until there are no more jobs in the list.
@@ -372,7 +372,7 @@ class RecipeProcessor:
         local_execution_delay = None
 
         # early abort option
-        v, r = self._get_launch_options_helper(dsl, "early_abort", [True, False], _lowercase_bool_option_value_filter)
+        v, r = self._get_launch_options_helper(dsl, "early-abort", [True, False], _lowercase_bool_option_value_filter)
         if not v:
             return False, r
         local_early_abort = r
@@ -417,7 +417,7 @@ class RecipeProcessor:
 
         local_options.early_abort = _conditional_write(local_options.early_abort, options.early_abort)
         if options.early_abort is not None and self.requested_options.early_abort is not None:
-            print("%sWarning: the [early_abort] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.early_abort, terminal_colors.TTY_WHITE))
+            print("%sWarning: the [early-abort] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_options.early_abort, terminal_colors.TTY_WHITE))
 
         local_options.time_delay = _conditional_write(local_options.time_delay, options.time_delay)
         if options.time_delay is not None and self.requested_options.time_delay is not None:

@@ -189,7 +189,7 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.recipe_test_file8, recipe_test_contents8)
 
         recipe_test_contents9 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
-        recipe_test_contents9 += "* early_abort = \"no\"\n"
+        recipe_test_contents9 += "* early-abort = \"no\"\n"
         recipe_test_contents9 += "]\n"
         recipe_test_contents9 += "[\n@test-job-1\n"
         recipe_test_contents9 += "* task1 = \"sample_echo_false_plugin.py\"\n"
@@ -201,8 +201,8 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.recipe_test_file9, recipe_test_contents9)
 
         recipe_test_contents10 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
-        recipe_test_contents10 += "* early_abort = \"yes\"\n"
-        recipe_test_contents10 += "* early_abort = \"no\"\n"
+        recipe_test_contents10 += "* early-abort = \"yes\"\n"
+        recipe_test_contents10 += "* early-abort = \"no\"\n"
         recipe_test_contents10 += "]\n"
         recipe_test_contents10 += "[\n@test-job-1\n"
         recipe_test_contents10 += "* task1 = \"sample_echo_true_plugin.py\"\n"
