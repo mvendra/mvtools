@@ -174,12 +174,16 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
-        recipe_test_contents7 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents7 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents7 += "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents7 += "]\n"
         recipe_test_contents7 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
         self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
 
-        recipe_test_contents8 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents8 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents8 += "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents8 += "]\n"
         recipe_test_contents8 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
         self.recipe_test_file8 = path_utils.concat_path(self.test_dir, "recipe_test8.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file8, recipe_test_contents8)
