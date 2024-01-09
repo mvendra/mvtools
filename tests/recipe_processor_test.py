@@ -221,7 +221,9 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file12 = path_utils.concat_path(self.test_dir, "recipe_test12.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file12, recipe_test_contents12)
 
-        recipe_test_contents13 = "* recipe_namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents13 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents13 += "* recipe_namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents13 += "]\n"
         recipe_test_contents13 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
         self.recipe_test_file13 = path_utils.concat_path(self.test_dir, "recipe_test13.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file13, recipe_test_contents13)
@@ -274,7 +276,9 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test21.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file21, recipe_test_contents21)
 
-        recipe_test_contents22 = "* recipe_namespace = \"%s\"\n" % self.test_dir
+        recipe_test_contents22 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents22 += "* recipe_namespace = \"%s\"\n" % self.test_dir
+        recipe_test_contents22 += "]\n"
         recipe_test_contents22 += "[\n@test-job-1\n"
         recipe_test_contents22 += "* task1 = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_exe_name_contents_file1)
         recipe_test_contents22 += "]\n"
