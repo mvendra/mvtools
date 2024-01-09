@@ -346,19 +346,21 @@ class RecipeProcessor:
 
         local_option = None
 
-        v, r = dsl.get_variables(option)
-        if not v:
-            return False, "Unable to fetch option [%s]: [%s]." % (option, r)
-        var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
-        if len(var_rn) > 1: # has been specified more than once. fail.
-            return False, "Recipe's %s option has been specified more than once." % option
-        elif len(var_rn) == 1: # has been specified once in the recipe file
-            unfiltered_val = var_rn[0][1]
-            filtered_val = value_filter_function(unfiltered_val)
-            if valid_values is not None:
-                if not filtered_val in valid_values:
-                    return False, "Recipe's %s option has an invalid value: [%s]" % (option, unfiltered_val)
-            local_option = filtered_val
+        has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
+        if has_metajob:
+            v, r = dsl.get_variables(option, RECIPE_PROCESSOR_CONFIG_METAJOB)
+            if not v:
+                return False, "Unable to fetch option [%s]: [%s]." % (option, r)
+            var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            if len(var_rn) > 1: # has been specified more than once. fail.
+                return False, "Recipe's %s option has been specified more than once." % option
+            elif len(var_rn) == 1: # has been specified once in the recipe file
+                unfiltered_val = var_rn[0][1]
+                filtered_val = value_filter_function(unfiltered_val)
+                if valid_values is not None:
+                    if not filtered_val in valid_values:
+                        return False, "Recipe's %s option has an invalid value: [%s]" % (option, unfiltered_val)
+                local_option = filtered_val
 
         return True, local_option
 
