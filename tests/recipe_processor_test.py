@@ -262,13 +262,17 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file17 = path_utils.concat_path(self.test_dir, "recipe_test17.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file17, recipe_test_contents17)
 
-        recipe_test_contents18 = "* signal-delay = \"test-signal\"\n"
+        recipe_test_contents18 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents18 += "* signal-delay = \"test-signal\"\n"
+        recipe_test_contents18 += "]\n"
         recipe_test_contents18 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file18 = path_utils.concat_path(self.test_dir, "recipe_test18.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file18, recipe_test_contents18)
 
-        recipe_test_contents19 = "* signal-delay = \"test-signal1\"\n"
+        recipe_test_contents19 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents19 += "* signal-delay = \"test-signal1\"\n"
         recipe_test_contents19 += "* signal-delay = \"test-signal2\"\n"
+        recipe_test_contents19 += "]\n"
         recipe_test_contents19 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file19 = path_utils.concat_path(self.test_dir, "recipe_test19.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file19, recipe_test_contents19)
