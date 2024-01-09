@@ -31,13 +31,13 @@ import mvtools_envvars
 #
 # by default, task scripts are searched for inside MVTOOLS/launchers/launch_jobs_plugins/tasks
 # this can be changed by adding the following freestanding (i.e. outside any context) variable:
-# * recipe_namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
+# * recipe-namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
 # it operates in two modes: exclusive mode (which is the default) and inclusive mode.
 # in exclusive mode, scripts will only be searched inside the specified path. in inclusive
 # mode, scripts will first be searched inside the built-in plugins
 # folder (MVTOOLS/launchers/launch_jobs_plugins/tasks), and if its not found there, then, and
 # only then, the custom path will be searched. example:
-# * recipe_namespace {inclusive} = "/home/user/custom_mvtools_launch_jobs_plugins"
+# * recipe-namespace {inclusive} = "/home/user/custom_mvtools_launch_jobs_plugins"
 # it is not necessary to explicitly set "exclusive" to activate the exclusive mode, because
 # it is the default.
 #
@@ -283,12 +283,12 @@ class RecipeProcessor:
         # recipe namespace (for tasks/plugins)
         has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if has_metajob:
-            v, r = dsl.get_variables("recipe_namespace", RECIPE_PROCESSOR_CONFIG_METAJOB)
+            v, r = dsl.get_variables("recipe-namespace", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
-                return False, "Failed attempting to retrieve recipe_namespace entries: [%s]" % r
+                return False, "Failed attempting to retrieve recipe-namespace entries: [%s]" % r
             var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
             if len(var_rn) > 1:
-                return False, "Recipe's recipe_namespace has been specified multiple times."
+                return False, "Recipe's recipe-namespace has been specified multiple times."
             elif len(var_rn) == 1:
                 namespace_path = var_rn[0][1]
                 namespace_opt = var_rn[0][2]
