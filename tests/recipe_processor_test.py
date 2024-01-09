@@ -157,7 +157,9 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file3 = path_utils.concat_path(self.test_dir, "recipe_test3.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file3, recipe_test_contents3)
 
-        recipe_test_contents4 = "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents4 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents4 += "* recipe_namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents4 += "]\n"
         recipe_test_contents4 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
         self.recipe_test_file4 = path_utils.concat_path(self.test_dir, "recipe_test4.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file4, recipe_test_contents4)

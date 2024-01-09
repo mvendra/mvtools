@@ -281,20 +281,22 @@ class RecipeProcessor:
         root_job = standard_job.StandardJob() # mvtodo
 
         # recipe namespace (for tasks/plugins)
-        v, r = dsl.get_variables("recipe_namespace")
-        if not v:
-            return False, "Failed attempting to retrieve recipe_namespace entries: [%s]" % r
-        var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
-        if len(var_rn) > 1:
-            return False, "Recipe's recipe_namespace has been specified multiple times."
-        elif len(var_rn) == 1:
-            namespace_path = var_rn[0][1]
-            namespace_opt = var_rn[0][2]
-            namespace_opt_v = True # exclusive mode (default)
-            for opts in namespace_opt:
-                if opts[0] == "inclusive":
-                    namespace_opt_v = False # disable exclusive mode
-            namespace = (namespace_path, namespace_opt_v)
+        has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
+        if has_metajob:
+            v, r = dsl.get_variables("recipe_namespace", RECIPE_PROCESSOR_CONFIG_METAJOB)
+            if not v:
+                return False, "Failed attempting to retrieve recipe_namespace entries: [%s]" % r
+            var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            if len(var_rn) > 1:
+                return False, "Recipe's recipe_namespace has been specified multiple times."
+            elif len(var_rn) == 1:
+                namespace_path = var_rn[0][1]
+                namespace_opt = var_rn[0][2]
+                namespace_opt_v = True # exclusive mode (default)
+                for opts in namespace_opt:
+                    if opts[0] == "inclusive":
+                        namespace_opt_v = False # disable exclusive mode
+                namespace = (namespace_path, namespace_opt_v)
 
         # jobs (contexts)
         v, r = dsl.get_all_sub_contexts()
