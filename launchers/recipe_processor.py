@@ -45,7 +45,7 @@ import mvtools_envvars
 # arguments (requested options) or using freestanding variables inside the recipe (which
 # will overwrite the commandline options when specified):
 #
-# * execution_name = "exec-name" # this will define the execution name that will be written
+# * execution-name = "exec-name" # this will define the execution name that will be written
 # to the launch_jobs toolbus database
 #
 # * early-abort = "true" # "true" or "false" are accepted - exclusively
@@ -439,13 +439,13 @@ class RecipeProcessor:
         if not v:
             return True, None
 
-        v, r = dsl.get_variables("execution_name", RECIPE_PROCESSOR_CONFIG_METAJOB)
+        v, r = dsl.get_variables("execution-name", RECIPE_PROCESSOR_CONFIG_METAJOB)
         if not v:
-            return False, "Failed retrieving execution_name: [%s]" % r
+            return False, "Failed retrieving execution-name: [%s]" % r
         var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
 
         if len(var_rn) > 1:
-            return False, "Recipe's execution_name has been specified more than once."
+            return False, "Recipe's execution-name has been specified more than once."
         elif len(var_rn) == 1:
             return True, (var_rn[0][1])
 
@@ -459,7 +459,7 @@ class RecipeProcessor:
         local_exec_name = _conditional_write(local_exec_name, recipe_execution_name)
 
         if requested_execution_name is not None and recipe_execution_name is not None:
-            print("%sWarning: the [execution_name] has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_exec_name, terminal_colors.TTY_WHITE))
+            print("%sWarning: the [execution-name] has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_exec_name, terminal_colors.TTY_WHITE))
 
         return True, local_exec_name
 
