@@ -243,6 +243,14 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
 
+        recipe_test_contents15 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents15 += "* recipe-namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents15 += "* custom-main-job-implementation = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
+        recipe_test_contents15 += "]\n"
+        recipe_test_contents15 += "[\n@test-job1\n* task1 = \"%s\"\n]\n" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
+        self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
+
         recipe_test_contents16 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents16 += "* execution-name = \"test-exec-name\"\n"
         recipe_test_contents16 += "]\n"
@@ -414,6 +422,10 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorCustomMainJobCustomNamespace1(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
         self.assertTrue(v)
+
+    def testRecipeProcessorCustomMainJobCustomNamespace1Fails(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
+        self.assertFalse(v)
 
     def testRecipeProcessorCustomExecutionName1(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file16)
