@@ -172,9 +172,18 @@ def _get_job_instance(job_name, custom_job_impl, direct_job_script, namespace):
 
 def _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, namespace):
 
-    if not job_name in custom_job_impl:
+    job_script = None
+
+    if job_name is None and custom_job_impl is None and direct_job_script is None:
         return True, standard_job.StandardJob
-    job_script = custom_job_impl[job_name]
+
+    if job_name is None and custom_job_impl is None and direct_job_script is not None: # main job
+        return True, standard_job.StandardJob # mvtodo
+
+    if job_name is not None and custom_job_impl is not None and direct_job_script is None: # regular jobs
+        if not job_name in custom_job_impl:
+            return True, standard_job.StandardJob
+        job_script = custom_job_impl[job_name]
 
     return _get_job_instance_internal(job_script, namespace)
 
@@ -283,7 +292,7 @@ class RecipeProcessor:
 
         namespace = None
         custom_job_impl = {}
-        root_job = standard_job.StandardJob() # mvtodo
+        main_custom_job_impl = None
 
         has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if has_metajob:
@@ -315,6 +324,13 @@ class RecipeProcessor:
                         custom_job_impl[jopt[0]] = cji[1]
                     else:
                         return False, "Failed attempting to validate custom-job-implementation map (duplicated jobs-vs-impl detected)"
+
+        # instantiate main/root job
+        print("mvdebug: [%s]" % main_custom_job_impl)
+        v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
+        if not v:
+            return False, r
+        root_job = r("mvtodo")
 
         # jobs (contexts)
         v, r = dsl.get_all_sub_contexts()
