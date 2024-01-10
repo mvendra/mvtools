@@ -176,11 +176,9 @@ def _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, nam
 
     if job_name is None and custom_job_impl is None and direct_job_script is None:
         return True, standard_job.StandardJob
-
-    if job_name is None and custom_job_impl is None and direct_job_script is not None: # main job
-        return True, standard_job.StandardJob # mvtodo
-
-    if job_name is not None and custom_job_impl is not None and direct_job_script is None: # regular jobs
+    elif job_name is None and custom_job_impl is None and direct_job_script is not None: # main job
+        job_script = direct_job_script
+    elif job_name is not None and custom_job_impl is not None and direct_job_script is None: # regular jobs
         if not job_name in custom_job_impl:
             return True, standard_job.StandardJob
         job_script = custom_job_impl[job_name]
@@ -339,7 +337,7 @@ class RecipeProcessor:
         v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
         if not v:
             return False, r
-        root_job = r("mvtodo")
+        root_job = r()
 
         # jobs (contexts)
         v, r = dsl.get_all_sub_contexts()
