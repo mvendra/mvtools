@@ -315,12 +315,12 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file23 = path_utils.concat_path(self.test_dir, "recipe_test23.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file23, recipe_test_contents23)
 
-        recipe_test_contents24 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
-        recipe_test_contents24 += "* recipe-namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents24 += "]\n"
-        recipe_test_contents24 += "[\n@test-job\n* task1 {test: (\"val1\", \"val2\")} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_repeated_params_script_file_namespace1)
-        self.recipe_test_file24 = path_utils.concat_path(self.test_dir, "recipe_test24.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file24, recipe_test_contents24)
+        recipe_test_contents25 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents25 += "* recipe-namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents25 += "]\n"
+        recipe_test_contents25 += "[\n@test-job\n* task1 {test: (\"val1\", \"val2\")} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_repeated_params_script_file_namespace1)
+        self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
 
         recipe_test_contents26 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents26 += "* recipe-namespace = \"%s\"\n" % self.namespace1
@@ -456,7 +456,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertTrue(v)
 
     def testRecipeProcessorStringlistParam(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file24)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file25)
         self.assertTrue(v)
 
     def testRecipeProcessorNamespaceExclusiveNotFound(self):
