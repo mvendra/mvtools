@@ -157,24 +157,24 @@ def _get_task_instance_delegate(task_script, namespace):
 
     return True, mod.CustomTask
 
-def _get_job_instance(job_params, namespace=None):
+def _get_job_instance(job_name, custom_job_impl, namespace=None):
 
     if namespace is None:
-        return _get_job_instance_delegate(job_params, None)
+        return _get_job_instance_delegate(job_name, custom_job_impl, None)
 
     if namespace[1]: # exclusive mode - only the custom namespace is tried
-        return _get_job_instance_delegate(job_params, namespace[0])
+        return _get_job_instance_delegate(job_name, custom_job_impl, namespace[0])
     else: # inclusive mode - first the built-in namespace is tried, and if that fails, then the custom namespace is tried
-        v, r = _get_job_instance_delegate(job_params, None)
+        v, r = _get_job_instance_delegate(job_name, custom_job_impl, None)
         if not v:
-            return _get_job_instance_delegate(job_params, namespace[0])
+            return _get_job_instance_delegate(job_name, custom_job_impl, namespace[0])
         return v, r
 
-def _get_job_instance_delegate(job_params, namespace):
+def _get_job_instance_delegate(job_name, custom_job_impl, namespace):
 
-    if not "mvtools_recipe_processor_plugin_job" in job_params:
+    if not job_name in custom_job_impl:
         return True, standard_job.StandardJob
-    job_script = job_params["mvtools_recipe_processor_plugin_job"]
+    job_script = custom_job_impl[job_name]
 
     v, r = _get_plugins_path(namespace)
     if not v:
@@ -278,11 +278,13 @@ class RecipeProcessor:
     def _translate_dsl_into_jobtree(self, dsl):
 
         namespace = None
+        custom_job_impl = {}
         root_job = standard_job.StandardJob() # mvtodo
 
-        # recipe namespace (for tasks/plugins)
         has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if has_metajob:
+
+            # recipe namespace (for tasks/plugins)
             v, r = dsl.get_variables("recipe-namespace", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve recipe-namespace entries: [%s]" % r
@@ -297,6 +299,18 @@ class RecipeProcessor:
                     if opts[0] == "inclusive":
                         namespace_opt_v = False # disable exclusive mode
                 namespace = (namespace_path, namespace_opt_v)
+
+            # custom job implementations
+            v, r = dsl.get_variables("custom-job-implementation", RECIPE_PROCESSOR_CONFIG_METAJOB)
+            if not v:
+                return False, "Failed attempting to retrieve custom-job-implementation entries: [%s]" % r
+            vars_cji = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            for cji in vars_cji:
+                for jopt in cji[2]:
+                    if not jopt[0] in custom_job_impl:
+                        custom_job_impl[jopt[0]] = cji[1]
+                    else:
+                        return False, "Failed attempting to validate custom-job-implementation map (duplicated jobs-vs-impl detected)"
 
         # jobs (contexts)
         v, r = dsl.get_all_sub_contexts()
@@ -315,7 +329,7 @@ class RecipeProcessor:
             ctx_opts = dsl_type20.convert_opt_obj_list_to_neutral_format(r)
 
             job_params = _convert_dsl_opts_into_py_map(ctx_opts)
-            v, r = _get_job_instance(job_params, namespace)
+            v, r = _get_job_instance(ctx.get_name(), custom_job_impl, namespace)
             if not v:
                 return False, r
             new_job = r(ctx.get_name())
