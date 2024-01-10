@@ -285,7 +285,7 @@ class RecipeProcessorTest(unittest.TestCase):
         recipe_test_contents21 += "* signal-delay = \"test-signal2\"\n"
         recipe_test_contents21 += "]\n"
         recipe_test_contents21 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test20.t20")
+        self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test21.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file21, recipe_test_contents21)
 
         recipe_test_contents22 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
