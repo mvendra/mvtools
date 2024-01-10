@@ -176,6 +176,10 @@ def _get_job_instance_delegate(job_name, custom_job_impl, namespace):
         return True, standard_job.StandardJob
     job_script = custom_job_impl[job_name]
 
+    return _get_job_instance_internal(job_script, namespace)
+
+def _get_job_instance_internal(job_script, namespace):
+
     v, r = _get_plugins_path(namespace)
     if not v:
         return False, r
