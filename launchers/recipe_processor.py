@@ -157,20 +157,20 @@ def _get_task_instance_delegate(task_script, namespace):
 
     return True, mod.CustomTask
 
-def _get_job_instance(job_name, custom_job_impl, namespace=None):
+def _get_job_instance(job_name, custom_job_impl, direct_job_script, namespace):
 
     if namespace is None:
-        return _get_job_instance_delegate(job_name, custom_job_impl, None)
+        return _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, None)
 
     if namespace[1]: # exclusive mode - only the custom namespace is tried
-        return _get_job_instance_delegate(job_name, custom_job_impl, namespace[0])
+        return _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, namespace[0])
     else: # inclusive mode - first the built-in namespace is tried, and if that fails, then the custom namespace is tried
-        v, r = _get_job_instance_delegate(job_name, custom_job_impl, None)
+        v, r = _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, None)
         if not v:
-            return _get_job_instance_delegate(job_name, custom_job_impl, namespace[0])
+            return _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, namespace[0])
         return v, r
 
-def _get_job_instance_delegate(job_name, custom_job_impl, namespace):
+def _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, namespace):
 
     if not job_name in custom_job_impl:
         return True, standard_job.StandardJob
@@ -333,7 +333,7 @@ class RecipeProcessor:
             ctx_opts = dsl_type20.convert_opt_obj_list_to_neutral_format(r)
 
             job_params = _convert_dsl_opts_into_py_map(ctx_opts)
-            v, r = _get_job_instance(ctx.get_name(), custom_job_impl, namespace)
+            v, r = _get_job_instance(ctx.get_name(), custom_job_impl, None, namespace)
             if not v:
                 return False, r
             new_job = r(ctx.get_name())
