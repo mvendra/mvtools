@@ -258,12 +258,12 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file16 = path_utils.concat_path(self.test_dir, "recipe_test16.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file16, recipe_test_contents16)
 
-        recipe_test_contents17 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
-        recipe_test_contents17 += "* time-delay = \"2s\"\n"
-        recipe_test_contents17 += "]\n"
-        recipe_test_contents17 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file17 = path_utils.concat_path(self.test_dir, "recipe_test17.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file17, recipe_test_contents17)
+        recipe_test_contents18 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents18 += "* time-delay = \"2s\"\n"
+        recipe_test_contents18 += "]\n"
+        recipe_test_contents18 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file18 = path_utils.concat_path(self.test_dir, "recipe_test18.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file18, recipe_test_contents18)
 
         recipe_test_contents19 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents19 += "* time-delay = \"2s\"\n"
@@ -424,7 +424,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testRecipeProcessorTimeDelay1(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file17)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file18)
         self.assertTrue(v)
 
     def testRecipeProcessorTimeDelay2(self):
