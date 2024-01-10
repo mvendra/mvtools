@@ -220,15 +220,17 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents12 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents12 += "* recipe-namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents12 += "* custom-job-implementation {test-job} = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
         recipe_test_contents12 += "]\n"
-        recipe_test_contents12 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1))
+        recipe_test_contents12 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
         self.recipe_test_file12 = path_utils.concat_path(self.test_dir, "recipe_test12.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file12, recipe_test_contents12)
 
         recipe_test_contents13 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents13 += "* recipe-namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents13 += "* custom-job-implementation {test-job} = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
         recipe_test_contents13 += "]\n"
-        recipe_test_contents13 += "[\n@test-job {mvtools_recipe_processor_plugin_job: \"%s\"}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
+        recipe_test_contents13 += "[\n@test-job\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
         self.recipe_test_file13 = path_utils.concat_path(self.test_dir, "recipe_test13.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file13, recipe_test_contents13)
 
