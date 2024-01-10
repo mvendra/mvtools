@@ -329,12 +329,12 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
 
-        recipe_test_contents26 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
-        recipe_test_contents26 += "* recipe-namespace {inclusive} = \"%s\"\n" % self.namespace2
-        recipe_test_contents26 += "]\n"
-        recipe_test_contents26 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file26 = path_utils.concat_path(self.test_dir, "recipe_test26.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file26, recipe_test_contents26)
+        recipe_test_contents27 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents27 += "* recipe-namespace {inclusive} = \"%s\"\n" % self.namespace2
+        recipe_test_contents27 += "]\n"
+        recipe_test_contents27 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file27 = path_utils.concat_path(self.test_dir, "recipe_test27.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file27, recipe_test_contents27)
 
         recipe_test_contents28 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents28 += "* recipe-namespace = \"%s\"\n" % self.namespace2
@@ -464,7 +464,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testRecipeProcessorNamespaceInclusiveIsFoundAtBuiltInsFirst(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file26)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file27)
         self.assertTrue(v)
 
     def testRecipeProcessorNamespaceExclusiveIsFoundButFails(self):
