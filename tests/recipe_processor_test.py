@@ -234,12 +234,12 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file13 = path_utils.concat_path(self.test_dir, "recipe_test13.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file13, recipe_test_contents13)
 
-        recipe_test_contents14 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
-        recipe_test_contents14 += "* execution-name = \"test-exec-name\"\n"
-        recipe_test_contents14 += "]\n"
-        recipe_test_contents14 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
+        recipe_test_contents15 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents15 += "* execution-name = \"test-exec-name\"\n"
+        recipe_test_contents15 += "]\n"
+        recipe_test_contents15 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
 
         recipe_test_contents16 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents16 += "* execution-name = \"test-exec-name1\"\n"
@@ -403,7 +403,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertTrue(v)
 
     def testRecipeProcessorCustomExecutionName1(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
         self.assertTrue(v)
 
     def testRecipeProcessorCustomExecutionName2(self):
@@ -429,7 +429,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testRecipeProcessorExecutionDelay1(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
         self.assertTrue(v)
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file21)
         self.assertTrue(v)
