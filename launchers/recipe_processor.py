@@ -297,7 +297,7 @@ class RecipeProcessor:
         has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if has_metajob:
 
-            # recipe namespace (for tasks/plugins)
+            # recipe namespace (for tasks/plugins and jobs as well)
             v, r = dsl.get_variables("recipe-namespace", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve recipe-namespace entries: [%s]" % r
@@ -325,8 +325,16 @@ class RecipeProcessor:
                     else:
                         return False, "Failed attempting to validate custom-job-implementation map (duplicated jobs-vs-impl detected)"
 
+            # custom job implementation for the main job
+            v, r = dsl.get_variables("custom-main-job-implementation", RECIPE_PROCESSOR_CONFIG_METAJOB)
+            if not v:
+                return False, "Failed attempting to retrieve custom-main-job-implementation entries: [%s]" % r
+            vars_cmji = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            if len(vars_cmji) > 1:
+                return False, "Recipe's custom-main-job-implementation has been specified multiple times."
+            main_custom_job_impl = vars_cmji[0][1]
+
         # instantiate main/root job
-        print("mvdebug: [%s]" % main_custom_job_impl)
         v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
         if not v:
             return False, r
