@@ -332,7 +332,8 @@ class RecipeProcessor:
             vars_cmji = dsl_type20.convert_var_obj_list_to_neutral_format(r)
             if len(vars_cmji) > 1:
                 return False, "Recipe's custom-main-job-implementation has been specified multiple times."
-            main_custom_job_impl = vars_cmji[0][1]
+            elif len(vars_cmji) == 1:
+                main_custom_job_impl = vars_cmji[0][1]
 
         # instantiate main/root job
         v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
