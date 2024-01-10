@@ -295,13 +295,13 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test21.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file21, recipe_test_contents21)
 
-        recipe_test_contents22 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
-        recipe_test_contents22 += "* execution-delay = \"test-exec1\"\n"
-        recipe_test_contents22 += "* execution-delay = \"test-exec2\"\n"
-        recipe_test_contents22 += "]\n"
-        recipe_test_contents22 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
-        self.recipe_test_file22 = path_utils.concat_path(self.test_dir, "recipe_test22.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file22, recipe_test_contents22)
+        recipe_test_contents23 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents23 += "* execution-delay = \"test-exec1\"\n"
+        recipe_test_contents23 += "* execution-delay = \"test-exec2\"\n"
+        recipe_test_contents23 += "]\n"
+        recipe_test_contents23 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file23 = path_utils.concat_path(self.test_dir, "recipe_test23.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file23, recipe_test_contents23)
 
         recipe_test_contents24 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents24 += "* recipe-namespace = \"%s\"\n" % self.test_dir
@@ -448,7 +448,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.assertTrue(v)
 
     def testRecipeProcessorExecutionDelay2(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file22)
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file23)
         self.assertFalse(v)
 
     def testRecipeProcessorCustomTaskUseExecutionName(self):
