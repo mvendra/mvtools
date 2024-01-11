@@ -210,11 +210,13 @@ def _get_job_instance_internal(job_script, namespace):
 
     return True, mod.CustomJob
 
+DEPTH_TRACKER_LIMIT = 500
 class RecipeProcessor:
 
     def __init__(self, recipe, requested_options):
         self.recipe = recipe
         self.requested_options = requested_options
+        self.depth_tracker = 0
 
     def test(self, requested_execution_name=None):
 
@@ -288,6 +290,11 @@ class RecipeProcessor:
 
     def __process_new_context_as_job(self, dsl, namespace, custom_job_impl, parent_job, ctx_name):
 
+        self.depth_tracker += 1
+
+        if self.depth_tracker > DEPTH_TRACKER_LIMIT:
+            return False, "Reached depth limit of [%s] on context [%s]" % (DEPTH_TRACKER_LIMIT, ctx_name)
+
         v, r = dsl.get_context(ctx_name)
         if not v:
             return False, "Failed attempting to retrieve context [%s]: [%s]" % (ctx_name, r)
@@ -323,9 +330,12 @@ class RecipeProcessor:
                     return False, r
 
         parent_job.add_entry(new_job)
+        self.depth_tracker -= 1
         return True, None
 
     def _translate_dsl_into_jobtree(self, dsl):
+
+        self.depth_tracker = 0
 
         namespace = None
         custom_job_impl = {}

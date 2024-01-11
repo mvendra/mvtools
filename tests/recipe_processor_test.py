@@ -512,6 +512,13 @@ class RecipeProcessorTest(unittest.TestCase):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file29)
         self.assertTrue(v)
 
+    def testRecipeProcessorNestedJobsDepthFail(self):
+        stashed_depth_limit = recipe_processor.DEPTH_TRACKER_LIMIT
+        recipe_processor.DEPTH_TRACKER_LIMIT = 1
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file30)
+        self.assertFalse(v)
+        recipe_processor.DEPTH_TRACKER_LIMIT = stashed_depth_limit
+
     def testRecipeProcessorNestedJobs(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file30)
         self.assertTrue(v)
