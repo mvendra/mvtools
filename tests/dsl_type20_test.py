@@ -2020,6 +2020,18 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r.get_parent_ptr(), None)
 
+    def testDslType20_TestGetContext6(self):
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context("ctx1", [], None)
+        self.assertTrue(v)
+        v, r = dsl.add_context("ctx2", [], "ctx1")
+        self.assertTrue(v)
+        v, r = dsl.get_context("ctx1")
+        self.assertTrue(v)
+        self.assertEqual(r.get_entries()[0].get_name(), "ctx2")
+        self.assertNotEqual(r.get_entries()[0].get_parent_ptr(), None)
+        self.assertEqual(r.get_entries()[0].get_parent_ptr().get_name(), "ctx1")
+
     def testDslType20_TestGetContext7(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context("ctx1", [], None)
