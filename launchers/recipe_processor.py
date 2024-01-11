@@ -286,6 +286,40 @@ class RecipeProcessor:
 
         return True, dsl
 
+    def __process_new_context_as_job(self, dsl, namespace, custom_job_impl, parent_job, ctx_name):
+
+        v, r = dsl.get_context(ctx_name)
+        if not v:
+            return False, "Failed attempting to retrieve context [%s]: [%s]" % (ctx_name, r)
+        ctx = r
+
+        job_params = _convert_dsl_opts_into_py_map(dsl_type20.convert_opt_obj_list_to_neutral_format(ctx.get_options()))
+        v, r = _get_job_instance(ctx.get_name(), custom_job_impl, None, namespace)
+        if not v:
+            return False, r
+        new_job = r(ctx.get_name())
+        new_job.params = job_params
+
+        v, r = dsl.get_all_variables(ctx.get_name()) # mvtodo: nope, not like this. both wasteful and redundant. already did a get_context up above, so just do a foreach get_entriess() (cos shallow not hollow). also, recurse into the entries that are CTXs
+        if not v:
+            return False, "Failed attempting to retrieve variables from context [%s]: [%s]" % (ctx.get_name(), r)
+        subvars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+
+        for var in subvars:
+
+            task_params = _convert_dsl_opts_into_py_map(var[2])
+
+            v, r = _get_task_instance(var[1], namespace)
+            if not v:
+                return False, r
+
+            new_task = r(var[0])
+            new_task.params = task_params
+            new_job.add_entry(new_task)
+
+        parent_job.add_entry(new_job)
+        return True, None
+
     def _translate_dsl_into_jobtree(self, dsl):
 
         namespace = None
@@ -339,47 +373,36 @@ class RecipeProcessor:
             return False, r
         root_job = r()
 
-        # jobs (contexts)
-        v, r = dsl.get_all_sub_contexts()
+        # root jobs and tasks
+        v, r = dsl.get_context()
         if not v:
-            return False, "Failed attempting to retrieve subcontexts: [%s]" % r
-        ctxs = r
+            return False, "Failed attempting to retrieve master context: [%s]" % r
+        root_ctx = r
 
-        for ctx in ctxs:
+        for entry in root_ctx.get_entries():
 
-            if ctx.get_name() == RECIPE_PROCESSOR_CONFIG_METAJOB:
+            if entry.get_name() == RECIPE_PROCESSOR_CONFIG_METAJOB:
                 continue
 
-            v, r = dsl.get_context_options(ctx.get_name())
-            if not v:
-                return False, "Failed attempting to retrieve options from context [%s]: [%s]" % (ctx.get_name(), r)
-            ctx_opts = dsl_type20.convert_opt_obj_list_to_neutral_format(r)
+            # tasks
+            if entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR:
 
-            job_params = _convert_dsl_opts_into_py_map(ctx_opts)
-            v, r = _get_job_instance(ctx.get_name(), custom_job_impl, None, namespace)
-            if not v:
-                return False, r
-            new_job = r(ctx.get_name())
-            new_job.params = job_params
+                task_params = _convert_dsl_opts_into_py_map(dsl_type20.convert_opt_obj_list_to_neutral_format(entry.get_options()))
 
-            v, r = dsl.get_all_variables(ctx.get_name())
-            if not v:
-                return False, "Failed attempting to retrieve variables from context [%s]: [%s]" % (ctx.get_name(), r)
-            subvars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
-
-            for var in subvars:
-
-                task_params = _convert_dsl_opts_into_py_map(var[2])
-
-                v, r = _get_task_instance(var[1], namespace)
+                v, r = _get_task_instance(entry.get_value(), namespace)
                 if not v:
                     return False, r
 
-                new_task = r(var[0])
+                new_task = r(entry.get_name())
                 new_task.params = task_params
-                new_job.add_entry(new_task)
+                root_job.add_entry(new_task)
 
-            root_job.add_entry(new_job)
+            # jobs
+            elif entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX:
+
+                v, r = self.__process_new_context_as_job(dsl, namespace, custom_job_impl, root_job, entry.get_name())
+                if not v:
+                    return False, r
 
         return True, root_job
 
