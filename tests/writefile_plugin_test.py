@@ -13,16 +13,6 @@ import path_utils
 
 import writefile_plugin
 
-def FileHasContents(filename, contents):
-    if not os.path.exists(filename):
-        return False
-    local_contents = ""
-    with open(filename, "r") as f:
-        local_contents = f.read()
-    if local_contents == contents:
-        return True
-    return False
-
 class WritefilePluginTest(unittest.TestCase):
 
     def setUp(self):
@@ -42,6 +32,9 @@ class WritefilePluginTest(unittest.TestCase):
         # the test task
         self.writefile_task = writefile_plugin.CustomTask()
 
+        # nonexistent path 1
+        self.nonexistent_path1 = path_utils.concat_path(self.test_dir, "nonexistent_path1")
+
         return True, ""
 
     def tearDown(self):
@@ -58,7 +51,7 @@ class WritefilePluginTest(unittest.TestCase):
     def testWritefilePluginReadParams2(self):
 
         local_params = {}
-        local_params["exec_path"] = self.existent_path1
+        local_params["target_file"] = self.nonexistent_path1
         self.writefile_task.params = local_params
 
         v, r = self.writefile_task._read_params()
@@ -67,12 +60,23 @@ class WritefilePluginTest(unittest.TestCase):
     def testWritefilePluginReadParams3(self):
 
         local_params = {}
-        local_params["exec_path"] = self.nonexistent_path1
-        local_params["operation"] = "dummy_value1"
+        local_params["target_file"] = self.nonexistent_path1
+        local_params["mode"] = "w"
         self.writefile_task.params = local_params
 
         v, r = self.writefile_task._read_params()
         self.assertFalse(v)
+
+    def testWritefilePluginReadParams4(self):
+
+        local_params = {}
+        local_params["target_file"] = self.nonexistent_path1
+        local_params["mode"] = "w"
+        local_params["content"] = "dummy-content"
+        self.writefile_task.params = local_params
+
+        v, r = self.writefile_task._read_params()
+        self.assertTrue(v)
 
     def testWritefilePluginRunTask1(self):
 
