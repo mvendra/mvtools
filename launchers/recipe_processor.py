@@ -69,25 +69,25 @@ import mvtools_envvars
 # [
 # @mvtools_recipe_processor_config
 # * execution-name = "exec-name"
-# * early-abort = "true"
-# * time_delay = "1h"
-# * signal_delay = "sig-name"
-# * execution_delay = "exec-name"
+# * early-abort = "yes"
+# * time-delay = "1h"
+# * signal-delay = "sig-name"
+# * execution-delay = "exec-name"
 # ]
 #
 # * execution-name # this will define the execution name that will be written to the launch_jobs toolbus database
 #
-# * early-abort # "true" or "false" are accepted - exclusively
+# * early-abort # "yes" or "no" are accepted - exclusively
 # this will specify whether an execution should be aborted whenever any job fails. the execution
 # itself will be deemed a failure upon any job failure, but with this option enabled, the execution
 # will nonetheless continue until there are no more jobs in the list.
 #
-# * time_delay # defines a pre-execution delay. examples: "7h", "30m", "15".
+# * time-delay # defines a pre-execution delay. examples: "7h", "30m", "15".
 #
-# * signal_delay # defines a toolbus internal signal to be waited for before starting this
+# * signal-delay # defines a toolbus internal signal to be waited for before starting this
 # execution. the signal gets consumed upon availability.
 #
-# * execution_delay # defines a toolbus launch_jobs database-registered execution name
+# * execution-delay # defines a toolbus launch_jobs database-registered execution name
 # to be waited for before starting this execution. this will cause this execution to be delayed *until*
 # the defined execution name is concluded (i.e. has bee removed from launch_jobs's toolbus database)
 #
