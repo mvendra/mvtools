@@ -95,12 +95,30 @@ import mvtools_envvars
 # by using the following syntax:
 #
 # [
-# @job1 {mvtools_recipe_processor_plugin_job: "custom_job_impl.py"}
+# @mvtools_recipe_processor_config
+# * custom-job-implementation {job1} = "custom_job_impl.py"
+# ]
+#
+# [
+# @job1
 # * task1 = "sample_echo_true.py"
 # ]
 #
-# which makes the option "mvtools_recipe_processor_plugin_job" not available for
-# custom/general use (i.e. not usable by task plugins)
+# [
+# @job2
+# * task1 = "sample_echo_true.py"
+# ]
+#
+# in the example above, job1's implementation would be replaced with "custom_job_impl.py", whereas the default
+# job implementation would be preserved for job2.
+# it is also possible to replace the implementation of the main/"invisible" job (the underlying job that parents
+# "freestanding" tasks, and all other jobs as well) - by using the following syntax:
+#
+# [
+# @mvtools_recipe_processor_config
+# * custom-main-job-implementation = "custom_job_impl.py"
+# ]
+#
 
 RECIPE_PROCESSOR_CONFIG_METAJOB = "mvtools_recipe_processor_config"
 
