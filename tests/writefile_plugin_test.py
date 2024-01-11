@@ -13,6 +13,16 @@ import path_utils
 
 import writefile_plugin
 
+def FileHasContents(filename, contents):
+    if not os.path.exists(filename):
+        return False
+    local_contents = ""
+    with open(filename, "r") as f:
+        local_contents = f.read()
+    if local_contents == contents:
+        return True
+    return False
+
 class WritefilePluginTest(unittest.TestCase):
 
     def setUp(self):
@@ -81,50 +91,32 @@ class WritefilePluginTest(unittest.TestCase):
     def testWritefilePluginRunTask1(self):
 
         local_params = {}
-        local_params["exec_path"] = self.existent_path1
-        local_params["operation"] = "invalid-operation"
+        local_params["target_file"] = self.nonexistent_path1
+        local_params["mode"] = "w"
+        local_params["content"] = "dummy-content"
         self.writefile_task.params = local_params
 
-        with mock.patch("writefile_plugin.CustomTask.task_build", return_value=(True, None)) as dummy:
-            v, r = self.writefile_task.run_task(print, "exe_name")
-            self.assertFalse(v)
-            dummy.assert_not_called()
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+        v, r = self.writefile_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.nonexistent_path1))
+        self.assertTrue(FileHasContents(self.nonexistent_path1, "dummy-content"))
 
     def testWritefilePluginRunTask2(self):
 
         local_params = {}
-        local_params["exec_path"] = self.existent_path1
-        local_params["operation"] = "build"
+        local_params["target_file"] = self.nonexistent_path1
+        local_params["mode"] = "a"
+        local_params["content"] = "\ndummy-content2"
         self.writefile_task.params = local_params
 
-        with mock.patch("writefile_plugin.CustomTask.task_build", return_value=(True, None)) as dummy:
-            v, r = self.writefile_task.run_task(print, "exe_name")
-            self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, None, None, None, [], None, None, False)
-
-    def testWritefilePluginRunTask3(self):
-
-        local_params = {}
-        local_params["exec_path"] = self.existent_path1
-        local_params["operation"] = "fetch"
-        self.writefile_task.params = local_params
-
-        with mock.patch("writefile_plugin.CustomTask.task_fetch", return_value=(True, None)) as dummy:
-            v, r = self.writefile_task.run_task(print, "exe_name")
-            self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, None, None, None, False)
-
-    def testWritefilePluginRunTask4(self):
-
-        local_params = {}
-        local_params["exec_path"] = self.existent_path1
-        local_params["operation"] = "clean"
-        self.writefile_task.params = local_params
-
-        with mock.patch("writefile_plugin.CustomTask.task_clean", return_value=(True, None)) as dummy:
-            v, r = self.writefile_task.run_task(print, "exe_name")
-            self.assertTrue(v)
-            dummy.assert_called_with(print, self.existent_path1, False, None, None, False)
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+        with open(self.nonexistent_path1, "w") as f:
+            f.write("dummy-content1")
+        v, r = self.writefile_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.nonexistent_path1))
+        self.assertTrue(FileHasContents(self.nonexistent_path1, "dummy-content1\ndummy-content2"))
 
 if __name__ == '__main__':
     unittest.main()
