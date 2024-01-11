@@ -589,11 +589,13 @@ class RecipeProcessor:
 
         return True, local_exec_name
 
-def test_jobs_from_recipe_file(recipe_file, execution_name=None, requested_options=None):
+def test_jobs_from_recipe_file(recipe_file, execution_name = None, recipe_namespace = None, requested_options = None):
+    # mvtodo: recipe_namespace (ensure None is good)
     recipe_processor = RecipeProcessor(recipe_file, requested_options)
     return recipe_processor.test(execution_name)
 
-def run_jobs_from_recipe_file(recipe_file, execution_name=None, requested_options=None):
+def run_jobs_from_recipe_file(recipe_file, execution_name = None, recipe_namespace = None, requested_options = None):
+    # mvtodo: recipe_namespace (ensure None is good)
     recipe_processor = RecipeProcessor(recipe_file, requested_options)
     return recipe_processor.run(execution_name)
 
@@ -602,7 +604,7 @@ def assemble_requested_options(_early_abort, _time_delay, _signal_delay, _execut
 
 def menu_test_recipe(recipe_file, execution_name, recipe_namespace, requested_options):
 
-    v, r = test_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
+    v, r = test_jobs_from_recipe_file(recipe_file, execution_name, recipe_namespace, requested_options)
     if not v:
         err_msg = r
         if len(err_msg) == 1:
@@ -613,7 +615,7 @@ def menu_test_recipe(recipe_file, execution_name, recipe_namespace, requested_op
 
 def menu_run_recipe(recipe_file, execution_name, recipe_namespace, requested_options):
 
-    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
+    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, recipe_namespace, requested_options)
     if not v:
         print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.TTY_WHITE))
     else:
