@@ -25,6 +25,21 @@ import mvtools_envvars
 # ]
 #
 # this would be a recipe file with only one job, which itself has only one task (task1)
+# tasks can be "freestanding" (i.e. they don't require being a member of any context), and nested
+# contexts are supported - examples below:
+#
+# * freestanding-task {task_options} = "sample_echo_true.py"
+#
+# [
+# @job1 {job_options}
+#
+#     [
+#     @nested-job2
+#     * another-task = "sample_echo_true.py"
+#     ]
+#
+# ]
+#
 # job options (job_options in the example above) are inherited/merged downwards onto the job's tasks.
 # a recipe is deemed successful if (and only if) every single task in every single job
 # succeeded (some exceptions may apply - see below)
