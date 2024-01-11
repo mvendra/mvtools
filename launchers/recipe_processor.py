@@ -600,7 +600,7 @@ def run_jobs_from_recipe_file(recipe_file, execution_name=None, requested_option
 def assemble_requested_options(_early_abort, _time_delay, _signal_delay, _execution_delay):
     return launch_jobs.RunOptions(early_abort=_early_abort, time_delay=_time_delay, signal_delay=_signal_delay, execution_delay=_execution_delay)
 
-def menu_test_recipe(recipe_file, execution_name, requested_options):
+def menu_test_recipe(recipe_file, execution_name, recipe_namespace, requested_options):
 
     v, r = test_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
     if not v:
@@ -611,7 +611,7 @@ def menu_test_recipe(recipe_file, execution_name, requested_options):
     else:
         print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
-def menu_run_recipe(recipe_file, execution_name, requested_options):
+def menu_run_recipe(recipe_file, execution_name, recipe_namespace, requested_options):
 
     v, r = run_jobs_from_recipe_file(recipe_file, execution_name, requested_options)
     if not v:
@@ -620,7 +620,7 @@ def menu_run_recipe(recipe_file, execution_name, requested_options):
         print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.TTY_WHITE))
 
 def puaq():
-    print("Usage: %s [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --recipe-namespace the-recipe-namespace --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -636,6 +636,8 @@ if __name__ == "__main__":
     # launch_jobs options
     execution_name = None
     execution_name_next = False
+    recipe_namespace = None
+    recipe_namespace_next = False
     early_abort = None
     early_abort_next = False
     time_delay = None
@@ -655,6 +657,11 @@ if __name__ == "__main__":
         if execution_name_next:
             execution_name_next = False
             execution_name = p
+            continue
+
+        if recipe_namespace_next:
+            recipe_namespace_next = False
+            recipe_namespace = p
             continue
 
         if early_abort_next:
@@ -697,6 +704,8 @@ if __name__ == "__main__":
             recipe_next = True
         elif p == "--execution-name":
             execution_name_next = True
+        elif p == "--recipe-namespace":
+            recipe_namespace_next = True
         elif p == "--early-abort":
             early_abort_next = True
         elif p == "--time-delay":
@@ -712,9 +721,9 @@ if __name__ == "__main__":
     req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
     if operation == "test":
-        menu_test_recipe(recipe_file, execution_name, req_opts)
+        menu_test_recipe(recipe_file, execution_name, recipe_namespace, req_opts)
     elif operation == "run":
-        menu_run_recipe(recipe_file, execution_name, req_opts)
+        menu_run_recipe(recipe_file, execution_name, recipe_namespace, req_opts)
     else:
         print("Invalid operation: [%s]" % operation)
         sys.exit(1)
