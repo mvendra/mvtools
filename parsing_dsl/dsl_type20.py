@@ -824,7 +824,7 @@ class DSLType20:
         return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.variable_decorator)
 
     def _var_copy(self, original_parent_ptr, var_ptr):
-        return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options())) # mvtodo
+        return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
 
     def _ctx_hollow_copy(self, original_parent_ptr, target_ptr, ctx_ptr):
         return DSLType20_Context(target_ptr, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(original_parent_ptr, ctx_ptr)))
