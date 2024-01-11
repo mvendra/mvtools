@@ -826,7 +826,7 @@ class DSLType20:
     def _var_copy(self, var_ptr):
         return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options())) # mvtodo
 
-    def _ctx_hollow_copy(self, target_ptr, ctx_ptr):
+    def _ctx_hollow_copy(self, original_parent_ptr, target_ptr, ctx_ptr):
         return DSLType20_Context(target_ptr, ctx_ptr.get_name(), self._opt_list_copy(ctx_ptr.get_options())) # mvtodo
 
     def _opt_copy(self, opt_ptr):
@@ -838,12 +838,12 @@ class DSLType20:
             result.append(self._opt_copy(opt))
         return result
 
-    def _generic_copy_helper(self, target_ptr, entry_ptr):
+    def _generic_copy_helper(self, original_parent_ptr, target_ptr, entry_ptr):
 
         if entry_ptr.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
             return self._var_copy(entry_ptr)
         elif entry_ptr.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-            return self._ctx_hollow_copy(target_ptr, entry_ptr)
+            return self._ctx_hollow_copy(original_parent_ptr, target_ptr, entry_ptr)
 
     def _ctx_shallow_copy(self, parent_ptr, ctx_ptr):
 
@@ -851,7 +851,7 @@ class DSLType20:
 
         ctx_copy = DSLType20_Context(None, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(parent_ptr, ctx_ptr)))
         for ent in ctx_ptr.get_entries():
-            ctx_copy.add_entry(self._generic_copy_helper(ctx_copy, ent))
+            ctx_copy.add_entry(self._generic_copy_helper(parent_ptr, ctx_copy, ent))
         return ctx_copy
 
     def _rem_context_helper(self, ptr, cb_data_rem):
