@@ -317,7 +317,10 @@ class RecipeProcessor:
 
             # jobs
             elif entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX:
-                pass # mvtodo
+
+                v, r = self.__process_new_context_as_job(dsl, namespace, custom_job_impl, new_job, entry.get_name())
+                if not v:
+                    return False, r
 
         parent_job.add_entry(new_job)
         return True, None
