@@ -710,7 +710,7 @@ class DSLType20:
         aggregate_opts_list = []
         final_opts_list = []
 
-        # aggregate al parents options up to root level
+        # aggregate all parents options up to root level
         current_parent_ptr = parent_ptr
         while (current_parent_ptr != None):
             aggregate_opts_list.append(current_parent_ptr.get_options())
@@ -824,10 +824,10 @@ class DSLType20:
         return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.variable_decorator)
 
     def _var_copy(self, var_ptr):
-        return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options()))
+        return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(var_ptr.get_options())) # mvtodo
 
     def _ctx_hollow_copy(self, parent_ptr, ctx_ptr):
-        return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._opt_list_copy(ctx_ptr.get_options()))
+        return DSLType20_Context(parent_ptr, ctx_ptr.get_name(), self._opt_list_copy(ctx_ptr.get_options())) # mvtodo
 
     def _opt_copy(self, opt_ptr):
         return DSLType20_Option(self._config_copy(), opt_ptr.get_name(), opt_ptr.get_value())
