@@ -12,6 +12,16 @@ import mvtools_envvars
 
 import recipe_processor
 
+def FileHasContents(filename, contents):
+    if not os.path.exists(filename):
+        return False
+    local_contents = ""
+    with open(filename, "r") as f:
+        local_contents = f.read()
+    if local_contents == contents:
+        return True
+    return False
+
 class RecipeProcessorTest(unittest.TestCase):
 
     def setUp(self):
@@ -358,6 +368,21 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file29 = path_utils.concat_path(self.test_dir, "recipe_test29.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file29, recipe_test_contents29)
 
+        self.recipe_test_30_callstack = path_utils.concat_path(self.test_dir, "recipe_test_30_callstack.txt")
+        recipe_test_contents30 = "* task1 {target_file: \"%s\" / mode: \"a\" / content: \"task1\"} = \"writefile_plugin.py\"\n" % self.recipe_test_30_callstack
+        recipe_test_contents30 += "[\n"
+        recipe_test_contents30 += "@job1\n"
+        recipe_test_contents30 += "* task2 {target_file: \"%s\" / mode: \"a\" / content: \"task2\"} = \"writefile_plugin.py\"\n" % self.recipe_test_30_callstack
+        recipe_test_contents30 += "[\n"
+        recipe_test_contents30 += "@job2\n"
+        recipe_test_contents30 += "* task3 {target_file: \"%s\" / mode: \"a\" / content: \"task3\"} = \"writefile_plugin.py\"\n" % self.recipe_test_30_callstack
+        recipe_test_contents30 += "]\n"
+        recipe_test_contents30 += "* task4 {target_file: \"%s\" / mode: \"a\" / content: \"task4\"} = \"writefile_plugin.py\"\n" % self.recipe_test_30_callstack
+        recipe_test_contents30 += "]\n"
+        recipe_test_contents30 += "* task5 {target_file: \"%s\" / mode: \"a\" / content: \"task5\"} = \"writefile_plugin.py\"\n" % self.recipe_test_30_callstack
+        self.recipe_test_file30 = path_utils.concat_path(self.test_dir, "recipe_test30.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file30, recipe_test_contents30)
+
         return True, ""
 
     def tearDown(self):
@@ -486,6 +511,11 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorNamespaceExclusiveIsFoundAndDoesWork(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file29)
         self.assertTrue(v)
+
+    def testRecipeProcessorNestedJobs(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file30)
+        self.assertTrue(v)
+        self.assertTrue(FileHasContents(self.recipe_test_30_callstack, "task1task2task3task4task5"))
 
     def testRecipeProcessorBlankFilename(self):
 
