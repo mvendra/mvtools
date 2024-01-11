@@ -2014,10 +2014,11 @@ class DSLType20Test(unittest.TestCase):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context("ctx1", [], None)
         self.assertTrue(v)
-        v, r = dsl.get_context("ctx1")
+        v, r = dsl.add_context("ctx2", [], "ctx1")
         self.assertTrue(v)
-        self.assertEqual(r.get_parent_ptr().get_name(), dsl.data.get_name())
-        self.assertNotEqual(r.get_parent_ptr(), dsl.data)
+        v, r = dsl.get_context("ctx2")
+        self.assertTrue(v)
+        self.assertEqual(r.get_parent_ptr(), None)
 
     def testDslType20_TestGetContext6(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())

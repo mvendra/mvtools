@@ -849,10 +849,7 @@ class DSLType20:
 
         # creates a "shallow-ish" copy - child contexts are also copied, but hollowed
 
-        parent_ptr_to_use = None
-        if parent_ptr is not None:
-            parent_ptr_to_use = self._ctx_hollow_copy(parent_ptr.get_parent_ptr(), parent_ptr)
-        ctx_copy = DSLType20_Context(parent_ptr_to_use, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(parent_ptr, ctx_ptr)))
+        ctx_copy = DSLType20_Context(None, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(parent_ptr, ctx_ptr)))
         for ent in ctx_ptr.get_entries():
             ctx_copy.add_entry(self._generic_copy_helper(ctx_copy, ent))
         return ctx_copy
