@@ -198,14 +198,16 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file8 = path_utils.concat_path(self.test_dir, "recipe_test8.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file8, recipe_test_contents8)
 
+        self.recipe_test_9_callstack = path_utils.concat_path(self.test_dir, "recipe_test_9_callstack.txt")
         recipe_test_contents9 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
         recipe_test_contents9 += "* early-abort = \"no\"\n"
         recipe_test_contents9 += "]\n"
         recipe_test_contents9 += "[\n@test-job-1\n"
-        recipe_test_contents9 += "* task1 = \"sample_echo_false_plugin.py\"\n"
+        recipe_test_contents9 += "* task1 {target_file: \"%s\" / mode: \"a\" / content: \"task1\"} = \"writefile_plugin.py\"\n" % self.recipe_test_9_callstack
+        recipe_test_contents9 += "* task-fail = \"sample_echo_false_plugin.py\"\n"
         recipe_test_contents9 += "]\n"
         recipe_test_contents9 += "[\n@test-job-2\n"
-        recipe_test_contents9 += "* task1 = \"sample_echo_false_plugin.py\"\n"
+        recipe_test_contents9 += "* task2 {target_file: \"%s\" / mode: \"a\" / content: \"task2\"} = \"writefile_plugin.py\"\n" % self.recipe_test_9_callstack
         recipe_test_contents9 += "]"
         self.recipe_test_file9 = path_utils.concat_path(self.test_dir, "recipe_test9.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file9, recipe_test_contents9)
@@ -426,7 +428,7 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorRecipeNoEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file9)
         self.assertFalse(v)
-        self.assertTrue("Intermediary failures" in r) # currently, this is the only way to detect multiple job executions
+        self.assertTrue(FileHasContents(self.recipe_test_9_callstack, "task1task2"))
 
     def testRecipeProcessorRecipeDoubleEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file10)
