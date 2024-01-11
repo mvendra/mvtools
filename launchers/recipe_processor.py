@@ -44,9 +44,15 @@ import mvtools_envvars
 # a recipe is deemed successful if (and only if) every single task in every single job
 # succeeded (some exceptions may apply - see below)
 #
+# recipes can be configured by adding certain variables to a metajob called "mvtools_recipe_processor_config"
 # by default, task scripts are searched for inside MVTOOLS/launchers/launch_jobs_plugins/tasks
-# this can be changed by adding the following freestanding (i.e. outside any context) variable:
+# this can be changed by adding the following config variable to the recipe config metajob:
+#
+# [
+# @mvtools_recipe_processor_config
 # * recipe-namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
+# ]
+#
 # it operates in two modes: exclusive mode (which is the default) and inclusive mode.
 # in exclusive mode, scripts will only be searched inside the specified path. in inclusive
 # mode, scripts will first be searched inside the built-in plugins
@@ -57,23 +63,31 @@ import mvtools_envvars
 # it is the default.
 #
 # it is possible to define launch_jobs's execution options either via commandline
-# arguments (requested options) or using freestanding variables inside the recipe (which
+# arguments (requested options) or using config variables inside the recipe's metajob (which
 # will overwrite the commandline options when specified):
 #
-# * execution-name = "exec-name" # this will define the execution name that will be written
-# to the launch_jobs toolbus database
+# [
+# @mvtools_recipe_processor_config
+# * execution-name = "exec-name"
+# * early-abort = "true"
+# * time_delay = "1h"
+# * signal_delay = "sig-name"
+# * execution_delay = "exec-name"
+# ]
 #
-# * early-abort = "true" # "true" or "false" are accepted - exclusively
+# * execution-name # this will define the execution name that will be written to the launch_jobs toolbus database
+#
+# * early-abort # "true" or "false" are accepted - exclusively
 # this will specify whether an execution should be aborted whenever any job fails. the execution
 # itself will be deemed a failure upon any job failure, but with this option enabled, the execution
 # will nonetheless continue until there are no more jobs in the list.
 #
-# * time_delay = "1h" # defines a pre-execution delay. examples: "7h", "30m", "15".
+# * time_delay # defines a pre-execution delay. examples: "7h", "30m", "15".
 #
-# * signal_delay = "sig-name" # defines a toolbus internal signal to be waited for before starting this
+# * signal_delay # defines a toolbus internal signal to be waited for before starting this
 # execution. the signal gets consumed upon availability.
 #
-# * execution_delay = "exec-name" # defines a toolbus launch_jobs database-registered execution name
+# * execution_delay # defines a toolbus launch_jobs database-registered execution name
 # to be waited for before starting this execution. this will cause this execution to be delayed *until*
 # the defined execution name is concluded (i.e. has bee removed from launch_jobs's toolbus database)
 #
