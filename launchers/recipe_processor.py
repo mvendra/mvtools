@@ -300,22 +300,24 @@ class RecipeProcessor:
         new_job = r(ctx.get_name())
         new_job.params = job_params
 
-        v, r = dsl.get_all_variables(ctx.get_name()) # mvtodo: nope, not like this. both wasteful and redundant. already did a get_context up above, so just do a foreach get_entriess() (cos shallow not hollow). also, recurse into the entries that are CTXs
-        if not v:
-            return False, "Failed attempting to retrieve variables from context [%s]: [%s]" % (ctx.get_name(), r)
-        subvars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+        for entry in ctx.get_entries():
 
-        for var in subvars:
+            # tasks
+            if entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR:
 
-            task_params = _convert_dsl_opts_into_py_map(var[2])
+                task_params = _convert_dsl_opts_into_py_map(dsl_type20.convert_opt_obj_list_to_neutral_format(entry.get_options()))
 
-            v, r = _get_task_instance(var[1], namespace)
-            if not v:
-                return False, r
+                v, r = _get_task_instance(entry.get_value(), namespace)
+                if not v:
+                    return False, r
 
-            new_task = r(var[0])
-            new_task.params = task_params
-            new_job.add_entry(new_task)
+                new_task = r(entry.get_name())
+                new_task.params = task_params
+                parent_job.add_entry(new_task)
+
+            # jobs
+            elif entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX:
+                pass # mvtodo
 
         parent_job.add_entry(new_job)
         return True, None
