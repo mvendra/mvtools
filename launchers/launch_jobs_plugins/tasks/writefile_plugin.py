@@ -14,8 +14,8 @@ class CustomTask(launch_jobs.BaseTask):
     def _read_params(self):
 
         target_file = None
-        content = None
         mode = None
+        content = None
 
         # target_file
         try:
@@ -23,19 +23,19 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "target_file is a required parameter"
 
-        # content
-        try:
-            content = self.params["content"]
-        except KeyError:
-            return False, "content is a required parameter"
-
         # mode
         try:
             mode = self.params["mode"]
         except KeyError:
             pass # optional
 
-        return True, (target_file, content, mode)
+        # content
+        try:
+            content = self.params["content"]
+        except KeyError:
+            return False, "content is a required parameter"
+
+        return True, (target_file, mode, content)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -43,6 +43,9 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        target_file, content, mode = r
+        target_file, mode, content = r
+
+        with open(target_file, mode) as f:
+            f.write(content)
 
         return True, None
