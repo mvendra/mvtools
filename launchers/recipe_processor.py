@@ -313,7 +313,7 @@ class RecipeProcessor:
 
                 new_task = r(entry.get_name())
                 new_task.params = task_params
-                parent_job.add_entry(new_task)
+                new_job.add_entry(new_task)
 
             # jobs
             elif entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX:
