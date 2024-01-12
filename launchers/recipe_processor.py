@@ -736,6 +736,9 @@ if __name__ == "__main__":
 
     req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
+    if recipe_namespace is not None:
+        recipe_namespace = (recipe_namespace, recipe_namespace_mode)
+
     if operation == "test":
         menu_test_recipe(recipe_file, execution_name, recipe_namespace, req_opts)
     elif operation == "run":
