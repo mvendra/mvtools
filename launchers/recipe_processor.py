@@ -263,7 +263,7 @@ def _get_job_instance_internal(job_script, namespace):
 
     return True, mod.CustomJob
 
-DEPTH_TRACKER_LIMIT = 500
+DEPTH_TRACKER_LIMIT = 200
 class RecipeProcessor:
 
     def __init__(self, recipe, recipe_namespace, requested_options):
