@@ -122,6 +122,12 @@ import mvtools_envvars
 
 RECIPE_PROCESSOR_CONFIG_METAJOB = "mvtools_recipe_processor_config"
 
+def _translate_namespace_mode(mode_val):
+    if mode_val:
+        return "exclusive"
+    else:
+        return "inclusive"
+
 def _lowercase_str_option_value_filter(opt_val):
     return opt_val.lower()
 
@@ -408,7 +414,7 @@ class RecipeProcessor:
                         namespace_opt_v = False # disable exclusive mode
                 local_namespace = (namespace_path, namespace_opt_v)
                 if namespace is not None:
-                    print("%sWarning: the [--recipe-namespace] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_namespace[0], terminal_colors.TTY_WHITE)) # mvtodo: improve printing: {opt-val}
+                    print("%sWarning: the [--recipe-namespace] option has been overridden by the recipe with value [%s {%s}]%s" % (terminal_colors.TTY_YELLOW, local_namespace[0], _translate_namespace_mode(local_namespace[1]), terminal_colors.TTY_WHITE))
                 namespace = local_namespace
 
             # custom job implementations
