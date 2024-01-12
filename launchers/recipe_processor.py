@@ -385,7 +385,7 @@ class RecipeProcessor:
 
         self.depth_tracker = 0
 
-        namespace = None
+        namespace = self.namespace
         custom_job_impl = {}
         main_custom_job_impl = None
 
@@ -406,7 +406,10 @@ class RecipeProcessor:
                 for opts in namespace_opt:
                     if opts[0] == "inclusive":
                         namespace_opt_v = False # disable exclusive mode
-                namespace = (namespace_path, namespace_opt_v)
+                local_namespace = (namespace_path, namespace_opt_v)
+                if namespace is not None:
+                    print("%sWarning: the [--recipe-namespace] option has been overridden by the recipe with value [%s]%s" % (terminal_colors.TTY_YELLOW, local_namespace[0], terminal_colors.TTY_WHITE)) # mvtodo: improve printing: {opt-val}
+                namespace = local_namespace
 
             # custom job implementations
             v, r = dsl.get_variables("custom-job-implementation", RECIPE_PROCESSOR_CONFIG_METAJOB)
