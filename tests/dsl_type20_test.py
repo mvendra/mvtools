@@ -2125,6 +2125,10 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r.get_entries()[0].get_name(), "ctx3")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(r.get_entries()[0].get_options()), [("opt1", None), ("opt2", None), ("opt3", None)])
+        self.assertEqual(r.get_entries()[0].get_parent_ptr().get_name(), "ctx2")
+        self.assertEqual(dsl.data.entries[0].entries[0].get_name(), "ctx2")
+        self.assertNotEqual(dsl.data.entries[0].entries[0], r.get_entries()[0].get_parent_ptr())
+        self.assertEqual(r.get_entries()[0].get_parent_ptr().get_parent_ptr(), None)
 
     def testDslType20_TestGetContext15(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
