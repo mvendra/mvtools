@@ -22,7 +22,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                 v, r = launch_jobs.run_single_job(entry, self.name, feedback_object, execution_name, options)
                 if not v:
                     if options.early_abort:
-                        return False, "Failed job"
+                        return False, "Failed job: [%s]" % r
                     else:
                         intermediary_failure = True
 
@@ -44,7 +44,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
 
             if not v:
                 feedback_object(launch_jobs._format_task_error_msg(entry, r))
-                return False, "Failed task"
+                return False, "Failed task: [%s]" % r
 
             if r is not None:
                 feedback_object(launch_jobs._format_task_warning_msg_console_output(entry, r))
