@@ -260,8 +260,9 @@ def _get_job_instance_internal(job_script, namespace):
 DEPTH_TRACKER_LIMIT = 500
 class RecipeProcessor:
 
-    def __init__(self, recipe, requested_options):
+    def __init__(self, recipe, recipe_namespace, requested_options):
         self.recipe = recipe
+        self.namespace = recipe_namespace
         self.requested_options = requested_options
         self.depth_tracker = 0
 
@@ -590,13 +591,11 @@ class RecipeProcessor:
         return True, local_exec_name
 
 def test_jobs_from_recipe_file(recipe_file, execution_name = None, recipe_namespace = None, requested_options = None):
-    # mvtodo: recipe_namespace (ensure None is good)
-    recipe_processor = RecipeProcessor(recipe_file, requested_options)
+    recipe_processor = RecipeProcessor(recipe_file, recipe_namespace, requested_options)
     return recipe_processor.test(execution_name)
 
 def run_jobs_from_recipe_file(recipe_file, execution_name = None, recipe_namespace = None, requested_options = None):
-    # mvtodo: recipe_namespace (ensure None is good)
-    recipe_processor = RecipeProcessor(recipe_file, requested_options)
+    recipe_processor = RecipeProcessor(recipe_file, recipe_namespace, requested_options)
     return recipe_processor.run(execution_name)
 
 def assemble_requested_options(_early_abort, _time_delay, _signal_delay, _execution_delay):
