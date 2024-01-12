@@ -639,7 +639,7 @@ if __name__ == "__main__":
     execution_name_next = False
     recipe_namespace = None
     recipe_namespace_next = False
-    recipe_namespace_mode = None
+    recipe_namespace_mode = True # exclusive mode (the default)
     recipe_namespace_mode_next = False
     early_abort = None
     early_abort_next = False
@@ -669,7 +669,13 @@ if __name__ == "__main__":
 
         if recipe_namespace_mode_next:
             recipe_namespace_mode_next = False
-            recipe_namespace_mode = p
+            if p == "inclusive":
+                recipe_namespace_mode = False
+            elif p == "exclusive":
+                recipe_namespace_mode = True
+            else:
+                print("Option [--recipe-namespace-mode] received an invalid value: [%s]. Valid values are [inclusive/exclusive]" % p)
+                sys.exit(1)
             continue
 
         if early_abort_next:
