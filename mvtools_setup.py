@@ -71,7 +71,7 @@ def generate_mvtools_profile(mvtools_path, temp_path, links_path, toolbus_dbs_pa
     contents += "export MVTOOLS_GIT_VISITOR_BASE=\"%s\"\n" % git_visitor_path
     if cygwin_install_path is not None:
         contents += "export MVTOOLS_CYGWIN_INSTALL_PATH=\"%s\"\n" % cygwin_install_path
-    contents += "source $MVTOOLS/mvtools_main.sh"
+    contents += "source \"$MVTOOLS/mvtools_main.sh\""
 
     return contents
 
