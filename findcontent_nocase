@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ag --hidden $1 2>/dev/null
+
