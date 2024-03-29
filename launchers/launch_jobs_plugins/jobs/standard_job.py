@@ -32,7 +32,6 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             if not v:
                 return False, r
 
-            feedback_object(launch_jobs._format_job_info_msg_task(self, entry))
             try:
                 v, r = entry.run_task(feedback_object, execution_name)
             except mvtools_exception.mvtools_exception as mvtex:

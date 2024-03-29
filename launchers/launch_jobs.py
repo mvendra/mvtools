@@ -42,9 +42,6 @@ class BaseTask:
     def run_task(self, feedback_object, execution_name=None):
         return False, "Not implemented"
 
-def _format_job_info_msg_task(job, task):
-    return "Job:  [%s][%s][%s]: now running task: [%s][%s]" % (maketimestamp.get_timestamp_now(), job.name, job.get_desc(), task.name, task.get_desc())
-
 def _format_job_info_msg_started(job, parent_job_name):
     p_str = ""
     if parent_job_name is not None:
