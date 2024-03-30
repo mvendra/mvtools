@@ -546,7 +546,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -562,7 +562,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), "The final folder [%s] is above the size limit." % self.prep_target)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -578,7 +578,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -593,7 +593,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -608,7 +608,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -625,7 +625,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -639,7 +639,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -655,7 +655,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep.instructions.append( ("COPY_PATH", self.file3, []) )
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -668,7 +668,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep.instructions.append( ("COPY_PATH", self.file3, [("warn_size", "1"), ("warn_abort", "")] ) )
         ex_raised = False
         try:
-            bkprep.process_instructions()
+            self.assertEqual(bkprep.process_instructions(), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 

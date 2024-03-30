@@ -188,12 +188,14 @@ class BackupPreparation:
         for v in self.instructions:
             self.proc_single_inst(v[0], v[1], v[2])
 
+        warn_msg = None
         if self.warn_size_final_active:
             if dirsize.get_dir_size(self.storage_path, False) > self.warn_size_final:
                 if self.warn_size_final_abort:
                     raise BackupPreparationException("The final folder [%s] is above the size limit. Aborting." % self.storage_path)
                 else:
-                    print("%sThe final folder [%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, self.storage_path, terminal_colors.TTY_WHITE)) # mvtodo
+                    warn_msg = "The final folder [%s] is above the size limit." % self.storage_path
+        return warn_msg # mvtodo: must be printed in yellow, wherever it may
 
     def proc_single_inst(self, var_name, var_value, var_options):
 
