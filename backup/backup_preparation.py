@@ -171,14 +171,16 @@ class BackupPreparation:
         if os.path.exists(full_target_filename):
             raise BackupPreparationException("[%s] already exists. Will not overwrite." % full_target_filename)
 
+        warn_msg = None
         if self.warn_size_each_active:
             if len(content) > self.warn_size_each:
                 if self.warn_size_each_abort:
                     raise BackupPreparationException("[%s] is above the size limit. Aborting." % target_filename)
                 else:
-                    print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, target_filename, terminal_colors.TTY_WHITE)) # mvtodo
+                    warn_msg = "[%s] is above the size limit." % target_filename
 
         create_and_write_file.create_file_contents(full_target_filename, content)
+        return warn_msg # mvtodo: must be printed in yellow, wherever it may
 
     def process_instructions(self):
 

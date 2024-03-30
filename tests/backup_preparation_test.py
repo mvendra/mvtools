@@ -465,7 +465,7 @@ class BackupPreparationTest(unittest.TestCase):
         test_content = "abc"
         final_path = path_utils.concat_path(self.prep_target, test_fn)
 
-        bkprep.do_copy_content(test_content, test_fn)
+        self.assertEqual(bkprep.do_copy_content(test_content, test_fn), None)
         self.assertTrue(os.path.exists(final_path))
 
     def testDoCopyContentFail1(self):
@@ -480,7 +480,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_content(test_content, test_fn)
+            self.assertEqual(bkprep.do_copy_content(test_content, test_fn), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -497,7 +497,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_content(test_content, test_fn)
+            self.assertEqual(bkprep.do_copy_content(test_content, test_fn), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -514,7 +514,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_content(test_content, test_fn)
+            self.assertEqual(bkprep.do_copy_content(test_content, test_fn), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -531,7 +531,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_content(test_content, test_fn)
+            self.assertEqual(bkprep.do_copy_content(test_content, test_fn), "[%s] is above the size limit." % test_fn)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
