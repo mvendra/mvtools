@@ -136,7 +136,7 @@ class BackupPreparation:
     def do_copy_file(self, source_file, override_warn_size, override_warn_abort):
 
         if not os.path.exists(source_file):
-            return # silently ignored. this function is not supposed to be called by client code
+            raise BackupPreparationException("[%s] does not exist." % source_file)
 
         warn_size_each_active_local = self.warn_size_each_active
         warn_size_each_local = self.warn_size_each
@@ -154,14 +154,16 @@ class BackupPreparation:
         if os.path.exists(target_candidate):
             raise BackupPreparationException("[%s] already exists. Will not overwrite." % target_candidate)
 
+        warn_msg = None
         if warn_size_each_active_local:
             if dirsize.get_dir_size(source_file, False) > warn_size_each_local:
                 if warn_size_each_abort_local:
                     raise BackupPreparationException("[%s] is above the size limit. Aborting." % source_file)
                 else:
-                    print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, source_file, terminal_colors.TTY_WHITE))
+                    warn_msg = "[%s] is above the size limit." % source_file
 
         path_utils.copy_to(source_file, self.storage_path)
+        return warn_msg # mvtodo: must be printed in yellow, wherever it may
 
     def do_copy_content(self, content, target_filename):
 
@@ -174,7 +176,7 @@ class BackupPreparation:
                 if self.warn_size_each_abort:
                     raise BackupPreparationException("[%s] is above the size limit. Aborting." % target_filename)
                 else:
-                    print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, target_filename, terminal_colors.TTY_WHITE))
+                    print("%s[%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, target_filename, terminal_colors.TTY_WHITE)) # mvtodo
 
         create_and_write_file.create_file_contents(full_target_filename, content)
 
@@ -189,7 +191,7 @@ class BackupPreparation:
                 if self.warn_size_final_abort:
                     raise BackupPreparationException("The final folder [%s] is above the size limit. Aborting." % self.storage_path)
                 else:
-                    print("%sThe final folder [%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, self.storage_path, terminal_colors.TTY_WHITE))
+                    print("%sThe final folder [%s] is above the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, self.storage_path, terminal_colors.TTY_WHITE)) # mvtodo
 
     def proc_single_inst(self, var_name, var_value, var_options):
 
@@ -219,7 +221,7 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("[%s] does not exist. Aborting." % origin_path)
             else:
-                print("%s[%s] does not exist. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, origin_path, terminal_colors.TTY_WHITE))
+                print("%s[%s] does not exist. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, origin_path, terminal_colors.TTY_WHITE)) # mvtodo
                 return
 
         override_warn_size = None
@@ -234,7 +236,7 @@ class BackupPreparation:
             elif o[0] == "warn_abort":
                 override_warn_abort = True
 
-        self.do_copy_file(origin_path, override_warn_size, override_warn_abort)
+        return self.do_copy_file(origin_path, override_warn_size, override_warn_abort)
 
     def proc_copy_path_to(self, var_value, var_options):
 
@@ -264,7 +266,7 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("Failed generating tree for [%s]: [%s]. Aborting." % (var_value, r))
             else:
-                print("%sFailed generating tree for [%s]: [%s]. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, var_value, r, terminal_colors.TTY_WHITE))
+                print("%sFailed generating tree for [%s]: [%s]. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, var_value, r, terminal_colors.TTY_WHITE)) # mvtodo
                 return
 
         self.do_copy_content(r, derivefoldernamefortree(var_value))
@@ -277,7 +279,7 @@ class BackupPreparation:
                 if dsl_type20.hasopt_opts(var_options, "abort"):
                     raise BackupPreparationException("Failed retrieving user's crontab. Aborting.")
                 else:
-                    print("%sFailed retrieving user's crontab. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE))
+                    print("%sFailed retrieving user's crontab. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE)) # mvtodo
                     return
 
             self.do_copy_content(r, derivefilenameforcrontab())

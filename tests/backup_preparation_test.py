@@ -357,7 +357,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
         final_path = path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))
-        bkprep.do_copy_file(self.test_source_folder1, None, None)
+        self.assertEqual(bkprep.do_copy_file(self.test_source_folder1, None, None), None)
         self.assertTrue(os.path.exists(final_path))
 
     def testDoCopyFileFail1(self):
@@ -369,7 +369,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1, None, None)
+            self.assertEqual(bkprep.do_copy_file(self.test_source_folder1, None, None), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -384,7 +384,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1, None, None)
+            self.assertEqual(bkprep.do_copy_file(self.test_source_folder1, None, None), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -399,11 +399,23 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1, None, None)
+            self.assertEqual(bkprep.do_copy_file(self.test_source_folder1, None, None), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
         self.assertFalse(ex_raised)
+
+    def testDoCopyFileFail4(self):
+        bkprep = backup_preparation.BackupPreparation("")
+        self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
+
+        ex_raised = False
+        try:
+            self.assertEqual(bkprep.do_copy_file(self.nonexistent, None, None), None)
+        except backup_preparation.BackupPreparationException as bkprepbpex:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
 
     def testDoCopyFileWarnSize1(self):
         bkprep = backup_preparation.BackupPreparation("")
@@ -414,7 +426,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1, None, None)
+            self.assertEqual(bkprep.do_copy_file(self.test_source_folder1, None, None), "[%s] is above the size limit." % self.test_source_folder1)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -429,7 +441,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1, None, None)
+            self.assertEqual(bkprep.do_copy_file(self.test_source_folder1, None, None), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -439,7 +451,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.do_copy_file(self.test_source_folder1, 1, True)
+            self.assertEqual(bkprep.do_copy_file(self.test_source_folder1, 1, True), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
