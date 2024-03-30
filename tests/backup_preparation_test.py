@@ -690,15 +690,15 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        bkprep.proc_copy_path(self.test_source_folder1, [])
+        self.assertEqual(bkprep.proc_copy_path(self.test_source_folder1, []), None)
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))))
 
-        bkprep.proc_copy_path(self.nonexistent, [])
+        self.assertEqual(bkprep.proc_copy_path(self.nonexistent, []), "[%s] does not exist. Skipping." % self.nonexistent)
         self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistent))))
 
         ex_raised = False
         try:
-            bkprep.proc_copy_path(self.nonexistent, [("abort", "")])
+            self.assertEqual(bkprep.proc_copy_path(self.nonexistent, [("abort", "")]), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 

@@ -221,8 +221,7 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("[%s] does not exist. Aborting." % origin_path)
             else:
-                print("%s[%s] does not exist. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, origin_path, terminal_colors.TTY_WHITE)) # mvtodo
-                return
+                return "[%s] does not exist. Skipping." % origin_path # mvtodo: must be printed in yellow, wherever it may
 
         override_warn_size = None
         override_warn_abort = None
