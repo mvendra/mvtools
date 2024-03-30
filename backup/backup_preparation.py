@@ -273,13 +273,13 @@ class BackupPreparation:
     def proc_copy_system(self, var_value, var_options):
 
         if var_value == "crontab":
+
             v, r = crontab_wrapper.get_crontab()
             if not v:
                 if dsl_type20.hasopt_opts(var_options, "abort"):
                     raise BackupPreparationException("Failed retrieving user's crontab. Aborting.")
                 else:
-                    print("%sFailed retrieving user's crontab. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE)) # mvtodo
-                    return
+                    return "Failed retrieving user's crontab. Skipping." # mvtodo: must be printed in yellow, wherever it may
 
             self.do_copy_content(r, derivefilenameforcrontab())
 
