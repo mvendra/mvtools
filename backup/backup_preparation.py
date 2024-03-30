@@ -265,8 +265,7 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("Failed generating tree for [%s]: [%s]. Aborting." % (var_value, r))
             else:
-                print("%sFailed generating tree for [%s]: [%s]. Skipping.%s" % (terminal_colors.TTY_YELLOW_BOLD, var_value, r, terminal_colors.TTY_WHITE)) # mvtodo
-                return
+                return "Failed generating tree for [%s]: [%s]. Skipping." % (var_value, r) # mvtodo: must be printed in yellow, wherever it may
 
         self.do_copy_content(r, derivefoldernamefortree(var_value))
 

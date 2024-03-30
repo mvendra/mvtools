@@ -769,7 +769,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
         final_path = path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder2))
-        bkprep.proc_copy_tree_out(self.test_source_folder2, [])
+        self.assertEqual(bkprep.proc_copy_tree_out(self.test_source_folder2, []), None)
         self.assertTrue(os.path.exists(final_path))
 
         str_read = ""
@@ -781,7 +781,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.proc_copy_tree_out(self.nonexistent, [])
+            self.assertEqual(bkprep.proc_copy_tree_out(self.nonexistent, []), "Failed generating tree for [%s]: [%s does not exist.]. Skipping." % (self.nonexistent, self.nonexistent))
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -789,7 +789,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.proc_copy_tree_out(self.nonexistent, [("abort", "")])
+            self.assertEqual(bkprep.proc_copy_tree_out(self.nonexistent, [("abort", "")]), None)
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
