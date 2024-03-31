@@ -593,7 +593,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), [])
+            self.assertEqual(bkprep.process_instructions(), ["[%s] does not exist. Skipping." % self.nonexistent])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -690,15 +690,15 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep = backup_preparation.BackupPreparation("")
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
-        self.assertEqual(bkprep.proc_copy_path(self.test_source_folder1, []), None)
+        self.assertEqual(bkprep.proc_copy_path(self.test_source_folder1, []), [])
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))))
 
-        self.assertEqual(bkprep.proc_copy_path(self.nonexistent, []), "[%s] does not exist. Skipping." % self.nonexistent)
+        self.assertEqual(bkprep.proc_copy_path(self.nonexistent, []), ["[%s] does not exist. Skipping." % self.nonexistent])
         self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.nonexistent))))
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.proc_copy_path(self.nonexistent, [("abort", "")]), None)
+            self.assertEqual(bkprep.proc_copy_path(self.nonexistent, [("abort", "")]), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -769,7 +769,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(bkprep.proc_single_config("SET_STORAGE_PATH", self.prep_target, []))
 
         final_path = path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder2))
-        self.assertEqual(bkprep.proc_copy_tree_out(self.test_source_folder2, []), None)
+        self.assertEqual(bkprep.proc_copy_tree_out(self.test_source_folder2, []), [])
         self.assertTrue(os.path.exists(final_path))
 
         str_read = ""
@@ -781,7 +781,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.proc_copy_tree_out(self.nonexistent, []), "Failed generating tree for [%s]: [%s does not exist.]. Skipping." % (self.nonexistent, self.nonexistent))
+            self.assertEqual(bkprep.proc_copy_tree_out(self.nonexistent, []), ["Failed generating tree for [%s]: [%s does not exist.]. Skipping." % (self.nonexistent, self.nonexistent)])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -789,7 +789,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.proc_copy_tree_out(self.nonexistent, [("abort", "")]), None)
+            self.assertEqual(bkprep.proc_copy_tree_out(self.nonexistent, [("abort", "")]), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
