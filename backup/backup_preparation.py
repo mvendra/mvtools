@@ -163,7 +163,7 @@ class BackupPreparation:
                     warn_msg = "[%s] is above the size limit." % source_file
 
         path_utils.copy_to(source_file, self.storage_path)
-        return warn_msg # mvtodo: must be printed in yellow, wherever it may
+        return warn_msg
 
     def do_copy_content(self, content, target_filename):
 
@@ -180,7 +180,7 @@ class BackupPreparation:
                     warn_msg = "[%s] is above the size limit." % target_filename
 
         create_and_write_file.create_file_contents(full_target_filename, content)
-        return warn_msg # mvtodo: must be printed in yellow, wherever it may
+        return warn_msg
 
     def process_instructions(self):
 
