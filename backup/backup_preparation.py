@@ -444,9 +444,8 @@ def backup_preparation(config_file):
 
     try:
         report = bkprep.run_preparation()
-    except BackupPreparationException as bpe:    
-        print("%sFailed processing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, bpe._get_message(), terminal_colors.TTY_WHITE))
-        return False, []
+    except BackupPreparationException as bpe:
+        return False, ["Failed processing [%s]: %s" % (config_file, bpe._get_message())]
 
     return True, report
 
@@ -463,9 +462,8 @@ if __name__ == "__main__":
 
     print("Preparation begins...")
     v, r = backup_preparation(config_file)
-    # mvtodo: test below more thoroughly
     if not v:
-        print("%sPreparation failed.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sPreparation failed: [%s]%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         sys.exit(1)
     if len(r) == 0:
         print("%sPreparation is complete - no issues reported.%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
