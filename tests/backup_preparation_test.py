@@ -1573,17 +1573,17 @@ class BackupPreparationTest(unittest.TestCase):
     def testBackupPreparationFail1(self):
         v, r = backup_preparation.backup_preparation(self.test_config_file_fail1)
         self.assertFalse(v)
-        self.assertEqual(r, [])
+        self.assertEqual(r, ["Failed processing [%s]: Storage path [%s] does not exist." % (self.test_config_file_fail1, self.nonexistent)])
 
     def testBackupPreparationFail2(self):
         v, r = backup_preparation.backup_preparation(self.test_config_file_fail3)
         self.assertFalse(v)
-        self.assertEqual(r, [])
+        self.assertEqual(r, ["Failed processing [%s]: [%s] is above the size limit. Aborting." % (self.test_config_file_fail3, self.file4)])
 
     def testBackupPreparationFail3(self):
         v, r = backup_preparation.backup_preparation(self.test_config_file_fail4)
         self.assertFalse(v)
-        self.assertEqual(r, [])
+        self.assertEqual(r, ["Failed processing [%s]: The final folder [%s] is above the size limit. Aborting." % (self.test_config_file_fail4, self.prep_target)])
 
 if __name__ == '__main__':
     unittest.main()
