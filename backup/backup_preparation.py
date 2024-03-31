@@ -206,11 +206,10 @@ class BackupPreparation:
         # functions ("do_copy_file" and "do_copy_content") because they concentrate the warning system
         # feature (checking for excessive filesizes) and also the storage path handling.
 
-        # mvtodo: must all return
         if var_name == "COPY_PATH":
             return self.proc_copy_path(var_value, var_options)
         elif var_name == "COPY_PATH_TO":
-            self.proc_copy_path_to(var_value, var_options)
+            return self.proc_copy_path_to(var_value, var_options)
         elif var_name == "COPY_TREE_OUT":
             return self.proc_copy_tree_out(var_value, var_options)
         elif var_name == "COPY_SYSTEM":
@@ -269,6 +268,7 @@ class BackupPreparation:
             raise BackupPreparationException("Source path [%s] does not exist. Aborting." % source_path)
 
         path_utils.copy_to(source_path, dest_path)
+        return []
 
     def proc_copy_tree_out(self, var_value, var_options):
 
