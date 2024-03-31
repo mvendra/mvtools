@@ -207,7 +207,7 @@ class BackupPreparation:
         # feature (checking for excessive filesizes) and also the storage path handling.
 
         if var_name == "COPY_PATH":
-            self.proc_copy_path(var_value, var_options)
+            return self.proc_copy_path(var_value, var_options)
         elif var_name == "COPY_PATH_TO":
             self.proc_copy_path_to(var_value, var_options)
         elif var_name == "COPY_TREE_OUT":
@@ -228,7 +228,7 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("[%s] does not exist. Aborting." % origin_path)
             else:
-                return "[%s] does not exist. Skipping." % origin_path # mvtodo: must be printed in yellow, wherever it may
+                return ["[%s] does not exist. Skipping." % origin_path]
 
         override_warn_size = None
         override_warn_abort = None
@@ -242,7 +242,11 @@ class BackupPreparation:
             elif o[0] == "warn_abort":
                 override_warn_abort = True
 
-        return self.do_copy_file(origin_path, override_warn_size, override_warn_abort)
+        report = []
+        warn_msg = self.do_copy_file(origin_path, override_warn_size, override_warn_abort)
+        if warn_msg is not None:
+            report.append(warn_msg)
+        return report
 
     def proc_copy_path_to(self, var_value, var_options):
 
