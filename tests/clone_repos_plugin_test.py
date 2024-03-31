@@ -83,6 +83,96 @@ class CloneReposPluginTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
+    def testCloneReposPluginReadParams1(self):
+
+        local_params = {}
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams2(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams3(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams4(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams5(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "yes"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+
+    def testCloneReposPluginReadParams6(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "yes"
+        local_params["remote_name"] = "dummy_value5"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None) )
+
+    def testCloneReposPluginReadParams7(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams8(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value5"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value5") )
+
     def testCloneReposPluginEmptyFail1(self):
 
         local_params = {}
