@@ -71,6 +71,7 @@ class BackupEngine:
                 if not prepv:
                     print("%sFailed preparing backup: [%s]. Aborting.%s" % (terminal_colors.TTY_RED, prepr, terminal_colors.TTY_WHITE))
                     return False
+                print(prepr.rstrip())
 
         print("%sDeleting old backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
         for it in _self.BKTARGETS_ROOT:
