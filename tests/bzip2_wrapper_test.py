@@ -36,7 +36,7 @@ class Bzip2WrapperTest(unittest.TestCase):
         self.tar_file_with_space_3 = path_utils.concat_path(self.test_dir, "test.tar   ")
 
         # create test content
-        self.file_nonexistant = path_utils.concat_path(self.test_dir, "no_file")
+        self.file_nonexistent = path_utils.concat_path(self.test_dir, "no_file")
 
         # base, files
         self.file1 = path_utils.concat_path(self.test_dir, "file1.txt")
@@ -64,7 +64,7 @@ class Bzip2WrapperTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testCompressPrecheck(self):
-        v, r = bzip2_wrapper.compress(self.file_nonexistant)
+        v, r = bzip2_wrapper.compress(self.file_nonexistent)
         self.assertFalse(v)
 
     def testCompress1(self):

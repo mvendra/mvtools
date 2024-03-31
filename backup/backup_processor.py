@@ -22,7 +22,7 @@ class ArtifactBase:
         descend is a boolean determining whether thepath should be "visited" - and as
         a result, every item inside thepath should become a separate artifact
         abort is a boolean that when True will cause the backup to be cancelled
-        if this artifact source is nonexistant. when False, it will be verbosedly skipped.
+        if this artifact source is nonexistent. when False, it will be verbosedly skipped.
         warn_size is a size in bytes that, if this artifact source exceeds it, either
         a warning is issued or the backup is cancelled.
         warn_abort is a boolean that determines whether the backup should be cancelled or

@@ -45,7 +45,7 @@ class PakGenTest(unittest.TestCase):
         self.target_with_space_3_tar_bz2 = self.target_with_space_3 + ".tar.bz2"
         self.target_with_space_3_tar_bz2_hash = self.target_with_space_3_tar_bz2 + ".sha512"
 
-        self.file_nonexistant = path_utils.concat_path(self.test_dir, "no_file")
+        self.file_nonexistent = path_utils.concat_path(self.test_dir, "no_file")
 
         # create test content
         self.file_with_space_1 = path_utils.concat_path(self.test_dir, "fi le.txt")
@@ -72,7 +72,7 @@ class PakGenTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testPrecheck(self):
-        v, r = pakgen.pakgen(self.target_file, False, [self.file_nonexistant])
+        v, r = pakgen.pakgen(self.target_file, False, [self.file_nonexistent])
         self.assertFalse(v)
 
     def testPakGen1(self):

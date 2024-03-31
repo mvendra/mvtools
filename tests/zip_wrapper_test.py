@@ -33,7 +33,7 @@ class ZipWrapperTest(unittest.TestCase):
         # create test content
 
         # special cases
-        self.file_nonexistant = path_utils.concat_path(self.test_dir, "no_file")
+        self.file_nonexistent = path_utils.concat_path(self.test_dir, "no_file")
 
         self.file_with_space = path_utils.concat_path(self.test_dir, "fi le.txt")
         create_and_write_file.create_file_contents(self.file_with_space, "abc")
@@ -104,7 +104,7 @@ class ZipWrapperTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testPrechecks2(self):
-        v, r = zip_wrapper.make_pack(self.file_nonexistant, [])
+        v, r = zip_wrapper.make_pack(self.file_nonexistent, [])
         self.assertFalse(v)
 
     def testMakeAndExtract1(self):

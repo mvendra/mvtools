@@ -680,7 +680,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.proc_single_inst("NONEXISTANT_INSTRUCTION", None, None), [])
+            self.assertEqual(bkprep.proc_single_inst("NONEXISTENT_INSTRUCTION", None, None), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
