@@ -211,7 +211,7 @@ class BackupPreparation:
         elif var_name == "COPY_PATH_TO":
             self.proc_copy_path_to(var_value, var_options)
         elif var_name == "COPY_TREE_OUT":
-            self.proc_copy_tree_out(var_value, var_options)
+            return self.proc_copy_tree_out(var_value, var_options)
         elif var_name == "COPY_SYSTEM":
             return self.proc_copy_system(var_value, var_options)
         elif var_name == "RUN_COLLECT_PATCHES":
@@ -272,9 +272,13 @@ class BackupPreparation:
             if dsl_type20.hasopt_opts(var_options, "abort"):
                 raise BackupPreparationException("Failed generating tree for [%s]: [%s]. Aborting." % (var_value, r))
             else:
-                return "Failed generating tree for [%s]: [%s]. Skipping." % (var_value, r) # mvtodo: must be printed in yellow, wherever it may
+                return ["Failed generating tree for [%s]: [%s]. Skipping." % (var_value, r)]
 
-        self.do_copy_content(r, derivefoldernamefortree(var_value))
+        report = []
+        warn_msg = self.do_copy_content(r, derivefoldernamefortree(var_value))
+        if warn_msg is not None:
+            report.append(warn_msg)
+        return report
 
     def proc_copy_system(self, var_value, var_options):
 
