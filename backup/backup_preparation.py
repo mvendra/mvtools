@@ -206,6 +206,7 @@ class BackupPreparation:
         # functions ("do_copy_file" and "do_copy_content") because they concentrate the warning system
         # feature (checking for excessive filesizes) and also the storage path handling.
 
+        # mvtodo: must all return
         if var_name == "COPY_PATH":
             return self.proc_copy_path(var_value, var_options)
         elif var_name == "COPY_PATH_TO":
