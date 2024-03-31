@@ -68,7 +68,7 @@ class BackupPreparation:
         self.setup_configuration()
 
         # second pass (instructions)
-        self.process_instructions()
+        return self.process_instructions()
 
     def read_config(self, config_file):
 
@@ -184,9 +184,11 @@ class BackupPreparation:
 
     def process_instructions(self):
 
+        report = []
+
         # does the second pass to process every single instruction
         for v in self.instructions:
-            self.proc_single_inst(v[0], v[1], v[2])
+            report += self.proc_single_inst(v[0], v[1], v[2])
 
         warn_msg = None
         if self.warn_size_final_active:
@@ -194,8 +196,9 @@ class BackupPreparation:
                 if self.warn_size_final_abort:
                     raise BackupPreparationException("The final folder [%s] is above the size limit. Aborting." % self.storage_path)
                 else:
-                    warn_msg = "The final folder [%s] is above the size limit." % self.storage_path
-        return warn_msg # mvtodo: must be printed in yellow, wherever it may
+                    report.append("The final folder [%s] is above the size limit." % self.storage_path)
+
+        return report
 
     def proc_single_inst(self, var_name, var_value, var_options):
 
@@ -210,7 +213,7 @@ class BackupPreparation:
         elif var_name == "COPY_TREE_OUT":
             self.proc_copy_tree_out(var_value, var_options)
         elif var_name == "COPY_SYSTEM":
-            self.proc_copy_system(var_value, var_options)
+            return self.proc_copy_system(var_value, var_options)
         elif var_name == "RUN_COLLECT_PATCHES":
             self.proc_run_collect_patches(var_value, var_options)
         else:
@@ -282,12 +285,14 @@ class BackupPreparation:
                 if dsl_type20.hasopt_opts(var_options, "abort"):
                     raise BackupPreparationException("Failed retrieving user's crontab. Aborting.")
                 else:
-                    return "Failed retrieving user's crontab. Skipping." # mvtodo: must be printed in yellow, wherever it may
+                    return ["Failed retrieving user's crontab. Skipping."]
 
             self.do_copy_content(r, derivefilenameforcrontab())
 
         else:
             raise BackupPreparationException("Invalid COPY_SYSTEM value: [%s] [%s]. Aborting." % (var_value, var_options))
+
+        return []
 
     def proc_run_collect_patches(self, var_value, var_options):
 
@@ -422,14 +427,16 @@ class BackupPreparation:
 
 def backup_preparation(config_file):
 
+    report = []
     bkprep = BackupPreparation(config_file)
+
     try:
-        bkprep.run_preparation()
+        report = bkprep.run_preparation()
     except BackupPreparationException as bpe:    
         print("%sFailed processing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, bpe._get_message(), terminal_colors.TTY_WHITE))
-        return False
+        return False, []
 
-    return True
+    return True, report
 
 def puaq():
     print("Usage: %s config_file" % path_utils.basename_filtered(__file__))

@@ -546,7 +546,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -562,7 +562,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), "The final folder [%s] is above the size limit." % self.prep_target)
+            self.assertEqual(bkprep.process_instructions(), ["The final folder [%s] is above the size limit." % self.prep_target])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -578,7 +578,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -593,7 +593,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -608,7 +608,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -625,7 +625,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -639,7 +639,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -655,7 +655,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep.instructions.append( ("COPY_PATH", self.file3, []) )
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -668,7 +668,7 @@ class BackupPreparationTest(unittest.TestCase):
         bkprep.instructions.append( ("COPY_PATH", self.file3, [("warn_size", "1"), ("warn_abort", "")] ) )
         ex_raised = False
         try:
-            self.assertEqual(bkprep.process_instructions(), None)
+            self.assertEqual(bkprep.process_instructions(), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -680,7 +680,7 @@ class BackupPreparationTest(unittest.TestCase):
 
         ex_raised = False
         try:
-            bkprep.proc_single_inst("NONEXISTANT_INSTRUCTION", None, None)
+            self.assertEqual(bkprep.proc_single_inst("NONEXISTANT_INSTRUCTION", None, None), [])
         except backup_preparation.BackupPreparationException as bkprepbpex:
             ex_raised = True
 
@@ -1546,32 +1546,44 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertFalse(os.path.exists(collected_second_repo_unversioned_file101))
 
     def testBackupPreparation1(self):
-        self.assertTrue(backup_preparation.backup_preparation(self.test_config_file1))
+        v, r = backup_preparation.backup_preparation(self.test_config_file1)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target)))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder1))))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder2))))
 
     def testBackupPreparation2(self):
-        self.assertTrue(backup_preparation.backup_preparation(self.test_config_file2))
+        v, r = backup_preparation.backup_preparation(self.test_config_file2)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target)))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder2))))
         self.assertFalse(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.file3))))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, backup_preparation.derivefoldernamefortree(self.test_source_folder1))))
 
     def testBackupPreparation3(self):
-        self.assertTrue(backup_preparation.backup_preparation(self.test_config_file4))
+        v, r = backup_preparation.backup_preparation(self.test_config_file4)
+        self.assertTrue(v)
+        self.assertEqual(r, [])
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target)))
         self.assertTrue(os.path.exists(path_utils.concat_path(self.prep_target, path_utils.basename_filtered(self.test_source_folder3))))
 
     def testBackupPreparationFail1(self):
-        self.assertFalse(backup_preparation.backup_preparation(self.test_config_file_fail1))
+        v, r = backup_preparation.backup_preparation(self.test_config_file_fail1)
+        self.assertFalse(v)
+        self.assertEqual(r, [])
 
     def testBackupPreparationFail2(self):
-        self.assertFalse(backup_preparation.backup_preparation(self.test_config_file_fail3))
+        v, r = backup_preparation.backup_preparation(self.test_config_file_fail3)
+        self.assertFalse(v)
+        self.assertEqual(r, [])
 
     def testBackupPreparationFail3(self):
-        self.assertFalse(backup_preparation.backup_preparation(self.test_config_file_fail4))
+        v, r = backup_preparation.backup_preparation(self.test_config_file_fail4)
+        self.assertFalse(v)
+        self.assertEqual(r, [])
 
 if __name__ == '__main__':
     unittest.main()
