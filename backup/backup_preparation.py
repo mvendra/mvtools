@@ -215,7 +215,7 @@ class BackupPreparation:
         elif var_name == "COPY_SYSTEM":
             return self.proc_copy_system(var_value, var_options)
         elif var_name == "RUN_COLLECT_PATCHES":
-            self.proc_run_collect_patches(var_value, var_options)
+            return self.proc_run_collect_patches(var_value, var_options)
         else:
             raise BackupPreparationException("Invalid instruction: [%s] [%s] [%s]. Aborting." % (var_name, var_value, var_options))
 
@@ -423,7 +423,7 @@ class BackupPreparation:
         if not v:
             for i in r:
                 report.append("proc_run_collect_patches: [%s]" % i)
-        return report # mvtodo: must be printed in yellow, wherever it may
+        return report
 
 def backup_preparation(config_file):
 
@@ -450,6 +450,14 @@ if __name__ == "__main__":
     config_file = sys.argv[1]
 
     print("Preparation begins...")
-    if not backup_preparation(config_file):
+    v, r = backup_preparation(config_file)
+    # mvtodo: test below more thoroughly
+    if not v:
+        print("%sPreparation failed.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
         sys.exit(1)
-    print("%sPreparation is complete.%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+    if len(r) == 0:
+        print("%sPreparation is complete - no issues reported.%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+    else:
+        print("%sPreparation completed with issues:%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE))
+        for i in r:
+            print("%s%s%s" % (terminal_colors.TTY_YELLOW, i, terminal_colors.TTY_WHITE))
