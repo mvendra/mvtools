@@ -282,6 +282,7 @@ class BackupPreparation:
 
     def proc_copy_system(self, var_value, var_options):
 
+        report = []
         if var_value == "crontab":
 
             v, r = crontab_wrapper.get_crontab()
@@ -291,12 +292,14 @@ class BackupPreparation:
                 else:
                     return ["Failed retrieving user's crontab. Skipping."]
 
-            self.do_copy_content(r, derivefilenameforcrontab())
+            warn_msg = self.do_copy_content(r, derivefilenameforcrontab())
+            if warn_msg is not None:
+                report.append(warn_msg)
 
         else:
             raise BackupPreparationException("Invalid COPY_SYSTEM value: [%s] [%s]. Aborting." % (var_value, var_options))
 
-        return []
+        return report
 
     def proc_run_collect_patches(self, var_value, var_options):
 
