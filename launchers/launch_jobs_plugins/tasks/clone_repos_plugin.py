@@ -73,7 +73,7 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             default_filter = "include"
         if default_filter != "include" and default_filter != "exclude":
-            return False, "default_filter has an invalid value: [%s] - valid values are [include] and [exclude]" % default_filter
+            return False, "default_filter has an invalid value: [%s] - valid values are include/exclude" % default_filter
 
         # include_list
         try:
@@ -99,7 +99,7 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             default_subfilter = "include"
         if default_subfilter != "include" and default_subfilter != "exclude":
-            return False, "default_subfilter has an invalid value: [%s] - valid values are [include] and [exclude]" % default_subfilter
+            return False, "default_subfilter has an invalid value: [%s] - valid values are include/exclude" % default_subfilter
 
         # subfilter_include_list
         try:
