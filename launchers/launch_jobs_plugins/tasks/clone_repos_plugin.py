@@ -140,12 +140,12 @@ class CustomTask(launch_jobs.BaseTask):
 
         items_filtered_struct = []
         items_filtered_struct_pre = []
+        items_filtered_clone = []
+
         filters_struct = []
+        filters_clone = []
         filters_struct.append( (fsquery_adv_filter.filter_has_not_middle_repos, "not-used") )
         filters_struct.append( (fsquery_adv_filter.filter_is_not_repo, "not-used") )
-
-        items_filtered_clone = []
-        filters_clone = []
         filters_clone.append( (fsquery_adv_filter.filter_is_repo, "not-used") )
 
         items_filtered_struct_pre = fsquery_adv_filter.filter_path_list_and(items, filters_struct)
