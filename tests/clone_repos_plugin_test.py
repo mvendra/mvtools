@@ -132,6 +132,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None, "include", None, None, "include", None, None) )
 
     def testCloneReposPluginReadParams6(self):
 
@@ -140,12 +141,12 @@ class CloneReposPluginTest(unittest.TestCase):
         local_params["dest_path"] = "dummy_value2"
         local_params["accepted_repo_type"] = "dummy_value3"
         local_params["bare_clone"] = "yes"
-        local_params["remote_name"] = "dummy_value5"
+        local_params["remote_name"] = "dummy_value4"
         self.clone_repo_task.params = local_params
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None, "include", None, None, "include", None, None) )
 
     def testCloneReposPluginReadParams7(self):
 
@@ -154,10 +155,12 @@ class CloneReposPluginTest(unittest.TestCase):
         local_params["dest_path"] = "dummy_value2"
         local_params["accepted_repo_type"] = "dummy_value3"
         local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
         self.clone_repo_task.params = local_params
 
         v, r = self.clone_repo_task._read_params()
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", None, None, "include", None, None) )
 
     def testCloneReposPluginReadParams8(self):
 
@@ -166,12 +169,235 @@ class CloneReposPluginTest(unittest.TestCase):
         local_params["dest_path"] = "dummy_value2"
         local_params["accepted_repo_type"] = "dummy_value3"
         local_params["bare_clone"] = "no"
-        local_params["remote_name"] = "dummy_value5"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
         self.clone_repo_task.params = local_params
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value5") )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", None, None, "include", None, None) )
+
+    def testCloneReposPluginReadParams9(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "exclude"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "exclude", None, None, "include", None, None) )
+
+    def testCloneReposPluginReadParams10(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "dummy_value5"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams11(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], None, "include", None, None) )
+
+    def testCloneReposPluginReadParams12(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = "dummy_value5"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams13(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", None, None) )
+
+    def testCloneReposPluginReadParams14(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = "dummy_value6"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams15(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        local_params["default_subfilter"] = "include"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", None, None) )
+
+    def testCloneReposPluginReadParams16(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        local_params["default_subfilter"] = "exclude"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "exclude", None, None) )
+
+    def testCloneReposPluginReadParams17(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        local_params["default_subfilter"] = "dummy_value7"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams18(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        local_params["default_subfilter"] = "include"
+        local_params["subfilter_include_list"] = ["dummy_value7"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", ["dummy_value7"], None) )
+
+    def testCloneReposPluginReadParams19(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        local_params["default_subfilter"] = "include"
+        local_params["subfilter_include_list"] = "dummy_value7"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
+
+    def testCloneReposPluginReadParams20(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        local_params["default_subfilter"] = "include"
+        local_params["subfilter_include_list"] = ["dummy_value7"]
+        local_params["subfilter_exclude_list"] = ["dummy_value8"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", ["dummy_value7"], ["dummy_value8"]) )
+
+    def testCloneReposPluginReadParams21(self):
+
+        local_params = {}
+        local_params["source_path"] = "dummy_value1"
+        local_params["dest_path"] = "dummy_value2"
+        local_params["accepted_repo_type"] = "dummy_value3"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "dummy_value4"
+        local_params["default_filter"] = "include"
+        local_params["include_list"] = ["dummy_value5"]
+        local_params["exclude_list"] = ["dummy_value6"]
+        local_params["default_subfilter"] = "include"
+        local_params["subfilter_include_list"] = ["dummy_value7"]
+        local_params["subfilter_exclude_list"] = "dummy_value8"
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task._read_params()
+        self.assertFalse(v)
 
     def testCloneReposPluginEmptyFail1(self):
 

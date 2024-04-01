@@ -22,6 +22,12 @@ class CustomTask(launch_jobs.BaseTask):
         accepted_repo_type = None
         bare_clone = None
         remote_name = None
+        default_filter = None
+        include_list = None
+        exclude_list = None
+        default_subfilter = None
+        subfilter_include_list = None
+        subfilter_exclude_list = None
 
         # source_path
         try:
@@ -61,7 +67,59 @@ class CustomTask(launch_jobs.BaseTask):
             except KeyError:
                 return False, "remote_name is a required parameter"
 
-        return True, (source_path, dest_path, accepted_repo_type, bare_clone, remote_name)
+        # default_filter
+        try:
+            default_filter = self.params["default_filter"]
+        except KeyError:
+            default_filter = "include"
+        if default_filter != "include" and default_filter != "exclude":
+            return False, "default_filter has an invalid value: [%s] - valid values are [include] and [exclude]" % default_filter
+
+        # include_list
+        try:
+            include_list_read = self.params["include_list"]
+            if not isinstance(include_list_read, list):
+                return False, "include_list must be a list"
+            include_list = include_list_read
+        except KeyError:
+            pass # optional
+
+        # exclude_list
+        try:
+            exclude_list_read = self.params["exclude_list"]
+            if not isinstance(exclude_list_read, list):
+                return False, "exclude_list must be a list"
+            exclude_list = exclude_list_read
+        except KeyError:
+            pass # optional
+
+        # default_subfilter
+        try:
+            default_subfilter = self.params["default_subfilter"]
+        except KeyError:
+            default_subfilter = "include"
+        if default_subfilter != "include" and default_subfilter != "exclude":
+            return False, "default_subfilter has an invalid value: [%s] - valid values are [include] and [exclude]" % default_subfilter
+
+        # subfilter_include_list
+        try:
+            subfilter_include_list_read = self.params["subfilter_include_list"]
+            if not isinstance(subfilter_include_list_read, list):
+                return False, "subfilter_include_list must be a list"
+            subfilter_include_list = subfilter_include_list_read
+        except KeyError:
+            pass # optional
+
+        # subfilter_exclude_list
+        try:
+            subfilter_exclude_list_read = self.params["subfilter_exclude_list"]
+            if not isinstance(subfilter_exclude_list_read, list):
+                return False, "subfilter_exclude_list must be a list"
+            subfilter_exclude_list = subfilter_exclude_list_read
+        except KeyError:
+            pass # optional
+
+        return True, (source_path, dest_path, accepted_repo_type, bare_clone, remote_name, default_filter, include_list, exclude_list, default_subfilter, subfilter_include_list, subfilter_exclude_list)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -69,7 +127,7 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        source_path, dest_path, accepted_repo_type, bare_clone, remote_name = r
+        source_path, dest_path, accepted_repo_type, bare_clone, remote_name, default_filter, include_list, exclude_list, default_subfilter, subfilter_include_list, subfilter_exclude_list = r
 
         v, r = path_utils.check_if_paths_not_exist_stop_first([source_path, dest_path])
         if not v:
