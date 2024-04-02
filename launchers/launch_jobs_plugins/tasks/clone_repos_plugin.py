@@ -82,7 +82,7 @@ class CustomTask(launch_jobs.BaseTask):
                 return False, "include_list must be a list"
             include_list = include_list_read
         except KeyError:
-            pass # optional
+            include_list = []
 
         # exclude_list
         try:
@@ -91,7 +91,7 @@ class CustomTask(launch_jobs.BaseTask):
                 return False, "exclude_list must be a list"
             exclude_list = exclude_list_read
         except KeyError:
-            pass # optional
+            exclude_list = []
 
         # default_subfilter
         try:
@@ -108,7 +108,7 @@ class CustomTask(launch_jobs.BaseTask):
                 return False, "subfilter_include_list must be a list"
             subfilter_include_list = subfilter_include_list_read
         except KeyError:
-            pass # optional
+            subfilter_include_list = []
 
         # subfilter_exclude_list
         try:
@@ -117,7 +117,7 @@ class CustomTask(launch_jobs.BaseTask):
                 return False, "subfilter_exclude_list must be a list"
             subfilter_exclude_list = subfilter_exclude_list_read
         except KeyError:
-            pass # optional
+            subfilter_exclude_list = []
 
         return True, (source_path, dest_path, accepted_repo_type, bare_clone, remote_name, default_filter, include_list, exclude_list, default_subfilter, subfilter_include_list, subfilter_exclude_list)
 
@@ -141,20 +141,34 @@ class CustomTask(launch_jobs.BaseTask):
         items_filtered_struct = []
         items_filtered_struct_pre = []
         items_filtered_clone = []
+        items_filtered_clone_postfs = []
+        items_tuple_final = []
 
         filters_struct = []
         filters_clone = []
+        filters_fs = []
         filters_struct.append( (fsquery_adv_filter.filter_has_not_middle_repos, "not-used") )
         filters_struct.append( (fsquery_adv_filter.filter_is_not_repo, "not-used") )
         filters_clone.append( (fsquery_adv_filter.filter_is_repo, "not-used") )
 
-        items_filtered_struct_pre = fsquery_adv_filter.filter_path_list_and(items, filters_struct)
         items_filtered_clone = fsquery_adv_filter.filter_path_list_and(items, filters_clone)
+        items_filtered_struct_pre = fsquery_adv_filter.filter_path_list_and(items, filters_struct)
 
         for it in items_filtered_struct_pre:
             middle_path_parts = path_utils.find_middle_path_parts(source_path, it)
             target_struct = path_utils.concat_path(dest_path, middle_path_parts, path_utils.basename_filtered(it))
             items_filtered_struct.append(target_struct)
+
+        if default_filter == "include":
+            filters_fs.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
+            for ei in exclude_list:
+                filters_fs.append( (fsquery_adv_filter.filter_has_not_middle_pieces, path_utils.splitpath(ei, "auto")) )
+            items_filtered_clone_postfs = fsquery_adv_filter.filter_path_list_and(items_filtered_clone, filters_fs)
+        elif default_filter == "exclude":
+            filters_fs.append( (fsquery_adv_filter.filter_all_negative, "not-used") )
+            for ii in include_list:
+                filters_fs.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii, "auto")) )
+            items_filtered_clone_postfs = fsquery_adv_filter.filter_path_list_or(items_filtered_clone, filters_fs)
 
         # check if any of the plain struct target folders already exist
         v, r = path_utils.check_if_paths_exist_stop_first(items_filtered_struct)
@@ -165,10 +179,8 @@ class CustomTask(launch_jobs.BaseTask):
         for it in items_filtered_struct:
             os.mkdir(it)
 
-        items_tuple_final = []
-
         # pre-assemble final source and target repo paths
-        for it in items_filtered_clone:
+        for it in items_filtered_clone_postfs:
 
             v, r = detect_repo_type.detect_repo_type(it)
             if not v:

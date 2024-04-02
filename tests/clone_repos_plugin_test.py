@@ -132,7 +132,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None, "include", None, None, "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None, "include", [], [], "include", [], []) )
 
     def testCloneReposPluginReadParams6(self):
 
@@ -146,7 +146,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None, "include", None, None, "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", True, None, "include", [], [], "include", [], []) )
 
     def testCloneReposPluginReadParams7(self):
 
@@ -160,7 +160,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", None, None, "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", [], [], "include", [], []) )
 
     def testCloneReposPluginReadParams8(self):
 
@@ -175,7 +175,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", None, None, "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", [], [], "include", [], []) )
 
     def testCloneReposPluginReadParams9(self):
 
@@ -190,7 +190,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "exclude", None, None, "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "exclude", [], [], "include", [], []) )
 
     def testCloneReposPluginReadParams10(self):
 
@@ -220,7 +220,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], None, "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], [], "include", [], []) )
 
     def testCloneReposPluginReadParams12(self):
 
@@ -252,7 +252,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", [], []) )
 
     def testCloneReposPluginReadParams14(self):
 
@@ -286,7 +286,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", [], []) )
 
     def testCloneReposPluginReadParams16(self):
 
@@ -304,7 +304,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "exclude", None, None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "exclude", [], []) )
 
     def testCloneReposPluginReadParams17(self):
 
@@ -340,7 +340,7 @@ class CloneReposPluginTest(unittest.TestCase):
 
         v, r = self.clone_repo_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", ["dummy_value7"], None) )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", False, "dummy_value4", "include", ["dummy_value5"], ["dummy_value6"], "include", ["dummy_value7"], []) )
 
     def testCloneReposPluginReadParams19(self):
 
