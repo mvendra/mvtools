@@ -168,7 +168,7 @@ class CustomTask(launch_jobs.BaseTask):
         items_tuple_final = []
 
         # pre-assemble final source and target repo paths
-        for it in items:
+        for it in items_filtered_clone:
 
             v, r = detect_repo_type.detect_repo_type(it)
             if not v:
