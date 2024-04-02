@@ -146,10 +146,6 @@ class CustomTask(launch_jobs.BaseTask):
         if not v:
             return False, "path already exists: [%s] (failed while creating plain folders structure)" % r
 
-        # create structure (plain folders only)
-        for it in items_filtered_struct:
-            os.mkdir(it)
-
         # pre-assemble final source and target repo paths
         for it in items_filtered_clone_postfs:
 
