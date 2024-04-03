@@ -370,6 +370,23 @@ class CloneReposPluginTest(unittest.TestCase):
         test_file_first_repo = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.first_repo), "test_file.txt")
         self.assertTrue( os.path.exists(test_file_first_repo) )
 
+    def testCloneReposPluginCheckStructPass1(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "yes"
+        self.clone_repo_task.params = local_params
+
+        dest_third_sub1 = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.source_sub1))
+        self.assertFalse( os.path.exists(dest_third_sub1))
+        os.mkdir(dest_third_sub1)
+        self.assertTrue( os.path.exists(dest_third_sub1))
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+
     def testCloneReposPluginAdvFilter1(self):
 
         local_params = {}
@@ -550,23 +567,6 @@ class CloneReposPluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.fourth_repo_target))
         self.assertFalse(os.path.exists(self.fifth_repo_target))
         self.assertFalse(os.path.exists(self.target_sub1))
-
-    def testCloneReposPluginCheckFail1(self):
-
-        local_params = {}
-        local_params["source_path"] = self.source_path
-        local_params["dest_path"] = self.dest_path
-        local_params["accepted_repo_type"] = "git/bare"
-        local_params["bare_clone"] = "yes"
-        self.clone_repo_task.params = local_params
-
-        dest_third_sub1 = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.source_sub1))
-        self.assertFalse( os.path.exists(dest_third_sub1))
-        os.mkdir(dest_third_sub1)
-        self.assertTrue( os.path.exists(dest_third_sub1))
-
-        v, r = self.clone_repo_task.run_task(print, "exe_name")
-        self.assertFalse(v)
 
 if __name__ == '__main__':
     unittest.main()

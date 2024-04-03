@@ -109,26 +109,15 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         items = r
 
-        items_filtered_struct = []
-        items_filtered_struct_pre = []
         items_filtered_clone = []
         items_filtered_clone_postfs = []
         items_tuple_final = []
 
-        filters_struct = []
         filters_clone = []
         filters_fs = []
-        filters_struct.append( (fsquery_adv_filter.filter_has_not_middle_repos, "not-used") )
-        filters_struct.append( (fsquery_adv_filter.filter_is_not_repo, "not-used") )
         filters_clone.append( (fsquery_adv_filter.filter_is_repo, "not-used") )
 
         items_filtered_clone = fsquery_adv_filter.filter_path_list_and(items, filters_clone)
-        items_filtered_struct_pre = fsquery_adv_filter.filter_path_list_and(items, filters_struct)
-
-        for it in items_filtered_struct_pre:
-            middle_path_parts = path_utils.find_middle_path_parts(source_path, it)
-            target_struct = path_utils.concat_path(dest_path, middle_path_parts, path_utils.basename_filtered(it))
-            items_filtered_struct.append(target_struct)
 
         if default_filter == "include":
             filters_fs.append( (fsquery_adv_filter.filter_all_positive, "not-used") )
@@ -140,11 +129,6 @@ class CustomTask(launch_jobs.BaseTask):
             for ii in include_list:
                 filters_fs.append( (fsquery_adv_filter.filter_has_middle_pieces, path_utils.splitpath(ii, "auto")) )
             items_filtered_clone_postfs = fsquery_adv_filter.filter_path_list_or(items_filtered_clone, filters_fs)
-
-        # check if any of the plain struct target folders already exist
-        v, r = path_utils.check_if_paths_exist_stop_first(items_filtered_struct)
-        if not v:
-            return False, "path already exists: [%s] (failed while creating plain folders structure)" % r
 
         # pre-assemble final source and target repo paths
         for it in items_filtered_clone_postfs:
