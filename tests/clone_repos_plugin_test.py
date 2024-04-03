@@ -39,12 +39,14 @@ class CloneReposPluginTest(unittest.TestCase):
 
         # first repo
         self.first_repo = path_utils.concat_path(self.source_path, "first")
+        self.first_repo_target = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.first_repo))
         v, r = git_wrapper.init(self.source_path, "first", True)
         if not v:
             return v, r
 
         # second repo
         self.second_repo = path_utils.concat_path(self.source_path, "second")
+        self.second_repo_target = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.second_repo))
         v, r = git_wrapper.clone(self.first_repo, self.second_repo)
         if not v:
             return v, r
@@ -63,15 +65,32 @@ class CloneReposPluginTest(unittest.TestCase):
 
         # third repo
         self.source_sub1 = path_utils.concat_path(self.source_path, "sub1")
+        self.target_sub1 = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.source_sub1))
         os.mkdir(self.source_sub1)
         if not os.path.exists(self.source_sub1):
             return False, "Failed creating test folder %s" % self.source_sub1
         self.source_sub2 = path_utils.concat_path(self.source_sub1, "sub2")
+        self.target_sub2 = path_utils.concat_path(self.target_sub1, path_utils.basename_filtered(self.source_sub2))
         os.mkdir(self.source_sub2)
         if not os.path.exists(self.source_sub2):
             return False, "Failed creating test folder %s" % self.source_sub2
         self.third_repo = path_utils.concat_path(self.source_sub2, "   third   ")
+        self.third_repo_target = path_utils.concat_path(self.target_sub2, path_utils.basename_filtered(self.third_repo))
         v, r = git_wrapper.init(self.source_sub2, "   third   ", True)
+        if not v:
+            return v, r
+
+        # fourth repo
+        self.fourth_repo = path_utils.concat_path(self.source_path, "fourth")
+        self.fourth_repo_target = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.fourth_repo))
+        v, r = git_wrapper.init(self.source_path, "fourth", True)
+        if not v:
+            return v, r
+
+        # fifth repo
+        self.fifth_repo = path_utils.concat_path(self.source_sub2, "fifth")
+        self.fifth_repo_target = path_utils.concat_path(self.target_sub2, path_utils.basename_filtered(self.fifth_repo))
+        v, r = git_wrapper.init(self.source_sub2, "fifth", True)
         if not v:
             return v, r
 
@@ -349,8 +368,167 @@ class CloneReposPluginTest(unittest.TestCase):
         v, r = self.clone_repo_task.run_task(print, "exe_name")
         self.assertTrue(v)
         test_file_first_repo = path_utils.concat_path(self.dest_path, path_utils.basename_filtered(self.first_repo), "test_file.txt")
-        print(test_file_first_repo)
         self.assertTrue( os.path.exists(test_file_first_repo) )
+
+    def testCloneReposPluginAdvFilter1(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "exclude"
+        local_params["include_list"] = []
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertFalse(os.path.exists(self.third_repo_target))
+        self.assertFalse(os.path.exists(self.fourth_repo_target))
+        self.assertFalse(os.path.exists(self.fifth_repo_target))
+
+    def testCloneReposPluginAdvFilter2(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "exclude"
+        local_params["include_list"] = ["*/fourth"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertFalse(os.path.exists(self.third_repo_target))
+        self.assertTrue(os.path.exists(self.fourth_repo_target))
+        self.assertFalse(os.path.exists(self.fifth_repo_target))
+
+    def testCloneReposPluginAdvFilter3(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "exclude"
+        local_params["include_list"] = ["*/fifth"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertFalse(os.path.exists(self.third_repo_target))
+        self.assertFalse(os.path.exists(self.fourth_repo_target))
+        self.assertTrue(os.path.exists(self.fifth_repo_target))
+
+    def testCloneReposPluginAdvFilter4(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "exclude"
+        local_params["include_list"] = ["*/fourth", "*/fifth"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertFalse(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertFalse(os.path.exists(self.third_repo_target))
+        self.assertTrue(os.path.exists(self.fourth_repo_target))
+        self.assertTrue(os.path.exists(self.fifth_repo_target))
+
+    def testCloneReposPluginAdvFilter5(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "include"
+        local_params["exclude_list"] = []
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertTrue(os.path.exists(self.third_repo_target))
+        self.assertTrue(os.path.exists(self.fourth_repo_target))
+        self.assertTrue(os.path.exists(self.fifth_repo_target))
+
+    def testCloneReposPluginAdvFilter6(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "include"
+        local_params["exclude_list"] = ["*/fourth"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertTrue(os.path.exists(self.third_repo_target))
+        self.assertFalse(os.path.exists(self.fourth_repo_target))
+        self.assertTrue(os.path.exists(self.fifth_repo_target))
+
+    def testCloneReposPluginAdvFilter7(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "include"
+        local_params["exclude_list"] = ["*/fifth"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertTrue(os.path.exists(self.third_repo_target))
+        self.assertTrue(os.path.exists(self.fourth_repo_target))
+        self.assertFalse(os.path.exists(self.fifth_repo_target))
+
+    def testCloneReposPluginAdvFilter8(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "include"
+        local_params["exclude_list"] = ["*/fourth", "*/fifth"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertTrue(os.path.exists(self.third_repo_target))
+        self.assertFalse(os.path.exists(self.fourth_repo_target))
+        self.assertFalse(os.path.exists(self.fifth_repo_target))
 
     def testCloneReposPluginCheckFail1(self):
 
