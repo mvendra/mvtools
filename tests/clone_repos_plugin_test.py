@@ -530,6 +530,27 @@ class CloneReposPluginTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.fourth_repo_target))
         self.assertFalse(os.path.exists(self.fifth_repo_target))
 
+    def testCloneReposPluginAdvFilter9(self):
+
+        local_params = {}
+        local_params["source_path"] = self.source_path
+        local_params["dest_path"] = self.dest_path
+        local_params["accepted_repo_type"] = "git/bare"
+        local_params["bare_clone"] = "no"
+        local_params["remote_name"] = "test_remote"
+        local_params["default_filter"] = "include"
+        local_params["exclude_list"] = ["*/   third   ", "*/fifth"]
+        self.clone_repo_task.params = local_params
+
+        v, r = self.clone_repo_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+        self.assertTrue(os.path.exists(self.first_repo_target))
+        self.assertFalse(os.path.exists(self.second_repo_target))
+        self.assertFalse(os.path.exists(self.third_repo_target))
+        self.assertTrue(os.path.exists(self.fourth_repo_target))
+        self.assertFalse(os.path.exists(self.fifth_repo_target))
+        self.assertFalse(os.path.exists(self.target_sub1))
+
     def testCloneReposPluginCheckFail1(self):
 
         local_params = {}
