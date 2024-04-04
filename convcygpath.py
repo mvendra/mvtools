@@ -16,7 +16,7 @@ def puaq():
 def get_cygwin_installation_path():
     v, r = mvtools_envvars.mvtools_envvar_read_cygwin_install_path()
     if not v:
-        return "C:/cygwin"
+        return "C:/cygwin64"
     return r
 
 def find_drive_letter(target_path):
