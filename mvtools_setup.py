@@ -168,7 +168,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     cygwin_install_path_read = ""
     if cygwin_install_path is None:
         print("Mvtools can be hooked with the local system's cygwin installation path, for correct cygwin-to-windows paths resolution. This is optional.")
-        cygwin_install_path_read = input("Choose your local path that points to this system's cygwin installation path (optional - can be left blank - must be a windows path, not a cygwin path - can't contain environment variables or any other aliases of any kind):")
+        cygwin_install_path_read = input("Choose your local path that points to this system's cygwin installation path (optional - can be left blank - must be a windows path, not a cygwin path - can't contain environment variables or any other aliases of any kind - ensure to use forward slashes):")
         print("")
     if cygwin_install_path_read == "":
         cygwin_install_path_copy = None
