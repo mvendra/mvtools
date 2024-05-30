@@ -266,9 +266,9 @@ def generate_linux_codelite15_c(target_dir, project_name):
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/linux/codelite15_c/%s.mk" % project_name)
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/linux/codelite15_c/%s.txt" % project_name)
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/linux/codelite15_c/compile_flags.txt")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/build/linux/codelite15_c/%s.mk" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/build/linux/codelite15_c/%s.txt" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/build/linux/codelite15_c/compile_flags.txt")
 
     # main C file
     base_src_main_c_fn = path_utils.concat_path(base_src, "main.c")

@@ -214,10 +214,10 @@ def generate_windows_msvc17_c(target_dir, project_name):
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/windows/msvc17_c/.vs")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/windows/msvc17_c/%s.VC.db" % project_name)
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/windows/msvc17_c/%s.VC.VC.opendb" % project_name)
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "build/windows/msvc17_c/%s.vcxproj.user" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/build/windows/msvc17_c/.vs")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/build/windows/msvc17_c/%s.VC.db" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/build/windows/msvc17_c/%s.VC.VC.opendb" % project_name)
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/build/windows/msvc17_c/%s.vcxproj.user" % project_name)
 
     # main C file
     base_src_main_c_fn = path_utils.concat_path(base_src, "main.c")

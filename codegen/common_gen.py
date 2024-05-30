@@ -88,9 +88,9 @@ def generate_common_structure(target_dir, project_name):
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "tmp/")
-    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "out/")
-    #prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "dep/") -> stopped adding the dep/ folder by default to gitignore, so its dep/.gitkeep can more easily be noticed and committed for the first time
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/tmp/")
+    prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/out/")
+    #prjboot_util.add_to_gitignore_if_needed(gitignore_filename, "/dep/") -> stopped adding the /dep/ folder by default to gitignore, so its /dep/.gitkeep can more easily be noticed and committed for the first time
 
     # dep/gitkeep
     base_dep_gitkeep_fn = path_utils.concat_path(base_dep, ".gitkeep")
