@@ -137,6 +137,14 @@ def guaranteefolder(path):
 
     return True
 
+def recreate_as_folder_if_needed(target):
+
+    if os.path.exists(target):
+        if not remove_path(target):
+            return False
+    os.mkdir(target)
+    return True
+
 def filter_path_list_no_same_branch(pathlist):
 
     """ filter_path_list_no_same_branch

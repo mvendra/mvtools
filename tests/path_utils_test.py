@@ -262,6 +262,33 @@ class PathUtilsTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(test_folder_fourth))
         self.assertTrue(os.path.isdir(test_folder_fourth_abs))
 
+    def testRecreateAsFolderIfNeeded1(self):
+
+        target_path = path_utils.concat_path(self.test_dir, "file_target.txt")
+        self.assertTrue(create_and_write_file.create_file_contents(target_path, "test-file"))
+        self.assertTrue(os.path.exists(target_path))
+        self.assertFalse(os.path.isdir(target_path))
+
+        self.assertTrue(path_utils.recreate_as_folder_if_needed(target_path))
+        self.assertTrue(os.path.exists(target_path))
+        self.assertTrue(os.path.isdir(target_path))
+
+    def testRecreateAsFolderIfNeeded2(self):
+
+        target_path = path_utils.concat_path(self.test_dir, "folder_target")
+        os.mkdir(target_path)
+        self.assertTrue(os.path.exists(target_path))
+        self.assertTrue(os.path.isdir(target_path))
+
+        target_path_sub = path_utils.concat_path(target_path, "sub")
+        self.assertTrue(create_and_write_file.create_file_contents(target_path_sub, "test-subfile"))
+
+        self.assertTrue(os.path.exists(target_path_sub))
+        self.assertTrue(path_utils.recreate_as_folder_if_needed(target_path))
+        self.assertTrue(os.path.exists(target_path))
+        self.assertTrue(os.path.isdir(target_path))
+        self.assertFalse(os.path.exists(target_path_sub))
+
     def testFilterPathListNoSameBranch(self):
         expected = ["/bug", "/home", "/shome"]
         result = path_utils.filter_path_list_no_same_branch(["/home", "/home/user/nuke", "/bug", "/home/ooser", "/shome", "/home/bork/nuke/bark"])
