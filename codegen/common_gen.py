@@ -94,11 +94,17 @@ def generate_common_structure(target_dir, project_name):
 
     # dep/gitkeep
     base_dep_gitkeep_fn = path_utils.concat_path(base_dep, ".gitkeep")
-    base_dep_linux_gitkeep_fn = path_utils.concat_path(base_dep_linux, ".gitkeep")
-    base_dep_windows_gitkeep_fn = path_utils.concat_path(base_dep_windows, ".gitkeep")
-    base_dep_macosx_gitkeep_fn = path_utils.concat_path(base_dep_macosx, ".gitkeep")
-    gitkeeps = [base_dep_gitkeep_fn, base_dep_linux_gitkeep_fn, base_dep_windows_gitkeep_fn, base_dep_macosx_gitkeep_fn]
+    #base_dep_linux_gitkeep_fn = path_utils.concat_path(base_dep_linux, ".gitkeep") -> disabled per-platform gitkeeps
+    #base_dep_windows_gitkeep_fn = path_utils.concat_path(base_dep_windows, ".gitkeep")
+    #base_dep_macosx_gitkeep_fn = path_utils.concat_path(base_dep_macosx, ".gitkeep")
 
+    # tmp/gitkeep
+    base_tmp_gitkeep_fn = path_utils.concat_path(base_tmp, ".gitkeep")
+
+    # out/gitkeep
+    base_out_gitkeep_fn = path_utils.concat_path(base_out, ".gitkeep")
+
+    gitkeeps = [base_dep_gitkeep_fn, base_tmp_gitkeep_fn, base_out_gitkeep_fn]
     for gk in gitkeeps:
         if not prjboot_util.writecontents(gk, ".gitkeep"):
             return False, "Failed creating [%s]" % gk
