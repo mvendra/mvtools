@@ -3,12 +3,12 @@
 import os
 
 import launch_jobs
-import proj_cleanup
+import prjcleanup
 
 class CustomTask(launch_jobs.BaseTask):
 
     def get_desc(self):
-        return "proj_cleanup"
+        return "prjcleanup"
 
     def _read_params(self):
 
@@ -45,7 +45,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         proj, dep, tmp, out = r
 
-        v, r = proj_cleanup.proj_cleanup(proj, dep, tmp, out)
+        v, r = prjcleanup.prjcleanup(proj, dep, tmp, out)
         if not v:
             return False, "Task failed: [%s]" % r
         return True, None

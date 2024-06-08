@@ -9,7 +9,7 @@ from unittest.mock import patch
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
-import proj_cleanup
+import prjcleanup
 
 class ProjCleanupTest(unittest.TestCase):
 
@@ -21,7 +21,7 @@ class ProjCleanupTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("proj_cleanup_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("prjcleanup_test")
         if not v:
             return v, r
         self.test_base_dir = r[0]
@@ -94,16 +94,16 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup1(self):
 
-        v, r = proj_cleanup.proj_cleanup(self.nonexistent, False, False, False)
+        v, r = prjcleanup.prjcleanup(self.nonexistent, False, False, False)
         self.assertFalse(v)
         self.assertTrue("does not exist" in r)
 
     def testProjCleanup2(self):
 
-        with mock.patch("proj_cleanup.proj_cleanup_dep", return_value=(True, None)) as dummy1:
-            with mock.patch("proj_cleanup.proj_cleanup_tmp", return_value=(True, None)) as dummy2:
-                with mock.patch("proj_cleanup.proj_cleanup_out", return_value=(True, None)) as dummy3:
-                    v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, False)
+        with mock.patch("prjcleanup.prjcleanup_dep", return_value=(True, None)) as dummy1:
+            with mock.patch("prjcleanup.prjcleanup_tmp", return_value=(True, None)) as dummy2:
+                with mock.patch("prjcleanup.prjcleanup_out", return_value=(True, None)) as dummy3:
+                    v, r = prjcleanup.prjcleanup(self.target_proj, False, False, False)
                     self.assertTrue(v)
                     self.assertEqual(r, None)
                     dummy1.assert_not_called()
@@ -112,10 +112,10 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup3(self):
 
-        with mock.patch("proj_cleanup.proj_cleanup_dep", return_value=(True, None)) as dummy1:
-            with mock.patch("proj_cleanup.proj_cleanup_tmp", return_value=(True, None)) as dummy2:
-                with mock.patch("proj_cleanup.proj_cleanup_out", return_value=(True, None)) as dummy3:
-                    v, r = proj_cleanup.proj_cleanup(self.target_proj, True, False, False)
+        with mock.patch("prjcleanup.prjcleanup_dep", return_value=(True, None)) as dummy1:
+            with mock.patch("prjcleanup.prjcleanup_tmp", return_value=(True, None)) as dummy2:
+                with mock.patch("prjcleanup.prjcleanup_out", return_value=(True, None)) as dummy3:
+                    v, r = prjcleanup.prjcleanup(self.target_proj, True, False, False)
                     self.assertTrue(v)
                     self.assertEqual(r, None)
                     dummy1.assert_called_with(self.target_proj)
@@ -124,10 +124,10 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup4(self):
 
-        with mock.patch("proj_cleanup.proj_cleanup_dep", return_value=(True, None)) as dummy1:
-            with mock.patch("proj_cleanup.proj_cleanup_tmp", return_value=(True, None)) as dummy2:
-                with mock.patch("proj_cleanup.proj_cleanup_out", return_value=(True, None)) as dummy3:
-                    v, r = proj_cleanup.proj_cleanup(self.target_proj, False, True, False)
+        with mock.patch("prjcleanup.prjcleanup_dep", return_value=(True, None)) as dummy1:
+            with mock.patch("prjcleanup.prjcleanup_tmp", return_value=(True, None)) as dummy2:
+                with mock.patch("prjcleanup.prjcleanup_out", return_value=(True, None)) as dummy3:
+                    v, r = prjcleanup.prjcleanup(self.target_proj, False, True, False)
                     self.assertTrue(v)
                     self.assertEqual(r, None)
                     dummy1.assert_not_called()
@@ -136,10 +136,10 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup5(self):
 
-        with mock.patch("proj_cleanup.proj_cleanup_dep", return_value=(True, None)) as dummy1:
-            with mock.patch("proj_cleanup.proj_cleanup_tmp", return_value=(True, None)) as dummy2:
-                with mock.patch("proj_cleanup.proj_cleanup_out", return_value=(True, None)) as dummy3:
-                    v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, True)
+        with mock.patch("prjcleanup.prjcleanup_dep", return_value=(True, None)) as dummy1:
+            with mock.patch("prjcleanup.prjcleanup_tmp", return_value=(True, None)) as dummy2:
+                with mock.patch("prjcleanup.prjcleanup_out", return_value=(True, None)) as dummy3:
+                    v, r = prjcleanup.prjcleanup(self.target_proj, False, False, True)
                     self.assertTrue(v)
                     self.assertEqual(r, None)
                     dummy1.assert_not_called()
@@ -148,10 +148,10 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup6(self):
 
-        with mock.patch("proj_cleanup.proj_cleanup_dep", return_value=(True, None)) as dummy1:
-            with mock.patch("proj_cleanup.proj_cleanup_tmp", return_value=(True, None)) as dummy2:
-                with mock.patch("proj_cleanup.proj_cleanup_out", return_value=(True, None)) as dummy3:
-                    v, r = proj_cleanup.proj_cleanup(self.target_proj, True, True, True)
+        with mock.patch("prjcleanup.prjcleanup_dep", return_value=(True, None)) as dummy1:
+            with mock.patch("prjcleanup.prjcleanup_tmp", return_value=(True, None)) as dummy2:
+                with mock.patch("prjcleanup.prjcleanup_out", return_value=(True, None)) as dummy3:
+                    v, r = prjcleanup.prjcleanup(self.target_proj, True, True, True)
                     self.assertTrue(v)
                     self.assertEqual(r, None)
                     dummy1.assert_called_with(self.target_proj)
@@ -214,7 +214,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(out_macosx_debug_file14))
         self.assertTrue(os.path.exists(out_macosx_release_file15))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, False, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -292,7 +292,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(out_macosx_debug_file14))
         self.assertTrue(os.path.exists(out_macosx_release_file15))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, True, False, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, True, False, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -370,7 +370,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(out_macosx_debug_file14))
         self.assertTrue(os.path.exists(out_macosx_release_file15))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, True, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, True, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -448,7 +448,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(out_macosx_debug_file14))
         self.assertTrue(os.path.exists(out_macosx_release_file15))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, True)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, False, True)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -526,7 +526,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(out_macosx_debug_file14))
         self.assertTrue(os.path.exists(out_macosx_release_file15))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, True, True, True)
+        v, r = prjcleanup.prjcleanup(self.target_proj, True, True, True)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -568,7 +568,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, False, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -610,7 +610,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, True, True, True)
+        v, r = prjcleanup.prjcleanup(self.target_proj, True, True, True)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -664,7 +664,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, True, False, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, True, False, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -718,7 +718,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, False, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -785,7 +785,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, True, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, True, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -848,7 +848,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, False, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -918,7 +918,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertFalse(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, True)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, False, True)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -981,7 +981,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_out_macosx_debug))
         self.assertFalse(os.path.isdir(self.target_proj_out_macosx_release))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, False, False, False)
+        v, r = prjcleanup.prjcleanup(self.target_proj, False, False, False)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -1078,7 +1078,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(out_macosx_debug_file14))
         self.assertTrue(os.path.exists(out_macosx_release_file15))
 
-        v, r = proj_cleanup.proj_cleanup(self.target_proj, True, True, True)
+        v, r = prjcleanup.prjcleanup(self.target_proj, True, True, True)
         self.assertTrue(v)
         self.assertEqual(r, None)
 

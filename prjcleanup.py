@@ -5,7 +5,7 @@ import os
 
 import path_utils
 
-def proj_cleanup_dep(proj):
+def prjcleanup_dep(proj):
 
     path_proj_dep = path_utils.concat_path(proj, "dep")
     path_proj_dep_linux = path_utils.concat_path(path_proj_dep, "linux")
@@ -20,7 +20,7 @@ def proj_cleanup_dep(proj):
 
     return True, None
 
-def proj_cleanup_tmp(proj):
+def prjcleanup_tmp(proj):
 
     path_proj_tmp = path_utils.concat_path(proj, "tmp")
     path_proj_tmp_linux = path_utils.concat_path(path_proj_tmp, "linux")
@@ -41,7 +41,7 @@ def proj_cleanup_tmp(proj):
 
     return True, None
 
-def proj_cleanup_out(proj):
+def prjcleanup_out(proj):
 
     path_proj_out = path_utils.concat_path(proj, "out")
     path_proj_out_linux = path_utils.concat_path(path_proj_out, "linux")
@@ -62,7 +62,7 @@ def proj_cleanup_out(proj):
 
     return True, None
 
-def proj_cleanup(proj, dep, tmp, out):
+def prjcleanup(proj, dep, tmp, out):
 
     # precond validations
     if not os.path.exists(proj):
@@ -70,19 +70,19 @@ def proj_cleanup(proj, dep, tmp, out):
 
     # dep
     if dep:
-        v, r = proj_cleanup_dep(proj)
+        v, r = prjcleanup_dep(proj)
         if not v:
             return False, r
 
     # tmp
     if tmp:
-        v, r = proj_cleanup_tmp(proj)
+        v, r = prjcleanup_tmp(proj)
         if not v:
             return False, r
 
     # out
     if out:
-        v, r = proj_cleanup_out(proj)
+        v, r = prjcleanup_out(proj)
         if not v:
             return False, r
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         elif o == "--out":
             out = True
 
-    v, r = proj_cleanup(proj, dep, tmp, out)
+    v, r = prjcleanup(proj, dep, tmp, out)
     if not v:
         print(r)
         sys.exit(1)
