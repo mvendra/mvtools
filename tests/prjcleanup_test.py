@@ -1104,5 +1104,98 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(out_macosx_debug_file14))
         self.assertFalse(os.path.exists(out_macosx_release_file15))
 
+    def testProjCleanup20(self):
+
+        shutil.rmtree(self.target_proj_dep)
+        shutil.rmtree(self.target_proj_tmp)
+        shutil.rmtree(self.target_proj_out)
+
+        self.assertFalse(os.path.exists(self.target_proj_dep))
+        self.assertFalse(os.path.exists(self.target_proj_tmp))
+        self.assertFalse(os.path.exists(self.target_proj_out))
+
+        v, r = prjcleanup.prjcleanup(self.target_proj, True, True, True)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        self.assertTrue(os.path.exists(self.target_proj_dep))
+        self.assertTrue(os.path.exists(self.target_proj_dep_linux))
+        self.assertTrue(os.path.exists(self.target_proj_dep_windows))
+        self.assertTrue(os.path.exists(self.target_proj_dep_macosx))
+
+        self.assertTrue(os.path.exists(self.target_proj_tmp))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_linux))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_linux_debug))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_linux_release))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_windows))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_windows_debug))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_windows_release))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_macosx))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_macosx_debug))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_macosx_release))
+
+        self.assertTrue(os.path.exists(self.target_proj_out))
+        self.assertTrue(os.path.exists(self.target_proj_out_linux))
+        self.assertTrue(os.path.exists(self.target_proj_out_linux_debug))
+        self.assertTrue(os.path.exists(self.target_proj_out_linux_release))
+        self.assertTrue(os.path.exists(self.target_proj_out_windows))
+        self.assertTrue(os.path.exists(self.target_proj_out_windows_debug))
+        self.assertTrue(os.path.exists(self.target_proj_out_windows_release))
+        self.assertTrue(os.path.exists(self.target_proj_out_macosx))
+        self.assertTrue(os.path.exists(self.target_proj_out_macosx_debug))
+        self.assertTrue(os.path.exists(self.target_proj_out_macosx_release))
+
+    def testProjCleanup21(self):
+
+        shutil.rmtree(self.target_proj_dep)
+        shutil.rmtree(self.target_proj_tmp)
+        shutil.rmtree(self.target_proj_out)
+
+        self.assertFalse(os.path.exists(self.target_proj_dep))
+        self.assertFalse(os.path.exists(self.target_proj_tmp))
+        self.assertFalse(os.path.exists(self.target_proj_out))
+
+        self.assertTrue(create_and_write_file.create_file_contents(self.target_proj_dep, "contents"))
+        self.assertTrue(create_and_write_file.create_file_contents(self.target_proj_tmp, "contents"))
+        self.assertTrue(create_and_write_file.create_file_contents(self.target_proj_out, "contents"))
+
+        self.assertTrue(os.path.exists(self.target_proj_dep))
+        self.assertTrue(os.path.exists(self.target_proj_tmp))
+        self.assertTrue(os.path.exists(self.target_proj_out))
+
+        v, r = prjcleanup.prjcleanup(self.target_proj, True, True, True)
+        self.assertFalse(v)
+        self.assertNotEqual(r, None)
+
+        self.assertTrue(os.path.exists(self.target_proj_dep))
+        self.assertFalse(os.path.isdir(self.target_proj_dep))
+        self.assertFalse(os.path.exists(self.target_proj_dep_linux))
+        self.assertFalse(os.path.exists(self.target_proj_dep_windows))
+        self.assertFalse(os.path.exists(self.target_proj_dep_macosx))
+
+        self.assertTrue(os.path.exists(self.target_proj_tmp))
+        self.assertFalse(os.path.isdir(self.target_proj_tmp))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_linux))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_linux_debug))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_linux_release))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_windows))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_windows_debug))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_windows_release))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_macosx))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_macosx_debug))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_macosx_release))
+
+        self.assertTrue(os.path.exists(self.target_proj_out))
+        self.assertFalse(os.path.isdir(self.target_proj_out))
+        self.assertFalse(os.path.exists(self.target_proj_out_linux))
+        self.assertFalse(os.path.exists(self.target_proj_out_linux_debug))
+        self.assertFalse(os.path.exists(self.target_proj_out_linux_release))
+        self.assertFalse(os.path.exists(self.target_proj_out_windows))
+        self.assertFalse(os.path.exists(self.target_proj_out_windows_debug))
+        self.assertFalse(os.path.exists(self.target_proj_out_windows_release))
+        self.assertFalse(os.path.exists(self.target_proj_out_macosx))
+        self.assertFalse(os.path.exists(self.target_proj_out_macosx_debug))
+        self.assertFalse(os.path.exists(self.target_proj_out_macosx_release))
+
 if __name__ == '__main__':
     unittest.main()

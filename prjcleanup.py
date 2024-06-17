@@ -16,7 +16,7 @@ def prjcleanup_dep(proj):
 
     for rp in recreate_paths:
         if not path_utils.recreate_as_folder_if_needed(rp):
-            return False, "Unable to recreate-as-folder [%d]" % rp
+            return False, "Unable to recreate-as-folder [%s]" % rp
 
     return True, None
 
@@ -37,7 +37,7 @@ def prjcleanup_tmp(proj):
 
     for rp in recreate_paths:
         if not path_utils.recreate_as_folder_if_needed(rp):
-            return False, "Unable to recreate-as-folder [%d]" % rp
+            return False, "Unable to recreate-as-folder [%s]" % rp
 
     return True, None
 
@@ -58,7 +58,7 @@ def prjcleanup_out(proj):
 
     for rp in recreate_paths:
         if not path_utils.recreate_as_folder_if_needed(rp):
-            return False, "Unable to recreate-as-folder [%d]" % rp
+            return False, "Unable to recreate-as-folder [%s]" % rp
 
     return True, None
 
