@@ -142,7 +142,10 @@ def recreate_as_folder_if_needed(target):
     if os.path.exists(target):
         if not remove_path(target):
             return False
-    os.mkdir(target)
+    try:
+        os.makedirs(target, exist_ok=True)
+    except:
+        return False
     return True
 
 def filter_path_list_no_same_branch(pathlist):
