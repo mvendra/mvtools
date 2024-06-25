@@ -52,7 +52,7 @@ endif
 # RELEASE
 ifeq ($(MODE),release)
 	CFLAGS+=-O2 -DNDEBUG
-	POSTBUILD=strip $(OUTNAME_FULL)
+	POSTBUILD=strip -g $(OUTNAME_FULL)
 endif
 
 # AUTOCONF COMPLETE
