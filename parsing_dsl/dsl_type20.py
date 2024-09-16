@@ -1125,6 +1125,9 @@ class DSLType20:
         opt_val = None
         parsed_opts = []
 
+        if local_str_input == miniparse.RCBRACKET: # tolerate empty option list
+            return True, [], ""
+
         counter = -1
         while True:
             counter += 1

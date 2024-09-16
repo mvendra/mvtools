@@ -1280,6 +1280,22 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", [], [])])
 
+    def testDslType20_TestVanilla20(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("var1 {}")
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", None, [])])
+
+    def testDslType20_TestVanilla21(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("var1 {} = ()")
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", [], [])])
+
     def testDslType20_TestParseDecoratedVar1(self):
 
         decorated_var = "* var1 {opt1} = \"val1\""
