@@ -330,13 +330,13 @@ class DSLType20_Context:
         self.entries.append(new_entry)
 
 class DSLType20_Config:
-    def __init__(self, expand_envvars = False, expand_user = False, allow_var_dupes = True, inherit_options = False, variable_decorator = ""):
+    def __init__(self, expand_envvars = False, expand_user = False, allow_var_dupes = True, inherit_options = False, var_decorator = ""):
 
         self.expand_envvars = expand_envvars
         self.expand_user = expand_user
         self.allow_var_dupes = allow_var_dupes
         self.inherit_options = inherit_options
-        self.variable_decorator = variable_decorator
+        self.var_decorator = var_decorator
 
 class _internal_parse_context:
     def __init__(self):
@@ -821,7 +821,7 @@ class DSLType20:
         return True, None
 
     def _config_copy(self):
-        return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.variable_decorator)
+        return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.var_decorator)
 
     def _var_copy(self, original_parent_ptr, var_ptr):
         return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
@@ -949,10 +949,10 @@ class DSLType20:
 
         local_str_input = str_input.strip()
 
-        if self.configs.variable_decorator != "":
-            if local_str_input.find(self.configs.variable_decorator) != 0:
-                return False, "Can't parse variable: [%s]: Decorator [%s] not found." % (str_input, self.configs.variable_decorator)
-            local_str_input = (local_str_input[len(self.configs.variable_decorator):]).strip()
+        if self.configs.var_decorator != "":
+            if local_str_input.find(self.configs.var_decorator) != 0:
+                return False, "Can't parse variable: [%s]: Decorator [%s] not found." % (str_input, self.configs.var_decorator)
+            local_str_input = (local_str_input[len(self.configs.var_decorator):]).strip()
 
         local_context = self.root_context_id
         if context is not None:
@@ -1387,7 +1387,7 @@ class DSLType20:
     def _produce_variable(self, input_variable):
 
         variable_result = ""
-        variable_result = self.configs.variable_decorator + input_variable.get_name()
+        variable_result = self.configs.var_decorator + input_variable.get_name()
 
         # produce the options
         prod_opts = self._produce_options(input_variable.get_options())
@@ -1465,7 +1465,7 @@ if __name__ == '__main__':
         the_deco = sys.argv[2]
         file_to_parse = sys.argv[3]
 
-    dsl = DSLType20(DSLType20_Config(expand_envvars=True, expand_user=True, allow_var_dupes=True, inherit_options=True, variable_decorator=the_deco))
+    dsl = DSLType20(DSLType20_Config(expand_envvars=True, expand_user=True, allow_var_dupes=True, inherit_options=True, var_decorator=the_deco))
 
     if not os.path.exists(file_to_parse):
         print("File [%s] does not exist." % file_to_parse)

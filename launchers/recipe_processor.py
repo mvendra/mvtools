@@ -333,7 +333,7 @@ class RecipeProcessor:
         if file_contents is None or file_contents == "":
             return False, "Recipe file [%s]'s contents are invalid." % local_recipe
 
-        dsl_opts = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True, inherit_options = True, variable_decorator = "* ")
+        dsl_opts = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True, inherit_options = True, var_decorator = "* ")
         dsl = dsl_type20.DSLType20(dsl_opts)
 
         v, r = dsl.parse(file_contents)

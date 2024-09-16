@@ -1272,7 +1272,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl1.parse(decorated_var)
         self.assertFalse(v)
 
-        dsl2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator = "* "))
+        dsl2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(var_decorator = "* "))
         v, r = dsl2.parse(decorated_var)
         self.assertTrue(v)
 
@@ -1280,25 +1280,25 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestParseDecoratedVar2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator = "**"))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(var_decorator = "**"))
         v, r = dsl.parse("** var1 {opt1} = \"val1\"")
         self.assertTrue(v)
 
     def testDslType20_TestParseDecoratedVarFail1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator = "* "))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(var_decorator = "* "))
         v, r = dsl.parse("*var1 {opt1} = \"val1\"")
         self.assertFalse(v)
 
     def testDslType20_TestParseDecoratedVarFail2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator = "* "))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(var_decorator = "* "))
         v, r = dsl.parse("* ")
         self.assertFalse(v)
 
     def testDslType20_TestParseDecoratedVarFail3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator = "**"))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(var_decorator = "**"))
         v, r = dsl.parse("* var1 {opt1} = \"val1\"")
         self.assertFalse(v)
 
@@ -3181,12 +3181,12 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
     def testDslType20_TestProduce11(self):
-        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator="* "))
+        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(var_decorator="* "))
         self.assertTrue(dsl_1.add_variable("var1", "val1", [])[0])
         self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), [("var1", "val1", [])])
         self.assertEqual(dsl_1.produce(), "* var1 = \"val1\"")
 
-        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(variable_decorator="* "))
+        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(var_decorator="* "))
         v, r = dsl_2.parse(dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)

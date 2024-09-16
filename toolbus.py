@@ -39,7 +39,7 @@ def _bootstrap_internal_toolbus_db(_filename): # this is supposed to be a "priva
     if os.path.exists(_filename):
         return False, "Unable to bootstrap internal database file [%s] (database: [%s], context: [%s]): File already exists." % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT)
 
-    db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = True, variable_decorator = ""))
+    db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = True, var_decorator = ""))
     db_handle.add_context(TOOLBUS_SIGNAL_CONTEXT, [])
     bootstrap_contents = db_handle.produce()
 
@@ -71,7 +71,7 @@ def get_db_handle(_db_name, bootstrap_internal=False):
         else:
             return False, "Failed setting up toolbus - database [%s] does not exist." % db_file_full, None
 
-    db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = True, variable_decorator = ""))
+    db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = True, var_decorator = ""))
 
     db_contents = ""
     with open(db_file_full) as f:
