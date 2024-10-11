@@ -2,6 +2,7 @@
 
 import sys
 import os
+import binascii
 
 import path_utils
 
@@ -13,6 +14,16 @@ def create_file_contents(filename, contents):
 
     with open(filename, "w+") as f:
         f.write(contents)
+    return True
+
+def create_file_contents_hex(filename, contents):
+
+    if os.path.exists(filename):
+        print("[%s] already exists. Will not proceed." % filename)
+        return False
+
+    with open(filename, "wb+") as f:
+        f.write(binascii.unhexlify(contents))
     return True
 
 def puaq():
