@@ -7,6 +7,7 @@ import path_utils
 import dsl_type20
 
 PREFIX = "TEXT18_"
+VAR_DECO = "* "
 
 class ProdCtx:
     def __init__(self):
@@ -47,12 +48,11 @@ def gen_from_t20(input, prod_ctx):
 
     t20_contents = ""
     gen_contents = ""
-    var_deco = "* "
 
     with open(input, "r") as f:
         t20_contents = f.read()
 
-    dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = var_deco))
+    dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
 
     v, r = dsl.parse(t20_contents)
     if not v:
