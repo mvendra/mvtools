@@ -44,12 +44,12 @@ def format_line_var(prefix, ctx, var, index):
 
     return "%s%s_%s %d" % (prefix, ctx_part_fixed, var_part_fixed, index)
 
-def gen_from_t20(input, prod_ctx):
+def gen_from_t20(input_file, prod_ctx):
 
     t20_contents = ""
     gen_contents = ""
 
-    with open(input, "r") as f:
+    with open(input_file, "r") as f:
         t20_contents = f.read()
 
     dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
@@ -79,7 +79,7 @@ def gen_from_t20(input, prod_ctx):
 
     return True, gen_contents
 
-def generate_header_index(inputs):
+def generate_header_index(input_files):
 
     header_guard_name = "GENERATED"
 
@@ -88,7 +88,7 @@ def generate_header_index(inputs):
 
     prod_ctx = ProdCtx()
 
-    for current_t20 in inputs:
+    for current_t20 in input_files:
 
         if not os.path.exists(current_t20):
             return False, "[%s] does not exist." % current_t20
@@ -112,9 +112,9 @@ if __name__ == "__main__":
         puaq()
 
     output = sys.argv[1]
-    inputs = sys.argv[2:]
+    input_files = sys.argv[2:]
 
-    v, r = generate_header_index(inputs)
+    v, r = generate_header_index(input_files)
     if not v:
         print(r)
         exit(1)
