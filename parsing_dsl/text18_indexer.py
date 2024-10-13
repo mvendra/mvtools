@@ -79,7 +79,7 @@ def gen_from_t20(input_file, prod_ctx):
 
     return True, gen_contents
 
-def generate_header_index(input_files):
+def generate_header_index(input_files, output_file):
 
     header_guard_name = "GENERATED"
 
@@ -100,7 +100,11 @@ def generate_header_index(input_files):
         generated_contents += r
 
     generated_contents += "\n\n#endif // _%s_H_\n" % header_guard_name
-    return True, generated_contents
+
+    with open(output_file, "w+") as f:
+        f.write(generated_contents)
+
+    return True, None
 
 def puaq():
     print("Usage: %s output_file.h input1.t20 [input2.t20 ...]" % path_utils.basename_filtered(__file__))
@@ -111,13 +115,10 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         puaq()
 
-    output = sys.argv[1]
+    output_file = sys.argv[1]
     input_files = sys.argv[2:]
 
-    v, r = generate_header_index(input_files)
+    v, r = generate_header_index(input_files, output_file)
     if not v:
         print(r)
         sys.exit(1)
-
-    with open(output, "w+") as f:
-        f.write(r)
