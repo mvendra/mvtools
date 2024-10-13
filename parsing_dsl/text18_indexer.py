@@ -117,7 +117,7 @@ if __name__ == "__main__":
     v, r = generate_header_index(input_files)
     if not v:
         print(r)
-        exit(1)
+        sys.exit(1)
 
     with open(output, "w+") as f:
         f.write(r)
