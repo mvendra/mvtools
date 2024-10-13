@@ -60,6 +60,12 @@ def compare_t18_schemas_delegate(left_filename, left_dsl, right_filename, right_
 
 def compare_t18_schemas(left_t20, right_t20):
 
+    if not os.path.exists(left_t20):
+        return False, "[%s] does not exist." % left_t20
+
+    if not os.path.exists(right_t20):
+        return False, "[%s] does not exist." % right_t20
+
     left_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
     right_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
 
