@@ -17,10 +17,6 @@ class ProdCtx:
         self.ctx_counter += 1
         return local_ctr_copy
 
-def puaq():
-    print("Usage: %s output_file.h input1.t20 [input2.t20 ...]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def fix_dash(line):
     line_fixed = ""
     for c in line:
@@ -105,6 +101,10 @@ def generate_header_index(inputs):
 
     generated_contents += "\n\n#endif // _%s_H_\n" % header_guard_name
     return True, generated_contents
+
+def puaq():
+    print("Usage: %s output_file.h input1.t20 [input2.t20 ...]" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
 
