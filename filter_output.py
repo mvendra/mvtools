@@ -106,6 +106,16 @@ def is_asan_stack_entry(expected, line):
 
     return False, "Unable to detect stack entry: input line [%s] is unrecognized" % line
 
+def asan_vga_v1_should_ignore_stack(stack_entries):
+
+    for sen in stack_entries:
+        if "(<unknown module>)" in sen:
+            return True
+        if "_XimOpenIM" in sen:
+            return True
+
+    return False
+
 def filter_asan_echo(contents):
 
     contents_list = contents.split("\n")
@@ -154,11 +164,66 @@ def filter_asan_echo(contents):
 
     return True, contents_list_result
 
+def filter_asan_vga_v1(contents):
+
+    contents_list = contents.split("\n")
+    contents_list_result = ""
+
+    exp_idx = 0
+    stack_mode = False
+    stack_entry = []
+    n = 0
+    for l in contents_list:
+        n += 1
+
+        if stack_mode:
+
+            if l == "":
+                exp_idx = 0
+                stack_mode = False
+                if not asan_vga_v1_should_ignore_stack(stack_entry):
+                    for sen in stack_entry:
+                        contents_list_result += "%s\n" % sen
+                    contents_list_result += "\n"
+                stack_entry = []
+                continue
+
+            v, r = is_asan_stack_entry(exp_idx, l)
+            if not v:
+                return False, r
+            exp_idx += 1
+
+            stack_entry.append(l)
+
+        else:
+
+            if l == "":
+                if n != len(contents_list):
+                    contents_list_result += "\n"
+                continue
+
+            if "Direct leak of" in l or "Indirect leak of" in l:
+                exp_idx = 0
+                stack_mode = True
+                stack_entry = []
+                stack_entry.append(l)
+                continue
+
+            contents_list_result += l
+            if not "SUMMARY: AddressSanitizer:" in l:
+                contents_list_result += "\n"
+
+    return True, contents_list_result
+
 def apply_filters(contents, asan_echo, asan_vga_v1):
 
     local_contents = contents
 
-    # mvtodo: implement filter_asan_vga_v1 (before _echo)
+    if asan_vga_v1:
+        v, r = filter_asan_vga_v1(local_contents)
+        if not v:
+            return False, r
+        local_contents = r
 
     if asan_echo: # asan_echo must be last of the asan filters
         v, r = filter_asan_echo(local_contents)
