@@ -42,12 +42,11 @@ java
 
 rpm2cpio
 
-autoselfext
-
 iat
 
 7z
 
+autoselfext
 ===========
 
 Python based creator of self extracting shell scripts
