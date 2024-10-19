@@ -66,6 +66,10 @@ class FilterOutputTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "(something else)")
 
+    def testScanHexAddress7(self):
+        v, r = filter_output.scan_hex_address("0xffffffffffffffff0 abc")
+        self.assertFalse(v)
+
     def testScanNextFrameNum1(self):
         v, r = filter_output.scan_next_frame_num(0, " ")
         self.assertFalse(v)

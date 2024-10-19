@@ -32,6 +32,9 @@ def scan_hex_address(line):
         return False, "Unable to scan hex address: input line [%s] has no address" % line
     local_line = local_line[idx:]
 
+    if idx > 16:
+        return False, "Unable to scan hex address: input line [%s] has a too-large address" % line
+
     if len(local_line) < 2:
         return False, "Unable to scan hex address: input line [%s] has no trailing space" % line
 
