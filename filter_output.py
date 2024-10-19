@@ -127,8 +127,7 @@ def filter_asan_echo(contents):
                 return False, r
             exp_idx += 1
 
-            #contents_list_result += "%s\n" % l # mvtodo
-            contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_PURPLE, l, terminal_colors.TTY_WHITE)
+            contents_list_result += "%s\n" % l
 
         else:
 
