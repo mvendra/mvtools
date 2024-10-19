@@ -6,7 +6,7 @@ import os
 import path_utils
 import generic_run
 
-def bincue_to_iso(input_file, output_file):
+def convert_to_iso(input_file, output_file):
 
     if not os.path.exists(input_file):
         return False, "Input file [%s] does not exist" % input_file
@@ -19,7 +19,7 @@ def bincue_to_iso(input_file, output_file):
     return v, r
 
 def puaq():
-    print("Usage: %s input.bin output.iso" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [input.bin | input.mdf] output.iso" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     input_file = sys.argv[1]
     output_file = sys.argv[2]
 
-    v, r = bincue_to_iso(input_file, output_file)
+    v, r = convert_to_iso(input_file, output_file)
     if not v:
         print(r)
         sys.exit(1)
