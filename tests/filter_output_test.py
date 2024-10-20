@@ -126,5 +126,9 @@ class FilterOutputTest(unittest.TestCase):
         v, r = filter_output.is_asan_stack_entry(1, "    #1 0x7f4b5569b045  (<unknown modula>)")
         self.assertFalse(v)
 
+    def testIsAsanStackEntry7(self):
+        v, r = filter_output.is_asan_stack_entry(1, "    #1 0x7fb5de828801  (/home/path/out/linux/debug/selftests+0x3a1801)")
+        self.assertTrue(v)
+
 if __name__ == '__main__':
     unittest.main()

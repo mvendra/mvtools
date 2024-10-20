@@ -56,7 +56,7 @@ def scan_next_frame_num(expected, line):
 
     pos = local_line.find(" ")
     if pos == -1:
-        return False, "Unable to scan next frame: input line [%s] has no space" % line
+        return False, "Unable to scan next frame: input line [%s] has no spaces" % line
     cur_frame = local_line[0:pos]
     local_line = (local_line[pos:]).lstrip()
 
@@ -103,6 +103,21 @@ def is_asan_stack_entry(expected, line):
     if len(local_line) >= 18:
         if local_line == "(<unknown module>)":
             return True, None
+
+    if len(local_line) >= 6:
+        if local_line[0] == "(":
+            plus_pos = local_line.find("+")
+            if plus_pos != -1:
+                this_addr = local_line[plus_pos:]
+                if len(this_addr) > 1:
+                    this_addr = this_addr[1:]
+                    if this_addr[len(this_addr)-1] == ")":
+                        this_addr = this_addr[:len(this_addr)-1]
+                        this_addr += "  "
+                        v, r = scan_hex_address(this_addr)
+                        if not v:
+                            return False, r
+                        return True, None
 
     return False, "Unable to detect stack entry: input line [%s] is unrecognized" % line
 
