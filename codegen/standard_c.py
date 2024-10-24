@@ -107,7 +107,7 @@ def get_c_linker_libs_linux_release_gcc():
 
 def get_clang_version():
 
-    contents = "17"
+    contents = "19"
 
     return contents
 
