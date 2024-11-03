@@ -32,6 +32,7 @@ def linux_mkfile_c_contents(project_name):
     r += "CFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_compiler_flags_linux_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_libs_linux_common_gcc())
+    r += "LIBS_AFTER_ASAN=\n"
     r += "POSTBUILD=\n"
     r += "\n"
 
@@ -92,6 +93,10 @@ def linux_mkfile_c_contents(project_name):
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LIBS", "+=", standard_c.get_c_linker_libs_linux_release_gcc())), "\n")
     r += "\tPOSTBUILD=strip -g $(OUTNAME_FULL)\n"
     r += "endif\n"
+    r += "\n"
+
+    r += "# LIBS AFTER ASAN\n"
+    r += "LIBS+=$(LIBS_AFTER_ASAN)\n"
     r += "\n"
 
     # AUTOCONF COMPLETE
@@ -193,6 +198,7 @@ def linux_mkfile_cpp_contents(project_name):
     r += "CPPFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_compiler_flags_linux_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_flags_linux_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_libs_linux_common_gcc())
+    r += "LIBS_AFTER_ASAN=\n"
     r += "POSTBUILD=\n"
     r += "\n"
 
@@ -253,6 +259,10 @@ def linux_mkfile_cpp_contents(project_name):
     r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LIBS", "+=", standard_cpp.get_cpp_linker_libs_linux_release_gcc())), "\n")
     r += "\tPOSTBUILD=strip -g $(OUTNAME_FULL)\n"
     r += "endif\n"
+    r += "\n"
+
+    r += "# LIBS AFTER ASAN\n"
+    r += "LIBS+=$(LIBS_AFTER_ASAN)\n"
     r += "\n"
 
     # AUTOCONF COMPLETE
