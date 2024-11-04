@@ -16,6 +16,7 @@ INCLUDES=
 CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=
 LIBS=
+LIBS_AFTER_ASAN=
 POSTBUILD=
 
 # AUTOCONF PREP
@@ -57,6 +58,9 @@ ifeq ($(MODE),release)
 	CFLAGS+=-O2 -DNDEBUG
 	POSTBUILD=strip -g $(OUTNAME_FULL)
 endif
+
+# LIBS AFTER ASAN
+LIBS+=$(LIBS_AFTER_ASAN)
 
 # AUTOCONF COMPLETE
 TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)
