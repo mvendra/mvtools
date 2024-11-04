@@ -146,6 +146,13 @@ def prjrename(target_dir, original_project_name, new_project_name):
         msvc17vcxprojfilters_rename(base_build_windows_msvc17_c_vcxproj_filters_fn, local_new_project_name)
         print("Adapted [%s], [%s] and [%s]" % (base_build_windows_msvc17_c_sln_fn, base_build_windows_msvc17_c_vcxproj_fn, base_build_windows_msvc17_c_vcxproj_filters_fn))
 
+    # windows/codelite15_c
+    base_build_windows_codelite15_c = path_utils.concat_path(base_build_windows, "codelite15_c")
+    base_build_windows_codelite15_c_fn = path_utils.concat_path(base_build_windows_codelite15_c, "%s.project" % local_original_project_name)
+    if os.path.isfile(base_build_windows_codelite15_c_fn):
+        codelite_rename(base_build_windows_codelite15_c_fn, local_new_project_name)
+        print("Adapted [%s]" % base_build_windows_codelite15_c_fn)
+
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
     if os.path.isfile(gitignore_filename):

@@ -105,9 +105,73 @@ def get_c_linker_libs_linux_release_gcc():
 
 ################################################################################################################################################################################################
 
-def get_clang_version():
+def get_linux_clang_version():
 
     contents = "19"
+
+    return contents
+
+################################################################################################################################################################################################
+
+def get_windows_clang_version():
+
+    contents = "18-MINGW"
+
+    return contents
+
+################################################################################################################################################################################################
+
+def get_c_compiler_flags_windows_common_gcc():
+    return get_c_compiler_flags_linux_common_gcc()
+
+def get_c_compiler_flags_windows_debug_gcc():
+
+    contents = []
+
+    contents.append("-g")
+
+    return contents
+
+def get_c_compiler_flags_windows_release_gcc():
+    return get_c_compiler_flags_linux_release_gcc()
+
+################################################################################################################################################################################################
+
+def get_c_linker_flags_windows_common_gcc():
+
+    contents = []
+
+    return contents
+
+def get_c_linker_flags_windows_debug_gcc():
+
+    contents = []
+
+    return contents
+
+def get_c_linker_flags_windows_release_gcc():
+
+    contents = []
+
+    return contents
+
+################################################################################################################################################################################################
+
+def get_c_linker_libs_windows_common_gcc():
+
+    contents = []
+
+    return contents
+
+def get_c_linker_libs_windows_debug_gcc():
+
+    contents = []
+
+    return contents
+
+def get_c_linker_libs_windows_release_gcc():
+
+    contents = []
 
     return contents
 

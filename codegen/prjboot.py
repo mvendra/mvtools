@@ -17,9 +17,10 @@ PROJECT_TYPE_LINUX_MAKEFILE_CPP = ("linux_makefile_cpp", makefile_proj_gen.gener
 
 # Windows
 PROJECT_TYPE_WINDOWS_MSVC17_C = ("windows_msvc17_c", msvc_proj_gen.generate_windows_msvc17_c)
+PROJECT_TYPE_WINDOWS_CODELITE15_C = ("windows_codelite15_c", codelite_proj_gen.generate_windows_codelite15_c)
 
 # hint: adding new project types should warrant a review of the accompanying "prjrenamer" tool as well
-PROJECT_TYPES = [PROJECT_TYPE_LINUX_CODELITE15_C, PROJECT_TYPE_LINUX_MAKEFILE_C, PROJECT_TYPE_LINUX_MAKEFILE_CPP, PROJECT_TYPE_WINDOWS_MSVC17_C]
+PROJECT_TYPES = [PROJECT_TYPE_LINUX_CODELITE15_C, PROJECT_TYPE_LINUX_MAKEFILE_C, PROJECT_TYPE_LINUX_MAKEFILE_CPP, PROJECT_TYPE_WINDOWS_MSVC17_C, PROJECT_TYPE_WINDOWS_CODELITE15_C]
 PROJECT_TYPE_DEFAULT = PROJECT_TYPE_LINUX_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):

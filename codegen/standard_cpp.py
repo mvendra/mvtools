@@ -106,8 +106,8 @@ def get_cpp_linker_libs_linux_release_gcc():
 
 ################################################################################################################################################################################################
 
-def get_clang_version():
+def get_linux_clang_version():
 
-    contents = "17"
+    contents = "19"
 
     return contents
