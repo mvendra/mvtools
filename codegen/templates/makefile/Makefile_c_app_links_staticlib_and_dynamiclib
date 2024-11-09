@@ -2,24 +2,25 @@
 
 # PLUMBING
 COMPILER=gcc
+LINKER=$(COMPILER)
+
+# AUTOCONF PREP
+BASE=../../..
+BASE_SRC=$(BASE)/src
+BASE_TMP=$(BASE)/tmp
+BASE_OUT=$(BASE)/out
+BASE_DEP=$(BASE)/dep
 
 # PROJECT SETUP
 # For this sample/template Makefile to correctly link with staticlib and dynamiclib, you'd need to build and deploy them into $(BASE_DEP)/$(PLAT)/$(MODE) (see below/further) - and also create the soname symlink for the dynamic lib inside of it as well
 OUTNAME=sampleapp
 SRC=main.c
-BASE=../../..
-BASE_DEP=$(BASE)/dep
-INCLUDES=
+INCLUDES=-I$(BASE_SRC)
 CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=-L$(BASE_DEP)/$(PLAT)/$(MODE)
 LIBS=-lstaticlib -ldynamiclib
 LIBS_AFTER_ASAN=
 POSTBUILD=
-
-# AUTOCONF PREP
-BASE_SRC=$(BASE)/src
-BASE_TMP=$(BASE)/tmp
-BASE_OUT=$(BASE)/out
 
 # DEFAULTS
 PLAT=linux
@@ -64,7 +65,6 @@ TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)
 OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)
 ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))
 OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)
-INCLUDES+=-I$(BASE_SRC)
 
 # TARGET: ALL
 all: prepfolders compile link
@@ -80,7 +80,7 @@ compile:
 
 # TARGET: LINK
 link:
-	$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS) -Wl,-rpath,"$(BASE_DEP)/$(PLAT)/$(MODE)"
+	$(LINKER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS) -Wl,-rpath,"$(BASE_DEP)/$(PLAT)/$(MODE)"
 	$(POSTBUILD)
 
 # TARGET: CLEAN

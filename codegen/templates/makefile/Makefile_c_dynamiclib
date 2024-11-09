@@ -4,25 +4,25 @@
 COMPILER=gcc
 LINKER=$(COMPILER)
 
+# AUTOCONF PREP
+BASE=../../..
+BASE_SRC=$(BASE)/src
+BASE_TMP=$(BASE)/tmp
+BASE_OUT=$(BASE)/out
+BASE_DEP=$(BASE)/dep
+
 # PROJECT SETUP
 # To link to this library, pass [-Wl,-rpath,"."] to your linker (during the linking step, particularly), plus -lthe-final-so-name (i.e. $SONAME in this particular Makefile - see below/further)
 # This will tell the application executable to search its own current path (".") for the library's soname. You could also pass "../../../dep/linux/my_library" for example.
 OUTNAME=dynamiclib
 SO_SUFFIX=-dev.1
 SRC=subfolder/second.c
-BASE=../../..
-BASE_DEP=$(BASE)/dep
-INCLUDES=
+INCLUDES=-I$(BASE_SRC)
 CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=
 LIBS=
 LIBS_AFTER_ASAN=
 POSTBUILD=
-
-# AUTOCONF PREP
-BASE_SRC=$(BASE)/src
-BASE_TMP=$(BASE)/tmp
-BASE_OUT=$(BASE)/out
 
 # DEFAULTS
 PLAT=linux
@@ -68,7 +68,6 @@ OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)
 ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))
 OUTNAME_FULL=$(OUT_FULL)/lib$(OUTNAME).so
 SONAME=lib$(OUTNAME)$(SO_SUFFIX).so
-INCLUDES+=-I$(BASE_SRC)
 
 # TARGET: ALL
 all: prepfolders compile link
