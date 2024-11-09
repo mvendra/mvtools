@@ -20,27 +20,28 @@ def linux_mkfile_c_contents(project_name):
     # PLUMBING
     r += "# PLUMBING\n"
     r += "COMPILER=gcc\n"
+    r += "LINKER=$(COMPILER)\n"
+    r += "\n"
+
+    # AUTOCONF PREP
+    r += "# AUTOCONF PREP\n"
+    r += "BASE=../../..\n"
+    r += "BASE_SRC=$(BASE)/src\n"
+    r += "BASE_TMP=$(BASE)/tmp\n"
+    r += "BASE_OUT=$(BASE)/out\n"
+    r += "BASE_DEP=$(BASE)/dep\n"
     r += "\n"
 
     # PROJECT SETUP
     r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
     r += "SRC=main.c subfolder/second.c\n"
-    r += "BASE=../../..\n"
-    r += "BASE_DEP=$(BASE)/dep\n"
-    r += "INCLUDES=\n"
+    r += "INCLUDES=-I$(BASE_SRC)\n"
     r += "CFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_compiler_flags_linux_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_libs_linux_common_gcc())
     r += "LIBS_AFTER_ASAN=\n"
     r += "POSTBUILD=\n"
-    r += "\n"
-
-    # AUTOCONF PREP
-    r += "# AUTOCONF PREP\n"
-    r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_TMP=$(BASE)/tmp\n"
-    r += "BASE_OUT=$(BASE)/out\n"
     r += "\n"
 
     # DEFAULTS
@@ -105,7 +106,6 @@ def linux_mkfile_c_contents(project_name):
     r += "OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
     r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
-    r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
     # ALL
@@ -129,7 +129,7 @@ def linux_mkfile_c_contents(project_name):
     # LINK
     r += "# TARGET: LINK\n"
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
+    r += "\t$(LINKER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
@@ -186,27 +186,28 @@ def linux_mkfile_cpp_contents(project_name):
     # PLUMBING
     r += "# PLUMBING\n"
     r += "COMPILER=g++\n"
+    r += "LINKER=$(COMPILER)\n"
+    r += "\n"
+
+    # AUTOCONF PREP
+    r += "# AUTOCONF PREP\n"
+    r += "BASE=../../..\n"
+    r += "BASE_SRC=$(BASE)/src\n"
+    r += "BASE_TMP=$(BASE)/tmp\n"
+    r += "BASE_OUT=$(BASE)/out\n"
+    r += "BASE_DEP=$(BASE)/dep\n"
     r += "\n"
 
     # PROJECT SETUP
     r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
     r += "SRC=main.cpp subfolder/second.cpp\n"
-    r += "BASE=../../..\n"
-    r += "BASE_DEP=$(BASE)/dep\n"
-    r += "INCLUDES=\n"
+    r += "INCLUDES=-I$(BASE_SRC)\n"
     r += "CPPFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_compiler_flags_linux_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_flags_linux_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_libs_linux_common_gcc())
     r += "LIBS_AFTER_ASAN=\n"
     r += "POSTBUILD=\n"
-    r += "\n"
-
-    # AUTOCONF PREP
-    r += "# AUTOCONF PREP\n"
-    r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_TMP=$(BASE)/tmp\n"
-    r += "BASE_OUT=$(BASE)/out\n"
     r += "\n"
 
     # DEFAULTS
@@ -271,7 +272,6 @@ def linux_mkfile_cpp_contents(project_name):
     r += "OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)\n"
     r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
     r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
-    r += "INCLUDES+=-I$(BASE_SRC)\n"
     r += "\n"
 
     # ALL
@@ -295,7 +295,7 @@ def linux_mkfile_cpp_contents(project_name):
     # LINK
     r += "# TARGET: LINK\n"
     r += "link:\n"
-    r += "\t$(COMPILER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
+    r += "\t$(LINKER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
     r += "\t$(POSTBUILD)\n"
     r += "\n"
 
