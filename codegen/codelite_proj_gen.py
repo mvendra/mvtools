@@ -37,12 +37,13 @@ def linux_codelite15_c_projfile_contents(project_name):
 
     r += "    <Configuration Name=\"Linux / Debug\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_linux_debug_gcc() + standard_c.get_c_compiler_flags_linux_common_gcc())
+    r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"%s\" Required=\"yes\">\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc() + standard_c.get_c_linker_flags_linux_debug_gcc())
     r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_libs_linux_common_gcc() + standard_c.get_c_linker_libs_linux_debug_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../../out/linux/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/debug/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <General OutputFile=\"../../../out/linux/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/debug\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/debug\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
     r += "      <BuildSystem Name=\"Default\"/>\n"
     r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
     r += "        <![CDATA[]]>\n"
@@ -78,12 +79,13 @@ def linux_codelite15_c_projfile_contents(project_name):
 
     r += "    <Configuration Name=\"Linux / Debug (no asan)\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", [x for x in (standard_c.get_c_compiler_flags_linux_debug_gcc() + standard_c.get_c_compiler_flags_linux_common_gcc()) if x != "-fsanitize=address"])
+    r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"%s\" Required=\"yes\">\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc() + standard_c.get_c_linker_flags_linux_debug_gcc())
     r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", [x for x in (standard_c.get_c_linker_libs_linux_common_gcc()+standard_c.get_c_linker_libs_linux_debug_gcc()) if x != "-lasan"], prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../../out/linux/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/debug/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <General OutputFile=\"../../../out/linux/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/debug\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/debug\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
     r += "      <BuildSystem Name=\"Default\"/>\n"
     r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
     r += "        <![CDATA[]]>\n"
@@ -119,12 +121,13 @@ def linux_codelite15_c_projfile_contents(project_name):
 
     r += "    <Configuration Name=\"Linux / Debug (LLVM)\" CompilerType=\"CLANG-%s\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n" % standard_c.get_linux_clang_version()
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_linux_debug_gcc() + standard_c.get_c_compiler_flags_linux_common_gcc())
+    r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"%s\" Required=\"yes\">\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc() + standard_c.get_c_linker_flags_linux_debug_gcc())
     r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_libs_linux_common_gcc() + standard_c.get_c_linker_libs_linux_debug_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../../out/linux/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/debug/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <General OutputFile=\"../../../out/linux/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/debug\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/debug\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
     r += "      <BuildSystem Name=\"Default\"/>\n"
     r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
     r += "        <![CDATA[]]>\n"
@@ -160,13 +163,14 @@ def linux_codelite15_c_projfile_contents(project_name):
 
     r += "    <Configuration Name=\"Linux / Release\" CompilerType=\"GCC\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
     r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_linux_release_gcc() + standard_c.get_c_compiler_flags_linux_common_gcc())
+    r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"%s\" Required=\"yes\">\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc() + standard_c.get_c_linker_flags_linux_release_gcc())
     r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_libs_linux_common_gcc() + standard_c.get_c_linker_libs_linux_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../../out/linux/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/release/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <General OutputFile=\"../../../out/linux/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/release\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/release\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
     r += "      <BuildSystem Name=\"Default\"/>\n"
     r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
     r += "        <![CDATA[]]>\n"
@@ -202,13 +206,14 @@ def linux_codelite15_c_projfile_contents(project_name):
 
     r += "    <Configuration Name=\"Linux / Release (LLVM)\" CompilerType=\"CLANG-%s\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n" % standard_c.get_linux_clang_version()
     r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_linux_release_gcc() + standard_c.get_c_compiler_flags_linux_common_gcc())
+    r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"%s\" Required=\"yes\">\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_linux_common_gcc() + standard_c.get_c_linker_flags_linux_release_gcc())
     r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_libs_linux_common_gcc() + standard_c.get_c_linker_libs_linux_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../../out/linux/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/release/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <General OutputFile=\"../../../out/linux/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/linux/release\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/linux/release\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
     r += "      <BuildSystem Name=\"Default\"/>\n"
     r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
     r += "        <![CDATA[]]>\n"
@@ -313,12 +318,13 @@ def windows_codelite15_c_projfile_contents(project_name):
 
     r += "    <Configuration Name=\"Windows / Debug (LLVM)\" CompilerType=\"CLANG-%s\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n" % standard_c.get_windows_clang_version()
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_windows_debug_gcc() + standard_c.get_c_compiler_flags_windows_common_gcc())
+    r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"%s\" Required=\"yes\">\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_windows_common_gcc() + standard_c.get_c_linker_flags_windows_debug_gcc())
     r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_libs_windows_common_gcc() + standard_c.get_c_linker_libs_windows_debug_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../../out/windows/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/windows/debug/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/windows/debug/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <General OutputFile=\"../../../out/windows/debug/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/windows/debug\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/windows/debug\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
     r += "      <BuildSystem Name=\"Default\"/>\n"
     r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
     r += "        <![CDATA[]]>\n"
@@ -354,13 +360,14 @@ def windows_codelite15_c_projfile_contents(project_name):
 
     r += "    <Configuration Name=\"Windows / Release (LLVM)\" CompilerType=\"CLANG-%s\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n" % standard_c.get_windows_clang_version()
     r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_windows_release_gcc() + standard_c.get_c_compiler_flags_windows_common_gcc())
+    r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
     r += "      </Compiler>\n"
     r += "      <Linker Options=\"%s\" Required=\"yes\">\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_windows_common_gcc() + standard_c.get_c_linker_flags_windows_release_gcc())
     r += prjboot_util.deco_if_not_empty("", prjboot_util.format_xml_tag_value_list("        ", "Library", "Value", standard_c.get_c_linker_libs_windows_common_gcc() + standard_c.get_c_linker_libs_windows_release_gcc(), prjboot_util.filter_remove_dash_l), "\n")
     r += "      </Linker>\n"
     r += "      <ResourceCompiler Options=\"\" Required=\"no\"/>\n"
-    r += "      <General OutputFile=\"../../../out/windows/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/windows/release/\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/windows/release/\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
+    r += "      <General OutputFile=\"../../../out/windows/release/$(ProjectName)\" IntermediateDirectory=\"../../../tmp/windows/release\" Command=\"$(OutputFile)\" CommandArguments=\"\" UseSeparateDebugArgs=\"no\" DebugArguments=\"\" WorkingDirectory=\"../../../out/windows/release\" PauseExecWhenProcTerminates=\"yes\" IsGUIProgram=\"no\" IsEnabled=\"yes\"/>\n"
     r += "      <BuildSystem Name=\"Default\"/>\n"
     r += "      <Environment EnvVarSetName=\"&lt;Use Defaults&gt;\" DbgSetName=\"&lt;Use Defaults&gt;\">\n"
     r += "        <![CDATA[]]>\n"
