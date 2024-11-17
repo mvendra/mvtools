@@ -40,35 +40,39 @@ class FilterOutputTest(unittest.TestCase):
         self.assertFalse(filter_output.is_hex_digit('g'))
 
     def testScanHexAddress1(self):
-        v, r = filter_output.scan_hex_address(" ")
+        v, r = filter_output.scan_hex_address(" ", True)
         self.assertFalse(v)
 
     def testScanHexAddress2(self):
-        v, r = filter_output.scan_hex_address("0x7f4b548g59cf abc")
+        v, r = filter_output.scan_hex_address("0x7f4b548g59cf abc", True)
         self.assertFalse(v)
 
     def testScanHexAddress3(self):
-        v, r = filter_output.scan_hex_address("0x7f4b548359cf")
+        v, r = filter_output.scan_hex_address("0x7f4b548359cf", True)
         self.assertFalse(v)
 
     def testScanHexAddress4(self):
-        v, r = filter_output.scan_hex_address("0x7f4b548359cf abc")
+        v, r = filter_output.scan_hex_address("0x7f4b548359cf abc", True)
         self.assertTrue(v)
         self.assertEqual(r, "abc")
 
     def testScanHexAddress5(self):
-        v, r = filter_output.scan_hex_address("0x7ffffffff def")
+        v, r = filter_output.scan_hex_address("0x7ffffffff def", True)
         self.assertTrue(v)
         self.assertEqual(r, "def")
 
     def testScanHexAddress6(self):
-        v, r = filter_output.scan_hex_address("0x7ffffffff  (something else)")
+        v, r = filter_output.scan_hex_address("0x7ffffffff  (something else)", True)
         self.assertTrue(v)
         self.assertEqual(r, "(something else)")
 
     def testScanHexAddress7(self):
-        v, r = filter_output.scan_hex_address("0xffffffffffffffff0 abc")
+        v, r = filter_output.scan_hex_address("0xffffffffffffffff0 abc", True)
         self.assertFalse(v)
+
+    def testScanHexAddress8(self):
+        v, r = filter_output.scan_hex_address("0x7f4b548359cf", False)
+        self.assertTrue(v)
 
     def testScanNextFrameNum1(self):
         v, r = filter_output.scan_next_frame_num(0, " ")

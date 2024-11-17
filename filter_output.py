@@ -9,14 +9,14 @@ import terminal_colors
 def is_hex_digit(character):
     return character in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
 
-def scan_hex_address(line):
+def scan_hex_address(line, check_trail):
 
     local_line = line
 
     if len(local_line) < 3:
         return False, "Unable to scan hex address: input line [%s] is smaller than 3" % line
 
-    if not local_line[0:2] == "0x":
+    if local_line[0:2] != "0x":
         return False, "Unable to scan hex address: input line [%s] does not begin with hex prefix 0x" % line
     local_line = local_line[2:]
 
@@ -35,18 +35,19 @@ def scan_hex_address(line):
     if idx > 16:
         return False, "Unable to scan hex address: input line [%s] has a too-large address" % line
 
-    if len(local_line) < 2:
-        return False, "Unable to scan hex address: input line [%s] has no trailing space" % line
+    if check_trail:
+        if len(local_line) < 2:
+            return False, "Unable to scan hex address: input line [%s] has no trailing space" % line
 
-    if local_line[0] != " ":
-        return False, "Unable to scan hex address: input line [%s] has a valid address but no trailing space" % line
-    local_line = local_line[1:]
-
-    if len(local_line) < 1:
-        return False, "Unable to scan hex address: input line [%s] has a valid address and trailing space, but nothing else" % line
-
-    if local_line[0] == " ":
+        if local_line[0] != " ":
+            return False, "Unable to scan hex address: input line [%s] has a valid address but no trailing space" % line
         local_line = local_line[1:]
+
+        if len(local_line) < 1:
+            return False, "Unable to scan hex address: input line [%s] has a valid address and trailing space, but nothing else" % line
+
+        if local_line[0] == " ":
+            local_line = local_line[1:]
 
     return True, local_line
 
@@ -76,7 +77,7 @@ def is_asan_stack_entry(expected, line):
     if len(local_line) < 5:
         return False, "Unable to detect stack entry: input line [%s] does not have a valid length" % line
 
-    if not local_line[0:4] != "    #":
+    if local_line[0:5] != "    #":
         return False, "Unable to detect stack entry: input line [%s] does not have a valid prefix" % line
     local_line = local_line[5:]
 
@@ -85,7 +86,7 @@ def is_asan_stack_entry(expected, line):
         return False, r
     local_line = r
 
-    v, r = scan_hex_address(local_line)
+    v, r = scan_hex_address(local_line, True)
     if not v:
         return False, r
     local_line = r
@@ -114,7 +115,7 @@ def is_asan_stack_entry(expected, line):
                     if this_addr[len(this_addr)-1] == ")":
                         this_addr = this_addr[:len(this_addr)-1]
                         this_addr += "  "
-                        v, r = scan_hex_address(this_addr)
+                        v, r = scan_hex_address(this_addr, True)
                         if not v:
                             return False, r
                         return True, None
@@ -123,10 +124,55 @@ def is_asan_stack_entry(expected, line):
 
 def asan_vga_v1_should_ignore_stack(stack_entries):
 
+    ign_entries = ["(<unknown module>)", "_XimOpenIM", "nvidia_drv"]
+
     for sen in stack_entries:
-        if "(<unknown module>)" in sen:
-            return True
-        if "_XimOpenIM" in sen:
+        for ignen in ign_entries:
+            if ignen in sen:
+                return True
+
+    if len(stack_entries) == 3:
+
+        local_line = stack_entries[2]
+        if len(local_line) < 5:
+            return False
+
+        if local_line[0:5] != "    #":
+            return False
+        local_line = local_line[5:]
+
+        v, r = scan_next_frame_num(1, local_line)
+        if not v:
+            return False
+        local_line = r
+
+        v, r = scan_hex_address(local_line, True)
+        if not v:
+            return False
+        local_line = r
+
+        if len(local_line) < 2:
+            return False
+
+        if not ((local_line[0] == "(") and (local_line[len(local_line)-1] == ")")):
+            return False
+        local_line = local_line[1:len(local_line)-1]
+
+        if len(local_line) < 6: # smallest valid combo I could think of at this point: /a+0x1 (binary/app named "a" inside the linux root folder, had a memory issue at address 0x1)
+            return False
+
+        pos = local_line.rfind("+")
+        if pos == -1:
+            return False
+        app_path = local_line[0:pos]
+        local_line = local_line[pos+1:]
+
+        v, r = scan_hex_address(local_line, False)
+        if not v:
+            return False
+        local_line = r
+
+        if os.path.exists(app_path):
             return True
 
     return False
