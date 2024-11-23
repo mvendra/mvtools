@@ -12,7 +12,7 @@ def _get_for_linux():
         return r
     return None
 
-def _get_for_cygwin():
+def _get_for_cygwin_or_msys():
     contents = None
     try:
         with open("/dev/clipboard", "r") as f:
@@ -32,9 +32,9 @@ def getfromclipboard():
         if contents is None:
             return False, "Failed getting clipboard. Make sure xclip is installed."
 
-    elif plat == get_platform.PLAT_CYGWIN:
+    elif plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS:
 
-        contents = _get_for_cygwin()
+        contents = _get_for_cygwin_or_msys()
         if contents is None:
             return False, "Failed getting clipboard."
 
