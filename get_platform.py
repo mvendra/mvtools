@@ -5,6 +5,7 @@ import platform
 PLAT_LINUX = "linux"
 PLAT_WINDOWS = "windows"
 PLAT_CYGWIN = "cygwin"
+PLAT_MSYS = "msys"
 PLAT_MACOSX = "macosx"
 PLAT_UNKNOWN = "unknown_platform"
 
@@ -18,8 +19,10 @@ def getplat():
         return PLAT_LINUX
     elif ps == "windows":
         return PLAT_WINDOWS
-    elif "cygwin_nt-10" in ps:
+    elif "cygwin_nt" in ps:
         return PLAT_CYGWIN
+    elif "msys_nt" in ps:
+        return PLAT_MSYS
     elif ps == "darwin":
         return PLAT_MACOSX
     return PLAT_UNKNOWN
