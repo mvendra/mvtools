@@ -3,12 +3,10 @@
 add2path(){
 
     unamestr=`uname`
-    if [[ ! ${unamestr:0:9} == "CYGWIN_NT" ]]; then
-        if [ -z "$PATH" ]; then
-            # first use. dont add the comma at the beginning
-            export PATH=${1}
-            return
-        fi
+    if [ -z "$PATH" ]; then
+        # first use. dont add the comma at the beginning
+        export PATH=${1}
+        return
     fi
 
     if [[ $PATH =~ $1 ]]; then
