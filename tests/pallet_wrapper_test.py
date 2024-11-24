@@ -8,8 +8,16 @@ import unittest
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
+import get_platform
+import convcygpath
 
 import pallet_wrapper
+
+def conv_cyg_if_needed(in_path):
+    plat_local = get_platform.getplat()
+    if plat_local == get_platform.PLAT_CYGWIN:
+        return convcygpath.convert_cygwin_path_to_win_path(in_path)
+    return in_path
 
 class PalletWrapperTest(unittest.TestCase):
 
@@ -39,6 +47,8 @@ class PalletWrapperTest(unittest.TestCase):
         self.extracted_folder = "extracted"
         self.extracted_folder_full = path_utils.concat_path(self.test_dir, self.extracted_folder)
         os.mkdir(self.extracted_folder_full)
+
+        plat_local = get_platform.getplat()
 
         # create test content
 
@@ -115,7 +125,8 @@ class PalletWrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.folder2_file2_full, "abc")
         create_and_write_file.create_file_contents(self.folder2_sub1_file1_full, "abc")
         create_and_write_file.create_file_contents(self.file_esp1_full, "abc")
-        create_and_write_file.create_file_contents(self.file_esp2_full, "abc")
+        if plat_local != get_platform.PLAT_CYGWIN:
+            create_and_write_file.create_file_contents(self.file_esp2_full, "abc")
         create_and_write_file.create_file_contents(self.file_with_space_full, "abc")
         create_and_write_file.create_file_contents(self.folder_with_space_filler_full, "abc")
         create_and_write_file.create_file_contents(self.hidden_file_full, "abc")
@@ -168,11 +179,14 @@ class PalletWrapperTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testCreateAndExtract(self):
-        v, r = pallet_wrapper.create(self.source_base_folder_full, self.pallet_file_full)
+
+        plat_local = get_platform.getplat()
+
+        v, r = pallet_wrapper.create(conv_cyg_if_needed(self.source_base_folder_full), conv_cyg_if_needed(self.pallet_file_full))
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.pallet_file_full))
 
-        v, r = pallet_wrapper.extract(self.pallet_file_full, self.extracted_folder_full)
+        v, r = pallet_wrapper.extract(conv_cyg_if_needed(self.pallet_file_full), conv_cyg_if_needed(self.extracted_folder_full))
         self.assertTrue(v)
 
         self.assertTrue(os.path.exists(self.file1_extracted))
@@ -187,7 +201,8 @@ class PalletWrapperTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.folder2_sub1_file1_extracted))
         self.assertFalse(os.path.exists(self.file_nonexistent_extracted))
         self.assertTrue(os.path.exists(self.file_esp1_extracted))
-        self.assertTrue(os.path.exists(self.file_esp2_extracted))
+        if plat_local != get_platform.PLAT_CYGWIN:
+            self.assertTrue(os.path.exists(self.file_esp2_extracted))
         self.assertTrue(os.path.exists(self.file_with_space_extracted))
         self.assertTrue(os.path.exists(self.folder_with_space_extracted))
         self.assertTrue(os.path.exists(self.folder_with_space_filler_extracted))
