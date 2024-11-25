@@ -1,4 +1,4 @@
 #!/bin/bash
 
 PWD_FIX=`pwd -P`
-sendtoclipboard.py $PWD_FIX
+sendtoclipboard.py "$PWD_FIX"
