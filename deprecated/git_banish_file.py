@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# NOTE: this approach has two major issues:
+# 1) git filter-branch is rather abrasive. not advisable generally to begin with
+# 2) as it is, it uses os.system -> lousy
+# hence, this script was deprecated in L24
+
 import sys
 import os
 
