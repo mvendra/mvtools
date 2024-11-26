@@ -30,16 +30,16 @@ def encrypt_des3_pbkdf2(infile, outfile, passphrase):
 def decrypt_des3_pbkdf2(infile, outfile, passphrase):
 
     if not os.path.exists(infile):
-        return False, "%s does not exist. Aborting." % infile
+        return False, "%s does not exist." % infile
 
     if outfile == "" or outfile is None:
-        return False, "Invalid output filename. Aborting"
+        return False, "Invalid output filename."
 
     if os.path.exists(outfile):
-        return False, "%s already exists. Aborting." % outfile
+        return False, "%s already exists." % outfile
 
     if passphrase == "" or passphrase is None:
-        return False, "Invalid passphrase. Aborting."
+        return False, "Invalid passphrase."
 
     full_cmd = ["openssl", "des3", "-d", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase]
     v, r = generic_run.run_cmd_simple(full_cmd)
