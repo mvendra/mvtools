@@ -3,8 +3,8 @@
 import sys
 import os
 
+import openssl_wrapper
 import getpass
-from subprocess import call
 
 import path_utils
 
@@ -14,31 +14,8 @@ def puaq():
 
 def symmetric_encrypt(infile, outfile, passphrase):
 
-    """
-    symmetric_encrypt
-    parameters are all mandatory here
-    """
-
-    if not os.path.exists(infile):
-        return False, "%s does not exist." % infile
-
-    if not os.path.isfile(infile):
-        return False, "%s is not a file." % infile
-
-    if outfile == "" or outfile is None:
-        return False, "Invalid output filename."
-
-    if os.path.exists(outfile):
-        return False, "%s already exists." % outfile
-
-    if passphrase == "" or passphrase is None:
-        return False, "Invalid passphrase."
-
-    out = call(["openssl", "des3", "-e", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase])
-    if out != 0:
-        return False, "Openssl command failed."
-
-    return True, None
+    v, r = openssl_wrapper.encrypt_des3_pbkdf2(infile, outfile, passphrase)
+    return v, r
 
 if __name__ == "__main__":
 
@@ -65,5 +42,5 @@ if __name__ == "__main__":
 
     v, r = symmetric_encrypt(infile, outfile, passphrase)
     if not v:
-        print(r)
+        print("Failed to encrypt: [%s]" % r)
         sys.exit(1)
