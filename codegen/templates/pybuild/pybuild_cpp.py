@@ -214,13 +214,10 @@ class Builder():
     def do_clean(self):
 
         for o in self.all_objs:
-            cmd = ["rm"]
             full_obj = self.tmp_full + "/" + o
-            cmd.append(full_obj)
-            self.call_cmd(cmd)
+            os.unlink(full_obj)
 
-        cmd = ["rm", self.out_full_fn]
-        self.call_cmd(cmd)
+        os.unlink(self.out_full_fn)
 
     def do_compile(self):
 
