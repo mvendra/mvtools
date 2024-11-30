@@ -16,7 +16,7 @@ def make_tree(folder_to_tree):
     if not os.path.isdir(folder_to_tree):
         return False, "%s is not a directory." % folder_to_tree
 
-    v, r = generic_run.run_cmd_simple(["tree", folder_to_tree])
+    v, r = generic_run.run_cmd_simple(["tree", "-a", folder_to_tree])
     return v, r
 
 def puaq():

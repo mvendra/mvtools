@@ -50,6 +50,9 @@ class TreeWrapperTest(unittest.TestCase):
         self.file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(self.file1, "abc")
 
+        self.file_hidden = path_utils.concat_path(self.test_dir, ".file_hidden.txt")
+        create_and_write_file.create_file_contents(self.file_hidden, "abc")
+
         self.file_esp1 = path_utils.concat_path(self.test_dir, "   file_esp1.txt")
         create_and_write_file.create_file_contents(self.file_esp1, "abc")
 
@@ -104,6 +107,7 @@ class TreeWrapperTest(unittest.TestCase):
         self.assertTrue( path_utils.basename_filtered(self.folder_with_sep) in r )
         self.assertTrue( path_utils.basename_filtered(self.folder_with_sep_filler) in r )
         self.assertTrue( path_utils.basename_filtered(self.file1) in r )
+        self.assertTrue( path_utils.basename_filtered(self.file_hidden) in r )
         self.assertTrue( path_utils.basename_filtered(self.file_esp1) in r )
         self.assertTrue( path_utils.basename_filtered(self.file_esp2) in r )
         self.assertTrue( path_utils.basename_filtered(self.file2) in r )
