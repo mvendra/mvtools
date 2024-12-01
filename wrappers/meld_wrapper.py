@@ -8,7 +8,7 @@ import generic_run
 
 def meld(left_path, right_path):
 
-    v, r = generic_run.run_cmd(["meld", left_path, right_path])
+    v, r = generic_run.run_cmd_simple(["meld", left_path, right_path])
     if not v:
         return False, r
     return True, None
