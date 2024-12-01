@@ -6,7 +6,7 @@ import sys
 import mvtools_exception
 import path_utils
 import fsquery
-import generic_run
+import ag_wrapper
 import terminal_colors
 
 def filteredsearch(path, search, extensions):
@@ -18,8 +18,8 @@ def filteredsearch(path, search, extensions):
 
     for tg in targets:
 
-        v, r = generic_run.run_cmd_simple(["ag", search, tg])
-        if v:
+        v, r = ag_wrapper.silversearch(tg, search)
+        if r != "":
             print("%s%s" % (terminal_colors.TTY_BLUE, tg))
             print("%s%s" % (terminal_colors.TTY_WHITE, r))
 
