@@ -8,7 +8,6 @@ import unittest
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
-import get_platform
 
 import ag_wrapper
 
