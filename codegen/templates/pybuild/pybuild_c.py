@@ -6,7 +6,7 @@ import os
 import mvtools_exception
 import terminal_colors
 import get_platform
-import generic_run
+import gcc_wrapper
 import path_utils
 import standard_c
 
@@ -66,7 +66,7 @@ class Builder():
 
         self.basepath = basepath
         self.options = self.parseoptions(options)
-        self.compiler = "gcc"
+        self.compiler = gcc_wrapper
 
         self.appname = appname
         self.src = sources
@@ -127,37 +127,37 @@ class Builder():
     def standard_c_hook(self):
 
         # common compiler flags
-        if (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOSX) and self.compiler == "gcc":
+        if (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOSX) and self.compiler == gcc_wrapper:
             self.compiler_flags_common += standard_c.get_c_compiler_flags_linux_common_gcc()
 
         # debug compiler flags
-        if self.mode == "debug" and self.compiler == "gcc":
+        if self.mode == "debug" and self.compiler == gcc_wrapper:
             self.compiler_flags_debug += standard_c.get_c_compiler_flags_linux_debug_gcc()
 
         # release compiler flags
-        if self.mode == "release" and self.compiler == "gcc":
+        if self.mode == "release" and self.compiler == gcc_wrapper:
             self.compiler_flags_release += standard_c.get_c_compiler_flags_linux_release_gcc()
 
         # common linker flags
         self.linker_flags_common += standard_c.get_c_linker_flags_linux_common_gcc()
 
         # debug linker flags
-        if self.mode == "debug" and self.compiler == "gcc":
+        if self.mode == "debug" and self.compiler == gcc_wrapper:
             self.linker_flags_debug += standard_c.get_c_linker_flags_linux_debug_gcc()
 
         # release linker flags
-        if self.mode == "release" and self.compiler == "gcc":
+        if self.mode == "release" and self.compiler == gcc_wrapper:
             self.linker_flags_release += standard_c.get_c_linker_flags_linux_release_gcc()
 
         # common linker libs
         self.linker_libs_common += standard_c.get_c_linker_libs_linux_common_gcc()
 
         # debug linker libs
-        if self.mode == "debug" and self.compiler == "gcc":
+        if self.mode == "debug" and self.compiler == gcc_wrapper:
             self.linker_libs_debug += standard_c.get_c_linker_libs_linux_debug_gcc()
 
         # release linker libs
-        if self.mode == "release" and self.compiler == "gcc":
+        if self.mode == "release" and self.compiler == gcc_wrapper:
             self.linker_libs_release += standard_c.get_c_linker_libs_linux_release_gcc()
 
     def parseoptions(self, options):
@@ -222,7 +222,7 @@ class Builder():
     def do_compile(self):
 
         for s in self.src:
-            cmd = [self.compiler]
+            cmd = []
             if len(self.include) > 0:
                 for i in self.include:
                     cmd.append(i)
@@ -232,7 +232,7 @@ class Builder():
 
     def do_link(self):
 
-        cmd = [self.compiler, "-o", self.out_full_fn]
+        cmd = ["-o", self.out_full_fn]
         cmd += [self.tmp_full + "/" + x for x in self.all_objs]
 
         if len(self.linker_flags_to_use) > 0:
@@ -261,7 +261,7 @@ class Builder():
             cmd_str += "%s " % c
         cmd_str = cmd_str.rstrip()
 
-        v, r = generic_run.run_cmd_simple(cmd)
+        v, r = gcc_wrapper.exec(cmd)
         if not v:
             raise mvtools_exception.mvtools_exception("%s: Failed: [%s]" % (cmd_str, r.rstrip()))
 
