@@ -5,12 +5,12 @@ import os
 
 import path_utils
 import get_platform
-import generic_run
+import mount_wrapper
 import mvtools_exception
 
 def checkmounted_linux(path):
 
-    v, r = generic_run.run_cmd_simple(["mount"])
+    v, r = mount_wrapper.mount(None)
     if not v:
         raise mvtools_exception.mvtools_exception("Unable to launch mount's subprocess")
     mount_output = r.strip()
