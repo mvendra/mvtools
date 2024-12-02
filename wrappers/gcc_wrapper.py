@@ -16,7 +16,10 @@ def exec(options_list, cwd = None):
         full_cmd.append(opt)
 
     v, r = generic_run.run_cmd_simple(full_cmd, use_cwd=cwd)
-    return v, r
+    if not v:
+        return False, "Failed running gcc command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s [options-list]" % path_utils.basename_filtered(__file__))

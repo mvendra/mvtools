@@ -57,7 +57,7 @@ class GccWrapperTest(unittest.TestCase):
 
         v, r = gcc_wrapper.exec([self.main_c_full], self.test_dir)
         self.assertTrue(v)
-        self.assertEqual(r, "")
+        self.assertEqual(r, None)
 
         a_out = "a.out"
         a_out_full = path_utils.concat_path(self.test_dir, a_out)
