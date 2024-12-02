@@ -46,7 +46,7 @@ class CmakeWrapperTest(unittest.TestCase):
         with mock.patch("generic_run.run_cmd", return_value=(False, "error message")) as dummy:
             v, r = cmake_wrapper.configure_and_generate("test3", "test4", "test5", "test6", {})
             self.assertFalse(v)
-            self.assertEqual(r, "error message")
+            self.assertEqual(r, "Failed running cmake configure-and-generate command: [error message]")
 
     def testConfigureAndGenerate1(self):
         self.result_obj.success = True
