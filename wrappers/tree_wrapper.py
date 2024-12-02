@@ -17,7 +17,10 @@ def make_tree(folder_to_tree):
         return False, "%s is not a directory." % folder_to_tree
 
     v, r = generic_run.run_cmd_simple(["tree", "-a", folder_to_tree])
-    return v, r
+    if not v:
+        return False, "Failed running tree command: [%s]" % r
+
+    return True, r
 
 def puaq():
     print("Usage: %s folder" % path_utils.basename_filtered(__file__))
