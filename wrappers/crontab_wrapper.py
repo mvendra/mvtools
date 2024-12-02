@@ -7,8 +7,12 @@ import generic_run
 import path_utils
 
 def get_crontab():
+
     v, r = generic_run.run_cmd_simple(["crontab", "-l"])
-    return v, r
+    if not v:
+        return False, "Failed running crontab command: [%s]" % r
+
+    return True, r
 
 if __name__ == "__main__":
 
