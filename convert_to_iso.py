@@ -4,18 +4,11 @@ import sys
 import os
 
 import path_utils
-import generic_run
+import iat_wrapper
 
 def convert_to_iso(input_file, output_file):
 
-    if not os.path.exists(input_file):
-        return False, "Input file [%s] does not exist" % input_file
-
-    if os.path.exists(output_file):
-        return False, "Output file [%s] already exists" % output_file
-
-    cmd = ["iat", "--iso", "-i", input_file, "-o", output_file]
-    v, r = generic_run.run_cmd_simple(cmd)
+    v, r = iat_wrapper.convert_to_iso(input_file, output_file)
     return v, r
 
 def puaq():
