@@ -24,7 +24,10 @@ def make_pack(file_to_create, incl_list):
 
     full_cmd = ["7z", "a", file_to_create] + incl_list
     v, r = generic_run.run_cmd_simple(full_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running 7z make_pack command: [%s]" % r
+
+    return True, None
 
 def extract(file_to_extract, target_path):
 
@@ -40,7 +43,10 @@ def extract(file_to_extract, target_path):
 
     full_cmd = ["7z", "x", file_to_extract, "-o%s" % target_path]
     v, r = generic_run.run_cmd_simple(full_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running 7z extract command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s file_to_create.7z (inclusion_list)" % path_utils.basename_filtered(__file__))
