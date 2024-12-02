@@ -19,11 +19,15 @@ def shred_target(path):
         for i in ret:
             v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", i])
             if not v:
-                return False, r
+                return False, "Failed running shred (dir) command: [%s]" % r
         shutil.rmtree(path)
         return True, None
-    else:
-        return generic_run.run_cmd_simple(["shred", "-z", "-u", path])
+
+    v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", path])
+    if not v:
+        return False, "Failed running shred (file) command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s target_to_shred" % path_utils.basename_filtered(__file__))
