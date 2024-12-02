@@ -17,7 +17,10 @@ def compress(file_to_compress):
     # actual command
     cmd = ["bzip2", file_to_compress]
     v, r = generic_run.run_cmd_simple(cmd)
-    return v, r
+    if not v:
+        return False, "Failed running bzip2 compress command: [%s]" % r
+
+    return True, r
 
 def decompress(file_to_decompress):
 
@@ -30,7 +33,10 @@ def decompress(file_to_decompress):
     # actual command
     cmd = ["bunzip2", file_to_decompress]
     v, r = generic_run.run_cmd_simple(cmd)
-    return v, r
+    if not v:
+        return False, "Failed running bunzip2 decompress command: [%s]" % r
+
+    return True, r
 
 def puaq():
     print("Usage: %s file_to_compress" % path_utils.basename_filtered(__file__))
