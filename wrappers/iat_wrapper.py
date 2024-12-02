@@ -19,7 +19,10 @@ def convert_to_iso(input_file, output_file):
 
     full_cmd = ["iat", "--iso", "-i", input_file_filtered, "-o", output_file_filtered]
     v, r = generic_run.run_cmd_simple(full_cmd)
-    return v, r
+    if not v:
+        return False, "Failed iso-converting [%s] to [%s]: [%s]" % (input_file_filtered, output_file_filtered, r)
+
+    return True, None
 
 if __name__ == "__main__":
     print("Hello from %s" % path_utils.basename_filtered(__file__))
