@@ -10,7 +10,8 @@ def meld(left_path, right_path):
 
     v, r = generic_run.run_cmd_simple(["meld", left_path, right_path])
     if not v:
-        return False, r
+        return False, "Failed running meld command: [%s]" % r
+
     return True, None
 
 def puaq():
