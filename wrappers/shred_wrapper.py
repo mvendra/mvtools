@@ -11,22 +11,24 @@ import generic_run
 
 def shred_target(path):
 
-    if os.path.isdir(path):
-        v, r = fsquery.makecontentlist(path, True, False, True, False, True, False, True, [])
+    if not os.path.isdir(path):
+        v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", path])
         if not v:
-            return False, r
-        ret = r
-        for i in ret:
-            v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", i])
-            if not v:
-                return False, "Failed running shred (dir) command: [%s]" % r
-        shutil.rmtree(path)
+            return False, "Failed running shred (file) command: [%s]" % r
+
         return True, None
 
-    v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", path])
+    v, r = fsquery.makecontentlist(path, True, False, True, False, True, False, True, [])
     if not v:
-        return False, "Failed running shred (file) command: [%s]" % r
+        return False, r
+    targets = r
 
+    for i in targets:
+        v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", i])
+        if not v:
+            return False, "Failed running shred (dir) command: [%s]" % r
+
+    shutil.rmtree(path)
     return True, None
 
 def puaq():
