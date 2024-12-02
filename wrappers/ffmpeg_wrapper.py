@@ -19,7 +19,10 @@ def convert(input_filename, output_filename, bitrate):
 
     full_cmd = ["ffmpeg", "-i", input_filename_filtered, "-ab", bitrate, "-map_metadata", "0", "-id3v2_version", "3", output_filename_filtered]
     v, r = generic_run.run_cmd_simple(full_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running ffmpeg convert command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s input_filename output_filename" % path_utils.basename_filtered(__file__))
