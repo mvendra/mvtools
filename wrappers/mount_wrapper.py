@@ -13,7 +13,10 @@ def mount(target_path):
         full_cmd.append(target_path)
 
     v, r = generic_run.run_cmd_simple(full_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running mount command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s target_path" % path_utils.basename_filtered(__file__))
