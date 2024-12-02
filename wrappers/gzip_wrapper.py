@@ -17,7 +17,10 @@ def compress(target_archive):
     # actual command
     gzip_cmd = ["gzip", target_archive]
     v, r = generic_run.run_cmd_simple(gzip_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running gzip compress command: [%s]" % r
+
+    return True, None
 
 def decompress(target_archive):
 
@@ -33,7 +36,10 @@ def decompress(target_archive):
     # actual command
     gunzip_cmd = ["gunzip", target_archive]
     v, r = generic_run.run_cmd_simple(gunzip_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running gunzip decompress command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s target_archive.tar" % path_utils.basename_filtered(__file__))
