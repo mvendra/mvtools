@@ -29,7 +29,10 @@ def make_pack(file_to_create, incl_list):
     # main option
     tar_cmd = ["tar", "-cf", file_to_create] + incl_list
     v, r = generic_run.run_cmd_simple(tar_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running tar make_pack command: [%s]" % r
+
+    return True, None
 
 def extract(file_to_extract, target_path):
 
@@ -47,7 +50,10 @@ def extract(file_to_extract, target_path):
     # actual command
     tar_cmd = ["tar", "-xf", file_to_extract, "-C", target_path]
     v, r = generic_run.run_cmd_simple(tar_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running tar extract command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s file_to_create.tar (inclusion_list)" % path_utils.basename_filtered(__file__))
