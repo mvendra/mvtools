@@ -4,7 +4,7 @@ import sys
 import os
 
 import path_utils
-import generic_run
+import seven_z_wrapper
 
 def extract_iso(source_file, target_folder):
 
@@ -16,8 +16,7 @@ def extract_iso(source_file, target_folder):
 
     os.mkdir(target_folder)
 
-    cmd = ["7z", "x", source_file, "-o%s" % target_folder]
-    v, r = generic_run.run_cmd_simple(cmd)
+    v, r = seven_z_wrapper.extract(source_file, target_folder)
     return v, r
 
 def puaq():
