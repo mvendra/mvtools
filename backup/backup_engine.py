@@ -10,6 +10,7 @@ import encrypt
 import dirsize
 import sha512_wrapper
 import shred_wrapper
+import umount_wrapper
 import terminal_colors
 import maketimestamp
 import create_and_write_file
@@ -203,7 +204,9 @@ class BackupEngine:
 
         for it in _self.BKTARGETS_ROOT:
             shutil.copytree(BKTEMP_AND_BASEDIR, path_utils.concat_path(it, _self.BKTARGETS_BASEDIR))
-            generic_run.run_cmd_simple(["umount", it])
+            v, r = umount_wrapper.umount(it)
+            if not v:
+                print("%sWARNING! umount for target [%s] failed: [%s]%s" % (terminal_colors.TTY_YELLOW_BOLD, it, r, terminal_colors.TTY_WHITE))
 
         shutil.rmtree(_self.BKTEMP)
         print("%sDone at %s%s" % (terminal_colors.TTY_GREEN, maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
