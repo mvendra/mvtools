@@ -40,7 +40,7 @@ class MakeWrapperTest(unittest.TestCase):
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
         with mock.patch("generic_run.run_cmd", return_value=(False, "error message")) as dummy:
-            self.assertEqual(make_wrapper.make("test3", "test4", None), (False, "error message"))
+            self.assertEqual(make_wrapper.make("test3", "test4", None), (False, "Failed running make command: [error message]"))
 
     def testMake1(self):
         self.result_obj.success = True

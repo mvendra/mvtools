@@ -19,7 +19,8 @@ def make(work_dir, target, prefix):
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=work_dir)
     if not v:
-        return False, r
+        return False, "Failed running make command: [%s]" % r
+
     return True, (r.success, r.stdout, r.stderr)
 
 def puaq():
