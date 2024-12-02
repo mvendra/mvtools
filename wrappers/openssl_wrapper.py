@@ -25,7 +25,10 @@ def encrypt_des3_pbkdf2(infile, outfile, passphrase):
 
     full_cmd = ["openssl", "des3", "-e", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase]
     v, r = generic_run.run_cmd_simple(full_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running openssl encrypt-des3-pbkdf2 command: [%s]" % r
+
+    return True, None
 
 def decrypt_des3_pbkdf2(infile, outfile, passphrase):
 
@@ -43,7 +46,10 @@ def decrypt_des3_pbkdf2(infile, outfile, passphrase):
 
     full_cmd = ["openssl", "des3", "-d", "-pbkdf2", "-in", infile, "-out", outfile, "-k", passphrase]
     v, r = generic_run.run_cmd_simple(full_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running openssl decrypt-des3-pbkdf2 command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Hello from %s" % path_utils.basename_filtered(__file__))

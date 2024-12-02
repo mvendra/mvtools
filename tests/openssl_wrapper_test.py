@@ -102,7 +102,7 @@ class OpensslWrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.file1, "xyz")
 
         with mock.patch("generic_run.run_cmd_simple", return_value=(True, "")) as dummy:
-            self.assertEqual(openssl_wrapper.encrypt_des3_pbkdf2(self.file1, self.file2, self.test_passphrase), (True, ""))
+            self.assertEqual(openssl_wrapper.encrypt_des3_pbkdf2(self.file1, self.file2, self.test_passphrase), (True, None))
             dummy.assert_called_with(["openssl", "des3", "-e", "-pbkdf2", "-in", self.file1, "-out", self.file2, "-k", self.test_passphrase])
 
     def testDecryptDes3Pbkdf2_1(self):
@@ -157,15 +157,15 @@ class OpensslWrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.file1, "xyz")
 
         with mock.patch("generic_run.run_cmd_simple", return_value=(True, "")) as dummy:
-            self.assertEqual(openssl_wrapper.decrypt_des3_pbkdf2(self.file1, self.file2, self.test_passphrase), (True, ""))
+            self.assertEqual(openssl_wrapper.decrypt_des3_pbkdf2(self.file1, self.file2, self.test_passphrase), (True, None))
             dummy.assert_called_with(["openssl", "des3", "-d", "-pbkdf2", "-in", self.file1, "-out", self.file2, "-k", self.test_passphrase])
 
     def testEncryptDes3Pbkdf2_DecryptDes3Pbkdf2(self):
 
         create_and_write_file.create_file_contents(self.file1, "xyz")
 
-        self.assertEqual(openssl_wrapper.encrypt_des3_pbkdf2(self.file1, self.file2, self.test_passphrase), (True, ""))
-        self.assertEqual(openssl_wrapper.decrypt_des3_pbkdf2(self.file2, self.file3, self.test_passphrase), (True, ""))
+        self.assertEqual(openssl_wrapper.encrypt_des3_pbkdf2(self.file1, self.file2, self.test_passphrase), (True, None))
+        self.assertEqual(openssl_wrapper.decrypt_des3_pbkdf2(self.file2, self.file3, self.test_passphrase), (True, None))
 
         contents_file1 = ""
         contents_file3 = ""
