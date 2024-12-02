@@ -32,7 +32,7 @@ def make_pack(file_to_create, incl_list):
     if not v:
         return False, "Failed running tar make_pack command: [%s]" % r
 
-    return True, None
+    return True, r
 
 def extract(file_to_extract, target_path):
 
@@ -53,7 +53,7 @@ def extract(file_to_extract, target_path):
     if not v:
         return False, "Failed running tar extract command: [%s]" % r
 
-    return True, None
+    return True, r
 
 def puaq():
     print("Usage: %s file_to_create.tar (inclusion_list)" % path_utils.basename_filtered(__file__))
