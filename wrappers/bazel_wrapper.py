@@ -31,7 +31,7 @@ def build(exec_path, jobs, config, target, options):
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
     if not v:
-        return False, r
+        return False, "Failed running bazel build command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
 def fetch(exec_path, target):
@@ -50,7 +50,7 @@ def fetch(exec_path, target):
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
     if not v:
-        return False, r
+        return False, "Failed running bazel fetch command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
 def clean(exec_path, expunge):
@@ -66,7 +66,7 @@ def clean(exec_path, expunge):
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
     if not v:
-        return False, r
+        return False, "Failed running bazel clean command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
 def run(exec_path, target, args):
@@ -93,7 +93,7 @@ def run(exec_path, target, args):
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
     if not v:
-        return False, r
+        return False, "Failed running bazel run command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
 def test(exec_path, jobs, config, target, options):
@@ -121,7 +121,7 @@ def test(exec_path, jobs, config, target, options):
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=exec_path)
     if not v:
-        return False, r
+        return False, "Failed running bazel test command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
 def puaq():
