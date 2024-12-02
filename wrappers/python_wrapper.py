@@ -31,7 +31,7 @@ def exec(script, cwd, args):
         v, r = generic_run.run_cmd(full_cmd)
 
     if not v:
-        return False, r
+        return False, "Failed running python command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
 def puaq():
