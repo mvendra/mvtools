@@ -25,7 +25,10 @@ def create(source_path, target_archive):
     # actual command
     plt_cmd = ["palletapp", "--create", "--in", source_path_filtered, "--out", target_archive_filtered]
     v, r = generic_run.run_cmd_simple(plt_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running pallet create command: [%s]" % r
+
+    return True, None
 
 def extract(source_archive, target_path):
 
@@ -48,7 +51,10 @@ def extract(source_archive, target_path):
     # actual command
     plt_cmd = ["palletapp", "--extract", "--in", source_archive_filtered, "--out", target_path_filtered]
     v, r = generic_run.run_cmd_simple(plt_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running pallet extract command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s source_path target_archive.plt" % path_utils.basename_filtered(__file__))
