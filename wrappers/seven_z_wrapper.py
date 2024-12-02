@@ -38,8 +38,8 @@ def extract(file_to_extract, target_path):
     if not os.path.exists(target_path):
         return False, "[%s] does not exist." % target_path
 
-    full_cmd = ["7z", "x", file_to_extract]
-    v, r = generic_run.run_cmd_simple(full_cmd, use_cwd=target_path)
+    full_cmd = ["7z", "x", file_to_extract, "-o%s" % target_path]
+    v, r = generic_run.run_cmd_simple(full_cmd)
     return v, r
 
 def puaq():
