@@ -29,7 +29,10 @@ def make_pack(file_to_create, incl_list):
     # main option
     zip_cmd = ["zip", file_to_create, "-r"] + incl_list
     v, r = generic_run.run_cmd_simple(zip_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running zip make_pack command: [%s]" % r
+
+    return True, None
 
 def extract(file_to_extract, target_path):
 
@@ -47,7 +50,10 @@ def extract(file_to_extract, target_path):
     # actual command
     zip_cmd = ["unzip", file_to_extract, "-d", target_path]
     v, r = generic_run.run_cmd_simple(zip_cmd)
-    return v, r
+    if not v:
+        return False, "Failed running zip extract command: [%s]" % r
+
+    return True, None
 
 def puaq():
     print("Usage: %s file_to_create.zip (inclusion_list)" % path_utils.basename_filtered(__file__))
