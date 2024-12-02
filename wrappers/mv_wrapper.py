@@ -21,7 +21,7 @@ def move(source_path, target_path):
 
     v, r = generic_run.run_cmd(full_cmd)
     if not v:
-        return False, r
+        return False, "Failed running mv command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
 def puaq():
