@@ -11,7 +11,7 @@ import path_utils
 import get_platform
 import convcygpath
 
-import pallet_wrapper
+import palletapp_wrapper
 
 def conv_cyg_if_needed(in_path):
     plat_local = get_platform.getplat()
@@ -19,7 +19,7 @@ def conv_cyg_if_needed(in_path):
         return convcygpath.convert_cygwin_path_to_win_path(in_path)
     return in_path
 
-class PalletWrapperTest(unittest.TestCase):
+class PalletappWrapperTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -29,7 +29,7 @@ class PalletWrapperTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("pallet_wrapper_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("palletapp_wrapper_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -137,56 +137,56 @@ class PalletWrapperTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testCreatePrechecks1(self):
-        v, r = pallet_wrapper.create(None, self.pallet_file_full)
+        v, r = palletapp_wrapper.create(None, self.pallet_file_full)
         self.assertFalse(v)
 
     def testCreatePrechecks2(self):
-        v, r = pallet_wrapper.create(self.file1_full, None)
+        v, r = palletapp_wrapper.create(self.file1_full, None)
         self.assertFalse(v)
 
     def testCreatePrechecks3(self):
         create_and_write_file.create_file_contents(self.pallet_file_full, "abc")
-        v, r = pallet_wrapper.create(self.file1_full, self.pallet_file_full)
+        v, r = palletapp_wrapper.create(self.file1_full, self.pallet_file_full)
         self.assertFalse(v)
 
     def testCreatePrechecks4(self):
-        v, r = pallet_wrapper.create(self.file_nonexistent, self.pallet_file_full)
+        v, r = palletapp_wrapper.create(self.file_nonexistent, self.pallet_file_full)
         self.assertFalse(v)
 
     def testExtractPrechecks1(self):
         create_and_write_file.create_file_contents_hex(self.pallet_file_full, "504c5400018350d7d37adf19ad8cb89b63462e63216c6cf43130b6c15aee68398357c1191bccb38628f0fa03b6a227e7aebe7023d61c65d523c31c66991c2a872009a12b6800000000000000020100000012736f757263655f626173655f666f6c646572020000001c736f757263655f626173655f666f6c6465722f66696c65312e7478740000000000000003000000000000000b78da4b4c4a0600024d0127")
-        v, r = pallet_wrapper.extract(None, self.extracted_folder_full)
+        v, r = palletapp_wrapper.extract(None, self.extracted_folder_full)
         self.assertFalse(v)
 
     def testExtractPrechecks2(self):
         create_and_write_file.create_file_contents_hex(self.pallet_file_full, "504c5400018350d7d37adf19ad8cb89b63462e63216c6cf43130b6c15aee68398357c1191bccb38628f0fa03b6a227e7aebe7023d61c65d523c31c66991c2a872009a12b6800000000000000020100000012736f757263655f626173655f666f6c646572020000001c736f757263655f626173655f666f6c6465722f66696c65312e7478740000000000000003000000000000000b78da4b4c4a0600024d0127")
-        v, r = pallet_wrapper.extract(self.pallet_file_full, None)
+        v, r = palletapp_wrapper.extract(self.pallet_file_full, None)
         self.assertFalse(v)
 
     def testExtractPrechecks3(self):
-        v, r = pallet_wrapper.extract(self.pallet_file_full, self.extracted_folder_full)
+        v, r = palletapp_wrapper.extract(self.pallet_file_full, self.extracted_folder_full)
         self.assertFalse(v)
 
     def testExtractPrechecks4(self):
         create_and_write_file.create_file_contents_hex(self.pallet_file_full, "504c5400018350d7d37adf19ad8cb89b63462e63216c6cf43130b6c15aee68398357c1191bccb38628f0fa03b6a227e7aebe7023d61c65d523c31c66991c2a872009a12b6800000000000000020100000012736f757263655f626173655f666f6c646572020000001c736f757263655f626173655f666f6c6465722f66696c65312e7478740000000000000003000000000000000b78da4b4c4a0600024d0127")
         os.rmdir(self.extracted_folder_full)
-        v, r = pallet_wrapper.extract(self.pallet_file_full, self.extracted_folder_full)
+        v, r = palletapp_wrapper.extract(self.pallet_file_full, self.extracted_folder_full)
         self.assertFalse(v)
 
     def testExtractPrechecks5(self):
         create_and_write_file.create_file_contents_hex(self.pallet_file_full, "504c5400018350d7d37adf19ad8cb89b63462e63216c6cf43130b6c15aee68398357c1191bccb38628f0fa03b6a227e7aebe7023d61c65d523c31c66991c2a872009a12b6800000000000000020100000012736f757263655f626173655f666f6c646572020000001c736f757263655f626173655f666f6c6465722f66696c65312e7478740000000000000003000000000000000b78da4b4c4a0600024d0127")
-        v, r = pallet_wrapper.extract(self.file_nonexistent, self.extracted_folder_full)
+        v, r = palletapp_wrapper.extract(self.file_nonexistent, self.extracted_folder_full)
         self.assertFalse(v)
 
     def testCreateAndExtract(self):
 
         plat_local = get_platform.getplat()
 
-        v, r = pallet_wrapper.create(conv_cyg_if_needed(self.source_base_folder_full), conv_cyg_if_needed(self.pallet_file_full))
+        v, r = palletapp_wrapper.create(conv_cyg_if_needed(self.source_base_folder_full), conv_cyg_if_needed(self.pallet_file_full))
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.pallet_file_full))
 
-        v, r = pallet_wrapper.extract(conv_cyg_if_needed(self.pallet_file_full), conv_cyg_if_needed(self.extracted_folder_full))
+        v, r = palletapp_wrapper.extract(conv_cyg_if_needed(self.pallet_file_full), conv_cyg_if_needed(self.extracted_folder_full))
         self.assertTrue(v)
 
         self.assertTrue(os.path.exists(self.file1_extracted))

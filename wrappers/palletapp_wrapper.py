@@ -26,7 +26,7 @@ def create(source_path, target_archive):
     plt_cmd = ["palletapp", "--create", "--in", source_path_filtered, "--out", target_archive_filtered]
     v, r = generic_run.run_cmd_simple(plt_cmd)
     if not v:
-        return False, "Failed running pallet create command: [%s]" % r
+        return False, "Failed running palletapp create command: [%s]" % r
 
     return True, None
 
@@ -52,7 +52,7 @@ def extract(source_archive, target_path):
     plt_cmd = ["palletapp", "--extract", "--in", source_archive_filtered, "--out", target_path_filtered]
     v, r = generic_run.run_cmd_simple(plt_cmd)
     if not v:
-        return False, "Failed running pallet extract command: [%s]" % r
+        return False, "Failed running palletapp extract command: [%s]" % r
 
     return True, None
 
