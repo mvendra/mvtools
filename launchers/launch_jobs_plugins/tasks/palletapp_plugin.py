@@ -4,12 +4,12 @@ import os
 
 import launch_jobs
 import path_utils
-import pallet_wrapper
+import palletapp_wrapper
 
 class CustomTask(launch_jobs.BaseTask):
 
     def get_desc(self):
-        return "pallet"
+        return "palletapp"
 
     def _read_params(self):
 
@@ -73,7 +73,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(source_path):
             return False, "Source path [%s] does not exist" % source_path
 
-        v, r = pallet_wrapper.create(source_path, target_archive)
+        v, r = palletapp_wrapper.create(source_path, target_archive)
         if not v:
             return False, r
 
@@ -90,7 +90,7 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(target_path):
             return False, "Target path [%s] does not exist" % target_path
 
-        v, r = pallet_wrapper.extract(target_archive, target_path)
+        v, r = palletapp_wrapper.extract(target_archive, target_path)
         if not v:
             return False, r
 
