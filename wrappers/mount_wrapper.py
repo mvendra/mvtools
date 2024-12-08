@@ -16,7 +16,7 @@ def mount(target_path):
     if not v:
         return False, "Failed running mount command: [%s]" % r
 
-    return True, None
+    return True, r
 
 def puaq():
     print("Usage: %s target_path" % path_utils.basename_filtered(__file__))
