@@ -23,7 +23,7 @@ def create(source_path, target_archive):
         return False, "%s already exists." % target_archive_filtered
 
     # actual command
-    plt_cmd = ["palletapp", "--create", "--in", source_path_filtered, "--out", target_archive_filtered]
+    plt_cmd = ["palletapp", "--create", source_path_filtered, target_archive_filtered]
     v, r = generic_run.run_cmd_simple(plt_cmd)
     if not v:
         return False, "Failed running palletapp create command: [%s]" % r
@@ -49,7 +49,7 @@ def extract(source_archive, target_path):
         return False, "%s does not exist." % target_path_filtered
 
     # actual command
-    plt_cmd = ["palletapp", "--extract", "--in", source_archive_filtered, "--out", target_path_filtered]
+    plt_cmd = ["palletapp", "--extract", source_archive_filtered, target_path_filtered]
     v, r = generic_run.run_cmd_simple(plt_cmd)
     if not v:
         return False, "Failed running palletapp extract command: [%s]" % r
@@ -68,4 +68,7 @@ if __name__ == "__main__":
     source_path = sys.argv[1]
     target_archive = sys.argv[2]
 
-    create(source_path, target_archive)
+    v, r = create(source_path, target_archive)
+    if not v:
+        print(r)
+        sys.exit(1)
