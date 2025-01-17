@@ -10,6 +10,9 @@ import toolbus
 
 # mvtodo: print out reminder: to stop this, send a toolbus signal such-and-such (variable per run -> only applicable for --run-until-fail)
 
+def _stop_until_fail(proc_success):
+    return not proc_success
+
 def _save_iter(cmd, output_path, num, stdout, stderr):
 
     tg_name = path_utils.basename_filtered(cmd[0])
@@ -47,9 +50,7 @@ def _save_summary(cmd, output_path, num_total, num_failed, start_time):
     with open(sm_full, "w") as f:
         f.write(contents)
 
-def _run_until_fail(cmd, output_path, save_mode, start_time):
-
-    # mvtodo: get this case sorted out, then try to flex/refactor to accomodate for different stop conditions
+def _run_until(cmd, output_path, save_mode, start_time, stop_callback):
 
     num_execs = 0
     num_failed = 0
@@ -74,6 +75,7 @@ def _run_until_fail(cmd, output_path, save_mode, start_time):
             if save_mode == "save-fail":
                 _save_iter(cmd, output_path, num_execs, stdout, stderr)
 
+        if stop_callback(proc.success):
             break
 
     _save_summary(cmd, output_path, num_execs, num_failed, start_time)
@@ -96,19 +98,20 @@ def batch_run(run_target, output_path, op_mode, op_mode_arg, save_mode, target_p
         cmd.append(p)
 
     start_time = maketimestamp.get_timestamp_now()
+    stop_cb = None
 
     # run until fail
     if op_mode == "until-fail":
-
-        v, r = _run_until_fail(cmd, output_path, save_mode, start_time)
-        if not v:
-            return False, r
+        stop_cb = _stop_until_fail
 
     # mvtodo: other cases
 
     else:
         return False, "Operation mode [%s] is invalid." % op_mode
 
+    v, r = _run_until(cmd, output_path, save_mode, start_time, stop_cb)
+    if not v:
+        return False, r
     return True, None
 
 def puaq():
