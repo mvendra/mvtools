@@ -199,6 +199,10 @@ class BatchRunTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
+    def testStopUntilFail(self):
+        self.assertEqual(batch_run._stop_until_fail(True), False)
+        self.assertEqual(batch_run._stop_until_fail(False), True)
+
     def testSaveIter(self):
 
         batch_run._save_iter([self.dummy_taget_full], self.output_folder, 7, "dummy-stdout", "dummy-stderr")
