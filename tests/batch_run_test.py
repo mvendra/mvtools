@@ -168,7 +168,9 @@ class BatchRunTest(unittest.TestCase):
 
         with mock.patch("generic_run.run_cmd", return_value=(True, dummy_gr_ret)) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy2:
-                batch_run._run_until([self.dummy_taget_full], self.output_folder, "save-all", "dummy-started-time", batch_run._stop_until_fail)
+                v, r = batch_run._run_until([self.dummy_taget_full], self.output_folder, "save-all", "dummy-started-time", batch_run._stop_until_fail)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
                 dummy1.assert_called_with([self.dummy_taget_full])
                 dummy2.assert_called()
 
@@ -206,7 +208,9 @@ class BatchRunTest(unittest.TestCase):
     def testRunUntil2(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            batch_run._run_until([self.test_script_first_full], self.output_folder, "save-all", "dummy-started-time", batch_run._stop_until_fail)
+            v, r = batch_run._run_until([self.test_script_first_full], self.output_folder, "save-all", "dummy-started-time", batch_run._stop_until_fail)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called()
 
         out1_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_1.txt")
@@ -257,7 +261,9 @@ class BatchRunTest(unittest.TestCase):
     def testRunUntil3(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            batch_run._run_until([self.test_script_first_full], self.output_folder, "save-fail", "dummy-started-time", batch_run._stop_until_fail)
+            v, r = batch_run._run_until([self.test_script_first_full], self.output_folder, "save-fail", "dummy-started-time", batch_run._stop_until_fail)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called()
 
         out1_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_1.txt")
@@ -308,7 +314,9 @@ class BatchRunTest(unittest.TestCase):
     def testRunUntil4(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            batch_run._run_until([self.test_script_second_full], self.output_folder, "save-fail", "dummy-started-time", batch_run._stop_until_fail)
+            v, r = batch_run._run_until([self.test_script_second_full], self.output_folder, "save-fail", "dummy-started-time", batch_run._stop_until_fail)
+            self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called()
 
         out1_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stdout_1.txt")
