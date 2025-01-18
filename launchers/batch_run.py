@@ -10,8 +10,11 @@ import toolbus
 
 # mvtodo: print out reminder: to stop this, send a toolbus signal such-and-such (variable per run -> only applicable for --run-until-fail)
 
-def _stop_until_fail(proc_success):
+def _stop_fail(stop_arg, proc_success, num_execs):
     return not proc_success
+
+def _stop_count(stop_arg, proc_success, num_execs):
+    return (num_execs == stop_arg)
 
 def _save_iter(cmd, output_path, num, stdout, stderr):
 
@@ -50,7 +53,7 @@ def _save_summary(cmd, output_path, num_total, num_failed, start_time):
     with open(sm_full, "w") as f:
         f.write(contents)
 
-def _run_until(cmd, output_path, save_mode, start_time, stop_callback):
+def _run_until(cmd, output_path, op_mode_arg, save_mode, start_time, stop_callback):
 
     num_execs = 0
     num_failed = 0
@@ -75,7 +78,7 @@ def _run_until(cmd, output_path, save_mode, start_time, stop_callback):
             if save_mode == "save-fail":
                 _save_iter(cmd, output_path, num_execs, stdout, stderr)
 
-        if stop_callback(proc.success):
+        if stop_callback(op_mode_arg, proc.success, num_execs):
             break
 
     _save_summary(cmd, output_path, num_execs, num_failed, start_time)
@@ -102,14 +105,16 @@ def batch_run(run_target, output_path, op_mode, op_mode_arg, save_mode, target_p
 
     # run until fail
     if op_mode == "until-fail":
-        stop_cb = _stop_until_fail
+        stop_cb = _stop_fail
 
-    # mvtodo: other cases
+    # run until iteration count
+    elif op_mode == "until-num":
+        stop_cb = _stop_count
 
     else:
         return False, "Operation mode [%s] is invalid." % op_mode
 
-    v, r = _run_until(cmd, output_path, save_mode, start_time, stop_cb)
+    v, r = _run_until(cmd, output_path, op_mode_arg, save_mode, start_time, stop_cb)
     if not v:
         return False, r
     return True, None
