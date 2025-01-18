@@ -374,7 +374,123 @@ class BatchRunTest(unittest.TestCase):
             self.assertEqual(line, contents_expected[line_num])
             line_num += 1
 
-    def testBatchRunX(self): # mvtodo
+    def testBatchRun1(self):
+
+        dummy_gr_ret = generic_run.run_cmd_result(False, 1, "dummy-stdout", "dummy-stderr")
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, dummy_gr_ret)) as dummy1:
+            with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy2:
+                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy1.assert_called_with([self.test_script_first_full])
+                dummy2.assert_called()
+
+        out_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_1.txt")
+        err_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stderr_1.txt")
+
+        self.assertTrue(os.path.exists(out_fn_full))
+        self.assertTrue(os.path.exists(err_fn_full))
+
+        self.assertTrue(file_has_contents(out_fn_full, "dummy-stdout"))
+        self.assertTrue(file_has_contents(err_fn_full, "dummy-stderr"))
+
+        sum_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_summary.txt")
+
+        self.assertTrue(os.path.exists(sum_fn_full))
+
+        contents = file_get_contents(sum_fn_full)
+        contents = contents.split("\n")
+
+        contents_expected = []
+        contents_expected.append("Run of [test_first.py] - summary:")
+        contents_expected.append("---------------------------------")
+        contents_expected.append("")
+        contents_expected.append("Number of total executions: [1]")
+        contents_expected.append("Number of failed executions: [1]")
+        contents_expected.append("Started time: [dummy-time]")
+        contents_expected.append("End time: [dummy-time]")
+        contents_expected.append("")
+
+        line_num = 0
+        for line in contents:
+            self.assertEqual(line, contents_expected[line_num])
+            line_num += 1
+
+    def testBatchRun2(self):
+
+        dummy_gr_ret = generic_run.run_cmd_result(False, 1, "dummy-stdout", "dummy-stderr")
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, dummy_gr_ret)) as dummy1:
+            with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy2:
+                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", ["test-param1", "test-param2"])
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy1.assert_called_with([self.test_script_first_full, "test-param1", "test-param2"])
+                dummy2.assert_called()
+
+        out_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_1.txt")
+        err_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stderr_1.txt")
+
+        self.assertTrue(os.path.exists(out_fn_full))
+        self.assertTrue(os.path.exists(err_fn_full))
+
+        self.assertTrue(file_has_contents(out_fn_full, "dummy-stdout"))
+        self.assertTrue(file_has_contents(err_fn_full, "dummy-stderr"))
+
+        sum_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_summary.txt")
+
+        self.assertTrue(os.path.exists(sum_fn_full))
+
+        contents = file_get_contents(sum_fn_full)
+        contents = contents.split("\n")
+
+        contents_expected = []
+        contents_expected.append("Run of [test_first.py] - summary:")
+        contents_expected.append("---------------------------------")
+        contents_expected.append("")
+        contents_expected.append("Number of total executions: [1]")
+        contents_expected.append("Number of failed executions: [1]")
+        contents_expected.append("Started time: [dummy-time]")
+        contents_expected.append("End time: [dummy-time]")
+        contents_expected.append("")
+
+        line_num = 0
+        for line in contents:
+            self.assertEqual(line, contents_expected[line_num])
+            line_num += 1
+
+    def testBatchRun3(self):
+
+        os.unlink(self.test_script_first_full)
+
+        with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+            self.assertFalse(v)
+            self.assertEqual(r, "Target [%s] does not exist." % self.test_script_first_full)
+            dummy.assert_not_called()
+
+    def testBatchRun4(self):
+
+        os.mkdir(self.output_folder)
+
+        with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+            self.assertFalse(v)
+            self.assertEqual(r, "Output path [%s] already exists." % self.output_folder)
+            dummy.assert_not_called()
+
+    def testBatchRun5(self):
+
+        with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy1:
+            with mock.patch("path_utils.guaranteefolder", return_value=False) as dummy2:
+                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+                self.assertFalse(v)
+                self.assertEqual(r, "Unable to create folder [%s]." % self.output_folder)
+                dummy1.assert_not_called()
+                dummy2.assert_called_with(self.output_folder)
+
+    def testBatchRun6(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
             v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
@@ -415,6 +531,112 @@ class BatchRunTest(unittest.TestCase):
         contents_expected = []
         contents_expected.append("Run of [test_first.py] - summary:")
         contents_expected.append("---------------------------------")
+        contents_expected.append("")
+        contents_expected.append("Number of total executions: [4]")
+        contents_expected.append("Number of failed executions: [1]")
+        contents_expected.append("Started time: [dummy-time]")
+        contents_expected.append("End time: [dummy-time]")
+        contents_expected.append("")
+
+        line_num = 0
+        for line in contents:
+            self.assertEqual(line, contents_expected[line_num])
+            line_num += 1
+
+    def testBatchRun7(self):
+
+        with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-fail", [])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called()
+
+        out1_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_1.txt")
+        out2_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_2.txt")
+        out3_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_3.txt")
+        out4_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stdout_4.txt")
+
+        err1_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stderr_1.txt")
+        err2_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stderr_2.txt")
+        err3_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stderr_3.txt")
+        err4_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_stderr_4.txt")
+
+        self.assertFalse(os.path.exists(out1_fn_full))
+        self.assertFalse(os.path.exists(out2_fn_full))
+        self.assertFalse(os.path.exists(out3_fn_full))
+        self.assertTrue(os.path.exists(out4_fn_full))
+
+        self.assertFalse(os.path.exists(err1_fn_full))
+        self.assertFalse(os.path.exists(err2_fn_full))
+        self.assertFalse(os.path.exists(err3_fn_full))
+        self.assertTrue(os.path.exists(err4_fn_full))
+
+        self.assertTrue(file_has_contents(out4_fn_full, "script-stdout"))
+        self.assertTrue(file_has_contents(err4_fn_full, ""))
+
+        sum_fn_full = path_utils.concat_path(self.output_folder, "test_first.py_summary.txt")
+
+        self.assertTrue(os.path.exists(sum_fn_full))
+
+        contents = file_get_contents(sum_fn_full)
+        contents = contents.split("\n")
+
+        contents_expected = []
+        contents_expected.append("Run of [test_first.py] - summary:")
+        contents_expected.append("---------------------------------")
+        contents_expected.append("")
+        contents_expected.append("Number of total executions: [4]")
+        contents_expected.append("Number of failed executions: [1]")
+        contents_expected.append("Started time: [dummy-time]")
+        contents_expected.append("End time: [dummy-time]")
+        contents_expected.append("")
+
+        line_num = 0
+        for line in contents:
+            self.assertEqual(line, contents_expected[line_num])
+            line_num += 1
+
+    def testBatchRun8(self):
+
+        with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
+            v, r = batch_run.batch_run(self.test_script_second_full, self.output_folder, "until-fail", None, "save-fail", [])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called()
+
+        out1_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stdout_1.txt")
+        out2_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stdout_2.txt")
+        out3_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stdout_3.txt")
+        out4_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stdout_4.txt")
+
+        err1_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stderr_1.txt")
+        err2_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stderr_2.txt")
+        err3_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stderr_3.txt")
+        err4_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_stderr_4.txt")
+
+        self.assertFalse(os.path.exists(out1_fn_full))
+        self.assertFalse(os.path.exists(out2_fn_full))
+        self.assertFalse(os.path.exists(out3_fn_full))
+        self.assertTrue(os.path.exists(out4_fn_full))
+
+        self.assertFalse(os.path.exists(err1_fn_full))
+        self.assertFalse(os.path.exists(err2_fn_full))
+        self.assertFalse(os.path.exists(err3_fn_full))
+        self.assertTrue(os.path.exists(err4_fn_full))
+
+        self.assertTrue(file_has_contents(out4_fn_full, "script-stdout"))
+        self.assertTrue(file_has_contents(err4_fn_full, "script-stderr"))
+
+        sum_fn_full = path_utils.concat_path(self.output_folder, "test_second.py_summary.txt")
+
+        self.assertTrue(os.path.exists(sum_fn_full))
+
+        contents = file_get_contents(sum_fn_full)
+        contents = contents.split("\n")
+
+        contents_expected = []
+        contents_expected.append("Run of [test_second.py] - summary:")
+        contents_expected.append("----------------------------------")
         contents_expected.append("")
         contents_expected.append("Number of total executions: [4]")
         contents_expected.append("Number of failed executions: [1]")
