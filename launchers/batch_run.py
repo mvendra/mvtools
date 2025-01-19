@@ -8,8 +8,6 @@ import generic_run
 import maketimestamp
 import toolbus
 
-# mvtodo: print out reminder: to stop this, send a toolbus signal such-and-such (variable per run -> only applicable for --run-until-fail)
-
 def _stop_fail(stop_arg, proc_success, num_execs):
     return True, not proc_success
 
