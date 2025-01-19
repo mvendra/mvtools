@@ -11,10 +11,17 @@ import toolbus
 # mvtodo: print out reminder: to stop this, send a toolbus signal such-and-such (variable per run -> only applicable for --run-until-fail)
 
 def _stop_fail(stop_arg, proc_success, num_execs):
-    return not proc_success
+    return True, not proc_success
 
 def _stop_count(stop_arg, proc_success, num_execs):
-    return (num_execs == stop_arg)
+    return True, (num_execs == stop_arg)
+
+def _stop_tb_sig(stop_arg, proc_success, num_execs):
+
+    v, r = toolbus.get_signal(stop_arg, False)
+    if not v:
+        return False, r
+    return True, (r is not None)
 
 def _save_iter(cmd, output_path, num, stdout, stderr):
 
@@ -78,7 +85,10 @@ def _run_until(cmd, output_path, op_mode_arg, save_mode, start_time, stop_callba
             if save_mode == "save-fail":
                 _save_iter(cmd, output_path, num_execs, stdout, stderr)
 
-        if stop_callback(op_mode_arg, proc.success, num_execs):
+        v, r = stop_callback(op_mode_arg, proc.success, num_execs)
+        if not v:
+            return False, r
+        if r:
             break
 
     _save_summary(cmd, output_path, num_execs, num_failed, start_time)
@@ -110,6 +120,10 @@ def batch_run(run_target, output_path, op_mode, op_mode_arg, save_mode, target_p
     # run until iteration count
     elif op_mode == "until-num":
         stop_cb = _stop_count
+
+    # run until toolbus signal
+    elif op_mode == "until-sig":
+        stop_cb = _stop_tb_sig
 
     else:
         return False, "Operation mode [%s] is invalid." % op_mode

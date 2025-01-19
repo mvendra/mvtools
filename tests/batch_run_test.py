@@ -170,12 +170,38 @@ class BatchRunTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testStopFail(self):
-        self.assertFalse(batch_run._stop_fail(None, True, None))
-        self.assertTrue(batch_run._stop_fail(None, False, None))
+
+        v, r = batch_run._stop_fail(None, True, None)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = batch_run._stop_fail(None, False, None)
+        self.assertTrue(v)
+        self.assertTrue(r)
 
     def testStopCount(self):
-        self.assertFalse(batch_run._stop_count(3, True, 1))
-        self.assertTrue(batch_run._stop_count(3, True, 3))
+
+        v, r = batch_run._stop_count(3, True, 1)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+        v, r = batch_run._stop_count(3, True, 3)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+    def testStopTBSig(self):
+
+        with mock.patch("toolbus.get_signal", return_value=(True, None)) as dummy:
+            v, r = batch_run._stop_tb_sig("test-stop-sig", True, 1)
+            self.assertTrue(v)
+            self.assertFalse(r)
+            dummy.assert_called_with("test-stop-sig", False)
+
+        with mock.patch("toolbus.get_signal", return_value=(True, "test-stop-sig-val")) as dummy:
+            v, r = batch_run._stop_tb_sig("test-stop-sig", True, 1)
+            self.assertTrue(v)
+            self.assertTrue(r)
+            dummy.assert_called_with("test-stop-sig", False)
 
     def testSaveIter(self):
 
