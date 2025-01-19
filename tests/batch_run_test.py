@@ -1046,7 +1046,21 @@ class BatchRunTest(unittest.TestCase):
                 dummy1.assert_not_called()
                 dummy2.assert_called_with(self.output_folder)
 
-    # mvtodo: ahead: more precond check
+    def testBatchRun6(self):
+
+        with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+            self.assertFalse(v)
+            self.assertEqual(r, "Operation argument is missing.")
+            dummy.assert_not_called()
+
+    def testBatchRun7(self):
+
+        with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "invalid-save-mode", [])
+            self.assertFalse(v)
+            self.assertEqual(r, "Invalid save mode: [invalid-save-mode].")
+            dummy.assert_not_called()
 
     def testBatchRun8(self):
 
