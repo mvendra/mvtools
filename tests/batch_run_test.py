@@ -236,34 +236,34 @@ class BatchRunTest(unittest.TestCase):
 
     def testStopFail(self):
 
-        v, r = batch_run._stop_fail(None, True, None)
+        v, r = batch_run._stop_fail("3", 0, 1)
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = batch_run._stop_fail(None, False, None)
+        v, r = batch_run._stop_fail("3", 0, 3)
         self.assertTrue(v)
         self.assertTrue(r)
 
     def testStopCount(self):
 
-        v, r = batch_run._stop_count(3, True, 1)
+        v, r = batch_run._stop_count("3", 1, 0)
         self.assertTrue(v)
         self.assertFalse(r)
 
-        v, r = batch_run._stop_count(3, True, 3)
+        v, r = batch_run._stop_count("3", 3, 0)
         self.assertTrue(v)
         self.assertTrue(r)
 
     def testStopTBSig(self):
 
         with mock.patch("toolbus.get_signal", return_value=(True, None)) as dummy:
-            v, r = batch_run._stop_tb_sig("test-stop-sig", True, 1)
+            v, r = batch_run._stop_tb_sig("test-stop-sig", 0, 0)
             self.assertTrue(v)
             self.assertFalse(r)
             dummy.assert_called_with("test-stop-sig", False)
 
         with mock.patch("toolbus.get_signal", return_value=(True, "test-stop-sig-val")) as dummy:
-            v, r = batch_run._stop_tb_sig("test-stop-sig", True, 1)
+            v, r = batch_run._stop_tb_sig("test-stop-sig", 0, 0)
             self.assertTrue(v)
             self.assertTrue(r)
             dummy.assert_called_with("test-stop-sig", False)
@@ -320,7 +320,7 @@ class BatchRunTest(unittest.TestCase):
 
         with mock.patch("generic_run.run_cmd", return_value=(True, dummy_gr_ret)) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy2:
-                v, r = batch_run._run_until([self.dummy_taget_full], self.output_folder, None, "save-all", "dummy-started-time", batch_run._stop_fail)
+                v, r = batch_run._run_until([self.dummy_taget_full], self.output_folder, "1", "save-all", "dummy-started-time", batch_run._stop_fail)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy1.assert_called_with([self.dummy_taget_full])
@@ -362,7 +362,7 @@ class BatchRunTest(unittest.TestCase):
         os.mkdir(self.output_folder)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            v, r = batch_run._run_until([self.test_script_first_full], self.output_folder, None, "save-all", "dummy-started-time", batch_run._stop_fail)
+            v, r = batch_run._run_until([self.test_script_first_full], self.output_folder, "1", "save-all", "dummy-started-time", batch_run._stop_fail)
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -417,7 +417,7 @@ class BatchRunTest(unittest.TestCase):
         os.mkdir(self.output_folder)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            v, r = batch_run._run_until([self.test_script_first_full], self.output_folder, None, "save-fail", "dummy-started-time", batch_run._stop_fail)
+            v, r = batch_run._run_until([self.test_script_first_full], self.output_folder, "1", "save-fail", "dummy-started-time", batch_run._stop_fail)
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -472,7 +472,7 @@ class BatchRunTest(unittest.TestCase):
         os.mkdir(self.output_folder)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            v, r = batch_run._run_until([self.test_script_second_full], self.output_folder, None, "save-fail", "dummy-started-time", batch_run._stop_fail)
+            v, r = batch_run._run_until([self.test_script_second_full], self.output_folder, "1", "save-fail", "dummy-started-time", batch_run._stop_fail)
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -527,7 +527,7 @@ class BatchRunTest(unittest.TestCase):
         os.mkdir(self.output_folder)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            v, r = batch_run._run_until([self.test_script_third_full], self.output_folder, 9, "save-all", "dummy-started-time", batch_run._stop_count)
+            v, r = batch_run._run_until([self.test_script_third_full], self.output_folder, "9", "save-all", "dummy-started-time", batch_run._stop_count)
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -605,7 +605,7 @@ class BatchRunTest(unittest.TestCase):
         os.mkdir(self.output_folder)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            v, r = batch_run._run_until([self.test_script_third_full], self.output_folder, 9, "save-fail", "dummy-started-time", batch_run._stop_count)
+            v, r = batch_run._run_until([self.test_script_third_full], self.output_folder, "9", "save-fail", "dummy-started-time", batch_run._stop_count)
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -683,7 +683,7 @@ class BatchRunTest(unittest.TestCase):
         os.mkdir(self.output_folder)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-end-time") as dummy:
-            v, r = batch_run._run_until([self.test_script_fourth_full], self.output_folder, 9, "save-fail", "dummy-started-time", batch_run._stop_count)
+            v, r = batch_run._run_until([self.test_script_fourth_full], self.output_folder, "9", "save-fail", "dummy-started-time", batch_run._stop_count)
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -930,13 +930,15 @@ class BatchRunTest(unittest.TestCase):
             self.assertEqual(line, contents_expected[line_num])
             line_num += 1
 
+    # mvtodo: ahead: more precond check
+
     def testBatchRun1(self):
 
         dummy_gr_ret = generic_run.run_cmd_result(False, 1, "dummy-stdout", "dummy-stderr")
 
         with mock.patch("generic_run.run_cmd", return_value=(True, dummy_gr_ret)) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy2:
-                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "save-all", [])
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy1.assert_called_with([self.test_script_first_full])
@@ -979,7 +981,7 @@ class BatchRunTest(unittest.TestCase):
 
         with mock.patch("generic_run.run_cmd", return_value=(True, dummy_gr_ret)) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy2:
-                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", ["test-param1", "test-param2"])
+                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "save-all", ["test-param1", "test-param2"])
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy1.assert_called_with([self.test_script_first_full, "test-param1", "test-param2"])
@@ -1021,7 +1023,7 @@ class BatchRunTest(unittest.TestCase):
         os.unlink(self.test_script_first_full)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "save-all", [])
             self.assertFalse(v)
             self.assertEqual(r, "Target [%s] does not exist." % self.test_script_first_full)
             dummy.assert_not_called()
@@ -1031,7 +1033,7 @@ class BatchRunTest(unittest.TestCase):
         os.mkdir(self.output_folder)
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "save-all", [])
             self.assertFalse(v)
             self.assertEqual(r, "Output path [%s] already exists." % self.output_folder)
             dummy.assert_not_called()
@@ -1040,7 +1042,7 @@ class BatchRunTest(unittest.TestCase):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy1:
             with mock.patch("path_utils.guaranteefolder", return_value=False) as dummy2:
-                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+                v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "save-all", [])
                 self.assertFalse(v)
                 self.assertEqual(r, "Unable to create folder [%s]." % self.output_folder)
                 dummy1.assert_not_called()
@@ -1049,7 +1051,7 @@ class BatchRunTest(unittest.TestCase):
     def testBatchRun6(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-all", [])
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "save-all", [])
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -1102,7 +1104,7 @@ class BatchRunTest(unittest.TestCase):
     def testBatchRun7(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", None, "save-fail", [])
+            v, r = batch_run.batch_run(self.test_script_first_full, self.output_folder, "until-fail", "1", "save-fail", [])
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -1155,7 +1157,7 @@ class BatchRunTest(unittest.TestCase):
     def testBatchRun8(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_second_full, self.output_folder, "until-fail", None, "save-fail", [])
+            v, r = batch_run.batch_run(self.test_script_second_full, self.output_folder, "until-fail", "1", "save-fail", [])
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -1208,7 +1210,7 @@ class BatchRunTest(unittest.TestCase):
     def testBatchRun9(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_third_full, self.output_folder, "until-num", 9, "save-all", [])
+            v, r = batch_run.batch_run(self.test_script_third_full, self.output_folder, "until-num", "9", "save-all", [])
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -1284,7 +1286,7 @@ class BatchRunTest(unittest.TestCase):
     def testBatchRun10(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_third_full, self.output_folder, "until-num", 9, "save-fail", [])
+            v, r = batch_run.batch_run(self.test_script_third_full, self.output_folder, "until-num", "9", "save-fail", [])
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
@@ -1360,7 +1362,7 @@ class BatchRunTest(unittest.TestCase):
     def testBatchRun11(self):
 
         with mock.patch("maketimestamp.get_timestamp_now", return_value="dummy-time") as dummy:
-            v, r = batch_run.batch_run(self.test_script_fourth_full, self.output_folder, "until-num", 9, "save-fail", [])
+            v, r = batch_run.batch_run(self.test_script_fourth_full, self.output_folder, "until-num", "9", "save-fail", [])
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called()
