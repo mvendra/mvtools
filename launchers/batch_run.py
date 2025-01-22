@@ -58,7 +58,7 @@ def _save_summary(cmd, output_path, num_total, num_failed, start_time):
     with open(sm_full, "w") as f:
         f.write(contents)
 
-def _run_until(cmd, output_path, op_modes, save_mode, start_time):
+def _run_until(cmd, output_path, op_modes, stop_mode, save_mode, start_time):
 
     num_execs = 0
     num_failed = 0
@@ -149,7 +149,7 @@ def batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_pa
             return False, "Operation mode [%s] - missing argument." % opm_original_name
 
     start_time = maketimestamp.get_timestamp_now()
-    v, r = _run_until(cmd, output_path, op_modes, save_mode, start_time)
+    v, r = _run_until(cmd, output_path, op_modes, stop_mode, save_mode, start_time)
     if not v:
         return False, r
     return True, None
