@@ -48,9 +48,10 @@ class BatchRunPluginTest(unittest.TestCase):
     def testBatchRunPluginReadParams1(self):
 
         local_params = {}
-        local_params["output"] = "dummy_value2"
-        local_params["op_modes"] = "dummy_value3"
-        local_params["op_modes_args"] = "dummy_value4"
+        local_params["output"] = "dummy_value1"
+        local_params["op_modes"] = "dummy_value2"
+        local_params["op_modes_args"] = "dummy_value3"
+        local_params["stop_mode"] = "dummy_value4"
         local_params["save_mode"] = "dummy_value5"
         self.batch_run_task.params = local_params
 
@@ -61,8 +62,9 @@ class BatchRunPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target"] = "dummy_value1"
-        local_params["op_modes"] = "dummy_value3"
-        local_params["op_modes_args"] = "dummy_value4"
+        local_params["op_modes"] = "dummy_value2"
+        local_params["op_modes_args"] = "dummy_value3"
+        local_params["stop_mode"] = "dummy_value4"
         local_params["save_mode"] = "dummy_value5"
         self.batch_run_task.params = local_params
 
@@ -74,7 +76,8 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target"] = "dummy_value1"
         local_params["output"] = "dummy_value2"
-        local_params["op_modes_args"] = "dummy_value4"
+        local_params["op_modes_args"] = "dummy_value3"
+        local_params["stop_mode"] = "dummy_value4"
         local_params["save_mode"] = "dummy_value5"
         self.batch_run_task.params = local_params
 
@@ -87,6 +90,7 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value1"
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = "dummy_value3"
+        local_params["stop_mode"] = "dummy_value4"
         local_params["save_mode"] = "dummy_value5"
         self.batch_run_task.params = local_params
 
@@ -100,6 +104,7 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = "dummy_value3"
         local_params["op_modes_args"] = "dummy_value4"
+        local_params["save_mode"] = "dummy_value5"
         self.batch_run_task.params = local_params
 
         v, r = self.batch_run_task._read_params()
@@ -112,25 +117,26 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = "dummy_value3"
         local_params["op_modes_args"] = "dummy_value4"
-        local_params["save_mode"] = "dummy_value5"
+        local_params["stop_mode"] = "dummy_value5"
         self.batch_run_task.params = local_params
 
         v, r = self.batch_run_task._read_params()
-        self.assertTrue(v)
-        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3"], ["dummy_value4"], "dummy_value5", []))
+        self.assertFalse(v)
 
     def testBatchRunPluginReadParams7(self):
 
         local_params = {}
         local_params["target"] = "dummy_value1"
         local_params["output"] = "dummy_value2"
-        local_params["op_modes"] = ["dummy_value3", "dummy_value4"]
-        local_params["op_modes_args"] = "dummy_value5"
+        local_params["op_modes"] = "dummy_value3"
+        local_params["op_modes_args"] = "dummy_value4"
+        local_params["stop_mode"] = "dummy_value5"
         local_params["save_mode"] = "dummy_value6"
         self.batch_run_task.params = local_params
 
         v, r = self.batch_run_task._read_params()
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3"], ["dummy_value4"], "dummy_value5", "dummy_value6", []))
 
     def testBatchRunPluginReadParams8(self):
 
@@ -138,28 +144,28 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value1"
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = ["dummy_value3", "dummy_value4"]
-        local_params["op_modes_args"] = ["dummy_value5", "dummy_value6"]
+        local_params["op_modes_args"] = "dummy_value5"
+        local_params["stop_mode"] = "dummy_value6"
         local_params["save_mode"] = "dummy_value7"
         self.batch_run_task.params = local_params
 
         v, r = self.batch_run_task._read_params()
-        self.assertTrue(v)
-        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3", "dummy_value4"], ["dummy_value5", "dummy_value6"], "dummy_value7", []))
+        self.assertFalse(v)
 
     def testBatchRunPluginReadParams9(self):
 
         local_params = {}
         local_params["target"] = "dummy_value1"
         local_params["output"] = "dummy_value2"
-        local_params["op_modes"] = "dummy_value3"
-        local_params["op_modes_args"] = "dummy_value4"
-        local_params["save_mode"] = "dummy_value5"
-        local_params["target_args"] = "dummy_value6"
+        local_params["op_modes"] = ["dummy_value3", "dummy_value4"]
+        local_params["op_modes_args"] = ["dummy_value5", "dummy_value6"]
+        local_params["stop_mode"] = "dummy_value7"
+        local_params["save_mode"] = "dummy_value8"
         self.batch_run_task.params = local_params
 
         v, r = self.batch_run_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3"], ["dummy_value4"], "dummy_value5", ["dummy_value6"]))
+        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3", "dummy_value4"], ["dummy_value5", "dummy_value6"], "dummy_value7", "dummy_value8", []))
 
     def testBatchRunPluginReadParams10(self):
 
@@ -168,13 +174,30 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = "dummy_value3"
         local_params["op_modes_args"] = "dummy_value4"
-        local_params["save_mode"] = "dummy_value5"
-        local_params["target_args"] = ["dummy_value6", "dummy_value7"]
+        local_params["stop_mode"] = "dummy_value5"
+        local_params["save_mode"] = "dummy_value6"
+        local_params["target_args"] = "dummy_value7"
         self.batch_run_task.params = local_params
 
         v, r = self.batch_run_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3"], ["dummy_value4"], "dummy_value5", ["dummy_value6", "dummy_value7"]))
+        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3"], ["dummy_value4"], "dummy_value5", "dummy_value6", ["dummy_value7"]))
+
+    def testBatchRunPluginReadParams11(self):
+
+        local_params = {}
+        local_params["target"] = "dummy_value1"
+        local_params["output"] = "dummy_value2"
+        local_params["op_modes"] = "dummy_value3"
+        local_params["op_modes_args"] = "dummy_value4"
+        local_params["stop_mode"] = "dummy_value5"
+        local_params["save_mode"] = "dummy_value6"
+        local_params["target_args"] = ["dummy_value7", "dummy_value8"]
+        self.batch_run_task.params = local_params
+
+        v, r = self.batch_run_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, ("dummy_value1", "dummy_value2", ["dummy_value3"], ["dummy_value4"], "dummy_value5", "dummy_value6", ["dummy_value7", "dummy_value8"]))
 
     def testBatchRunPluginRunTask1(self):
 
@@ -183,13 +206,14 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = "dummy_value3"
         local_params["op_modes_args"] = "dummy_value4"
-        local_params["save_mode"] = "dummy_value5"
+        local_params["stop_mode"] = "dummy_value5"
+        local_params["save_mode"] = "dummy_value6"
         self.batch_run_task.params = local_params
 
         with mock.patch("batch_run.batch_run", return_value=(True, None)) as dummy:
             v, r = self.batch_run_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value4"]], "dummy_value5", [])
+            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value4"]], "dummy_value5", "dummy_value6", [])
 
     def testBatchRunPluginRunTask2(self):
 
@@ -198,13 +222,14 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = ["dummy_value3", "dummy_value4"]
         local_params["op_modes_args"] = ["dummy_value5", "dummy_value6"]
-        local_params["save_mode"] = "dummy_value7"
+        local_params["stop_mode"] = "dummy_value7"
+        local_params["save_mode"] = "dummy_value8"
         self.batch_run_task.params = local_params
 
         with mock.patch("batch_run.batch_run", return_value=(True, None)) as dummy:
             v, r = self.batch_run_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value5"], ["dummy_value4", "dummy_value6"]], "dummy_value7", [])
+            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value5"], ["dummy_value4", "dummy_value6"]], "dummy_value7", "dummy_value8", [])
 
     def testBatchRunPluginRunTask3(self):
 
@@ -213,14 +238,15 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = "dummy_value3"
         local_params["op_modes_args"] = "dummy_value4"
-        local_params["save_mode"] = "dummy_value5"
-        local_params["target_args"] = "dummy_value6"
+        local_params["stop_mode"] = "dummy_value5"
+        local_params["save_mode"] = "dummy_value6"
+        local_params["target_args"] = "dummy_value7"
         self.batch_run_task.params = local_params
 
         with mock.patch("batch_run.batch_run", return_value=(True, None)) as dummy:
             v, r = self.batch_run_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value4"]], "dummy_value5", ["dummy_value6"])
+            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value4"]], "dummy_value5", "dummy_value6", ["dummy_value7"])
 
     def testBatchRunPluginRunTask4(self):
 
@@ -229,14 +255,15 @@ class BatchRunPluginTest(unittest.TestCase):
         local_params["output"] = "dummy_value2"
         local_params["op_modes"] = "dummy_value3"
         local_params["op_modes_args"] = "dummy_value4"
-        local_params["save_mode"] = "dummy_value5"
-        local_params["target_args"] = ["dummy_value6", "dummy_value7"]
+        local_params["stop_mode"] = "dummy_value5"
+        local_params["save_mode"] = "dummy_value6"
+        local_params["target_args"] = ["dummy_value7", "dummy_value8"]
         self.batch_run_task.params = local_params
 
         with mock.patch("batch_run.batch_run", return_value=(True, None)) as dummy:
             v, r = self.batch_run_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value4"]], "dummy_value5", ["dummy_value6", "dummy_value7"])
+            dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value4"]], "dummy_value5", "dummy_value6", ["dummy_value7", "dummy_value8"])
 
 if __name__ == '__main__':
     unittest.main()
