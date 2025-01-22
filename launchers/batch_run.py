@@ -151,7 +151,7 @@ def batch_run(run_target, output_path, op_modes, save_mode, target_param_list):
     return True, None
 
 def puaq():
-    print("Usage: %s [--help] run_target output_path [--run-until-fail X | --run-until-count X | --run-until-signal X]+ [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] run_target output_path [--run-until-fail X | --run-until-count X | --run-until-signal X]+ [--stop-any (default) | --stop-all] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -170,6 +170,7 @@ if __name__ == "__main__":
     output_path = None
     op_modes = []
     op_modes_arg_next = False
+    stop_mode = None
     save_mode = None
     parsing_target_param_list = False
     target_param_list = []
@@ -179,6 +180,7 @@ if __name__ == "__main__":
     output_path = sys.argv[2]
 
     # defaults
+    stop_mode = "stop-any"
     save_mode = "save-fail"
 
     for p in params:
@@ -205,6 +207,10 @@ if __name__ == "__main__":
             save_mode = "save-fail"
         elif p == "--save-all":
             save_mode = "save-all"
+        elif p == "--stop-any":
+            stop_mode = "stop-any"
+        elif p == "--stop-all":
+            stop_mode = "stop-all"
         elif p == "--":
             parsing_target_param_list = True
 
