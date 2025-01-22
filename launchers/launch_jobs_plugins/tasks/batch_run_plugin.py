@@ -16,8 +16,8 @@ class CustomTask(launch_jobs.BaseTask):
 
         target = None
         output = None
-        op_mode = None
-        op_mode_arg = None
+        op_modes = []
+        op_modes_args = []
         save_mode = None
         target_args = []
 
@@ -33,17 +33,25 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "output is a required parameter"
 
-        # op_mode
+        # op_modes
         try:
-            op_mode = self.params["op_mode"]
+            op_modes_read = self.params["op_modes"]
+            if isinstance(op_modes_read, list):
+                op_modes = op_modes_read
+            else:
+                op_modes = [op_modes_read]
         except KeyError:
-            return False, "op_mode is a required parameter"
+            return False, "op_modes is a required parameter"
 
-        # op_mode_arg
+        # op_modes_args
         try:
-            op_mode_arg = self.params["op_mode_arg"]
+            op_modes_args_read = self.params["op_modes_args"]
+            if isinstance(op_modes_args_read, list):
+                op_modes_args = op_modes_args_read
+            else:
+                op_modes_args = [op_modes_args_read]
         except KeyError:
-            pass # optional
+            return False, "op_modes_args is a required parameter"
 
         # save_mode
         try:
@@ -61,37 +69,23 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        # validations
-        target = os.path.abspath(target)
-        if not os.path.exists(target):
-            return False, "Target [%s] does not exist." % target
+        if len(op_modes) != len(op_modes_args):
+            return False, "op_modes and op_modes_args must match in length"
 
-        output = os.path.abspath(output)
-        if os.path.exists(output):
-            return False, "Output [%s] already exists." % output
-
-        valid_op_modes = ["until-fail", "until-num", "until-sig"]
-        if not op_mode in valid_op_modes:
-            return False, "Operation mode [%s] is invalid." % op_mode
-
-        op_modes_require_arg = ["until-num", "until-sig"]
-        if op_mode in op_modes_require_arg and op_mode_arg is None:
-            return False, "Operation mode [%s] requires an argument." % op_mode
-
-        valid_same_modes = ["save-all", "save-fail"]
-        if not save_mode in valid_same_modes:
-            return False, "Save mode [%s] is invalid." % save_mode
-
-        return True, (target, output, op_mode, op_mode_arg, save_mode, target_args)
+        return True, (target, output, op_modes, op_modes_args, save_mode, target_args)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target, output, op_mode, op_mode_arg, save_mode, target_args = r
+        target, output, op_modes, op_modes_args, save_mode, target_args = r
 
-        v, r = batch_run.batch_run(target, output, op_mode, op_mode_arg, save_mode, target_args)
+        op_modes_final = []
+        for i in range(len(op_modes)):
+            op_modes_final.append([op_modes[i], op_modes_args[i]])
+
+        v, r = batch_run.batch_run(target, output, op_modes_final, save_mode, target_args)
         if not v:
             return False, "Batch run failed: [%s]." % r
 
