@@ -100,7 +100,7 @@ def _run_until(cmd, output_path, op_modes, save_mode, start_time):
 
     return True, None
 
-def batch_run(run_target, output_path, op_modes, save_mode, target_param_list):
+def batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_param_list):
 
     if not os.path.exists(run_target):
         return False, "Target [%s] does not exist." % run_target
@@ -110,6 +110,10 @@ def batch_run(run_target, output_path, op_modes, save_mode, target_param_list):
 
     if not path_utils.guaranteefolder(output_path):
         return False, "Unable to create folder [%s]." % output_path
+
+    valid_stop_modes = ["stop-any", "stop-all"]
+    if not stop_mode in valid_stop_modes:
+        return False, "Invalid stop mode: [%s]." % stop_mode
 
     valid_save_modes = ["save-all", "save-fail"]
     if not save_mode in valid_save_modes:
@@ -218,7 +222,7 @@ if __name__ == "__main__":
         print("Unterminated operation mode parsing (missing arg).")
         sys.exit(1)
 
-    v, r = batch_run(run_target, output_path, op_modes, save_mode, target_param_list)
+    v, r = batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_param_list)
     if not v:
         print(r)
         sys.exit(1)
