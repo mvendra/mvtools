@@ -58,7 +58,7 @@ def _save_summary(cmd, output_path, num_total, num_failed, start_time):
     with open(sm_full, "w") as f:
         f.write(contents)
 
-def _run_until(cmd, output_path, op_mode_arg, save_mode, start_time, stop_callback):
+def _run_until(cmd, output_path, op_modes, save_mode, start_time):
 
     num_execs = 0
     num_failed = 0
@@ -83,17 +83,24 @@ def _run_until(cmd, output_path, op_mode_arg, save_mode, start_time, stop_callba
             if save_mode == "save-fail":
                 _save_iter(cmd, output_path, num_execs, stdout, stderr)
 
-        v, r = stop_callback(op_mode_arg, num_execs, num_failed)
-        if not v:
-            return False, r
-        if r:
+        stop_flag = False
+        for stop_cond in op_modes:
+
+            fptr = stop_cond[0]
+            v, r = fptr(stop_cond[1], num_execs, num_failed)
+            if not v:
+                return False, r
+            if r:
+                stop_flag = True
+
+        if stop_flag:
             break
 
     _save_summary(cmd, output_path, num_execs, num_failed, start_time)
 
     return True, None
 
-def batch_run(run_target, output_path, op_mode, op_mode_arg, save_mode, target_param_list):
+def batch_run(run_target, output_path, op_modes, save_mode, target_param_list):
 
     if not os.path.exists(run_target):
         return False, "Target [%s] does not exist." % run_target
@@ -104,42 +111,42 @@ def batch_run(run_target, output_path, op_mode, op_mode_arg, save_mode, target_p
     if not path_utils.guaranteefolder(output_path):
         return False, "Unable to create folder [%s]." % output_path
 
-    if op_mode_arg is None:
-        return False, "Operation argument is missing."
-
     valid_save_modes = ["save-all", "save-fail"]
     if not save_mode in valid_save_modes:
         return False, "Invalid save mode: [%s]." % save_mode
+
+    if len(op_modes) < 1: # mvtodo: precond coverage
+        return False, "No operation modes specified."
 
     cmd = [os.path.abspath(run_target)]
     for p in target_param_list:
         cmd.append(p)
 
+    for opm in op_modes:
+
+        # run until fail
+        if opm[0] == "until-fail":
+            opm[0] = _stop_fail
+
+        # run until iteration count
+        elif opm[0] == "until-cnt":
+            opm[0] = _stop_count
+
+        # run until toolbus signal
+        elif opm[0] == "until-sig":
+            opm[0] = _stop_tb_sig
+
+        else:
+            return False, "Operation mode [%s] is invalid." % opm[0]
+
     start_time = maketimestamp.get_timestamp_now()
-    stop_cb = None
-
-    # run until fail
-    if op_mode == "until-fail":
-        stop_cb = _stop_fail
-
-    # run until iteration count
-    elif op_mode == "until-num":
-        stop_cb = _stop_count
-
-    # run until toolbus signal
-    elif op_mode == "until-sig":
-        stop_cb = _stop_tb_sig
-
-    else:
-        return False, "Operation mode [%s] is invalid." % op_mode
-
-    v, r = _run_until(cmd, output_path, op_mode_arg, save_mode, start_time, stop_cb)
+    v, r = _run_until(cmd, output_path, op_modes, save_mode, start_time)
     if not v:
         return False, r
     return True, None
 
 def puaq():
-    print("Usage: %s [--help] run_target output_path [--run-until-fail X (default) | --run-until-num X | --run-until-signal X] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] run_target output_path [--run-until-fail X | --run-until-count X | --run-until-signal X]+ [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -156,9 +163,8 @@ if __name__ == "__main__":
     # decl
     target = None
     output_path = None
-    op_mode = None
-    op_mode_arg = None
-    op_mode_arg_next = False
+    op_modes = []
+    op_modes_arg_next = False
     save_mode = None
     parsing_target_param_list = False
     target_param_list = []
@@ -168,7 +174,6 @@ if __name__ == "__main__":
     output_path = sys.argv[2]
 
     # defaults
-    op_mode = "until-fail"
     save_mode = "save-fail"
 
     for p in params:
@@ -177,20 +182,20 @@ if __name__ == "__main__":
             target_param_list.append(p)
             continue
 
-        if op_mode_arg_next:
-            op_mode_arg = p
-            op_mode_arg_next = False
+        if op_modes_arg_next:
+            op_modes[len(op_modes)-1][1] = p
+            op_modes_arg_next = False
             continue
 
         if p == "--run-until-fail":
-            op_mode = "until-fail"
-            op_mode_arg_next = True
-        elif p == "--run-until-num":
-            op_mode = "until-num"
-            op_mode_arg_next = True
+            op_modes.append(["until-fail", None])
+            op_modes_arg_next = True
+        elif p == "--run-until-count":
+            op_modes.append(["until-cnt", None])
+            op_modes_arg_next = True
         elif p == "--run-until-signal":
-            op_mode = "until-sig"
-            op_mode_arg_next = True
+            op_modes.append(["until-sig", None])
+            op_modes_arg_next = True
         elif p == "--save-fail":
             save_mode = "save-fail"
         elif p == "--save-all":
@@ -198,7 +203,11 @@ if __name__ == "__main__":
         elif p == "--":
             parsing_target_param_list = True
 
-    v, r = batch_run(run_target, output_path, op_mode, op_mode_arg, save_mode, target_param_list)
+    if op_modes_arg_next:
+        print("Unterminated operation mode parsing (missing arg).")
+        sys.exit(1)
+
+    v, r = batch_run(run_target, output_path, op_modes, save_mode, target_param_list)
     if not v:
         print(r)
         sys.exit(1)
