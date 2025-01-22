@@ -115,7 +115,7 @@ def batch_run(run_target, output_path, op_modes, save_mode, target_param_list):
     if not save_mode in valid_save_modes:
         return False, "Invalid save mode: [%s]." % save_mode
 
-    if len(op_modes) < 1: # mvtodo: precond coverage
+    if len(op_modes) < 1:
         return False, "No operation modes specified."
 
     cmd = [os.path.abspath(run_target)]
@@ -123,6 +123,8 @@ def batch_run(run_target, output_path, op_modes, save_mode, target_param_list):
         cmd.append(p)
 
     for opm in op_modes:
+
+        opm_original_name = opm[0]
 
         # run until fail
         if opm[0] == "until-fail":
@@ -138,6 +140,9 @@ def batch_run(run_target, output_path, op_modes, save_mode, target_param_list):
 
         else:
             return False, "Operation mode [%s] is invalid." % opm[0]
+
+        if opm[1] is None:
+            return False, "Operation mode [%s] - missing argument." % opm_original_name
 
     start_time = maketimestamp.get_timestamp_now()
     v, r = _run_until(cmd, output_path, op_modes, save_mode, start_time)
