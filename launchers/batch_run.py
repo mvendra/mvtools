@@ -19,6 +19,15 @@ def _compare_num(input_int, input_str):
     if input_str[0:2] == "gt":
         return (input_int > int(input_str[2:]))
 
+def _compare_time(input_current_date, input_arg_date):
+
+    if input_arg_date[0:2] == "eq":
+        return (input_current_date == input_arg_date[2:])
+
+    # mvtodo: gt pending
+
+    return (input_current_date == input_arg_date) # default to eq
+
 def _stop_fail(stop_arg, num_exec, num_fail):
     return True, _compare_num(num_fail, stop_arg)
 
@@ -170,6 +179,8 @@ def batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_pa
     if not v:
         return False, r
     return True, None
+
+# mvtodo: must pre-validate the date: must be a certain length
 
 def puaq():
     print("Usage: %s [--help] run_target output_path [--run-until-fail [eq(def)|gt]X | --run-until-count [eq(def)|gt]X | --run-until-signal X]+ [--stop-any (default) | --stop-all] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))

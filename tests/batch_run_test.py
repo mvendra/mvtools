@@ -280,6 +280,18 @@ class BatchRunTest(unittest.TestCase):
         self.assertFalse(batch_run._compare_num(1, "gt2"))
         self.assertFalse(batch_run._compare_num(10, "gt11"))
 
+    def testCompareTime(self):
+
+        # eq - default
+        self.assertTrue(batch_run._compare_time("23012025_185629", "23012025_185629"))
+        self.assertFalse(batch_run._compare_time("23012025_185630", "23012025_185629"))
+
+        # eq - explicit
+        self.assertTrue(batch_run._compare_time("23012025_185629", "eq23012025_185629"))
+        self.assertFalse(batch_run._compare_time("23012025_185630", "eq23012025_185629"))
+
+        # mvtodo: time
+
     def testStopFail(self):
 
         v, r = batch_run._stop_fail("3", 0, 1)
