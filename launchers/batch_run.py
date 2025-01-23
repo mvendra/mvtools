@@ -83,14 +83,14 @@ def _run_until(cmd, output_path, op_modes, stop_mode, save_mode, start_time):
             if save_mode == "save-fail":
                 _save_iter(cmd, output_path, num_execs, stdout, stderr)
 
-        stop_flag = False
+        stop_flag = (stop_mode == "stop-all")
         for stop_cond in op_modes:
 
             fptr = stop_cond[0]
             v, r = fptr(stop_cond[1], num_execs, num_failed)
             if not v:
                 return False, r
-            if r:
+            if r and stop_mode == "stop-any":
                 stop_flag = True
                 break
 
