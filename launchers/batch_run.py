@@ -20,10 +20,10 @@ def _compare(input_int, input_str):
         return (input_int > int(input_str[2:]))
 
 def _stop_fail(stop_arg, num_exec, num_fail):
-    return True, (num_fail == int(stop_arg))
+    return True, _compare(num_fail, stop_arg)
 
 def _stop_count(stop_arg, num_exec, num_fail):
-    return True, (num_exec == int(stop_arg))
+    return True, _compare(num_exec, stop_arg)
 
 def _stop_tb_sig(stop_arg, num_exec, num_fail):
 
@@ -172,7 +172,7 @@ def batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_pa
     return True, None
 
 def puaq():
-    print("Usage: %s [--help] run_target output_path [--run-until-fail X | --run-until-count X | --run-until-signal X]+ [--stop-any (default) | --stop-all] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] run_target output_path [--run-until-fail [eq(def)|gt]X | --run-until-count [eq(def)|gt]X | --run-until-signal X]+ [--stop-any (default) | --stop-all] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
