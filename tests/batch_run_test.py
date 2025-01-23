@@ -290,7 +290,9 @@ class BatchRunTest(unittest.TestCase):
         self.assertTrue(batch_run._compare_time("23012025_185629", "eq23012025_185629"))
         self.assertFalse(batch_run._compare_time("23012025_185630", "eq23012025_185629"))
 
-        # mvtodo: time
+        # gt - explicit
+        self.assertTrue(batch_run._compare_time("23012025_185630", "gt23012025_185629"))
+        self.assertFalse(batch_run._compare_time("23012025_185629", "gt23012025_185629"))
 
     def testStopFail(self):
 

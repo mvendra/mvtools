@@ -24,7 +24,66 @@ def _compare_time(input_current_date, input_arg_date):
     if input_arg_date[0:2] == "eq":
         return (input_current_date == input_arg_date[2:])
 
-    # mvtodo: gt pending
+    if input_arg_date[0:2] == "gt":
+
+        # current date
+        day_cur = int(input_current_date[0:2])
+        month_cur = int(input_current_date[2:4])
+        year_cur = int(input_current_date[4:8])
+        hour_cur = int(input_current_date[9:11])
+        minute_cur = int(input_current_date[11:13])
+        second_cur = int(input_current_date[13:15])
+
+        # argument (target) date
+        day_arg = int(input_arg_date[2:4])
+        month_arg = int(input_arg_date[4:6])
+        year_arg = int(input_arg_date[6:10])
+        hour_arg = int(input_arg_date[11:13])
+        minute_arg = int(input_arg_date[13:15])
+        second_arg = int(input_arg_date[15:17])
+
+        # round 1 - years
+        if year_cur < year_arg:
+            return False
+        elif year_cur > year_arg:
+            return True
+        else:
+
+            # round 2 - months
+            if month_cur < month_arg:
+                return False
+            elif month_cur > month_arg:
+                return True
+            else:
+
+                # round 3 - days
+                if day_cur < day_arg:
+                    return False
+                elif day_cur > day_arg:
+                    return True
+                else:
+
+                    # round 4 - hours
+                    if hour_cur < hour_arg:
+                        return False
+                    elif hour_cur > hour_arg:
+                        return True
+                    else:
+
+                        # round 5 - minutes
+                        if minute_cur < minute_arg:
+                            return False
+                        elif minute_cur > minute_arg:
+                            return True
+                        else:
+
+                            # round 6 - seconds
+                            if second_cur < second_arg:
+                                return False
+                            elif second_cur > second_arg:
+                                return True
+                            else:
+                                return False # same to the dot
 
     return (input_current_date == input_arg_date) # default to eq
 
