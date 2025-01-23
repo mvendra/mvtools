@@ -226,6 +226,13 @@ def batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_pa
         elif opm[0] == "until-cnt":
             opm[0] = _stop_count
 
+        # run until time
+        elif opm[0] == "until-time":
+            if opm[1] is not None:
+                if len(opm[1]) < 15:
+                    return False, "argument of stop condition until-time is invalid: [%s]." % opm[1]
+            opm[0] = _stop_time
+
         # run until toolbus signal
         elif opm[0] == "until-sig":
             opm[0] = _stop_tb_sig
@@ -242,10 +249,8 @@ def batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_pa
         return False, r
     return True, None
 
-# mvtodo: must pre-validate the date: must be a certain length
-
 def puaq():
-    print("Usage: %s [--help] run_target output_path [--run-until-fail [eq(def)|gt]X | --run-until-count [eq(def)|gt]X | --run-until-signal X]+ [--stop-any (default) | --stop-all] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] run_target output_path [--run-until-fail [eq(def)|gt]X | --run-until-count [eq(def)|gt]X | --run-until-time [eq(def)|gt]X | --run-until-signal X]+ [--stop-any (default) | --stop-all] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -293,6 +298,9 @@ if __name__ == "__main__":
             op_modes_arg_next = True
         elif p == "--run-until-count":
             op_modes.append(["until-cnt", None])
+            op_modes_arg_next = True
+        elif p == "--run-until-time":
+            op_modes.append(["until-time", None])
             op_modes_arg_next = True
         elif p == "--run-until-signal":
             op_modes.append(["until-sig", None])
