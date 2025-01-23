@@ -260,25 +260,25 @@ class BatchRunTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testCompare(self):
+    def testCompareNum(self):
 
         # eq - default
-        self.assertTrue(batch_run._compare(1, "1"))
-        self.assertTrue(batch_run._compare(10, "10"))
-        self.assertFalse(batch_run._compare(1, "2"))
-        self.assertFalse(batch_run._compare(10, "11"))
+        self.assertTrue(batch_run._compare_num(1, "1"))
+        self.assertTrue(batch_run._compare_num(10, "10"))
+        self.assertFalse(batch_run._compare_num(1, "2"))
+        self.assertFalse(batch_run._compare_num(10, "11"))
 
         # eq - explicit
-        self.assertTrue(batch_run._compare(1, "eq1"))
-        self.assertTrue(batch_run._compare(10, "eq10"))
-        self.assertFalse(batch_run._compare(1, "eq2"))
-        self.assertFalse(batch_run._compare(10, "eq11"))
+        self.assertTrue(batch_run._compare_num(1, "eq1"))
+        self.assertTrue(batch_run._compare_num(10, "eq10"))
+        self.assertFalse(batch_run._compare_num(1, "eq2"))
+        self.assertFalse(batch_run._compare_num(10, "eq11"))
 
         # gt - explicit
-        self.assertTrue(batch_run._compare(2, "gt1"))
-        self.assertTrue(batch_run._compare(11, "gt10"))
-        self.assertFalse(batch_run._compare(1, "gt2"))
-        self.assertFalse(batch_run._compare(10, "gt11"))
+        self.assertTrue(batch_run._compare_num(2, "gt1"))
+        self.assertTrue(batch_run._compare_num(11, "gt10"))
+        self.assertFalse(batch_run._compare_num(1, "gt2"))
+        self.assertFalse(batch_run._compare_num(10, "gt11"))
 
     def testStopFail(self):
 

@@ -8,7 +8,7 @@ import generic_run
 import maketimestamp
 import toolbus
 
-def _compare(input_int, input_str):
+def _compare_num(input_int, input_str):
 
     if len(input_str) < 3:
         return (input_int == int(input_str)) # default to eq
@@ -20,10 +20,10 @@ def _compare(input_int, input_str):
         return (input_int > int(input_str[2:]))
 
 def _stop_fail(stop_arg, num_exec, num_fail):
-    return True, _compare(num_fail, stop_arg)
+    return True, _compare_num(num_fail, stop_arg)
 
 def _stop_count(stop_arg, num_exec, num_fail):
-    return True, _compare(num_exec, stop_arg)
+    return True, _compare_num(num_exec, stop_arg)
 
 def _stop_tb_sig(stop_arg, num_exec, num_fail):
 
