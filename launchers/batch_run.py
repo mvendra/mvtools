@@ -92,6 +92,7 @@ def _run_until(cmd, output_path, op_modes, stop_mode, save_mode, start_time):
                 return False, r
             if r:
                 stop_flag = True
+                break
 
         if stop_flag:
             break
