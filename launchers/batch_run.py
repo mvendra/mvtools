@@ -90,8 +90,13 @@ def _run_until(cmd, output_path, op_modes, stop_mode, save_mode, start_time):
             v, r = fptr(stop_cond[1], num_execs, num_failed)
             if not v:
                 return False, r
+
             if r and stop_mode == "stop-any":
                 stop_flag = True
+                break
+
+            if not r and stop_mode == "stop-all":
+                stop_flag = False
                 break
 
         if stop_flag:
