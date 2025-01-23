@@ -8,6 +8,17 @@ import generic_run
 import maketimestamp
 import toolbus
 
+def _compare(input_int, input_str):
+
+    if len(input_str) < 3:
+        return (input_int == int(input_str)) # default to eq
+
+    if input_str[0:2] == "eq":
+        return (input_int == int(input_str[2:]))
+
+    if input_str[0:2] == "gt":
+        return (input_int > int(input_str[2:]))
+
 def _stop_fail(stop_arg, num_exec, num_fail):
     return True, (num_fail == int(stop_arg))
 
