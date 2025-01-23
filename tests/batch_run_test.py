@@ -314,6 +314,32 @@ class BatchRunTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r)
 
+    def testStopTime(self):
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="23012025_185629") as dummy:
+            v, r = batch_run._stop_time("23012025_185629", 0, 0)
+            self.assertTrue(v)
+            self.assertTrue(r)
+            dummy.assert_called()
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="23012025_185629") as dummy:
+            v, r = batch_run._stop_time("eq23012025_185629", 0, 0)
+            self.assertTrue(v)
+            self.assertTrue(r)
+            dummy.assert_called()
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="23012025_185630") as dummy:
+            v, r = batch_run._stop_time("gt23012025_185629", 0, 0)
+            self.assertTrue(v)
+            self.assertTrue(r)
+            dummy.assert_called()
+
+        with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="23012025_185629") as dummy:
+            v, r = batch_run._stop_time("gt23012025_185629", 0, 0)
+            self.assertTrue(v)
+            self.assertFalse(r)
+            dummy.assert_called()
+
     def testStopTBSig(self):
 
         with mock.patch("toolbus.get_signal", return_value=(True, None)) as dummy:

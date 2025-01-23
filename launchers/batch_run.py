@@ -93,6 +93,9 @@ def _stop_fail(stop_arg, num_exec, num_fail):
 def _stop_count(stop_arg, num_exec, num_fail):
     return True, _compare_num(num_exec, stop_arg)
 
+def _stop_time(stop_arg, num_exec, num_fail):
+    return True, _compare_time(maketimestamp.get_timestamp_now_compact(), stop_arg)
+
 def _stop_tb_sig(stop_arg, num_exec, num_fail):
 
     v, r = toolbus.get_signal(stop_arg, False)
