@@ -19,6 +19,8 @@ def _compare_num(input_int, input_str):
     if input_str[0:2] == "gt":
         return (input_int > int(input_str[2:]))
 
+    return (input_int == int(input_str)) # default to eq
+
 def _compare_time(input_current_date, input_arg_date):
 
     if input_arg_date[0:2] == "eq":
