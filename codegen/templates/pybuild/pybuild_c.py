@@ -127,7 +127,7 @@ class Builder():
     def standard_c_hook(self):
 
         # common compiler flags
-        if (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOSX) and self.compiler == gcc_wrapper:
+        if (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOS) and self.compiler == gcc_wrapper:
             self.compiler_flags_common += standard_c.get_c_compiler_flags_linux_common_gcc()
 
         # debug compiler flags
