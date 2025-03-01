@@ -112,7 +112,7 @@ def prjrename(target_dir, original_project_name, new_project_name):
     base_build = path_utils.concat_path(prj_fullname_base, "build")
     base_build_linux = path_utils.concat_path(base_build, "linux")
     base_build_windows = path_utils.concat_path(base_build, "windows")
-    base_build_macosx = path_utils.concat_path(base_build, "macosx")
+    base_build_macos = path_utils.concat_path(base_build, "macos")
 
     # linux/codelite15_c
     base_build_linux_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")

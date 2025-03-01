@@ -42,9 +42,9 @@ ifeq ($(UNAME_S),Linux)
 	PLAT=linux
 endif
 
-# MACOSX
+# MACOS
 ifeq ($(UNAME_S),Darwin)
-	PLAT=macosx
+	PLAT=macos
 endif
 
 # DEBUG

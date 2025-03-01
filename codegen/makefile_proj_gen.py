@@ -70,10 +70,10 @@ def linux_mkfile_c_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # MACOSX
-    r += "# MACOSX\n"
+    # MACOS
+    r += "# MACOS\n"
     r += "ifeq ($(UNAME_S),Darwin)\n"
-    r += "\tPLAT=macosx\n"
+    r += "\tPLAT=macos\n"
     r += "endif\n"
     r += "\n"
 
@@ -236,10 +236,10 @@ def linux_mkfile_cpp_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # MACOSX
-    r += "# MACOSX\n"
+    # MACOS
+    r += "# MACOS\n"
     r += "ifeq ($(UNAME_S),Darwin)\n"
-    r += "\tPLAT=macosx\n"
+    r += "\tPLAT=macos\n"
     r += "endif\n"
     r += "\n"
 
