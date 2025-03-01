@@ -45,9 +45,9 @@ def codelite_build_cleaner(target_path):
     # plats
     target_path_build_linux = path_utils.concat_path(target_path_build, "linux")
     target_path_build_windows = path_utils.concat_path(target_path_build, "windows")
-    target_path_build_macosx = path_utils.concat_path(target_path_build, "macosx")
+    target_path_build_macos = path_utils.concat_path(target_path_build, "macos")
 
-    targets = [target_path_build_linux, target_path_build_windows, target_path_build_macosx]
+    targets = [target_path_build_linux, target_path_build_windows, target_path_build_macos]
     report = []
 
     for tg in targets:

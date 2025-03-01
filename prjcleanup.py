@@ -10,9 +10,9 @@ def prjcleanup_dep(proj):
     path_proj_dep = path_utils.concat_path(proj, "dep")
     path_proj_dep_linux = path_utils.concat_path(path_proj_dep, "linux")
     path_proj_dep_windows = path_utils.concat_path(path_proj_dep, "windows")
-    path_proj_dep_macosx = path_utils.concat_path(path_proj_dep, "macosx")
+    path_proj_dep_macos = path_utils.concat_path(path_proj_dep, "macos")
 
-    recreate_paths = [path_proj_dep_linux, path_proj_dep_windows, path_proj_dep_macosx]
+    recreate_paths = [path_proj_dep_linux, path_proj_dep_windows, path_proj_dep_macos]
 
     for rp in recreate_paths:
         if not path_utils.recreate_as_folder_if_needed(rp):
@@ -29,11 +29,11 @@ def prjcleanup_tmp(proj):
     path_proj_tmp_windows = path_utils.concat_path(path_proj_tmp, "windows")
     path_proj_tmp_windows_debug = path_utils.concat_path(path_proj_tmp_windows, "debug")
     path_proj_tmp_windows_release = path_utils.concat_path(path_proj_tmp_windows, "release")
-    path_proj_tmp_macosx = path_utils.concat_path(path_proj_tmp, "macosx")
-    path_proj_tmp_macosx_debug = path_utils.concat_path(path_proj_tmp_macosx, "debug")
-    path_proj_tmp_macosx_release = path_utils.concat_path(path_proj_tmp_macosx, "release")
+    path_proj_tmp_macos = path_utils.concat_path(path_proj_tmp, "macos")
+    path_proj_tmp_macos_debug = path_utils.concat_path(path_proj_tmp_macos, "debug")
+    path_proj_tmp_macos_release = path_utils.concat_path(path_proj_tmp_macos, "release")
 
-    recreate_paths = [path_proj_tmp_linux, path_proj_tmp_linux_debug, path_proj_tmp_linux_release, path_proj_tmp_windows, path_proj_tmp_windows_debug, path_proj_tmp_windows_release, path_proj_tmp_macosx, path_proj_tmp_macosx_debug, path_proj_tmp_macosx_release]
+    recreate_paths = [path_proj_tmp_linux, path_proj_tmp_linux_debug, path_proj_tmp_linux_release, path_proj_tmp_windows, path_proj_tmp_windows_debug, path_proj_tmp_windows_release, path_proj_tmp_macos, path_proj_tmp_macos_debug, path_proj_tmp_macos_release]
 
     for rp in recreate_paths:
         if not path_utils.recreate_as_folder_if_needed(rp):
@@ -50,11 +50,11 @@ def prjcleanup_out(proj):
     path_proj_out_windows = path_utils.concat_path(path_proj_out, "windows")
     path_proj_out_windows_debug = path_utils.concat_path(path_proj_out_windows, "debug")
     path_proj_out_windows_release = path_utils.concat_path(path_proj_out_windows, "release")
-    path_proj_out_macosx = path_utils.concat_path(path_proj_out, "macosx")
-    path_proj_out_macosx_debug = path_utils.concat_path(path_proj_out_macosx, "debug")
-    path_proj_out_macosx_release = path_utils.concat_path(path_proj_out_macosx, "release")
+    path_proj_out_macos = path_utils.concat_path(path_proj_out, "macos")
+    path_proj_out_macos_debug = path_utils.concat_path(path_proj_out_macos, "debug")
+    path_proj_out_macos_release = path_utils.concat_path(path_proj_out_macos, "release")
 
-    recreate_paths = [path_proj_out_linux, path_proj_out_linux_debug, path_proj_out_linux_release, path_proj_out_windows, path_proj_out_windows_debug, path_proj_out_windows_release, path_proj_out_macosx, path_proj_out_macosx_debug, path_proj_out_macosx_release]
+    recreate_paths = [path_proj_out_linux, path_proj_out_linux_debug, path_proj_out_linux_release, path_proj_out_windows, path_proj_out_windows_debug, path_proj_out_windows_release, path_proj_out_macos, path_proj_out_macos_debug, path_proj_out_macos_release]
 
     for rp in recreate_paths:
         if not path_utils.recreate_as_folder_if_needed(rp):
