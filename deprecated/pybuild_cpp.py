@@ -127,7 +127,7 @@ class Builder():
     def standard_cpp_hook(self):
 
         # common compiler flags
-        if (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOSX) and self.compiler == "g++":
+        if (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOS) and self.compiler == "g++":
             self.compiler_flags_common += standard_cpp.get_cpp_compiler_flags_linux_common_gcc()
 
         # debug compiler flags

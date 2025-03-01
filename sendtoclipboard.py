@@ -38,7 +38,7 @@ def sendtoclipboard(contents):
     clipboard_app = ""
     if plat == get_platform.PLAT_WINDOWS:
         clipboard_app = "clip"
-    elif plat == get_platform.PLAT_MACOSX:
+    elif plat == get_platform.PLAT_MACOS:
         clipboard_app = "pbcopy"
     else:
         return False, "Unsupported platform"

@@ -6,7 +6,7 @@ PLAT_LINUX = "linux"
 PLAT_WINDOWS = "windows"
 PLAT_CYGWIN = "cygwin"
 PLAT_MSYS = "msys"
-PLAT_MACOSX = "macosx"
+PLAT_MACOS = "macos"
 PLAT_UNKNOWN = "unknown_platform"
 
 ARCH_64 = "x64"
@@ -24,7 +24,7 @@ def getplat():
     elif "msys_nt" in ps:
         return PLAT_MSYS
     elif ps == "darwin":
-        return PLAT_MACOSX
+        return PLAT_MACOS
     return PLAT_UNKNOWN
 
 def getarch():
