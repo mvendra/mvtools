@@ -22,7 +22,7 @@ if [ -z $OUTFILE ]; then
   OUTFILE=${INFILE}.enc
 fi
 
-if [ -e $OUTIFLE ]; then
+if [ -e $OUTFILE ]; then
   echo "$OUTFILE already exists. Will not overwrite. Aborting."
   exit 1
 fi
