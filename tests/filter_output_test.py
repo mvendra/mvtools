@@ -20,6 +20,19 @@ class FilterOutputTest(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def testIsDigit(self):
+        self.assertTrue(filter_output.is_digit('0'))
+        self.assertTrue(filter_output.is_digit('1'))
+        self.assertTrue(filter_output.is_digit('2'))
+        self.assertTrue(filter_output.is_digit('3'))
+        self.assertTrue(filter_output.is_digit('4'))
+        self.assertTrue(filter_output.is_digit('5'))
+        self.assertTrue(filter_output.is_digit('6'))
+        self.assertTrue(filter_output.is_digit('7'))
+        self.assertTrue(filter_output.is_digit('8'))
+        self.assertTrue(filter_output.is_digit('9'))
+        self.assertFalse(filter_output.is_digit('a'))
+
     def testIsHexDigit(self):
         self.assertTrue(filter_output.is_hex_digit('0'))
         self.assertTrue(filter_output.is_hex_digit('1'))

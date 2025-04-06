@@ -6,6 +6,9 @@ import os
 import path_utils
 import terminal_colors
 
+def is_digit(character):
+    return character in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
 def is_hex_digit(character):
     return character in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
 
@@ -122,6 +125,130 @@ def is_asan_stack_entry(expected, line):
 
     return False, "Unable to detect stack entry: input line [%s] is unrecognized" % line
 
+def is_line_error_asan_segv_unk_addr(line):
+
+    if len(line) < 7:
+        return False
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    next_eq = line.find("=")
+    if next_eq == -1:
+        return False
+
+    pid_entry = line[0:next_eq]
+    for c in pid_entry:
+        if not is_digit(c):
+            return False
+    line = line[next_eq:]
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    if len(line) < 49:
+        return False
+
+    if line[0:49] == "ERROR: AddressSanitizer: SEGV on unknown address ":
+        return True
+
+    return False
+
+def is_line_sig_caused_by_read_mem_acc(line):
+
+    if len(line) < 7:
+        return False
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    next_eq = line.find("=")
+    if next_eq == -1:
+        return False
+
+    pid_entry = line[0:next_eq]
+    for c in pid_entry:
+        if not is_digit(c):
+            return False
+    line = line[next_eq:]
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    if len(line) < 45:
+        return False
+
+    if line[0:45] == "The signal is caused by a READ memory access.":
+        return True
+
+    return False
+
+def is_line_hint_addr_point_zero_page(line):
+
+    if len(line) < 7:
+        return False
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    next_eq = line.find("=")
+    if next_eq == -1:
+        return False
+
+    pid_entry = line[0:next_eq]
+    for c in pid_entry:
+        if not is_digit(c):
+            return False
+    line = line[next_eq:]
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    if len(line) < 38:
+        return False
+
+    if line[0:38] == "Hint: address points to the zero page.":
+        return True
+
+    return False
+
+def is_line_aborting(line):
+
+    if len(line) < 7:
+        return False
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    next_eq = line.find("=")
+    if next_eq == -1:
+        return False
+
+    pid_entry = line[0:next_eq]
+    for c in pid_entry:
+        if not is_digit(c):
+            return False
+    line = line[next_eq:]
+
+    if line[0:2] != "==":
+        return False
+    line = line[2:]
+
+    if len(line) < 8:
+        return False
+
+    if line[0:8] == "ABORTING":
+        return True
+
+    return False
+
 def asan_vga_v1_should_ignore_stack(stack_entries):
 
     ign_entries = ["(<unknown module>)", "_XimOpenIM", "nvidia_drv"]
@@ -212,6 +339,16 @@ def filter_asan_echo(contents):
 
             if "=================================================================" == l:
                 contents_list_result += "%s\n" % l
+            elif "AddressSanitizer:DEADLYSIGNAL" == l:
+                contents_list_result += "%s\n" % l
+            elif is_line_error_asan_segv_unk_addr(l):
+                contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_RED_BOLD, l, terminal_colors.TTY_WHITE)
+            elif is_line_sig_caused_by_read_mem_acc(l):
+                contents_list_result += "%s\n" % l
+            elif is_line_hint_addr_point_zero_page(l):
+                contents_list_result += "%s\n" % l
+                exp_idx = 0
+                stack_mode = True
             elif "ERROR: LeakSanitizer: detected memory leaks" in l:
                 contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_RED_BOLD, l, terminal_colors.TTY_WHITE)
             elif "Direct leak of" in l or "Indirect leak of" in l:
@@ -220,6 +357,10 @@ def filter_asan_echo(contents):
                 stack_mode = True
             elif "SUMMARY: AddressSanitizer:" in l:
                 contents_list_result += "%s" % l
+            elif "AddressSanitizer can not provide additional info." == l:
+                contents_list_result += "%s\n" % l
+            elif is_line_aborting(l):
+                contents_list_result += "\n%s" % l
             else:
                 return False, "Unable to detect pattern: [%s] (line number %d)" % (l, n-1)
 
@@ -271,7 +412,7 @@ def filter_asan_vga_v1(contents):
                 continue
 
             contents_list_result += l
-            if not "SUMMARY: AddressSanitizer:" in l:
+            if n != len(contents_list):
                 contents_list_result += "\n"
 
     return True, contents_list_result
