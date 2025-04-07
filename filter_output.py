@@ -73,6 +73,33 @@ def scan_next_frame_num(expected, line):
 
     return True, local_line
 
+def scan_eq_eq_pid_eq_eq(line):
+
+    local_line = line
+
+    if len(local_line) < 5:
+        return False, None
+
+    if local_line[0:2] != "==":
+        return False, None
+    local_line = local_line[2:]
+
+    next_eq = local_line.find("=")
+    if next_eq == -1:
+        return False, None
+
+    pid_entry = local_line[0:next_eq]
+    for c in pid_entry:
+        if not is_digit(c):
+            return False, None
+    local_line = local_line[next_eq:]
+
+    if local_line[0:2] != "==":
+        return False, None
+    local_line = local_line[2:]
+
+    return True, local_line
+
 def is_asan_stack_entry(expected, line):
 
     local_line = line
@@ -127,124 +154,74 @@ def is_asan_stack_entry(expected, line):
 
 def is_line_error_asan_segv_unk_addr(line):
 
-    if len(line) < 7:
+    local_line = line
+
+    v, r = scan_eq_eq_pid_eq_eq(local_line)
+    if not v:
+        return False
+    local_line = r
+
+    if len(local_line) < 49:
         return False
 
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
-
-    next_eq = line.find("=")
-    if next_eq == -1:
-        return False
-
-    pid_entry = line[0:next_eq]
-    for c in pid_entry:
-        if not is_digit(c):
-            return False
-    line = line[next_eq:]
-
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
-
-    if len(line) < 49:
-        return False
-
-    if line[0:49] == "ERROR: AddressSanitizer: SEGV on unknown address ":
+    if local_line[0:49] == "ERROR: AddressSanitizer: SEGV on unknown address ":
         return True
 
     return False
 
-def is_line_sig_caused_by_read_mem_acc(line):
+def is_line_sig_caused_by_read_or_write_mem_acc(line):
 
-    if len(line) < 7:
+    local_line = line
+
+    v, r = scan_eq_eq_pid_eq_eq(local_line)
+    if not v:
+        return False
+    local_line = r
+
+    if len(local_line) < 45:
         return False
 
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
+    if local_line[0:45] == "The signal is caused by a READ memory access.":
+        return True
 
-    next_eq = line.find("=")
-    if next_eq == -1:
+    if len(local_line) < 46:
         return False
 
-    pid_entry = line[0:next_eq]
-    for c in pid_entry:
-        if not is_digit(c):
-            return False
-    line = line[next_eq:]
-
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
-
-    if len(line) < 45:
-        return False
-
-    if line[0:45] == "The signal is caused by a READ memory access.":
+    if local_line[0:46] == "The signal is caused by a WRITE memory access.":
         return True
 
     return False
 
 def is_line_hint_addr_point_zero_page(line):
 
-    if len(line) < 7:
+    local_line = line
+
+    v, r = scan_eq_eq_pid_eq_eq(local_line)
+    if not v:
+        return False
+    local_line = r
+
+    if len(local_line) < 38:
         return False
 
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
-
-    next_eq = line.find("=")
-    if next_eq == -1:
-        return False
-
-    pid_entry = line[0:next_eq]
-    for c in pid_entry:
-        if not is_digit(c):
-            return False
-    line = line[next_eq:]
-
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
-
-    if len(line) < 38:
-        return False
-
-    if line[0:38] == "Hint: address points to the zero page.":
+    if local_line[0:38] == "Hint: address points to the zero page.":
         return True
 
     return False
 
 def is_line_aborting(line):
 
-    if len(line) < 7:
+    local_line = line
+
+    v, r = scan_eq_eq_pid_eq_eq(local_line)
+    if not v:
+        return False
+    local_line = r
+
+    if len(local_line) < 8:
         return False
 
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
-
-    next_eq = line.find("=")
-    if next_eq == -1:
-        return False
-
-    pid_entry = line[0:next_eq]
-    for c in pid_entry:
-        if not is_digit(c):
-            return False
-    line = line[next_eq:]
-
-    if line[0:2] != "==":
-        return False
-    line = line[2:]
-
-    if len(line) < 8:
-        return False
-
-    if line[0:8] == "ABORTING":
+    if local_line[0:8] == "ABORTING":
         return True
 
     return False
@@ -343,7 +320,7 @@ def filter_asan_echo(contents):
                 contents_list_result += "%s\n" % l
             elif is_line_error_asan_segv_unk_addr(l):
                 contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_RED_BOLD, l, terminal_colors.TTY_WHITE)
-            elif is_line_sig_caused_by_read_mem_acc(l):
+            elif is_line_sig_caused_by_read_or_write_mem_acc(l):
                 contents_list_result += "%s\n" % l
             elif is_line_hint_addr_point_zero_page(l):
                 contents_list_result += "%s\n" % l

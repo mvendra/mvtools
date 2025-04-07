@@ -119,6 +119,37 @@ class FilterOutputTest(unittest.TestCase):
         v, r = filter_output.scan_next_frame_num(1, "2 ")
         self.assertFalse(v)
 
+    def testScanEqEqPidEqEq1(self):
+        v, r = filter_output.scan_eq_eq_pid_eq_eq("=1==")
+        self.assertFalse(v)
+
+    def testScanEqEqPidEqEq2(self):
+        v, r = filter_output.scan_eq_eq_pid_eq_eq("==1=")
+        self.assertFalse(v)
+
+    def testScanEqEqPidEqEq3(self):
+        v, r = filter_output.scan_eq_eq_pid_eq_eq("1")
+        self.assertFalse(v)
+
+    def testScanEqEqPidEqEq4(self):
+        v, r = filter_output.scan_eq_eq_pid_eq_eq("==12a34==")
+        self.assertFalse(v)
+
+    def testScanEqEqPidEqEq5(self):
+        v, r = filter_output.scan_eq_eq_pid_eq_eq("==1==")
+        self.assertTrue(v)
+        self.assertEqual(r, "")
+
+    def testScanEqEqPidEqEq6(self):
+        v, r = filter_output.scan_eq_eq_pid_eq_eq("==1234==")
+        self.assertTrue(v)
+        self.assertEqual(r, "")
+
+    def testScanEqEqPidEqEq7(self):
+        v, r = filter_output.scan_eq_eq_pid_eq_eq("==1234==: other stuff")
+        self.assertTrue(v)
+        self.assertEqual(r, ": other stuff")
+
     def testIsAsanStackEntry1(self):
         v, r = filter_output.is_asan_stack_entry(0, "   #0 0x7f4b58acda57 in __interceptor_calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:154")
         self.assertFalse(v)
