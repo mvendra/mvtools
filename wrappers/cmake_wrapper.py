@@ -49,7 +49,7 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=output_path)
     if not v:
-        return False, "Failed running cmake configure-and-generate command: [%s]" % r # mvtodo: rong. its not cmd_simple.
+        return False, "Failed running cmake configure-and-generate command: [%s][%s]" % (r.stdout, r.stderr)
     return True, (r.success, r.stdout, r.stderr)
 
 def puaq():
