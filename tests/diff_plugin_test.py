@@ -70,7 +70,7 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
-        local_params["pass_mode"] = "invalid"
+        local_params["mode"] = "invalid"
         self.diff_task.params = local_params
 
         v, r = self.diff_task._read_params()
@@ -81,7 +81,7 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
-        local_params["pass_mode"] = "eq"
+        local_params["mode"] = "eq"
         self.diff_task.params = local_params
 
         v, r = self.diff_task._read_params()
@@ -93,7 +93,7 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
-        local_params["pass_mode"] = "ne"
+        local_params["mode"] = "ne"
         self.diff_task.params = local_params
 
         v, r = self.diff_task._read_params()
@@ -105,7 +105,7 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
-        local_params["pass_mode"] = "eq"
+        local_params["mode"] = "eq"
         self.diff_task.params = local_params
 
         with mock.patch("diff_wrapper.do_diff", return_value=(True, "")) as dummy:
@@ -119,7 +119,7 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
-        local_params["pass_mode"] = "eq"
+        local_params["mode"] = "eq"
         self.diff_task.params = local_params
 
         with mock.patch("diff_wrapper.do_diff", return_value=(True, "mocked contents")) as dummy:
@@ -133,7 +133,7 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
-        local_params["pass_mode"] = "ne"
+        local_params["mode"] = "ne"
         self.diff_task.params = local_params
 
         with mock.patch("diff_wrapper.do_diff", return_value=(True, "")) as dummy:
@@ -147,7 +147,7 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
-        local_params["pass_mode"] = "ne"
+        local_params["mode"] = "ne"
         self.diff_task.params = local_params
 
         with mock.patch("diff_wrapper.do_diff", return_value=(True, "mocked contents")) as dummy:

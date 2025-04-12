@@ -16,7 +16,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         left_path = None
         right_path = None
-        pass_mode = None
+        mode = None
 
         # left_path
         try:
@@ -30,34 +30,34 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "right_path is a required parameter"
 
-        # pass_mode
+        # mode
         try:
-            pass_mode = self.params["pass_mode"]
+            mode = self.params["mode"]
         except KeyError:
-            return False, "pass_mode is a required parameter"
+            return False, "mode is a required parameter"
 
         # params validation
-        if not pass_mode in ["eq", "ne"]:
-            return False, "pass_mode [%s] is invalid" % pass_mode
+        if not mode in ["eq", "ne"]:
+            return False, "mode [%s] is invalid" % mode
 
-        return True, (left_path, right_path, pass_mode)
+        return True, (left_path, right_path, mode)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        left_path, right_path, pass_mode = r
+        left_path, right_path, mode = r
 
         v, r = diff_wrapper.do_diff(left_path, right_path)
         if not v:
             return False, r
         contents = r
 
-        if pass_mode == "eq":
+        if mode == "eq":
             if len(contents) > 0:
                 return False, "contents of [%s] and [%s] are not equal" % (left_path, right_path)
-        elif pass_mode == "ne":
+        elif mode == "ne":
             if len(contents) == 0:
                 return False, "contents of [%s] and [%s] are equal" % (left_path, right_path)
 
