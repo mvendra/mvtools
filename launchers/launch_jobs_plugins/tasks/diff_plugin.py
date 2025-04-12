@@ -37,7 +37,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "mode is a required parameter"
 
         # params validation
-        if not mode in ["eq", "ne"]:
+        if not mode in ["eq-fail", "ne-fail"]:
             return False, "mode [%s] is invalid" % mode
 
         return True, (left_path, right_path, mode)
@@ -54,11 +54,11 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         contents = r
 
-        if mode == "eq":
-            if len(contents) > 0:
-                return False, "contents of [%s] and [%s] are not equal" % (left_path, right_path)
-        elif mode == "ne":
+        if mode == "eq-fail":
             if len(contents) == 0:
                 return False, "contents of [%s] and [%s] are equal" % (left_path, right_path)
+        elif mode == "ne-fail":
+            if len(contents) > 0:
+                return False, "contents of [%s] and [%s] are not equal" % (left_path, right_path)
 
         return True, None
