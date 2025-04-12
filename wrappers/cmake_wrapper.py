@@ -25,7 +25,7 @@ def extract_options(cmake_path, source_path, temp_path):
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=temp_path)
     if not v:
-        return False, "Failed running cmake extract-options command: [%s]" % r
+        return False, "Failed running cmake extract-options command: [%s][%s]" % (r.stdout, r.stderr)
     return True, (r.success, r.stdout, r.stderr)
 
 def configure_and_generate(cmake_path, source_path, output_path, generator_type, options):
@@ -49,7 +49,7 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=output_path)
     if not v:
-        return False, "Failed running cmake configure-and-generate command: [%s]" % r
+        return False, "Failed running cmake configure-and-generate command: [%s]" % r # mvtodo: rong. its not cmd_simple.
     return True, (r.success, r.stdout, r.stderr)
 
 def puaq():

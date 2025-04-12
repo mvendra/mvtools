@@ -57,6 +57,20 @@ def set_option_build_type(options, option_value):
 
     return set_option(options, "CMAKE_BUILD_TYPE", "STRING", option_value)
 
+def extract_options(cmake_path, source_path, temp_path, output_path):
+
+    if os.path.exists(output_path):
+        return False, "Output path [%s] already exists" % output_path
+
+    v, r = cmake_wrapper.extract_options(cmake_path, source_path, temp_path)
+    if not v:
+        return False, r
+
+    with open(output_path, "w") as f:
+        f.write(r[1])
+
+    return True, None
+
 def configure_and_generate(cmake_path, source_path, output_path, generator_type, options):
 
     local_generator_type = generator_type
