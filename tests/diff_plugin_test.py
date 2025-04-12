@@ -112,6 +112,18 @@ class DiffPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.left_path, self.right_path, "ne-fail"))
 
+    def testDiffPluginReadParams7(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["right_path"] = self.right_path
+        local_params["mode"] = "ne-warn"
+        self.diff_task.params = local_params
+
+        v, r = self.diff_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.left_path, self.right_path, "ne-warn"))
+
     def testDiffPluginRunTask1(self):
 
         local_params = {}
@@ -193,6 +205,34 @@ class DiffPluginTest(unittest.TestCase):
         with mock.patch("diff_wrapper.do_diff", return_value=(True, "mocked contents")) as dummy:
             v, r = self.diff_task.run_task(print, "exe_name")
             self.assertFalse(v)
+            self.assertEqual(r, "contents of [%s] and [%s] are not equal" % (self.left_path, self.right_path))
+            dummy.assert_called_with(self.left_path, self.right_path)
+
+    def testDiffPluginRunTask7(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["right_path"] = self.right_path
+        local_params["mode"] = "ne-warn"
+        self.diff_task.params = local_params
+
+        with mock.patch("diff_wrapper.do_diff", return_value=(True, "")) as dummy:
+            v, r = self.diff_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.left_path, self.right_path)
+
+    def testDiffPluginRunTask8(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["right_path"] = self.right_path
+        local_params["mode"] = "ne-warn"
+        self.diff_task.params = local_params
+
+        with mock.patch("diff_wrapper.do_diff", return_value=(True, "mocked contents")) as dummy:
+            v, r = self.diff_task.run_task(print, "exe_name")
+            self.assertTrue(v)
             self.assertEqual(r, "contents of [%s] and [%s] are not equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, self.right_path)
 
