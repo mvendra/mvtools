@@ -48,6 +48,7 @@ class DiffWrapperTest(unittest.TestCase):
         self.file2_esp4 = path_utils.concat_path(self.test_dir, "file2_esp4.txt")
         self.file1_bin = path_utils.concat_path(self.test_dir, "file1.bin")
         self.file2_bin = path_utils.concat_path(self.test_dir, "file2.bin")
+        self.folder1 = path_utils.concat_path(self.test_dir, "folder1")
         self.nonexistent1 = path_utils.concat_path(self.test_dir, "nonexistent1")
         self.nonexistent2 = path_utils.concat_path(self.test_dir, "nonexistent2")
 
@@ -74,6 +75,8 @@ class DiffWrapperTest(unittest.TestCase):
         with open(self.file2_bin, "wb+") as f:
             f.write(b"\xd4\xe5\xf6")
 
+        os.mkdir(self.folder1)
+
         return True, ""
 
     def tearDown(self):
@@ -99,13 +102,25 @@ class DiffWrapperTest(unittest.TestCase):
 
     def testDoDiff4(self):
 
+        v, r = diff_wrapper.do_diff(self.folder1, self.file1)
+        self.assertFalse(v)
+        self.assertEqual(r, "[%s] is a folder." % self.folder1)
+
+    def testDoDiff5(self):
+
+        v, r = diff_wrapper.do_diff(self.file1, self.folder1)
+        self.assertFalse(v)
+        self.assertEqual(r, "[%s] is a folder." % self.folder1)
+
+    def testDoDiff6(self):
+
         with mock.patch("generic_run.run_cmd", return_value=(False, "test error message")) as dummy:
             v, r = diff_wrapper.do_diff(self.file1, self.file2)
             self.assertFalse(v)
             self.assertEqual(r, "Failed running diff command: [test error message]")
             dummy.assert_called_with(["diff", self.file1, self.file2])
 
-    def testDoDiff5(self):
+    def testDoDiff7(self):
 
         test_res = generic_run.run_cmd_result(False, 2, "dummy-stdout", "dummy-stderr")
         with mock.patch("generic_run.run_cmd", return_value=(True, test_res)) as dummy:
@@ -114,33 +129,33 @@ class DiffWrapperTest(unittest.TestCase):
             self.assertEqual(r, "Failed running diff command: [dummy-stdout][dummy-stderr]")
             dummy.assert_called_with(["diff", self.file1, self.file2])
 
-    def testDoDiff6(self):
+    def testDoDiff8(self):
 
         v, r = diff_wrapper.do_diff(self.file1, self.file2)
         self.assertTrue(v)
         self.assertEqual(r, "1c1%s< abc%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
 
-    def testDoDiff7(self):
+    def testDoDiff9(self):
 
         v, r = diff_wrapper.do_diff(self.file1, self.file1)
         self.assertTrue(v)
         self.assertEqual(r, "")
 
-    def testDoDiff8(self):
+    def testDoDiff10(self):
 
         v, r = diff_wrapper.do_diff(self.file1, self.file2_bin)
         self.assertTrue(v)
         self.assertEqual(r[0:44], "1c1%s< abc%s\\ No newline at end of file%s---%s> " % (os.linesep, os.linesep, os.linesep, os.linesep))
         self.assertEqual(r[44:], "%s\\ No newline at end of file%s" % (os.linesep, os.linesep))
 
-    def testDoDiff9(self):
+    def testDoDiff11(self):
 
         v, r = diff_wrapper.do_diff(self.file1_bin, self.file2)
         self.assertTrue(v)
         self.assertEqual(r[0:6], "1c1%s< " % (os.linesep))
         self.assertEqual(r[6:], "%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
 
-    def testDoDiff10(self):
+    def testDoDiff12(self):
 
         v, r = diff_wrapper.do_diff(self.file1_bin, self.file2_bin)
         self.assertTrue(v)
@@ -148,43 +163,43 @@ class DiffWrapperTest(unittest.TestCase):
         self.assertEqual(r[6:41], "%s\\ No newline at end of file%s---%s> " % (os.linesep, os.linesep, os.linesep))
         self.assertEqual(r[41:70], "%s\\ No newline at end of file%s" % (os.linesep, os.linesep))
 
-    def testDoDiff11(self):
+    def testDoDiff13(self):
 
         v, r = diff_wrapper.do_diff(self.file1_bin, self.file1_bin)
         self.assertTrue(v)
         self.assertEqual(r, "")
 
-    def testDoDiff12(self):
+    def testDoDiff14(self):
 
         v, r = diff_wrapper.do_diff(self.file1_hid, self.file2_hid)
         self.assertTrue(v)
         self.assertEqual(r, "1c1%s< abc%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
 
-    def testDoDiff13(self):
+    def testDoDiff15(self):
 
         v, r = diff_wrapper.do_diff(self.file1_esp1, self.file2_esp1)
         self.assertTrue(v)
         self.assertEqual(r, "1c1%s< abc%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
 
-    def testDoDiff14(self):
+    def testDoDiff16(self):
 
         v, r = diff_wrapper.do_diff(self.file1_esp2, self.file2_esp2)
         self.assertTrue(v)
         self.assertEqual(r, "1c1%s< abc%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
 
-    def testDoDiff15(self):
+    def testDoDiff17(self):
 
         v, r = diff_wrapper.do_diff(self.file1_esp3, self.file2_esp3)
         self.assertTrue(v)
         self.assertEqual(r, "1c1%s< abc%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
 
-    def testDoDiff16(self):
+    def testDoDiff18(self):
 
         v, r = diff_wrapper.do_diff(self.file1_esp4, self.file2_esp4)
         self.assertTrue(v)
         self.assertEqual(r, "1c1%s< abc%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
 
-    def testDoDiff17(self):
+    def testDoDiff19(self):
 
         v, r = diff_wrapper.do_diff(self.file1_empty, self.file1_empty)
         self.assertTrue(v)

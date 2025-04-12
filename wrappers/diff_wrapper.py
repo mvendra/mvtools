@@ -19,6 +19,12 @@ def do_diff(left_path, right_path):
     if not os.path.exists(right_path_res):
         return False, "[%s] does not exist." % right_path_res
 
+    if os.path.isdir(left_path_res):
+        return False, "[%s] is a folder." % left_path_res
+
+    if os.path.isdir(right_path_res):
+        return False, "[%s] is a folder." % right_path_res
+
     v, r = generic_run.run_cmd(["diff", left_path_res, right_path_res])
     if not v:
         return False, "Failed running diff command: [%s]" % r
