@@ -8,6 +8,7 @@ from unittest import mock
 from unittest.mock import patch
 
 import mvtools_test_fixture
+import path_utils
 
 import cmake_wrapper
 import generic_run
@@ -34,6 +35,63 @@ class CmakeWrapperTest(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
+
+    def testExtractOptions1(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test2"
+        self.result_obj.stderr = "test3"
+
+        self.folder1 = "folder1"
+        self.folder2 = "folder2"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+        self.folder2_full = path_utils.concat_path(self.test_dir, self.folder2)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
+            self.assertFalse(v)
+            self.assertEqual(r, "Source path [%s] does not exist." % self.folder1_full)
+            dummy.assert_not_called()
+
+    def testExtractOptions2(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test2"
+        self.result_obj.stderr = "test3"
+
+        self.folder1 = "folder1"
+        self.folder2 = "folder2"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+        self.folder2_full = path_utils.concat_path(self.test_dir, self.folder2)
+        os.mkdir(self.folder1_full)
+        os.mkdir(self.folder2_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
+            self.assertFalse(v)
+            self.assertEqual(r, "Temp path [%s] already exists." % self.folder2_full)
+            dummy.assert_not_called()
+
+    def testExtractOptions3(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test2"
+        self.result_obj.stderr = "test3"
+
+        self.folder1 = "folder1"
+        self.folder2 = "folder2"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+        self.folder2_full = path_utils.concat_path(self.test_dir, self.folder2)
+        os.mkdir(self.folder1_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
+            self.assertTrue(v)
+            self.assertTrue(r[0])
+            self.assertEqual(r[1], "test2")
+            self.assertEqual(r[2], "test3")
+            dummy.assert_called_with(["test1", self.folder1_full, "-LAH"], use_cwd=self.folder2_full)
 
     def testConfigureAndGenerateFail1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
