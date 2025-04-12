@@ -102,6 +102,7 @@ class TreePluginTest(unittest.TestCase):
 
         v, r = self.tree_task._read_params()
         self.assertTrue(v)
+        self.assertEqual(r, (self.source_path_full, self.target_path_full))
 
     def testTreePluginRunTask1(self):
 
@@ -113,6 +114,8 @@ class TreePluginTest(unittest.TestCase):
         with mock.patch("tree_wrapper.make_tree", return_value=(True, "mocked contents")) as dummy:
             v, r = self.tree_task.run_task(print, "exe_name")
             self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.source_path_full)
 
         self.assertTrue(os.path.exists(self.target_path_full))
 
