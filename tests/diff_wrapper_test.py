@@ -34,6 +34,8 @@ class DiffWrapperTest(unittest.TestCase):
 
         self.file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         self.file2 = path_utils.concat_path(self.test_dir, "file2.txt")
+        self.file1_empty = path_utils.concat_path(self.test_dir, "file1_empty.txt")
+        self.file2_empty = path_utils.concat_path(self.test_dir, "file2_empty.txt")
         self.file1_hid = path_utils.concat_path(self.test_dir, ".file1.txt")
         self.file2_hid = path_utils.concat_path(self.test_dir, ".file2.txt")
         self.file1_esp1 = path_utils.concat_path(self.test_dir, "   file1.txt")
@@ -51,6 +53,8 @@ class DiffWrapperTest(unittest.TestCase):
 
         self.assertTrue(create_and_write_file.create_file_contents(self.file1, "abc"))
         self.assertTrue(create_and_write_file.create_file_contents(self.file2, "def"))
+        self.assertTrue(create_and_write_file.create_file_contents(self.file1_empty, ""))
+        self.assertTrue(create_and_write_file.create_file_contents(self.file2_empty, ""))
         self.assertTrue(create_and_write_file.create_file_contents(self.file1_hid, "abc"))
         self.assertTrue(create_and_write_file.create_file_contents(self.file2_hid, "def"))
         self.assertTrue(create_and_write_file.create_file_contents(self.file1_esp1, "abc"))
@@ -179,6 +183,12 @@ class DiffWrapperTest(unittest.TestCase):
         v, r = diff_wrapper.do_diff(self.file1_esp4, self.file2_esp4)
         self.assertTrue(v)
         self.assertEqual(r, "1c1%s< abc%s\\ No newline at end of file%s---%s> def%s\\ No newline at end of file%s" % (os.linesep, os.linesep, os.linesep, os.linesep, os.linesep, os.linesep))
+
+    def testDoDiff17(self):
+
+        v, r = diff_wrapper.do_diff(self.file1_empty, self.file1_empty)
+        self.assertTrue(v)
+        self.assertEqual(r, "")
 
 if __name__ == '__main__':
     unittest.main()
