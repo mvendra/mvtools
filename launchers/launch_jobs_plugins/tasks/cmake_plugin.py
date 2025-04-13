@@ -40,8 +40,10 @@ class CustomTask(launch_jobs.BaseTask):
     def _read_params(self):
 
         cmake_path = None
-        source_path = None
         output_path = None
+        extract_options = None
+        temp_path = None
+        source_path = None
         gen_type = None
         build_type = None
         install_prefix = None
@@ -57,17 +59,31 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
-        # source_path
-        try:
-            source_path = self.params["source_path"]
-        except KeyError:
-            return False, "source_path is a required parameter"
-
         # output_path
         try:
             output_path = self.params["output_path"]
         except KeyError:
             return False, "output_path is a required parameter"
+
+        # extract_options - special case (ie. hack)
+        try:
+            extract_options = self.params["extract_options"]
+            if len(self.params) != 3 and len(self.params) != 4:
+                return False, "extract_options requires three or four parameters" # mvtodo: coverage
+            # temp_path
+            try:
+                temp_path = self.params["temp_path"]
+            except KeyError:
+                return False, "temp_path is a required parameter (for extract_options)"
+            return True, (cmake_path, extract_options, temp_path, output_path)
+        except KeyError:
+            pass # optional
+
+        # source_path
+        try:
+            source_path = self.params["source_path"]
+        except KeyError:
+            return False, "source_path is a required parameter"
 
         # gen_type
         try:
@@ -146,6 +162,12 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
+
+        # special case/hack - extract options and early-quit
+        if len(r) == 4:
+            cmake_path, extract_options, temp_path, output_path = r
+            return cmake_lib.extract_options(cmake_path, extract_options, temp_path, output_path)
+
         cmake_path, source_path, output_path, gen_type, build_type, install_prefix, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings = r
 
         # assemble options

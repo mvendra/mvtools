@@ -46,6 +46,9 @@ class CmakePluginTest(unittest.TestCase):
         # nonexistent path 1
         self.nonexistent_path1 = path_utils.concat_path(self.test_dir, "nonexistent_path1")
 
+        # nonexistent path 2
+        self.nonexistent_path2 = path_utils.concat_path(self.test_dir, "nonexistent_path2")
+
         # existent file 1
         self.existent_file1 = path_utils.concat_path(self.test_dir, "existent_file1.txt")
         create_and_write_file.create_file_contents(self.existent_file1, "test file 1")
@@ -60,15 +63,21 @@ class CmakePluginTest(unittest.TestCase):
     def testCmakePluginReadParams1(self):
 
         local_params = {}
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["extract_options"] = self.existent_path1
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertEqual( r, (None, self.existent_path1, self.nonexistent_path2, self.nonexistent_path1) )
 
     def testCmakePluginReadParams2(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["extract_options"] = self.existent_path1
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
@@ -78,13 +87,54 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
-        local_params["source_path"] = "dummy_value2"
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["extract_options"] = self.existent_path1
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
     def testCmakePluginReadParams4(self):
+
+        local_params = {}
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["extract_options"] = self.existent_path1
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.nonexistent_path2, self.nonexistent_path1) )
+
+    def testCmakePluginReadParams5(self):
+
+        local_params = {}
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams6(self):
+
+        local_params = {}
+        local_params["cmake_path"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams7(self):
+
+        local_params = {}
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["source_path"] = "dummy_value2"
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams8(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -95,7 +145,7 @@ class CmakePluginTest(unittest.TestCase):
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
-    def testCmakePluginReadParams5(self):
+    def testCmakePluginReadParams9(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -107,7 +157,7 @@ class CmakePluginTest(unittest.TestCase):
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
-    def testCmakePluginReadParams6(self):
+    def testCmakePluginReadParams10(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -119,7 +169,7 @@ class CmakePluginTest(unittest.TestCase):
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
-    def testCmakePluginReadParams7(self):
+    def testCmakePluginReadParams11(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -132,7 +182,7 @@ class CmakePluginTest(unittest.TestCase):
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
-    def testCmakePluginReadParams8(self):
+    def testCmakePluginReadParams12(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -145,7 +195,7 @@ class CmakePluginTest(unittest.TestCase):
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
-    def testCmakePluginReadParams9(self):
+    def testCmakePluginReadParams13(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -158,7 +208,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", None, None, None, None, None, None, False) )
 
-    def testCmakePluginReadParams10(self):
+    def testCmakePluginReadParams14(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -172,7 +222,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", None, None, None, None, None, False) )
 
-    def testCmakePluginReadParams11(self):
+    def testCmakePluginReadParams15(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -187,7 +237,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, None, None, None, False) )
 
-    def testCmakePluginReadParams12(self):
+    def testCmakePluginReadParams16(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -203,7 +253,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", None, None, None, False) )
 
-    def testCmakePluginReadParams13(self):
+    def testCmakePluginReadParams17(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -220,7 +270,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], None, None, False) )
 
-    def testCmakePluginReadParams14(self):
+    def testCmakePluginReadParams18(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -237,7 +287,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8", "dummy_value9"], None, None, False) )
 
-    def testCmakePluginReadParams15(self):
+    def testCmakePluginReadParams19(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -255,7 +305,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], "dummy_value9", None, False) )
 
-    def testCmakePluginReadParams16(self):
+    def testCmakePluginReadParams20(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -274,7 +324,7 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", False) )
 
-    def testCmakePluginReadParams17(self):
+    def testCmakePluginReadParams21(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -317,6 +367,70 @@ class CmakePluginTest(unittest.TestCase):
     def testCmakePluginRunTask1(self):
 
         local_params = {}
+        local_params["cmake_path"] = None
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["extract_options"] = self.existent_path1
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(False, "err-msg")) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "err-msg")
+            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path2, self.nonexistent_path1)
+
+    def testCmakePluginRunTask2(self):
+
+        local_params = {}
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["extract_options"] = self.existent_path1
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(False, "err-msg")) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "err-msg")
+            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path2, self.nonexistent_path1)
+
+    def testCmakePluginRunTask3(self):
+
+        local_params = {}
+        local_params["cmake_path"] = None
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["extract_options"] = self.existent_path1
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path2, self.nonexistent_path1)
+
+    def testCmakePluginRunTask4(self):
+
+        local_params = {}
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["extract_options"] = self.existent_path1
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path2, self.nonexistent_path1)
+
+    def testCmakePluginRunTask5(self):
+
+        local_params = {}
         local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.existent_path2
@@ -333,7 +447,7 @@ class CmakePluginTest(unittest.TestCase):
                     dummy2.assert_not_called()
                     dummy3.assert_not_called()
 
-    def testCmakePluginRunTask2(self):
+    def testCmakePluginRunTask6(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -353,7 +467,7 @@ class CmakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
-    def testCmakePluginRunTask3(self):
+    def testCmakePluginRunTask7(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -373,7 +487,7 @@ class CmakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
-    def testCmakePluginRunTask4(self):
+    def testCmakePluginRunTask8(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -394,7 +508,7 @@ class CmakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
-    def testCmakePluginRunTask5(self):
+    def testCmakePluginRunTask9(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
@@ -413,7 +527,7 @@ class CmakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
-    def testCmakePluginRunTask6(self):
+    def testCmakePluginRunTask10(self):
 
         local_params = {}
         local_params["cmake_path"] = "dummy_value1"
