@@ -69,7 +69,7 @@ class CustomTask(launch_jobs.BaseTask):
         try:
             extract_options = self.params["extract_options"]
             if len(self.params) != 3 and len(self.params) != 4:
-                return False, "extract_options requires three or four parameters" # mvtodo: coverage
+                return False, "extract_options requires three or four parameters"
             # temp_path
             try:
                 temp_path = self.params["temp_path"]
