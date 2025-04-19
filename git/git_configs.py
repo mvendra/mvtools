@@ -17,6 +17,8 @@ def set_git_configs(name, email):
     report = call_and_assemble_report(report, "diff.tool", "meld")
     report = call_and_assemble_report(report, "diff.external", "meldiff.py")
     report = call_and_assemble_report(report, "push.default", "simple")
+    report = call_and_assemble_report(report, "init.defaultBranch", "master")
+    report = call_and_assemble_report(report, "protocol.file.allow", "always")
 
     if len(report) > 0:
         print("Failures:")
