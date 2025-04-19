@@ -46,6 +46,8 @@ iat
 
 7z
 
+palletapp (nonpublic)
+
 autoselfext
 ===========
 
