@@ -20,7 +20,7 @@ def print_warning(msg):
 def print_error(msg):
     print("%s%s%s" % (terminal_colors.TTY_RED, msg, terminal_colors.get_standard_color()))
 
-def config_repos_remote_internal(repos, options):
+def git_config_remotes_internal(repos, options):
 
     for rp in repos:
 
@@ -64,9 +64,9 @@ def config_repos_remote_internal(repos, options):
             print_error("Repo [%s]: %s" % (rp, r))
             return False
 
-def config_repos_remote():
+def git_config_remotes():
 
-    r = git_visitor_base.do_visit(None, None, config_repos_remote_internal)
+    r = git_visitor_base.do_visit(None, None, git_config_remotes_internal)
     if False in r:
         return False
     return True
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     internal_options["target_remote"] = sys.argv[2]
     internal_options["target_remote_address"] = sys.argv[3]
 
-    if not config_repos_remote():
+    if not git_config_remotes():
         print_error("Operation failed.")
         sys.exit(1)
     print_success("Operation successful.")
