@@ -85,13 +85,24 @@ class MakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
+        local_params["jobs"] = "8"
+        self.make_task.params = local_params
+
+        v, r = self.make_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.existent_path1, "8", None, None, None, None, False))
+
+    def testMakePluginReadParams5(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
         local_params["save_output"] = self.existent_path2
         self.make_task.params = local_params
 
         v, r = self.make_task._read_params()
         self.assertFalse(v)
 
-    def testMakePluginReadParams5(self):
+    def testMakePluginReadParams6(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -101,7 +112,7 @@ class MakePluginTest(unittest.TestCase):
         v, r = self.make_task._read_params()
         self.assertFalse(v)
 
-    def testMakePluginReadParams6(self):
+    def testMakePluginReadParams7(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -112,7 +123,7 @@ class MakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_path1, None, "dummy_value2", None, None, None, False))
 
-    def testMakePluginReadParams7(self):
+    def testMakePluginReadParams8(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -124,7 +135,7 @@ class MakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", None, None, False))
 
-    def testMakePluginReadParams8(self):
+    def testMakePluginReadParams9(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -137,7 +148,7 @@ class MakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, False))
 
-    def testMakePluginReadParams9(self):
+    def testMakePluginReadParams10(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -151,7 +162,7 @@ class MakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", False))
 
-    def testMakePluginReadParams10(self):
+    def testMakePluginReadParams11(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -203,6 +214,24 @@ class MakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
+        local_params["jobs"] = "8"
+        self.make_task.params = local_params
+
+        with mock.patch("make_wrapper.make", return_value=(True, (False, "test1", "test2"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
+
+                    v, r = self.make_task.run_task(print, "exe_name")
+                    self.assertTrue(v)
+                    self.assertEqual(r, "test2")
+                    dummy1.assert_called_with(self.existent_path1, "8", None, None)
+                    dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
+                    dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
+
+    def testMakePluginRunTask4(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
         self.make_task.params = local_params
 
         with mock.patch("make_wrapper.make", return_value=(True, (False, "test1", "test2"))) as dummy1:
@@ -216,7 +245,7 @@ class MakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
-    def testMakePluginRunTask4(self):
+    def testMakePluginRunTask5(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -234,7 +263,7 @@ class MakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
-    def testMakePluginRunTask5(self):
+    def testMakePluginRunTask6(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -250,7 +279,7 @@ class MakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
-    def testMakePluginRunTask6(self):
+    def testMakePluginRunTask7(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -268,7 +297,7 @@ class MakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Make's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Make's stderr has been saved to: [dummy_value6]"))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
-    def testMakePluginRunTask7(self):
+    def testMakePluginRunTask8(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
@@ -285,7 +314,7 @@ class MakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
-    def testMakePluginRunTask8(self):
+    def testMakePluginRunTask9(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
