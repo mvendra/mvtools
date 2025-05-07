@@ -70,7 +70,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, None, None, None, False))
+        self.assertEqual(r, (self.existent_path1, None, None, None, None, None, False))
 
     def testMakePluginReadParams3(self):
 
@@ -110,7 +110,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, "dummy_value2", None, None, None, False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", None, None, None, False))
 
     def testMakePluginReadParams7(self):
 
@@ -122,7 +122,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, "dummy_value2", "dummy_value3", None, None, False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", None, None, False))
 
     def testMakePluginReadParams8(self):
 
@@ -135,7 +135,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", None, False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, False))
 
     def testMakePluginReadParams9(self):
 
@@ -149,7 +149,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", False))
 
     def testMakePluginReadParams10(self):
 
@@ -164,7 +164,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", True))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", True))
 
     def testMakePluginRunTask1(self):
 
@@ -178,7 +178,7 @@ class MakePluginTest(unittest.TestCase):
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertFalse(v)
-                    dummy1.assert_called_with(self.existent_path1, None, None)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
                     dummy2.assert_not_called()
                     dummy3.assert_not_called()
 
@@ -195,7 +195,7 @@ class MakePluginTest(unittest.TestCase):
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test2")
-                    dummy1.assert_called_with(self.existent_path1, None, None)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
@@ -212,7 +212,7 @@ class MakePluginTest(unittest.TestCase):
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%stest2" % os.linesep)
-                    dummy1.assert_called_with(self.existent_path1, None, None)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
@@ -230,7 +230,7 @@ class MakePluginTest(unittest.TestCase):
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%smake's stderr has been suppressed" % os.linesep)
-                    dummy1.assert_called_with(self.existent_path1, None, None)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
@@ -246,7 +246,7 @@ class MakePluginTest(unittest.TestCase):
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    dummy1.assert_called_with(self.existent_path1, None, None)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
@@ -264,7 +264,7 @@ class MakePluginTest(unittest.TestCase):
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    dummy1.assert_called_with(self.existent_path1, None, None)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
                     dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Make's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Make's stderr has been saved to: [dummy_value6]"))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
@@ -281,7 +281,7 @@ class MakePluginTest(unittest.TestCase):
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    dummy1.assert_called_with(self.existent_path1, "dummy_value2", None)
+                    dummy1.assert_called_with(self.existent_path1, None, "dummy_value2", None)
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
@@ -299,7 +299,7 @@ class MakePluginTest(unittest.TestCase):
 
                     v, r = self.make_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    dummy1.assert_called_with(self.existent_path1, "dummy_value2", "dummy_value3")
+                    dummy1.assert_called_with(self.existent_path1, None, "dummy_value2", "dummy_value3")
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
