@@ -6,9 +6,13 @@ import os
 import path_utils
 import generic_run
 
-def make(work_dir, target, prefix):
+def make(work_dir, jobs, target, prefix):
 
     full_cmd = ["make"]
+
+    if jobs is not None:
+        full_cmd.append("-j")
+        full_cmd.append(jobs)
 
     if target is not None:
         full_cmd.append(target)

@@ -40,22 +40,30 @@ class MakeWrapperTest(unittest.TestCase):
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
         with mock.patch("generic_run.run_cmd", return_value=(False, "error message")) as dummy:
-            self.assertEqual(make_wrapper.make("test3", "test4", None), (False, "Failed running make command: [error message]"))
+            self.assertEqual(make_wrapper.make("test3", None, "test4", None), (False, "Failed running make command: [error message]"))
 
     def testMake1(self):
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            self.assertEqual(make_wrapper.make("test3", "test4", None), (True, (True, "test1", "test2")))
-            dummy.assert_called_with(["make", "test4"], use_cwd="test3")
+            self.assertEqual(make_wrapper.make("test3", "8", "test4", None), (True, (True, "test1", "test2")))
+            dummy.assert_called_with(["make", "-j", "8", "test4"], use_cwd="test3")
 
     def testMake2(self):
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            self.assertEqual(make_wrapper.make("test3", "test4", "test5"), (True, (True, "test1", "test2")))
+            self.assertEqual(make_wrapper.make("test3", None, "test4", None), (True, (True, "test1", "test2")))
+            dummy.assert_called_with(["make", "test4"], use_cwd="test3")
+
+    def testMake3(self):
+        self.result_obj.success = True
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            self.assertEqual(make_wrapper.make("test3", None, "test4", "test5"), (True, (True, "test1", "test2")))
             dummy.assert_called_with(["make", "test4", "PREFIX=test5"], use_cwd="test3")
 
 if __name__ == '__main__':
