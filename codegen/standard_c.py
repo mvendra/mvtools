@@ -30,7 +30,7 @@ def get_c_compiler_flags_linux_common_gcc():
 
     contents = []
 
-    contents.append("-std=c18")
+    contents.append("-std=c23")
     contents.append("-m64")
     contents.append("-Wall")
     contents.append("-Wextra")
@@ -163,7 +163,7 @@ def get_c_linker_libs_windows_release_gcc():
 
 def get_c_compiler_standard_windows_msvc():
 
-    contents = "stdc17"
+    contents = "stdc23"
 
     return contents
 

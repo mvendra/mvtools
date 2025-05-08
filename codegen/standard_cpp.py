@@ -30,7 +30,7 @@ def get_cpp_compiler_flags_linux_common_gcc():
 
     contents = []
 
-    contents.append("-std=c++17")
+    contents.append("-std=c++23")
     contents.append("-m64")
     contents.append("-Wall")
     contents.append("-Wextra")
