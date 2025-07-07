@@ -18,7 +18,7 @@ OUTNAME=dynamiclib
 SO_SUFFIX=-dev.1
 SRC=subfolder/second.c
 INCLUDES=-I$(BASE_SRC)
-CFLAGS=-std=c23 -m64 -Wall -Wextra -Werror -Wconversion -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
+CFLAGS=-std=c23 -m64 -Wall -Wextra -Wconversion -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=
 LIBS=
 LIBS_AFTER_ASAN=
