@@ -35,6 +35,7 @@ def get_cpp_compiler_flags_linux_common_gcc():
     contents.append("-Wall")
     contents.append("-Wextra")
     contents.append("-Werror")
+    contents.append("-Wconversion")
     contents.append("-pedantic")
     contents.append("-fPIC")
     contents.append("-finput-charset=utf-8")
