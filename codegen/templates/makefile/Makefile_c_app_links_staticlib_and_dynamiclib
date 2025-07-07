@@ -16,7 +16,7 @@ BASE_DEP=$(BASE)/dep
 OUTNAME=sampleapp
 SRC=main.c
 INCLUDES=-I$(BASE_SRC)
-CFLAGS=-std=c18 -m64 -Wall -Wextra -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
+CFLAGS=-std=c23 -m64 -Wall -Wextra -Werror -Wconversion -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=-L$(BASE_DEP)/$(PLAT)/$(MODE)
 LIBS=-lstaticlib -ldynamiclib
 LIBS_AFTER_ASAN=
