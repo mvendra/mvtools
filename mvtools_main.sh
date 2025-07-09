@@ -2,7 +2,6 @@
 
 add2path(){
 
-    unamestr=`uname`
     if [ -z "$PATH" ]; then
         # first use. dont add the comma at the beginning
         export PATH=${1}

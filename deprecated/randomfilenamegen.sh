@@ -2,7 +2,8 @@
 
 SHA_APP=""
 
-if [[ "$unamestr" == 'Linux' ]]; then
+unamestr=`uname -s`
+if [[ "$unamestr" == "Linux" ]]; then
     SHA_APP="sha256sum"
 else
     SHA_APP="shasum -a 256"
@@ -22,4 +23,3 @@ inline_echo.py $RFN
 
 # second method
 #cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32
-
