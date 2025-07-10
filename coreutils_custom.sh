@@ -1,8 +1,8 @@
 #!/bin/bash
 
-unamestr=`uname -s`
-if [[ "$unamestr" == "Linux" ]]; then
-  alias ls="ls --color --group-directories-first --sort=extension"
+platform=`get_platform.py`
+if [[ "$platform" == "linux" ]]; then
+    alias ls="ls --color --group-directories-first --sort=extension"
 fi
 
 alias la="ls -la"
