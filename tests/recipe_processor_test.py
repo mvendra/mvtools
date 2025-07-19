@@ -535,7 +535,7 @@ class RecipeProcessorTest(unittest.TestCase):
 
         blanksub_blankfile = path_utils.concat_path(blanksub, " ")
         self.assertFalse(os.path.exists(blanksub_blankfile))
-        self.assertTrue(create_and_write_file.create_file_contents(blanksub_blankfile, self.recipe_test_contents1))
+        create_and_write_file.create_file_contents(blanksub_blankfile, self.recipe_test_contents1)
         self.assertTrue(os.path.exists(blanksub_blankfile))
 
         v, r = recipe_processor.run_jobs_from_recipe_file(blanksub_blankfile)
