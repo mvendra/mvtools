@@ -965,8 +965,7 @@ class CollectGitPatchTest(unittest.TestCase):
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
         create_and_write_file.create_file_contents(newfile, "newfilecontents")
 
-        if not git_wrapper.stage(self.first_repo):
-            self.fail("")
+        self.assertTrue(git_wrapper.stage(self.first_repo))
 
         v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -983,8 +982,7 @@ class CollectGitPatchTest(unittest.TestCase):
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
         create_and_write_file.create_file_contents(newfile, "newfilecontents")
 
-        if not git_wrapper.stage(self.first_repo):
-            self.fail("")
+        self.assertTrue(git_wrapper.stage(self.first_repo))
 
         v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -1278,8 +1276,7 @@ class CollectGitPatchTest(unittest.TestCase):
         newfile = path_utils.concat_path(self.second_sub, "newfile_secondsub.txt")
         create_and_write_file.create_file_contents(newfile, "newfilecontents_secondsub")
 
-        if not git_wrapper.stage(self.second_sub):
-            self.fail("")
+        self.assertTrue(git_wrapper.stage(self.second_sub))
 
         v, r = collect_git_patch.collect_git_patch_staged(self.second_sub, self.storage_path, "include", [], [])
         self.assertTrue(v)
