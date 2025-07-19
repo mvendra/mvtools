@@ -5,17 +5,12 @@ import os
 
 import path_utils
 import fsquery
+import getcontents
 import mvtools_exception
-
-def getcontents(thefile):
-    contents = ""
-    with open(thefile, "r") as f:
-        contents = f.read()
-    return contents
 
 def convert_clementine_playlist_to_python_list(filename):
 
-    contents = getcontents(filename)
+    contents = getcontents.getcontents(filename)
     if len(contents) == 0:
         print("%s is empty! Aborting." % filename)
         sys.exit(1)
