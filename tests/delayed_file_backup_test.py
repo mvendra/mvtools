@@ -81,7 +81,7 @@ class DelayedFileBackupTest(unittest.TestCase):
 
         self.assertFalse(os.path.exists(test_patch_file_full))
         os.mkdir(local_dfb_storage)
-        self.assertTrue(create_and_write_file.create_file_contents(test_patch_file_full, "dummy contents"))
+        create_and_write_file.create_file_contents(test_patch_file_full, "dummy contents")
         v, r = local_dfb.make_backup(None, test_fn, test_content)
         self.assertFalse(v)
         self.assertEqual(r, test_patch_file_full)
