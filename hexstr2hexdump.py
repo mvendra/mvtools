@@ -4,6 +4,7 @@ import sys
 import os
 
 import path_utils
+import getcontents
 
 def hexstring_to_hexdump(hexstring):
 
@@ -45,12 +46,6 @@ def make_output_filename(filename):
     f, e = filename.split(".")
     return "%s_out.%s" % (f, e)
 
-def getcontents(filename):
-    cnt = ""
-    with open(filename) as f:
-        cnt = f.read()
-    return cnt
-
 def savecontents(filename, contents):
     with open(filename, "w") as f:
         f.write(contents)
@@ -75,6 +70,6 @@ if __name__ == "__main__":
         print("%s already exists. Aborting." % output_filename)
         sys.exit(1)
 
-    contents = getcontents(input_filename)
+    contents = getcontents.getcontents(input_filename)
     contents = hexstring_to_hexdump(contents)
     savecontents(output_filename, contents)
