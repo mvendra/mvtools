@@ -54,8 +54,7 @@ def pakgen(filename, dohash, files):
         v, r = sha512_wrapper.hash_sha_512_app_file(FILENAME_TAR_BZ2)
         if v:
             report = add_str_to_report(report, r)
-            if not create_and_write_file.create_file_contents(HASH_FILENAME, r):
-                return False, "Failed saving hash file."
+            create_and_write_file.create_file_contents(HASH_FILENAME, r)
         else:
             return False, "Failed generating hash for %s" % FILENAME_TAR_BZ2
 

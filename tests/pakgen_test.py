@@ -171,7 +171,7 @@ class PakGenTest(unittest.TestCase):
 
         subf_blankfolder_blankfile = path_utils.concat_path(subf_blankfolder, " ")
         self.assertFalse(os.path.exists(subf_blankfolder_blankfile))
-        self.assertTrue(create_and_write_file.create_file_contents(subf_blankfolder_blankfile, "bazooka and grenades"))
+        create_and_write_file.create_file_contents(subf_blankfolder_blankfile, "bazooka and grenades")
         self.assertTrue(os.path.exists(subf_blankfolder_blankfile))
 
         v, r = pakgen.pakgen(self.target_file, False, [subf_blankfolder_blankfile])
@@ -194,7 +194,7 @@ class PakGenTest(unittest.TestCase):
 
         test_source_file = path_utils.concat_path(self.test_dir, "test_source_file")
         self.assertFalse(os.path.exists(test_source_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_source_file, "bazooka and grenades"))
+        create_and_write_file.create_file_contents(test_source_file, "bazooka and grenades")
         self.assertTrue(os.path.exists(test_source_file))
 
         test_source_link = path_utils.concat_path(self.test_dir, "test_source_link")
