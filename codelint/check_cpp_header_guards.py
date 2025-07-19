@@ -4,12 +4,7 @@ import sys
 import os
 
 import path_utils
-
-def getcontents(filename):
-    contents = ""
-    with open(filename) as f:
-        contents = f.read()
-    return contents
+import getcontents
 
 def check_cpp_header_guards(filename):
 
@@ -22,7 +17,7 @@ def check_cpp_header_guards(filename):
     #endif // GUARD
     """
 
-    contents = getcontents(filename)
+    contents = getcontents.getcontents(filename)
     lines = contents.split("\n")
 
     guardname = ""
