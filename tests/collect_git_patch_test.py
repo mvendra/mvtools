@@ -384,7 +384,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
@@ -836,12 +836,12 @@ class CollectGitPatchTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
         self.assertFalse(os.path.exists(first_more2))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
         self.assertTrue(os.path.exists(first_more2))
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1, first_more2])
@@ -870,12 +870,12 @@ class CollectGitPatchTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
         self.assertFalse(os.path.exists(first_more2))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
         self.assertTrue(os.path.exists(first_more2))
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1, first_more2])
@@ -963,8 +963,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchStagedFail(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
-        if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfile, "newfilecontents")
 
         if not git_wrapper.stage(self.first_repo):
             self.fail("")
@@ -982,8 +981,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchStaged1(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
-        if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfile, "newfilecontents")
 
         if not git_wrapper.stage(self.first_repo):
             self.fail("")
@@ -1090,10 +1088,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.unlink(first_sub2_another_file19)
 
         first_file25 = path_utils.concat_path(self.first_repo, "file25.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file25, "file25-contents"))
+        create_and_write_file.create_file_contents(first_file25, "file25-contents")
 
         first_sub1_another_file30 = path_utils.concat_path(first_sub1_another, "file30.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents"))
+        create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -1221,10 +1219,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.unlink(first_sub2_another_file19)
 
         first_file25 = path_utils.concat_path(self.first_repo, "file25.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file25, "file25-contents"))
+        create_and_write_file.create_file_contents(first_file25, "file25-contents")
 
         first_sub1_another_file30 = path_utils.concat_path(first_sub1_another, "file30.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents"))
+        create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -1278,8 +1276,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchStagedSub(self):
 
         newfile = path_utils.concat_path(self.second_sub, "newfile_secondsub.txt")
-        if not create_and_write_file.create_file_contents(newfile, "newfilecontents_secondsub"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfile, "newfilecontents_secondsub")
 
         if not git_wrapper.stage(self.second_sub):
             self.fail("")
@@ -1386,10 +1383,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.unlink(first_sub2_another_file19)
 
         first_file25 = path_utils.concat_path(self.first_repo, "file25.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file25, "file25-contents"))
+        create_and_write_file.create_file_contents(first_file25, "file25-contents")
 
         first_sub1_another_file30 = path_utils.concat_path(first_sub1_another, "file30.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents"))
+        create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -1517,10 +1514,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.unlink(first_sub2_another_file19)
 
         first_file25 = path_utils.concat_path(self.first_repo, "file25.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file25, "file25-contents"))
+        create_and_write_file.create_file_contents(first_file25, "file25-contents")
 
         first_sub1_another_file30 = path_utils.concat_path(first_sub1_another, "file30.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents"))
+        create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -1648,10 +1645,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.unlink(first_sub2_another_file19)
 
         first_file25 = path_utils.concat_path(self.first_repo, "file25.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file25, "file25-contents"))
+        create_and_write_file.create_file_contents(first_file25, "file25-contents")
 
         first_sub1_another_file30 = path_utils.concat_path(first_sub1_another, "file30.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents"))
+        create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -1779,10 +1776,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.unlink(first_sub2_another_file19)
 
         first_file25 = path_utils.concat_path(self.first_repo, "file25.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file25, "file25-contents"))
+        create_and_write_file.create_file_contents(first_file25, "file25-contents")
 
         first_sub1_another_file30 = path_utils.concat_path(first_sub1_another, "file30.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents"))
+        create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -1910,10 +1907,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.unlink(first_sub2_another_file19)
 
         first_file25 = path_utils.concat_path(self.first_repo, "file25.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file25, "file25-contents"))
+        create_and_write_file.create_file_contents(first_file25, "file25-contents")
 
         first_sub1_another_file30 = path_utils.concat_path(first_sub1_another, "file30.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents"))
+        create_and_write_file.create_file_contents(first_sub1_another_file30, "file30-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -1956,12 +1953,12 @@ class CollectGitPatchTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
         self.assertFalse(os.path.exists(first_more2))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
         self.assertTrue(os.path.exists(first_more2))
 
         with open(self.first_file1, "a") as f:
@@ -1991,8 +1988,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversionedFail(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
-        if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfile, "newfilecontents")
 
         v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -2007,26 +2003,22 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversioned1(self):
 
         newfile = path_utils.concat_path(self.first_repo, "newfile.txt")
-        if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfile, "newfilecontents")
 
         newfolder = path_utils.concat_path(self.first_repo, "newfolder")
         os.mkdir(newfolder)
 
         newfoldernewfile2 = path_utils.concat_path(newfolder, "newfile2.txt")
-        if not create_and_write_file.create_file_contents(newfoldernewfile2, "newfilecontents2"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfoldernewfile2, "newfilecontents2")
 
         newfoldernewfile3 = path_utils.concat_path(newfolder, "newfile3.txt")
-        if not create_and_write_file.create_file_contents(newfoldernewfile3, "newfilecontents3"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfoldernewfile3, "newfilecontents3")
 
         anotherfolder = path_utils.concat_path(newfolder, "anotherfolder")
         os.mkdir(anotherfolder)
 
         anotherfoldernewfile4 = path_utils.concat_path(anotherfolder, "newfile4.txt")
-        if not create_and_write_file.create_file_contents(anotherfoldernewfile4, "newfilecontents4"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(anotherfoldernewfile4, "newfilecontents4")
 
         v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -2081,8 +2073,7 @@ class CollectGitPatchTest(unittest.TestCase):
         os.mkdir(newfolder2)
 
         newfolder2newfile1 = path_utils.concat_path(newfolder2, "newfile_twolevels.txt")
-        if not create_and_write_file.create_file_contents(newfolder2newfile1, "newfile_twolevels-contents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfolder2newfile1, "newfile_twolevels-contents")
 
         v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -2099,12 +2090,10 @@ class CollectGitPatchTest(unittest.TestCase):
         os.mkdir(newfolder2)
 
         newfolder1newfile = path_utils.concat_path(newfolder1, "newfile.txt")
-        if not create_and_write_file.create_file_contents(newfolder1newfile, "newfile-contents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfolder1newfile, "newfile-contents")
 
         newfolder2newfile = path_utils.concat_path(newfolder2, "newfile.txt")
-        if not create_and_write_file.create_file_contents(newfolder2newfile, "newfile-contents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfolder2newfile, "newfile-contents")
 
         v, r = collect_git_patch.collect_git_patch_unversioned(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -2120,7 +2109,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversioned4(self):
 
         first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73")
 
         first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
         self.assertFalse(os.path.exists(first_repo_sub))
@@ -2132,7 +2121,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715")
 
         first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
         self.assertFalse(os.path.exists(first_repo_anothersub))
@@ -2160,22 +2149,22 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330")
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308")
 
         first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99")
 
         first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47")
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(self.first_file2))
@@ -2235,7 +2224,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversioned_Filtering1(self):
 
         first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73")
 
         first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
         self.assertFalse(os.path.exists(first_repo_sub))
@@ -2247,7 +2236,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715")
 
         first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
         self.assertFalse(os.path.exists(first_repo_anothersub))
@@ -2275,22 +2264,22 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330")
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308")
 
         first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99")
 
         first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47")
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(self.first_file2))
@@ -2350,7 +2339,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversioned_Filtering2(self):
 
         first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73")
 
         first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
         self.assertFalse(os.path.exists(first_repo_sub))
@@ -2362,7 +2351,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715")
 
         first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
         self.assertFalse(os.path.exists(first_repo_anothersub))
@@ -2390,22 +2379,22 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330")
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308")
 
         first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99")
 
         first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47")
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(self.first_file2))
@@ -2465,7 +2454,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversioned_Filtering3(self):
 
         first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73")
 
         first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
         self.assertFalse(os.path.exists(first_repo_sub))
@@ -2477,7 +2466,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715")
 
         first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
         self.assertFalse(os.path.exists(first_repo_anothersub))
@@ -2505,22 +2494,22 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330")
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308")
 
         first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99")
 
         first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47")
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(self.first_file2))
@@ -2580,7 +2569,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversioned_Filtering4(self):
 
         first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73")
 
         first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
         self.assertFalse(os.path.exists(first_repo_sub))
@@ -2592,7 +2581,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715")
 
         first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
         self.assertFalse(os.path.exists(first_repo_anothersub))
@@ -2620,22 +2609,22 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330")
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308")
 
         first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99")
 
         first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47")
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(self.first_file2))
@@ -2695,7 +2684,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversioned_Filtering5(self):
 
         first_repo_unvfile73 = path_utils.concat_path(self.first_repo, "unvfile73.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73"))
+        create_and_write_file.create_file_contents(first_repo_unvfile73, "dummy contents, file73")
 
         first_repo_sub = path_utils.concat_path(self.first_repo, "sub")
         self.assertFalse(os.path.exists(first_repo_sub))
@@ -2707,7 +2696,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_repo_sub_unvfile715 = path_utils.concat_path(first_repo_sub, "unvfile715.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715"))
+        create_and_write_file.create_file_contents(first_repo_sub_unvfile715, "dummy contents, file715")
 
         first_repo_anothersub = path_utils.concat_path(self.first_repo, "anothersub")
         self.assertFalse(os.path.exists(first_repo_anothersub))
@@ -2735,22 +2724,22 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe))
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile330 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile330.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile330, "dummy contents, file330")
 
         first_repo_anothersub_onemorelvl_evenmore_unvfile333 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore, "unvfile333.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_unvfile333, "dummy contents, file333")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore, "unvfile762.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_unvfile762, "dummy contents, file762")
 
         first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308 = path_utils.concat_path(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe, "unvfile308.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_onemorelvl_evenmore_andyetmore_leafmaybe_unvfile308, "dummy contents, file308")
 
         first_repo_anothersub_unvfile99 = path_utils.concat_path(first_repo_anothersub, "unvfile99.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile99, "dummy contents, file99")
 
         first_repo_anothersub_unvfile47 = path_utils.concat_path(first_repo_anothersub, "unvfile47.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47"))
+        create_and_write_file.create_file_contents(first_repo_anothersub_unvfile47, "dummy contents, file47")
 
         self.assertTrue(os.path.exists(self.first_file1))
         self.assertTrue(os.path.exists(self.first_file2))
@@ -2810,8 +2799,7 @@ class CollectGitPatchTest(unittest.TestCase):
     def testCollectPatchUnversionedSub(self):
 
         newfile = path_utils.concat_path(self.second_sub, "newfile.txt")
-        if not create_and_write_file.create_file_contents(newfile, "newfilecontents"):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(newfile, "newfilecontents")
 
         v, r = collect_git_patch.collect_git_patch_unversioned(self.second_sub, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -3388,7 +3376,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         v, r = git_wrapper.stage(self.first_repo)
@@ -3398,7 +3386,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         v, r = git_wrapper.stage(self.first_repo)
