@@ -11,20 +11,12 @@ from unittest.mock import patch
 import path_utils
 import mvtools_test_fixture
 import getcontents
+import create_and_write_file
 import generic_run
 import batch_run
 
 def file_has_contents(fn_full, contents):
     return (getcontents.getcontents(fn_full) == contents)
-
-def file_create_contents(fn_full, contents):
-    if os.path.exists(fn_full):
-        return False
-    with open(fn_full, "w") as f:
-        f.write(contents)
-    return True
-    if not os.path.exists(fn_full):
-        return False
 
 class BatchRunTest(unittest.TestCase):
 
@@ -76,7 +68,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_first_content += "        f.write(contents)" + os.linesep
 
         self.test_script_first_full = path_utils.concat_path(self.scripts_folder, "test_first.py")
-        self.assertTrue(file_create_contents(self.test_script_first_full, self.test_script_first_content))
+        create_and_write_file.create_file_contents(self.test_script_first_full, self.test_script_first_content)
         os.chmod(self.test_script_first_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # second script
@@ -103,7 +95,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_second_content += "        f.write(contents)" + os.linesep
 
         self.test_script_second_full = path_utils.concat_path(self.scripts_folder, "test_second.py")
-        self.assertTrue(file_create_contents(self.test_script_second_full, self.test_script_second_content))
+        create_and_write_file.create_file_contents(self.test_script_second_full, self.test_script_second_content)
         os.chmod(self.test_script_second_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # third script
@@ -129,7 +121,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_third_content += "        sys.exit(1)" + os.linesep
 
         self.test_script_third_full = path_utils.concat_path(self.scripts_folder, "test_third.py")
-        self.assertTrue(file_create_contents(self.test_script_third_full, self.test_script_third_content))
+        create_and_write_file.create_file_contents(self.test_script_third_full, self.test_script_third_content)
         os.chmod(self.test_script_third_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fourth script
@@ -156,7 +148,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_fourth_content += "        sys.exit(1)" + os.linesep
 
         self.test_script_fourth_full = path_utils.concat_path(self.scripts_folder, "test_fourth.py")
-        self.assertTrue(file_create_contents(self.test_script_fourth_full, self.test_script_fourth_content))
+        create_and_write_file.create_file_contents(self.test_script_fourth_full, self.test_script_fourth_content)
         os.chmod(self.test_script_fourth_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fifth script
@@ -188,7 +180,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_fifth_content += "            raise mvtools_exception.mvtools_exception(r)" + os.linesep
 
         self.test_script_fifth_full = path_utils.concat_path(self.scripts_folder, "test_fifth.py")
-        self.assertTrue(file_create_contents(self.test_script_fifth_full, self.test_script_fifth_content))
+        create_and_write_file.create_file_contents(self.test_script_fifth_full, self.test_script_fifth_content)
         os.chmod(self.test_script_fifth_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # sixth script
@@ -221,7 +213,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_sixth_content += "            raise mvtools_exception.mvtools_exception(r)" + os.linesep
 
         self.test_script_sixth_full = path_utils.concat_path(self.scripts_folder, "test_sixth.py")
-        self.assertTrue(file_create_contents(self.test_script_sixth_full, self.test_script_sixth_content))
+        create_and_write_file.create_file_contents(self.test_script_sixth_full, self.test_script_sixth_content)
         os.chmod(self.test_script_sixth_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # seventh script
@@ -247,7 +239,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_seventh_content += "        sys.exit(1)" + os.linesep
 
         self.test_script_seventh_full = path_utils.concat_path(self.scripts_folder, "test_seventh.py")
-        self.assertTrue(file_create_contents(self.test_script_seventh_full, self.test_script_seventh_content))
+        create_and_write_file.create_file_contents(self.test_script_seventh_full, self.test_script_seventh_content)
         os.chmod(self.test_script_seventh_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         return True, ""
