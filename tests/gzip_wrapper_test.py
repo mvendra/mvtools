@@ -34,8 +34,7 @@ class GzipWrapperTest(unittest.TestCase):
 
         # base, files
         self.file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        if not create_and_write_file.create_file_contents(self.file1, "abc"):
-            return False, "Unable to create test file [%s]" % self.file1
+        create_and_write_file.create_file_contents(self.file1, "abc")
 
         return True, ""
 
@@ -85,7 +84,7 @@ class GzipWrapperTest(unittest.TestCase):
 
         blanksub_blankfn = path_utils.concat_path(blanksub, " ")
         self.assertFalse(os.path.exists(blanksub_blankfn))
-        self.assertTrue(create_and_write_file.create_file_contents(blanksub_blankfn, "def"))
+        create_and_write_file.create_file_contents(blanksub_blankfn, "def")
         self.assertTrue(os.path.exists(blanksub_blankfn))
 
         blanksub_blankfn_gz = blanksub_blankfn + ".gz"
@@ -110,7 +109,7 @@ class GzipWrapperTest(unittest.TestCase):
 
         testfile1 = path_utils.concat_path(self.test_dir, "testfile1.txt")
         self.assertFalse(os.path.exists(testfile1))
-        self.assertTrue(create_and_write_file.create_file_contents(testfile1, "def"))
+        create_and_write_file.create_file_contents(testfile1, "def")
         self.assertTrue(os.path.exists(testfile1))
 
         testfile2 = path_utils.concat_path(self.test_dir, "testfile2.txt")
@@ -143,7 +142,7 @@ class GzipWrapperTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.tar_file))
         self.assertTrue(os.path.exists(self.tar_gz_file))
 
-        self.assertTrue(create_and_write_file.create_file_contents(self.tar_file, "fake archive"))
+        create_and_write_file.create_file_contents(self.tar_file, "fake archive")
         self.assertTrue(os.path.exists(self.tar_file))
 
         v, r = gzip_wrapper.decompress(self.tar_gz_file)
