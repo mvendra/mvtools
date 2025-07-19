@@ -8,8 +8,7 @@ import git_wrapper
 def git_createAndCommit(repo, filename, content, commitmsg):
 
     file_final = path_utils.concat_path(repo, filename)
-    if not create_and_write_file.create_file_contents(file_final, content):
-        return False, "create_and_write_file command failed. Can't proceed. File: %s." % file_final
+    create_and_write_file.create_file_contents(file_final, content)
 
     v, r = git_wrapper.stage(repo, [file_final])
     if not v:
