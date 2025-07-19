@@ -52,8 +52,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_ret_0_content += "    sys.exit(0)"
 
         self.test_script_ret_0_filename = path_utils.concat_path(self.scripts_folder, "test_ret_0.py")
-        if not create_and_write_file.create_file_contents(self.test_script_ret_0_filename, self.test_script_ret_0_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_ret_0_filename, self.test_script_ret_0_content)
         os.chmod(self.test_script_ret_0_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # second script
@@ -63,8 +62,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_ret_1_content += "    sys.exit(1)"
 
         self.test_script_ret_1_filename = path_utils.concat_path(self.scripts_folder, "test_ret_1.py")
-        if not create_and_write_file.create_file_contents(self.test_script_ret_1_filename, self.test_script_ret_1_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_ret_1_filename, self.test_script_ret_1_content)
         os.chmod(self.test_script_ret_1_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # third script
@@ -73,8 +71,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_fail_content += "    print..." # malformed instruction
 
         self.test_script_fail_filename = path_utils.concat_path(self.scripts_folder, "test_fail.py")
-        if not create_and_write_file.create_file_contents(self.test_script_fail_filename, self.test_script_fail_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_fail_filename, self.test_script_fail_content)
         os.chmod(self.test_script_fail_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fourth script
@@ -83,8 +80,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_print_content += "    print(\"the test output\")"
 
         self.test_script_print_filename = path_utils.concat_path(self.scripts_folder, "test_print.py")
-        if not create_and_write_file.create_file_contents(self.test_script_print_filename, self.test_script_print_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_print_filename, self.test_script_print_content)
         os.chmod(self.test_script_print_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fifth script
@@ -94,8 +90,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_print_err_content += "    sys.stderr.write(\"the test error\")"
 
         self.test_script_print_err_filename = path_utils.concat_path(self.scripts_folder, "test_print_err.py")
-        if not create_and_write_file.create_file_contents(self.test_script_print_err_filename, self.test_script_print_err_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_print_err_filename, self.test_script_print_err_content)
         os.chmod(self.test_script_print_err_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # sixth script
@@ -106,8 +101,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_print_err_ret_1_content += "    sys.exit(1)"
 
         self.test_script_print_err_ret_1_filename = path_utils.concat_path(self.scripts_folder, "test_print_err_ret_1.py")
-        if not create_and_write_file.create_file_contents(self.test_script_print_err_ret_1_filename, self.test_script_print_err_ret_1_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_print_err_ret_1_filename, self.test_script_print_err_ret_1_content)
         os.chmod(self.test_script_print_err_ret_1_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # seventh script
@@ -117,8 +111,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_print_input_content += "    print(\"echoing back: {%s}\" % p)"
 
         self.test_script_print_input_filename = path_utils.concat_path(self.scripts_folder, "test_input_print.py")
-        if not create_and_write_file.create_file_contents(self.test_script_print_input_filename, self.test_script_print_input_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_print_input_filename, self.test_script_print_input_content)
         os.chmod(self.test_script_print_input_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # eight script
@@ -129,8 +122,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_print_cmdlineargs_content += "    print(v)"
 
         self.test_script_print_cmdlineargs_filename = path_utils.concat_path(self.scripts_folder, "test_print_cmdlineargs.py")
-        if not create_and_write_file.create_file_contents(self.test_script_print_cmdlineargs_filename, self.test_script_print_cmdlineargs_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_print_cmdlineargs_filename, self.test_script_print_cmdlineargs_content)
         os.chmod(self.test_script_print_cmdlineargs_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # ninth script
@@ -141,8 +133,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_script_print_utf8_content += "    sys.stderr.write(\"こんばんは\")"
 
         self.test_script_print_utf8_filename = path_utils.concat_path(self.scripts_folder, "test_print_utf8.py")
-        if not create_and_write_file.create_file_contents(self.test_script_print_utf8_filename, self.test_script_print_utf8_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_script_print_utf8_filename, self.test_script_print_utf8_content)
         os.chmod(self.test_script_print_utf8_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # tenth script
@@ -153,8 +144,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_print_file_cwd_content += "        print(f.read())"  + os.linesep
 
         self.test_print_file_cwd_filename = path_utils.concat_path(self.scripts_folder, "test_print_file_cwd.py")
-        if not create_and_write_file.create_file_contents(self.test_print_file_cwd_filename, self.test_print_file_cwd_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_print_file_cwd_filename, self.test_print_file_cwd_content)
         os.chmod(self.test_print_file_cwd_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # eleventh script
@@ -164,8 +154,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_custom_env_content += ("    print(os.environ[\"%s\"])" + os.linesep) % self.reserved_test_env_var_1
 
         self.test_custom_env_filename = path_utils.concat_path(self.scripts_folder, "test_print_custom_env.py")
-        if not create_and_write_file.create_file_contents(self.test_custom_env_filename, self.test_custom_env_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_custom_env_filename, self.test_custom_env_content)
         os.chmod(self.test_custom_env_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # twelvth script
@@ -175,8 +164,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_malformed_output_content += "    sys.stdout.buffer.write(b\"\\xff\")"
 
         self.test_malformed_output_filename = path_utils.concat_path(self.scripts_folder, "test_malformed_print.py")
-        if not create_and_write_file.create_file_contents(self.test_malformed_output_filename, self.test_malformed_output_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_malformed_output_filename, self.test_malformed_output_content)
         os.chmod(self.test_malformed_output_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # thirteenth script
@@ -186,8 +174,7 @@ class GenericRunTest(unittest.TestCase):
         self.test_sleepy_content += "    time.sleep(2)" + os.linesep
 
         self.test_sleepy_filename = path_utils.concat_path(self.scripts_folder, "test_sleepy.py")
-        if not create_and_write_file.create_file_contents(self.test_sleepy_filename, self.test_sleepy_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(self.test_sleepy_filename, self.test_sleepy_content)
         os.chmod(self.test_sleepy_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         return True, ""
@@ -332,8 +319,7 @@ class GenericRunTest(unittest.TestCase):
 
     def testPrintFileCwd(self):
 
-        if not create_and_write_file.create_file_contents(path_utils.concat_path(self.secondary_folder, self.file_test_filename), self.file_test_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(path_utils.concat_path(self.secondary_folder, self.file_test_filename), self.file_test_content)
 
         ret = generic_run.run_cmd([self.test_print_file_cwd_filename], use_cwd=self.secondary_folder)
         self.assertEqual(len(ret), 2)
@@ -348,8 +334,7 @@ class GenericRunTest(unittest.TestCase):
 
     def testPrintFileCwdFail(self):
 
-        if not create_and_write_file.create_file_contents(path_utils.concat_path(self.scripts_folder, self.file_test_filename), self.file_test_content):
-            self.fail("create_and_write_file command failed. Can't proceed.")
+        create_and_write_file.create_file_contents(path_utils.concat_path(self.scripts_folder, self.file_test_filename), self.file_test_content)
 
         ret = generic_run.run_cmd([self.test_print_file_cwd_filename], use_cwd=self.secondary_folder)
         self.assertEqual(len(ret), 2)
@@ -395,7 +380,7 @@ class GenericRunTest(unittest.TestCase):
 
         blank_cmd = path_utils.concat_path(blank_folder, " ")
         self.assertFalse(os.path.exists(blank_cmd))
-        self.assertTrue(create_and_write_file.create_file_contents(blank_cmd, self.test_script_print_content))
+        create_and_write_file.create_file_contents(blank_cmd, self.test_script_print_content)
         self.assertTrue(os.path.exists(blank_cmd))
 
         os.chmod(blank_cmd, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
