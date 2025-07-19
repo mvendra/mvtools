@@ -12,3 +12,11 @@ def getcontents(filename):
     with open(filename) as f:
         contents = f.read()
     return contents
+
+def getcontents_bin(filename):
+    if not os.path.exists(filename):
+        raise mvtools_exception.mvtools_exception("filename [%s] does not exist" % filename)
+    contents = ""
+    with open(filename, "rb+") as f:
+        contents = f.read()
+    return contents
