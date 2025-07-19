@@ -52,7 +52,7 @@ class AgWrapperTest(unittest.TestCase):
 
     def testSilversearch3(self):
 
-        self.assertTrue(create_and_write_file.create_file_contents(self.file1_full, "abcdefxyz"))
+        create_and_write_file.create_file_contents(self.file1_full, "abcdefxyz")
 
         v, r = ag_wrapper.silversearch(self.file1_full, "qwe")
         self.assertTrue(v)
@@ -60,7 +60,7 @@ class AgWrapperTest(unittest.TestCase):
 
     def testSilversearch4(self):
 
-        self.assertTrue(create_and_write_file.create_file_contents(self.file1_full, "abcdefxyz"))
+        create_and_write_file.create_file_contents(self.file1_full, "abcdefxyz")
 
         v, r = ag_wrapper.silversearch(self.file1_full, "abc")
         self.assertTrue(v)
