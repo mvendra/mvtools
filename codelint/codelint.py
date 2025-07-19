@@ -5,6 +5,7 @@ import os
 
 import path_utils
 import getcontents
+import terminal_colors
 
 # plugins
 import lint_sample_echo
@@ -93,10 +94,11 @@ if __name__ == "__main__":
 
     v, r = codelint(autocorrect, plugins, filelist)
     if not v:
-        print(r[0])
+        print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         print("Partially generated report:")
         for e in r[1]:
             print(e)
         sys.exit(1)
     for e in r:
         print(e)
+    print("\n%sAll operations suceeded%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
