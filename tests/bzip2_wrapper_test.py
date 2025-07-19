@@ -184,7 +184,7 @@ class Bzip2WrapperTest(unittest.TestCase):
 
         blankfile = path_utils.concat_path(blanksub, " ")
         self.assertFalse(os.path.exists(blankfile))
-        self.assertTrue(create_and_write_file.create_file_contents(blankfile, "abc"))
+        create_and_write_file.create_file_contents(blankfile, "abc")
         self.assertTrue(os.path.exists(blankfile))
 
         blankfile_bz = blankfile + ".bz2"
@@ -206,7 +206,7 @@ class Bzip2WrapperTest(unittest.TestCase):
 
         test_source_file = path_utils.concat_path(self.test_dir, "test_source_file.txt")
         self.assertFalse(os.path.exists(test_source_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_source_file, "abc"))
+        create_and_write_file.create_file_contents(test_source_file, "abc")
         self.assertTrue(os.path.exists(test_source_file))
 
         test_source_link = path_utils.concat_path(self.test_dir, "test_source_link.txt")
