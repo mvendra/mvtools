@@ -29,10 +29,18 @@ def makeAndGetTestFolder(additional_folder):
 
     return True, (test_dir_pre, final_dir)
 
-def throwsExcept(trigger, param1, ex_type):
+def throwsExcept1(trigger, param1, ex_type):
 
     try:
         trigger(param1)
+    except ex_type:
+        return True
+    return False
+
+def throwsExcept2(trigger, param1, param2, ex_type):
+
+    try:
+        trigger(param1, param2)
     except ex_type:
         return True
     return False
