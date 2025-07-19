@@ -75,8 +75,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStage1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -87,8 +86,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStage2(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [path_utils.basename_filtered(test_file)])
         self.assertTrue(v)
@@ -99,8 +97,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStage3(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -111,8 +108,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStageFail(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, test_file)
         self.assertFalse(v)
@@ -121,8 +117,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCommitDirectFail1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.commit_direct(self.second_repo, 123)
         self.assertFalse(v)
@@ -131,8 +126,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCommitDirectFail2(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.commit_direct(self.second_repo, [])
         self.assertFalse(v)
@@ -141,8 +135,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCommitDirect(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
         if not v:
@@ -163,8 +156,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCommit(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
         if not v:
@@ -174,8 +166,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.status(self.second_repo)
         self.assertTrue("?? test_file2.txt" in r)
@@ -193,8 +184,7 @@ class GitWrapperTest(unittest.TestCase):
     def testClone1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -213,8 +203,7 @@ class GitWrapperTest(unittest.TestCase):
     def testClone2(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -233,8 +222,7 @@ class GitWrapperTest(unittest.TestCase):
     def testClone3(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -255,7 +243,7 @@ class GitWrapperTest(unittest.TestCase):
 
         second_sub_fn = path_utils.concat_path(second_sub, " ")
         self.assertFalse(os.path.exists(second_sub_fn))
-        self.assertTrue(create_and_write_file.create_file_contents(second_sub_fn, "test-contents"))
+        create_and_write_file.create_file_contents(second_sub_fn, "test-contents")
         self.assertTrue(os.path.exists(second_sub_fn))
 
         v, r = git_wrapper.stage(self.second_repo, [second_sub_fn])
@@ -274,7 +262,7 @@ class GitWrapperTest(unittest.TestCase):
     def testClone5(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file, "test-contents"))
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         test_file_link = path_utils.concat_path(self.second_repo, "test_file_link.txt")
         self.assertFalse(os.path.exists(test_file_link))
@@ -302,8 +290,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCloneExt1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -323,8 +310,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCloneExt2(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -344,8 +330,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCloneExt3(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -361,8 +346,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCloneBare1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -386,12 +370,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiff1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -413,12 +395,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiff2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -440,12 +420,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiff3(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -490,10 +468,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffIndexed1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -515,7 +493,7 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffIndexed2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -533,7 +511,7 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffIndexed3(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -567,12 +545,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffCached1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -597,12 +573,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffCached2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -624,12 +598,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffCached3(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -674,10 +646,10 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffCachedIndexed1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -702,7 +674,7 @@ class GitWrapperTest(unittest.TestCase):
     def testDiffCachedIndexed2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -724,7 +696,7 @@ class GitWrapperTest(unittest.TestCase):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
         test_file1_renamed = path_utils.concat_path(self.second_repo, "test_file1_renamed.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
         self.assertFalse(os.path.exists(test_file1_renamed))
 
         v, r = git_wrapper.stage(self.second_repo)
@@ -754,8 +726,7 @@ class GitWrapperTest(unittest.TestCase):
     def testRevParseHead(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo, [test_file])
         self.assertTrue(v)
@@ -809,8 +780,7 @@ class GitWrapperTest(unittest.TestCase):
     def testLsFiles1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -819,12 +789,10 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         test_file3 = path_utils.concat_path(self.second_repo, "test_file3.txt")
-        if not create_and_write_file.create_file_contents(test_file3, "test-contents3"):
-            self.fail("Failed creating test file %s" % test_file3)
+        create_and_write_file.create_file_contents(test_file3, "test-contents3")
 
         v, r = git_wrapper.ls_files(self.second_repo)
         self.assertTrue(v)
@@ -844,8 +812,7 @@ class GitWrapperTest(unittest.TestCase):
     def testLsFiles2(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -857,8 +824,7 @@ class GitWrapperTest(unittest.TestCase):
     def testLsFilesNullTerm1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -867,12 +833,10 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         test_file3 = path_utils.concat_path(self.second_repo, "test_file3.txt")
-        if not create_and_write_file.create_file_contents(test_file3, "test-contents3"):
-            self.fail("Failed creating test file %s" % test_file3)
+        create_and_write_file.create_file_contents(test_file3, "test-contents3")
 
         v, r = git_wrapper.ls_files_nullterm(self.second_repo)
         self.assertTrue(v)
@@ -892,8 +856,7 @@ class GitWrapperTest(unittest.TestCase):
     def testLsFilesNullTerm2(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -905,8 +868,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStash_and_StashList(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -942,14 +904,14 @@ class GitWrapperTest(unittest.TestCase):
     def testStash_and_StashShow(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg1")
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg2")
@@ -969,8 +931,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStash_and_StashShowDiff(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1010,8 +971,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStash_and_StashClear(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1062,8 +1022,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStash_and_StashDrop1(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1125,21 +1084,21 @@ class GitWrapperTest(unittest.TestCase):
     def testStash_and_StashDrop2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg1")
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg2")
         self.assertTrue(v)
 
         test_file3 = path_utils.concat_path(self.second_repo, "test_file3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file3, "test-contents3"))
+        create_and_write_file.create_file_contents(test_file3, "test-contents3")
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg3")
@@ -1186,7 +1145,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStash_and_StashPop(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file, "test-contents"))
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1230,8 +1189,7 @@ class GitWrapperTest(unittest.TestCase):
     def testLogOneline(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1268,8 +1226,7 @@ class GitWrapperTest(unittest.TestCase):
     def testLog(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1307,8 +1264,7 @@ class GitWrapperTest(unittest.TestCase):
     def testShow(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-show, test contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-show, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1336,8 +1292,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStatus(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-status, test contents"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-status, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1350,8 +1305,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual("", r)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.status(self.second_repo)
         self.assertTrue(v)
@@ -1367,8 +1321,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStatusSimple(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-status-simple, test contents"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-status-simple, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1381,8 +1334,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual("", r)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -1398,8 +1350,7 @@ class GitWrapperTest(unittest.TestCase):
     def testStatusPorcelainV1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-status-simple, test contents"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-status-simple, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1412,8 +1363,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual("", r)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.status_nullterm_porcelain_v1(self.second_repo)
         self.assertTrue(v)
@@ -1429,8 +1379,7 @@ class GitWrapperTest(unittest.TestCase):
     def testRemoteList_and_RemoteAdd_and_ChangeUrl(self):
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-remote, test contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-remote, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1471,8 +1420,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual("", r.strip())
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-branch, test contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-branch, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1491,8 +1439,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual("", r.strip())
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-branch, test contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-branch, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1515,8 +1462,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual("", r.strip())
 
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-branch-create-and-switch, test contents"):
-            self.fail("Failed creating test file %s" % test_file)
+        create_and_write_file.create_file_contents(test_file, "test-branch-create-and-switch, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1534,8 +1480,7 @@ class GitWrapperTest(unittest.TestCase):
     def testPull_and_PullDefault(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-pull, test contents"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-pull, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1548,8 +1493,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-pull, test contents"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-pull, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1563,8 +1507,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(os.path.exists(file2_third_repo))
 
         test_file3 = path_utils.concat_path(self.second_repo, "test_file3.txt")
-        if not create_and_write_file.create_file_contents(test_file3, "test-pull, test contents"):
-            self.fail("Failed creating test file %s" % test_file3)
+        create_and_write_file.create_file_contents(test_file3, "test-pull, test contents")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1580,8 +1523,7 @@ class GitWrapperTest(unittest.TestCase):
     def testPush(self):
 
         test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-push, test contents 1"):
-            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+        create_and_write_file.create_file_contents(test_file1_secondrepo, "test-push, test contents 1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1601,8 +1543,7 @@ class GitWrapperTest(unittest.TestCase):
     def testPushDefault(self):
 
         test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-push-default, test contents 1"):
-            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+        create_and_write_file.create_file_contents(test_file1_secondrepo, "test-push-default, test contents 1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1622,8 +1563,7 @@ class GitWrapperTest(unittest.TestCase):
     def testFetchAll_and_Merge(self):
 
         test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-fetch-all, test contents 1"):
-            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+        create_and_write_file.create_file_contents(test_file1_secondrepo, "test-fetch-all, test contents 1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1649,8 +1589,7 @@ class GitWrapperTest(unittest.TestCase):
 
         # add some extra content into second
         test_file2_secondrepo = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2_secondrepo, "test-fetch-all, test contents 2"):
-            self.fail("Failed creating test file %s" % test_file2_secondrepo)
+        create_and_write_file.create_file_contents(test_file2_secondrepo, "test-fetch-all, test contents 2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1660,8 +1599,7 @@ class GitWrapperTest(unittest.TestCase):
 
         # add some extra content into third
         test_file3_thirdrepo = path_utils.concat_path(third_repo, "test_file3.txt")
-        if not create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-fetch-all, test contents 3"):
-            self.fail("Failed creating test file %s" % test_file3_thirdrepo)
+        create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-fetch-all, test contents 3")
 
         v, r = git_wrapper.stage(third_repo)
         self.assertTrue(v)
@@ -1703,8 +1641,7 @@ class GitWrapperTest(unittest.TestCase):
     def testFetchMultiple_and_Merge(self):
 
         test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-fetch-all, test contents 1"):
-            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+        create_and_write_file.create_file_contents(test_file1_secondrepo, "test-fetch-all, test contents 1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1738,8 +1675,7 @@ class GitWrapperTest(unittest.TestCase):
 
         # add some extra content into second
         test_file2_secondrepo = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2_secondrepo, "test-fetch-all, test contents 2"):
-            self.fail("Failed creating test file %s" % test_file2_secondrepo)
+        create_and_write_file.create_file_contents(test_file2_secondrepo, "test-fetch-all, test contents 2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1749,8 +1685,7 @@ class GitWrapperTest(unittest.TestCase):
 
         # add some extra content into third
         test_file3_thirdrepo = path_utils.concat_path(third_repo, "test_file3.txt")
-        if not create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-fetch-all, test contents 3"):
-            self.fail("Failed creating test file %s" % test_file3_thirdrepo)
+        create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-fetch-all, test contents 3")
 
         v, r = git_wrapper.stage(third_repo)
         self.assertTrue(v)
@@ -1760,8 +1695,7 @@ class GitWrapperTest(unittest.TestCase):
 
         # add some extra content into fourth
         test_file4_fourthrepo = path_utils.concat_path(fourth_repo, "test_file4.txt")
-        if not create_and_write_file.create_file_contents(test_file4_fourthrepo, "test-fetch-all, test contents 4"):
-            self.fail("Failed creating test file %s" % test_file4_fourthrepo)
+        create_and_write_file.create_file_contents(test_file4_fourthrepo, "test-fetch-all, test contents 4")
 
         v, r = git_wrapper.stage(fourth_repo)
         self.assertTrue(v)
@@ -1808,8 +1742,7 @@ class GitWrapperTest(unittest.TestCase):
     def testSubmoduleAdd(self):
 
         test_file1_secondrepo = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1_secondrepo, "test-submodule-add, test contents 1"):
-            self.fail("Failed creating test file %s" % test_file1_secondrepo)
+        create_and_write_file.create_file_contents(test_file1_secondrepo, "test-submodule-add, test contents 1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1823,8 +1756,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2_thirdrepo = path_utils.concat_path(third_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2_thirdrepo, "test-submodule-add, test contents 2"):
-            self.fail("Failed creating test file %s" % test_file2_thirdrepo)
+        create_and_write_file.create_file_contents(test_file2_thirdrepo, "test-submodule-add, test contents 2")
 
         v, r = git_wrapper.stage(third_repo)
         self.assertTrue(v)
@@ -1843,8 +1775,7 @@ class GitWrapperTest(unittest.TestCase):
 
         # add some stuff to third, the standalone copy
         test_file3_thirdrepo = path_utils.concat_path(third_repo, "test_file3.txt")
-        if not create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-submodule-add, test contents 3"):
-            self.fail("Failed creating test file %s" % test_file3_thirdrepo)
+        create_and_write_file.create_file_contents(test_file3_thirdrepo, "test-submodule-add, test contents 3")
 
         v, r = git_wrapper.stage(third_repo)
         self.assertTrue(v)
@@ -1861,8 +1792,7 @@ class GitWrapperTest(unittest.TestCase):
     def testApplyPatchFromHead(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1871,8 +1801,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1908,8 +1837,7 @@ class GitWrapperTest(unittest.TestCase):
     def testApplyPatchFromHeadStaged(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1918,8 +1846,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1958,8 +1885,7 @@ class GitWrapperTest(unittest.TestCase):
     def testApplyPatchFromStash(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1968,8 +1894,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2008,8 +1933,7 @@ class GitWrapperTest(unittest.TestCase):
     def testApplyPatchFromPrevious(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        if not create_and_write_file.create_file_contents(test_file1, "test-contents1"):
-            self.fail("Failed creating test file %s" % test_file1)
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2018,8 +1942,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        if not create_and_write_file.create_file_contents(test_file2, "test-contents2"):
-            self.fail("Failed creating test file %s" % test_file2)
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2061,7 +1984,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckoutFail1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2077,7 +2000,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckoutFail2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2086,7 +2009,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
 
         test_file2_notrepoed = path_utils.concat_path(self.second_repo, "test_file2_notrepoed.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2_notrepoed, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2_notrepoed, "test-contents2")
 
         v, r = git_wrapper.checkout(self.second_repo, [test_file2_notrepoed])
         self.assertFalse(v)
@@ -2094,10 +2017,10 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckoutFail3(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2133,10 +2056,10 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckoutFail4(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2155,7 +2078,7 @@ class GitWrapperTest(unittest.TestCase):
             f.write("smore")
 
         test_file2_notrepoed = path_utils.concat_path(self.second_repo, "test_file2_notrepoed.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2_notrepoed, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2_notrepoed, "test-contents2")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2173,7 +2096,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2187,7 +2110,7 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2216,10 +2139,10 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout3(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2253,12 +2176,12 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout4(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_sub = path_utils.concat_path(self.second_repo, "sub")
         os.mkdir(test_sub)
         test_sub_file2 = path_utils.concat_path(test_sub, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_sub_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_sub_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2292,12 +2215,12 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout5(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_sub = path_utils.concat_path(self.second_repo, "sub")
         os.mkdir(test_sub)
         test_sub_file2 = path_utils.concat_path(test_sub, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_sub_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_sub_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2331,10 +2254,10 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout6(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2366,12 +2289,12 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout7(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_sub = path_utils.concat_path(self.second_repo, "sub")
         os.mkdir(test_sub)
         test_sub_file2 = path_utils.concat_path(test_sub, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_sub_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_sub_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2403,10 +2326,10 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout8(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2438,10 +2361,10 @@ class GitWrapperTest(unittest.TestCase):
     def testCheckout9(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2480,7 +2403,7 @@ class GitWrapperTest(unittest.TestCase):
     def testResetHeadFail2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2518,7 +2441,7 @@ class GitWrapperTest(unittest.TestCase):
     def testResetHead1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2555,10 +2478,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetHead2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2607,10 +2530,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetHead3(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2659,10 +2582,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetHardHeadFail1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2685,10 +2608,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetHardHead1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2756,10 +2679,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetHardHead2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2827,10 +2750,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetSoftHeadFail1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2853,10 +2776,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetSoftHead1(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2924,10 +2847,10 @@ class GitWrapperTest(unittest.TestCase):
     def testResetSoftHead2(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file1, "test-contents1"))
+        create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         test_file2 = path_utils.concat_path(self.second_repo, "test_file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(test_file2, "test-contents2"))
+        create_and_write_file.create_file_contents(test_file2, "test-contents2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
