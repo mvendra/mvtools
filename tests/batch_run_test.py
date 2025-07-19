@@ -10,17 +10,12 @@ from unittest.mock import patch
 
 import path_utils
 import mvtools_test_fixture
+import getcontents
 import generic_run
 import batch_run
 
-def file_get_contents(fn_full):
-    contents = ""
-    with open(fn_full, "r") as f:
-        contents = f.read()
-    return contents
-
 def file_has_contents(fn_full, contents):
-    return (file_get_contents(fn_full) == contents)
+    return (getcontents.getcontents(fn_full) == contents)
 
 def file_create_contents(fn_full, contents):
     if os.path.exists(fn_full):
@@ -384,7 +379,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -428,7 +423,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -483,7 +478,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -538,7 +533,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -593,7 +588,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -665,7 +660,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -737,7 +732,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -809,7 +804,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -887,7 +882,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -965,7 +960,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1043,7 +1038,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1121,7 +1116,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1199,7 +1194,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1245,7 +1240,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1303,7 +1298,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1361,7 +1356,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1419,7 +1414,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1483,7 +1478,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1553,7 +1548,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1596,7 +1591,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1639,7 +1634,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1770,7 +1765,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1823,7 +1818,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1876,7 +1871,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1946,7 +1941,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -1999,7 +1994,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2052,7 +2047,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2128,7 +2123,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2204,7 +2199,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2280,7 +2275,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2356,7 +2351,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2432,7 +2427,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2470,7 +2465,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2526,7 +2521,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2582,7 +2577,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2638,7 +2633,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2700,7 +2695,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
@@ -2768,7 +2763,7 @@ class BatchRunTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(sum_fn_full))
 
-        contents = file_get_contents(sum_fn_full)
+        contents = getcontents.getcontents(sum_fn_full)
         contents = contents.split("\n")
 
         contents_expected = []
