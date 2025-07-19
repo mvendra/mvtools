@@ -50,20 +50,26 @@ def codelint(autocorrect, plugins, filelist):
         for p in plugins:
 
             report.append("Plugin: [%s] - begin" % p.lint_name())
-            p.lint_pre(autocorrect, fn, shared_state, len(lines))
+            v, r = p.lint_pre(autocorrect, fn, shared_state, len(lines))
+            if not v:
+                return False, "Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r)
 
             idx = 0
             for l in lines:
                 idx += 1
 
-                p.lint_cycle(autocorrect, fn, shared_state, idx, l)
+                v, r = p.lint_cycle(autocorrect, fn, shared_state, idx, l)
+                if not v:
+                    return False, "Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r)
 
-            p.lint_post(autocorrect, fn, shared_state)
+            v, r = p.lint_post(autocorrect, fn, shared_state)
+            if not v:
+                return False, "Plugin [%s] failed (post): [%s]" % (p.lint_name(), r)
             report.append("Plugin: [%s] - end" % p.lint_name())
 
         report.append("Processing [%s] - end" % f)
 
-    return True, None
+    return True, report
 
 if __name__ == "__main__":
 
@@ -89,3 +95,5 @@ if __name__ == "__main__":
     if not v:
         print(r)
         sys.exit(1)
+    for e in r:
+        print(e)
