@@ -46,11 +46,11 @@ def codelint(autocorrect, plugins, filelist):
         contents = getcontents.getcontents(f)
         lines = contents.split("\n")
 
-        report.append("Processing [%s] - begin" % f)
+        report.append((False, "Processing [%s] - begin" % f))
 
         for p in plugins:
 
-            report.append("Plugin: [%s] - begin" % p.lint_name())
+            report.append((False, "Plugin: [%s] - begin" % p.lint_name()))
             v, r = p.lint_pre(autocorrect, fn, shared_state, len(lines))
             if not v:
                 return False, ("Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r), report)
@@ -63,16 +63,24 @@ def codelint(autocorrect, plugins, filelist):
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
                 if r is not None:
-                    report.append(r)
+                    report.append((True, r))
 
             v, r = p.lint_post(autocorrect, fn, shared_state)
             if not v:
                 return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
-            report.append("Plugin: [%s] - end" % p.lint_name())
+            report.append((False, "Plugin: [%s] - end" % p.lint_name()))
 
-        report.append("Processing [%s] - end" % f)
+        report.append((False, "Processing [%s] - end" % f))
 
     return True, report
+
+def print_report(report):
+
+    for e in report:
+        if e[0]:
+            print("%s%s%s" % (terminal_colors.TTY_YELLOW, e[1], terminal_colors.TTY_WHITE))
+        else:
+            print(e[1])
 
 if __name__ == "__main__":
 
@@ -98,9 +106,8 @@ if __name__ == "__main__":
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         print("Partially generated report:")
-        for e in r[1]:
-            print(e)
+        print_report(r[1])
         sys.exit(1)
-    for e in r:
-        print(e)
+    print("Complete report:")
+    print_report(r)
     print("\n%sAll operations suceeded%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
