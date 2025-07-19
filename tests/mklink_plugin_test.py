@@ -29,8 +29,7 @@ class MklinkPluginTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         self.test_source_file = path_utils.concat_path(self.test_dir, "test_source_file")
-        if not create_and_write_file.create_file_contents(self.test_source_file, "test-contents"):
-            return False, "Unable to create test file [%s]" % self.test_source_file
+        create_and_write_file.create_file_contents(self.test_source_file, "test-contents")
         if not os.path.exists(self.test_source_file):
             return False, "Unable to create test file [%s]" % self.test_source_file
 
@@ -82,7 +81,7 @@ class MklinkPluginTest(unittest.TestCase):
         local_params["target_path"] = local_target_file
         self.mklink_task.params = local_params
 
-        self.assertTrue(create_and_write_file.create_file_contents(local_target_file, "test-contents"))
+        create_and_write_file.create_file_contents(local_target_file, "test-contents")
         self.assertTrue(os.path.exists(local_target_file))
 
         v, r = self.mklink_task.run_task(print, "exe_name")
