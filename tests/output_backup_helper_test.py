@@ -64,7 +64,7 @@ class OutputBackupHelperTest(unittest.TestCase):
     def testOutputBackupHelper_DumpOutput3(self):
 
         self.assertFalse(os.path.exists(self.nonexistent_file1))
-        self.assertTrue(create_and_write_file.create_file_contents(self.nonexistent_file1, "contents"))
+        create_and_write_file.create_file_contents(self.nonexistent_file1, "contents")
 
         ex_raised = False
         try:
@@ -97,7 +97,7 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
-        self.assertTrue(create_and_write_file.create_file_contents(test_stdout_fn, "contents"))
+        create_and_write_file.create_file_contents(test_stdout_fn, "contents")
         self.assertTrue(os.path.exists(test_stdout_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
@@ -115,7 +115,7 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         self.assertFalse(os.path.exists(test_stdout_fn))
         self.assertFalse(os.path.exists(test_stderr_fn))
-        self.assertTrue(create_and_write_file.create_file_contents(test_stderr_fn, "contents"))
+        create_and_write_file.create_file_contents(test_stderr_fn, "contents")
         self.assertTrue(os.path.exists(test_stderr_fn))
 
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
@@ -253,7 +253,7 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         test_out_fn = path_utils.concat_path(self.output_backup_storage, "app_out_autobackup_0_test_timestamp.txt")
         self.assertFalse(os.path.exists(test_out_fn))
-        self.assertTrue(create_and_write_file.create_file_contents(test_out_fn, "contents"))
+        create_and_write_file.create_file_contents(test_out_fn, "contents")
 
         with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
@@ -267,7 +267,7 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         test_out_fn = path_utils.concat_path(self.output_backup_storage, "app_out_autobackup_8_test_timestamp.txt")
         self.assertFalse(os.path.exists(test_out_fn))
-        self.assertTrue(create_and_write_file.create_file_contents(test_out_fn, "contents"))
+        create_and_write_file.create_file_contents(test_out_fn, "contents")
 
         with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
