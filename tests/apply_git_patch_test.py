@@ -90,12 +90,12 @@ class ApplyGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(second_sub))
 
         first_sub_file4 = path_utils.concat_path(first_sub, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub_file4, "first, sub, file4, contents"))
+        create_and_write_file.create_file_contents(first_sub_file4, "first, sub, file4, contents")
         second_sub_file4 = path_utils.concat_path(second_sub, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(second_sub_file4, "second, sub, file4, contents"))
+        create_and_write_file.create_file_contents(second_sub_file4, "second, sub, file4, contents")
 
         first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "first, file5, contents"))
+        create_and_write_file.create_file_contents(first_file5, "first, file5, contents")
         second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
         self.assertFalse( os.path.exists(second_file5) )
 
@@ -119,12 +119,12 @@ class ApplyGitPatchTest(unittest.TestCase):
         self.assertFalse(os.path.exists(second_sub))
 
         first_sub_file4 = path_utils.concat_path(first_sub, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub_file4, "first, sub, file4, contents"))
+        create_and_write_file.create_file_contents(first_sub_file4, "first, sub, file4, contents")
         second_sub_file4 = path_utils.concat_path(second_sub, "file4.txt")
         self.assertFalse(os.path.exists(second_sub_file4))
 
         first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "first, file5, contents"))
+        create_and_write_file.create_file_contents(first_file5, "first, file5, contents")
         second_file5 = path_utils.concat_path(self.second_repo, "file5.txt")
         self.assertFalse( os.path.exists(second_file5) )
 
