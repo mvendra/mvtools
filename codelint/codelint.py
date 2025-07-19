@@ -15,27 +15,27 @@ def puaq():
 
 def codelint(autocorrect, plugins, filelist):
 
+    report = []
+
     # preconds
     if not isinstance(autocorrect, bool):
-        return False, "autocorrect is not bool"
+        return False, ("autocorrect is not bool", report)
     if not isinstance(plugins, list):
-        return False, "plugins is not a list"
+        return False, ("plugins is not a list", report)
     if not isinstance(filelist, list):
-        return False, "filelist is not a list"
+        return False, ("filelist is not a list", report)
 
     if len(plugins) < 1:
-        return False, "No plugins selected"
+        return False, ("No plugins selected", report)
 
     if autocorrect and len(plugins) > 1:
-        return False, "Only one plugin is allowed to be executed with autocorrect turned on"
+        return False, ("Only one plugin is allowed to be executed with autocorrect turned on", report)
 
     for f in filelist:
         if not os.path.exists(f):
-            return False, "File [%s] does not exist" % f
+            return False, ("File [%s] does not exist" % f, report)
 
     # mvtodo: need to setup a feedback mechanism, for both cycle and post, for either changes or just reporting (reporting == such-and-such is wrong, go fix it yourself manually)
-
-    report = []
 
     for f in filelist:
 
@@ -52,7 +52,7 @@ def codelint(autocorrect, plugins, filelist):
             report.append("Plugin: [%s] - begin" % p.lint_name())
             v, r = p.lint_pre(autocorrect, fn, shared_state, len(lines))
             if not v:
-                return False, "Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r)
+                return False, ("Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r), report)
 
             idx = 0
             for l in lines:
@@ -60,11 +60,11 @@ def codelint(autocorrect, plugins, filelist):
 
                 v, r = p.lint_cycle(autocorrect, fn, shared_state, idx, l)
                 if not v:
-                    return False, "Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r)
+                    return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
 
             v, r = p.lint_post(autocorrect, fn, shared_state)
             if not v:
-                return False, "Plugin [%s] failed (post): [%s]" % (p.lint_name(), r)
+                return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
             report.append("Plugin: [%s] - end" % p.lint_name())
 
         report.append("Processing [%s] - end" % f)
@@ -93,7 +93,10 @@ if __name__ == "__main__":
 
     v, r = codelint(autocorrect, plugins, filelist)
     if not v:
-        print(r)
+        print(r[0])
+        print("Partially generated report:")
+        for e in r[1]:
+            print(e)
         sys.exit(1)
     for e in r:
         print(e)
