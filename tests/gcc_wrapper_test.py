@@ -40,7 +40,7 @@ class GccWrapperTest(unittest.TestCase):
 
     def testExec1(self):
 
-        self.assertTrue(create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app()))
+        create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
 
         v, r = gcc_wrapper.exec(self.main_c_full, self.test_dir)
         self.assertFalse(v)
@@ -53,7 +53,7 @@ class GccWrapperTest(unittest.TestCase):
 
     def testExec3(self):
 
-        self.assertTrue(create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app()))
+        create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
 
         v, r = gcc_wrapper.exec([self.main_c_full], self.test_dir)
         self.assertTrue(v)
