@@ -62,6 +62,8 @@ def codelint(autocorrect, plugins, filelist):
                 v, r = p.lint_cycle(autocorrect, fn, shared_state, idx, l)
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
+                if r is not None:
+                    report.append(r)
 
             v, r = p.lint_post(autocorrect, fn, shared_state)
             if not v:
