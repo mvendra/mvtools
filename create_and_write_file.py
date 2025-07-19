@@ -4,27 +4,24 @@ import sys
 import os
 import binascii
 
+import mvtools_exception
 import path_utils
 
 def create_file_contents(filename, contents):
 
     if os.path.exists(filename):
-        print("[%s] already exists. Will not proceed." % filename)
-        return False
+        raise mvtools_exception.mvtools_exception("[%s] already exists. Will not proceed." % filename)
 
     with open(filename, "w+") as f:
         f.write(contents)
-    return True
 
 def create_file_contents_hex(filename, contents):
 
     if os.path.exists(filename):
-        print("[%s] already exists. Will not proceed." % filename)
-        return False
+        raise mvtools_exception.mvtools_exception("[%s] already exists. Will not proceed." % filename)
 
     with open(filename, "wb+") as f:
         f.write(binascii.unhexlify(contents))
-    return True
 
 def puaq():
     print("Usage: %s file contents" % path_utils.basename_filtered(__file__))
