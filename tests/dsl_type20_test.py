@@ -8,18 +8,11 @@ import create_and_write_file
 import mvtools_test_fixture
 import path_utils
 import mvtools_envvars
+import getcontents
 
 import dsl_type20
 import miniparse
 import mvtools_exception
-
-def getcontents(filename):
-    if not os.path.exists(filename):
-        return None
-    contents = ""
-    with open(filename) as f:
-        contents = f.read()
-    return contents
 
 def var_fmt_helper(var_list):
     v, r = var_list
@@ -297,9 +290,11 @@ class DSLType20Test(unittest.TestCase):
             self.fail(r)
 
     def parse_test_aux(self, filename, _dsl_t20_opts):
-        contents = getcontents(filename)
-        if contents is None:
-            self.fail("Unable to open and read file [%s]" % filename)
+
+        try:
+            contents = getcontents.getcontents(filename)
+        except mvtools_exception.mvtools_exception as ex:
+            self.fail(ex.message)
 
         dsl = dsl_type20.DSLType20(_dsl_t20_opts)
         v, r = dsl.parse(contents)
