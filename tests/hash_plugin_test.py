@@ -343,7 +343,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-hash")) as dummy:
@@ -357,7 +357,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-hash")) as dummy:
@@ -371,7 +371,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-hash")) as dummy:
@@ -385,7 +385,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-hash")) as dummy:
@@ -399,7 +399,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-hash")) as dummy:
@@ -425,7 +425,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-rash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-rash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-hash")) as dummy:
@@ -439,7 +439,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-rash")) as dummy:
@@ -453,7 +453,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-256-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha256_wrapper.hash_sha_256_app_file", return_value=(True, "fake-256-hash")) as dummy:
@@ -467,7 +467,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-512-rash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-512-rash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha512_wrapper.hash_sha_512_app_file", return_value=(True, "fake-512-hash")) as dummy:
@@ -481,7 +481,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-512-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-512-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha512_wrapper.hash_sha_512_app_file", return_value=(True, "fake-512-rash")) as dummy:
@@ -495,7 +495,7 @@ class HashPluginTest(unittest.TestCase):
 
         test_hash_file = path_utils.concat_path(self.test_dir, "test_hash_file.txt")
         self.assertFalse(os.path.exists(test_hash_file))
-        self.assertTrue(create_and_write_file.create_file_contents(test_hash_file, "fake-512-hash"))
+        create_and_write_file.create_file_contents(test_hash_file, "fake-512-hash")
         self.assertTrue(os.path.exists(test_hash_file))
 
         with mock.patch("sha512_wrapper.hash_sha_512_app_file", return_value=(True, "fake-512-hash")) as dummy:
