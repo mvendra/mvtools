@@ -955,12 +955,12 @@ class FsqueryTest(unittest.TestCase):
 
         blankfile1 = path_utils.concat_path(blanksub, " ")
         self.assertFalse(os.path.exists(blankfile1))
-        self.assertTrue(create_and_write_file.create_file_contents(blankfile1, "blank contents"))
+        create_and_write_file.create_file_contents(blankfile1, "blank contents")
         self.assertTrue(os.path.exists(blankfile1))
 
         blankfile2 = path_utils.concat_path(blanksub, "   ")
         self.assertFalse(os.path.exists(blankfile2))
-        self.assertTrue(create_and_write_file.create_file_contents(blankfile2, "blank contents"))
+        create_and_write_file.create_file_contents(blankfile2, "blank contents")
         self.assertTrue(os.path.exists(blankfile2))
 
         v, r = fsquery.makecontentlist(blanksub, False, False, True, False, True, True, True, None)
@@ -978,7 +978,7 @@ class FsqueryTest(unittest.TestCase):
 
         subtestfile1 = path_utils.concat_path(subtest, "file1.txt")
         self.assertFalse(os.path.exists(subtestfile1))
-        self.assertTrue(create_and_write_file.create_file_contents(subtestfile1, "blank contents"))
+        create_and_write_file.create_file_contents(subtestfile1, "blank contents")
         self.assertTrue(os.path.exists(subtestfile1))
 
         subtestfile2 = path_utils.concat_path(subtest, "file2.txt")
@@ -1005,7 +1005,7 @@ class FsqueryTest(unittest.TestCase):
 
         subtestfile1 = path_utils.concat_path(subtest, "file1.txt")
         self.assertFalse(os.path.exists(subtestfile1))
-        self.assertTrue(create_and_write_file.create_file_contents(subtestfile1, "blank contents"))
+        create_and_write_file.create_file_contents(subtestfile1, "blank contents")
         self.assertTrue(os.path.exists(subtestfile1))
 
         subtestfile2 = path_utils.concat_path(subtest, "file2.txt")
