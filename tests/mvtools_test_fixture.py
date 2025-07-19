@@ -33,7 +33,7 @@ def throwsExcept1(trigger, param1, ex_type):
 
     try:
         trigger(param1)
-    except ex_type:
+    except ex_type as ex:
         return True
     return False
 
@@ -41,6 +41,6 @@ def throwsExcept2(trigger, param1, param2, ex_type):
 
     try:
         trigger(param1, param2)
-    except ex_type:
+    except ex_type as ex:
         return True
     return False
