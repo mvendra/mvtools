@@ -476,7 +476,7 @@ class PortGitRepoTest(unittest.TestCase):
     def testPortGitRepoUnversionedFail(self):
 
         first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+        create_and_write_file.create_file_contents(first_file4, "file4-contents")
 
         first_sub1 = path_utils.concat_path(self.first_repo, "sub1")
         os.mkdir(first_sub1)
@@ -485,7 +485,7 @@ class PortGitRepoTest(unittest.TestCase):
         os.mkdir(first_sub1_sub2)
 
         first_sub1_sub2_file5 = path_utils.concat_path(first_sub1_sub2, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_sub2_file5, "file5-contents"))
+        create_and_write_file.create_file_contents(first_sub1_sub2_file5, "file5-contents")
 
         v, r = git_lib.is_head_clear(self.second_repo)
         self.assertTrue(v)
@@ -496,7 +496,7 @@ class PortGitRepoTest(unittest.TestCase):
         second_sub1_sub2 = path_utils.concat_path(second_sub1, "sub2")
         second_sub1_sub2_file5 = path_utils.concat_path(second_sub1_sub2, "file5.txt")
 
-        self.assertTrue(create_and_write_file.create_file_contents(second_file4, "file4-contents-dupe"))
+        create_and_write_file.create_file_contents(second_file4, "file4-contents-dupe")
 
         v, r = port_git_repo.port_git_repo_unversioned(self.storage_path, self.first_repo, self.second_repo, "include", [], [])
         self.assertFalse(v)
@@ -513,7 +513,7 @@ class PortGitRepoTest(unittest.TestCase):
     def testPortGitRepoUnversioned(self):
 
         first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+        create_and_write_file.create_file_contents(first_file4, "file4-contents")
 
         first_sub1 = path_utils.concat_path(self.first_repo, "sub1")
         os.mkdir(first_sub1)
@@ -522,7 +522,7 @@ class PortGitRepoTest(unittest.TestCase):
         os.mkdir(first_sub1_sub2)
 
         first_sub1_sub2_file5 = path_utils.concat_path(first_sub1_sub2, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub1_sub2_file5, "file5-contents"))
+        create_and_write_file.create_file_contents(first_sub1_sub2_file5, "file5-contents")
 
         v, r = git_lib.is_head_clear(self.second_repo)
         self.assertTrue(v)
@@ -558,10 +558,10 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.first_file3))
 
         first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+        create_and_write_file.create_file_contents(first_file4, "file4-contents")
 
         first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+        create_and_write_file.create_file_contents(first_file5, "file5-contents")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
         self.assertTrue(v)
@@ -634,10 +634,10 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.first_file3))
 
         first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+        create_and_write_file.create_file_contents(first_file4, "file4-contents")
 
         first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+        create_and_write_file.create_file_contents(first_file5, "file5-contents")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
         self.assertTrue(v)
@@ -710,10 +710,10 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.first_file3))
 
         first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+        create_and_write_file.create_file_contents(first_file4, "file4-contents")
 
         first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+        create_and_write_file.create_file_contents(first_file5, "file5-contents")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
         self.assertTrue(v)
@@ -782,10 +782,10 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.first_file3))
 
         first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+        create_and_write_file.create_file_contents(first_file4, "file4-contents")
 
         first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+        create_and_write_file.create_file_contents(first_file5, "file5-contents")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
         self.assertTrue(v)
@@ -855,10 +855,10 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.first_file3))
 
         first_file4 = path_utils.concat_path(self.first_repo, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file4, "file4-contents"))
+        create_and_write_file.create_file_contents(first_file4, "file4-contents")
 
         first_file5 = path_utils.concat_path(self.first_repo, "file5.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_file5, "file5-contents"))
+        create_and_write_file.create_file_contents(first_file5, "file5-contents")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file2, first_file4])
         self.assertTrue(v)
