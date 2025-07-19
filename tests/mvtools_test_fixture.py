@@ -28,3 +28,11 @@ def makeAndGetTestFolder(additional_folder):
         os.mkdir(final_dir)
 
     return True, (test_dir_pre, final_dir)
+
+def throwsExcept(trigger, param1, ex_type):
+
+    try:
+        trigger(param1)
+    except ex_type:
+        return True
+    return False
