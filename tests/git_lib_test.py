@@ -405,7 +405,7 @@ class GitLibTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.first_file1))
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, [" D"])
@@ -439,10 +439,10 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v and r)
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
@@ -556,7 +556,7 @@ class GitLibTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
@@ -724,10 +724,10 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v and r)
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
@@ -814,17 +814,17 @@ class GitLibTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         first_more2 = path_utils.concat_path(self.first_repo, " ")
         self.assertFalse(os.path.exists(first_more2))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
         self.assertTrue(os.path.exists(first_more2))
 
         first_more3 = path_utils.concat_path(self.first_repo, os.linesep)
         self.assertFalse(os.path.exists(first_more3))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
         self.assertTrue(os.path.exists(first_more3))
 
         v, r = git_wrapper.stage(self.first_repo, [first_more1, first_more2, first_more3])
@@ -1165,17 +1165,17 @@ class GitLibTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         first_more2 = path_utils.concat_path(self.first_repo, " ")
         self.assertFalse(os.path.exists(first_more2))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
         self.assertTrue(os.path.exists(first_more2))
 
         first_more3 = path_utils.concat_path(self.first_repo, os.linesep)
         self.assertFalse(os.path.exists(first_more3))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
         self.assertTrue(os.path.exists(first_more3))
 
         v, r = git_wrapper.stage(self.first_repo)
@@ -1185,15 +1185,15 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         self.assertFalse(os.path.exists(first_more2))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-conflicting-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-conflicting-contents")
         self.assertTrue(os.path.exists(first_more2))
 
         self.assertFalse(os.path.exists(first_more3))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-conflicting-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-conflicting-contents")
         self.assertTrue(os.path.exists(first_more3))
 
         v, r = git_wrapper.stage(self.first_repo)
@@ -1342,7 +1342,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more3), "file3-content3", "commit_msg_file3")
@@ -1503,19 +1503,19 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
 
         first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+        create_and_write_file.create_file_contents(first_more4, "more4-contents")
 
         first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
+        create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents")
 
         first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more6), "more6-content6", "commit_msg_more6")
@@ -1722,19 +1722,19 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
 
         first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+        create_and_write_file.create_file_contents(first_more4, "more4-contents")
 
         first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
+        create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents")
 
         first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more6), "more6-content6", "commit_msg_more6")
@@ -1919,19 +1919,19 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
 
         first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+        create_and_write_file.create_file_contents(first_more4, "more4-contents")
 
         first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
+        create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents")
 
         first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more6), "more6-content6", "commit_msg_more6")
@@ -2123,19 +2123,19 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
 
         first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+        create_and_write_file.create_file_contents(first_more4, "more4-contents")
 
         first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
+        create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents")
 
         first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, path_utils.basename_filtered(first_more6), "more6-content6", "commit_msg_more6")
@@ -2172,16 +2172,16 @@ class GitLibTest(unittest.TestCase):
             f.write("adding stuff")
 
         first_more8 = path_utils.concat_path(self.first_repo, "more8.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more8, "more8-contents"))
+        create_and_write_file.create_file_contents(first_more8, "more8-contents")
 
         first_more88 = path_utils.concat_path(self.first_repo, "more88.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more88, "more88-contents"))
+        create_and_write_file.create_file_contents(first_more88, "more88-contents")
 
         first_more9 = path_utils.concat_path(self.first_repo, " ")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more9, "more9-contents"))
+        create_and_write_file.create_file_contents(first_more9, "more9-contents")
 
         first_more99 = path_utils.concat_path(self.first_repo, os.linesep)
-        self.assertTrue(create_and_write_file.create_file_contents(first_more99, "more99-contents"))
+        create_and_write_file.create_file_contents(first_more99, "more99-contents")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -2254,7 +2254,7 @@ class GitLibTest(unittest.TestCase):
             f.write("extra unexpected info")
 
         sub1_testrepo_sub2_file8 = path_utils.concat_path(sub1_testrepo_sub2, "file8.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file8, "file8-contents"))
+        create_and_write_file.create_file_contents(sub1_testrepo_sub2_file8, "file8-contents")
         sub1_testrepo_sub3_file8 = path_utils.concat_path(sub1_testrepo_sub3, "file8.txt")
 
         v, r = git_wrapper.stage(sub1_testrepo, [sub1_testrepo_sub3_file8])
@@ -2326,11 +2326,11 @@ class GitLibTest(unittest.TestCase):
             f.write("more onto the file")
 
         sub1_testrepo_sub2_file8 = path_utils.concat_path(sub1_testrepo_sub2, "file8.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file8, "file8-contents"))
+        create_and_write_file.create_file_contents(sub1_testrepo_sub2_file8, "file8-contents")
         sub1_testrepo_sub3_file8 = path_utils.concat_path(sub1_testrepo_sub3, "file8.txt")
 
         sub1_testrepo_sub2_file9 = path_utils.concat_path(sub1_testrepo_sub2, "file9.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file9, "file9-contents"))
+        create_and_write_file.create_file_contents(sub1_testrepo_sub2_file9, "file9-contents")
         sub1_testrepo_sub3_file9 = path_utils.concat_path(sub1_testrepo_sub3, "file9.txt")
 
         v, r = git_wrapper.stage(sub1_testrepo)
@@ -2363,19 +2363,19 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
 
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
 
         first_more3 = path_utils.concat_path(self.first_repo, "more3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
 
         first_more4 = path_utils.concat_path(self.first_repo, "more4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+        create_and_write_file.create_file_contents(first_more4, "more4-contents")
 
         first_more5 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents"))
+        create_and_write_file.create_file_contents(first_more5, "アーカイブ-contents")
 
         first_more6 = path_utils.concat_path(self.first_repo, "more6.txt")
         first_more6_renamed = path_utils.concat_path(self.first_repo, "more6_renamed.txt")
@@ -2601,23 +2601,23 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_zero1 = path_utils.concat_path(self.first_repo, " ") # filename consisting of a single char (space)
-        self.assertTrue(create_and_write_file.create_file_contents(first_zero1, "zero1-contents"))
+        create_and_write_file.create_file_contents(first_zero1, "zero1-contents")
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
         first_more3 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
         first_more4 = path_utils.concat_path(self.first_repo, "\" \"")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+        create_and_write_file.create_file_contents(first_more4, "more4-contents")
         first_more5 = path_utils.concat_path(self.first_repo, os.linesep)
-        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "more5-contents"))
+        create_and_write_file.create_file_contents(first_more5, "more5-contents")
 
         first_sub = path_utils.concat_path(self.first_repo, "subfolder")
         os.mkdir(first_sub)
         self.assertTrue(os.path.exists(first_sub))
         first_sub_more6 = path_utils.concat_path(first_sub, "more6.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub_more6, "more6-contents"))
+        create_and_write_file.create_file_contents(first_sub_more6, "more6-contents")
 
         v, r = git_lib.get_unversioned_files(self.first_repo)
         self.assertTrue(v)
@@ -2657,10 +2657,10 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file2, "file2-content1"))
+        create_and_write_file.create_file_contents(testrepo_file2, "file2-content1")
 
         testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file3, "file3-content1"))
+        create_and_write_file.create_file_contents(testrepo_file3, "file3-content1")
 
         sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
         os.mkdir(sub1_testrepo_sub2)
@@ -2668,7 +2668,7 @@ class GitLibTest(unittest.TestCase):
         os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
 
         sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1"))
+        create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1")
         self.assertTrue(v)
         sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
 
@@ -2713,10 +2713,10 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file2, "file2-content1"))
+        create_and_write_file.create_file_contents(testrepo_file2, "file2-content1")
 
         testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file3, "file3-content1"))
+        create_and_write_file.create_file_contents(testrepo_file3, "file3-content1")
 
         sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
         os.mkdir(sub1_testrepo_sub2)
@@ -2724,7 +2724,7 @@ class GitLibTest(unittest.TestCase):
         os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
 
         sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1"))
+        create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1")
         self.assertTrue(v)
         sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
 
@@ -2754,23 +2754,23 @@ class GitLibTest(unittest.TestCase):
         self.assertEqual(r, [])
 
         first_zero1 = path_utils.concat_path(self.first_repo, " ") # filename consisting of a single char (space)
-        self.assertTrue(create_and_write_file.create_file_contents(first_zero1, "zero1-contents"))
+        create_and_write_file.create_file_contents(first_zero1, "zero1-contents")
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         first_more2 = path_utils.concat_path(self.first_repo, "more2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more2, "more2-contents"))
+        create_and_write_file.create_file_contents(first_more2, "more2-contents")
         first_more3 = path_utils.concat_path(self.first_repo, "アーカイブ.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more3, "more3-contents"))
+        create_and_write_file.create_file_contents(first_more3, "more3-contents")
         first_more4 = path_utils.concat_path(self.first_repo, "\" \"")
-        self.assertTrue(create_and_write_file.create_file_contents(first_more4, "more4-contents"))
+        create_and_write_file.create_file_contents(first_more4, "more4-contents")
         first_more5 = path_utils.concat_path(self.first_repo, os.linesep)
-        self.assertTrue(create_and_write_file.create_file_contents(first_more5, "more5-contents"))
+        create_and_write_file.create_file_contents(first_more5, "more5-contents")
 
         first_sub = path_utils.concat_path(self.first_repo, "subfolder")
         os.mkdir(first_sub)
         self.assertTrue(os.path.exists(first_sub))
         first_sub_more6 = path_utils.concat_path(first_sub, "more6.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_sub_more6, "more6-contents"))
+        create_and_write_file.create_file_contents(first_sub_more6, "more6-contents")
 
         v, r = git_lib.get_unversioned_files_and_folders(self.first_repo)
 
@@ -2811,10 +2811,10 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file2, "file2-content1"))
+        create_and_write_file.create_file_contents(testrepo_file2, "file2-content1")
 
         testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file3, "file3-content1"))
+        create_and_write_file.create_file_contents(testrepo_file3, "file3-content1")
 
         sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
         os.mkdir(sub1_testrepo_sub2)
@@ -2822,7 +2822,7 @@ class GitLibTest(unittest.TestCase):
         os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
 
         sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1"))
+        create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1")
         self.assertTrue(v)
         sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
 
@@ -2867,10 +2867,10 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         testrepo_file2 = path_utils.concat_path(sub1_testrepo, "file2.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file2, "file2-content1"))
+        create_and_write_file.create_file_contents(testrepo_file2, "file2-content1")
 
         testrepo_file3 = path_utils.concat_path(sub1_testrepo, "file3.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(testrepo_file3, "file3-content1"))
+        create_and_write_file.create_file_contents(testrepo_file3, "file3-content1")
 
         sub1_testrepo_sub2 = path_utils.concat_path(sub1_testrepo, "sub2")
         os.mkdir(sub1_testrepo_sub2)
@@ -2878,7 +2878,7 @@ class GitLibTest(unittest.TestCase):
         os.symlink(sub1_testrepo_sub2, sub1_testrepo_sub3)
 
         sub1_testrepo_sub2_file4 = path_utils.concat_path(sub1_testrepo_sub2, "file4.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1"))
+        create_and_write_file.create_file_contents(sub1_testrepo_sub2_file4, "file4-content1")
         self.assertTrue(v)
         sub1_testrepo_sub3_file4 = path_utils.concat_path(sub1_testrepo_sub3, "file4.txt")
 
@@ -3253,7 +3253,7 @@ class GitLibTest(unittest.TestCase):
 
         unv_file = path_utils.concat_path(self.first_repo, "unvfile")
         self.assertFalse(os.path.exists(unv_file))
-        self.assertTrue(create_and_write_file.create_file_contents(unv_file, "more1-contents"))
+        create_and_write_file.create_file_contents(unv_file, "more1-contents")
         self.assertTrue(os.path.exists(unv_file))
 
         v, r = git_lib.is_head_clear(self.first_repo)
@@ -3345,7 +3345,7 @@ class GitLibTest(unittest.TestCase):
 
         unv_file = path_utils.concat_path(self.first_repo, "unvfile")
         self.assertFalse(os.path.exists(unv_file))
-        self.assertTrue(create_and_write_file.create_file_contents(unv_file, "more1-contents"))
+        create_and_write_file.create_file_contents(unv_file, "more1-contents")
         self.assertTrue(os.path.exists(unv_file))
 
         v, r = git_wrapper.stage(self.first_repo, [unv_file])
@@ -3529,7 +3529,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
@@ -3566,7 +3566,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -3606,7 +3606,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_lib.patch_as_head(first_mirror, generated_patch_file, True)
         self.assertTrue(v)
@@ -3649,7 +3649,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -3780,7 +3780,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_lib.patch_as_staged(first_mirror, generated_patch_file, False)
         self.assertFalse(v)
@@ -3817,7 +3817,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -3858,7 +3858,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_lib.patch_as_staged(first_mirror, generated_patch_file, True)
         self.assertTrue(v)
@@ -3901,7 +3901,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_wrapper.stage(first_mirror, [first_mirror_more1])
         self.assertTrue(v)
@@ -4024,7 +4024,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file, False, False)
         self.assertFalse(v)
@@ -4136,7 +4136,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(os.path.exists(generated_patch_file))
 
         first_mirror_more1 = path_utils.concat_path(first_mirror, "more1.txt")
-        self.assertTrue(create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_mirror_more1, "more1-contents")
 
         v, r = git_lib.patch_as_stash(first_mirror, generated_patch_file, True, True)
         self.assertTrue(v)
@@ -4261,7 +4261,7 @@ class GitLibTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        self.assertTrue(create_and_write_file.create_file_contents(first_file2, "more1-contents"))
+        create_and_write_file.create_file_contents(first_file2, "more1-contents")
 
         v, r = git_lib.get_staged_files(self.first_repo)
         self.assertTrue(v)
@@ -4482,7 +4482,7 @@ class GitLibTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        self.assertTrue(create_and_write_file.create_file_contents(first_file2, "more1-contents"))
+        create_and_write_file.create_file_contents(first_file2, "more1-contents")
 
         v, r = git_lib.get_staged_files(self.first_repo)
         self.assertTrue(v)
@@ -4661,7 +4661,7 @@ class GitLibTest(unittest.TestCase):
 
         first_more1 = path_utils.concat_path(self.first_repo, "more1.txt")
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         v, r = git_wrapper.stage(self.first_repo)
@@ -4671,7 +4671,7 @@ class GitLibTest(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertFalse(os.path.exists(first_more1))
-        self.assertTrue(create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents"))
+        create_and_write_file.create_file_contents(first_more1, "more1-conflicting-contents")
         self.assertTrue(os.path.exists(first_more1))
 
         v, r = git_wrapper.stage(self.first_repo)
