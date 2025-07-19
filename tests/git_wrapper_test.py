@@ -138,8 +138,7 @@ class GitWrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(test_file, "test-contents")
 
         v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         v, r = git_wrapper.commit_direct(self.second_repo, ["-m", "test commit msg1"])
         self.assertTrue(v)
@@ -159,8 +158,7 @@ class GitWrapperTest(unittest.TestCase):
         create_and_write_file.create_file_contents(test_file1, "test-contents1")
 
         v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         v, r = git_wrapper.commit(self.second_repo, "test commit msg1")
         self.assertTrue(v)
@@ -172,8 +170,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue("?? test_file2.txt" in r)
 
         v, r = git_wrapper.git_wrapper_standard_command(["git", "-C", self.second_repo, "add", "."])
-        if not v:
-            self.fail(r)
+        self.assertTrue(v)
 
         v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
         self.assertTrue(v)
@@ -1275,8 +1272,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.log_oneline(self.second_repo)
         self.assertTrue(v)
         p = r.find(" ")
-        if p == -1:
-            self.fail("Failed retrieving commit id, testShow")
+        self.assertNotEqual(p, -1)
         commit_id = r[:p]
 
         v, r = git_wrapper.show(self.second_repo, [commit_id])
