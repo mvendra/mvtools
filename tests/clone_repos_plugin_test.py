@@ -51,8 +51,7 @@ class CloneReposPluginTest(unittest.TestCase):
         if not v:
             return v, r
         test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
-        if not create_and_write_file.create_file_contents(test_file, "test-contents"):
-            return False, "Failed creating test file %s" % test_file
+        create_and_write_file.create_file_contents(test_file, "test-contents")
         v, r = git_wrapper.stage(self.second_repo, [path_utils.basename_filtered(test_file)])
         if not v:
             return False, r
