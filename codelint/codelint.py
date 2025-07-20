@@ -130,6 +130,7 @@ if __name__ == "__main__":
         elif p == "--autocorrect":
             autocorrect = True
         else:
+            idx -= 1
             break
 
     if plugin_param_name_next:
