@@ -107,6 +107,7 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
         fn = path_utils.basename_filtered(f)
         contents = getcontents.getcontents(f)
         lines = contents.split("\n")
+        lines_copy = None
         if autocorrect:
             lines_copy = lines.copy()
 
