@@ -11,6 +11,9 @@ import terminal_colors
 import lint_sample_echo
 import lint_c_integer_suffix
 
+def helper_apply_patches(lines, patches):
+    return False, "mvtodo"
+
 def helper_validate_cycle_return(msg, patches):
 
     if not isinstance(msg, str):
@@ -66,6 +69,8 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
         fn = path_utils.basename_filtered(f)
         contents = getcontents.getcontents(f)
         lines = contents.split("\n")
+        if autocorrect:
+            lines_copy = lines.copy()
 
         report.append((False, "Processing [%s] - begin" % f))
 
@@ -83,20 +88,27 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
                 v, r = p.lint_cycle(plugins_params, autocorrect, fn, shared_state, idx, l)
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
+
                 if r is not None:
                     msg, patches = r
+
                     v, r = helper_validate_cycle_return(msg, patches)
                     if not v:
                         return False, (r, report)
                     report.append((True, msg))
 
-                    # mvtodo: apply {patches} if autocorrect is on
+                    if autocorrect:
+                        v, r = helper_apply_patches(lines_copy, patches)
+                        if not v:
+                            return False, (r, report)
 
             v, r = p.lint_post(plugins_params, autocorrect, fn, shared_state)
             if not v:
                 return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
             report.append((False, "Plugin: [%s] - end" % p.lint_name()))
+            # mvtodo: post can also generate patches (so rename the helper too)
 
+        # mvtodo: if autocorrect -> swap contents with {lines_copy}
         report.append((False, "Processing [%s] - end" % f))
 
     return True, report
