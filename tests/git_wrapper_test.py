@@ -5,6 +5,7 @@ import os
 import shutil
 import unittest
 
+import getcontents
 import create_and_write_file
 import open_and_update_file
 import mvtools_test_fixture
@@ -1119,19 +1120,14 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( len(r), 0)
 
-        with open(test_file, "r") as f:
-            self.assertFalse("stuff-for-the-stash" in f.read())
-
+        self.assertNotEqual(getcontents.getcontents(test_file), "stuff-for-the-stash")
         open_and_update_file.update_file_contents(test_file, "stuff-for-the-stash")
-
-        with open(test_file, "r") as f:
-            self.assertTrue("stuff-for-the-stash" in f.read())
+        self.assertTrue("stuff-for-the-stash" in getcontents.getcontents(test_file))
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        with open(test_file, "r") as f:
-            self.assertFalse("stuff-for-the-stash" in f.read())
+        self.assertFalse("stuff-for-the-stash" in getcontents.getcontents(test_file))
 
         v, r = git_wrapper.stash_list(self.second_repo)
         self.assertTrue(v)
@@ -1144,8 +1140,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( len(r), 0)
 
-        with open(test_file, "r") as f:
-            self.assertTrue("stuff-for-the-stash" in f.read())
+        self.assertTrue("stuff-for-the-stash" in getcontents.getcontents(test_file))
 
     def testLogOneline(self):
 
