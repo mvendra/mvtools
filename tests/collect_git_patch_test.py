@@ -7,6 +7,7 @@ import unittest
 
 import path_utils
 import fsquery
+import getcontents
 import create_and_write_file
 
 import mvtools_test_fixture
@@ -163,9 +164,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue("extra" in contents_read)
 
@@ -211,9 +210,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue("extra" in contents_read)
         self.assertTrue("smore stuff" in contents_read)
@@ -326,9 +323,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue("extra" in contents_read)
         self.assertTrue("smore stuff" in contents_read)
@@ -375,9 +370,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
         self.assertTrue("actual modification, again" in contents_read)
 
     def testCollectPatchHead5(self):
@@ -400,9 +393,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
         self.assertTrue("actual modification, again" in contents_read)
 
     def testCollectPatchHeadSub(self):
@@ -417,9 +408,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue("extra_sub" in contents_read)
 
@@ -521,9 +510,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertFalse("extra" in contents_read)
         self.assertFalse("smore stuff" in contents_read)
@@ -647,9 +634,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertEqual(contents_read.count("deleted file mode"), 3)
         self.assertFalse(path_utils.basename_filtered(self.first_file1) in contents_read)
@@ -778,9 +763,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertFalse(path_utils.basename_filtered(self.first_file1) in contents_read)
         self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
@@ -826,9 +809,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(r))
         self.assertTrue(os.path.exists(patch_file))
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
         self.assertTrue("actual modification, again, file1" in contents_read)
         self.assertFalse("actual modification, again, file2" in contents_read)
 
@@ -860,9 +841,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
         self.assertTrue("actual modification, again, more1" in contents_read)
         self.assertFalse("actual modification, again, more2" in contents_read)
 
@@ -915,9 +894,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertGreaterEqual(len(contents_read), 40)
 
@@ -930,9 +907,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertGreaterEqual(len(contents_read), 40)
 
@@ -950,14 +925,10 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file_second))
         self.assertEqual(r, patch_file_second)
 
-        contents_read = ""
-        with open(patch_file_first) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file_first)
         self.assertGreaterEqual(len(contents_read), 40)
 
-        contents_read = ""
-        with open(patch_file_second) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file_second)
         self.assertGreaterEqual(len(contents_read), 40)
 
     def testCollectPatchStagedFail(self):
@@ -991,9 +962,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue("newfilecontents" in contents_read)
 
@@ -1102,9 +1071,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue(path_utils.basename_filtered(self.first_file1) in contents_read)
         self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
@@ -1236,9 +1203,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue(os.path.exists(first_sub2_file9))
         os.unlink(first_sub2_file9)
@@ -1285,9 +1250,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue("newfilecontents_secondsub" in contents_read)
 
@@ -1396,9 +1359,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertFalse(path_utils.basename_filtered(self.first_file1) in contents_read)
         self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
@@ -1527,9 +1488,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue(path_utils.basename_filtered(self.first_file1) in contents_read)
         self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
@@ -1658,9 +1617,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertFalse(path_utils.basename_filtered(self.first_file1) in contents_read)
         self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
@@ -1789,9 +1746,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertFalse(path_utils.basename_filtered(self.first_file1) in contents_read)
         self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
@@ -1920,9 +1875,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(patch_file))
         self.assertEqual(r, patch_file)
 
-        contents_read = ""
-        with open(patch_file) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patch_file)
 
         self.assertTrue(path_utils.basename_filtered(self.first_file1) in contents_read)
         self.assertFalse(path_utils.basename_filtered(self.first_file2) in contents_read)
@@ -2024,9 +1977,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(newfile_storage))
         self.assertTrue(newfile_storage in r)
 
-        contents_read = ""
-        with open(newfile_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(newfile_storage)
         self.assertEqual(contents_read, "newfilecontents")
 
         newfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfolder")
@@ -2036,18 +1987,14 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(newfoldernewfile2_storage))
         self.assertTrue(newfoldernewfile2_storage in r)
 
-        contents_read = ""
-        with open(newfoldernewfile2_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(newfoldernewfile2_storage)
         self.assertEqual(contents_read, "newfilecontents2")
 
         newfoldernewfile3_storage = path_utils.concat_path(newfolder_storage, "newfile3.txt")
         self.assertTrue(os.path.exists(newfoldernewfile3_storage))
         self.assertTrue(newfoldernewfile3_storage in r)
 
-        contents_read = ""
-        with open(newfoldernewfile3_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(newfoldernewfile3_storage)
         self.assertEqual(contents_read, "newfilecontents3")
 
         anotherfolder_storage = path_utils.concat_path(self.storage_path, self.first_repo, "unversioned", "newfolder", "anotherfolder")
@@ -2057,9 +2004,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(anotherfoldernewfile4_storage))
         self.assertTrue(anotherfoldernewfile4_storage in r)
 
-        contents_read = ""
-        with open(anotherfoldernewfile4_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(anotherfoldernewfile4_storage)
         self.assertEqual(contents_read, "newfilecontents4")
 
     def testCollectPatchUnversioned2(self):
@@ -2805,9 +2750,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(newfile_storage))
         self.assertEqual(r[0], newfile_storage)
 
-        contents_read = ""
-        with open(newfile_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(newfile_storage)
         self.assertEqual(contents_read, "newfilecontents")
 
     def testCollectPatchStashFail(self):
@@ -2857,18 +2800,14 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(stash1_storage))
         self.assertEqual(r[0], stash1_storage)
 
-        contents_read = ""
-        with open(stash1_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(stash1_storage)
         self.assertTrue("stashcontent2" in contents_read)
 
         stash2_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{1}.patch")
         self.assertTrue(os.path.exists(stash2_storage))
         self.assertEqual(r[1], stash2_storage)
 
-        contents_read = ""
-        with open(stash2_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(stash2_storage)
         self.assertTrue("stashcontent1" in contents_read)
 
     def testCollectPatchStash2(self):
@@ -2890,9 +2829,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(stash1_storage))
         self.assertEqual(r[0], stash1_storage)
 
-        contents_read = ""
-        with open(stash1_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(stash1_storage)
         self.assertTrue("stashcontent2" in contents_read)
 
         stash2_storage = path_utils.concat_path(self.storage_path, self.first_repo, "stash@{1}.patch")
@@ -2913,9 +2850,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(os.path.exists(stash1_storage))
         self.assertEqual(r[0], stash1_storage)
 
-        contents_read = ""
-        with open(stash1_storage) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(stash1_storage)
         self.assertTrue("stashcontent-sub" in contents_read)
 
     def testCollectPatchPreviousFail1(self):
@@ -2948,14 +2883,10 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue( os.path.exists(patches[1]) )
         self.assertEqual(r[1], patches[1])
 
-        contents_read = ""
-        with open(patches[0]) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patches[0])
         self.assertTrue("first-adding-submodule" in contents_read)
 
-        contents_read = ""
-        with open(patches[1]) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patches[1])
         self.assertTrue("first-file3-content" in contents_read)
 
     def testCollectPatchPreviousSub(self):
@@ -2968,9 +2899,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue( os.path.exists(patches[0]) )
         self.assertEqual(r[0], patches[0])
 
-        contents_read = ""
-        with open(patches[0]) as f:
-            contents_read = f.read()
+        contents_read = getcontents.getcontents(patches[0])
         self.assertTrue("second-file1-content" in contents_read)
 
     def testCollectPatchCherryPickPreviousFail1(self):
@@ -3023,9 +2952,7 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
         generated_patch = r
 
-        contents = None
-        with open(generated_patch, "r") as f:
-            contents = f.read()
+        contents = getcontents.getcontents(generated_patch)
 
         self.assertTrue("content to be cherry picked later" in contents)
         self.assertFalse("nondetectful" in contents)
