@@ -135,7 +135,9 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
             if not v:
                 return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
 
-            # mvtodo: post can also generate patches
+            v, r = helper_process_result(r, report, autocorrect, lines_copy)
+            if not v:
+                return False, ("Plugin [%s] failed (post-result): [%s]" % (p.lint_name(), r), report)
 
             report.append((False, "Plugin: [%s] - end" % p.lint_name()))
 
