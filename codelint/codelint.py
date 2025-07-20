@@ -10,10 +10,6 @@ import terminal_colors
 # plugins
 import lint_sample_echo
 
-def puaq():
-    print("Usage: %s [--autocorrect (only one linter/plugin allowed per run)] [--lint-sample-echo | --mvtodo-other-plugins] [file-list]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def codelint(autocorrect, plugins, filelist):
 
     report = []
@@ -81,6 +77,10 @@ def print_report(report):
             print("%s%s%s" % (terminal_colors.TTY_YELLOW, e[1], terminal_colors.TTY_WHITE))
         else:
             print(e[1])
+
+def puaq():
+    print("Usage: %s [--autocorrect (only one linter/plugin allowed per run)] [--lint-sample-echo | --mvtodo-other-plugins] [file-list]" % path_utils.basename_filtered(__file__))
+    sys.exit(1)
 
 if __name__ == "__main__":
 
