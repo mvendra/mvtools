@@ -5,6 +5,8 @@ import os
 
 import path_utils
 import getcontents
+import create_and_write_file
+import string_utils
 import terminal_colors
 
 # plugins
@@ -12,7 +14,22 @@ import lint_sample_echo
 import lint_c_integer_suffix
 
 def helper_apply_patches(lines, patches):
-    return False, "mvtodo"
+
+    for pe in patches:
+
+        pidx = pe[0]
+        pcnt = pe[1]
+
+        if pidx > len(lines):
+            return False, "patch index [%s] is out of bounds [%s]" % (pidx, len(lines))
+
+        if pidx == 0:
+            return False, "patch index is zero (invalid base)"
+        pidx -= 1
+
+        lines[pidx] = pcnt
+
+    return True, None
 
 def helper_validate_cycle_return(msg, patches):
 
@@ -61,6 +78,8 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
     for f in filelist:
         if not os.path.exists(f):
             return False, ("File [%s] does not exist" % f, report)
+        if os.path.isdir(f):
+            return False, ("File [%s] is a directory" % f, report)
 
     for f in filelist:
 
@@ -108,7 +127,9 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
             report.append((False, "Plugin: [%s] - end" % p.lint_name()))
             # mvtodo: post can also generate patches (so rename the helper too)
 
-        # mvtodo: if autocorrect -> swap contents with {lines_copy}
+        if autocorrect:
+            os.unlink(f)
+            create_and_write_file.create_file_contents(f, string_utils.line_list_to_string(lines_copy))
         report.append((False, "Processing [%s] - end" % f))
 
     return True, report
