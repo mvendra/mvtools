@@ -17,8 +17,10 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
     # preconds
     if not isinstance(autocorrect, bool):
         return False, ("autocorrect is not bool", report)
+
     if not isinstance(plugins, list):
         return False, ("plugins is not a list", report)
+
     if not isinstance(filelist, list):
         return False, ("filelist is not a list", report)
 
@@ -27,6 +29,9 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
 
     if autocorrect and len(plugins) > 1:
         return False, ("Only one plugin is allowed to be executed with autocorrect turned on", report)
+
+    if len(filelist) < 1:
+        return False, ("No target files selected", report)
 
     for f in filelist:
         if not os.path.exists(f):
@@ -124,6 +129,8 @@ if __name__ == "__main__":
             plugin_param_name_next = True
         elif p == "--autocorrect":
             autocorrect = True
+        else:
+            break
 
     if plugin_param_name_next:
         print("Missing plugin param name!")
@@ -133,13 +140,14 @@ if __name__ == "__main__":
         print("Missing plugin param value (expected for [%s])!" % plugin_param_name)
         sys.exit(1)
 
-    filelist = sys.argv[idx:]
+    filelist = sys.argv[idx+1:]
 
     v, r = codelint(plugins, plugins_params, autocorrect, filelist)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
-        print("Partially generated report:")
-        print_report(r[1])
+        if len(r[1]) > 0:
+            print("Partially generated report:")
+            print_report(r[1])
         sys.exit(1)
     print("Complete report:")
     print_report(r)
