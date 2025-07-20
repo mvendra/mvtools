@@ -79,10 +79,15 @@ def print_report(report):
             print(e[1])
 
 def puaq():
-    print("Usage: %s [--lint-sample-echo | --mvtodo-other-plugins] [mvtodo: plugins-params] [--autocorrect (only one linter/plugin allowed per run)] [file-list]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [plugins - see below] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [filelist] [--help]" % path_utils.basename_filtered(__file__))
+    print("Plugin list:")
+    print("--lint-sample-echo {no parameters}")
     sys.exit(1)
 
 if __name__ == "__main__":
+
+    if "--help" in sys.argv[1:]:
+        puaq()
 
     if len(sys.argv) < 3:
         puaq()
