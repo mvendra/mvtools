@@ -10,7 +10,7 @@ import terminal_colors
 # plugins
 import lint_sample_echo
 
-def codelint(autocorrect, plugins, plugins_params, filelist):
+def codelint(plugins, plugins_params, autocorrect, filelist):
 
     report = []
 
@@ -79,7 +79,7 @@ def print_report(report):
             print(e[1])
 
 def puaq():
-    print("Usage: %s [--autocorrect (only one linter/plugin allowed per run)] [--lint-sample-echo | --mvtodo-other-plugins] [file-list]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--lint-sample-echo | --mvtodo-other-plugins] [mvtodo: plugins-params] [--autocorrect (only one linter/plugin allowed per run)] [file-list]" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -87,23 +87,23 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         puaq()
 
-    autocorrect = False
     plugins = []
     plugins_params = {}
+    autocorrect = False
     filelist = None
 
     idx = 0
     for p in sys.argv[1:]:
         idx += 1
 
-        if p == "--autocorrect":
-            autocorrect = True
-        elif p == "--lint-sample-echo":
+        if p == "--lint-sample-echo":
             plugins.append(lint_sample_echo)
+        elif p == "--autocorrect":
+            autocorrect = True
 
     filelist = sys.argv[idx:]
 
-    v, r = codelint(autocorrect, plugins, plugins_params, filelist)
+    v, r = codelint(plugins, plugins_params, autocorrect, filelist)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         print("Partially generated report:")
