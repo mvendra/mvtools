@@ -84,9 +84,9 @@ def print_report(report):
             print(e[1])
 
 def puaq():
-    print("Usage: %s [plugins - see below] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [filelist] [--help]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [filelist] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
-    print("--lint-sample-echo {no parameters}")
+    print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -97,11 +97,15 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         puaq()
 
+    plugin_table = {}
+    plugin_table["lint-sample-echo"] = lint_sample_echo
+
     plugins = []
     plugins_params = {}
     autocorrect = False
     filelist = None
 
+    plugin_next = False
     plugin_param_name = None
     plugin_param_name_next = False
     plugin_param_value_next = False
@@ -109,6 +113,14 @@ if __name__ == "__main__":
     idx = 0
     for p in sys.argv[1:]:
         idx += 1
+
+        if plugin_next:
+            plugin_next = False
+            if not p in plugin_table:
+                print("Plugin [%s] does not exist" % p)
+                sys.exit(1)
+            plugins.append(plugin_table[p])
+            continue
 
         if plugin_param_value_next:
             plugin_param_value_next = False
@@ -125,8 +137,8 @@ if __name__ == "__main__":
             plugin_param_name = p
             continue
 
-        if p == "--lint-sample-echo":
-            plugins.append(lint_sample_echo)
+        if p == "--plugin":
+            plugin_next = True
         elif p == "--plugin-param":
             plugin_param_name_next = True
         elif p == "--autocorrect":
