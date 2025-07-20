@@ -124,8 +124,10 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
             v, r = p.lint_post(plugins_params, autocorrect, fn, shared_state)
             if not v:
                 return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
-            report.append((False, "Plugin: [%s] - end" % p.lint_name()))
+
             # mvtodo: post can also generate patches
+
+            report.append((False, "Plugin: [%s] - end" % p.lint_name()))
 
         if autocorrect:
             os.unlink(f)
