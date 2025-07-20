@@ -14,6 +14,15 @@ class StringUtilsTest(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def testLineListToString(self):
+
+        self.assertEqual(string_utils.line_list_to_string(None), None)
+        self.assertEqual(string_utils.line_list_to_string(123), None)
+        self.assertEqual(string_utils.line_list_to_string([123]), None)
+        self.assertEqual(string_utils.line_list_to_string([]), "")
+        self.assertEqual(string_utils.line_list_to_string(["first"]), "first")
+        self.assertEqual(string_utils.line_list_to_string(["first", "second", "third"]), "first\nsecond\nthird")
+
     def testGenericParse(self):
 
         self.assertEqual(string_utils.generic_parse(None, None), None)

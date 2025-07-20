@@ -3,6 +3,27 @@
 import sys
 import os
 
+def line_list_to_string(str_list):
+
+    if not isinstance(str_list, list):
+        return None
+
+    idx = 0
+    result_str = ""
+    list_size = len(str_list)
+
+    for l in str_list:
+        idx += 1
+
+        if not isinstance(l, str):
+            return None
+
+        result_str += "%s" % l
+        if idx < list_size:
+            result_str += "\n"
+
+    return result_str
+
 def generic_parse(str_line, separator):
     if str_line is None:
         return None
