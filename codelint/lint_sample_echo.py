@@ -14,7 +14,7 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
     # True, None
     # False, "error msg"
 
-    print("%s    (pre): [%s][%s][%s][%s][%s]" % (lint_name(), plugins_params, filename, shared_state, num_lines))
+    print("%s    (pre): [%s][%s][%s][%s]" % (lint_name(), plugins_params, filename, shared_state, num_lines))
     return True, None
 
 def lint_cycle(plugins_params, filename, shared_state, line_index, content_line):
@@ -24,7 +24,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
     # False, "error msg"
 
-    print("%s  (cycle): [%s][%s][%s][%s][%s][%s]" % (lint_name(), plugins_params, filename, shared_state, line_index, content_line))
+    print("%s  (cycle): [%s][%s][%s][%s][%s]" % (lint_name(), plugins_params, filename, shared_state, line_index, content_line))
 
     try:
         pattern_match = plugins_params["lint-sample-echo-pattern-match"]
@@ -44,7 +44,7 @@ def lint_post(plugins_params, filename, shared_state):
     # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
     # False, "error msg"
 
-    print("%s   (post): [%s][%s][%s][%s]\n" % (lint_name(), plugins_params, filename, shared_state))
+    print("%s   (post): [%s][%s][%s]\n" % (lint_name(), plugins_params, filename, shared_state))
     return True, None
 
 def puaq():
