@@ -50,7 +50,7 @@ class CreateAndWriteFileTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.content_file, "abcdef123456")
         self.assertTrue(os.path.exists(self.content_file))
         self.assertEqual(getcontents.getcontents(self.content_file), "abcdef123456")
-        self.assertTrue(mvtools_test_fixture.throwsExcept2(create_and_write_file.create_file_contents, self.content_file, "abcdef123456", mvtools_exception.mvtools_exception))
+        self.assertTrue(mvtools_test_fixture.throwsExcept2(mvtools_exception.mvtools_exception, create_and_write_file.create_file_contents, self.content_file, "abcdef123456"))
 
     def testCreateFileContentsHexVanilla(self):
 
@@ -65,7 +65,7 @@ class CreateAndWriteFileTest(unittest.TestCase):
         create_and_write_file.create_file_contents_hex(self.content_file_bin, "a8a8a8")
         self.assertTrue(os.path.exists(self.content_file_bin))
         self.assertEqual(getcontents.getcontents_bin(self.content_file_bin), b"\xa8\xa8\xa8")
-        self.assertTrue(mvtools_test_fixture.throwsExcept2(create_and_write_file.create_file_contents_hex, self.content_file_bin, "a8a8a8", mvtools_exception.mvtools_exception))
+        self.assertTrue(mvtools_test_fixture.throwsExcept2(mvtools_exception.mvtools_exception, create_and_write_file.create_file_contents_hex, self.content_file_bin, "a8a8a8"))
 
 if __name__ == '__main__':
     unittest.main()
