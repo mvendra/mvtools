@@ -6,6 +6,7 @@ import shutil
 import unittest
 
 import create_and_write_file
+import open_and_update_file
 import mvtools_test_fixture
 import path_utils
 import git_wrapper
@@ -143,8 +144,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit_direct(self.second_repo, ["-m", "test commit msg1"])
         self.assertTrue(v)
 
-        with open(test_file, "a") as f:
-            f.write("extrastuff")
+        open_and_update_file.update_file_contents(test_file, "extrastuff")
 
         v, r = git_wrapper.commit_direct(self.second_repo, ["-a", "-m", "test commit msg2"])
         self.assertTrue(v)
@@ -378,11 +378,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
-
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.diff(self.second_repo)
         self.assertTrue(v)
@@ -403,11 +400,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
-
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.diff(self.second_repo, [test_file1])
         self.assertTrue(v)
@@ -428,14 +422,12 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
 
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.diff(self.second_repo)
         self.assertTrue(v)
@@ -476,11 +468,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
-
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.diff_indexed(self.second_repo, [test_file1, test_file2])
         self.assertTrue(v)
@@ -516,14 +505,12 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("incompatible stuff, conflicts a-coming")
+        open_and_update_file.update_file_contents(test_file1, "incompatible stuff, conflicts a-coming")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -553,11 +540,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
-
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -581,11 +565,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
-
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.diff_cached(self.second_repo)
         self.assertTrue(v)
@@ -606,14 +587,12 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
 
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.diff_cached(self.second_repo)
         self.assertTrue(v)
@@ -654,11 +633,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content1")
-
-        with open(test_file2, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file1, "latest content1")
+        open_and_update_file.update_file_contents(test_file2, "latest content2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -873,8 +849,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "stash-list test commit msg")
         self.assertTrue(v)
 
-        with open(test_file, "a") as f:
-            f.write("latest content")
+        open_and_update_file.update_file_contents(test_file, "latest content")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -885,8 +860,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue( "stash@{0}: WIP on master:" in r)
         self.assertTrue( "stash-list test commit msg" in r)
 
-        with open(test_file, "a") as f:
-            f.write("yet more stuff")
+        open_and_update_file.update_file_contents(test_file, "yet more stuff")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -914,10 +888,9 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg2")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content, stash show 1")
-        with open(test_file2, "a") as f:
-            f.write("latest content, stash show 2")
+        open_and_update_file.update_file_contents(test_file1, "latest content, stash show 1")
+        open_and_update_file.update_file_contents(test_file2, "latest content, stash show 2")
+
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
@@ -939,8 +912,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertFalse(v)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, stash show 1")
+        open_and_update_file.update_file_contents(test_file, "latest content, stash show 1")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -949,8 +921,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, stash show 2")
+        open_and_update_file.update_file_contents(test_file, "latest content, stash show 2")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -979,8 +950,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertFalse(v)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, stash show 1")
+        open_and_update_file.update_file_contents(test_file, "latest content, stash show 1")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -989,8 +959,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, stash show 2")
+        open_and_update_file.update_file_contents(test_file, "latest content, stash show 2")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -1030,8 +999,7 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.stash_show_diff(self.second_repo, "stash@{0}")
         self.assertFalse(v)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, stash show 1")
+        open_and_update_file.update_file_contents(test_file, "latest content, stash show 1")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -1040,8 +1008,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("+test-contentslatest content, stash show 1" in r)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, stash show 2")
+        open_and_update_file.update_file_contents(test_file, "latest content, stash show 2")
 
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
@@ -1101,18 +1068,16 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "stash test commit msg3")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("latest content, stash show 1")
+        open_and_update_file.update_file_contents(test_file1, "latest content, stash show 1")
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        with open(test_file2, "a") as f:
-            f.write("latest content, stash show 2")
+        open_and_update_file.update_file_contents(test_file2, "latest content, stash show 2")
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
-        with open(test_file3, "a") as f:
-            f.write("latest content, stash show 3")
+        open_and_update_file.update_file_contents(test_file3, "latest content, stash show 3")
+
         v, r = git_wrapper.stash(self.second_repo)
         self.assertTrue(v)
 
@@ -1157,8 +1122,7 @@ class GitWrapperTest(unittest.TestCase):
         with open(test_file, "r") as f:
             self.assertFalse("stuff-for-the-stash" in f.read())
 
-        with open(test_file, "a") as f:
-            f.write("stuff-for-the-stash")
+        open_and_update_file.update_file_contents(test_file, "stuff-for-the-stash")
 
         with open(test_file, "r") as f:
             self.assertTrue("stuff-for-the-stash" in f.read())
@@ -1199,8 +1163,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual( len(r.strip().split(os.linesep)), 1 )
         self.assertTrue("log-oneline test commit msg 1" in r)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, log-oneline")
+        open_and_update_file.update_file_contents(test_file, "latest content, log-oneline")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1237,8 +1200,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertEqual( len(r.strip().split(os.linesep)), 5 )
         self.assertTrue("log test commit msg 1" in r)
 
-        with open(test_file, "a") as f:
-            f.write("latest content, log")
+        open_and_update_file.update_file_contents(test_file, "latest content, log")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -1811,8 +1773,7 @@ class GitWrapperTest(unittest.TestCase):
 
         test_file2_fourthrepo = path_utils.concat_path(fourth_repo, "test_file2.txt")
 
-        with open(test_file2_fourthrepo, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file2_fourthrepo, "latest content2")
 
         v, r = collect_git_patch.collect_git_patch_head(fourth_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -1856,8 +1817,7 @@ class GitWrapperTest(unittest.TestCase):
 
         test_file2_fourthrepo = path_utils.concat_path(fourth_repo, "test_file2.txt")
 
-        with open(test_file2_fourthrepo, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file2_fourthrepo, "latest content2")
 
         v, r = git_wrapper.stage(fourth_repo)
         self.assertTrue(v)
@@ -1904,8 +1864,7 @@ class GitWrapperTest(unittest.TestCase):
 
         test_file2_fourthrepo = path_utils.concat_path(fourth_repo, "test_file2.txt")
 
-        with open(test_file2_fourthrepo, "a") as f:
-            f.write("latest content2")
+        open_and_update_file.update_file_contents(test_file2_fourthrepo, "latest content2")
 
         v, r = git_wrapper.stash(fourth_repo)
         self.assertTrue(v)
@@ -1952,8 +1911,7 @@ class GitWrapperTest(unittest.TestCase):
 
         test_file3_fourthrepo = path_utils.concat_path(fourth_repo, "test_file3.txt")
 
-        with open(test_file3_fourthrepo, "a") as f:
-            f.write("latest content3")
+        create_and_write_file.create_file_contents(test_file3_fourthrepo, "latest content3")
 
         v, r = git_wrapper.stage(fourth_repo)
         self.assertTrue(v)
@@ -2028,11 +1986,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         test_file2_nonexistent = path_utils.concat_path(self.second_repo, "test_file2_nonexistent.txt")
 
@@ -2067,11 +2022,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         test_file2_notrepoed = path_utils.concat_path(self.second_repo, "test_file2_notrepoed.txt")
         create_and_write_file.create_file_contents(test_file2_notrepoed, "test-contents2")
@@ -2118,8 +2070,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2150,11 +2101,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2189,11 +2137,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_sub_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_sub_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2228,11 +2173,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_sub_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_sub_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2265,11 +2207,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2302,11 +2241,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_sub_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_sub_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2337,11 +2273,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2372,11 +2305,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2411,8 +2341,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2449,8 +2378,7 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2489,11 +2417,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2541,11 +2466,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore")
-
-        with open(test_file2, "a") as f:
-            f.write("smore")
+        open_and_update_file.update_file_contents(test_file1, "smore")
+        open_and_update_file.update_file_contents(test_file2, "smore")
 
         v, r = git_wrapper.status_simple(self.second_repo)
         self.assertTrue(v)
@@ -2619,11 +2541,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore1")
-
-        with open(test_file2, "a") as f:
-            f.write("smore2")
+        open_and_update_file.update_file_contents(test_file1, "smore1")
+        open_and_update_file.update_file_contents(test_file2, "smore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2631,11 +2550,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("yetmore1")
-
-        with open(test_file2, "a") as f:
-            f.write("yetmore2")
+        open_and_update_file.update_file_contents(test_file1, "yetmore1")
+        open_and_update_file.update_file_contents(test_file2, "yetmore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2690,11 +2606,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore1")
-
-        with open(test_file2, "a") as f:
-            f.write("smore2")
+        open_and_update_file.update_file_contents(test_file1, "smore1")
+        open_and_update_file.update_file_contents(test_file2, "smore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2702,11 +2615,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("yetmore1")
-
-        with open(test_file2, "a") as f:
-            f.write("yetmore2")
+        open_and_update_file.update_file_contents(test_file1, "yetmore1")
+        open_and_update_file.update_file_contents(test_file2, "yetmore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2714,11 +2624,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg3")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("againmorestuff1")
-
-        with open(test_file2, "a") as f:
-            f.write("againmorestuff2")
+        open_and_update_file.update_file_contents(test_file1, "againmorestuff1")
+        open_and_update_file.update_file_contents(test_file2, "againmorestuff2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2787,11 +2694,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore1")
-
-        with open(test_file2, "a") as f:
-            f.write("smore2")
+        open_and_update_file.update_file_contents(test_file1, "smore1")
+        open_and_update_file.update_file_contents(test_file2, "smore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2799,11 +2703,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("yetmore1")
-
-        with open(test_file2, "a") as f:
-            f.write("yetmore2")
+        open_and_update_file.update_file_contents(test_file1, "yetmore1")
+        open_and_update_file.update_file_contents(test_file2, "yetmore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2858,11 +2759,8 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(len(r.strip()) == 0)
 
-        with open(test_file1, "a") as f:
-            f.write("smore1")
-
-        with open(test_file2, "a") as f:
-            f.write("smore2")
+        open_and_update_file.update_file_contents(test_file1, "smore1")
+        open_and_update_file.update_file_contents(test_file2, "smore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2870,11 +2768,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg2")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("yetmore1")
-
-        with open(test_file2, "a") as f:
-            f.write("yetmore2")
+        open_and_update_file.update_file_contents(test_file1, "yetmore1")
+        open_and_update_file.update_file_contents(test_file2, "yetmore2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
@@ -2882,11 +2777,8 @@ class GitWrapperTest(unittest.TestCase):
         v, r = git_wrapper.commit(self.second_repo, "test commit msg3")
         self.assertTrue(v)
 
-        with open(test_file1, "a") as f:
-            f.write("againmorestuff1")
-
-        with open(test_file2, "a") as f:
-            f.write("againmorestuff2")
+        open_and_update_file.update_file_contents(test_file1, "againmorestuff1")
+        open_and_update_file.update_file_contents(test_file2, "againmorestuff2")
 
         v, r = git_wrapper.stage(self.second_repo)
         self.assertTrue(v)
