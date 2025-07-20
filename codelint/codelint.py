@@ -9,6 +9,28 @@ import terminal_colors
 
 # plugins
 import lint_sample_echo
+import lint_c_integer_suffix
+
+def helper_validate_cycle_return(msg, patches):
+
+    if not isinstance(msg, str):
+        return False, "invalid cycle return: msg is not a str"
+
+    if not isinstance(patches, list):
+        return False, "invalid cycle return: patches is not a list"
+
+    for e in patches:
+
+        if not isinstance(e, tuple):
+            return False, "invalid cycle return: patches entry is not a tuple"
+
+        if not isinstance(e[0], int):
+            return False, "invalid cycle return: patches entry, first tuple entry is not an int"
+
+        if not isinstance(e[1], str):
+            return False, "invalid cycle return: patches entry, second tuple entry is not a str"
+
+    return True, None
 
 def codelint(plugins, plugins_params, autocorrect, filelist):
 
@@ -37,8 +59,6 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
         if not os.path.exists(f):
             return False, ("File [%s] does not exist" % f, report)
 
-    # mvtodo: need to setup a feedback mechanism, for both cycle and post, for either changes or just reporting (reporting == such-and-such is wrong, go fix it yourself manually)
-
     for f in filelist:
 
         shared_state = {}
@@ -64,7 +84,13 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
                 if r is not None:
-                    report.append((True, r[0]))
+                    msg, patches = r
+                    v, r = helper_validate_cycle_return(msg, patches)
+                    if not v:
+                        return False, (r, report)
+                    report.append((True, msg))
+
+                    # mvtodo: apply {patches} if autocorrect is on
 
             v, r = p.lint_post(plugins_params, autocorrect, fn, shared_state)
             if not v:
@@ -87,6 +113,7 @@ def puaq():
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [filelist] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
+    print("* lint-c-int-suf {}")
     sys.exit(1)
 
 if __name__ == "__main__":
@@ -99,6 +126,7 @@ if __name__ == "__main__":
 
     plugin_table = {}
     plugin_table["lint-sample-echo"] = lint_sample_echo
+    plugin_table["lint-c-int-suf"] = lint_c_integer_suffix
 
     plugins = []
     plugins_params = {}
