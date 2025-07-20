@@ -97,14 +97,41 @@ if __name__ == "__main__":
     autocorrect = False
     filelist = None
 
+    plugin_param_name = None
+    plugin_param_name_next = False
+
+    plugin_param_value = None
+    plugin_param_value_next = False
+
     idx = 0
     for p in sys.argv[1:]:
         idx += 1
 
+        if plugin_param_value_next:
+            plugin_param_value_next = False
+            plugin_param_value = p
+            continue
+
+        if plugin_param_name_next:
+            plugin_param_name_next = False
+            plugin_param_value_next = True
+            plugin_param_name = p
+            continue
+
         if p == "--lint-sample-echo":
             plugins.append(lint_sample_echo)
+        elif p == "--plugin-param":
+            plugin_param_name_next = True
         elif p == "--autocorrect":
             autocorrect = True
+
+    if plugin_param_name_next:
+        print("Missing plugin param name!")
+        sys.exit(1)
+
+    if plugin_param_value_next:
+        print("Missing plugin param value (expected for [%s])!" % plugin_param_name)
+        sys.exit(1)
 
     filelist = sys.argv[idx:]
 
