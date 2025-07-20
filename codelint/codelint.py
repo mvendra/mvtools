@@ -104,8 +104,6 @@ if __name__ == "__main__":
 
     plugin_param_name = None
     plugin_param_name_next = False
-
-    plugin_param_value = None
     plugin_param_value_next = False
 
     idx = 0
@@ -114,7 +112,11 @@ if __name__ == "__main__":
 
         if plugin_param_value_next:
             plugin_param_value_next = False
-            plugin_param_value = p
+            if plugin_param_name in plugins_params:
+                plugins_params[plugin_param_name].append(p)
+            else:
+                plugins_params[plugin_param_name] = [p]
+            plugin_param_name = None
             continue
 
         if plugin_param_name_next:
