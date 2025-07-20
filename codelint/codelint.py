@@ -149,9 +149,9 @@ if __name__ == "__main__":
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         if len(r[1]) > 0:
-            print("Partially generated report:")
+            print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.TTY_WHITE))
             print_report(r[1])
         sys.exit(1)
-    print("Complete report:")
+    print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.TTY_WHITE))
     print_report(r)
     print("\n%sAll operations suceeded%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
