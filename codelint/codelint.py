@@ -31,7 +31,7 @@ def helper_apply_patches(lines, patches):
 
     return True, None
 
-def helper_validate_cycle_return(msg, patches):
+def helper_validate_msgpatch_return(msg, patches):
 
     if not isinstance(msg, str):
         return False, "invalid cycle return: msg is not a str"
@@ -111,7 +111,7 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
                 if r is not None:
                     msg, patches = r
 
-                    v, r = helper_validate_cycle_return(msg, patches)
+                    v, r = helper_validate_msgpatch_return(msg, patches)
                     if not v:
                         return False, (r, report)
                     report.append((True, msg))
@@ -125,7 +125,7 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
             if not v:
                 return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
             report.append((False, "Plugin: [%s] - end" % p.lint_name()))
-            # mvtodo: post can also generate patches (so rename the helper too)
+            # mvtodo: post can also generate patches
 
         if autocorrect:
             os.unlink(f)
