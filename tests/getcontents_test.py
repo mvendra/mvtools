@@ -42,7 +42,7 @@ class GetContentsTest(unittest.TestCase):
 
     def testGetContentsNonExistent(self):
 
-        self.assertTrue(mvtools_test_fixture.throwsExcept1(mvtools_exception.mvtools_exception, getcontents.getcontents, self.nonexistent_file))
+        self.assertTrue(mvtools_test_fixture.throwsExcept(mvtools_exception.mvtools_exception, getcontents.getcontents, self.nonexistent_file))
 
     def testGetContentsVanilla(self):
 
@@ -50,7 +50,7 @@ class GetContentsTest(unittest.TestCase):
 
     def testGetContentsBinNonExistent(self):
 
-        self.assertTrue(mvtools_test_fixture.throwsExcept1(mvtools_exception.mvtools_exception, getcontents.getcontents_bin, self.nonexistent_file))
+        self.assertTrue(mvtools_test_fixture.throwsExcept(mvtools_exception.mvtools_exception, getcontents.getcontents_bin, self.nonexistent_file))
 
     def testGetContentsBinVanilla(self):
 

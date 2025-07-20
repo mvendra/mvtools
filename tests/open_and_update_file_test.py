@@ -40,7 +40,7 @@ class OpenAndUpdateFileTest(unittest.TestCase):
     def testUpdateFileContentsDoesntExist(self):
 
         self.assertFalse(os.path.exists(self.content_file))
-        self.assertTrue(mvtools_test_fixture.throwsExcept2(mvtools_exception.mvtools_exception, open_and_update_file.update_file_contents, self.content_file, "andthensomemore"))
+        self.assertTrue(mvtools_test_fixture.throwsExcept(mvtools_exception.mvtools_exception, open_and_update_file.update_file_contents, self.content_file, "andthensomemore"))
         self.assertFalse(os.path.exists(self.content_file))
 
     def testUpdateFileContentsVanilla(self):
