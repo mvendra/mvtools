@@ -35,7 +35,8 @@ if __name__ == "__main__":
     filename = sys.argv[1]
     contents = sys.argv[2]
 
-    r = create_file_contents(filename, contents)
-    if not r:
-        print("Failed creating new file.")
+    try:
+        r = create_file_contents(filename, contents)
+    except mvtools_exception.mvtools_exception as ex:
+        print(ex)
         sys.exit(1)
