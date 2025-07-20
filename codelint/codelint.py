@@ -115,7 +115,7 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
         for p in plugins:
 
             report.append((False, "Plugin: [%s] - begin" % p.lint_name()))
-            v, r = p.lint_pre(plugins_params, autocorrect, fn, shared_state, len(lines))
+            v, r = p.lint_pre(plugins_params, fn, shared_state, len(lines))
             if not v:
                 return False, ("Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r), report)
 
@@ -123,7 +123,7 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
             for l in lines:
                 idx += 1
 
-                v, r = p.lint_cycle(plugins_params, autocorrect, fn, shared_state, idx, l)
+                v, r = p.lint_cycle(plugins_params, fn, shared_state, idx, l)
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
 
@@ -131,7 +131,7 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
                 if not v:
                     return False, ("Plugin [%s] failed (cycle-result): [%s]" % (p.lint_name(), r), report)
 
-            v, r = p.lint_post(plugins_params, autocorrect, fn, shared_state)
+            v, r = p.lint_post(plugins_params, fn, shared_state)
             if not v:
                 return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
 
