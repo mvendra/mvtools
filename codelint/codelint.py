@@ -10,7 +10,7 @@ import terminal_colors
 # plugins
 import lint_sample_echo
 
-def codelint(autocorrect, plugins, filelist):
+def codelint(autocorrect, plugins, plugins_params, filelist):
 
     report = []
 
@@ -47,7 +47,7 @@ def codelint(autocorrect, plugins, filelist):
         for p in plugins:
 
             report.append((False, "Plugin: [%s] - begin" % p.lint_name()))
-            v, r = p.lint_pre(autocorrect, fn, shared_state, len(lines))
+            v, r = p.lint_pre(plugins_params, autocorrect, fn, shared_state, len(lines))
             if not v:
                 return False, ("Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r), report)
 
@@ -55,13 +55,13 @@ def codelint(autocorrect, plugins, filelist):
             for l in lines:
                 idx += 1
 
-                v, r = p.lint_cycle(autocorrect, fn, shared_state, idx, l)
+                v, r = p.lint_cycle(plugins_params, autocorrect, fn, shared_state, idx, l)
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
                 if r is not None:
                     report.append((True, r[0]))
 
-            v, r = p.lint_post(autocorrect, fn, shared_state)
+            v, r = p.lint_post(plugins_params, autocorrect, fn, shared_state)
             if not v:
                 return False, ("Plugin [%s] failed (post): [%s]" % (p.lint_name(), r), report)
             report.append((False, "Plugin: [%s] - end" % p.lint_name()))
@@ -89,6 +89,7 @@ if __name__ == "__main__":
 
     autocorrect = False
     plugins = []
+    plugins_params = {}
     filelist = None
 
     idx = 0
@@ -102,7 +103,7 @@ if __name__ == "__main__":
 
     filelist = sys.argv[idx:]
 
-    v, r = codelint(autocorrect, plugins, filelist)
+    v, r = codelint(autocorrect, plugins, plugins_params, filelist)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         print("Partially generated report:")
