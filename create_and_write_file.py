@@ -36,7 +36,7 @@ if __name__ == "__main__":
     contents = sys.argv[2]
 
     try:
-        r = create_file_contents(filename, contents)
+        create_file_contents(filename, contents)
     except mvtools_exception.mvtools_exception as ex:
         print(ex)
         sys.exit(1)
