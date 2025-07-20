@@ -9,6 +9,7 @@ import path_utils
 import fsquery
 import getcontents
 import create_and_write_file
+import open_and_update_file
 
 import mvtools_test_fixture
 import git_test_fixture
@@ -141,8 +142,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchHeadFail(self):
 
-        with open(self.first_file1, "a") as f:
-            f.write("extra")
+        open_and_update_file.update_file_contents(self.first_file1, "extra")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -154,8 +154,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchHead1(self):
 
-        with open(self.first_file1, "a") as f:
-            f.write("extra")
+        open_and_update_file.update_file_contents(self.first_file1, "extra")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -190,14 +189,9 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "file8.txt", "first-file8-content", "first-file8-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("extra")
-
-        with open(self.first_file2, "a") as f:
-            f.write("smore stuff")
-
-        with open(first_file7, "a") as f:
-            f.write("onto-the-seventh")
+        open_and_update_file.update_file_contents(self.first_file1, "extra")
+        open_and_update_file.update_file_contents(self.first_file2, "smore stuff")
+        open_and_update_file.update_file_contents(first_file7, "onto-the-seventh")
 
         self.assertTrue(os.path.exists(self.first_file3))
         os.unlink(self.first_file3)
@@ -291,29 +285,14 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("extra")
-
-        with open(self.first_file2, "a") as f:
-            f.write("smore stuff")
-
-        with open(self.first_file3, "a") as f:
-            f.write("modifying the third too")
-
-        with open(first_file7, "a") as f:
-            f.write("onto-the-seventh")
-
-        with open(first_sub1_another_file10, "a") as f:
-            f.write("appending to s1-f10")
-
-        with open(first_sub1_another_file17, "a") as f:
-            f.write("more stuff for s1-f17")
-
-        with open(first_sub2_another_file10, "a") as f:
-            f.write("yet more contents onto s2-f10")
-
-        with open(first_sub2_another_file19, "a") as f:
-            f.write("some additional text for s2-f19")
+        open_and_update_file.update_file_contents(self.first_file1, "extra")
+        open_and_update_file.update_file_contents(self.first_file2, "smore stuff")
+        open_and_update_file.update_file_contents(self.first_file3, "modifying the third too")
+        open_and_update_file.update_file_contents(first_file7, "onto-the-seventh")
+        open_and_update_file.update_file_contents(first_sub1_another_file10, "appending to s1-f10")
+        open_and_update_file.update_file_contents(first_sub1_another_file17, "more stuff for s1-f17")
+        open_and_update_file.update_file_contents(first_sub2_another_file10, "yet more contents onto s2-f10")
+        open_and_update_file.update_file_contents(first_sub2_another_file19, "some additional text for s2-f19")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -354,14 +333,12 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v and r)
 
-        with open(self.first_file1, "a") as f:
-            f.write("actual modification")
+        open_and_update_file.update_file_contents(self.first_file1, "actual modification")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file1])
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("actual modification, again")
+        open_and_update_file.update_file_contents(self.first_file1, "actual modification, again")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -383,8 +360,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo, [first_more1])
         self.assertTrue(v)
 
-        with open(first_more1, "a") as f:
-            f.write("actual modification, again")
+        open_and_update_file.update_file_contents(first_more1, "actual modification, again")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -398,8 +374,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchHeadSub(self):
 
-        with open(self.second_sub_file1, "a") as f:
-            f.write("extra_sub")
+        open_and_update_file.update_file_contents(self.second_sub_file1, "extra_sub")
 
         v, r = collect_git_patch.collect_git_patch_head(self.second_sub, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -478,29 +453,14 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("extra")
-
-        with open(self.first_file2, "a") as f:
-            f.write("smore stuff")
-
-        with open(self.first_file3, "a") as f:
-            f.write("modifying the third too")
-
-        with open(first_file7, "a") as f:
-            f.write("onto-the-seventh")
-
-        with open(first_sub1_another_file10, "a") as f:
-            f.write("appending to s1-f10")
-
-        with open(first_sub1_another_file17, "a") as f:
-            f.write("more stuff for s1-f17")
-
-        with open(first_sub2_another_file10, "a") as f:
-            f.write("yet more contents onto s2-f10")
-
-        with open(first_sub2_another_file19, "a") as f:
-            f.write("some additional text for s2-f19")
+        open_and_update_file.update_file_contents(self.first_file1, "extra")
+        open_and_update_file.update_file_contents(self.first_file2, "smore stuff")
+        open_and_update_file.update_file_contents(self.first_file3, "modifying the third too")
+        open_and_update_file.update_file_contents(first_file7, "onto-the-seventh")
+        open_and_update_file.update_file_contents(first_sub1_another_file10, "appending to s1-f10")
+        open_and_update_file.update_file_contents(first_sub1_another_file17, "more stuff for s1-f17")
+        open_and_update_file.update_file_contents(first_sub2_another_file10, "yet more contents onto s2-f10")
+        open_and_update_file.update_file_contents(first_sub2_another_file19, "some additional text for s2-f19")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "exclude", ["*/another/*"], [])
         self.assertTrue(v)
@@ -719,32 +679,18 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(first_file6, "a") as f:
-            f.write("adding to file6")
-
-        with open(first_sub1_file9, "a") as f:
-            f.write("adding to sub1-file9")
-
-        with open(first_sub1_another_file17, "a") as f:
-            f.write("adding to sub1-file17")
-
-        with open(first_sub2_another_file19, "a") as f:
-            f.write("adding to sub2-file19")
+        open_and_update_file.update_file_contents(first_file6, "adding to file6")
+        open_and_update_file.update_file_contents(first_sub1_file9, "adding to sub1-file9")
+        open_and_update_file.update_file_contents(first_sub1_another_file17, "adding to sub1-file17")
+        open_and_update_file.update_file_contents(first_sub2_another_file19, "adding to sub2-file19")
 
         v, r = git_wrapper.stash(self.first_repo)
         self.assertTrue(v)
 
-        with open(first_file6, "a") as f:
-            f.write("!incompatible! adding to file6")
-
-        with open(first_sub1_file9, "a") as f:
-            f.write("!incompatible! adding to sub1-file9")
-
-        with open(first_sub1_another_file17, "a") as f:
-            f.write("!incompatible! adding to sub1-file17")
-
-        with open(first_sub2_another_file19, "a") as f:
-            f.write("!incompatible! adding to sub2-file19")
+        open_and_update_file.update_file_contents(first_file6, "!incompatible! adding to file6")
+        open_and_update_file.update_file_contents(first_sub1_file9, "!incompatible! adding to sub1-file9")
+        open_and_update_file.update_file_contents(first_sub1_another_file17, "!incompatible! adding to sub1-file17")
+        open_and_update_file.update_file_contents(first_sub2_another_file19, "!incompatible! adding to sub2-file19")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -786,20 +732,14 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v and r)
 
-        with open(self.first_file1, "a") as f:
-            f.write("actual modification, file1")
-
-        with open(self.first_file2, "a") as f:
-            f.write("actual modification, file2")
+        open_and_update_file.update_file_contents(self.first_file1, "actual modification, file1")
+        open_and_update_file.update_file_contents(self.first_file2, "actual modification, file2")
 
         v, r = git_wrapper.stage(self.first_repo, [self.first_file1, self.first_file2])
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("actual modification, again, file1")
-
-        with open(self.first_file2, "a") as f:
-            f.write("actual modification, again, file2")
+        open_and_update_file.update_file_contents(self.first_file1, "actual modification, again, file1")
+        open_and_update_file.update_file_contents(self.first_file2, "actual modification, again, file2")
 
         patch_file = path_utils.concat_path(self.storage_path, self.first_repo, "head.patch")
         self.assertFalse(os.path.exists(patch_file))
@@ -828,11 +768,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo, [first_more1, first_more2])
         self.assertTrue(v)
 
-        with open(first_more1, "a") as f:
-            f.write("actual modification, again, more1")
-
-        with open(first_more2, "a") as f:
-            f.write("actual modification, again, more2")
+        open_and_update_file.update_file_contents(first_more1, "actual modification, again, more1")
+        open_and_update_file.update_file_contents(first_more2, "actual modification, again, more2")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "include", [], ["*/more2.txt"])
         self.assertTrue(v)
@@ -860,11 +797,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo, [first_more1, first_more2])
         self.assertTrue(v)
 
-        with open(first_more1, "a") as f:
-            f.write("actual modification, again, more1")
-
-        with open(first_more2, "a") as f:
-            f.write("actual modification, again, more2")
+        open_and_update_file.update_file_contents(first_more1, "actual modification, again, more1")
+        open_and_update_file.update_file_contents(first_more2, "actual modification, again, more2")
 
         v, r = collect_git_patch.collect_git_patch_head(self.first_repo, self.storage_path, "exclude", [], [])
         self.assertFalse(v)
@@ -1033,11 +967,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("more file1")
-
-        with open(self.first_file3, "a") as f:
-            f.write("more file3")
+        open_and_update_file.update_file_contents(self.first_file1, "more file1")
+        open_and_update_file.update_file_contents(self.first_file3, "more file3")
 
         self.assertTrue(os.path.exists(first_file4))
         os.unlink(first_file4)
@@ -1162,11 +1093,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("more file1")
-
-        with open(self.first_file3, "a") as f:
-            f.write("more file3")
+        open_and_update_file.update_file_contents(self.first_file1, "more file1")
+        open_and_update_file.update_file_contents(self.first_file3, "more file3")
 
         self.assertTrue(os.path.exists(first_file4))
         os.unlink(first_file4)
@@ -1192,8 +1120,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        with open(first_file5, "a") as f:
-            f.write("mod f5")
+        open_and_update_file.update_file_contents(first_file5, "mod f5")
 
         v, r = collect_git_patch.collect_git_patch_staged(self.first_repo, self.storage_path, "include", [], [])
         self.assertTrue(v)
@@ -1321,11 +1248,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("more file1")
-
-        with open(self.first_file3, "a") as f:
-            f.write("more file3")
+        open_and_update_file.update_file_contents(self.first_file1, "more file1")
+        open_and_update_file.update_file_contents(self.first_file3, "more file3")
 
         self.assertTrue(os.path.exists(first_file4))
         os.unlink(first_file4)
@@ -1450,11 +1374,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("more file1")
-
-        with open(self.first_file3, "a") as f:
-            f.write("more file3")
+        open_and_update_file.update_file_contents(self.first_file1, "more file1")
+        open_and_update_file.update_file_contents(self.first_file3, "more file3")
 
         self.assertTrue(os.path.exists(first_file4))
         os.unlink(first_file4)
@@ -1579,11 +1500,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("more file1")
-
-        with open(self.first_file3, "a") as f:
-            f.write("more file3")
+        open_and_update_file.update_file_contents(self.first_file1, "more file1")
+        open_and_update_file.update_file_contents(self.first_file3, "more file3")
 
         self.assertTrue(os.path.exists(first_file4))
         os.unlink(first_file4)
@@ -1708,11 +1626,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("more file1")
-
-        with open(self.first_file3, "a") as f:
-            f.write("more file3")
+        open_and_update_file.update_file_contents(self.first_file1, "more file1")
+        open_and_update_file.update_file_contents(self.first_file3, "more file3")
 
         self.assertTrue(os.path.exists(first_file4))
         os.unlink(first_file4)
@@ -1837,11 +1752,8 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_test_fixture.git_createAndCommit(self.first_repo, "sub2/another/file19.txt", "first-sub2-another-file19-content", "first-sub2-another-file19-msg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("more file1")
-
-        with open(self.first_file3, "a") as f:
-            f.write("more file3")
+        open_and_update_file.update_file_contents(self.first_file1, "more file1")
+        open_and_update_file.update_file_contents(self.first_file3, "more file3")
 
         self.assertTrue(os.path.exists(first_file4))
         os.unlink(first_file4)
@@ -1911,11 +1823,8 @@ class CollectGitPatchTest(unittest.TestCase):
         create_and_write_file.create_file_contents(first_more2, "more2-contents")
         self.assertTrue(os.path.exists(first_more2))
 
-        with open(self.first_file1, "a") as f:
-            f.write("actual modification, again, file1")
-
-        with open(self.first_file2, "a") as f:
-            f.write("actual modification, again, file2")
+        open_and_update_file.update_file_contents(self.first_file1, "actual modification, again, file1")
+        open_and_update_file.update_file_contents(self.first_file2, "actual modification, again, file2")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -2755,8 +2664,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchStashFail(self):
 
-        with open(self.first_file1, "a") as f:
-            f.write("stashcontent1")
+        open_and_update_file.update_file_contents(self.first_file1, "stashcontent1")
 
         git_wrapper.stash(self.first_repo)
 
@@ -2783,13 +2691,11 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchStash1(self):
 
-        with open(self.first_file1, "a") as f:
-            f.write("stashcontent1")
+        open_and_update_file.update_file_contents(self.first_file1, "stashcontent1")
 
         git_wrapper.stash(self.first_repo)
 
-        with open(self.first_file2, "a") as f:
-            f.write("stashcontent2")
+        open_and_update_file.update_file_contents(self.first_file2, "stashcontent2")
 
         git_wrapper.stash(self.first_repo)
 
@@ -2812,13 +2718,11 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchStash2(self):
 
-        with open(self.first_file1, "a") as f:
-            f.write("stashcontent1")
+        open_and_update_file.update_file_contents(self.first_file1, "stashcontent1")
 
         git_wrapper.stash(self.first_repo)
 
-        with open(self.first_file2, "a") as f:
-            f.write("stashcontent2")
+        open_and_update_file.update_file_contents(self.first_file2, "stashcontent2")
 
         git_wrapper.stash(self.first_repo)
 
@@ -2838,8 +2742,7 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchStashSub(self):
 
-        with open(self.second_sub_file1, "a") as f:
-            f.write("stashcontent-sub")
+        open_and_update_file.update_file_contents(self.second_sub_file1, "stashcontent-sub")
 
         git_wrapper.stash(self.second_sub)
 
@@ -2923,10 +2826,11 @@ class CollectGitPatchTest(unittest.TestCase):
 
     def testCollectPatchCherryPickPrevious2(self):
 
-        with open(self.first_file1, "a") as f:
-            f.write("content to be cherry picked later")
+        open_and_update_file.update_file_contents(self.first_file1, "content to be cherry picked later")
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
+
         v, r = git_wrapper.commit(self.first_repo, "commitmsg")
         self.assertTrue(v)
 
@@ -2934,17 +2838,19 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(v)
         stored_hash = r
 
-        with open(self.first_file1, "a") as f:
-            f.write("nondetectful")
+        open_and_update_file.update_file_contents(self.first_file1, "nondetectful")
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
+
         v, r = git_wrapper.commit(self.first_repo, "commitmsg")
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("ship-of-the-line")
+        open_and_update_file.update_file_contents(self.first_file1, "ship-of-the-line")
+
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
+
         v, r = git_wrapper.commit(self.first_repo, "commitmsg")
         self.assertTrue(v)
 
@@ -2966,8 +2872,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_lib.is_head_clear(self.first_repo)
         self.assertTrue(v and r)
 
-        with open(self.first_file1, "a") as f:
-            f.write("actual modification, second")
+        open_and_update_file.update_file_contents(self.first_file1, "actual modification, second")
 
         v, r = git_wrapper.stash(self.first_repo)
         self.assertTrue(v)
@@ -3013,8 +2918,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_wrapper.stash(self.first_repo)
         self.assertTrue(v)
 
-        with open(self.first_file1, "a") as f:
-            f.write("stuff of extra")
+        open_and_update_file.update_file_contents(self.first_file1, "stuff of extra")
 
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
@@ -3350,8 +3254,7 @@ class CollectGitPatchTest(unittest.TestCase):
         v, r = git_wrapper.stage(self.first_repo)
         self.assertTrue(v)
 
-        with open(first_file1_renamed, "a") as f:
-            f.write("actual modification, again")
+        open_and_update_file.update_file_contents(first_file1_renamed, "actual modification, again")
 
         v, r = git_lib.get_head_renamed_modified_files(self.first_repo)
         self.assertTrue(v)
