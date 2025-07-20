@@ -52,6 +52,25 @@ def helper_validate_msgpatch_return(msg, patches):
 
     return True, None
 
+def helper_process_result(result, report, autocorrect, lines_copy):
+
+    if result is None:
+        return True, None
+    msg, patches = result
+
+    v, r = helper_validate_msgpatch_return(msg, patches)
+    if not v:
+        return False, r
+
+    report.append((True, msg))
+
+    if autocorrect:
+        v, r = helper_apply_patches(lines_copy, patches)
+        if not v:
+            return False, r
+
+    return True, None
+
 def codelint(plugins, plugins_params, autocorrect, filelist):
 
     report = []
@@ -108,18 +127,9 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
 
-                if r is not None:
-                    msg, patches = r
-
-                    v, r = helper_validate_msgpatch_return(msg, patches)
-                    if not v:
-                        return False, (r, report)
-                    report.append((True, msg))
-
-                    if autocorrect:
-                        v, r = helper_apply_patches(lines_copy, patches)
-                        if not v:
-                            return False, (r, report)
+                v, r = helper_process_result(r, report, autocorrect, lines_copy)
+                if not v:
+                    return False, ("Plugin [%s] failed (cycle-result): [%s]" % (p.lint_name(), r), report)
 
             v, r = p.lint_post(plugins_params, autocorrect, fn, shared_state)
             if not v:
