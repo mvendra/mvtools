@@ -301,6 +301,8 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("autocorrect is not a bool", []))
 
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
     def testCodelint2(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
@@ -316,6 +318,8 @@ class CodeLintTest(unittest.TestCase):
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("plugins is not a list", []))
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint3(self):
 
@@ -333,6 +337,8 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("filelist is not a list", []))
 
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
     def testCodelint4(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
@@ -349,6 +355,8 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("No plugins selected", []))
 
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
     def testCodelint5(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
@@ -364,6 +372,8 @@ class CodeLintTest(unittest.TestCase):
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("Only one plugin is allowed to be executed with autocorrect turned on", []))
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint6(self):
 
@@ -430,6 +440,8 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (pre): [failing the pre step]", expected_report))
 
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
     def testCodelint10(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
@@ -450,6 +462,8 @@ class CodeLintTest(unittest.TestCase):
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (cycle): [failing the cycle step]", expected_report))
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint11(self):
 
@@ -473,7 +487,7 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (post): [failing the post step]", expected_report))
 
-        # mvtodo: for here and elsewhere where it applies - verify that the file did NOT change
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint12(self):
 
@@ -499,6 +513,8 @@ class CodeLintTest(unittest.TestCase):
             self.assertFalse(v)
             self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (cycle-result): [helper_process_result to fail artificially (cycle-result)]", expected_report))
             dummy.assert_called_once()
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint13(self):
 
@@ -526,7 +542,9 @@ class CodeLintTest(unittest.TestCase):
             self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (post-result): [helper_process_result to fail artificially (post-result)]", expected_report))
             dummy.assert_called()
 
-    def testCodelintX(self): # mvtodo
+        self.assertEqual(getcontents.getcontents(test_file1), "sole-line")
+
+    def testCodelint14(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
