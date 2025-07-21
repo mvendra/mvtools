@@ -10,18 +10,9 @@ from unittest.mock import call
 
 import mvtools_test_fixture
 import path_utils
+import getcontents
 
 import writefile_plugin
-
-def FileHasContents(filename, contents):
-    if not os.path.exists(filename):
-        return False
-    local_contents = ""
-    with open(filename, "r") as f:
-        local_contents = f.read()
-    if local_contents == contents:
-        return True
-    return False
 
 class WritefilePluginTest(unittest.TestCase):
 
@@ -100,7 +91,7 @@ class WritefilePluginTest(unittest.TestCase):
         v, r = self.writefile_task.run_task(print, "exe_name")
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.nonexistent_path1))
-        self.assertTrue(FileHasContents(self.nonexistent_path1, "dummy-content"))
+        self.assertTrue("dummy-content" in getcontents.getcontents(self.nonexistent_path1))
 
     def testWritefilePluginRunTask2(self):
 
@@ -116,7 +107,7 @@ class WritefilePluginTest(unittest.TestCase):
         v, r = self.writefile_task.run_task(print, "exe_name")
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.nonexistent_path1))
-        self.assertTrue(FileHasContents(self.nonexistent_path1, "dummy-content1\ndummy-content2"))
+        self.assertTrue("dummy-content1\ndummy-content2" in getcontents.getcontents(self.nonexistent_path1))
 
 if __name__ == '__main__':
     unittest.main()
