@@ -672,7 +672,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    # mvtodo: multiple files, multiples plugins
+    # mvtodo: multiple files, multiples plugins, multiple lines
 
 if __name__ == "__main__":
     unittest.main()
