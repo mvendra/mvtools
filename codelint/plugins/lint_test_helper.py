@@ -14,6 +14,15 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
     # True, None
     # False, "error msg"
 
+    pre_fail = None
+    try:
+        pre_fail = plugins_params["lint-test-helper-pre-fail"]
+    except KeyError as ex:
+        pass
+
+    if pre_fail is not None:
+        return False, pre_fail
+
     return True, None
 
 def lint_cycle(plugins_params, filename, shared_state, line_index, content_line):
@@ -22,6 +31,15 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     # True, None
     # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
     # False, "error msg"
+
+    cycle_fail = None
+    try:
+        cycle_fail = plugins_params["lint-test-helper-cycle-fail"]
+    except KeyError as ex:
+        pass
+
+    if cycle_fail is not None:
+        return False, cycle_fail
 
     try:
         pattern_match = plugins_params["lint-test-helper-cycle-pattern-match"]
@@ -42,6 +60,15 @@ def lint_post(plugins_params, filename, shared_state):
     # True, None
     # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
     # False, "error msg"
+
+    post_fail = None
+    try:
+        post_fail = plugins_params["lint-test-helper-post-fail"]
+    except KeyError as ex:
+        pass
+
+    if post_fail is not None:
+        return False, post_fail
 
     return True, None
 

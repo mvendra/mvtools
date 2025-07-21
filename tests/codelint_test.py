@@ -4,6 +4,8 @@ import sys
 import os
 import shutil
 import unittest
+from unittest import mock
+from unittest.mock import patch
 
 import mvtools_test_fixture
 import create_and_write_file
@@ -11,6 +13,7 @@ import getcontents
 import path_utils
 
 import lint_test_helper
+import lint_sample_echo
 
 import codelint
 
@@ -30,10 +33,22 @@ class CodeLintTest(unittest.TestCase):
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
+        self.helper_process_result_mock_flag = 0
+        self.helper_process_result_mock_msg = ""
+        self.helper_process_result_stashed_ptr = codelint.helper_process_result
+
         return True, ""
 
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
+
+    def helper_process_result_mock(self, r, report, autocorrect, lines_copy):
+
+        if self.helper_process_result_mock_flag > 0:
+            self.helper_process_result_mock_flag -= 1
+            if self.helper_process_result_mock_flag == 0:
+                return False, self.helper_process_result_mock_msg
+        return self.helper_process_result_stashed_ptr(r, report, autocorrect, lines_copy)
 
     def testHelperValidateMsgpatchReturn1(self):
 
@@ -269,6 +284,247 @@ class CodeLintTest(unittest.TestCase):
         self.assertEqual(test_lines[0], "first")
         self.assertEqual(test_lines[1], "second")
         self.assertEqual(test_lines[2], "third")
+
+    def testCodelint1(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, 1, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("autocorrect is not a bool", []))
+
+    def testCodelint2(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = (lint_test_helper)
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("plugins is not a list", []))
+
+    def testCodelint3(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = (test_file1)
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("filelist is not a list", []))
+
+    def testCodelint4(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = []
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("No plugins selected", []))
+
+    def testCodelint5(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper, lint_sample_echo]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("Only one plugin is allowed to be executed with autocorrect turned on", []))
+
+    def testCodelint6(self):
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = []
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("No target files selected", []))
+
+    def testCodelint7(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("File [%s] does not exist" % test_file1, []))
+
+    def testCodelint8(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        os.mkdir(test_file1)
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("File [%s] is a directory" % test_file1, []))
+
+    def testCodelint9(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-pre-fail"] = "failing the pre step"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (pre): [failing the pre step]", expected_report))
+
+    def testCodelint10(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-fail"] = "failing the cycle step"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (cycle): [failing the cycle step]", expected_report))
+
+    def testCodelint11(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-post-fail"] = "failing the post step"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "detected pattern [third-line] at line [3]"))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (post): [failing the post step]", expected_report))
+
+        # mvtodo: for here and elsewhere where it applies - verify that the file did NOT change
+
+    def testCodelint12(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+
+        self.helper_process_result_mock_flag = 1
+        self.helper_process_result_mock_msg = "helper_process_result to fail artificially (cycle-result)"
+
+        with patch("codelint.helper_process_result", wraps=self.helper_process_result_mock) as dummy:
+            v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+            self.assertFalse(v)
+            self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (cycle-result): [helper_process_result to fail artificially (cycle-result)]", expected_report))
+            dummy.assert_called_once()
+
+    def testCodelint13(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "sole-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "sole-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-sole-line"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "detected pattern [sole-line] at line [1]"))
+
+        self.helper_process_result_mock_flag = 2
+        self.helper_process_result_mock_msg = "helper_process_result to fail artificially (post-result)"
+
+        with patch("codelint.helper_process_result", wraps=self.helper_process_result_mock) as dummy:
+            v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+            self.assertFalse(v)
+            self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (post-result): [helper_process_result to fail artificially (post-result)]", expected_report))
+            dummy.assert_called()
 
     def testCodelintX(self): # mvtodo
 
