@@ -15,6 +15,8 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
     # False, "error msg"
 
     pre_fail = None
+    pre_verify_fn = None
+
     try:
         pre_fail = plugins_params["lint-test-helper-pre-fail"]
     except KeyError as ex:
@@ -22,6 +24,15 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     if pre_fail is not None:
         return False, pre_fail
+
+    try:
+        pre_verify_fn = plugins_params["lint-test-helper-pre-verify-filename"]
+    except KeyError as ex:
+        pass
+
+    if pre_verify_fn is not None:
+        if filename != pre_verify_fn:
+            return False, "trigger assert fail"
 
     return True, None
 
@@ -33,6 +44,9 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     # False, "error msg"
 
     cycle_fail = None
+    pattern_match = None
+    pattern_replace = None
+
     try:
         cycle_fail = plugins_params["lint-test-helper-cycle-fail"]
     except KeyError as ex:
@@ -43,6 +57,10 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     try:
         pattern_match = plugins_params["lint-test-helper-cycle-pattern-match"]
+    except KeyError as ex:
+        return True, None
+
+    try:
         pattern_replace = plugins_params["lint-test-helper-cycle-pattern-replace"]
     except KeyError as ex:
         return True, None
@@ -62,6 +80,7 @@ def lint_post(plugins_params, filename, shared_state):
     # False, "error msg"
 
     post_fail = None
+
     try:
         post_fail = plugins_params["lint-test-helper-post-fail"]
     except KeyError as ex:
