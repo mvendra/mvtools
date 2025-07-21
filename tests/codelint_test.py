@@ -5,15 +5,12 @@ import os
 import shutil
 import unittest
 
-"""
-# mvtodo: needed?
-from unittest import mock
-from unittest.mock import patch
-from unittest.mock import call
-"""
-
 import mvtools_test_fixture
+import create_and_write_file
+import getcontents
 import path_utils
+
+import lint_test_helper
 
 import codelint
 
@@ -273,5 +270,30 @@ class CodeLintTest(unittest.TestCase):
         self.assertEqual(test_lines[1], "second")
         self.assertEqual(test_lines[2], "third")
 
-if __name__ == '__main__':
+    def testCodelintX(self): # mvtodo
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "detected pattern [third-line] at line [3]"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Processing [%s] - end" % test_file1))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertTrue(v)
+        self.assertEqual(r, expected_report)
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nmodified-third-line\nfourth-line\nfifth-line")
+
+if __name__ == "__main__":
     unittest.main()
