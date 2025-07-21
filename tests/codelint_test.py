@@ -120,5 +120,158 @@ class CodeLintTest(unittest.TestCase):
         self.assertEqual(test_lines[1], "second-mod")
         self.assertEqual(test_lines[2], "third-mod")
 
+    def testHelperProcessResult1(self):
+
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result(None, test_report, True, test_lines)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        self.assertEqual(test_report, [])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
+    def testHelperProcessResult2(self):
+
+        test_msg = 123
+        test_patches = [(1, "first-mod"), (2, "second-mod"), (3, "third-mod")]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertFalse(v)
+        self.assertEqual(r, "invalid result return: msg is not a str")
+
+    def testHelperProcessResult3(self):
+
+        test_msg = "content-msg"
+        test_patches = ((1, "first-mod"), (2, "second-mod"), (3, "third-mod"))
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertFalse(v)
+        self.assertEqual(r, "invalid result return: patches is not a list")
+
+        self.assertEqual(test_report, [])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
+    def testHelperProcessResult4(self):
+
+        test_msg = "content-msg"
+        test_patches = [[1, "first-mod"], [2, "second-mod"], [3, "third-mod"]]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertFalse(v)
+        self.assertEqual(r, "invalid result return: patches entry is not a tuple")
+
+        self.assertEqual(test_report, [])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
+    def testHelperProcessResult5(self):
+
+        test_msg = "content-msg"
+        test_patches = [("1", "first-mod"), ("2", "second-mod"), ("3", "third-mod")]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertFalse(v)
+        self.assertEqual(r, "invalid result return: patches entry, first tuple entry is not an int")
+
+        self.assertEqual(test_report, [])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
+    def testHelperProcessResult6(self):
+
+        test_msg = "content-msg"
+        test_patches = [(1, 123), (2, "second-mod"), (3, "third-mod")]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertFalse(v)
+        self.assertEqual(r, "invalid result return: patches entry, second tuple entry is not a str")
+
+        self.assertEqual(test_report, [])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
+    def testHelperProcessResult7(self):
+
+        test_msg = "content-msg"
+        test_patches = [(4, "first-mod"), (2, "second-mod"), (3, "third-mod")]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertFalse(v)
+        self.assertEqual(r, "patch index [4] is out of bounds [3]")
+
+        self.assertEqual(test_report, [(True, "content-msg")])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
+    def testHelperProcessResult8(self):
+
+        test_msg = "content-msg"
+        test_patches = [(0, "first-mod"), (2, "second-mod"), (3, "third-mod")]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertFalse(v)
+        self.assertEqual(r, "patch index is zero (invalid base)")
+
+        self.assertEqual(test_report, [(True, "content-msg")])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
+    def testHelperProcessResult9(self):
+
+        test_msg = "content-msg"
+        test_patches = [(1, "first-mod"), (2, "second-mod"), (3, "third-mod")]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        self.assertEqual(test_report, [(True, "content-msg")])
+        self.assertEqual(test_lines[0], "first-mod")
+        self.assertEqual(test_lines[1], "second-mod")
+        self.assertEqual(test_lines[2], "third-mod")
+
+    def testHelperProcessResult10(self):
+
+        test_msg = "content-msg"
+        test_patches = [(1, "first-mod"), (2, "second-mod"), (3, "third-mod")]
+        test_report = []
+        test_lines = ["first", "second", "third"]
+
+        v, r = codelint.helper_process_result((test_msg, test_patches), test_report, False, test_lines)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        self.assertEqual(test_report, [(True, "content-msg")])
+        self.assertEqual(test_lines[0], "first")
+        self.assertEqual(test_lines[1], "second")
+        self.assertEqual(test_lines[2], "third")
+
 if __name__ == '__main__':
     unittest.main()
