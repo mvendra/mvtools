@@ -6,21 +6,12 @@ import unittest
 
 import mvtools_test_fixture
 import create_and_write_file
+import getcontents
 import path_utils
 import toolbus
 import mvtools_envvars
 
 import recipe_processor
-
-def FileHasContents(filename, contents):
-    if not os.path.exists(filename):
-        return False
-    local_contents = ""
-    with open(filename, "r") as f:
-        local_contents = f.read()
-    if local_contents == contents:
-        return True
-    return False
 
 class RecipeProcessorTest(unittest.TestCase):
 
@@ -428,7 +419,7 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorRecipeNoEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file9)
         self.assertFalse(v)
-        self.assertTrue(FileHasContents(self.recipe_test_9_callstack, "task1task2"))
+        self.assertTrue("task1task2" in getcontents.getcontents(self.recipe_test_9_callstack))
 
     def testRecipeProcessorRecipeDoubleEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file10)
@@ -524,7 +515,7 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorNestedJobs(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file30)
         self.assertTrue(v)
-        self.assertTrue(FileHasContents(self.recipe_test_30_callstack, "task1task2task3task4task5"))
+        self.assertTrue("task1task2task3task4task5" in getcontents.getcontents(self.recipe_test_30_callstack))
 
     def testRecipeProcessorBlankFilename(self):
 
