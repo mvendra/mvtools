@@ -13,24 +13,6 @@ import terminal_colors
 import lint_sample_echo
 import lint_c_integer_suffix
 
-def helper_apply_patches(lines, patches):
-
-    for pe in patches:
-
-        pidx = pe[0]
-        pcnt = pe[1]
-
-        if pidx > len(lines):
-            return False, "patch index [%s] is out of bounds [%s]" % (pidx, len(lines))
-
-        if pidx == 0:
-            return False, "patch index is zero (invalid base)"
-        pidx -= 1
-
-        lines[pidx] = pcnt
-
-    return True, None
-
 def helper_validate_msgpatch_return(msg, patches):
 
     if not isinstance(msg, str):
@@ -49,6 +31,24 @@ def helper_validate_msgpatch_return(msg, patches):
 
         if not isinstance(e[1], str):
             return False, "invalid cycle return: patches entry, second tuple entry is not a str"
+
+    return True, None
+
+def helper_apply_patches(lines, patches):
+
+    for pe in patches:
+
+        pidx = pe[0]
+        pcnt = pe[1]
+
+        if pidx > len(lines):
+            return False, "patch index [%s] is out of bounds [%s]" % (pidx, len(lines))
+
+        if pidx == 0:
+            return False, "patch index is zero (invalid base)"
+        pidx -= 1
+
+        lines[pidx] = pcnt
 
     return True, None
 
