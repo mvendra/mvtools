@@ -11,18 +11,9 @@ from unittest.mock import call
 import mvtools_test_fixture
 import path_utils
 import output_backup_helper
+import getcontents
 
 import bazel_plugin
-
-def FileHasContents(filename, contents):
-    if not os.path.exists(filename):
-        return False
-    local_contents = ""
-    with open(filename, "r") as f:
-        local_contents = f.read()
-    if local_contents == contents:
-        return True
-    return False
 
 class BazelPluginTest(unittest.TestCase):
 
@@ -485,7 +476,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, None, [], self.dumped_stdout_file, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                self.assertTrue("test-stdout" in getcontents.getcontents(self.dumped_stdout_file))
                 dummy1.assert_called_with(self.existent_path1, None, None, None, [])
                 out_list = [("bazel_plugin_stdout", "test-stdout", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -497,7 +488,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, None, [], None, self.dumped_stderr_file, False)
                 self.assertTrue(v)
                 self.assertEqual(r, "test-stderr")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None, None, None, [])
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -520,7 +511,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_build(print, self.existent_path1, None, None, None, [], None, self.dumped_stderr_file, True)
                 self.assertTrue(v)
                 self.assertEqual(r, "bazel's stderr has been suppressed")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None, None, None, [])
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -564,7 +555,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_fetch(print, self.existent_path1, None, self.dumped_stdout_file, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                self.assertTrue("test-stdout" in getcontents.getcontents(self.dumped_stdout_file))
                 dummy1.assert_called_with(self.existent_path1, None)
                 out_list = [("bazel_plugin_stdout", "test-stdout", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -576,7 +567,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_fetch(print, self.existent_path1, None, None, self.dumped_stderr_file, False)
                 self.assertTrue(v)
                 self.assertEqual(r, "test-stderr")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None)
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -599,7 +590,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_fetch(print, self.existent_path1, None, None, self.dumped_stderr_file, True)
                 self.assertTrue(v)
                 self.assertEqual(r, "bazel's stderr has been suppressed")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None)
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -643,7 +634,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_clean(print, self.existent_path1, False, self.dumped_stdout_file, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                self.assertTrue("test-stdout" in getcontents.getcontents(self.dumped_stdout_file))
                 dummy1.assert_called_with(self.existent_path1, False)
                 out_list = [("bazel_plugin_stdout", "test-stdout", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -655,7 +646,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_clean(print, self.existent_path1, False, None, self.dumped_stderr_file, False)
                 self.assertTrue(v)
                 self.assertEqual(r, "test-stderr")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, False)
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -678,7 +669,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_clean(print, self.existent_path1, False, None, self.dumped_stderr_file, True)
                 self.assertTrue(v)
                 self.assertEqual(r, "bazel's stderr has been suppressed")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, False)
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -733,7 +724,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_run(print, self.existent_path1, None, [], self.dumped_stdout_file, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                self.assertTrue("test-stdout" in getcontents.getcontents(self.dumped_stdout_file))
                 dummy1.assert_called_with(self.existent_path1, None, [])
                 out_list = [("bazel_plugin_stdout", "test-stdout", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -745,7 +736,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_run(print, self.existent_path1, None, [], None, self.dumped_stderr_file, False)
                 self.assertTrue(v)
                 self.assertEqual(r, "test-stderr")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None, [])
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -757,7 +748,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_run(print, self.existent_path1, None, [], None, self.dumped_stderr_file, True)
                 self.assertTrue(v)
                 self.assertEqual(r, "bazel's stderr has been suppressed")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None, [])
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -845,7 +836,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_test(print, self.existent_path1, None, None, None, False, [], self.dumped_stdout_file, None, False)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
+                self.assertTrue("test-stdout" in getcontents.getcontents(self.dumped_stdout_file))
                 dummy1.assert_called_with(self.existent_path1, None, None, None, [])
                 out_list = [("bazel_plugin_stdout", "test-stdout", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -857,7 +848,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_test(print, self.existent_path1, None, None, None, False, [], None, self.dumped_stderr_file, False)
                 self.assertTrue(v)
                 self.assertEqual(r, "test-stderr")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None, None, None, [])
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
@@ -880,7 +871,7 @@ class BazelPluginTest(unittest.TestCase):
                 v, r = self.bazel_task.task_test(print, self.existent_path1, None, None, None, False, [], None, self.dumped_stderr_file, True)
                 self.assertTrue(v)
                 self.assertEqual(r, "bazel's stderr has been suppressed")
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, None, None, None, [])
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "test-stderr", "Bazel's stderr")]
                 dummy2.assert_called_with(True, print, out_list)
