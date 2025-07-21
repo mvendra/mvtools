@@ -11,18 +11,9 @@ from unittest.mock import call
 import mvtools_test_fixture
 import path_utils
 import output_backup_helper
+import getcontents
 
 import python_plugin
-
-def FileHasContents(filename, contents):
-    if not os.path.exists(filename):
-        return False
-    local_contents = ""
-    with open(filename, "r") as f:
-        local_contents = f.read()
-    if local_contents == contents:
-        return True
-    return False
 
 class PythonPluginTest(unittest.TestCase):
 
@@ -231,8 +222,8 @@ class PythonPluginTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertTrue("somewarning" in r)
                 self.assertTrue("test-stderr" in r)
-                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stdout" in getcontents.getcontents(self.dumped_stdout_file))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, self.existent_path2, ["dummy_value1"])
 
     def testPythonPluginRunTask5(self):
@@ -252,8 +243,8 @@ class PythonPluginTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertTrue("somewarning" in r)
                 self.assertFalse("test-stderr" in r)
-                self.assertTrue(FileHasContents(self.dumped_stdout_file, "test-stdout"))
-                self.assertTrue(FileHasContents(self.dumped_stderr_file, "test-stderr"))
+                self.assertTrue("test-stdout" in getcontents.getcontents(self.dumped_stdout_file))
+                self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, self.existent_path2, ["dummy_value1"])
 
 if __name__ == '__main__':
