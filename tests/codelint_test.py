@@ -80,5 +80,45 @@ class CodeLintTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+    def testHelperApplyPatches1(self):
+
+        test_lines = ["first", "second", "third"]
+        test_patches = [(1, "first-mod"), (2, "second-mod"), (4, "third-mod")]
+
+        v, r = codelint.helper_apply_patches(test_lines, test_patches)
+        self.assertFalse(v)
+        self.assertEqual(r, "patch index [4] is out of bounds [3]")
+
+    def testHelperApplyPatches2(self):
+
+        test_lines = ["first", "second", "third"]
+        test_patches = [(0, "first-mod"), (2, "second-mod"), (3, "third-mod")]
+
+        v, r = codelint.helper_apply_patches(test_lines, test_patches)
+        self.assertFalse(v)
+        self.assertEqual(r, "patch index is zero (invalid base)")
+
+    def testHelperApplyPatches3(self):
+
+        test_lines = []
+        test_patches = []
+
+        v, r = codelint.helper_apply_patches(test_lines, test_patches)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+    def testHelperApplyPatches4(self):
+
+        test_lines = ["first", "second", "third"]
+        test_patches = [(1, "first-mod"), (2, "second-mod"), (3, "third-mod")]
+
+        v, r = codelint.helper_apply_patches(test_lines, test_patches)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        self.assertEqual(test_lines[0], "first-mod")
+        self.assertEqual(test_lines[1], "second-mod")
+        self.assertEqual(test_lines[2], "third-mod")
+
 if __name__ == '__main__':
     unittest.main()
