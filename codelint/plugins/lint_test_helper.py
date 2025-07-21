@@ -44,6 +44,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     # False, "error msg"
 
     cycle_fail = None
+    cycle_verify_fn = None
     pattern_match = None
     pattern_replace = None
 
@@ -54,6 +55,15 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     if cycle_fail is not None:
         return False, cycle_fail
+
+    try:
+        cycle_verify_fn = plugins_params["lint-test-helper-cycle-verify-filename"]
+    except KeyError as ex:
+        pass
+
+    if cycle_verify_fn is not None:
+        if filename != cycle_verify_fn:
+            return False, "trigger assert fail"
 
     try:
         pattern_match = plugins_params["lint-test-helper-cycle-pattern-match"]
@@ -80,6 +90,7 @@ def lint_post(plugins_params, filename, shared_state):
     # False, "error msg"
 
     post_fail = None
+    post_verify_fn = None
 
     try:
         post_fail = plugins_params["lint-test-helper-post-fail"]
@@ -88,6 +99,15 @@ def lint_post(plugins_params, filename, shared_state):
 
     if post_fail is not None:
         return False, post_fail
+
+    try:
+        post_verify_fn = plugins_params["lint-test-helper-post-verify-filename"]
+    except KeyError as ex:
+        pass
+
+    if post_verify_fn is not None:
+        if filename != post_verify_fn:
+            return False, "trigger assert fail"
 
     return True, None
 
