@@ -16,21 +16,21 @@ import lint_c_integer_suffix
 def helper_validate_msgpatch_return(msg, patches):
 
     if not isinstance(msg, str):
-        return False, "invalid cycle return: msg is not a str"
+        return False, "invalid result return: msg is not a str"
 
     if not isinstance(patches, list):
-        return False, "invalid cycle return: patches is not a list"
+        return False, "invalid result return: patches is not a list"
 
     for e in patches:
 
         if not isinstance(e, tuple):
-            return False, "invalid cycle return: patches entry is not a tuple"
+            return False, "invalid result return: patches entry is not a tuple"
 
         if not isinstance(e[0], int):
-            return False, "invalid cycle return: patches entry, first tuple entry is not an int"
+            return False, "invalid result return: patches entry, first tuple entry is not an int"
 
         if not isinstance(e[1], str):
-            return False, "invalid cycle return: patches entry, second tuple entry is not a str"
+            return False, "invalid result return: patches entry, second tuple entry is not a str"
 
     return True, None
 
