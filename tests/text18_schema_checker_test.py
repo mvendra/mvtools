@@ -132,5 +132,5 @@ class Text18SchemaCheckerTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, ["Entries at index [0] (from groups at index [0]) are different: [left.t20][main][entry1] vs. [right.t20][main][entry3]", "Entries at index [1] (from groups at index [0]) are different: [left.t20][main][entry2] vs. [right.t20][main][entry4]"])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -225,5 +225,5 @@ class Bzip2WrapperTest(unittest.TestCase):
         self.assertFalse(os.path.exists(test_source_link_bz))
         self.assertTrue(path_utils.is_path_broken_symlink(test_source_link))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

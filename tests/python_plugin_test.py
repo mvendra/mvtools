@@ -247,5 +247,5 @@ class PythonPluginTest(unittest.TestCase):
                 self.assertTrue("test-stderr" in getcontents.getcontents(self.dumped_stderr_file))
                 dummy1.assert_called_with(self.existent_path1, self.existent_path2, ["dummy_value1"])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

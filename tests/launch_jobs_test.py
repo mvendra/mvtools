@@ -375,5 +375,5 @@ class LaunchJobsTest(unittest.TestCase):
         v, r = launch_jobs.begin_execution(job1, print, options=launch_jobs.RunOptions(execution_delay=first_exec))
         self.assertTrue(v)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

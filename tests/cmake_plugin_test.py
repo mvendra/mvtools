@@ -574,5 +574,5 @@ class CmakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Cmake's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Cmake's stderr has been saved to: [dummy_value6]"))])
                     dummy3.assert_called_with(True, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

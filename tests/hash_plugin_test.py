@@ -503,5 +503,5 @@ class HashPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

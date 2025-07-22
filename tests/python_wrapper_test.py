@@ -71,5 +71,5 @@ class PythonWrapperTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(["python3", "test-script.py", "param1", "param2"], use_cwd="test-cwd")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -67,5 +67,5 @@ class CreateAndWriteFileTest(unittest.TestCase):
         self.assertEqual(getcontents.getcontents_bin(self.content_file_bin), b"\xa8\xa8\xa8")
         self.assertTrue(mvtools_test_fixture.throwsExcept(mvtools_exception.mvtools_exception, create_and_write_file.create_file_contents_hex, self.content_file_bin, "a8a8a8"))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

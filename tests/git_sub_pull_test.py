@@ -117,5 +117,5 @@ class GitSubPullTest(unittest.TestCase):
         sub4_first_file3 = path_utils.concat_path( sub4_first, file3)
         self.assertTrue( os.path.exists(sub4_first_file3) )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

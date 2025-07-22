@@ -1517,5 +1517,5 @@ class PathUtilsTest(unittest.TestCase):
         os.unlink(folder1_file2)
         self.assertTrue(path_utils.is_folder_empty(self.folder1))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

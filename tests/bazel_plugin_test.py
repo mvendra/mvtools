@@ -887,5 +887,5 @@ class BazelPluginTest(unittest.TestCase):
                 out_list = [("bazel_plugin_stdout", "", "Bazel's stdout"), ("bazel_plugin_stderr", "", "Bazel's stderr")]
                 dummy2.assert_called_with(False, print, out_list)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
