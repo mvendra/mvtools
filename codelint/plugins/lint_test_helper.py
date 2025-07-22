@@ -16,6 +16,7 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     pre_fail = None
     pre_verify_fn = None
+    pre_write_to_shared_state = None
 
     try:
         pre_fail = plugins_params["lint-test-helper-pre-fail"]
@@ -34,6 +35,14 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
         if filename != pre_verify_fn:
             return False, "trigger assert fail"
 
+    try:
+        pre_write_to_shared_state = plugins_params["lint-test-helper-pre-write-to-shared-state"]
+    except KeyError as ex:
+        pass
+
+    if pre_write_to_shared_state is not None:
+        shared_state["lint-test-helper-shared-state-verify"] = pre_write_to_shared_state
+
     return True, None
 
 def lint_cycle(plugins_params, filename, shared_state, line_index, content_line):
@@ -45,6 +54,8 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     cycle_fail = None
     cycle_verify_fn = None
+    cycle_verify_shared_state_verify = None
+    cycle_verify_shared_state = None
     pattern_match = None
     pattern_replace = None
 
@@ -63,6 +74,19 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     if cycle_verify_fn is not None:
         if filename != cycle_verify_fn:
+            return False, "trigger assert fail"
+
+    try:
+        cycle_verify_shared_state_verify = shared_state["lint-test-helper-shared-state-verify"]
+    except KeyError as ex:
+        pass
+
+    if cycle_verify_shared_state_verify is not None:
+        try:
+            cycle_verify_shared_state = plugins_params["lint-test-helper-cycle-verify-shared-state"]
+        except KeyError as ex:
+            return False, "trigger assert fail"
+        if cycle_verify_shared_state_verify != cycle_verify_shared_state:
             return False, "trigger assert fail"
 
     try:
@@ -91,6 +115,8 @@ def lint_post(plugins_params, filename, shared_state):
 
     post_fail = None
     post_verify_fn = None
+    post_verify_shared_state_verify = None
+    post_verify_shared_state = None
 
     try:
         post_fail = plugins_params["lint-test-helper-post-fail"]
@@ -107,6 +133,19 @@ def lint_post(plugins_params, filename, shared_state):
 
     if post_verify_fn is not None:
         if filename != post_verify_fn:
+            return False, "trigger assert fail"
+
+    try:
+        post_verify_shared_state_verify = shared_state["lint-test-helper-shared-state-verify"]
+    except KeyError as ex:
+        pass
+
+    if post_verify_shared_state_verify is not None:
+        try:
+            post_verify_shared_state = plugins_params["lint-test-helper-post-verify-shared-state"]
+        except KeyError as ex:
+            return False, "trigger assert fail"
+        if post_verify_shared_state_verify != post_verify_shared_state:
             return False, "trigger assert fail"
 
     return True, None
