@@ -66,6 +66,8 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     cycle_verify_fn = None
     cycle_verify_shared_state_verify = None
     cycle_verify_shared_state = None
+    cycle_line_idx_check = None
+    cycle_line_content_check = None
     pattern_match = None
     pattern_replace = None
 
@@ -98,6 +100,20 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             return False, "trigger assert fail"
         if cycle_verify_shared_state_verify != cycle_verify_shared_state:
             return False, "trigger assert fail"
+
+    try:
+        cycle_line_idx_check = plugins_params["lint-test-helper-cycle-line-idx-check"]
+    except KeyError as ex:
+        pass
+
+    if cycle_line_idx_check is not None:
+        try:
+            cycle_line_content_check = plugins_params["lint-test-helper-cycle-line-content-check"]
+        except KeyError as ex:
+            return False, "trigger assert fail"
+        if cycle_line_idx_check == line_index:
+            if cycle_line_content_check != content_line:
+                return False, "trigger assert fail"
 
     try:
         pattern_match = plugins_params["lint-test-helper-cycle-pattern-match"]
