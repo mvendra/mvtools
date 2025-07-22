@@ -91,9 +91,35 @@ def lint_post(plugins_params, filename, shared_state):
 
     last_endif_local = shared_state["lint-check-c-header-guards-last-endif"]
 
-    # mvtodo: process and validate {last_endif_local}
+    if len(last_endif_local) < 1:
+        return False, "invalid final endif"
 
-    print("mvdebug: [%s]" % last_endif_local)
+    if last_endif_local[0] == "#":
+        last_endif_local = last_endif_local[1:]
+        last_endif_local = last_endif_local.strip()
+    else:
+        return False, "invalid final endif"
+
+    if len(last_endif_local) < 7: # "endif " + at least one more symbol
+        return False, "invalid final endif"
+
+    if last_endif_local[:5] == "endif":
+        last_endif_local = last_endif_local[5:]
+        last_endif_local = last_endif_local.strip()
+    else:
+        return False, "invalid final endif"
+
+    if len(last_endif_local) < 4: # "// " + at least one more symbol
+        return False, "invalid final endif"
+
+    if last_endif_local[:2] == "//":
+        last_endif_local = last_endif_local[2:]
+        last_endif_local = last_endif_local.strip()
+    else:
+        return False, "invalid final endif"
+
+    if last_endif_local != shared_state["lint-check-c-header-guards-first-ifndef-is"]:
+        return False, "incorrect header guard detected (at the final endif)"
 
     return True, None
 
