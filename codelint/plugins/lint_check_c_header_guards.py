@@ -29,10 +29,10 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             content_line_local = content_line_local[1:]
             content_line_local = content_line_local.strip()
         else:
-            return True, ("first content is not an ifndef", [])
+            return True, ("first content is not an ifndef (line [%s])" % line_index, [])
 
         if len(content_line_local) < 8: # "ifndef " + at least one more symbol
-            return True, ("first content is not an ifndef", [])
+            return True, ("first content is not an ifndef (line [%s])" % line_index, [])
 
         if content_line_local[:6] == "ifndef":
 
@@ -42,32 +42,32 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             shared_state["lint-check-c-header-guards-state"] = "expecting-define"
             return True, None
 
-        return True, ("first content is not an ifndef", [])
+        return True, ("first content is not an ifndef (line [%s])" % line_index, [])
 
     elif shared_state["lint-check-c-header-guards-state"] == "expecting-define":
 
         if len(content_line_local) < 1:
-            return True, ("follow-up define not found just after first ifndef", [])
+            return True, ("follow-up define not found just after first ifndef", []) # mvtodo
 
         if content_line_local[0] == "#":
             content_line_local = content_line_local[1:]
             content_line_local = content_line_local.strip()
         else:
-            return True, ("follow-up define not found just after first ifndef", [])
+            return True, ("follow-up define not found just after first ifndef", []) # mvtodo
 
         if len(content_line_local) < 8: # "define " + at least one more symbol
-            return True, ("follow-up define not found just after first ifndef", [])
+            return True, ("follow-up define not found just after first ifndef", []) # mvtodo
 
         if content_line_local[:6] == "define":
 
             content_line_local = content_line_local[6:]
             content_line_local = content_line_local.strip()
             if content_line_local != shared_state["lint-check-c-header-guards-first-ifndef-is"]:
-                return True, ("incorrect header guard detected", [])
+                return True, ("incorrect header guard detected", []) # mvtodo
             shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
             return True, None
 
-        return True, ("follow-up define not found just after first ifndef", [])
+        return True, ("follow-up define not found just after first ifndef", []) # mvtodo
 
     elif shared_state["lint-check-c-header-guards-state"] == "expecting-endif":
 

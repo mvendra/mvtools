@@ -108,7 +108,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("first content is not an ifndef", []))
+                self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -138,7 +138,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("first content is not an ifndef", []))
+                self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -168,7 +168,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("first content is not an ifndef", []))
+                self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
