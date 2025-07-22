@@ -343,7 +343,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("incorrect header guard detected", []))
+                self.assertEqual(r, ("incorrect header guard detected (line: [3], expected: [__module_name__], have: [__modula_name__])", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 

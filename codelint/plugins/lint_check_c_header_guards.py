@@ -63,7 +63,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             content_line_local = content_line_local[6:]
             content_line_local = content_line_local.strip()
             if content_line_local != shared_state["lint-check-c-header-guards-first-ifndef-is"]:
-                return True, ("incorrect header guard detected", []) # mvtodo
+                return True, ("incorrect header guard detected (line: [%s], expected: [%s], have: [%s])" % (line_index, shared_state["lint-check-c-header-guards-first-ifndef-is"], content_line_local), [])
             shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
             return True, None
 
