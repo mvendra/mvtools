@@ -53,13 +53,13 @@ def hascandidateinxinputstring(theline, candidate):
 
 def countlistprops(mid):
     xinput_listprops_ret = os.popen("xinput --list-props %s" % mid).read().strip()
-    xlp_list = xinput_listprops_ret.split('\n')
+    xlp_list = xinput_listprops_ret.split("\n")
     return len(xlp_list)
 
 def getlibinputaccelspeedfromid(mid):
     """returns None if cant find DAP"""
     xinput_listprops_ret = os.popen("xinput --list-props %s" % mid).read().strip()
-    xlp_list = xinput_listprops_ret.split('\n')
+    xlp_list = xinput_listprops_ret.split("\n")
     for pc in xlp_list: # pc = props candidate
         if hascandidateinxinputstring(pc, "libinput Accel Speed"):
             dap = getidfromdapstring(pc)
@@ -78,7 +78,7 @@ def detect_and_apply(opts):
     call(["xset", "m", "0", "0"])
 
     xinput_ret = os.popen("xinput --list").read().strip()
-    xr_list = xinput_ret.split('\n')
+    xr_list = xinput_ret.split("\n")
     for mc in xr_list: # mc = mouse candidate
         for md in mouse_detection: # md = mouse detection
             if hascandidateinxinputstring(mc, md):

@@ -23,7 +23,7 @@ def file2hexstr(input_file, output_file):
         input_contents = f.read()
 
     for b in input_contents:
-        output_contents += format(b, '02x')
+        output_contents += format(b, "02x")
 
     output_contents += "\""
 

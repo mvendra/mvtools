@@ -103,7 +103,7 @@ exit 0 #SENTINEL\n"""
         pack_ct = _self.pack_contents()
         templ_ct = _self.template_contents(inst_ct, pack_ct)
 
-        with open(_self.outputfn, 'wb') as f:
+        with open(_self.outputfn, "wb") as f:
             f.write(templ_ct.encode("ascii"))
             f.write(inst_ct)
             f.write(pack_ct)
