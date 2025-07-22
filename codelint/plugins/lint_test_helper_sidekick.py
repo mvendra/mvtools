@@ -9,19 +9,9 @@ def lint_name():
     return path_utils.basename_filtered(__file__)
 
 def lint_pre(plugins_params, filename, shared_state, num_lines):
-
-    # returns:
-    # True, None
-    # False, "error msg"
-
     return True, None
 
 def lint_cycle(plugins_params, filename, shared_state, line_index, content_line):
-
-    # returns:
-    # True, None
-    # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
-    # False, "error msg"
 
     cycle_pattern_match = None
     cycle_pattern_replace = None
@@ -44,12 +34,6 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     return True, ("(sidekick) detected pattern [%s] at line [%d]" % (cycle_pattern_match, line_index), [(line_index, updated_line)])
 
 def lint_post(plugins_params, filename, shared_state):
-
-    # returns:
-    # True, None
-    # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
-    # False, "error msg"
-
     return True, None
 
 def puaq():

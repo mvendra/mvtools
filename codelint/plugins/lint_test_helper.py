@@ -10,10 +10,6 @@ def lint_name():
 
 def lint_pre(plugins_params, filename, shared_state, num_lines):
 
-    # returns:
-    # True, None
-    # False, "error msg"
-
     pre_fail = None
     pre_verify_fn = None
     pre_write_to_shared_state = None
@@ -56,11 +52,6 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
     return True, None
 
 def lint_cycle(plugins_params, filename, shared_state, line_index, content_line):
-
-    # returns:
-    # True, None
-    # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
-    # False, "error msg"
 
     cycle_fail = None
     cycle_verify_fn = None
@@ -133,11 +124,6 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     return True, ("detected pattern [%s] at line [%d]" % (cycle_pattern_match, line_index), [(line_index, updated_line)])
 
 def lint_post(plugins_params, filename, shared_state):
-
-    # returns:
-    # True, None
-    # True, ( "msg", [ (1, "replace-first-line-with-this"), (2, "replace-second-line-with-this") ] )
-    # False, "error msg"
 
     post_fail = None
     post_verify_fn = None
