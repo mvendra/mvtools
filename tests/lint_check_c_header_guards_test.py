@@ -659,7 +659,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost9(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __modula_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -669,7 +669,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
-        self.assertEqual(r, ("incorrect header guard detected (at the final endif)", []))
+        self.assertEqual(r, ("incorrect header guard detected (at the final endif) - expected [__module_name__], have [__modula_name__]", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"

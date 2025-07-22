@@ -119,7 +119,7 @@ def lint_post(plugins_params, filename, shared_state):
         return True, ("invalid final endif", [])
 
     if last_endif_local != shared_state["lint-check-c-header-guards-first-ifndef-is"]:
-        return True, ("incorrect header guard detected (at the final endif)", [])
+        return True, ("incorrect header guard detected (at the final endif) - expected [%s], have [%s]" % (shared_state["lint-check-c-header-guards-first-ifndef-is"], last_endif_local), [])
 
     return True, None
 
