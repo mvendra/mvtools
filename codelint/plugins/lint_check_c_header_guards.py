@@ -29,10 +29,10 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             content_line_local = content_line_local[1:]
             content_line_local = content_line_local.strip()
         else:
-            return False, "first content is not an ifndef"
+            return True, ("first content is not an ifndef", [])
 
         if len(content_line_local) < 8: # "ifndef " + at least one more symbol
-            return False, "first content is not an ifndef"
+            return True, ("first content is not an ifndef", [])
 
         if content_line_local[:6] == "ifndef":
 
@@ -42,32 +42,32 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             shared_state["lint-check-c-header-guards-state"] = "expecting-define"
             return True, None
 
-        return False, "first content is not an ifndef"
+        return True, ("first content is not an ifndef", [])
 
     elif shared_state["lint-check-c-header-guards-state"] == "expecting-define":
 
         if len(content_line_local) < 1:
-            return False, "follow-up define not found just after first ifndef"
+            return True, ("follow-up define not found just after first ifndef", [])
 
         if content_line_local[0] == "#":
             content_line_local = content_line_local[1:]
             content_line_local = content_line_local.strip()
         else:
-            return False, "follow-up define not found just after first ifndef"
+            return True, ("follow-up define not found just after first ifndef", [])
 
         if len(content_line_local) < 8: # "define " + at least one more symbol
-            return False, "follow-up define not found just after first ifndef"
+            return True, ("follow-up define not found just after first ifndef", [])
 
         if content_line_local[:6] == "define":
 
             content_line_local = content_line_local[6:]
             content_line_local = content_line_local.strip()
             if content_line_local != shared_state["lint-check-c-header-guards-first-ifndef-is"]:
-                return False, "incorrect header guard detected"
+                return True, ("incorrect header guard detected", [])
             shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
             return True, None
 
-        return False, "follow-up define not found just after first ifndef"
+        return True, ("follow-up define not found just after first ifndef", [])
 
     elif shared_state["lint-check-c-header-guards-state"] == "expecting-endif":
 
@@ -87,39 +87,39 @@ def lint_post(plugins_params, filename, shared_state):
         return False, "wrong state at post"
 
     if not "lint-check-c-header-guards-last-endif" in shared_state:
-        return False, "no endifs detected"
+        return True, ("no endifs detected", [])
 
     last_endif_local = shared_state["lint-check-c-header-guards-last-endif"]
 
     if len(last_endif_local) < 1:
-        return False, "invalid final endif"
+        return True, ("invalid final endif", [])
 
     if last_endif_local[0] == "#":
         last_endif_local = last_endif_local[1:]
         last_endif_local = last_endif_local.strip()
     else:
-        return False, "invalid final endif"
+        return True, ("invalid final endif", [])
 
     if len(last_endif_local) < 7: # "endif " + at least one more symbol
-        return False, "invalid final endif"
+        return True, ("invalid final endif", [])
 
     if last_endif_local[:5] == "endif":
         last_endif_local = last_endif_local[5:]
         last_endif_local = last_endif_local.strip()
     else:
-        return False, "invalid final endif"
+        return True, ("invalid final endif", [])
 
     if len(last_endif_local) < 4: # "// " + at least one more symbol
-        return False, "invalid final endif"
+        return True, ("invalid final endif", [])
 
     if last_endif_local[:2] == "//":
         last_endif_local = last_endif_local[2:]
         last_endif_local = last_endif_local.strip()
     else:
-        return False, "invalid final endif"
+        return True, ("invalid final endif", [])
 
     if last_endif_local != shared_state["lint-check-c-header-guards-first-ifndef-is"]:
-        return False, "incorrect header guard detected (at the final endif)"
+        return True, ("incorrect header guard detected (at the final endif)", [])
 
     return True, None
 

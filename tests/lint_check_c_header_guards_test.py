@@ -107,8 +107,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "first content is not an ifndef")
+                self.assertTrue(v)
+                self.assertEqual(r, ("first content is not an ifndef", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -137,8 +137,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "first content is not an ifndef")
+                self.assertTrue(v)
+                self.assertEqual(r, ("first content is not an ifndef", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -167,8 +167,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "first content is not an ifndef")
+                self.assertTrue(v)
+                self.assertEqual(r, ("first content is not an ifndef", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -202,8 +202,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "follow-up define not found just after first ifndef")
+                self.assertTrue(v)
+                self.assertEqual(r, ("follow-up define not found just after first ifndef", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -237,8 +237,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "follow-up define not found just after first ifndef")
+                self.assertTrue(v)
+                self.assertEqual(r, ("follow-up define not found just after first ifndef", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -272,8 +272,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "follow-up define not found just after first ifndef")
+                self.assertTrue(v)
+                self.assertEqual(r, ("follow-up define not found just after first ifndef", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -307,8 +307,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "follow-up define not found just after first ifndef")
+                self.assertTrue(v)
+                self.assertEqual(r, ("follow-up define not found just after first ifndef", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -342,8 +342,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
-                self.assertFalse(v)
-                self.assertEqual(r, "incorrect header guard detected")
+                self.assertTrue(v)
+                self.assertEqual(r, ("incorrect header guard detected", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
@@ -515,8 +515,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "no endifs detected")
+        self.assertTrue(v)
+        self.assertEqual(r, ("no endifs detected", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
@@ -536,8 +536,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-last-endif"] = ""
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "invalid final endif")
+        self.assertTrue(v)
+        self.assertEqual(r, ("invalid final endif", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
@@ -558,8 +558,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-last-endif"] = "endif // __module_name__"
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "invalid final endif")
+        self.assertTrue(v)
+        self.assertEqual(r, ("invalid final endif", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
@@ -580,8 +580,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif"
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "invalid final endif")
+        self.assertTrue(v)
+        self.assertEqual(r, ("invalid final endif", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
@@ -602,8 +602,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#enduf // __module_name__"
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "invalid final endif")
+        self.assertTrue(v)
+        self.assertEqual(r, ("invalid final endif", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
@@ -624,8 +624,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif // "
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "invalid final endif")
+        self.assertTrue(v)
+        self.assertEqual(r, ("invalid final endif", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
@@ -646,8 +646,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif /* __module_name__ */"
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "invalid final endif")
+        self.assertTrue(v)
+        self.assertEqual(r, ("invalid final endif", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
@@ -668,8 +668,8 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif // __modula_name__"
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
-        self.assertFalse(v)
-        self.assertEqual(r, "incorrect header guard detected (at the final endif)")
+        self.assertTrue(v)
+        self.assertEqual(r, ("incorrect header guard detected (at the final endif)", []))
 
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
