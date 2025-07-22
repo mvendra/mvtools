@@ -485,7 +485,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost1(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -507,7 +507,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost2(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -527,7 +527,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost3(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -549,7 +549,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost4(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -571,7 +571,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost5(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -593,7 +593,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost6(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -615,7 +615,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost7(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -637,7 +637,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost8(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -659,7 +659,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost9(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __modula_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __modula_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -681,7 +681,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintPost10(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
