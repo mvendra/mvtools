@@ -230,5 +230,5 @@ class GitVisitorBaseTest(unittest.TestCase):
         self.assertTrue( "xor-remotename" in r[0] )
         self.assertEqual( r[0]["xor-remotename"], "origin" )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

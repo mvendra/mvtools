@@ -71,5 +71,5 @@ class BashWrapperTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(["bash", "test-script.sh", "param1", "param2"], use_cwd="test-cwd")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

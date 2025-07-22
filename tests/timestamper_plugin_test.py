@@ -87,5 +87,5 @@ class TimestamperPluginTest(unittest.TestCase):
             read_contents = f.read()
         self.assertTrue(LOCAL_CUSTOM_MESSAGE in read_contents)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

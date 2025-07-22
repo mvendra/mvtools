@@ -2798,5 +2798,5 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue("test-contents1" in r)
         self.assertTrue("test-contents2" in r)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

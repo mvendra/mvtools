@@ -125,5 +125,5 @@ class RmPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(r is not None)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

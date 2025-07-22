@@ -153,5 +153,5 @@ class LaunchListTest(unittest.TestCase):
             elif path_utils.basename_filtered(i[1]) == path_utils.basename_filtered(self.cmd9):
                 self.assertFalse(i[0])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

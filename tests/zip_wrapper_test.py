@@ -314,5 +314,5 @@ class ZipWrapperTest(unittest.TestCase):
         v, r = zip_wrapper.make_pack(self.zip_file, [test_source_link])
         self.assertFalse(v) # zip version 3.0, of L21, does not support broken symlinks
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

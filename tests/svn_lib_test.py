@@ -89,5 +89,5 @@ class SvnLibTest(unittest.TestCase):
             self.assertEqual(svn_lib.sanitize_windows_path("C:\\windows\\data"), "C:/windows/data")
             self.assertEqual(svn_lib.sanitize_windows_path("C:/windows/data"), "C:/windows/data")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

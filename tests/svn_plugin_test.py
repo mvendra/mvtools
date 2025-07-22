@@ -1160,5 +1160,5 @@ class SvnPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, True, True)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

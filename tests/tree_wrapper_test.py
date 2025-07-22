@@ -120,5 +120,5 @@ class TreeWrapperTest(unittest.TestCase):
         self.assertTrue( path_utils.basename_filtered(self.folder2_file1) in r )
         self.assertTrue( path_utils.basename_filtered(self.folder2_file2) in r )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

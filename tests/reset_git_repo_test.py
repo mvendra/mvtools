@@ -5319,5 +5319,5 @@ class ResetGitRepoTest(unittest.TestCase):
         self.assertTrue(any(first_file1_renamed in s for s in r))
         self.assertTrue(any(first_file2_renamed in s for s in r))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

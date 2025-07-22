@@ -61,5 +61,5 @@ class MinicronTest(unittest.TestCase):
     def testBusyWaitOk(self):
         self.assertEqual(minicron.busy_wait(2), True)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
