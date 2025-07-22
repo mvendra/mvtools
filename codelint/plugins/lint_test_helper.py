@@ -68,8 +68,8 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     cycle_verify_shared_state = None
     cycle_line_idx_check = None
     cycle_line_content_check = None
-    pattern_match = None
-    pattern_replace = None
+    cycle_pattern_match = None
+    cycle_pattern_replace = None
 
     try:
         cycle_fail = plugins_params["lint-test-helper-cycle-fail"]
@@ -116,21 +116,21 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 return False, "trigger assert fail"
 
     try:
-        pattern_match = plugins_params["lint-test-helper-cycle-pattern-match"]
+        cycle_pattern_match = plugins_params["lint-test-helper-cycle-pattern-match"]
     except KeyError as ex:
         return True, None
 
     try:
-        pattern_replace = plugins_params["lint-test-helper-cycle-pattern-replace"]
+        cycle_pattern_replace = plugins_params["lint-test-helper-cycle-pattern-replace"]
     except KeyError as ex:
         return True, None
 
-    ppos = content_line.find(pattern_match)
+    ppos = content_line.find(cycle_pattern_match)
     if ppos == -1:
         return True, None
 
-    updated_line = content_line.replace(pattern_match, pattern_replace)
-    return True, ("detected pattern [%s] at line [%d]" % (pattern_match, line_index), [(line_index, updated_line)])
+    updated_line = content_line.replace(cycle_pattern_match, cycle_pattern_replace)
+    return True, ("detected pattern [%s] at line [%d]" % (cycle_pattern_match, line_index), [(line_index, updated_line)])
 
 def lint_post(plugins_params, filename, shared_state):
 

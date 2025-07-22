@@ -13,7 +13,7 @@ import getcontents
 import path_utils
 
 import lint_test_helper
-import lint_sample_echo
+import lint_test_helper_sidekick
 
 import codelint
 
@@ -362,7 +362,7 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper, lint_sample_echo]
+        test_plugins = [lint_test_helper, lint_test_helper_sidekick]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -803,7 +803,46 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    # mvtodo: multiple files, multiples plugins, multiple lines
+    def testCodelint24(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        test_file2 = path_utils.concat_path(self.test_dir, "file2.txt")
+
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+        create_and_write_file.create_file_contents(test_file2, "some-stuff\nsome-other-stuff")
+
+        test_plugins = [lint_test_helper, lint_test_helper_sidekick]
+        test_plugins_params = {}
+        test_files = [test_file1, test_file2]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+
+        test_plugins_params["lint-test-helper-sidekick-cycle-pattern-match"] = "some-other-stuff"
+        test_plugins_params["lint-test-helper-sidekick-cycle-pattern-replace"] = "modified-some-other-stuff"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "detected pattern [third-line] at line [3]"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - begin"))
+        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - end"))
+        expected_report.append((False, "Processing [%s] - end" % test_file1))
+        expected_report.append((False, "Processing [%s] - begin" % test_file2))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - begin"))
+        expected_report.append((True, "(sidekick) detected pattern [some-other-stuff] at line [2]"))
+        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - end"))
+        expected_report.append((False, "Processing [%s] - end" % test_file2))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        self.assertTrue(v)
+        self.assertEqual(r, expected_report)
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+        self.assertEqual(getcontents.getcontents(test_file2), "some-stuff\nsome-other-stuff")
 
 if __name__ == "__main__":
     unittest.main()
