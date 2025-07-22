@@ -64,21 +64,303 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         self.assertEqual(test_shared_state, expected_shared_state)
 
-    def testLintCycleX(self): # mvtodo
+    def testLintCycle1(self):
 
         test_file = "test_file.txt"
-        test_lines = ["#ifndef __module_name__", "#define __module_name__", "", "#endif // __module_name__"]
+        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state = {}
+        expected_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, 1, test_lines[0])
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        self.assertEqual(test_shared_state, expected_shared_state)
+
+    def testLintCycle2(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "!ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
         test_plugins_params = {}
         test_shared_state = {}
 
         test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
 
         expected_shared_state1 = {}
-        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-define"
-        expected_shared_state1["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
 
         expected_shared_state2 = {}
-        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2]
+
+        for test_index in [1, 2]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 2:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "first content is not an ifndef")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle3(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef ", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2]
+
+        for test_index in [1, 2]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 2:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "first content is not an ifndef")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle4(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndof __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2]
+
+        for test_index in [1, 2]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 2:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "first content is not an ifndef")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle5(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "   ", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state3["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 3:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "follow-up define not found just after first ifndef")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle6(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "!define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state3["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 3:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "follow-up define not found just after first ifndef")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle7(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "#define ", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state3["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 3:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "follow-up define not found just after first ifndef")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle8(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "#dofine __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state3["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 3:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "follow-up define not found just after first ifndef")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle9(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "#define __modula_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state3["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+
+            if test_index < 3:
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+            else:
+                self.assertFalse(v)
+                self.assertEqual(r, "incorrect header guard detected")
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle10(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
         expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
 
         expected_shared_state3 = {}
@@ -88,11 +370,111 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         expected_shared_state4 = {}
         expected_shared_state4["lint-check-c-header-guards-state"] = "expecting-endif"
         expected_shared_state4["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
-        expected_shared_state4["lint-check-c-header-guards-last-endif"] = "#endif // __module_name__"
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4]
 
         for test_index in [1, 2, 3, 4]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle11(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state3["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state4 = {}
+        expected_shared_state4["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state4["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state5 = {}
+        expected_shared_state5["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state5["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+        expected_shared_state5["lint-check-c-header-guards-last-endif"] = "#endif // __module_name__"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4, expected_shared_state5]
+
+        for test_index in [1, 2, 3, 4, 5]:
+
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle12(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-something-else"
+
+        expected_shared_state = {}
+        expected_shared_state["lint-check-c-header-guards-state"] = "expecting-something-else"
+
+        v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, 1, test_lines[0])
+        self.assertFalse(v)
+        self.assertEqual(r, "unknown state")
+
+        self.assertEqual(test_shared_state, expected_shared_state)
+
+    def testLintCycle13(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-check-c-header-guards-state"] = "expecting-ifndef"
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-check-c-header-guards-state"] = "expecting-define"
+        expected_shared_state2["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state3["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state4 = {}
+        expected_shared_state4["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state4["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+
+        expected_shared_state5 = {}
+        expected_shared_state5["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state5["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+        expected_shared_state5["lint-check-c-header-guards-last-endif"] = "#endif // __module_name__"
+
+        expected_shared_state6 = {}
+        expected_shared_state6["lint-check-c-header-guards-state"] = "expecting-endif"
+        expected_shared_state6["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
+        expected_shared_state6["lint-check-c-header-guards-last-endif"] = "#endif // __module_name__"
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4, expected_shared_state5, expected_shared_state6]
+
+        for test_index in [1, 2, 3, 4, 5, 6]:
 
             v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
             self.assertTrue(v)
