@@ -46,5 +46,5 @@ class PropsTest(unittest.TestCase):
     def testSetupProp3(self):
         self.assertEqual(props.setup_prop(0, 5, {"a": 6}, "a"), 5)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

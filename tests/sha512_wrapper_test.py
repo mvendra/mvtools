@@ -105,5 +105,5 @@ class Sha512WrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, self.content1_sha512)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

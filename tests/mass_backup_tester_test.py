@@ -146,5 +146,5 @@ class MassBackupTesterTest(unittest.TestCase):
             r = mass_backup_tester.backups_mass_check(self.test_config_file, self.hash_file)
         self.assertFalse(r)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

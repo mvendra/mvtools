@@ -5902,5 +5902,5 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -210,5 +210,5 @@ class GitVisitorBackendsTest(unittest.TestCase):
         # file from repo1 must exist inside fifth repo
         self.assertTrue(os.path.exists( path_utils.concat_path(fifth_repo, self.first_repo_first_file) ) )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -151,5 +151,5 @@ class GzipWrapperTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.tar_file))
         self.assertTrue(os.path.exists(self.tar_gz_file))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

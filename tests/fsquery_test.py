@@ -1077,5 +1077,5 @@ class FsqueryTest(unittest.TestCase):
         self.assertFalse( subtest_sub1 in r )
         self.assertTrue( subtest_sub2 in r )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

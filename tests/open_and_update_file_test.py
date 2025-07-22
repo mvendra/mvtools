@@ -52,5 +52,5 @@ class OpenAndUpdateFileTest(unittest.TestCase):
         open_and_update_file.update_file_contents(self.content_file, "andthensomemore")
         self.assertEqual(getcontents.getcontents(self.content_file), "abcdef123456andthensomemore")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
