@@ -700,6 +700,12 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
+    # mvtodo: pre-lines check
+
+    # mvtodo: cycle idx+lines check
+
+    # mvtodo: post producing patches as well {and also not, with autocorrect off}
+
     # mvtodo: multiple files, multiples plugins, multiple lines
 
 if __name__ == "__main__":
