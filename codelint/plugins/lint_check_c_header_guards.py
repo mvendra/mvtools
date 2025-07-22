@@ -47,16 +47,16 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     elif shared_state["lint-check-c-header-guards-state"] == "expecting-define":
 
         if len(content_line_local) < 1:
-            return True, ("follow-up define not found just after first ifndef", []) # mvtodo
+            return True, ("follow-up define not found just after first ifndef (line [%s])" % line_index, [])
 
         if content_line_local[0] == "#":
             content_line_local = content_line_local[1:]
             content_line_local = content_line_local.strip()
         else:
-            return True, ("follow-up define not found just after first ifndef", []) # mvtodo
+            return True, ("follow-up define not found just after first ifndef (line [%s])" % line_index, [])
 
         if len(content_line_local) < 8: # "define " + at least one more symbol
-            return True, ("follow-up define not found just after first ifndef", []) # mvtodo
+            return True, ("follow-up define not found just after first ifndef (line [%s])" % line_index, [])
 
         if content_line_local[:6] == "define":
 
@@ -67,7 +67,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
             return True, None
 
-        return True, ("follow-up define not found just after first ifndef", []) # mvtodo
+        return True, ("follow-up define not found just after first ifndef (line [%s])" % line_index, [])
 
     elif shared_state["lint-check-c-header-guards-state"] == "expecting-endif":
 
