@@ -55,5 +55,5 @@ class ConvCygPathTest(unittest.TestCase):
             with mock.patch("mvtools_envvars.mvtools_envvar_read_cygwin_install_path", return_value=(True, "D:/cygwin_custom_install_folder/cygwin")):
                 self.assertEqual(convcygpath.convert_cygwin_path_to_win_path("/home/user/folder"), "D:/cygwin_custom_install_folder/cygwin/home/user/folder")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

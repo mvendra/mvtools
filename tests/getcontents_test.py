@@ -56,5 +56,5 @@ class GetContentsTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents_bin(self.content_file_bin), b"\xa8\xa8\xa8")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

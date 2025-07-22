@@ -173,5 +173,5 @@ class GenericRunPluginTest(unittest.TestCase):
             v, r = self.generic_run_task.run_task(print, "exe_name")
             self.assertFalse(v)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

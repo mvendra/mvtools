@@ -238,5 +238,5 @@ class ZipPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, self.existent_path2)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -48,7 +48,7 @@ class GenericRunTest(unittest.TestCase):
         # first script
         self.test_script_ret_0_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_ret_0_content += "import sys" + os.linesep
-        self.test_script_ret_0_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_ret_0_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_ret_0_content += "    sys.exit(0)"
 
         self.test_script_ret_0_filename = path_utils.concat_path(self.scripts_folder, "test_ret_0.py")
@@ -58,7 +58,7 @@ class GenericRunTest(unittest.TestCase):
         # second script
         self.test_script_ret_1_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_ret_1_content += "import sys" + os.linesep
-        self.test_script_ret_1_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_ret_1_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_ret_1_content += "    sys.exit(1)"
 
         self.test_script_ret_1_filename = path_utils.concat_path(self.scripts_folder, "test_ret_1.py")
@@ -67,7 +67,7 @@ class GenericRunTest(unittest.TestCase):
 
         # third script
         self.test_script_fail_content = "#!/usr/bin/env python3" + os.linesep
-        self.test_script_fail_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_fail_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_fail_content += "    print..." # malformed instruction
 
         self.test_script_fail_filename = path_utils.concat_path(self.scripts_folder, "test_fail.py")
@@ -76,7 +76,7 @@ class GenericRunTest(unittest.TestCase):
 
         # fourth script
         self.test_script_print_content = "#!/usr/bin/env python3" + os.linesep
-        self.test_script_print_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_print_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_content += "    print(\"the test output\")"
 
         self.test_script_print_filename = path_utils.concat_path(self.scripts_folder, "test_print.py")
@@ -86,7 +86,7 @@ class GenericRunTest(unittest.TestCase):
         # fifth script
         self.test_script_print_err_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_print_err_content += "import sys" + os.linesep
-        self.test_script_print_err_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_print_err_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_err_content += "    sys.stderr.write(\"the test error\")"
 
         self.test_script_print_err_filename = path_utils.concat_path(self.scripts_folder, "test_print_err.py")
@@ -96,7 +96,7 @@ class GenericRunTest(unittest.TestCase):
         # sixth script
         self.test_script_print_err_ret_1_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_print_err_ret_1_content += "import sys" + os.linesep
-        self.test_script_print_err_ret_1_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_print_err_ret_1_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_err_ret_1_content += "    sys.stderr.write(\"the test error\")" + os.linesep
         self.test_script_print_err_ret_1_content += "    sys.exit(1)"
 
@@ -106,7 +106,7 @@ class GenericRunTest(unittest.TestCase):
 
         # seventh script
         self.test_script_print_input_content = "#!/usr/bin/env python3" + os.linesep
-        self.test_script_print_input_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_print_input_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_input_content += "    p = input(\"asking for input\")" + os.linesep
         self.test_script_print_input_content += "    print(\"echoing back: {%s}\" % p)"
 
@@ -117,7 +117,7 @@ class GenericRunTest(unittest.TestCase):
         # eight script
         self.test_script_print_cmdlineargs_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_print_cmdlineargs_content += "import sys" + os.linesep
-        self.test_script_print_cmdlineargs_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_print_cmdlineargs_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_cmdlineargs_content += "    v = sys.argv[1]" + os.linesep
         self.test_script_print_cmdlineargs_content += "    print(v)"
 
@@ -128,7 +128,7 @@ class GenericRunTest(unittest.TestCase):
         # ninth script
         self.test_script_print_utf8_content = "#!/usr/bin/env python3" + os.linesep
         self.test_script_print_utf8_content += "import sys" + os.linesep
-        self.test_script_print_utf8_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_print_utf8_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_utf8_content += "    print(\"おはようございます\")" + os.linesep
         self.test_script_print_utf8_content += "    sys.stderr.write(\"こんばんは\")"
 
@@ -138,7 +138,7 @@ class GenericRunTest(unittest.TestCase):
 
         # tenth script
         self.test_print_file_cwd_content = "#!/usr/bin/env python3" + os.linesep
-        self.test_print_file_cwd_content += "if __name__ == '__main__':" + os.linesep
+        self.test_print_file_cwd_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_print_file_cwd_content += ("    fn = \"./%s\"" + os.linesep) % self.file_test_filename
         self.test_print_file_cwd_content += "    with open(fn) as f:"  + os.linesep
         self.test_print_file_cwd_content += "        print(f.read())"  + os.linesep
@@ -150,7 +150,7 @@ class GenericRunTest(unittest.TestCase):
         # eleventh script
         self.test_custom_env_content = "#!/usr/bin/env python3" + os.linesep
         self.test_custom_env_content += "import os" + os.linesep
-        self.test_custom_env_content += "if __name__ == '__main__':" + os.linesep
+        self.test_custom_env_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_custom_env_content += ("    print(os.environ[\"%s\"])" + os.linesep) % self.reserved_test_env_var_1
 
         self.test_custom_env_filename = path_utils.concat_path(self.scripts_folder, "test_print_custom_env.py")
@@ -160,7 +160,7 @@ class GenericRunTest(unittest.TestCase):
         # twelvth script
         self.test_malformed_output_content = "#!/usr/bin/env python3" + os.linesep
         self.test_malformed_output_content += "import sys" + os.linesep
-        self.test_malformed_output_content += "if __name__ == '__main__':" + os.linesep
+        self.test_malformed_output_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_malformed_output_content += "    sys.stdout.buffer.write(b\"\\xff\")"
 
         self.test_malformed_output_filename = path_utils.concat_path(self.scripts_folder, "test_malformed_print.py")
@@ -170,7 +170,7 @@ class GenericRunTest(unittest.TestCase):
         # thirteenth script
         self.test_sleepy_content = "#!/usr/bin/env python3" + os.linesep
         self.test_sleepy_content += "import time" + os.linesep
-        self.test_sleepy_content += "if __name__ == '__main__':" + os.linesep
+        self.test_sleepy_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_sleepy_content += "    time.sleep(2)" + os.linesep
 
         self.test_sleepy_filename = path_utils.concat_path(self.scripts_folder, "test_sleepy.py")
@@ -465,5 +465,5 @@ class GenericRunTest(unittest.TestCase):
         self.assertEqual(cmd_ret.stdout, "")
         self.assertEqual(cmd_ret.stderr, "")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

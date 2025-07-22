@@ -99,5 +99,5 @@ class Text18HeaderIndexerTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(file_has_contents(self.target_h, "\n#ifndef _GENERATED_H_\n#define _GENERATED_H_\n\n// main\nTEXT18_MAIN 0\nTEXT18_MAIN_ENTRY1 0\nTEXT18_MAIN_ENTRY2 1\n\n// sub\nTEXT18_SUB 1\nTEXT18_SUB_ENTRY1 0\nTEXT18_SUB_ENTRY2 1\n\n#endif // _GENERATED_H_\n"))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

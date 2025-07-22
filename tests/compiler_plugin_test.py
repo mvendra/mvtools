@@ -101,5 +101,5 @@ class CompilerPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.called_with(["dummy_value1", "dummy_value2"])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

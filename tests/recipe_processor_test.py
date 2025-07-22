@@ -532,5 +532,5 @@ class RecipeProcessorTest(unittest.TestCase):
         v, r = recipe_processor.run_jobs_from_recipe_file(blanksub_blankfile)
         self.assertTrue(v)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -50,7 +50,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_first_content += "import os" + os.linesep
         self.test_script_first_content += "import sys" + os.linesep
         self.test_script_first_content += "import path_utils" + os.linesep
-        self.test_script_first_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_first_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_first_content += "    fn_full = path_utils.concat_path(\"%s\", \"counter.txt\")%s" % (self.data_folder, os.linesep)
         self.test_script_first_content += "    if not os.path.exists(fn_full):" + os.linesep
         self.test_script_first_content += "        with open(fn_full, \"w\") as f:" + os.linesep
@@ -76,7 +76,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_second_content += "import os" + os.linesep
         self.test_script_second_content += "import sys" + os.linesep
         self.test_script_second_content += "import path_utils" + os.linesep
-        self.test_script_second_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_second_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_second_content += "    fn_full = path_utils.concat_path(\"%s\", \"counter.txt\")%s" % (self.data_folder, os.linesep)
         self.test_script_second_content += "    if not os.path.exists(fn_full):" + os.linesep
         self.test_script_second_content += "        with open(fn_full, \"w\") as f:" + os.linesep
@@ -103,7 +103,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_third_content += "import os" + os.linesep
         self.test_script_third_content += "import sys" + os.linesep
         self.test_script_third_content += "import path_utils" + os.linesep
-        self.test_script_third_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_third_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_third_content += "    fn_full = path_utils.concat_path(\"%s\", \"counter.txt\")%s" % (self.data_folder, os.linesep)
         self.test_script_third_content += "    if not os.path.exists(fn_full):" + os.linesep
         self.test_script_third_content += "        with open(fn_full, \"w\") as f:" + os.linesep
@@ -129,7 +129,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_fourth_content += "import os" + os.linesep
         self.test_script_fourth_content += "import sys" + os.linesep
         self.test_script_fourth_content += "import path_utils" + os.linesep
-        self.test_script_fourth_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_fourth_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_fourth_content += "    fn_full = path_utils.concat_path(\"%s\", \"counter.txt\")%s" % (self.data_folder, os.linesep)
         self.test_script_fourth_content += "    if not os.path.exists(fn_full):" + os.linesep
         self.test_script_fourth_content += "        with open(fn_full, \"w\") as f:" + os.linesep
@@ -158,7 +158,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_fifth_content += "import path_utils" + os.linesep
         self.test_script_fifth_content += "import toolbus" + os.linesep
         self.test_script_fifth_content += "import mvtools_exception" + os.linesep
-        self.test_script_fifth_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_fifth_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_fifth_content += "    fn_full = path_utils.concat_path(\"%s\", \"counter.txt\")%s" % (self.data_folder, os.linesep)
         self.test_script_fifth_content += "    if not os.path.exists(fn_full):" + os.linesep
         self.test_script_fifth_content += "        with open(fn_full, \"w\") as f:" + os.linesep
@@ -190,7 +190,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_sixth_content += "import path_utils" + os.linesep
         self.test_script_sixth_content += "import toolbus" + os.linesep
         self.test_script_sixth_content += "import mvtools_exception" + os.linesep
-        self.test_script_sixth_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_sixth_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_sixth_content += "    fn_full = path_utils.concat_path(\"%s\", \"counter.txt\")%s" % (self.data_folder, os.linesep)
         self.test_script_sixth_content += "    if not os.path.exists(fn_full):" + os.linesep
         self.test_script_sixth_content += "        with open(fn_full, \"w\") as f:" + os.linesep
@@ -221,7 +221,7 @@ class BatchRunTest(unittest.TestCase):
         self.test_script_seventh_content += "import os" + os.linesep
         self.test_script_seventh_content += "import sys" + os.linesep
         self.test_script_seventh_content += "import path_utils" + os.linesep
-        self.test_script_seventh_content += "if __name__ == '__main__':" + os.linesep
+        self.test_script_seventh_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_seventh_content += "    fn_full = path_utils.concat_path(\"%s\", \"counter.txt\")%s" % (self.data_folder, os.linesep)
         self.test_script_seventh_content += "    if not os.path.exists(fn_full):" + os.linesep
         self.test_script_seventh_content += "        with open(fn_full, \"w\") as f:" + os.linesep
@@ -2773,5 +2773,5 @@ class BatchRunTest(unittest.TestCase):
             self.assertEqual(line, contents_expected[line_num])
             line_num += 1
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
