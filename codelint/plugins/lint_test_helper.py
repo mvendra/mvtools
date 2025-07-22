@@ -17,6 +17,7 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
     pre_fail = None
     pre_verify_fn = None
     pre_write_to_shared_state = None
+    pre_lines_check = None
 
     try:
         pre_fail = plugins_params["lint-test-helper-pre-fail"]
@@ -42,6 +43,15 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     if pre_write_to_shared_state is not None:
         shared_state["lint-test-helper-shared-state-verify"] = pre_write_to_shared_state
+
+    try:
+        pre_lines_check = plugins_params["lint-test-helper-pre-lines-check"]
+    except KeyError as ex:
+        pass
+
+    if pre_lines_check is not None:
+        if pre_lines_check != num_lines:
+            return False, "trigger assert fail"
 
     return True, None
 
