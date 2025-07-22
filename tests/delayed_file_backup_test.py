@@ -1326,5 +1326,5 @@ class DelayedFileBackupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(test_sourcefolder_subfolder_insideanother_backup))
         self.assertFalse(os.path.exists(test_sourcefolder_subfolder_insideanother_file4_backup))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -168,5 +168,5 @@ class ProjCleanupPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path, True, True, True)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

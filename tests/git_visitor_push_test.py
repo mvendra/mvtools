@@ -108,5 +108,5 @@ class GitVisitorPushTest(unittest.TestCase):
         self.assertTrue(os.path.exists(fifth_file1))
         self.assertTrue(os.path.exists(sixth_file2))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -60,5 +60,5 @@ class GitVisitorStatusTest(unittest.TestCase):
         r = git_visitor_status.visitor_status(repos, opts)
         self.assertTrue(r)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

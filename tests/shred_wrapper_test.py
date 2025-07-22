@@ -117,5 +117,5 @@ class ShredWrapperTest(unittest.TestCase):
         self.assertFalse(os.path.exists(blanksub_blankfile))
         self.assertFalse(os.path.exists(blanksub))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

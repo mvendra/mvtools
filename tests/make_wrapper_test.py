@@ -66,5 +66,5 @@ class MakeWrapperTest(unittest.TestCase):
             self.assertEqual(make_wrapper.make("test3", None, "test4", "test5"), (True, (True, "test1", "test2")))
             dummy.assert_called_with(["make", "test4", "PREFIX=test5"], use_cwd="test3")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

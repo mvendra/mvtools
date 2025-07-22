@@ -1248,5 +1248,5 @@ class BackupProcessorTest(unittest.TestCase):
         self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "bk_date.txt") ) )
         self.assertTrue( os.path.exists( path_utils.concat_path(tg_final, "source_test", "folder1.tar.bz2.enc") ) )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

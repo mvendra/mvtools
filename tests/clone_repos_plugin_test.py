@@ -567,5 +567,5 @@ class CloneReposPluginTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.fifth_repo_target))
         self.assertFalse(os.path.exists(self.target_sub1))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
