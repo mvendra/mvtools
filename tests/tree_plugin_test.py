@@ -125,5 +125,5 @@ class TreePluginTest(unittest.TestCase):
 
         self.assertEqual(contents, "mocked contents")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

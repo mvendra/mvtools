@@ -277,5 +277,5 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(test_out_fn))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

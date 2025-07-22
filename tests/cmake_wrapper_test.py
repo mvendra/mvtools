@@ -131,5 +131,5 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertEqual(cmake_wrapper.configure_and_generate(None, "test4", "test5", "test6", {}), (True, (True, "test1", "test2")))
             dummy.assert_called_with(["cmake", "test4", "-G", "test6"], use_cwd="test5")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

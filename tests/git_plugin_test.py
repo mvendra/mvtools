@@ -1730,5 +1730,5 @@ class GitPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -18,5 +18,5 @@ class ClipboardToolsTest(unittest.TestCase):
         #self.assertTrue(v)
         #self.assertEqual(r, test_string)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

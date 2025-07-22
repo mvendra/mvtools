@@ -229,5 +229,5 @@ class PakGenTest(unittest.TestCase):
         report = pakgen.add_str_to_report(report, "")
         self.assertEqual(report, "add1 / add2")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

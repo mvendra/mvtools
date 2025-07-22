@@ -46,5 +46,5 @@ class ConvertUnitTest(unittest.TestCase):
         self.assertEqual(convert_unit.convert_to_bytes("1gb"), (True, 1073741824))
         self.assertEqual(convert_unit.convert_to_bytes("1tb"), (True, 1073741824*1024))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

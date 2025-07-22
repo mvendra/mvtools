@@ -309,5 +309,5 @@ class CopyPluginTest(unittest.TestCase):
             self.assertFalse(v)
             self.assertNotEqual( dummy.mock_calls, [ mock.call(self.existent_path1, self.existent_path3), mock.call(self.nonexistent_path, self.existent_path3) ] )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

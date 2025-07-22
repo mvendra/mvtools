@@ -265,5 +265,5 @@ class BatchRunPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with("dummy_value1", "dummy_value2", [["dummy_value3", "dummy_value4"]], "dummy_value5", "dummy_value6", ["dummy_value7", "dummy_value8"])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

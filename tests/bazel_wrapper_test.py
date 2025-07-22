@@ -185,5 +185,5 @@ class BazelWrapperTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(["bazel", "test", "--jobs=64", "--config=test-config", "test-target"], use_cwd="nonempty")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

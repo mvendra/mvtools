@@ -92,5 +92,5 @@ class MkdirPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue(os.path.exists( self.test_target_path ))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

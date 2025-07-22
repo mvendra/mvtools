@@ -66,5 +66,5 @@ class AgWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "1:abcdefxyz%s" % os.linesep)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

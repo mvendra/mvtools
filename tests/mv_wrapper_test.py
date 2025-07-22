@@ -71,5 +71,5 @@ class MvWrapperTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(["mv", self.path1, self.path2])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
