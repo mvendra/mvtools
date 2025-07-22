@@ -143,6 +143,8 @@ def lint_post(plugins_params, filename, shared_state):
     post_verify_fn = None
     post_verify_shared_state_verify = None
     post_verify_shared_state = None
+    post_tag_line_index = None
+    post_tag_line_content = None
 
     try:
         post_fail = plugins_params["lint-test-helper-post-fail"]
@@ -173,6 +175,18 @@ def lint_post(plugins_params, filename, shared_state):
             return False, "trigger assert fail"
         if post_verify_shared_state_verify != post_verify_shared_state:
             return False, "trigger assert fail"
+
+    try:
+        post_tag_line_index = plugins_params["lint-test-helper-post-tag-line-index"]
+    except KeyError as ex:
+        pass
+
+    if post_tag_line_index is not None:
+        try:
+            post_tag_line_content = plugins_params["lint-test-helper-post-tag-line-content"]
+        except KeyError as ex:
+            return False, "trigger assert fail"
+        return True, ("tagging line [%s] with [%s]" % (post_tag_line_index, post_tag_line_content), [(post_tag_line_index, post_tag_line_content)])
 
     return True, None
 

@@ -753,7 +753,55 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    # mvtodo: post producing patches as well {and also not, with autocorrect off}
+    def testCodelint22(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-post-tag-line-index"] = 1
+        test_plugins_params["lint-test-helper-post-tag-line-content"] = "modified-header"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "tagging line [1] with [modified-header]"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Processing [%s] - end" % test_file1))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        self.assertTrue(v)
+        self.assertEqual(r, expected_report)
+
+        self.assertEqual(getcontents.getcontents(test_file1), "modified-header\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+    def testCodelint23(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        test_plugins = [lint_test_helper]
+        test_plugins_params = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-post-tag-line-index"] = 1
+        test_plugins_params["lint-test-helper-post-tag-line-content"] = "modified-header"
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "tagging line [1] with [modified-header]"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Processing [%s] - end" % test_file1))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        self.assertTrue(v)
+        self.assertEqual(r, expected_report)
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     # mvtodo: multiple files, multiples plugins, multiple lines
 
