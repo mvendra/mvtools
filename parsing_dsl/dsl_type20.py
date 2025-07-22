@@ -1457,7 +1457,7 @@ def puaq():
     print("Usage: %s [--decorator the-deco] file_to_parse.t20" % path_utils.basename_filtered(__file__))
     sys.exit(1)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     if len(sys.argv) < 2:
         puaq()

@@ -81,7 +81,7 @@ if __name__ == "__main__":
         puaq()
 
     filename = sys.argv[1]
-    if '.' in filename:
+    if "." in filename:
         print("Please do not include the extension")
         sys.exit(1)
 

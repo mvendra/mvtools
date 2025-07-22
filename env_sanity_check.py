@@ -23,7 +23,7 @@ def is_sane(var, val):
                 print("%s inside PATH does not exist" % p)
                 return False
 
-    elif val[0] == '/': # generic case
+    elif val[0] == "/": # generic case
         return os.path.exists(val)
 
     return True

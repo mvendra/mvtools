@@ -7,10 +7,10 @@ import path_utils
 import terminal_colors
 
 def is_digit(character):
-    return character in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    return character in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 def is_hex_digit(character):
-    return character in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
+    return character in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
 
 def scan_hex_address(line, check_trail):
 
