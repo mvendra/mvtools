@@ -324,5 +324,5 @@ class TarWrapperTest(unittest.TestCase):
         self.ext_file1 = path_utils.concat_path(self.extracted_folder, test_source_link)
         self.assertTrue( path_utils.is_path_broken_symlink( self.ext_file1 ) )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -913,5 +913,5 @@ class PortGitRepoTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

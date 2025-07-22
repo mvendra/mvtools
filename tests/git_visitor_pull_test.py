@@ -104,5 +104,5 @@ class GitVisitorPullTest(unittest.TestCase):
         self.assertTrue(os.path.exists(fourth_file2))
         self.assertTrue(os.path.exists(fifth_file2))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

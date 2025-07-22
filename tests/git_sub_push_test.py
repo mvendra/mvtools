@@ -118,5 +118,5 @@ class GitSubPushTest(unittest.TestCase):
         fifth_file3 = path_utils.concat_path( fifth_repo, file3)
         self.assertTrue( os.path.exists(fifth_file3) )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

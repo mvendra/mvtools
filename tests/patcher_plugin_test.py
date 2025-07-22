@@ -207,5 +207,5 @@ class PatcherPluginTest(unittest.TestCase):
 
         self.assertTrue(is_file_contents(self.target_file, "ac"))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -209,5 +209,5 @@ class PalletappWrapperTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.hidden_file_extracted))
         self.assertTrue(os.path.exists(self.hidden_folder_extracted))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -109,5 +109,5 @@ class WritefilePluginTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.nonexistent_path1))
         self.assertTrue("dummy-content1\ndummy-content2" in getcontents.getcontents(self.nonexistent_path1))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

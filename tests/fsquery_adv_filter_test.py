@@ -570,5 +570,5 @@ class FsqueryAdvFilterTest(unittest.TestCase):
         paths_returned = fsquery_adv_filter.filter_path_list_and(paths, filters)
         self.assertEqual(paths_returned, ["one/two/three.txt", "another/extra/more", "folder/whatever.nfo"])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

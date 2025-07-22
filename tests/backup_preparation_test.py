@@ -1585,5 +1585,5 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ["Failed processing [%s]: The final folder [%s] is above the size limit. Aborting." % (self.test_config_file_fail4, self.prep_target)])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

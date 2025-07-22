@@ -3274,5 +3274,5 @@ class CollectGitPatchTest(unittest.TestCase):
         self.assertTrue(any(self.first_file1 in s for s in r))
         self.assertTrue(any(first_file1_renamed in s for s in r))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

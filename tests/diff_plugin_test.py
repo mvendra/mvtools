@@ -236,5 +236,5 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, "contents of [%s] and [%s] are not equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, self.right_path)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -4019,5 +4019,5 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[0], "}")
         self.assertEqual(r[1], ["   abc  ", "  def   "])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
