@@ -178,5 +178,5 @@ class OpensslWrapperTest(unittest.TestCase):
 
         self.assertEqual(contents_file1, contents_file3)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

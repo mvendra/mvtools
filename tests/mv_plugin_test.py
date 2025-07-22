@@ -129,5 +129,5 @@ class MvPluginTest(unittest.TestCase):
         v, r = self.mv_task._read_params()
         self.assertFalse(v)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

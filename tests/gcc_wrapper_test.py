@@ -66,5 +66,5 @@ class GccWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r.strip(), "test for echo")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

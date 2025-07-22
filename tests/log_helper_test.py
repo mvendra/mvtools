@@ -56,5 +56,5 @@ class LogHelperTest(unittest.TestCase):
         self.warnings = log_helper.add_to_warnings(self.warnings, None)
         self.assertEqual(self.warnings, "first warning")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

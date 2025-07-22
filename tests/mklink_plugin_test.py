@@ -107,5 +107,5 @@ class MklinkPluginTest(unittest.TestCase):
         v, r = self.mklink_task.run_task(print, "exe_name")
         self.assertTrue(v)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

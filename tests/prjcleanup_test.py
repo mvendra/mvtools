@@ -1197,5 +1197,5 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.target_proj_out_macos_debug))
         self.assertFalse(os.path.exists(self.target_proj_out_macos_release))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -303,5 +303,5 @@ class TarPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_archive1)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

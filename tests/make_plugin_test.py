@@ -332,5 +332,5 @@ class MakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -105,5 +105,5 @@ class Sha256WrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, self.content1_sha256)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -26,5 +26,5 @@ class SanitizeTerminalLineTest(unittest.TestCase):
         self.assertEqual(sanitize_terminal_line.sanitize_terminal_line("\x1b[01;34m__pycache__/"), "__pycache__/")
         self.assertEqual(sanitize_terminal_line.sanitize_terminal_line("__pycache__/"), "__pycache__/")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

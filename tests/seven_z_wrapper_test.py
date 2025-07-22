@@ -340,5 +340,5 @@ class SevenZWrapperTest(unittest.TestCase):
         v, r = seven_z_wrapper.make_pack(self.seven_z_file, [test_source_link])
         self.assertFalse(v) # 7z version 16.02, of L24, does not support broken symlinks
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

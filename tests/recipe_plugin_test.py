@@ -473,5 +473,5 @@ class RecipePluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_path1, None, "req_opts_mock")
                 dummy2.assert_called_with(None, None, None, "dummy_value2")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
