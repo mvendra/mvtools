@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+
+import path_utils
+import string_utils
+
+def lint_name():
+    return path_utils.basename_filtered(__file__)
+
+def lint_pre(plugins_params, filename, shared_state, num_lines):
+
+    return True, None
+
+def lint_cycle(plugins_params, filename, shared_state, line_index, content_line):
+
+    content_line_local = content_line
+
+    if len(content_line_local) == 0:
+        return True, None
+
+    if content_line_local.endswith(" "):
+        return True, ("trailing spaces detected at line [%s]" % line_index, [(line_index, content_line_local.rstrip())])
+
+    return True, None
+
+def lint_post(plugins_params, filename, shared_state):
+
+    return True, None
