@@ -16,6 +16,9 @@ import lint_check_c_header_guards
 import lint_func_indexer
 import lint_c_integer_suffix
 
+CODELINT_CMDLINE_RETURN_PLUGIN_FINDING = 1
+CODELINT_CMDLINE_RETURN_ERROR = 2
+
 def helper_validate_msgpatch_return(msg, patches):
 
     if not isinstance(msg, str):
@@ -170,7 +173,7 @@ def puaq():
     print("* lint-check-c-header-guards {}")
     print("* lint-func-indexer {}")
     print("* lint-c-int-suf {}")
-    sys.exit(2)
+    sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
 if __name__ == "__main__":
 
@@ -212,7 +215,7 @@ if __name__ == "__main__":
             plugin_next = False
             if not p in plugin_table:
                 print("Plugin [%s] does not exist" % p)
-                sys.exit(2)
+                sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
             plugins.append(plugin_table[p])
             continue
 
@@ -245,11 +248,11 @@ if __name__ == "__main__":
 
     if plugin_param_name_next:
         print("Missing plugin param name")
-        sys.exit(2)
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
     if plugin_param_value_next:
         print("Missing plugin param value (expected for [%s])" % plugin_param_name)
-        sys.exit(2)
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
     if filelist_next:
         filelist = sys.argv[idx+1:]
@@ -261,12 +264,12 @@ if __name__ == "__main__":
         v, r = fsquery.makecontentlist(targetfolder, True, True, True, False, True, False, True, extensions)
         if not v:
             print(r)
-            sys.exit(2)
+            sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
         filelist = r
 
     else:
         print("Neither --filelist nor --targetfolder chosen")
-        sys.exit(2)
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
     v, r = codelint(plugins, plugins_params, autocorrect, filelist)
     if not v:
@@ -274,10 +277,10 @@ if __name__ == "__main__":
         if len(r[1]) > 0:
             print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.TTY_WHITE))
             print_report(r[1])
-        sys.exit(2)
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
     print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.TTY_WHITE))
     if print_report(r):
         print("\n%sAll operations suceeded - with some findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.TTY_WHITE))
-        sys.exit(1)
+        sys.exit(CODELINT_CMDLINE_RETURN_PLUGIN_FINDING)
     else:
         print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
