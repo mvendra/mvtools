@@ -175,13 +175,3 @@ def lint_post(plugins_params, filename, shared_state):
         return True, ("tagging line [%s] with [%s]" % (post_tag_line_index, post_tag_line_content), [(post_tag_line_index, post_tag_line_content)])
 
     return True, None
-
-def puaq():
-    print("Usage: %s params" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
-if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-        puaq()
-    print("elo")

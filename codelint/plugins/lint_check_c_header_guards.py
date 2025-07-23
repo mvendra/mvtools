@@ -122,13 +122,3 @@ def lint_post(plugins_params, filename, shared_state):
         return True, ("incorrect header guard detected (at the final endif) - expected [%s], have [%s]" % (shared_state["lint-check-c-header-guards-first-ifndef-is"], last_endif_local), [])
 
     return True, None
-
-def puaq():
-    print("Usage: %s params" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
-if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-        puaq()
-    print("elo")

@@ -46,13 +46,3 @@ def lint_post(plugins_params, filename, shared_state):
 
     print("%s   (post): [%s][%s][%s]\n" % (lint_name(), plugins_params, filename, shared_state))
     return True, None
-
-def puaq():
-    print("Usage: %s params" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
-if __name__ == "__main__":
-
-    if len(sys.argv) < 2:
-        puaq()
-    print("elo")
