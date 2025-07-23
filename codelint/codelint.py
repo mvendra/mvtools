@@ -13,6 +13,7 @@ import terminal_colors
 # plugins
 import lint_sample_echo
 import lint_check_c_header_guards
+import lint_func_indexer
 import lint_c_integer_suffix
 
 def helper_validate_msgpatch_return(msg, patches):
@@ -167,6 +168,7 @@ def puaq():
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     print("* lint-check-c-header-guards {}")
+    print("* lint-func-indexer {}")
     print("* lint-c-int-suf {}")
     sys.exit(2)
 
@@ -181,6 +183,7 @@ if __name__ == "__main__":
     plugin_table = {}
     plugin_table["lint-sample-echo"] = lint_sample_echo
     plugin_table["lint-check-c-header-guards"] = lint_check_c_header_guards
+    plugin_table["lint-func-indexer"] = lint_func_indexer
     plugin_table["lint-c-int-suf"] = lint_c_integer_suffix
 
     plugins = []
