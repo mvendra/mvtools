@@ -166,6 +166,7 @@ def puaq():
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--filelist [filelist] | --targetfolder target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
+    print("* lint-check-c-header-guards {}")
     print("* lint-c-int-suf {}")
     sys.exit(2)
 
