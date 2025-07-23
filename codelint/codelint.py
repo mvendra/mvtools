@@ -11,6 +11,7 @@ import terminal_colors
 
 # plugins
 import lint_sample_echo
+import lint_check_c_header_guards
 import lint_c_integer_suffix
 
 def helper_validate_msgpatch_return(msg, patches):
@@ -158,7 +159,7 @@ def print_report(report):
             print(e[1])
 
 def puaq():
-    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [filelist] [--help]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--filelist [filelist] | --target target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     print("* lint-c-int-suf {}")
@@ -174,6 +175,7 @@ if __name__ == "__main__":
 
     plugin_table = {}
     plugin_table["lint-sample-echo"] = lint_sample_echo
+    plugin_table["lint-check-c-header-guards"] = lint_check_c_header_guards
     plugin_table["lint-c-int-suf"] = lint_c_integer_suffix
 
     plugins = []
@@ -185,6 +187,7 @@ if __name__ == "__main__":
     plugin_param_name = None
     plugin_param_name_next = False
     plugin_param_value_next = False
+    filelist_next = False
 
     idx = 0
     for p in sys.argv[1:]:
@@ -219,8 +222,8 @@ if __name__ == "__main__":
             plugin_param_name_next = True
         elif p == "--autocorrect":
             autocorrect = True
-        else:
-            idx -= 1
+        elif p == "--filelist":
+            filelist_next = True
             break
 
     if plugin_param_name_next:
@@ -231,7 +234,8 @@ if __name__ == "__main__":
         print("Missing plugin param value (expected for [%s])!" % plugin_param_name)
         sys.exit(1)
 
-    filelist = sys.argv[idx+1:]
+    if filelist_next:
+        filelist = sys.argv[idx+1:]
 
     v, r = codelint(plugins, plugins_params, autocorrect, filelist)
     if not v:
