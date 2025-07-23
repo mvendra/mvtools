@@ -105,6 +105,9 @@ def makecontentlist(path, recursive, follow_symlinks, include_regular_files, inc
     # extensions_include: whether to include the extensions listed in the next parameter, or exclude them
     # extensions: a list of extensions, to include or exclude. None means catch-all. can be a single string or a list of strings
 
+    if not os.path.exists(path):
+        return False, "Path [%s] does not exist" % path
+
     ret_list = []
 
     if recursive:
