@@ -21,10 +21,16 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
     if not "lint-func-indexer-param-right" in plugins_params:
         return False, "required parameter {lint-func-indexer-param-right} was not provided"
 
-    if len(plugins_params["lint-func-indexer-param-left"]) < 1:
+    if len(plugins_params["lint-func-indexer-param-left"]) != 1:
+        return False, "the parameter {lint-func-indexer-param-left} must contain at least one entry"
+
+    if len(plugins_params["lint-func-indexer-param-right"]) != 1:
+        return False, "the parameter {lint-func-indexer-param-right} must contain at least one entry"
+
+    if len(plugins_params["lint-func-indexer-param-left"][0]) < 1:
         return False, "the parameter {lint-func-indexer-param-left} cannot be empty"
 
-    if len(plugins_params["lint-func-indexer-param-right"]) < 1:
+    if len(plugins_params["lint-func-indexer-param-right"][0]) < 1:
         return False, "the parameter {lint-func-indexer-param-right} cannot be empty"
 
     return True, None
@@ -36,8 +42,8 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     if len(content_line_local) == 0:
         return True, None
 
-    lp = plugins_params["lint-func-indexer-param-left"]
-    rp = plugins_params["lint-func-indexer-param-right"]
+    lp = plugins_params["lint-func-indexer-param-left"][0]
+    rp = plugins_params["lint-func-indexer-param-right"][0]
 
     if not content_line_local.startswith(lp) or not content_line_local.endswith(rp):
         return True, None

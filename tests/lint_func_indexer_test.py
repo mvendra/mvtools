@@ -42,8 +42,8 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = "left"
-        test_plugins_params["lint-func-indexer-param-right"] = "right"
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         test_shared_state["lint-func-indexer-counter"] = 0
 
@@ -58,7 +58,7 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-right"] = "right"
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertFalse(v)
@@ -76,7 +76,7 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = "left"
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertFalse(v)
@@ -94,12 +94,12 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = ""
-        test_plugins_params["lint-func-indexer-param-right"] = "right"
+        test_plugins_params["lint-func-indexer-param-left"] = []
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertFalse(v)
-        self.assertEqual(r, "the parameter {lint-func-indexer-param-left} cannot be empty")
+        self.assertEqual(r, "the parameter {lint-func-indexer-param-left} must contain at least one entry")
 
         expected_shared_state = {}
         expected_shared_state["lint-func-indexer-counter"] = 0
@@ -113,12 +113,12 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = "left"
-        test_plugins_params["lint-func-indexer-param-right"] = ""
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = []
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertFalse(v)
-        self.assertEqual(r, "the parameter {lint-func-indexer-param-right} cannot be empty")
+        self.assertEqual(r, "the parameter {lint-func-indexer-param-right} must contain at least one entry")
 
         expected_shared_state = {}
         expected_shared_state["lint-func-indexer-counter"] = 0
@@ -132,8 +132,46 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = "left"
-        test_plugins_params["lint-func-indexer-param-right"] = "right"
+        test_plugins_params["lint-func-indexer-param-left"] = [""]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
+
+        v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        self.assertFalse(v)
+        self.assertEqual(r, "the parameter {lint-func-indexer-param-left} cannot be empty")
+
+        expected_shared_state = {}
+        expected_shared_state["lint-func-indexer-counter"] = 0
+
+        self.assertEqual(test_shared_state, expected_shared_state)
+
+    def testLintPre7(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["left1right", "left2right", "left3right"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = [""]
+
+        v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        self.assertFalse(v)
+        self.assertEqual(r, "the parameter {lint-func-indexer-param-right} cannot be empty")
+
+        expected_shared_state = {}
+        expected_shared_state["lint-func-indexer-counter"] = 0
+
+        self.assertEqual(test_shared_state, expected_shared_state)
+
+    def testLintPre8(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["left1right", "left2right", "left3right"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
@@ -151,8 +189,8 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = "left"
-        test_plugins_params["lint-func-indexer-param-right"] = "right"
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         test_shared_state["lint-func-indexer-counter"] = 0
 
@@ -182,8 +220,8 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = "left"
-        test_plugins_params["lint-func-indexer-param-right"] = "right"
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         test_shared_state["lint-func-indexer-counter"] = 0
 
@@ -213,8 +251,8 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = "left"
-        test_plugins_params["lint-func-indexer-param-right"] = "right"
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         test_shared_state["lint-func-indexer-counter"] = 0
 
