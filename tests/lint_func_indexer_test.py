@@ -244,6 +244,74 @@ class LintFuncIndexerTest(unittest.TestCase):
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
 
+    def testLintCycle3(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["left3right", "left2right", "left1right"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
+
+        test_shared_state["lint-func-indexer-counter"] = 0
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-func-indexer-counter"] = 1
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-func-indexer-counter"] = 2
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-func-indexer-counter"] = 3
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        expected_result1 = ("line [1]: expected index [1], have [3]", [(1, "left1right")])
+        expected_result2 = None
+        expected_result3 = ("line [3]: expected index [3], have [1]", [(3, "left3right")])
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index-1])
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+    def testLintCycle4(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["leftright", "leftright", "leftright"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
+
+        test_shared_state["lint-func-indexer-counter"] = 0
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-func-indexer-counter"] = 0
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-func-indexer-counter"] = 0
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-func-indexer-counter"] = 0
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"
@@ -265,7 +333,48 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         self.assertEqual(test_shared_state, expected_shared_state)
 
-    # mvtodo: def testLintComplete(self):
+    def testLintComplete(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["left3right", "left2right", "left1right"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
+
+        expected_shared_state1 = {}
+        expected_shared_state1["lint-func-indexer-counter"] = 1
+
+        expected_shared_state2 = {}
+        expected_shared_state2["lint-func-indexer-counter"] = 2
+
+        expected_shared_state3 = {}
+        expected_shared_state3["lint-func-indexer-counter"] = 3
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        expected_result1 = ("line [1]: expected index [1], have [3]", [(1, "left1right")])
+        expected_result2 = None
+        expected_result3 = ("line [3]: expected index [3], have [1]", [(3, "left3right")])
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        for test_index in [1, 2, 3]:
+
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index-1])
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+
+        v, r = lint_func_indexer.lint_post(test_plugins_params, test_file, test_shared_state)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
 
 if __name__ == "__main__":
     unittest.main()
