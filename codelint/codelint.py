@@ -172,7 +172,7 @@ def puaq():
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     print("* lint-check-c-header-guards {}")
-    print("* lint-func-indexer {}")
+    print("* lint-func-indexer {lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
     print("* lint-end-space-detector {}")
     print("* lint-c-int-suf {}")
     sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
