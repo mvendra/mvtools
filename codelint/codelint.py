@@ -174,7 +174,7 @@ def puaq():
     print("* lint-check-c-header-guards {}")
     print("* lint-func-indexer {lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
     print("* lint-end-space-detector {}")
-    print("* lint-c-int-suf {}")
+    print("* lint-c-integer-suffix {lint-c-integer-suffix-warn-no-suffix}")
     sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
 if __name__ == "__main__":
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     plugin_table["lint-check-c-header-guards"] = lint_check_c_header_guards
     plugin_table["lint-func-indexer"] = lint_func_indexer
     plugin_table["lint-end-space-detector"] = lint_end_space_detector
-    plugin_table["lint-c-int-suf"] = lint_c_integer_suffix
+    plugin_table["lint-c-integer-suffix"] = lint_c_integer_suffix
 
     plugins = []
     plugins_params = {}
