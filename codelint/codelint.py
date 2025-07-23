@@ -7,6 +7,7 @@ import path_utils
 import getcontents
 import create_and_write_file
 import string_utils
+import fsquery
 import terminal_colors
 
 # plugins
@@ -159,7 +160,7 @@ def print_report(report):
             print(e[1])
 
 def puaq():
-    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--filelist [filelist] | --target target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--filelist [filelist] | --targetfolder target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     print("* lint-c-int-suf {}")
@@ -182,16 +183,22 @@ if __name__ == "__main__":
     plugins_params = {}
     autocorrect = False
     filelist = None
+    targetfolder = None
 
     plugin_next = False
     plugin_param_name = None
     plugin_param_name_next = False
     plugin_param_value_next = False
     filelist_next = False
+    target_folder_next = False
 
     idx = 0
     for p in sys.argv[1:]:
         idx += 1
+
+        if target_folder_next:
+            targetfolder = p
+            break
 
         if plugin_next:
             plugin_next = False
@@ -222,20 +229,31 @@ if __name__ == "__main__":
             plugin_param_name_next = True
         elif p == "--autocorrect":
             autocorrect = True
+        elif p == "--targetfolder":
+            target_folder_next = True
         elif p == "--filelist":
             filelist_next = True
             break
 
     if plugin_param_name_next:
-        print("Missing plugin param name!")
+        print("Missing plugin param name")
         sys.exit(1)
 
     if plugin_param_value_next:
-        print("Missing plugin param value (expected for [%s])!" % plugin_param_name)
+        print("Missing plugin param value (expected for [%s])" % plugin_param_name)
         sys.exit(1)
 
     if filelist_next:
         filelist = sys.argv[idx+1:]
+    elif target_folder_next:
+        v, r = fsquery.makecontentlist(targetfolder, True, True, True, False, True, False, True, None)
+        if not v:
+            print(r)
+            sys.exit(1)
+        filelist = r
+    else:
+        print("Neither --filelist nor --targetfolder chosen")
+        sys.exit(1)
 
     v, r = codelint(plugins, plugins_params, autocorrect, filelist)
     if not v:
