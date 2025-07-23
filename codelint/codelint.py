@@ -153,18 +153,21 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
 
 def print_report(report):
 
+    any_findings = False
     for e in report:
         if e[0]:
             print("%s%s%s" % (terminal_colors.TTY_YELLOW, e[1], terminal_colors.TTY_WHITE))
+            any_findings = True
         else:
             print(e[1])
+    return any_findings
 
 def puaq():
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--filelist [filelist] | --targetfolder target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     print("* lint-c-int-suf {}")
-    sys.exit(1)
+    sys.exit(2)
 
 if __name__ == "__main__":
 
@@ -205,7 +208,7 @@ if __name__ == "__main__":
             plugin_next = False
             if not p in plugin_table:
                 print("Plugin [%s] does not exist" % p)
-                sys.exit(1)
+                sys.exit(2)
             plugins.append(plugin_table[p])
             continue
 
@@ -238,11 +241,11 @@ if __name__ == "__main__":
 
     if plugin_param_name_next:
         print("Missing plugin param name")
-        sys.exit(1)
+        sys.exit(2)
 
     if plugin_param_value_next:
         print("Missing plugin param value (expected for [%s])" % plugin_param_name)
-        sys.exit(1)
+        sys.exit(2)
 
     if filelist_next:
         filelist = sys.argv[idx+1:]
@@ -254,12 +257,12 @@ if __name__ == "__main__":
         v, r = fsquery.makecontentlist(targetfolder, True, True, True, False, True, False, True, extensions)
         if not v:
             print(r)
-            sys.exit(1)
+            sys.exit(2)
         filelist = r
 
     else:
         print("Neither --filelist nor --targetfolder chosen")
-        sys.exit(1)
+        sys.exit(2)
 
     v, r = codelint(plugins, plugins_params, autocorrect, filelist)
     if not v:
@@ -267,7 +270,10 @@ if __name__ == "__main__":
         if len(r[1]) > 0:
             print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.TTY_WHITE))
             print_report(r[1])
-        sys.exit(1)
+        sys.exit(2)
     print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.TTY_WHITE))
-    print_report(r)
-    print("\n%sAll operations suceeded%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+    if print_report(r):
+        print("\n%sAll operations suceeded - with some findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.TTY_WHITE))
+        sys.exit(1)
+    else:
+        print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
