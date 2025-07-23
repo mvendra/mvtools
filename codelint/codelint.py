@@ -184,6 +184,7 @@ if __name__ == "__main__":
     autocorrect = False
     filelist = None
     targetfolder = None
+    extensions = None
 
     plugin_next = False
     plugin_param_name = None
@@ -246,11 +247,16 @@ if __name__ == "__main__":
     if filelist_next:
         filelist = sys.argv[idx+1:]
     elif target_folder_next:
-        v, r = fsquery.makecontentlist(targetfolder, True, True, True, False, True, False, True, None)
+
+        if len(sys.argv) > (idx+1):
+            extensions = sys.argv[idx+1:]
+
+        v, r = fsquery.makecontentlist(targetfolder, True, True, True, False, True, False, True, extensions)
         if not v:
             print(r)
             sys.exit(1)
         filelist = r
+
     else:
         print("Neither --filelist nor --targetfolder chosen")
         sys.exit(1)
