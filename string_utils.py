@@ -106,3 +106,10 @@ def is_hex_string(the_string):
         return True
     except:
         return False
+
+def is_dec_string(the_string):
+    try:
+        f = int(the_string, 10)
+        return True
+    except:
+        return False
