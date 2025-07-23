@@ -113,3 +113,17 @@ def is_dec_string(the_string):
         return True
     except:
         return False
+
+def is_asc_char_string(the_string):
+
+    if the_string is None:
+        return False
+
+    if the_string == "":
+        return False
+
+    valid_chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+    for c in the_string:
+        if not c in valid_chars:
+            return False
+    return True
