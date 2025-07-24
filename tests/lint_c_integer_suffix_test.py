@@ -111,6 +111,77 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+    def testLintCycle4(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["123U;", "010U;", "0xabU;", "0XDFU;", "0b10101U;", "0B10101U;", "0.0F;"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        expected_result1 = ("line [1] has integer suffix violations", [(1, "123;")])
+        expected_result2 = ("line [2] has integer suffix violations", [(2, "010;")])
+        expected_result3 = ("line [3] has integer suffix violations", [(3, "0xab;")])
+        expected_result4 = ("line [4] has integer suffix violations", [(4, "0XDF;")])
+        expected_result5 = ("line [5] has integer suffix violations", [(5, "0b10101;")])
+        expected_result6 = ("line [6] has integer suffix violations", [(6, "0B10101;")])
+        expected_result7 = ("line [7] has integer suffix violations", [(7, "0.0;")])
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintCycle5(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["    123LL", "    010LL", "    0xabLL", "    0XDFLL", "    0b10101LL", "    0B10101LL", "    0.0F"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        expected_result1 = ("line [1] has integer suffix violations", [(1, "    123")])
+        expected_result2 = ("line [2] has integer suffix violations", [(2, "    010")])
+        expected_result3 = ("line [3] has integer suffix violations", [(3, "    0xab")])
+        expected_result4 = ("line [4] has integer suffix violations", [(4, "    0XDF")])
+        expected_result5 = ("line [5] has integer suffix violations", [(5, "    0b10101")])
+        expected_result6 = ("line [6] has integer suffix violations", [(6, "    0B10101")])
+        expected_result7 = ("line [7] has integer suffix violations", [(7, "    0.0")])
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintCycle6(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["    123LL;321ULL    ", "    010LL 111ULL", "    0xabLL;0xccULL    0xddULL", "    0XDFLL    0XFDLL;", "    0b10101Ll", "    0B10101LL;;  8l", "    0..F", "    0.F   ", "    .F   "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        expected_result1 = ("line [1] has integer suffix violations", [(1, "    123;321    ")])
+        expected_result2 = ("line [2] has integer suffix violations", [(2, "    010 111")])
+        expected_result3 = ("line [3] has integer suffix violations", [(3, "    0xab;0xcc    0xdd")])
+        expected_result4 = ("line [4] has integer suffix violations", [(4, "    0XDF    0XFD;")])
+        expected_result5 = ("line [5] has integer suffix violations", [(5, "    0b10101")])
+        expected_result6 = ("line [6] has integer suffix violations", [(6, "    0B10101;;  8")])
+        expected_result7 = None
+        expected_result8 = None
+        expected_result9 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7, expected_result8, expected_result9]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"

@@ -68,6 +68,14 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                     corrected_line += c
                     continue
 
+            if parsing_fp:
+                parsing_fp = False
+                if not string_utils.is_dec_string(c): # a floating-point dot requires a followup decimal number - or else, its something else
+                    parsing_fp = False
+                    parsing_number = False
+                    corrected_line += c
+                    continue
+
             if parsing_hex:
                 if string_utils.is_hex_string(c):
                     corrected_line += c
