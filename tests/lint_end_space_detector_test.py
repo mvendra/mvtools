@@ -59,11 +59,11 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
     def testLintCycle2(self):
 
@@ -78,11 +78,11 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
     def testLintCycle3(self):
 
@@ -97,11 +97,11 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
     def testLintPost1(self):
 
@@ -131,11 +131,11 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
         v, r = lint_end_space_detector.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
