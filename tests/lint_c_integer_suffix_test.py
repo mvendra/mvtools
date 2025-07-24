@@ -74,32 +74,34 @@ class LintCIntegerSuffixTest(unittest.TestCase):
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
     def testLintCycle2(self):
 
         test_file = "test_file.txt"
-        test_lines = ["123", "123U", "123llu"]
+        test_lines = ["123", "010", "0xab", "0XDF", "0b10101", "0B10101", "0.0"]
         test_plugins_params = {}
         test_shared_state = {}
 
         expected_result1 = None
-        expected_result2 = ("line [2] has integer suffix violations", [(2, "123")])
+        expected_result2 = None
         expected_result3 = None
+        expected_result4 = None
+        expected_result5 = None
+        expected_result6 = None
+        expected_result7 = None
 
-        expected_results = [expected_result1, expected_result2, expected_result3]
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            print("\nmvdebug ut: [%s]" % test_index)
-
-            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
     def testLintPost1(self):
 

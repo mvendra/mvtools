@@ -67,6 +67,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     corrected_line = ""
     parsing_number = False
     hex_candidate = False
+    bin_candidate = False
     parsing_hex = False
     parsing_fp = False
     parsing_suffix = False
@@ -79,12 +80,17 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
         if parsing_number:
 
-            # mvtodo: if parsing_fp...
+            if hex_candidate or bin_candidate:
 
-            if hex_candidate:
                 hex_candidate = False
+                bin_candidate = False
+
                 if c == "x" or c == "X":
                     parsing_hex = True
+                    corrected_line += c
+                    continue
+
+                if c == "b" or c == "B":
                     corrected_line += c
                     continue
 
@@ -93,21 +99,20 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                     corrected_line += c
                     continue
 
-            if string_utils.is_dec_string(c): # not bothering distinguishing between octal and binary for the time being
+            if not parsing_fp:
+                if c == ".":
+                    parsing_fp = True
+                    corrected_line += c
+                    continue
+
+            if string_utils.is_dec_string(c):
                 corrected_line += c
                 continue
 
             # integer already ended here - its the suffix's turn
             parsing_number = False
             parsing_hex = False
-
-            # mvtodo: it could still be parsing_fp...
-
-            parsing_suffix = True
-            skip_amt = scan_largest_of(content_line_local, idx, valid_suffixes)
-            if skip_amt == 0:
-                if string_utils.is_asc_char_string(c):
-                    print("mvdebug!")
+            parsing_fp = False # mvtodo: might need to be used first
 
             # mvtodo: now its either a matter of knowing which suffixes are bad, or what followup chars are not bad suffixes but something esle (that is also valid)
 
@@ -118,6 +123,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             if c == "0":
                 parsing_number = True
                 hex_candidate = True
+                bin_candidate = True
                 continue
 
             if string_utils.is_dec_string(c):
