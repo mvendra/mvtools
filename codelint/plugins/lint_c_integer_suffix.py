@@ -89,14 +89,18 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 corrected_line += c
                 continue
 
-            # integer already ended here - this is the beginning of the suffix (if any)
+            # integer already ended here
             parsing_number = False
             parsing_hex = False
 
-            # mvtodo: careful, without checking, it should be a bug!
+            # it might be the beginning of a suffix
+            if string_utils.is_asc_char_string(c):
+                parsing_suffix = True
+                current_suffix += c
+                continue
 
-            parsing_suffix = True
-            current_suffix += c
+            # its something else
+            corrected_line += c
 
         else:
 
