@@ -85,7 +85,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
     def testLintCycle2(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "!ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "!ifndef __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -99,23 +99,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2]
 
-        for test_index in [1, 2]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 2:
+            if test_index < 1:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle3(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef ", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef "]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -129,23 +129,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2]
 
-        for test_index in [1, 2]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 2:
+            if test_index < 1:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle4(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndof __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndof __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -159,23 +159,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2]
 
-        for test_index in [1, 2]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 2:
+            if test_index < 1:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle5(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef __module_name__", "   ", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef __module_name__", "   "]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -194,23 +194,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 3:
+            if test_index < 2:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle6(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef __module_name__", "!define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef __module_name__", "!define __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -229,23 +229,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 3:
+            if test_index < 2:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle7(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef __module_name__", "#define ", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef __module_name__", "#define "]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -264,23 +264,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 3:
+            if test_index < 2:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle8(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef __module_name__", "#dofine __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef __module_name__", "#dofine __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -299,23 +299,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 3:
+            if test_index < 2:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle9(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef __module_name__", "#define __modula_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef __module_name__", "#define __modula_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -334,23 +334,23 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
-            if test_index < 3:
+            if test_index < 2:
                 self.assertTrue(v)
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
                 self.assertEqual(r, ("incorrect header guard detected (line: [3], expected: [__module_name__], have: [__modula_name__])", []))
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle10(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   "]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -373,18 +373,18 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4]
 
-        for test_index in [1, 2, 3, 4]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle11(self):
 
         test_file = "test_file.txt"
-        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__", "   "]
+        test_lines = ["   ", "#ifndef __module_name__", "#define __module_name__", "   ", "#endif // __module_name__"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -412,13 +412,13 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4, expected_shared_state5]
 
-        for test_index in [1, 2, 3, 4, 5]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle12(self):
 
@@ -474,13 +474,13 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4, expected_shared_state5, expected_shared_state6]
 
-        for test_index in [1, 2, 3, 4, 5, 6]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintPost1(self):
 
@@ -755,13 +755,13 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
-        for test_index in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
         v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
