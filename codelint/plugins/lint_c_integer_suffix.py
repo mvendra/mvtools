@@ -92,7 +92,6 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             # integer already ended here - this is the beginning of the suffix (if any)
             parsing_number = False
             parsing_hex = False
-            parsing_fp = False
 
             # mvtodo: careful, without checking, it should be a bug!
 
