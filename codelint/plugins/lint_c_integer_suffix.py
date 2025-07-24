@@ -101,6 +101,8 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
             # its something else
             corrected_line += c
+            if warn_no_suffix:
+                findings += 1
 
         else:
 

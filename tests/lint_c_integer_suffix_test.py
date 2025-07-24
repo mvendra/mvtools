@@ -207,6 +207,31 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+    def testLintCycle8(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["123 123U;", " 50LF  010", "0xab  0x11L ", "0XDF  ;   0XAAl ;  ", "  0b111ul 0b10101  ", " 0B10101 ;  0B101U", "0.0 0.0F "]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = "yes"
+
+        expected_result1 = ("line [1] has [2] integer suffix violations", [(1, "123 123;")])
+        expected_result2 = ("line [2] has [2] integer suffix violations", [(2, " 50  010")])
+        expected_result3 = ("line [3] has [2] integer suffix violations", [(3, "0xab  0x11 ")])
+        expected_result4 = ("line [4] has [2] integer suffix violations", [(4, "0XDF  ;   0XAA ;  ")])
+        expected_result5 = ("line [5] has [2] integer suffix violations", [(5, "  0b111 0b10101  ")])
+        expected_result6 = ("line [6] has [2] integer suffix violations", [(6, " 0B10101 ;  0B101")])
+        expected_result7 = ("line [7] has [2] integer suffix violations", [(7, "0.0 0.0 ")])
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"
