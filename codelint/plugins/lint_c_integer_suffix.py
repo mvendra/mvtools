@@ -30,7 +30,6 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     bin_candidate = False
     parsing_hex = False
     parsing_fp = False
-    number_is_fp = False
     parsing_suffix = False
     mod_flag = False
 
@@ -44,12 +43,14 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 current_suffix += c
                 continue
 
-            # suffix ended
-            print("mvdebug1: [%s]" % c)
-            print("mvdebug2: [%s]" % current_suffix)
+            # suffix ended (with remaining contents)
+            if current_suffix in valid_suffixes:
+                corrected_line += current_suffix
+            else:
+                mod_flag = True # invalid suffix removed (skipped) from final resulting line
+
             parsing_suffix = False
-            number_is_fp = False # mvtodo: use first
-            current_suffix = "" # mvtodo: use first
+            current_suffix = ""
 
         if parsing_number:
 
@@ -75,13 +76,11 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             if c == ".":
                 if not parsing_fp:
                     parsing_fp = True
-                    number_is_fp = True
                     corrected_line += c
                     continue
                 else:
                     # second dot in a row - its something else
                     parsing_fp = False
-                    number_is_fp = False
                     parsing_number = False
                     corrected_line += c
                     continue
@@ -111,7 +110,11 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 parsing_number = True
                 continue
 
-    # mvtodo: leftover flags? {parsing_suffix} for sure
+    if parsing_suffix: # suffix ended (end-of-line)
+        if current_suffix in valid_suffixes:
+            corrected_line += current_suffix
+        else:
+            mod_flag = True # invalid suffix removed (skipped) from final resulting line
 
     if mod_flag:
         return True, ("line [%s] has integer suffix violations" % line_index, [(line_index, corrected_line)])

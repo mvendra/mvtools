@@ -91,18 +91,17 @@ class LintCIntegerSuffixTest(unittest.TestCase):
     def testLintCycle3(self):
 
         test_file = "test_file.txt"
-        test_lines_mvtodo = ["123U;", "010", "0xab", "0XDF", "0b10101", "0B10101", "0.0"]
-        test_lines = [test_lines_mvtodo[0]]
+        test_lines = ["123U", "010U", "0xabU", "0XDFU", "0b10101U", "0B10101U", "0.0F"]
         test_plugins_params = {}
         test_shared_state = {}
 
-        expected_result1 = None
-        expected_result2 = None
-        expected_result3 = None
-        expected_result4 = None
-        expected_result5 = None
-        expected_result6 = None
-        expected_result7 = None
+        expected_result1 = ("line [1] has integer suffix violations", [(1, "123")])
+        expected_result2 = ("line [2] has integer suffix violations", [(2, "010")])
+        expected_result3 = ("line [3] has integer suffix violations", [(3, "0xab")])
+        expected_result4 = ("line [4] has integer suffix violations", [(4, "0XDF")])
+        expected_result5 = ("line [5] has integer suffix violations", [(5, "0b10101")])
+        expected_result6 = ("line [6] has integer suffix violations", [(6, "0B10101")])
+        expected_result7 = ("line [7] has integer suffix violations", [(7, "0.0")])
 
         expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
 
