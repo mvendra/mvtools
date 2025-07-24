@@ -48,8 +48,8 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             print("mvdebug1: [%s]" % c)
             print("mvdebug2: [%s]" % current_suffix)
             parsing_suffix = False
-            current_suffix = "" # mvtodo: use first
             number_is_fp = False # mvtodo: use first
+            current_suffix = "" # mvtodo: use first
 
         if parsing_number:
 
