@@ -91,6 +91,7 @@ class StringUtilsTest(unittest.TestCase):
         self.assertTrue(string_utils.is_hex_string("ab38563fd1a6b839c"))
         self.assertTrue(string_utils.is_hex_string("11111111111111"))
         self.assertFalse(string_utils.is_hex_string("ab38563fd1g6b839c"))
+        self.assertFalse(string_utils.is_hex_string("aabb.c"))
 
     def testIsDecString(self):
 
@@ -102,6 +103,7 @@ class StringUtilsTest(unittest.TestCase):
         self.assertTrue(string_utils.is_dec_string("1234567890"))
         self.assertFalse(string_utils.is_dec_string("1234567890a"))
         self.assertFalse(string_utils.is_dec_string("ab38563fd1g6b839c"))
+        self.assertFalse(string_utils.is_dec_string("123.0"))
 
     def testIsAscCharString(self):
 
