@@ -417,6 +417,47 @@ def scan_simple(thestr, theregex):
         return False
     return len(result[0]) == len(thestr)
 
+def scan_largest_of(target_str, target_str_offset, source_str_list):
+
+    largest_found = 0
+    largest_available = 0
+    map_src_offsets = {}
+
+    for e in source_str_list:
+        map_src_offsets[e] = 0
+        if len(e) > largest_available:
+            largest_available = len(e)
+
+    scan_count = 0
+    for idx in range(target_str_offset, len(target_str)):
+        scan_count += 1
+
+        c = target_str[idx]
+
+        no_matches = True
+        for e in source_str_list:
+
+            if scan_count > len(e):
+                continue
+
+            if c == e[map_src_offsets[e]]:
+                map_src_offsets[e] += 1
+                no_matches = False
+            else:
+                map_src_offsets[e] = 0
+
+            if map_src_offsets[e] == len(e):
+                if len(e) > largest_found:
+                    largest_found = len(e)
+
+        if no_matches:
+            break
+
+        if largest_found == largest_available:
+            break
+
+    return largest_found
+
 def descape(thestr, escape_char):
 
     if thestr is None:

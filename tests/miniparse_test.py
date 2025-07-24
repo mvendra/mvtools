@@ -896,6 +896,20 @@ class MiniparseTest(unittest.TestCase):
         self.assertFalse(miniparse.scan_simple("abd", "[^d]+"))
         self.assertFalse(miniparse.scan_simple("d", "[^d]+"))
 
+    def testScanLargestOf(self):
+        self.assertEqual(miniparse.scan_largest_of("", 0, ["a", "ab", "abc"]), 0)
+        self.assertEqual(miniparse.scan_largest_of("abc123def", 0, ["a", "ab", "abc"]), 3)
+        self.assertEqual(miniparse.scan_largest_of("abc123def", 1, ["a", "ab", "abc"]), 0)
+        self.assertEqual(miniparse.scan_largest_of("ab123abc", 0, ["a", "ab", "abc"]), 2)
+        self.assertEqual(miniparse.scan_largest_of("ababc", 0, ["a", "ab", "abc"]), 2)
+        self.assertEqual(miniparse.scan_largest_of("ababc", 1, ["a", "ab", "abc"]), 0)
+        self.assertEqual(miniparse.scan_largest_of("ababc", 2, ["a", "ab", "abc"]), 3)
+        self.assertEqual(miniparse.scan_largest_of("123ull", 0, ["ll", "f", "u", "ull"]), 0)
+        self.assertEqual(miniparse.scan_largest_of("123ull", 3, ["ll", "f", "u", "ull"]), 3)
+        self.assertEqual(miniparse.scan_largest_of("123ull; // some comment", 3, ["ll", "f", "u", "ull"]), 3)
+        self.assertEqual(miniparse.scan_largest_of("123u; // some comment", 3, ["ll", "f", "u", "ull"]), 1)
+        self.assertEqual(miniparse.scan_largest_of("123; 456ull // some comment", 3, ["ll", "f", "u", "ull"]), 0)
+
     def testDescape1(self):
         v, r = miniparse.descape(None, "s")
         self.assertFalse(v)
