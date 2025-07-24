@@ -24,6 +24,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     valid_suffixes = ["ll", "ull", "u", "f"]
 
     corrected_line = ""
+    current_suffix = ""
     parsing_number = False
     hex_candidate = False
     bin_candidate = False
@@ -36,6 +37,19 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     for idx in range(len(content_line_local)):
 
         c = content_line_local[idx]
+
+        if parsing_suffix:
+
+            if string_utils.is_asc_char_string(c):
+                current_suffix += c
+                continue
+
+            # suffix ended
+            print("mvdebug1: [%s]" % c)
+            print("mvdebug2: [%s]" % current_suffix)
+            parsing_suffix = False
+            current_suffix = "" # mvtodo: use first
+            number_is_fp = False # mvtodo: use first
 
         if parsing_number:
 
@@ -58,10 +72,17 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                     corrected_line += c
                     continue
 
-            if not parsing_fp:
-                if c == ".":
+            if c == ".":
+                if not parsing_fp:
                     parsing_fp = True
                     number_is_fp = True
+                    corrected_line += c
+                    continue
+                else:
+                    # second dot in a row - its something else
+                    parsing_fp = False
+                    number_is_fp = False
+                    parsing_number = False
                     corrected_line += c
                     continue
 
@@ -69,11 +90,12 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 corrected_line += c
                 continue
 
-            # integer already ended here - its the suffix's turn
-            parsing_suffix = True
+            # integer already ended here - this is the beginning of the suffix (if any)
             parsing_number = False
             parsing_hex = False
             parsing_fp = False
+            parsing_suffix = True
+            current_suffix += c
 
         else:
 
@@ -89,7 +111,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 parsing_number = True
                 continue
 
-    # mvtodo: leftover flags?
+    # mvtodo: leftover flags? {parsing_suffix} for sure
 
     if mod_flag:
         return True, ("line [%s] has integer suffix violations" % line_index, [(line_index, corrected_line)])
