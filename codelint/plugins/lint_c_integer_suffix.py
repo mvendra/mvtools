@@ -93,6 +93,9 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             parsing_number = False
             parsing_hex = False
             parsing_fp = False
+
+            # mvtodo: careful, without checking, it should be a bug!
+
             parsing_suffix = True
             current_suffix += c
 
@@ -115,9 +118,15 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             corrected_line += current_suffix
         else:
             findings += 1 # invalid suffix removed (skipped) from final resulting line
+    else:
+        if parsing_number and warn_no_suffix: # optionally report missing suffix
+            findings += 1
 
     if findings > 0:
-        return True, ("line [%s] has [%s] integer suffix violations" % (line_index, findings), [(line_index, corrected_line)])
+        final_patches = []
+        if content_line_local != corrected_line: # only report patches if actual modifications are being offered (because suffix-less cases are optional and dont produce patches)
+            final_patches = [(line_index, corrected_line)]
+        return True, ("line [%s] has [%s] integer suffix violations" % (line_index, findings), final_patches)
     return True, None
 
 def lint_post(plugins_params, filename, shared_state):
