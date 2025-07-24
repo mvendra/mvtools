@@ -205,13 +205,13 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle2(self):
 
@@ -236,13 +236,13 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle3(self):
 
@@ -273,13 +273,13 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintCycle4(self):
 
@@ -304,13 +304,13 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
     def testLintPost1(self):
 
@@ -364,13 +364,13 @@ class LintFuncIndexerTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
-        for test_index in [1, 2, 3]:
+        for test_index in range(len(test_lines)):
 
-            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index, test_lines[test_index-1])
+            v, r = lint_func_indexer.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
-            self.assertEqual(r, expected_results[test_index-1])
+            self.assertEqual(r, expected_results[test_index])
 
-            self.assertEqual(test_shared_state, expected_shared_states[test_index-1])
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
         v, r = lint_func_indexer.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
