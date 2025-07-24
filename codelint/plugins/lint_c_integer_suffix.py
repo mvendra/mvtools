@@ -62,7 +62,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     if len(content_line_local) == 0:
         return True, None
 
-    valid_suffixes = ["ll", "f", "u", "ull"]
+    valid_suffixes = ["ll", "ull", "u", "f"]
 
     corrected_line = ""
     parsing_number = False
