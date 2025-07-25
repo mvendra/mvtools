@@ -79,7 +79,7 @@ def helper_process_result(result, report, autocorrect, lines_copy):
 
     return True, None
 
-def codelint(plugins, plugins_params, autocorrect, filelist):
+def codelint(plugins, plugins_params, autocorrect, files):
 
     report = []
 
@@ -90,8 +90,8 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
     if not isinstance(plugins, list):
         return False, ("plugins is not a list", report)
 
-    if not isinstance(filelist, list):
-        return False, ("filelist is not a list", report)
+    if not isinstance(files, list):
+        return False, ("files is not a list", report)
 
     if len(plugins) < 1:
         return False, ("No plugins selected", report)
@@ -99,16 +99,16 @@ def codelint(plugins, plugins_params, autocorrect, filelist):
     if autocorrect and len(plugins) > 1:
         return False, ("Only one plugin is allowed to be executed with autocorrect turned on", report)
 
-    if len(filelist) < 1:
+    if len(files) < 1:
         return False, ("No target files selected", report)
 
-    for f in filelist:
+    for f in files:
         if not os.path.exists(f):
             return False, ("File [%s] does not exist" % f, report)
         if os.path.isdir(f):
             return False, ("File [%s] is a directory" % f, report)
 
-    for f in filelist:
+    for f in files:
 
         shared_state = {}
 
@@ -168,9 +168,9 @@ def print_report(report):
             print(e[1])
     return any_findings
 
-def applet_helper(plugins, plugins_params, autocorrect, filelist):
+def applet_helper(plugins, plugins_params, autocorrect, files):
 
-    v, r = codelint(plugins, plugins_params, autocorrect, filelist)
+    v, r = codelint(plugins, plugins_params, autocorrect, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         if len(r[1]) > 0:
@@ -185,7 +185,7 @@ def applet_helper(plugins, plugins_params, autocorrect, filelist):
         print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
 def puaq():
-    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--filelist [filelist] | --targetfolder target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --targetfolder target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     print("* lint-check-c-header-guards {}")
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     plugins = []
     plugins_params = {}
     autocorrect = False
-    filelist = None
+    files = None
     targetfolder = None
     extensions = None
 
@@ -222,7 +222,7 @@ if __name__ == "__main__":
     plugin_param_name = None
     plugin_param_name_next = False
     plugin_param_value_next = False
-    filelist_next = False
+    files_next = False
     target_folder_next = False
 
     idx = 0
@@ -264,8 +264,8 @@ if __name__ == "__main__":
             autocorrect = True
         elif p == "--targetfolder":
             target_folder_next = True
-        elif p == "--filelist":
-            filelist_next = True
+        elif p == "--files":
+            files_next = True
             break
 
     if plugin_param_name_next:
@@ -276,8 +276,8 @@ if __name__ == "__main__":
         print("Missing plugin param value (expected for [%s])" % plugin_param_name)
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
-    if filelist_next:
-        filelist = sys.argv[idx+1:]
+    if files_next:
+        files = sys.argv[idx+1:]
     elif target_folder_next:
 
         if len(sys.argv) > (idx+1):
@@ -287,10 +287,10 @@ if __name__ == "__main__":
         if not v:
             print(r)
             sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
-        filelist = r
+        files = r
 
     else:
-        print("Neither --filelist nor --targetfolder chosen")
+        print("Neither --files nor --targetfolder chosen")
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
-    applet_helper(plugins, plugins_params, autocorrect, filelist)
+    applet_helper(plugins, plugins_params, autocorrect, files)
