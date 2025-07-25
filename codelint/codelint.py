@@ -168,6 +168,22 @@ def print_report(report):
             print(e[1])
     return any_findings
 
+def applet_helper(plugins, plugins_params, autocorrect, filelist):
+
+    v, r = codelint(plugins, plugins_params, autocorrect, filelist)
+    if not v:
+        print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
+        if len(r[1]) > 0:
+            print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.TTY_WHITE))
+            print_report(r[1])
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
+    print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.TTY_WHITE))
+    if print_report(r):
+        print("\n%sAll operations suceeded - with some findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.TTY_WHITE))
+        sys.exit(CODELINT_CMDLINE_RETURN_PLUGIN_FINDING)
+    else:
+        print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+
 def puaq():
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--filelist [filelist] | --targetfolder target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
@@ -277,16 +293,4 @@ if __name__ == "__main__":
         print("Neither --filelist nor --targetfolder chosen")
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
-    v, r = codelint(plugins, plugins_params, autocorrect, filelist)
-    if not v:
-        print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
-        if len(r[1]) > 0:
-            print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.TTY_WHITE))
-            print_report(r[1])
-        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
-    print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.TTY_WHITE))
-    if print_report(r):
-        print("\n%sAll operations suceeded - with some findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.TTY_WHITE))
-        sys.exit(CODELINT_CMDLINE_RETURN_PLUGIN_FINDING)
-    else:
-        print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+    applet_helper(plugins, plugins_params, autocorrect, filelist)
