@@ -69,7 +69,7 @@ class LintSelectFilterTest(unittest.TestCase):
         test_plugins_params["lint-select-filter-include"] = ["second"]
 
         expected_result1 = None
-        expected_result2 = ("second", [])
+        expected_result2 = ("[test_file.txt]: second", [])
         expected_result3 = None
 
         expected_results = [expected_result1, expected_result2, expected_result3]
@@ -111,7 +111,7 @@ class LintSelectFilterTest(unittest.TestCase):
         test_plugins_params["lint-select-filter-include"] = ["second", "cond"]
 
         expected_result1 = None
-        expected_result2 = ("second", [])
+        expected_result2 = ("[test_file.txt]: second", [])
         expected_result3 = None
 
         expected_results = [expected_result1, expected_result2, expected_result3]
@@ -153,9 +153,9 @@ class LintSelectFilterTest(unittest.TestCase):
 
         test_plugins_params["lint-select-filter-include"] = ["line"]
 
-        expected_result1 = ("first line with contents", [])
+        expected_result1 = ("[test_file.txt]: first line with contents", [])
         expected_result2 = None
-        expected_result3 = ("third and last line that has yet different things", [])
+        expected_result3 = ("[test_file.txt]: third and last line that has yet different things", [])
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
@@ -175,7 +175,7 @@ class LintSelectFilterTest(unittest.TestCase):
         test_plugins_params["lint-select-filter-include"] = ["line"]
         test_plugins_params["lint-select-filter-exclude"] = ["third"]
 
-        expected_result1 = ("first line with contents", [])
+        expected_result1 = ("[test_file.txt]: first line with contents", [])
         expected_result2 = None
         expected_result3 = None
 
@@ -208,7 +208,7 @@ class LintSelectFilterTest(unittest.TestCase):
         test_plugins_params["lint-select-filter-include"] = ["line"]
         test_plugins_params["lint-select-filter-exclude"] = ["third"]
 
-        expected_result1 = ("first line with contents", [])
+        expected_result1 = ("[test_file.txt]: first line with contents", [])
         expected_result2 = None
         expected_result3 = None
 
