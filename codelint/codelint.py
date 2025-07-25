@@ -29,6 +29,12 @@ plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-i
 plugin_table["lint-check-c-header-guards"] = (lint_check_c_header_guards, "{}")
 plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
 
+def resolve_plugin_name(plugin_name):
+
+    if plugin_name in plugin_table:
+        return plugin_table[plugin_name][0]
+    return None
+
 def helper_validate_msgpatch_return(msg, patches):
 
     if not isinstance(msg, str):
@@ -116,6 +122,13 @@ def codelint(plugins, plugins_params, autocorrect, files):
         if os.path.isdir(f):
             return False, ("File [%s] is a directory" % f, report)
 
+    plugins_resolved = []
+    for p in plugins:
+        p_mod = resolve_plugin_name(p)
+        if p_mod is None:
+            return False, ("Plugin [%s] does not exist" % p, report)
+        plugins_resolved.append(p_mod)
+
     for f in files:
 
         shared_state = {}
@@ -129,7 +142,7 @@ def codelint(plugins, plugins_params, autocorrect, files):
 
         report.append((False, "Processing [%s] - begin" % f))
 
-        for p in plugins:
+        for p in plugins_resolved:
 
             report.append((False, "Plugin: [%s] - begin" % p.lint_name()))
             v, r = p.lint_pre(plugins_params, fn, shared_state, len(lines))
@@ -197,12 +210,6 @@ def files_from_folder(folder, extensions):
     v, r = fsquery.makecontentlist(folder, True, True, True, False, True, False, True, extensions)
     return v, r
 
-def resolve_plugin_name(plugin_name):
-
-    if plugin_name in plugin_table:
-        return plugin_table[plugin_name][0]
-    return None
-
 def puaq():
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
@@ -242,11 +249,7 @@ if __name__ == "__main__":
 
         if plugin_next:
             plugin_next = False
-            plugin_mod = resolve_plugin_name(p)
-            if plugin_mod is None:
-                print("Plugin [%s] does not exist" % p)
-                sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
-            plugins.append(plugin_mod)
+            plugins.append(p)
             continue
 
         if plugin_param_value_next:
