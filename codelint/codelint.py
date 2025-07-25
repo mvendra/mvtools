@@ -185,7 +185,7 @@ def applet_helper(plugins, plugins_params, autocorrect, files):
         print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
 def puaq():
-    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --targetfolder target_folder [extensions]] [--help]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
     print("* lint-check-c-header-guards {}")
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     plugins_params = {}
     autocorrect = False
     files = None
-    targetfolder = None
+    folder = None
     extensions = None
 
     plugin_next = False
@@ -223,14 +223,14 @@ if __name__ == "__main__":
     plugin_param_name_next = False
     plugin_param_value_next = False
     files_next = False
-    target_folder_next = False
+    folder_next = False
 
     idx = 0
     for p in sys.argv[1:]:
         idx += 1
 
-        if target_folder_next:
-            targetfolder = p
+        if folder_next:
+            folder = p
             break
 
         if plugin_next:
@@ -262,8 +262,8 @@ if __name__ == "__main__":
             plugin_param_name_next = True
         elif p == "--autocorrect":
             autocorrect = True
-        elif p == "--targetfolder":
-            target_folder_next = True
+        elif p == "--folder":
+            folder_next = True
         elif p == "--files":
             files_next = True
             break
@@ -278,19 +278,19 @@ if __name__ == "__main__":
 
     if files_next:
         files = sys.argv[idx+1:]
-    elif target_folder_next:
+    elif folder_next:
 
         if len(sys.argv) > (idx+1):
             extensions = sys.argv[idx+1:]
 
-        v, r = fsquery.makecontentlist(targetfolder, True, True, True, False, True, False, True, extensions)
+        v, r = fsquery.makecontentlist(folder, True, True, True, False, True, False, True, extensions)
         if not v:
             print(r)
             sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
         files = r
 
     else:
-        print("Neither --files nor --targetfolder chosen")
+        print("Neither --files nor --folder chosen")
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
     applet_helper(plugins, plugins_params, autocorrect, files)
