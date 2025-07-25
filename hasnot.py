@@ -7,7 +7,6 @@ import path_utils
 import terminal_colors
 import fsquery
 import codelint
-import lint_select_filter
 
 def puaq():
     print("Usage: %s [--has [patterns]] [--not [patterns]] [--files [targets] | --folder target [extensions] | (omitted -> cwd will be used with all extensions)] [--help]" % path_utils.basename_filtered(__file__))
@@ -99,7 +98,7 @@ if __name__ == "__main__":
     plugin_params["lint-select-filter-include"] = has_list
     plugin_params["lint-select-filter-exclude"] = not_list
 
-    v, r = codelint.codelint([lint_select_filter], plugin_params, False, files)
+    v, r = codelint.codelint(["lint-select-filter"], plugin_params, False, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         if len(r[1]) > 0:
