@@ -21,6 +21,14 @@ import lint_select_filter
 CODELINT_CMDLINE_RETURN_PLUGIN_FINDING = 1
 CODELINT_CMDLINE_RETURN_ERROR = 2
 
+plugin_table = {}
+plugin_table["lint-sample-echo"] = (lint_sample_echo, "{lint-sample-echo-pattern-match -> pattern}")
+plugin_table["lint-check-c-header-guards"] = (lint_check_c_header_guards, "{}")
+plugin_table["lint-func-indexer"] = (lint_func_indexer, "{lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
+plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
+plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer-suffix-warn-no-suffix}")
+plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [] / lint-select-filter-exclude -> []}")
+
 def helper_validate_msgpatch_return(msg, patches):
 
     if not isinstance(msg, str):
@@ -184,15 +192,17 @@ def applet_helper(plugins, plugins_params, autocorrect, files):
     else:
         print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
+def resolve_plugin_name(plugin_name):
+
+    if plugin_name in plugin_table:
+        return plugin_table[plugin_name][0]
+    return None
+
 def puaq():
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
-    print("* lint-sample-echo {lint-sample-echo-pattern-match -> pattern}")
-    print("* lint-check-c-header-guards {}")
-    print("* lint-func-indexer {lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
-    print("* lint-end-space-detector {}")
-    print("* lint-c-integer-suffix {lint-c-integer-suffix-warn-no-suffix}")
-    print("* lint-select-filter {lint-select-filter-include -> [] / lint-select-filter-exclude -> []}")
+    for p in plugin_table:
+        print("* %s %s" % (p, plugin_table[p][1]))
     sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
 if __name__ == "__main__":
@@ -202,14 +212,6 @@ if __name__ == "__main__":
 
     if len(sys.argv) < 3:
         puaq()
-
-    plugin_table = {}
-    plugin_table["lint-sample-echo"] = lint_sample_echo
-    plugin_table["lint-check-c-header-guards"] = lint_check_c_header_guards
-    plugin_table["lint-func-indexer"] = lint_func_indexer
-    plugin_table["lint-end-space-detector"] = lint_end_space_detector
-    plugin_table["lint-c-integer-suffix"] = lint_c_integer_suffix
-    plugin_table["lint-select-filter"] = lint_select_filter
 
     plugins = []
     plugins_params = {}
@@ -235,10 +237,11 @@ if __name__ == "__main__":
 
         if plugin_next:
             plugin_next = False
-            if not p in plugin_table:
+            plugin_mod = resolve_plugin_name(p)
+            if plugin_mod is None:
                 print("Plugin [%s] does not exist" % p)
                 sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
-            plugins.append(plugin_table[p])
+            plugins.append(plugin_mod)
             continue
 
         if plugin_param_value_next:
