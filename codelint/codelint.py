@@ -23,11 +23,11 @@ CODELINT_CMDLINE_RETURN_ERROR = 2
 
 plugin_table = {}
 plugin_table["lint-sample-echo"] = (lint_sample_echo, "{lint-sample-echo-pattern-match -> pattern}")
-plugin_table["lint-check-c-header-guards"] = (lint_check_c_header_guards, "{}")
 plugin_table["lint-func-indexer"] = (lint_func_indexer, "{lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
-plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
 plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer-suffix-warn-no-suffix}")
 plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [] / lint-select-filter-exclude -> []}")
+plugin_table["lint-check-c-header-guards"] = (lint_check_c_header_guards, "{}")
+plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
 
 def helper_validate_msgpatch_return(msg, patches):
 
