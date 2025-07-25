@@ -187,6 +187,27 @@ class LintSelectFilterTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+    def testLintCycle7(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["second", "sec"]
+
+        expected_result1 = None
+        expected_result2 = ("[test_file.txt]: second", [])
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"
