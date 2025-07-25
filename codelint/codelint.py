@@ -16,6 +16,7 @@ import lint_check_c_header_guards
 import lint_func_indexer
 import lint_end_space_detector
 import lint_c_integer_suffix
+import lint_select_filter
 
 CODELINT_CMDLINE_RETURN_PLUGIN_FINDING = 1
 CODELINT_CMDLINE_RETURN_ERROR = 2
@@ -175,6 +176,7 @@ def puaq():
     print("* lint-func-indexer {lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
     print("* lint-end-space-detector {}")
     print("* lint-c-integer-suffix {lint-c-integer-suffix-warn-no-suffix}")
+    print("* lint-select-filter {lint-select-filter-include -> [] / lint-select-filter-exclude -> []}")
     sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
 if __name__ == "__main__":
@@ -191,6 +193,7 @@ if __name__ == "__main__":
     plugin_table["lint-func-indexer"] = lint_func_indexer
     plugin_table["lint-end-space-detector"] = lint_end_space_detector
     plugin_table["lint-c-integer-suffix"] = lint_c_integer_suffix
+    plugin_table["lint-select-filter"] = lint_select_filter
 
     plugins = []
     plugins_params = {}

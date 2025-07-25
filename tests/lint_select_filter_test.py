@@ -1,0 +1,232 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+import shutil
+import unittest
+
+import mvtools_test_fixture
+import path_utils
+
+import lint_select_filter
+
+class LintSelectFilterTest(unittest.TestCase):
+
+    def setUp(self):
+        v, r = self.delegate_setUp()
+        if not v:
+            self.tearDown()
+            self.fail(r)
+
+    def delegate_setUp(self):
+
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("lint_select_filter_test")
+        if not v:
+            return v, r
+        self.test_base_dir = r[0] # base test folder. shared amongst other test cases
+        self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
+
+        return True, ""
+
+    def tearDown(self):
+        shutil.rmtree(self.test_base_dir)
+
+    def testLintName(self):
+
+        self.assertEqual(lint_select_filter.lint_name(), "lint_select_filter.py")
+
+    def testLintPre1(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        v, r = lint_select_filter.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        self.assertFalse(v)
+        self.assertEqual(r, "at least one entry is required for {lint-select-filter-include}")
+
+    def testLintPre2(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["test-sample-pattern"]
+
+        v, r = lint_select_filter.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+    def testLintCycle1(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["second"]
+
+        expected_result1 = None
+        expected_result2 = ("second", [])
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintCycle2(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["second", "blocker"]
+
+        expected_result1 = None
+        expected_result2 = None
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintCycle3(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["second", "cond"]
+
+        expected_result1 = None
+        expected_result2 = ("second", [])
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintCycle4(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["second"]
+        test_plugins_params["lint-select-filter-exclude"] = ["cond"]
+
+        expected_result1 = None
+        expected_result2 = None
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintCycle5(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first line with contents", "second with some different stuff and incompatible wording", "third and last line that has yet different things"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["line"]
+
+        expected_result1 = ("first line with contents", [])
+        expected_result2 = None
+        expected_result3 = ("third and last line that has yet different things", [])
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintCycle6(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first line with contents", "second with some different stuff and incompatible wording", "third and last line that has yet different things"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["line"]
+        test_plugins_params["lint-select-filter-exclude"] = ["third"]
+
+        expected_result1 = ("first line with contents", [])
+        expected_result2 = None
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+    def testLintPost1(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        v, r = lint_select_filter.lint_post(test_plugins_params, test_file, test_shared_state)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+    def testLintComplete(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first line with contents", "second with some different stuff and incompatible wording", "third and last line that has yet different things"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-select-filter-include"] = ["line"]
+        test_plugins_params["lint-select-filter-exclude"] = ["third"]
+
+        expected_result1 = ("first line with contents", [])
+        expected_result2 = None
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        v, r = lint_select_filter.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_select_filter.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+        v, r = lint_select_filter.lint_post(test_plugins_params, test_file, test_shared_state)
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+if __name__ == "__main__":
+    unittest.main()
