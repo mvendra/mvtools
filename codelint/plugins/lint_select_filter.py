@@ -44,7 +44,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
         if content_line.find(exc_f) > -1:
             return True, None
 
-    return True, ("[%s]: %s" % (filename, content_line), [])
+    return True, ("[%s:%s]: %s." % (filename, line_index, content_line), [])
 
 def lint_post(plugins_params, filename, shared_state):
 
