@@ -21,7 +21,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
         return True, None
 
     if content_line_local.endswith(" "):
-        return True, ("trailing spaces detected at line [%s]" % line_index, [(line_index, content_line_local.rstrip())])
+        return True, ("[%s:%s]: trailing spaces detected." % (filename, line_index), [(line_index, content_line_local.rstrip())])
 
     return True, None
 
