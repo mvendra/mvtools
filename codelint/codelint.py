@@ -192,6 +192,11 @@ def applet_helper(plugins, plugins_params, autocorrect, files):
     else:
         print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
 
+def files_from_folder(folder, extensions):
+
+    v, r = fsquery.makecontentlist(folder, True, True, True, False, True, False, True, extensions)
+    return v, r
+
 def resolve_plugin_name(plugin_name):
 
     if plugin_name in plugin_table:
@@ -286,7 +291,7 @@ if __name__ == "__main__":
         if len(sys.argv) > (idx+1):
             extensions = sys.argv[idx+1:]
 
-        v, r = fsquery.makecontentlist(folder, True, True, True, False, True, False, True, extensions)
+        v, r = files_from_folder(folder, extensions)
         if not v:
             print(r)
             sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
