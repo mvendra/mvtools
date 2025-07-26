@@ -95,13 +95,13 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violations.", [(1, "123")])
-        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violations.", [(2, "010")])
-        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violations.", [(3, "0xab")])
-        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violations.", [(4, "0XDF")])
-        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violations.", [(5, "0b10101")])
-        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violations.", [(6, "0B10101")])
-        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violations.", [(7, "0.0")])
+        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "123")])
+        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "010")])
+        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violation.", [(3, "0xab")])
+        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violation.", [(4, "0XDF")])
+        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violation.", [(5, "0b10101")])
+        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violation.", [(6, "0B10101")])
+        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violation.", [(7, "0.0")])
 
         expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
 
@@ -118,13 +118,13 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violations.", [(1, "123;")])
-        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violations.", [(2, "010;")])
-        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violations.", [(3, "0xab;")])
-        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violations.", [(4, "0XDF;")])
-        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violations.", [(5, "0b10101;")])
-        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violations.", [(6, "0B10101;")])
-        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violations.", [(7, "0.0;")])
+        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "123;")])
+        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "010;")])
+        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violation.", [(3, "0xab;")])
+        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violation.", [(4, "0XDF;")])
+        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violation.", [(5, "0b10101;")])
+        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violation.", [(6, "0B10101;")])
+        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violation.", [(7, "0.0;")])
 
         expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
 
@@ -141,13 +141,13 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violations.", [(1, "    123")])
-        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violations.", [(2, "    010")])
-        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violations.", [(3, "    0xab")])
-        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violations.", [(4, "    0XDF")])
-        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violations.", [(5, "    0b10101")])
-        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violations.", [(6, "    0B10101")])
-        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violations.", [(7, "    0.0")])
+        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "    123")])
+        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "    010")])
+        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violation.", [(3, "    0xab")])
+        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violation.", [(4, "    0XDF")])
+        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violation.", [(5, "    0b10101")])
+        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violation.", [(6, "    0B10101")])
+        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violation.", [(7, "    0.0")])
 
         expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
 
@@ -168,7 +168,7 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         expected_result2 = ("[test_file.txt:2] has [2] integer suffix violations.", [(2, "    010 111")])
         expected_result3 = ("[test_file.txt:3] has [3] integer suffix violations.", [(3, "    0xab;0xcc    0xdd")])
         expected_result4 = ("[test_file.txt:4] has [2] integer suffix violations.", [(4, "    0XDF    0XFD;")])
-        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violations.", [(5, "    0b10101")])
+        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violation.", [(5, "    0b10101")])
         expected_result6 = ("[test_file.txt:6] has [2] integer suffix violations.", [(6, "    0B10101;;  8")])
         expected_result7 = None
         expected_result8 = None
@@ -191,13 +191,13 @@ class LintCIntegerSuffixTest(unittest.TestCase):
 
         test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = "yes"
 
-        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violations.", [])
-        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violations.", [])
-        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violations.", [])
-        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violations.", [])
-        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violations.", [])
-        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violations.", [])
-        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violations.", [])
+        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [])
+        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [])
+        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violation.", [])
+        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violation.", [])
+        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violation.", [])
+        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violation.", [])
+        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violation.", [])
 
         expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
 
@@ -302,8 +302,8 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violations.", [(1, "0.0")])
-        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violations.", [(2, "0.0 123u")])
+        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "0.0")])
+        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "0.0 123u")])
 
         expected_results = [expected_result1, expected_result2]
 
@@ -331,13 +331,13 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violations.", [(1, "123")])
-        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violations.", [(2, "010")])
-        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violations.", [(3, "0xab")])
-        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violations.", [(4, "0XDF")])
-        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violations.", [(5, "0b10101")])
-        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violations.", [(6, "0B10101")])
-        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violations.", [(7, "0.0")])
+        expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "123")])
+        expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "010")])
+        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violation.", [(3, "0xab")])
+        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violation.", [(4, "0XDF")])
+        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violation.", [(5, "0b10101")])
+        expected_result6 = ("[test_file.txt:6] has [1] integer suffix violation.", [(6, "0B10101")])
+        expected_result7 = ("[test_file.txt:7] has [1] integer suffix violation.", [(7, "0.0")])
 
         expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7]
 

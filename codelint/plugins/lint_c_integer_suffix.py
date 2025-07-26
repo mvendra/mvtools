@@ -206,7 +206,10 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
         final_patches = []
         if content_line_local != corrected_line: # only report patches if actual modifications are being offered (because suffix-less cases are optional and dont produce patches)
             final_patches = [(line_index, corrected_line)]
-        return True, ("[%s:%s] has [%s] integer suffix violations." % (filename, line_index, findings), final_patches)
+        plural_maybe = ""
+        if findings > 1:
+            plural_maybe = "s"
+        return True, ("[%s:%s] has [%s] integer suffix violation%s." % (filename, line_index, findings, plural_maybe), final_patches)
     return True, None
 
 def lint_post(plugins_params, filename, shared_state):
