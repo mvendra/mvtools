@@ -25,6 +25,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     corrected_line = ""
     current_suffix = ""
+    parsing_var = False
     parsing_number = False
     hex_candidate = False
     bin_candidate = False
@@ -36,6 +37,22 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     for idx in range(len(content_line_local)):
 
         c = content_line_local[idx]
+
+        if parsing_var:
+
+            if c == "_":
+                corrected_line += c
+                continue
+
+            if string_utils.is_asc_char_string(c):
+                corrected_line += c
+                continue
+
+            if string_utils.is_dec_string(c):
+                corrected_line += c
+                continue
+
+            parsing_var = False
 
         if parsing_suffix:
 
@@ -116,6 +133,14 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
             if string_utils.is_dec_string(c):
                 parsing_number = True
+                continue
+
+            if c == "_":
+                parsing_var = True
+                continue
+
+            if string_utils.is_asc_char_string(c):
+                parsing_var = True
                 continue
 
     if parsing_suffix: # suffix ended (end-of-line)
