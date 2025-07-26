@@ -33,7 +33,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     for ps in pattern_match:
         if ps in content_line:
-            return True, ("detected pattern [%s] at line [%d]" % (ps, line_index), [])
+            return True, ("[%s:%s]: detected pattern [%s]." % (filename, line_index, ps), [])
 
     return True, None
 
