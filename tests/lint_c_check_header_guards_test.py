@@ -8,7 +8,7 @@ import unittest
 import mvtools_test_fixture
 import path_utils
 
-import lint_check_c_header_guards
+import lint_c_check_header_guards
 
 class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
@@ -20,7 +20,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("lint_check_c_header_guards_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("lint_c_check_header_guards_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -33,7 +33,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
     def testLintName(self):
 
-        self.assertEqual(lint_check_c_header_guards.lint_name(), "lint_check_c_header_guards.py")
+        self.assertEqual(lint_c_check_header_guards.lint_name(), "lint_c_check_header_guards.py")
 
     def testLintPre1(self):
 
@@ -44,7 +44,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         test_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
 
-        v, r = lint_check_c_header_guards.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        v, r = lint_c_check_header_guards.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertFalse(v)
         self.assertEqual(r, "shared state already contains {lint-check-c-header-guards-state}")
 
@@ -55,7 +55,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        v, r = lint_check_c_header_guards.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        v, r = lint_c_check_header_guards.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -76,7 +76,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-ifndef"
 
-        v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, 1, test_lines[0])
+        v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, 1, test_lines[0])
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -101,7 +101,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 1:
                 self.assertTrue(v)
@@ -131,7 +131,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 1:
                 self.assertTrue(v)
@@ -161,7 +161,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 1:
                 self.assertTrue(v)
@@ -196,7 +196,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 2:
                 self.assertTrue(v)
@@ -231,7 +231,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 2:
                 self.assertTrue(v)
@@ -266,7 +266,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 2:
                 self.assertTrue(v)
@@ -301,7 +301,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 2:
                 self.assertTrue(v)
@@ -336,7 +336,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
 
             if test_index < 2:
                 self.assertTrue(v)
@@ -375,7 +375,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
@@ -414,7 +414,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
@@ -432,7 +432,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         expected_shared_state = {}
         expected_shared_state["lint-check-c-header-guards-state"] = "expecting-something-else"
 
-        v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, 1, test_lines[0])
+        v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, 1, test_lines[0])
         self.assertFalse(v)
         self.assertEqual(r, "unknown state")
 
@@ -476,7 +476,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
@@ -493,7 +493,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif // __module_name__"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertFalse(v)
         self.assertEqual(r, "wrong state at post")
 
@@ -514,7 +514,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-state"] = "expecting-endif"
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("no endifs detected", []))
 
@@ -535,7 +535,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = ""
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("invalid final endif", []))
 
@@ -557,7 +557,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "endif // __module_name__"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("invalid final endif", []))
 
@@ -579,7 +579,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("invalid final endif", []))
 
@@ -601,7 +601,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#enduf // __module_name__"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("invalid final endif", []))
 
@@ -623,7 +623,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif // "
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("invalid final endif", []))
 
@@ -645,7 +645,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif /* __module_name__ */"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("invalid final endif", []))
 
@@ -667,7 +667,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif // __modula_name__"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, ("incorrect header guard detected (at the final endif) - expected [__module_name__], have [__modula_name__]", []))
 
@@ -689,7 +689,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
         test_shared_state["lint-check-c-header-guards-first-ifndef-is"] = "__module_name__"
         test_shared_state["lint-check-c-header-guards-last-endif"] = "#endif // __module_name__"
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -751,19 +751,19 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4, expected_shared_state5, expected_shared_state6, expected_shared_state7, expected_shared_state8, expected_shared_state9, expected_shared_state10]
 
-        v, r = lint_check_c_header_guards.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        v, r = lint_c_check_header_guards.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
         self.assertEqual(r, None)
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_check_c_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_c_check_header_guards.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, None)
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
-        v, r = lint_check_c_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_c_check_header_guards.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, None)
 

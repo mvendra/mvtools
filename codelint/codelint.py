@@ -12,7 +12,7 @@ import terminal_colors
 
 # plugins
 import lint_sample_echo
-import lint_check_c_header_guards
+import lint_c_check_header_guards
 import lint_func_indexer
 import lint_end_space_detector
 import lint_c_integer_suffix
@@ -26,7 +26,7 @@ plugin_table["lint-sample-echo"] = (lint_sample_echo, "{lint-sample-echo-pattern
 plugin_table["lint-func-indexer"] = (lint_func_indexer, "{lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
 plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer-suffix-warn-no-suffix}")
 plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [] / lint-select-filter-exclude -> []}")
-plugin_table["lint-check-c-header-guards"] = (lint_check_c_header_guards, "{}")
+plugin_table["lint-c-check-header-guards"] = (lint_c_check_header_guards, "{}")
 plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
 
 def resolve_plugin_name(plugin_name):
