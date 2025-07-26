@@ -200,7 +200,7 @@ def applet_helper(plugins, plugins_params, autocorrect, files):
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
     print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.TTY_WHITE))
     if print_report(r):
-        print("\n%sAll operations suceeded - with some findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.TTY_WHITE))
+        print("\n%sAll operations suceeded - with findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.TTY_WHITE))
         sys.exit(CODELINT_CMDLINE_RETURN_PLUGIN_FINDING)
     else:
         print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
