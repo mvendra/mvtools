@@ -9,7 +9,6 @@ from unittest import mock
 from unittest.mock import patch
 import getpass
 
-import fsquery
 import create_and_write_file
 import mvtools_test_fixture
 import backup_preparation
@@ -1112,9 +1111,7 @@ class BackupPreparationTest(unittest.TestCase):
         self.assertTrue(ex_raised)
 
         patches_path = path_utils.concat_path(self.prep_target, "collected_patches")
-        v, r = fsquery.makecontentlist(patches_path, True, True, True, True, True, True, True, None)
-        self.assertTrue(v)
-        self.assertEqual(len(r), 0)
+        self.assertFalse(os.path.exists(patches_path))
 
     def testProcRunCollectPatches_DefaultInclude_ExcludeThirdOnly(self):
 
