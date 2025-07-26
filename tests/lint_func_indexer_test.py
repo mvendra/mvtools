@@ -267,9 +267,9 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        expected_result1 = ("line [1]: expected index [1], have [3]", [(1, "left1right")])
+        expected_result1 = ("[test_file.txt:1]: expected index [1], have [3].", [(1, "left1right")])
         expected_result2 = None
-        expected_result3 = ("line [3]: expected index [3], have [1]", [(3, "left3right")])
+        expected_result3 = ("[test_file.txt:3]: expected index [3], have [1].", [(3, "left3right")])
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
@@ -354,9 +354,9 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
 
-        expected_result1 = ("line [1]: expected index [1], have [3]", [(1, "left1right")])
+        expected_result1 = ("[test_file.txt:1]: expected index [1], have [3].", [(1, "left1right")])
         expected_result2 = None
-        expected_result3 = ("line [3]: expected index [3], have [1]", [(3, "left3right")])
+        expected_result3 = ("[test_file.txt:3]: expected index [3], have [1].", [(3, "left3right")])
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
