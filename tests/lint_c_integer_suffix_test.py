@@ -278,6 +278,23 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+    def testLintCycle11(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["\'1\'"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        expected_result1 = None
+
+        expected_results = [expected_result1]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"
