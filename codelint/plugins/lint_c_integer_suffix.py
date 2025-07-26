@@ -21,7 +21,9 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     if len(content_line_local) == 0:
         return True, None
 
-    valid_suffixes = ["ll", "ull", "u", "f"]
+    valid_suffixes_floats = ["f"]
+    valid_suffixes_ints = ["ll", "ull", "u"]
+    valid_suffixes_all = valid_suffixes_ints + valid_suffixes_floats
 
     corrected_line = ""
     current_suffix = ""
@@ -86,11 +88,12 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 continue
 
             # suffix ended (with remaining contents)
-            if current_suffix in valid_suffixes:
+            if current_suffix in valid_suffixes_all:
                 corrected_line += current_suffix
             else:
                 findings += 1 # invalid suffix removed (skipped) from final resulting line
 
+            number_was_fp = False
             parsing_suffix = False
             current_suffix = ""
 
@@ -145,6 +148,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 continue
 
             # its something else
+            number_was_fp = False
             corrected_line += c
             if warn_no_suffix:
                 findings += 1
@@ -180,7 +184,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
                 continue
 
     if parsing_suffix: # suffix ended (end-of-line)
-        if current_suffix in valid_suffixes:
+        if current_suffix in valid_suffixes_all:
             corrected_line += current_suffix
         else:
             findings += 1 # invalid suffix removed (skipped) from final resulting line
