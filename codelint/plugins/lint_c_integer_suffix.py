@@ -34,6 +34,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     bin_candidate = False
     parsing_hex = False
     parsing_fp = False
+    number_was_fp = False
     parsing_suffix = False
     findings = 0
 
@@ -41,6 +42,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
         c = content_line_local[idx]
 
+        # skippages (reject false positives)
         if parsing_char > 0:
 
             parsing_char -= 1
@@ -76,6 +78,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
             parsing_var = False
 
+        # suffix
         if parsing_suffix:
 
             if string_utils.is_asc_char_string(c):
@@ -91,6 +94,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             parsing_suffix = False
             current_suffix = ""
 
+        # main part - pasing numbers
         if parsing_number:
 
             if hex_candidate or bin_candidate:
@@ -109,10 +113,12 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
             if parsing_fp:
                 parsing_fp = False
-                if not string_utils.is_dec_string(c): # a floating-point dot requires a followup decimal number - or else, its something else
+                if string_utils.is_dec_string(c): # a floating-point dot requires a followup decimal number - or else, its something else
+                    number_was_fp = True
+                else:
                     parsing_number = False
-                    corrected_line += c
-                    continue
+                corrected_line += c
+                continue
 
             if c == ".":
                 parsing_fp = True
@@ -143,7 +149,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             if warn_no_suffix:
                 findings += 1
 
-        else:
+        else: # new parsing
 
             corrected_line += c
 
