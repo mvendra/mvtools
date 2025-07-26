@@ -108,7 +108,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
+                self.assertEqual(r, ("[test_file.txt:2]: first content is not an ifndef.", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
@@ -138,7 +138,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
+                self.assertEqual(r, ("[test_file.txt:2]: first content is not an ifndef.", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
@@ -168,7 +168,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("first content is not an ifndef (line [2])", []))
+                self.assertEqual(r, ("[test_file.txt:2]: first content is not an ifndef.", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
@@ -203,7 +203,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
+                self.assertEqual(r, ("[test_file.txt:3]: follow-up define not found just after first ifndef.", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
@@ -238,7 +238,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
+                self.assertEqual(r, ("[test_file.txt:3]: follow-up define not found just after first ifndef.", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
@@ -273,7 +273,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
+                self.assertEqual(r, ("[test_file.txt:3]: follow-up define not found just after first ifndef.", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
@@ -308,7 +308,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("follow-up define not found just after first ifndef (line [3])", []))
+                self.assertEqual(r, ("[test_file.txt:3]: follow-up define not found just after first ifndef.", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
@@ -343,7 +343,7 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
                 self.assertEqual(r, None)
             else:
                 self.assertTrue(v)
-                self.assertEqual(r, ("incorrect header guard detected (line: [3], expected: [__module_name__], have: [__modula_name__])", []))
+                self.assertEqual(r, ("[test_file.txt:3]: incorrect header guard detected (expected: [__module_name__], have: [__modula_name__]).", []))
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
