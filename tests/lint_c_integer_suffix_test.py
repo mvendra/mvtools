@@ -235,7 +235,7 @@ class LintCIntegerSuffixTest(unittest.TestCase):
     def testLintCycle9(self):
 
         test_file = "test_file.txt"
-        test_lines = ["some1Uvar", "Somevar1U", "some1 var", "_2L"]
+        test_lines = ["some1Uvar", "Somevar1U", "some1 var", "_2L", "funcname2()", "_f3(){}", "funcname2U()", "_f3L(){}"]
         test_plugins_params = {}
         test_shared_state = {}
 
@@ -243,8 +243,12 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         expected_result2 = None
         expected_result3 = None
         expected_result4 = None
+        expected_result5 = None
+        expected_result6 = None
+        expected_result7 = None
+        expected_result8 = None
 
-        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4]
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6, expected_result7, expected_result8]
 
         for test_index in range(len(test_lines)):
 
