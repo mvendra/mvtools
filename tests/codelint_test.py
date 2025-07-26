@@ -290,7 +290,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -326,7 +328,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = (test_file1)
 
@@ -335,7 +339,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
-        self.assertEqual(r, ("filelist is not a list", []))
+        self.assertEqual(r, ("files is not a list", []))
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
@@ -377,7 +381,9 @@ class CodeLintTest(unittest.TestCase):
 
     def testCodelint6(self):
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = []
 
@@ -392,7 +398,9 @@ class CodeLintTest(unittest.TestCase):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -408,7 +416,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         os.mkdir(test_file1)
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -424,7 +434,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -447,7 +459,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -470,7 +484,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -494,7 +510,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -521,7 +539,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "sole-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -549,7 +569,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -574,7 +596,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -599,7 +623,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -625,7 +651,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -651,7 +679,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -677,7 +707,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -705,7 +737,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -731,7 +765,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -758,7 +794,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -783,7 +821,9 @@ class CodeLintTest(unittest.TestCase):
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-        test_plugins = [lint_test_helper]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_files = [test_file1]
 
@@ -811,7 +851,10 @@ class CodeLintTest(unittest.TestCase):
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
         create_and_write_file.create_file_contents(test_file2, "some-stuff\nsome-other-stuff")
 
-        test_plugins = [lint_test_helper, lint_test_helper_sidekick]
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+        codelint.plugin_table["lint-test-helper-sidekick"] = (lint_test_helper_sidekick, "")
+
+        test_plugins = ["lint-test-helper", "lint-test-helper-sidekick"]
         test_plugins_params = {}
         test_files = [test_file1, test_file2]
 
