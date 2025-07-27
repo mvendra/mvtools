@@ -443,6 +443,34 @@ class LintCIntegerSuffixTest(unittest.TestCase):
 
         self.assertEqual(test_shared_state, expected_shared_state)
 
+    def testLintCycle14(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["/**", "*", "20U", "**/", "20U"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_result1 = None
+        expected_result2 = None
+        expected_result3 = None
+        expected_result4 = None
+        expected_result5 = ("[test_file.txt:5] has [1] integer suffix violation.", [(5, "20")])
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"
