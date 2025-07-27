@@ -313,6 +313,27 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+    def testLintCycle13(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["// 20U", "/* 20U */", "/* 20U */ 20U", "/ / 20U", "/* * 20U */"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        expected_result1 = None
+        expected_result2 = None
+        expected_result3 = ("[test_file.txt:3] has [1] integer suffix violation.", [(3, "/* 20U */ 20")])
+        expected_result4 = ("[test_file.txt:4] has [1] integer suffix violation.", [(4, "/ / 20")])
+        expected_result5 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"

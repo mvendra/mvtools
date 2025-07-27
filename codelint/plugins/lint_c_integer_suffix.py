@@ -26,6 +26,10 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     corrected_line = ""
     current_suffix = ""
+    parsing_sa_comment = False # sa = slash-asterisk
+    closing_sa_comment_candidate = False
+    parsing_ds_comment = False # ds = double-slash
+    parsing_comment_candidate = False
     parsing_var = False
     parsing_char = 0
     parsing_str = False
@@ -44,6 +48,42 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
         c = content_line_local[idx]
 
         # skippages (reject false positives)
+        if parsing_comment_candidate:
+
+            parsing_comment_candidate = False
+
+            if c == "*":
+                parsing_sa_comment = True
+                corrected_line += c
+                continue
+
+            if c == "/":
+                parsing_ds_comment = True
+                corrected_line += c
+                continue
+
+        if closing_sa_comment_candidate:
+
+            closing_sa_comment_candidate = False
+
+            if c == "/":
+                parsing_sa_comment = False
+                corrected_line += c
+                continue
+
+        if parsing_sa_comment:
+
+            if c == "*":
+                closing_sa_comment_candidate = True
+
+            corrected_line += c
+            continue
+
+        if parsing_ds_comment:
+
+            corrected_line += c
+            continue
+
         if parsing_char > 0:
 
             parsing_char -= 1
@@ -159,6 +199,10 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
         else: # new parsing
 
             corrected_line += c
+
+            if c == "/":
+                parsing_comment_candidate = True
+                continue
 
             if c == "0":
                 parsing_number = True
