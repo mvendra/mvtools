@@ -53,11 +53,15 @@ class LintSelectFilterTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
+        expected_shared_state = {}
+
         test_plugins_params["lint-select-filter-include"] = ["test-sample-pattern"]
 
         v, r = lint_select_filter.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
         self.assertEqual(r, None)
+
+        self.assertEqual(test_shared_state, expected_shared_state)
 
     def testLintCycle1(self):
 
