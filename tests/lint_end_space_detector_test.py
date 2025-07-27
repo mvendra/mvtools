@@ -125,6 +125,8 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
+        expected_shared_state = {}
+
         expected_result1 = ("[test_file.txt:1]: trailing spaces detected.", [(1, "    first")])
         expected_result2 = ("[test_file.txt:2]: trailing spaces detected.", [(2, "        second")])
         expected_result3 = ("[test_file.txt:3]: trailing spaces detected.", [(3, "third")])
@@ -144,6 +146,8 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
         v, r = lint_end_space_detector.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, None)
+
+        self.assertEqual(test_shared_state, expected_shared_state)
 
 if __name__ == "__main__":
     unittest.main()
