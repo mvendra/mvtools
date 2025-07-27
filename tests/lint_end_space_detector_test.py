@@ -42,9 +42,13 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
+        expected_shared_state = {}
+
         v, r = lint_end_space_detector.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
         self.assertEqual(r, None)
+
+        self.assertEqual(test_shared_state, expected_shared_state)
 
     def testLintCycle1(self):
 
