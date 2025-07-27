@@ -230,6 +230,8 @@ class LintSelectFilterTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
+        expected_shared_state = {}
+
         test_plugins_params["lint-select-filter-include"] = ["line"]
         test_plugins_params["lint-select-filter-exclude"] = ["third"]
 
@@ -252,6 +254,8 @@ class LintSelectFilterTest(unittest.TestCase):
         v, r = lint_select_filter.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, None)
+
+        self.assertEqual(test_shared_state, expected_shared_state)
 
 if __name__ == "__main__":
     unittest.main()
