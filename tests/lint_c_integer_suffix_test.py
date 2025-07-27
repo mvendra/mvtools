@@ -42,9 +42,27 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        v, r = lint_c_integer_suffix.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        self.assertFalse(v)
+        self.assertEqual(r, "shared state already contains {lint-c-integer-suffix-internal-slash-asterisk-state}")
+
+    def testLintPre2(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["first", "second", "third"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
         v, r = lint_c_integer_suffix.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
         self.assertEqual(r, None)
+
+        self.assertEqual(test_shared_state, expected_shared_state)
 
     def testLintCycle1(self):
 
@@ -52,6 +70,11 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_lines = ["first", "second", "third"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = None
         expected_result2 = None
@@ -65,12 +88,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle2(self):
 
         test_file = "test_file.txt"
         test_lines = ["123", "010", "0xab", "0XDF", "0b10101", "0B10101", "0.0"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = None
         expected_result2 = None
@@ -88,12 +118,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle3(self):
 
         test_file = "test_file.txt"
         test_lines = ["123U", "010U", "0xabU", "0XDFU", "0b10101U", "0B10101U", "0.0F"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "123")])
         expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "010")])
@@ -111,12 +148,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle4(self):
 
         test_file = "test_file.txt"
         test_lines = ["123U;", "010U;", "0xabU;", "0XDFU;", "0b10101U;", "0B10101U;", "0.0F;"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "123;")])
         expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "010;")])
@@ -134,12 +178,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle5(self):
 
         test_file = "test_file.txt"
         test_lines = ["    123LL", "    010LL", "    0xabLL", "    0XDFLL", "    0b10101LL", "    0B10101LL", "    0.0F"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "    123")])
         expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "    010")])
@@ -157,12 +208,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle6(self):
 
         test_file = "test_file.txt"
         test_lines = ["    123LL;321ULL    ", "    010LL 111ULL", "    0xabLL;0xccULL    0xddULL", "    0XDFLL    0XFDLL;", "    0b10101Ll", "    0B10101LL;;  8l", "    0..F", "    0.F   ", "    .F   "]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = ("[test_file.txt:1] has [2] integer suffix violations.", [(1, "    123;321    ")])
         expected_result2 = ("[test_file.txt:2] has [2] integer suffix violations.", [(2, "    010 111")])
@@ -182,12 +240,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle7(self):
 
         test_file = "test_file.txt"
         test_lines = ["123", "010", "0xab", "0XDF", "0b10101", "0B10101", "0.0"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = "yes"
 
@@ -207,12 +272,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle8(self):
 
         test_file = "test_file.txt"
         test_lines = ["123 123U;", " 50LF  010", "0xab  0x11L ", "0XDF  ;   0XAAl ;  ", "  0b111ul 0b10101  ", " 0B10101 ;  0B101U", "0.0 0.0F "]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = "yes"
 
@@ -232,12 +304,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle9(self):
 
         test_file = "test_file.txt"
         test_lines = ["some1Uvar", "Somevar1U", "some1 var", "_2L", "funcname2()", "_f3(){}", "funcname2U()", "_f3L(){}"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = None
         expected_result2 = None
@@ -256,12 +335,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle10(self):
 
         test_file = "test_file.txt"
         test_lines = ["\"1U\"", "\"some 1U str\"", "\"somestr1U\"", "\"_ 2L\"", "\"some_\\\"str 1U\"", "\"\\K\""]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = None
         expected_result2 = None
@@ -278,12 +364,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle11(self):
 
         test_file = "test_file.txt"
         test_lines = ["\'1\'"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = None
 
@@ -295,12 +388,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle12(self):
 
         test_file = "test_file.txt"
         test_lines = ["0.0u", "0.0u 123u"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "0.0")])
         expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "0.0 123u")])
@@ -313,12 +413,19 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintCycle13(self):
 
         test_file = "test_file.txt"
         test_lines = ["// 20U", "/* 20U */", "/* 20U */ 20U", "/ / 20U", "/* * 20U */"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = None
         expected_result2 = None
@@ -333,6 +440,8 @@ class LintCIntegerSuffixTest(unittest.TestCase):
             v, r = lint_c_integer_suffix.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
+
+        self.assertEqual(test_shared_state, expected_shared_state)
 
     def testLintPost1(self):
 
@@ -351,6 +460,9 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_lines = ["123U", "010U", "0xabU", "0XDFU", "0b10101U", "0B10101U", "0.0F"]
         test_plugins_params = {}
         test_shared_state = {}
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
         expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [(1, "123")])
         expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [(2, "010")])
@@ -375,6 +487,8 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         v, r = lint_c_integer_suffix.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, None)
+
+        self.assertEqual(test_shared_state, expected_shared_state)
 
 if __name__ == "__main__":
     unittest.main()

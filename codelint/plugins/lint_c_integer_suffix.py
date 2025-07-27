@@ -11,6 +11,10 @@ def lint_name():
 
 def lint_pre(plugins_params, filename, shared_state, num_lines):
 
+    if "lint-c-integer-suffix-internal-slash-asterisk-state" in shared_state:
+        return False, "shared state already contains {lint-c-integer-suffix-internal-slash-asterisk-state}"
+    shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
+
     return True, None
 
 def lint_cycle(plugins_params, filename, shared_state, line_index, content_line):
@@ -26,7 +30,6 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     corrected_line = ""
     current_suffix = ""
-    parsing_sa_comment = False # sa = slash-asterisk
     closing_sa_comment_candidate = False
     parsing_ds_comment = False # ds = double-slash
     parsing_comment_candidate = False
@@ -53,7 +56,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             parsing_comment_candidate = False
 
             if c == "*":
-                parsing_sa_comment = True
+                shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = True
                 corrected_line += c
                 continue
 
@@ -67,11 +70,11 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             closing_sa_comment_candidate = False
 
             if c == "/":
-                parsing_sa_comment = False
+                shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
                 corrected_line += c
                 continue
 
-        if parsing_sa_comment:
+        if shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"]:
 
             if c == "*":
                 closing_sa_comment_candidate = True
