@@ -98,14 +98,35 @@ def helper_process_result(result, report, autocorrect, lines_copy):
 
 def helper_make_extra_plugin_end_str(num_findings, num_patches_applied):
 
+    findings_str = ""
+    patches_str = ""
     extra_str = ""
+    inbetween_str = ""
+    has_either = False
+    has_both = False
+
+    if num_findings > 0:
+        has_either = True
+        str_plural = ""
+        if num_findings > 1:
+            str_plural = "s"
+        findings_str = "detected %s finding%s" % (num_findings, str_plural)
 
     if num_patches_applied > 0:
+        if has_either:
+            has_both = True
+        else:
+            has_either = True
         str_plural = ""
         if num_patches_applied > 1:
             str_plural = "es"
-        extra_str = " (applied %s patch%s)" % (num_patches_applied, str_plural)
+        patches_str = "applied %s patch%s" % (num_patches_applied, str_plural)
 
+    if has_both:
+        inbetween_str = ", "
+
+    if has_either:
+        extra_str = " (%s%s%s)" % (findings_str, inbetween_str, patches_str)
     return extra_str
 
 def codelint(plugins, plugins_params, autocorrect, files):

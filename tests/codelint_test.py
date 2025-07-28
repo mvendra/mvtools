@@ -285,6 +285,18 @@ class CodeLintTest(unittest.TestCase):
         self.assertEqual(test_lines[1], "second")
         self.assertEqual(test_lines[2], "third")
 
+    def testHelperMakeExtraPluginEndStr(self):
+
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(0, 0), "")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(0, 1), " (applied 1 patch)")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(0, 2), " (applied 2 patches)")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(1, 0), " (detected 1 finding)")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(2, 0), " (detected 2 findings)")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(1, 1), " (detected 1 finding, applied 1 patch)")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(2, 1), " (detected 2 findings, applied 1 patch)")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(1, 2), " (detected 1 finding, applied 2 patches)")
+        self.assertEqual(codelint.helper_make_extra_plugin_end_str(2, 2), " (detected 2 findings, applied 2 patches)")
+
     def testCodelint1(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
