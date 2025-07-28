@@ -134,7 +134,10 @@ def codelint(plugins, plugins_params, autocorrect, files):
         shared_state = {}
 
         fn = path_utils.basename_filtered(f)
-        contents = getcontents.getcontents(f)
+        try:
+            contents = getcontents.getcontents(f)
+        except UnicodeDecodeError as ex:
+            return False, ("File [%s] is not UTF8 decodable" % f, report)
         lines = contents.split("\n")
         lines_copy = None
         if autocorrect:
