@@ -139,7 +139,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result(None, test_report, True, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, 0)
+        self.assertEqual(r, (0, 0))
 
         self.assertEqual(test_report, [])
         self.assertEqual(test_lines[0], "first")
@@ -262,7 +262,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, 3)
+        self.assertEqual(r, (0, 3))
 
         self.assertEqual(test_report, [(True, "content-msg")])
         self.assertEqual(test_lines[0], "first-mod")
@@ -278,7 +278,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result((test_msg, test_patches), test_report, False, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, 0)
+        self.assertEqual(r, (0, 0))
 
         self.assertEqual(test_report, [(True, "content-msg")])
         self.assertEqual(test_lines[0], "first")
