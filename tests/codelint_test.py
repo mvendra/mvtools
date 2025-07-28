@@ -262,7 +262,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, (0, 3))
+        self.assertEqual(r, (1, 3))
 
         self.assertEqual(test_report, [(True, "content-msg")])
         self.assertEqual(test_lines[0], "first-mod")
@@ -278,7 +278,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result((test_msg, test_patches), test_report, False, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, (0, 0))
+        self.assertEqual(r, (1, 0))
 
         self.assertEqual(test_report, [(True, "content-msg")])
         self.assertEqual(test_lines[0], "first")
@@ -594,7 +594,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (applied 1 patch)"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding, applied 1 patch)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
@@ -621,7 +621,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -649,7 +649,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -677,7 +677,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -705,7 +705,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -735,7 +735,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -763,7 +763,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -792,7 +792,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -819,7 +819,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "tagging line [1] with [modified-header]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (applied 1 patch)"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding, applied 1 patch)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
@@ -846,7 +846,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "tagging line [1] with [modified-header]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
@@ -880,16 +880,16 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - begin"))
-        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
         expected_report.append((False, "Processing [%s] - begin" % test_file2))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
         expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - begin"))
         expected_report.append((True, "(sidekick) detected pattern [some-other-stuff] at line [2]"))
-        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file2))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)

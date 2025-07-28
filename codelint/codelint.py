@@ -94,7 +94,7 @@ def helper_process_result(result, report, autocorrect, lines_copy):
             return False, r
         applied_patches = r
 
-    return True, (0, applied_patches)
+    return True, (1, applied_patches)
 
 def helper_make_extra_plugin_end_str(num_findings, num_patches_applied):
 
@@ -203,6 +203,7 @@ def codelint(plugins, plugins_params, autocorrect, files):
                 if not v:
                     return False, ("Plugin [%s] failed (cycle-result): [%s]" % (p.lint_name(), r), report)
                 r_left, r_right = r
+                num_findings += r_left
                 num_patches_applied += r_right
 
             v, r = p.lint_post(plugins_params, fn, shared_state)
@@ -213,6 +214,7 @@ def codelint(plugins, plugins_params, autocorrect, files):
             if not v:
                 return False, ("Plugin [%s] failed (post-result): [%s]" % (p.lint_name(), r), report)
             r_left, r_right = r
+            num_findings += r_left
             num_patches_applied += r_right
 
             extra_str = helper_make_extra_plugin_end_str(num_findings, num_patches_applied)
