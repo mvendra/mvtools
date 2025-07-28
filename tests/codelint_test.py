@@ -117,7 +117,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_apply_patches(test_lines, test_patches)
         self.assertTrue(v)
-        self.assertEqual(r, None)
+        self.assertEqual(r, 0)
 
     def testHelperApplyPatches4(self):
 
@@ -126,7 +126,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_apply_patches(test_lines, test_patches)
         self.assertTrue(v)
-        self.assertEqual(r, None)
+        self.assertEqual(r, 3)
 
         self.assertEqual(test_lines[0], "first-mod")
         self.assertEqual(test_lines[1], "second-mod")
@@ -139,7 +139,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result(None, test_report, True, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, None)
+        self.assertEqual(r, 0)
 
         self.assertEqual(test_report, [])
         self.assertEqual(test_lines[0], "first")
@@ -262,7 +262,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result((test_msg, test_patches), test_report, True, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, None)
+        self.assertEqual(r, 3)
 
         self.assertEqual(test_report, [(True, "content-msg")])
         self.assertEqual(test_lines[0], "first-mod")
@@ -278,7 +278,7 @@ class CodeLintTest(unittest.TestCase):
 
         v, r = codelint.helper_process_result((test_msg, test_patches), test_report, False, test_lines)
         self.assertTrue(v)
-        self.assertEqual(r, None)
+        self.assertEqual(r, 0)
 
         self.assertEqual(test_report, [(True, "content-msg")])
         self.assertEqual(test_lines[0], "first")
@@ -582,7 +582,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (applied 1 patch)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
@@ -807,7 +807,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "tagging line [1] with [modified-header]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (applied 1 patch)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)

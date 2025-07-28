@@ -72,12 +72,14 @@ def helper_apply_patches(lines, patches):
 
         lines[pidx] = pcnt
 
-    return True, None
+    return True, len(patches)
 
 def helper_process_result(result, report, autocorrect, lines_copy):
 
+    applied_patches = 0
+
     if result is None:
-        return True, None
+        return True, applied_patches
     msg, patches = result
 
     v, r = helper_validate_msgpatch_return(msg, patches)
@@ -90,8 +92,9 @@ def helper_process_result(result, report, autocorrect, lines_copy):
         v, r = helper_apply_patches(lines_copy, patches)
         if not v:
             return False, r
+        applied_patches = r
 
-    return True, None
+    return True, applied_patches
 
 def codelint(plugins, plugins_params, autocorrect, files):
 
@@ -145,6 +148,8 @@ def codelint(plugins, plugins_params, autocorrect, files):
 
         report.append((False, "Processing [%s] - begin" % f))
 
+        num_patches_applied = 0
+
         for p in plugins_resolved:
 
             report.append((False, "Plugin: [%s] - begin" % p.lint_name()))
@@ -163,6 +168,7 @@ def codelint(plugins, plugins_params, autocorrect, files):
                 v, r = helper_process_result(r, report, autocorrect, lines_copy)
                 if not v:
                     return False, ("Plugin [%s] failed (cycle-result): [%s]" % (p.lint_name(), r), report)
+                num_patches_applied += r
 
             v, r = p.lint_post(plugins_params, fn, shared_state)
             if not v:
@@ -171,10 +177,17 @@ def codelint(plugins, plugins_params, autocorrect, files):
             v, r = helper_process_result(r, report, autocorrect, lines_copy)
             if not v:
                 return False, ("Plugin [%s] failed (post-result): [%s]" % (p.lint_name(), r), report)
+            num_patches_applied += r
 
-            report.append((False, "Plugin: [%s] - end" % p.lint_name()))
+            extra_str = ""
+            if num_patches_applied > 0:
+                str_plural = ""
+                if num_patches_applied > 1:
+                    str_plural = "es"
+                extra_str = " (applied %s patch%s)" % (num_patches_applied, str_plural)
+            report.append((False, "Plugin: [%s] - end%s" % (p.lint_name(), extra_str)))
 
-        if autocorrect:
+        if autocorrect and num_patches_applied > 0:
             os.unlink(f)
             create_and_write_file.create_file_contents(f, string_utils.line_list_to_string(lines_copy))
         report.append((False, "Processing [%s] - end" % f))
