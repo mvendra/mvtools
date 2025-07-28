@@ -96,6 +96,18 @@ def helper_process_result(result, report, autocorrect, lines_copy):
 
     return True, applied_patches
 
+def helper_make_extra_plugin_end_str(num_findings, num_patches_applied):
+
+    extra_str = ""
+
+    if num_patches_applied > 0:
+        str_plural = ""
+        if num_patches_applied > 1:
+            str_plural = "es"
+        extra_str = " (applied %s patch%s)" % (num_patches_applied, str_plural)
+
+    return extra_str
+
 def codelint(plugins, plugins_params, autocorrect, files):
 
     report = []
@@ -148,6 +160,7 @@ def codelint(plugins, plugins_params, autocorrect, files):
 
         report.append((False, "Processing [%s] - begin" % f))
 
+        num_findings = 0
         num_patches_applied = 0
 
         for p in plugins_resolved:
@@ -179,12 +192,7 @@ def codelint(plugins, plugins_params, autocorrect, files):
                 return False, ("Plugin [%s] failed (post-result): [%s]" % (p.lint_name(), r), report)
             num_patches_applied += r
 
-            extra_str = ""
-            if num_patches_applied > 0:
-                str_plural = ""
-                if num_patches_applied > 1:
-                    str_plural = "es"
-                extra_str = " (applied %s patch%s)" % (num_patches_applied, str_plural)
+            extra_str = helper_make_extra_plugin_end_str(num_findings, num_patches_applied)
             report.append((False, "Plugin: [%s] - end%s" % (p.lint_name(), extra_str)))
 
         if autocorrect and num_patches_applied > 0:
