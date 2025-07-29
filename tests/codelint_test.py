@@ -300,7 +300,6 @@ class CodeLintTest(unittest.TestCase):
     def testCodelint1(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
@@ -316,12 +315,9 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("autocorrect is not a bool", []))
 
-        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
-
     def testCodelint2(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
@@ -337,12 +333,9 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("plugins is not a list", []))
 
-        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
-
     def testCodelint3(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
@@ -360,7 +353,6 @@ class CodeLintTest(unittest.TestCase):
     def testCodelint4(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
@@ -378,7 +370,6 @@ class CodeLintTest(unittest.TestCase):
     def testCodelint5(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
@@ -394,12 +385,9 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("files is not a list", []))
 
-        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
-
     def testCodelint6(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
@@ -414,8 +402,6 @@ class CodeLintTest(unittest.TestCase):
         v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("No plugins selected", []))
-
-        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint7(self):
 
@@ -492,9 +478,23 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("File [%s] is a directory" % test_file1, []))
 
-    # mvtodo
-
     def testCodelint11(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line")
+
+        test_plugins = ["nonexistent-plugin"]
+        test_plugins_params = {}
+        test_filters = {}
+        test_files = [test_file1]
+
+        expected_report = []
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("Plugin [nonexistent-plugin] does not exist", []))
+
+    def testCodelint12(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -520,7 +520,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint12(self):
+    def testCodelint13(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -546,7 +546,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint13(self):
+    def testCodelint14(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -573,7 +573,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint14(self):
+    def testCodelint15(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -603,7 +603,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint15(self):
+    def testCodelint16(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "sole-line")
@@ -634,7 +634,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "sole-line")
 
-    def testCodelint16(self):
+    def testCodelint17(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -662,34 +662,6 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nmodified-third-line\nfourth-line\nfifth-line")
 
-    def testCodelint17(self):
-
-        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
-
-        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
-
-        test_plugins = ["lint-test-helper"]
-        test_plugins_params = {}
-        test_filters = {}
-        test_files = [test_file1]
-
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-
-        expected_report = []
-        expected_report.append((False, "Processing [%s] - begin" % test_file1))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
-        expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
-        expected_report.append((False, "Processing [%s] - end" % test_file1))
-
-        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
-        self.assertTrue(v)
-        self.assertEqual(r, expected_report)
-
-        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
-
     def testCodelint18(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
@@ -704,7 +676,6 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-        test_plugins_params["lint-test-helper-pre-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -733,7 +704,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-        test_plugins_params["lint-test-helper-cycle-verify-filename"] = [path_utils.basename_filtered(test_file1)]
+        test_plugins_params["lint-test-helper-pre-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -762,7 +733,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-        test_plugins_params["lint-test-helper-post-verify-filename"] = [path_utils.basename_filtered(test_file1)]
+        test_plugins_params["lint-test-helper-cycle-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -778,6 +749,35 @@ class CodeLintTest(unittest.TestCase):
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint21(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
+        test_plugins_params = {}
+        test_filters = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-post-verify-filename"] = [path_utils.basename_filtered(test_file1)]
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "detected pattern [third-line] at line [3]"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
+        expected_report.append((False, "Processing [%s] - end" % test_file1))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
+        self.assertTrue(v)
+        self.assertEqual(r, expected_report)
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+    def testCodelint22(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -808,7 +808,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint22(self):
+    def testCodelint23(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -837,7 +837,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint23(self):
+    def testCodelint24(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -867,7 +867,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint24(self):
+    def testCodelint25(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -895,7 +895,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "modified-header\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint25(self):
+    def testCodelint26(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -923,7 +923,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint26(self):
+    def testCodelint27(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         test_file2 = path_utils.concat_path(self.test_dir, "file2.txt")
