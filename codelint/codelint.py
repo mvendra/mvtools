@@ -293,7 +293,7 @@ def files_from_folder(folder, extensions):
     v, r = fsquery.makecontentlist(folder, True, True, True, False, True, False, True, extensions)
     return v, r
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     for p in plugin_table:
@@ -301,15 +301,18 @@ def puaq():
     print("Filter list:")
     for f in filter_table:
         print("* %s %s (%s)" % (f, filter_table[f][0], filter_table[f][1]))
-    sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
 if __name__ == "__main__":
 
     if "--help" in sys.argv[1:]:
-        puaq()
+        puaq(True)
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     plugins = []
     plugins_params = {}
