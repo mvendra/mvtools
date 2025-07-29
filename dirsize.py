@@ -48,9 +48,12 @@ def get_dir_size(path, human):
     else:
         return int(out)
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s /path/to/folder" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 def escape_spaces(thepath):
     theret = ""
@@ -63,7 +66,7 @@ def escape_spaces(thepath):
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     thepath = ""
     if len(sys.argv) > 2:

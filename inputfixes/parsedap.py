@@ -20,14 +20,17 @@ def parsed_accel_profile(STR):
 
     return m.group(0) 
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s search-string" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     STR=" ".join(sys.argv[1:])
     print(parsed_accel_profile(STR))

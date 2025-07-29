@@ -26,14 +26,17 @@ def silversearch(target_path, pattern):
 
     return v, r.stdout
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s target_path pattern" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     target_path = sys.argv[1]
     pattern = sys.argv[2]
