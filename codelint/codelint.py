@@ -260,6 +260,7 @@ def files_from_folder(folder, extensions):
     return v, r
 
 def puaq():
+    # mvtodo: should also include filtering info (generalize filters into a table as well?)
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     for p in plugin_table:
@@ -276,6 +277,7 @@ if __name__ == "__main__":
 
     plugins = []
     plugins_params = {}
+    filters = {}
     autocorrect = False
     files = None
     folder = None
@@ -285,6 +287,9 @@ if __name__ == "__main__":
     plugin_param_name = None
     plugin_param_name_next = False
     plugin_param_value_next = False
+    filter_name = None
+    filter_name_next = False
+    filter_value_next = False
     files_next = False
     folder_next = False
 
@@ -316,12 +321,29 @@ if __name__ == "__main__":
             plugin_param_name = p
             continue
 
+        if filter_value_next:
+            filter_value_next = False
+            if filter_name in filters:
+                filters[filter_name].append(p)
+            else:
+                filters[filter_name] = [p]
+            filter_name = None
+            continue
+
+        if filter_name_next:
+            filter_name_next = False
+            filter_value_next = True
+            filter_name = p
+            continue
+
         if p == "--plugin":
             plugin_next = True
         elif p == "--plugin-param":
             plugin_param_name_next = True
         elif p == "--autocorrect":
             autocorrect = True
+        elif p == "--filter":
+            filter_name_next = True
         elif p == "--folder":
             folder_next = True
         elif p == "--files":
@@ -334,6 +356,14 @@ if __name__ == "__main__":
 
     if plugin_param_value_next:
         print("Missing plugin param value (expected for [%s])" % plugin_param_name)
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
+
+    if filter_name_next:
+        print("Missing filter name")
+        sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
+
+    if filter_value_next:
+        print("Missing filter value (expected for [%s])" % filter_name)
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
     if files_next:
