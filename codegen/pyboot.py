@@ -14,12 +14,15 @@ def default_py_app():
     local_contents += "import sys\n"
     local_contents += "import os\n\n"
     local_contents += "import path_utils\n\n"
-    local_contents += "def puaq():\n"
+    local_contents += "def puaq(selfhelp):\n"
     local_contents += "    print(\"Usage: %s params\" % path_utils.basename_filtered(__file__))\n"
-    local_contents += "    sys.exit(1)\n\n"
+    local_contents += "    if selfhelp:\n"
+    local_contents += "        sys.exit(0)\n"
+    local_contents += "    else:\n"
+    local_contents += "        sys.exit(1)\n\n"
     local_contents += "if __name__ == \"__main__\":\n\n"
     local_contents += "    if len(sys.argv) < 2:\n"
-    local_contents += "        puaq()\n"
+    local_contents += "        puaq(False)\n"
     local_contents += "    print(\"elo\")\n"
 
     return local_contents
