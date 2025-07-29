@@ -23,6 +23,21 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     if len(content_line_local) == 0:
         return True, None
 
+    indent_ratio = 4
+    indent_counter = 0
+
+    for c in content_line_local:
+        if c != " ":
+            break
+        indent_counter += 1
+        if indent_counter == indent_ratio:
+            indent_counter = 0
+
+    if indent_counter > 0:
+        return True, ("[%s:%s]: bad indentation detected." % (filename, line_index), [])
+
+    # mvtodo: merge them two
+
     if content_line_local.endswith(" "):
         return True, ("[%s:%s]: trailing spaces detected." % (filename, line_index), [(line_index, content_line_local.rstrip())])
 
