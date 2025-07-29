@@ -6,14 +6,17 @@ import os
 import path_utils
 import git_lib
 
-def puaq(): # print usage and quit
+def puaq(selfhelp): # print usage and quit
     print("Usage: %s repo_path." % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     repo_path = sys.argv[1]
     print("Fetching %s..." % repo_path)
