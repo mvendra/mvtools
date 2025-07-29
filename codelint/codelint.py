@@ -176,6 +176,10 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
             return False, ("Plugin [%s] does not exist" % p, report)
         plugins_resolved.append(p_mod)
 
+    filter_min_line = None
+    if "min-line" in filters:
+        filter_min_line = int(filters["min-line"][0])
+
     for f in files:
 
         shared_state = {}
@@ -205,6 +209,10 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
             idx = 0
             for l in lines:
                 idx += 1
+
+                if filter_min_line is not None:
+                    if not idx >= filter_min_line:
+                        continue
 
                 v, r = p.lint_cycle(plugins_params, fn, shared_state, idx, l)
                 if not v:
