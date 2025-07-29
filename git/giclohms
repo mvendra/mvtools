@@ -1,12 +1,16 @@
 #!/bin/bash
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename $0` url"
-  exit 1
+    echo "Usage: `basename $0` url"
+    if [ "$1" = true ]; then
+        exit 0
+    else
+        exit 1
+    fi
 }
 
 if [ -z $1 ]; then
-  puaq
+    puaq false
 fi
 
 URL=$1

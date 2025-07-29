@@ -1,25 +1,24 @@
 #!/bin/bash
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename $0` file/folder"
-  exit 1
+    echo "Usage: `basename $0` file/folder"
+    exit 1
 }
 
 TARGET=$1
 
 if [ -z $TARGET ]; then
-  puaq
+    puaq
 fi
 
 if [[ ! -f $TARGET && ! -d $TARGET ]]; then
-  echo "$TARGET does not exist (or is not currently supported). Aborting."
-  exit 2
+    echo "$TARGET does not exist (or is not currently supported). Aborting."
+    exit 2
 fi
 
 LAST=${TARGET:${#TARGET} - 1}
 if [ $LAST == "/" ]; then
-  TARGET=${TARGET::-1}
+    TARGET=${TARGET::-1}
 fi
 
 cp -R $TARGET ${TARGET}_bk
-

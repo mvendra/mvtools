@@ -1,19 +1,23 @@
 #!/bin/bash
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename $0` new_repo_name"
-  exit 1
+    echo "Usage: `basename $0` new_repo_name"
+    if [ "$1" = true ]; then
+        exit 0
+    else
+        exit 1
+    fi
 }
 
 if [ -z $1 ]; then
-  puaq
+    puaq false
 fi
 
 NEW_REPO_NAME=$1
 
 if [ -e $NEW_REPO_NAME ]; then
-  echo "Path [$NEW_REPO_NAME] already exists."
-  exit 1
+    echo "Path [$NEW_REPO_NAME] already exists."
+    exit 1
 fi
 
 mkdir $NEW_REPO_NAME
