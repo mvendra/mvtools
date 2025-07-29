@@ -148,6 +148,9 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
     if not isinstance(plugins_params, dict):
         return False, ("plugins_params is not a dict", report)
 
+    if not isinstance(filters, dict):
+        return False, ("filters is not a dict", report)
+
     if not isinstance(files, list):
         return False, ("files is not a list", report)
 
