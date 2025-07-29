@@ -303,24 +303,6 @@ class CodeLintTest(unittest.TestCase):
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
-        test_plugins = ["lint-test-helper"]
-        test_plugins_params = {}
-        test_filters = {}
-        test_files = [test_file1]
-
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-
-        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, [], test_files)
-        self.assertFalse(v)
-        self.assertEqual(r, ("autocorrect is not a bool", []))
-
-    def testCodelint2(self):
-
-        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-
-        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
-
         test_plugins = (lint_test_helper)
         test_plugins_params = {}
         test_filters = {}
@@ -333,7 +315,7 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("plugins is not a list", []))
 
-    def testCodelint3(self):
+    def testCodelint2(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
 
@@ -350,7 +332,7 @@ class CodeLintTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, ("plugins_params is not a dict", []))
 
-    def testCodelint4(self):
+    def testCodelint3(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
 
@@ -366,6 +348,24 @@ class CodeLintTest(unittest.TestCase):
         v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("filters is not a dict", []))
+
+    def testCodelint4(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
+        test_plugins_params = {}
+        test_filters = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, [], test_files)
+        self.assertFalse(v)
+        self.assertEqual(r, ("autocorrect is not a bool", []))
 
     def testCodelint5(self):
 

@@ -139,9 +139,6 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
     report = []
 
     # preconds
-    if not isinstance(autocorrect, bool):
-        return False, ("autocorrect is not a bool", report)
-
     if not isinstance(plugins, list):
         return False, ("plugins is not a list", report)
 
@@ -150,6 +147,9 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
 
     if not isinstance(filters, dict):
         return False, ("filters is not a dict", report)
+
+    if not isinstance(autocorrect, bool):
+        return False, ("autocorrect is not a bool", report)
 
     if not isinstance(files, list):
         return False, ("files is not a list", report)
