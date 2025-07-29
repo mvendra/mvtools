@@ -308,8 +308,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, 1, test_files)
         self.assertFalse(v)
@@ -326,8 +326,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
@@ -346,8 +346,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = (test_file1)
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
@@ -364,8 +364,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
@@ -382,8 +382,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
@@ -399,8 +399,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = []
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
@@ -416,8 +416,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
@@ -434,8 +434,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
         self.assertFalse(v)
@@ -452,9 +452,9 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-pre-fail"] = "failing the pre step"
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-pre-fail"] = ["failing the pre step"]
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -477,9 +477,9 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-fail"] = "failing the cycle step"
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-fail"] = ["failing the cycle step"]
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -502,9 +502,9 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
-        test_plugins_params["lint-test-helper-post-fail"] = "failing the post step"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-post-fail"] = ["failing the post step"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -528,8 +528,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -557,8 +557,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "sole-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-sole-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["sole-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-sole-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -587,8 +587,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -614,8 +614,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -641,9 +641,9 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
-        test_plugins_params["lint-test-helper-pre-verify-filename"] = path_utils.basename_filtered(test_file1)
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-pre-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -669,9 +669,9 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
-        test_plugins_params["lint-test-helper-cycle-verify-filename"] = path_utils.basename_filtered(test_file1)
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-cycle-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -697,9 +697,9 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
-        test_plugins_params["lint-test-helper-post-verify-filename"] = path_utils.basename_filtered(test_file1)
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-post-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -725,11 +725,11 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-pre-write-to-shared-state"] = "pre-to-cycle-to-post-connection-test"
-        test_plugins_params["lint-test-helper-cycle-verify-shared-state"] = "pre-to-cycle-to-post-connection-test"
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
-        test_plugins_params["lint-test-helper-post-verify-shared-state"] = "pre-to-cycle-to-post-connection-test"
+        test_plugins_params["lint-test-helper-pre-write-to-shared-state"] = ["pre-to-cycle-to-post-connection-test"]
+        test_plugins_params["lint-test-helper-cycle-verify-shared-state"] = ["pre-to-cycle-to-post-connection-test"]
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-post-verify-shared-state"] = ["pre-to-cycle-to-post-connection-test"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -755,9 +755,9 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-pre-lines-check"] = 5
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-pre-lines-check"] = ["5"]
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -783,10 +783,10 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-cycle-line-idx-check"] = 4
-        test_plugins_params["lint-test-helper-cycle-line-content-check"] = "fourth-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-line-idx-check"] = ["4"]
+        test_plugins_params["lint-test-helper-cycle-line-content-check"] = ["fourth-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -812,8 +812,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-post-tag-line-index"] = 1
-        test_plugins_params["lint-test-helper-post-tag-line-content"] = "modified-header"
+        test_plugins_params["lint-test-helper-post-tag-line-index"] = ["1"]
+        test_plugins_params["lint-test-helper-post-tag-line-content"] = ["modified-header"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -839,8 +839,8 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1]
 
-        test_plugins_params["lint-test-helper-post-tag-line-index"] = 1
-        test_plugins_params["lint-test-helper-post-tag-line-content"] = "modified-header"
+        test_plugins_params["lint-test-helper-post-tag-line-index"] = ["1"]
+        test_plugins_params["lint-test-helper-post-tag-line-content"] = ["modified-header"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -870,11 +870,11 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params = {}
         test_files = [test_file1, test_file2]
 
-        test_plugins_params["lint-test-helper-cycle-pattern-match"] = "third-line"
-        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = "modified-third-line"
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        test_plugins_params["lint-test-helper-sidekick-cycle-pattern-match"] = "some-other-stuff"
-        test_plugins_params["lint-test-helper-sidekick-cycle-pattern-replace"] = "modified-some-other-stuff"
+        test_plugins_params["lint-test-helper-sidekick-cycle-pattern-match"] = ["some-other-stuff"]
+        test_plugins_params["lint-test-helper-sidekick-cycle-pattern-replace"] = ["modified-some-other-stuff"]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))

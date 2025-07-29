@@ -18,11 +18,13 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     try:
         cycle_pattern_match = plugins_params["lint-test-helper-sidekick-cycle-pattern-match"]
+        cycle_pattern_match = cycle_pattern_match[0]
     except KeyError as ex:
         return True, None
 
     try:
         cycle_pattern_replace = plugins_params["lint-test-helper-sidekick-cycle-pattern-replace"]
+        cycle_pattern_replace = cycle_pattern_replace[0]
     except KeyError as ex:
         return True, None
 

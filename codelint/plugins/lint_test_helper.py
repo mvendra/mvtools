@@ -17,6 +17,7 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     try:
         pre_fail = plugins_params["lint-test-helper-pre-fail"]
+        pre_fail = pre_fail[0]
     except KeyError as ex:
         pass
 
@@ -25,6 +26,7 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     try:
         pre_verify_fn = plugins_params["lint-test-helper-pre-verify-filename"]
+        pre_verify_fn = pre_verify_fn[0]
     except KeyError as ex:
         pass
 
@@ -34,6 +36,7 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     try:
         pre_write_to_shared_state = plugins_params["lint-test-helper-pre-write-to-shared-state"]
+        pre_write_to_shared_state = pre_write_to_shared_state[0]
     except KeyError as ex:
         pass
 
@@ -42,6 +45,7 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     try:
         pre_lines_check = plugins_params["lint-test-helper-pre-lines-check"]
+        pre_lines_check = int(pre_lines_check[0])
     except KeyError as ex:
         pass
 
@@ -64,6 +68,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     try:
         cycle_fail = plugins_params["lint-test-helper-cycle-fail"]
+        cycle_fail = cycle_fail[0]
     except KeyError as ex:
         pass
 
@@ -72,6 +77,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     try:
         cycle_verify_fn = plugins_params["lint-test-helper-cycle-verify-filename"]
+        cycle_verify_fn = cycle_verify_fn[0]
     except KeyError as ex:
         pass
 
@@ -87,6 +93,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     if cycle_verify_shared_state_verify is not None:
         try:
             cycle_verify_shared_state = plugins_params["lint-test-helper-cycle-verify-shared-state"]
+            cycle_verify_shared_state = cycle_verify_shared_state[0]
         except KeyError as ex:
             return False, "trigger assert fail"
         if cycle_verify_shared_state_verify != cycle_verify_shared_state:
@@ -94,12 +101,14 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     try:
         cycle_line_idx_check = plugins_params["lint-test-helper-cycle-line-idx-check"]
+        cycle_line_idx_check = int(cycle_line_idx_check[0])
     except KeyError as ex:
         pass
 
     if cycle_line_idx_check is not None:
         try:
             cycle_line_content_check = plugins_params["lint-test-helper-cycle-line-content-check"]
+            cycle_line_content_check = cycle_line_content_check[0]
         except KeyError as ex:
             return False, "trigger assert fail"
         if cycle_line_idx_check == line_index:
@@ -108,11 +117,13 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     try:
         cycle_pattern_match = plugins_params["lint-test-helper-cycle-pattern-match"]
+        cycle_pattern_match = cycle_pattern_match[0]
     except KeyError as ex:
         return True, None
 
     try:
         cycle_pattern_replace = plugins_params["lint-test-helper-cycle-pattern-replace"]
+        cycle_pattern_replace = cycle_pattern_replace[0]
     except KeyError as ex:
         return True, None
 
@@ -134,6 +145,7 @@ def lint_post(plugins_params, filename, shared_state):
 
     try:
         post_fail = plugins_params["lint-test-helper-post-fail"]
+        post_fail = post_fail[0]
     except KeyError as ex:
         pass
 
@@ -142,6 +154,7 @@ def lint_post(plugins_params, filename, shared_state):
 
     try:
         post_verify_fn = plugins_params["lint-test-helper-post-verify-filename"]
+        post_verify_fn = post_verify_fn[0]
     except KeyError as ex:
         pass
 
@@ -157,6 +170,7 @@ def lint_post(plugins_params, filename, shared_state):
     if post_verify_shared_state_verify is not None:
         try:
             post_verify_shared_state = plugins_params["lint-test-helper-post-verify-shared-state"]
+            post_verify_shared_state = post_verify_shared_state[0]
         except KeyError as ex:
             return False, "trigger assert fail"
         if post_verify_shared_state_verify != post_verify_shared_state:
@@ -164,12 +178,14 @@ def lint_post(plugins_params, filename, shared_state):
 
     try:
         post_tag_line_index = plugins_params["lint-test-helper-post-tag-line-index"]
+        post_tag_line_index = int(post_tag_line_index[0])
     except KeyError as ex:
         pass
 
     if post_tag_line_index is not None:
         try:
             post_tag_line_content = plugins_params["lint-test-helper-post-tag-line-content"]
+            post_tag_line_content = post_tag_line_content[0]
         except KeyError as ex:
             return False, "trigger assert fail"
         return True, ("tagging line [%s] with [%s]" % (post_tag_line_index, post_tag_line_content), [(post_tag_line_index, post_tag_line_content)])
