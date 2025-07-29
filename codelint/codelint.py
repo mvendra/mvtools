@@ -146,7 +146,7 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
         return False, ("plugins is not a list", report)
 
     if not isinstance(plugins_params, dict):
-        return False, ("plugins_params is not a dict", report) # mvtodo: coverage
+        return False, ("plugins_params is not a dict", report)
 
     if not isinstance(files, list):
         return False, ("files is not a list", report)
