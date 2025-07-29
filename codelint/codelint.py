@@ -32,7 +32,7 @@ plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
 filter_table = {}
 filter_table["min-line"] = ("{index}", "skips lines below this index")
 filter_table["max-line"] = ("{index}", "skips lines above this index")
-filter_table["max-findings"] = ("{count}", "will stop linting if this limit is reached")
+filter_table["max-findings"] = ("{count}", "will stop linting if this limit is reached") # note that it's still possible for an execution to yield count+1 due to the lint_post() step being also able to return an additional finding
 
 def resolve_plugin_name(plugin_name):
 
@@ -178,11 +178,14 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
 
     filter_min_line = None
     filter_max_line = None
+    filter_max_findings = None
 
     if "min-line" in filters:
         filter_min_line = int(filters["min-line"][0])
     if "max-line" in filters:
         filter_max_line = int(filters["max-line"][0])
+    if "max-findings" in filters:
+        filter_max_findings = int(filters["max-findings"][0])
 
     for f in files:
 
@@ -213,6 +216,10 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
             idx = 0
             for l in lines:
                 idx += 1
+
+                if filter_max_findings is not None:
+                    if num_findings == filter_max_findings:
+                        break
 
                 if filter_max_line is not None:
                     if idx == filter_max_line:
