@@ -339,6 +339,9 @@ if __name__ == "__main__":
 
         if plugin_next:
             plugin_next = False
+            if not p in plugin_table:
+                print("Unregistered plugin: [%s]" % p)
+                sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
             plugins.append(p)
             continue
 
@@ -368,6 +371,9 @@ if __name__ == "__main__":
 
         if filter_name_next:
             filter_name_next = False
+            if not p in filter_table:
+                print("Unregistered filter: [%s]" % p)
+                sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
             filter_value_next = True
             filter_name = p
             continue
