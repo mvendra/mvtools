@@ -139,14 +139,17 @@ def _assemble_unversioned_all(unversioned_all):
 
     return True, all_assembled_pairs
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s target_repo [--head patch-file] [--staged patch-file] [--stash patch-file] [--unversioned file-base patch-file] [--unversioned-all file-base]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 4:
-        puaq()
+        puaq(False)
 
     target_repo = sys.argv[1]
     params = sys.argv[2:]

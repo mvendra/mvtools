@@ -32,14 +32,17 @@ def file2hexstr(input_file, output_file):
 
     return True, None
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s source_file target_file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     input_file = sys.argv[1]
     output_file = sys.argv[2]

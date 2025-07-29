@@ -56,13 +56,16 @@ def prefixer_insert(target_dir, prefix_to_reserve):
             else:
                 basic_refactor(d, new_full)
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s prefix-to-reserve [target-dir]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
-    print("This script is broken and disabled")
+    print("mvtodo: this script is broken and disabled")
     sys.exit(1)
 
     """
@@ -88,7 +91,7 @@ if __name__ == "__main__":
     ptr = ""
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     ptr = sys.argv[1]
 

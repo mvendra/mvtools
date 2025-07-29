@@ -32,14 +32,17 @@ def sanitize_terminal_line(input_line):
 
     return input_line_local
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s input_line" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
     input_lines = sys.argv[1:]
     for i in input_lines:
         print(sanitize_terminal_line(i))
