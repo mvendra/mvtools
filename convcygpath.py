@@ -9,10 +9,6 @@ import mvtools_envvars
 import fsquery
 import mvtools_exception
 
-def puaq():
-    print("Usage: %s path" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def get_cygwin_installation_path():
     v, r = mvtools_envvars.mvtools_envvar_read_cygwin_install_path()
     if not v:
@@ -135,11 +131,18 @@ def merge_spaces(input):
 def escape_spaces(input):
     return input.replace(" ", "\\ ")
 
+def puaq(selfhelp):
+    print("Usage: %s path" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 if __name__ == "__main__":
 
     target_path = ""
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
     target_path = merge_spaces(sys.argv[1:])
 
     new_path = convert_win_path_to_cygwin_path(target_path)
