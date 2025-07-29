@@ -278,14 +278,17 @@ def error_only_one_op_allowed():
     print("Only one operation is allowed (either --get-signal or --set-signal)")
     sys.exit(TOOLBUS_RET_USER_ERROR)
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--get-signal signame | --set-signal signame sigvalue]" % path_utils.basename_filtered(__file__))
-    sys.exit(TOOLBUS_RET_USER_ERROR)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(TOOLBUS_RET_USER_ERROR)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     params = sys.argv[1:]
 

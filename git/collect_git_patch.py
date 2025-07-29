@@ -428,14 +428,17 @@ def collect_git_patch(repo, storage_path, default_filter, include_list, exclude_
 
     return (not has_any_failed), report
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s repo [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X] [--cherry-pick-previous HASH]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     repo = sys.argv[1]
     storage_path = None
