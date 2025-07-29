@@ -88,14 +88,17 @@ def compare_t18_schemas(left_t20, right_t20):
     v, r = compare_t18_schemas_delegate(path_utils.basename_filtered(left_t20), left_dsl, path_utils.basename_filtered(right_t20), right_dsl)
     return v, r
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s left.t20 right.t20" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) != 3:
-        puaq()
+        puaq(False)
 
     left_t20 = sys.argv[1]
     right_t20 = sys.argv[2]

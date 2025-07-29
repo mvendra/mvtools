@@ -79,16 +79,19 @@ def extbypattern(file_in, file_out):
     epinst = extractpattern(file_in, beginpattern, endpattern, file_out)
     epinst.process()
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s inputfilename [baseoutputfilename]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     fileout = None
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
     elif len(sys.argv) > 2:
         fileout = sys.argv[2]
 

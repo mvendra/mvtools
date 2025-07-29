@@ -32,9 +32,12 @@ def prefix_checker(target_dir, prefix_size):
         print("%s - all good" % target_dir)
         return True
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s prefix_size [target-dir]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
@@ -63,7 +66,7 @@ if __name__ == "__main__":
     ps = ""
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     ps = sys.argv[1]
 

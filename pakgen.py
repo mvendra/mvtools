@@ -60,14 +60,17 @@ def pakgen(filename, dohash, files):
 
     return True, report
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--file pack_filename] [--hash] (files_and_folders)" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     params = sys.argv[1:]
     files = []
@@ -87,7 +90,7 @@ if __name__ == "__main__":
             files.append(i)
 
     if len(files) < 1:
-        puaq
+        puaq(False)
     elif len(files) == 1 and filename is None:
         filename = path_utils.basename_filtered(files[0])
     elif filename is None:

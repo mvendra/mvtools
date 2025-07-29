@@ -106,14 +106,17 @@ def generate_header_index(input_files, output_file):
 
     return True, None
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s output_file.h input1.t20 [input2.t20 ...]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     output_file = sys.argv[1]
     input_files = sys.argv[2:]

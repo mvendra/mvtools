@@ -110,14 +110,17 @@ exit 0 #SENTINEL\n"""
 
         os.chmod(_self.outputfn, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s input_instructionsfile.sh input_packagefile.tar.gz (or tar.bz2, .zip, etc) output_filename.sh" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) != 4:
-        puaq()
+        puaq(False)
 
     infile_inst = sys.argv[1]
     infile_pack = sys.argv[2]

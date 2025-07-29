@@ -136,14 +136,20 @@ for short, the matching algorithm is a greedy, left-to-right only matcher that y
 be cautious about when using, to avoid mismatches and misuse.
 """
 
-def puaq():
-    print("Usage: %s path [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--default-subfilter-include | --default-subfilter-exclude] [--subfilter-include repo_basename] [--subfilter-exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X] [--cherry-pick-previous HASH/REV] [--repo-type git|svn|all]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+def puaq(selfhelp):
+    print("Usage: %s [path | --help] [--custom-path-navigator the_custom_path_navigator] [--storage-path the_storage_path] [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--default-subfilter-include | --default-subfilter-exclude] [--subfilter-include repo_basename] [--subfilter-exclude repo_basename] [--head] [--head-id] [--staged] [--unversioned] [--stash X (use \"-1\" to collect the entire stash)] [--previous X] [--cherry-pick-previous HASH/REV] [--repo-type git|svn|all]" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
+
+    if sys.argv[1] == "--help":
+        puaq(True)
 
     path = sys.argv[1]
     storage_path = None
