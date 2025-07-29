@@ -34,14 +34,17 @@ def get_checked_passphrase(passphrase_hash_file):
     else:
         return False, None
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s passphrase_hash_file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     passphrase_hash_file = sys.argv[1]
 

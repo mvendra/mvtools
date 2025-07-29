@@ -412,14 +412,17 @@ def apply_filters(contents, asan_echo, asan_vga_v1):
 
     return True, local_contents
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s input_file [--asan-vga-v1 --asan-echo]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
     input_file = sys.argv[1]
 
     if not os.path.exists(input_file):

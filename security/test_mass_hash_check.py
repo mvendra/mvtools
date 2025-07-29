@@ -51,14 +51,17 @@ def print_report(v, r):
         print(x)
     return errcode
 
-def puaq(): # print usage and quit
+def puaq(selfhelp): # print usage and quit
     print("Usage: %s path_to_operate files_extension" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     path_files = sys.argv[1]
     extension = sys.argv[2]

@@ -15,14 +15,17 @@ def update_file_contents(filename, contents):
     with open(filename, "a+") as f:
         f.write(contents)
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s file contents" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     filename = sys.argv[1]
     contents = sys.argv[2]

@@ -7,10 +7,6 @@ import path_utils
 import fsquery
 import mvtools_exception
 
-def puaq():
-    print("Usage: %s folder" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def insert_pragma(path):
 
     exts = ["h"]
@@ -37,9 +33,16 @@ def insert_pragma(path):
     else:
         print("All done - no errors detected")
 
+def puaq(selfhelp):
+    print("Usage: %s folder" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
     else:
         insert_pragma(sys.argv[1])
