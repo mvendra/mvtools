@@ -373,14 +373,17 @@ def menu_list():
     for l in r:
         print(l)
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--list-executions | --pause-execution execution-name | --resume-execution execution-name]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
     params = sys.argv[1:]
 
     next_pause_exec = False

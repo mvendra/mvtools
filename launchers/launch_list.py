@@ -54,14 +54,17 @@ def print_report(v, r):
 
     print("%s: All succeeded." % path_utils.basename_filtered(__file__))
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--nocwd] [--adapter the_adapter] runnable_list" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     runnable_list = sys.argv[1:]
     verbose = False

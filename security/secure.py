@@ -39,16 +39,19 @@ def secure_file(target_file, pass_hash_file):
 
     return True
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s target_file pass_hash_file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     target_file = ""
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     target_file = sys.argv[1]
     pass_hash_file = sys.argv[2]

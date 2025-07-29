@@ -57,14 +57,17 @@ def test_mass_decrypt(path_files, path_temp_base, extension, passphrase):
 
     return (len(report) == 0), report
 
-def puaq(): # print usage and quit
+def puaq(selfhelp): # print usage and quit
     print("Usage: %s path_to_operate temporary_path files_extension passphrase_hash_file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 5:
-        puaq()
+        puaq(False)
 
     path_files = sys.argv[1]
     path_temp_base = sys.argv[2]

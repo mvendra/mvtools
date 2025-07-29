@@ -17,14 +17,17 @@ def wait_for(time_delay_string):
 
     return True, None
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s time_delay_string" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) != 2:
-        puaq()
+        puaq(False)
 
     time_delay_string = sys.argv[1]
     v, r = wait_for(time_delay_string)

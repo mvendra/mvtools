@@ -8,14 +8,17 @@ import getpass
 
 import path_utils
 
-def puaq():
-    print("Usage: %s infile [outfile] [passphrase]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def symmetric_encrypt(infile, outfile, passphrase):
 
     v, r = openssl_wrapper.encrypt_des3_pbkdf2(infile, outfile, passphrase)
     return v, r
+
+def puaq(selfhelp):
+    print("Usage: %s infile [outfile] [passphrase]" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
@@ -24,7 +27,7 @@ if __name__ == "__main__":
     passphrase = None
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     infile = sys.argv[1] # mandatory
 
