@@ -229,7 +229,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     print("Mvtools setup is complete. %s" % last_message)
     return True
 
-def puaq():
+def puaq(selfhelp):
     print("Valid options are:")
     print("[--profile-filename] -> defines the bash file to write the installation recipe to. If ommitted, its contents will be printed to stdout.")
     print("[--mvtools-path] -> defines the MVTOOLS envvar. It should point to the mvtools base folder. If ommitted, it will be prompted from stdin.")
@@ -239,14 +239,17 @@ def puaq():
     print("[--git-visitor-path] -> defines the MVTOOLS_GIT_VISITOR_BASE envvar. If ommitted, it will be prompted from stdin.")
     print("[--cygwin-install-path] -> defines the MVTOOLS_CYGWIN_INSTALL_PATH envvar (must be a windows path, not a cygwin path, can't contain environment variables or any other aliases of any kind). If ommitted, it will be prompted from stdin.")
     print("[--run-uts] -> runs mvtools's unit tests after setup.")
-    sys.exit(0)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     options = sys.argv[1:]
 
     if "--help" in options:
-        puaq()
+        puaq(True)
 
     # switches
     run_unit_tests = False

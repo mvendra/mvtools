@@ -39,14 +39,17 @@ def detect_repo_type(path):
 def is_any_repo_type(repo_type):
     return repo_type in REPO_TYPES
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s path" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     path = sys.argv[1]
     v, r = detect_repo_type(path)

@@ -30,14 +30,17 @@ def chomparray(option, inputs):
     toline=toline[:len(toline)-1] # removes trailing blank space
     print(toline)
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s {r1|l1} [string] ..." % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     option = sys.argv[1]
     inputs = sys.argv[2:]

@@ -41,10 +41,6 @@ def hexdump_to_hexstring(hexdump):
 
     return result
 
-def puaq():
-    print("Usage: %s file_with_hexdump.txt" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def make_output_filename(filename):
     if filename is None:
         filename = "blank"
@@ -54,10 +50,17 @@ def savecontents(filename, contents):
     with open(filename, "w") as f:
         f.write(contents)
 
+def puaq(selfhelp):
+    print("Usage: %s file_with_hexdump.txt" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     input_filename = path_utils.basename_filtered(sys.argv[1])
     output_filename = ""
