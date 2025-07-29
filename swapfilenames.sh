@@ -1,16 +1,20 @@
 #!/bin/bash
 
 puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename $0` file1 file2"
-  exit 1
+    echo "Usage: `basename $0` file1 file2"
+    if [ "$1" = true ]; then
+        exit 0
+    else
+        exit 1
+    fi
 }
 
 if [ -z $1 ]; then
-  puaq
+    puaq false
 fi
 
 if [ -z $2 ]; then
-  puaq
+    puaq false
 fi
 
 FILE1=$1
@@ -18,11 +22,10 @@ FILE2=$2
 
 FILEAUX=`randomfilenamegen.sh`
 if [ $? != 0 ]; then
-  echo "Random filename generation failed. Aborting..."
-  exit 1
+    echo "Random filename generation failed. Aborting..."
+    exit 1
 fi
 
 mv $FILE1 $FILEAUX
 mv $FILE2 $FILE1
 mv $FILEAUX $FILE2
-
