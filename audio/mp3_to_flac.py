@@ -6,10 +6,6 @@ import os
 import path_utils
 import ffmpeg_wrapper
 
-def puaq():
-    print("Usage: %s input_file.mp3" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def convert_mp3_to_flac(input_file, output_file, bitrate):
 
     v, r = ffmpeg_wrapper.convert(input_file, output_file, bitrate)
@@ -17,10 +13,17 @@ def convert_mp3_to_flac(input_file, output_file, bitrate):
         print("Failed to convert file from mp3 to flac: [%s]" % r)
         sys.exit(1)
 
+def puaq(selfhelp):
+    print("Usage: %s input_file.mp3" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     input_file = sys.argv[1]
     output_file = ""

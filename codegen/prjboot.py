@@ -58,9 +58,12 @@ def parse_proj_types(proj_types):
         contents = contents[:len(contents)-3]
     return contents + "]"
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--help] [--target-dir target_dir] [--project-name proj_name] [--project-type %s]" % (path_utils.basename_filtered(__file__), parse_proj_types(PROJECT_TYPES)))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
@@ -78,7 +81,7 @@ if __name__ == "__main__":
     for p in params:
 
         if p == "--help":
-            puaq()
+            puaq(True)
 
         if target_dir_next:
             target_dir_next = False

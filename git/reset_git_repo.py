@@ -584,14 +584,17 @@ def reset_git_repo(target_repo, default_filter, include_list, exclude_list, head
 
     return (not has_any_failed), report
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s target_repo [--default-filter-include | --default-filter-exclude] [--include repo_basename] [--exclude repo_basename] [--head] [--staged] [--stash X (use \"-1\" to reset the entire stash)] [--unversioned] [--previous X]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     target_repo = sys.argv[1]
     params = sys.argv[2:]

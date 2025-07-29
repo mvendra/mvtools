@@ -48,13 +48,16 @@ def proc(plfile):
             print("(index %s): %s of playlist %s does not exist!" % (i, path_utils.basename_filtered(t), path_utils.basename_filtered(plfile)))
     print("\n")
 
-def puaq(): # print usage and quit
+def puaq(selfhelp): # print usage and quit
     print("Usage: %s path_with_playlists" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     path_playlists = os.path.abspath(sys.argv[1])
     if not os.path.exists(path_playlists):

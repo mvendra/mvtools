@@ -17,13 +17,16 @@ def proc(plfile, str_find, str_rep):
 
     call(the_cmd)
 
-def puaq(): # print usage and quit
+def puaq(selfhelp): # print usage and quit
     print("Usage: %s path_with_playlists string_to_find string_to_replace_with" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        puaq()
+        puaq(False)
 
     path_playlists = os.path.abspath(sys.argv[1])
     if not os.path.exists(path_playlists):
