@@ -29,6 +29,11 @@ plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-i
 plugin_table["lint-c-check-header-guards"] = (lint_c_check_header_guards, "{}")
 plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
 
+filter_table = {}
+filter_table["min-line"] = ("{index}", "skips lines below this index")
+filter_table["max-line"] = ("{index}", "skips lines above this index")
+filter_table["max-findings"] = ("{count}", "will stop linting if this limit is reached")
+
 def resolve_plugin_name(plugin_name):
 
     if plugin_name in plugin_table:
@@ -260,11 +265,13 @@ def files_from_folder(folder, extensions):
     return v, r
 
 def puaq():
-    # mvtodo: should also include filtering info (generalize filters into a table as well?)
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     for p in plugin_table:
         print("* %s %s" % (p, plugin_table[p][1]))
+    print("Filter list:")
+    for f in filter_table:
+        print("* %s %s (%s)" % (f, filter_table[f][0], filter_table[f][1]))
     sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
 if __name__ == "__main__":
