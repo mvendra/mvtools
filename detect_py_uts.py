@@ -5,21 +5,12 @@ import os
 
 import path_utils
 import fsquery
+import getcontents
 import mvtools_exception
-
-def puaq():
-    print("Usage: %s target_path" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
-def get_content(file):
-    content = ""
-    with open(file) as f:
-        content = f.read()
-    return content
 
 def is_file_py_ut(path):
 
-    content = get_content(path)
+    content = getcontents.getcontents(path)
     if "unittest.TestCase" in content and "unittest.main()" in content:
         return True
     return False
@@ -38,10 +29,17 @@ def detect_py_uts(path):
 
     return ret
 
+def puaq(selfhelp):
+    print("Usage: %s target_path" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     path = sys.argv[1]
     r = detect_py_uts(path)

@@ -22,14 +22,17 @@ def make_tree(folder_to_tree):
 
     return True, r
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s folder" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     target_path = sys.argv[1]
 

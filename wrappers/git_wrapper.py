@@ -302,8 +302,12 @@ def reset_soft_head(repo, reset_range):
     cmd = ["git", "-C", repo, "reset", "--soft", ("HEAD~%d" % reset_range)]
     return git_wrapper_standard_command(cmd, "reset-soft-head")
 
-def puaq():
+def puaq(selfhelp):
     print("Hello from %s" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
-    puaq()
+    puaq(False)
