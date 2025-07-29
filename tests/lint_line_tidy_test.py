@@ -133,6 +133,28 @@ class LintLineTidyTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
+    def testLintCycle5(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["  first   ", "   second", "     third ", "      fourth", "       fifth    ", "         sixth"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        expected_result1 = ("[test_file.txt:1]: bad indentation detected. trailing spaces detected.", [(1, "  first")])
+        expected_result2 = ("[test_file.txt:2]: bad indentation detected.", [])
+        expected_result3 = ("[test_file.txt:3]: bad indentation detected. trailing spaces detected.", [(3, "     third")])
+        expected_result4 = ("[test_file.txt:4]: bad indentation detected.", [])
+        expected_result5 = ("[test_file.txt:5]: bad indentation detected. trailing spaces detected.", [(5, "       fifth")])
+        expected_result6 = ("[test_file.txt:6]: bad indentation detected.", [])
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_line_tidy.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"
@@ -147,19 +169,20 @@ class LintLineTidyTest(unittest.TestCase):
     def testLintComplete(self):
 
         test_file = "test_file.txt"
-        test_lines = ["    first    ", "        second        ", "third  "]
+        test_lines = ["    first    ", "        second        ", "third  ", " fourth", "fifth", "   sixth  "]
         test_plugins_params = {}
         test_shared_state = {}
 
         expected_shared_state = {}
 
-        # mvtodo complement here
-
         expected_result1 = ("[test_file.txt:1]: trailing spaces detected.", [(1, "    first")])
         expected_result2 = ("[test_file.txt:2]: trailing spaces detected.", [(2, "        second")])
         expected_result3 = ("[test_file.txt:3]: trailing spaces detected.", [(3, "third")])
+        expected_result4 = ("[test_file.txt:4]: bad indentation detected.", [])
+        expected_result5 = None
+        expected_result6 = ("[test_file.txt:6]: bad indentation detected. trailing spaces detected.", [(6, "   sixth")])
 
-        expected_results = [expected_result1, expected_result2, expected_result3]
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5, expected_result6]
 
         v, r = lint_line_tidy.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
