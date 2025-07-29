@@ -25,6 +25,13 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     if len(content_line_local) == 0:
         return True, None
 
+    min_line_index = 1
+    if "lint-c-integer-suffix-min-line" in plugins_params:
+        min_line_index = plugins_params["lint-c-integer-suffix-min-line"]
+
+    if not line_index >= min_line_index:
+        return True, None
+
     valid_suffixes_floats = ["f"]
     valid_suffixes_ints = ["ll", "ull", "u"]
 
