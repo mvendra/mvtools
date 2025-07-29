@@ -306,12 +306,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, 1, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, [], test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("autocorrect is not a bool", []))
 
@@ -324,12 +325,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = (lint_test_helper)
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("plugins is not a list", []))
 
@@ -344,12 +346,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = (test_file1)
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("files is not a list", []))
 
@@ -362,12 +365,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = []
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("No plugins selected", []))
 
@@ -380,12 +384,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = [lint_test_helper, lint_test_helper_sidekick]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("Only one plugin is allowed to be executed with autocorrect turned on", []))
 
@@ -397,12 +402,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = []
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("No target files selected", []))
 
@@ -414,12 +420,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("File [%s] does not exist" % test_file1, []))
 
@@ -432,12 +439,13 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("File [%s] is a directory" % test_file1, []))
 
@@ -450,6 +458,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-pre-fail"] = ["failing the pre step"]
@@ -460,7 +469,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (pre): [failing the pre step]", expected_report))
 
@@ -475,6 +484,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-fail"] = ["failing the cycle step"]
@@ -485,7 +495,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (cycle): [failing the cycle step]", expected_report))
 
@@ -500,6 +510,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -511,7 +522,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertFalse(v)
         self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (post): [failing the post step]", expected_report))
 
@@ -526,6 +537,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -539,7 +551,7 @@ class CodeLintTest(unittest.TestCase):
         self.helper_process_result_mock_msg = "helper_process_result to fail artificially (cycle-result)"
 
         with patch("codelint.helper_process_result", wraps=self.helper_process_result_mock) as dummy:
-            v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+            v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
             self.assertFalse(v)
             self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (cycle-result): [helper_process_result to fail artificially (cycle-result)]", expected_report))
             dummy.assert_called_once()
@@ -555,6 +567,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["sole-line"]
@@ -569,7 +582,7 @@ class CodeLintTest(unittest.TestCase):
         self.helper_process_result_mock_msg = "helper_process_result to fail artificially (post-result)"
 
         with patch("codelint.helper_process_result", wraps=self.helper_process_result_mock) as dummy:
-            v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+            v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
             self.assertFalse(v)
             self.assertEqual(r, ("Plugin [lint_test_helper.py] failed (post-result): [helper_process_result to fail artificially (post-result)]", expected_report))
             dummy.assert_called()
@@ -585,6 +598,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -597,7 +611,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding, applied 1 patch)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -612,6 +626,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -624,7 +639,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -639,6 +654,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -652,7 +668,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -667,6 +683,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -680,7 +697,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -695,6 +712,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -708,7 +726,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -723,6 +741,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-pre-write-to-shared-state"] = ["pre-to-cycle-to-post-connection-test"]
@@ -738,7 +757,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -753,6 +772,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-pre-lines-check"] = ["5"]
@@ -766,7 +786,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -781,6 +801,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-cycle-line-idx-check"] = ["4"]
@@ -795,7 +816,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -810,6 +831,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-post-tag-line-index"] = ["1"]
@@ -822,7 +844,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding, applied 1 patch)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, True, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -837,6 +859,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1]
 
         test_plugins_params["lint-test-helper-post-tag-line-index"] = ["1"]
@@ -849,7 +872,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
@@ -868,6 +891,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins = ["lint-test-helper", "lint-test-helper-sidekick"]
         test_plugins_params = {}
+        test_filters = {}
         test_files = [test_file1, test_file2]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
@@ -892,7 +916,7 @@ class CodeLintTest(unittest.TestCase):
         expected_report.append((False, "Plugin: [lint_test_helper_sidekick.py] - end (detected 1 finding)"))
         expected_report.append((False, "Processing [%s] - end" % test_file2))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
