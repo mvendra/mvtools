@@ -8,17 +8,20 @@ import terminal_colors
 import fsquery
 import codelint
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--has [patterns]] [--not [patterns]] [--files [targets] | --folder target [extensions] | (omitted -> cwd will be used with all extensions)] [--help]" % path_utils.basename_filtered(__file__))
-    sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
 
 if __name__ == "__main__":
 
     if "--help" in sys.argv[1:]:
-        puaq()
+        puaq(True)
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     has_list = []
     not_list = []

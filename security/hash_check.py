@@ -7,10 +7,6 @@ import path_utils
 import sha512_wrapper
 import terminal_colors
 
-def puaq():
-    print("Usage: %s archive-to-check [hash-file]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
-
 def sha512sum_check(archive_file, hash_file):
 
     hash_file_contents = ""
@@ -28,10 +24,17 @@ def sha512sum_check(archive_file, hash_file):
     else:
         return False
 
+def puaq(selfhelp):
+    print("Usage: %s archive-to-check [hash-file]" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     archive_file = sys.argv[1]
     hash_file = ""

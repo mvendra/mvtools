@@ -147,14 +147,17 @@ def makecontentlist(path, recursive, follow_symlinks, include_regular_files, inc
 
     return True, ret_list
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s path [-R|-r] follow_symlinks, include_regular_files include_regular_dirs include_hidden_files include_hidden_dirs extensions_include [extensions]" % path_utils.basename_filtered(__file__))
-    exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 8:
-        puaq()
+        puaq(False)
 
     # parameters
     path = sys.argv[1]
