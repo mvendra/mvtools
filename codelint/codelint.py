@@ -134,7 +134,7 @@ def helper_make_extra_plugin_end_str(num_findings, num_patches_applied):
         extra_str = " (%s%s%s)" % (findings_str, inbetween_str, patches_str)
     return extra_str
 
-def codelint(plugins, plugins_params, autocorrect, files):
+def codelint(plugins, plugins_params, filters, autocorrect, files):
 
     report = []
 
@@ -144,6 +144,9 @@ def codelint(plugins, plugins_params, autocorrect, files):
 
     if not isinstance(plugins, list):
         return False, ("plugins is not a list", report)
+
+    if not isinstance(plugins_params, dict):
+        return False, ("plugins_params is not a dict", report) # mvtodo: coverage
 
     if not isinstance(files, list):
         return False, ("files is not a list", report)
@@ -243,9 +246,9 @@ def print_report(report):
             print(e[1])
     return any_findings
 
-def applet_helper(plugins, plugins_params, autocorrect, files):
+def applet_helper(plugins, plugins_params, filters, autocorrect, files):
 
-    v, r = codelint(plugins, plugins_params, autocorrect, files)
+    v, r = codelint(plugins, plugins_params, filters, autocorrect, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         if len(r[1]) > 0:
@@ -390,4 +393,4 @@ if __name__ == "__main__":
         print("Neither --files nor --folder chosen")
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
-    applet_helper(plugins, plugins_params, autocorrect, files)
+    applet_helper(plugins, plugins_params, filters, autocorrect, files)
