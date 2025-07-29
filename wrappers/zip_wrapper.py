@@ -55,14 +55,17 @@ def extract(file_to_extract, target_path):
 
     return True, None
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s file_to_create.zip (inclusion_list)" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     file_to_create = sys.argv[1]
     incl_list = sys.argv[2:]

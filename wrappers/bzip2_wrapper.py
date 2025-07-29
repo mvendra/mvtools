@@ -38,14 +38,17 @@ def decompress(file_to_decompress):
 
     return True, r
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s file_to_compress" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
-        puaq()
+        puaq(False)
 
     file_to_compress = sys.argv[1]
     compress(file_to_compress)

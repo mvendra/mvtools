@@ -24,14 +24,17 @@ def convert(input_filename, output_filename, bitrate):
 
     return True, None
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s input_filename output_filename" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     input_filename = sys.argv[1]
     output_filename = sys.argv[2]

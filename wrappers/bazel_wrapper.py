@@ -124,9 +124,12 @@ def test(exec_path, jobs, config, target, options):
         return False, "Failed running bazel test command: [%s]" % r
     return True, (r.success, r.stdout, r.stderr)
 
-def puaq():
+def puaq(selfhelp):
     print("Hello from %s" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
-    puaq()
+    puaq(False)
