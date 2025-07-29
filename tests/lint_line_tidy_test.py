@@ -8,9 +8,9 @@ import unittest
 import mvtools_test_fixture
 import path_utils
 
-import lint_end_space_detector
+import lint_line_tidy
 
-class LintEndSpaceDetectorTest(unittest.TestCase):
+class LintLineTidyTest(unittest.TestCase):
 
     def setUp(self):
         v, r = self.delegate_setUp()
@@ -20,7 +20,7 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
     def delegate_setUp(self):
 
-        v, r = mvtools_test_fixture.makeAndGetTestFolder("lint_end_space_detector_test")
+        v, r = mvtools_test_fixture.makeAndGetTestFolder("lint_line_tidy_test")
         if not v:
             return v, r
         self.test_base_dir = r[0] # base test folder. shared amongst other test cases
@@ -33,11 +33,11 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
     def testLintName(self):
 
-        self.assertEqual(lint_end_space_detector.lint_name(), "lint_end_space_detector.py")
+        self.assertEqual(lint_line_tidy.lint_name(), "lint_line_tidy.py")
 
     def testLintDesc(self):
 
-        self.assertEqual(lint_end_space_detector.lint_desc(), "detects trailing spaces")
+        self.assertEqual(lint_line_tidy.lint_desc(), "detects trailing spaces")
 
     def testLintPre1(self):
 
@@ -48,7 +48,7 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         expected_shared_state = {}
 
-        v, r = lint_end_space_detector.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        v, r = lint_line_tidy.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -69,7 +69,7 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_line_tidy.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
@@ -88,7 +88,7 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_line_tidy.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
@@ -107,7 +107,7 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_line_tidy.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
@@ -118,7 +118,7 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        v, r = lint_end_space_detector.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_line_tidy.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, None)
 
@@ -137,17 +137,17 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
-        v, r = lint_end_space_detector.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
+        v, r = lint_line_tidy.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)
         self.assertEqual(r, None)
 
         for test_index in range(len(test_lines)):
 
-            v, r = lint_end_space_detector.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            v, r = lint_line_tidy.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
             self.assertTrue(v)
             self.assertEqual(r, expected_results[test_index])
 
-        v, r = lint_end_space_detector.lint_post(test_plugins_params, test_file, test_shared_state)
+        v, r = lint_line_tidy.lint_post(test_plugins_params, test_file, test_shared_state)
         self.assertTrue(v)
         self.assertEqual(r, None)
 

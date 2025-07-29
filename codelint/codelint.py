@@ -14,7 +14,7 @@ import terminal_colors
 import lint_sample_echo
 import lint_c_check_header_guards
 import lint_func_indexer
-import lint_end_space_detector
+import lint_line_tidy
 import lint_c_integer_suffix
 import lint_select_filter
 
@@ -27,7 +27,7 @@ plugin_table["lint-func-indexer"] = (lint_func_indexer, "{lint-func-indexer-para
 plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer-suffix-warn-no-suffix}")
 plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [] / lint-select-filter-exclude -> []}")
 plugin_table["lint-c-check-header-guards"] = (lint_c_check_header_guards, "{}")
-plugin_table["lint-end-space-detector"] = (lint_end_space_detector, "{}")
+plugin_table["lint-line-tidy"] = (lint_line_tidy, "{}")
 
 filter_table = {}
 filter_table["min-line"] = ("{index}", "skips lines below this index")
