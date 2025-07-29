@@ -230,14 +230,17 @@ def run_backup(config_file, pass_hash_file):
     bkeng_ret = bkeng.run()
     return bkeng_ret
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s config_file pass_hash_file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     config_file = sys.argv[1]
     pass_hash_file = sys.argv[2]

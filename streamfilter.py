@@ -31,16 +31,19 @@ def cmdline_prettyprint(_valid_modes):
     local_output_str += "]"
     return local_output_str
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s pattern replacement %s" % (path_utils.basename_filtered(__file__), cmdline_prettyprint(valid_modes)))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     params = sys.argv[1:]
 
     if len(params) < 3:
-        puaq()
+        puaq(False)
 
     input_text = sys.stdin.read()
     pattern = params[0]

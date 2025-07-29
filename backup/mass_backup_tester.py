@@ -64,14 +64,17 @@ def backups_mass_check_delegate(extension, passphrase, path_folders, temp_path):
 
     return return_value
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s config-file passhash-file" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     cfg_file_path = sys.argv[1]
     ph_file = sys.argv[2]

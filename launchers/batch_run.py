@@ -251,20 +251,22 @@ def batch_run(run_target, output_path, op_modes, stop_mode, save_mode, target_pa
         return False, r
     return True, None
 
-def puaq():
+def puaq(selfhelp):
     print("Usage: %s [--help] run_target output_path [--run-until-fail [eq(def)|gt]X | --run-until-count [eq(def)|gt]X | --run-until-time [eq(def)|gt]X | --run-until-signal X]+ [--stop-any (default) | --stop-all] [--save-fail (default) | --save-all] [-- target-param-list]" % path_utils.basename_filtered(__file__))
-    sys.exit(1)
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 if __name__ == "__main__":
 
+    if "--help" in sys.argv[1:]:
+        puaq(True)
+
     if len(sys.argv) < 3:
-        puaq()
+        puaq(False)
 
     params = sys.argv[3:]
-
-    if "--help" in params:
-        puaq()
-        sys.exit(0)
 
     # decl
     target = None
