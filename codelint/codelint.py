@@ -177,8 +177,12 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
         plugins_resolved.append(p_mod)
 
     filter_min_line = None
+    filter_max_line = None
+
     if "min-line" in filters:
         filter_min_line = int(filters["min-line"][0])
+    if "max-line" in filters:
+        filter_max_line = int(filters["max-line"][0])
 
     for f in files:
 
@@ -209,6 +213,10 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
             idx = 0
             for l in lines:
                 idx += 1
+
+                if filter_max_line is not None:
+                    if idx == filter_max_line:
+                        break
 
                 if filter_min_line is not None:
                     if not idx >= filter_min_line:
