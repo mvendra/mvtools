@@ -27,7 +27,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
     min_line_index = 1
     if "lint-c-integer-suffix-min-line" in plugins_params:
-        min_line_index = plugins_params["lint-c-integer-suffix-min-line"]
+        min_line_index = int(plugins_params["lint-c-integer-suffix-min-line"][0])
 
     if not line_index >= min_line_index:
         return True, None

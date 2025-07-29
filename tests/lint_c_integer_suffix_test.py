@@ -254,7 +254,7 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         expected_shared_state = {}
         expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
-        test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = "yes"
+        test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = ["yes"]
 
         expected_result1 = ("[test_file.txt:1] has [1] integer suffix violation.", [])
         expected_result2 = ("[test_file.txt:2] has [1] integer suffix violation.", [])
@@ -286,7 +286,7 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         expected_shared_state = {}
         expected_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
-        test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = "yes"
+        test_plugins_params["lint-c-integer-suffix-warn-no-suffix"] = ["yes"]
 
         expected_result1 = ("[test_file.txt:1] has [2] integer suffix violations.", [(1, "123 123;")])
         expected_result2 = ("[test_file.txt:2] has [2] integer suffix violations.", [(2, " 50  010")])
@@ -478,7 +478,7 @@ class LintCIntegerSuffixTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-c-integer-suffix-min-line"] = 2
+        test_plugins_params["lint-c-integer-suffix-min-line"] = ["2"]
 
         test_shared_state["lint-c-integer-suffix-internal-slash-asterisk-state"] = False
 
