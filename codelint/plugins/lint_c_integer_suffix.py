@@ -9,6 +9,9 @@ import string_utils
 def lint_name():
     return path_utils.basename_filtered(__file__)
 
+def lint_desc():
+    return "checks C source files for proper integer constant suffix usage"
+
 def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     if "lint-c-integer-suffix-internal-slash-asterisk-state" in shared_state:

@@ -9,6 +9,9 @@ import string_utils
 def lint_name():
     return path_utils.basename_filtered(__file__)
 
+def lint_desc():
+    return "checks whether a proper indexing takes place inbetween two text patterns"
+
 def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     if "lint-func-indexer-counter" in shared_state:

@@ -35,6 +35,10 @@ class LintEndSpaceDetectorTest(unittest.TestCase):
 
         self.assertEqual(lint_end_space_detector.lint_name(), "lint_end_space_detector.py")
 
+    def testLintDesc(self):
+
+        self.assertEqual(lint_end_space_detector.lint_desc(), "detects trailing spaces")
+
     def testLintPre1(self):
 
         test_file = "test_file.txt"

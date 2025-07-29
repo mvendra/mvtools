@@ -8,6 +8,9 @@ import path_utils
 def lint_name():
     return path_utils.basename_filtered(__file__)
 
+def lint_desc():
+    return "checks C header files for proper preprocessor include guards"
+
 def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     if "lint-check-c-header-guards-state" in shared_state:

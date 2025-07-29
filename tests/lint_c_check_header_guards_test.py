@@ -35,6 +35,10 @@ class LintCheckCHeaderGuardsTest(unittest.TestCase):
 
         self.assertEqual(lint_c_check_header_guards.lint_name(), "lint_c_check_header_guards.py")
 
+    def testLintDesc(self):
+
+        self.assertEqual(lint_c_check_header_guards.lint_desc(), "checks C header files for proper preprocessor include guards")
+
     def testLintPre1(self):
 
         test_file = "test_file.txt"

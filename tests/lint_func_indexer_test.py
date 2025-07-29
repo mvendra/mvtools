@@ -35,6 +35,10 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         self.assertEqual(lint_func_indexer.lint_name(), "lint_func_indexer.py")
 
+    def testLintDesc(self):
+
+        self.assertEqual(lint_func_indexer.lint_desc(), "checks whether a proper indexing takes place inbetween two text patterns")
+
     def testLintPre1(self):
 
         test_file = "test_file.txt"

@@ -35,6 +35,10 @@ class LintCIntegerSuffixTest(unittest.TestCase):
 
         self.assertEqual(lint_c_integer_suffix.lint_name(), "lint_c_integer_suffix.py")
 
+    def testLintDesc(self):
+
+        self.assertEqual(lint_c_integer_suffix.lint_desc(), "checks C source files for proper integer constant suffix usage")
+
     def testLintPre1(self):
 
         test_file = "test_file.txt"

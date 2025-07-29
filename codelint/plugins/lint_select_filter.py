@@ -9,6 +9,9 @@ import string_utils
 def lint_name():
     return path_utils.basename_filtered(__file__)
 
+def lint_desc():
+    return "selects patterns (include) and then filters patterns (exclude) - serially and respectively"
+
 def lint_pre(plugins_params, filename, shared_state, num_lines):
 
     patterns_inc = []

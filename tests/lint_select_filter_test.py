@@ -35,6 +35,10 @@ class LintSelectFilterTest(unittest.TestCase):
 
         self.assertEqual(lint_select_filter.lint_name(), "lint_select_filter.py")
 
+    def testLintDesc(self):
+
+        self.assertEqual(lint_select_filter.lint_desc(), "selects patterns (include) and then filters patterns (exclude) - serially and respectively")
+
     def testLintPre1(self):
 
         test_file = "test_file.txt"

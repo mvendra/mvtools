@@ -297,7 +297,7 @@ def puaq():
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
     print("Plugin list:")
     for p in plugin_table:
-        print("* %s %s" % (p, plugin_table[p][1]))
+        print("* %s %s (%s)" % (p, plugin_table[p][1], plugin_table[p][0].lint_desc()))
     print("Filter list:")
     for f in filter_table:
         print("* %s %s (%s)" % (f, filter_table[f][0], filter_table[f][1]))

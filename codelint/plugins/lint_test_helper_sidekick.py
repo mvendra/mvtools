@@ -8,6 +8,9 @@ import path_utils
 def lint_name():
     return path_utils.basename_filtered(__file__)
 
+def lint_desc():
+    return "internal ut helper's sidekick"
+
 def lint_pre(plugins_params, filename, shared_state, num_lines):
     return True, None
 
