@@ -227,23 +227,21 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
             if not v:
                 return False, ("Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r), report)
 
-            idx = 0
-            for l in lines:
-                idx += 1
+            for idx in range(len(lines)):
 
                 if filter_max_findings is not None:
                     if num_findings == filter_max_findings:
                         break
 
                 if filter_max_line is not None:
-                    if idx == filter_max_line:
+                    if (idx+1) == filter_max_line:
                         break
 
                 if filter_min_line is not None:
-                    if not idx >= filter_min_line:
+                    if not (idx+1) >= filter_min_line:
                         continue
 
-                v, r = p.lint_cycle(plugins_params, fn, shared_state, idx, l)
+                v, r = p.lint_cycle(plugins_params, fn, shared_state, (idx+1), lines[idx])
                 if not v:
                     return False, ("Plugin [%s] failed (cycle): [%s]" % (p.lint_name(), r), report)
 
