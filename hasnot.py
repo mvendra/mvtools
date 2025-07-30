@@ -8,7 +8,7 @@ import terminal_colors
 import codelint
 
 def puaq(selfhelp):
-    print("Usage: %s [--min-line index] [--max-line index] [--has [patterns]] [--not [patterns]] [--files [targets] | --folder target [extensions] | (omitted -> cwd will be used with all extensions)] [--help]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--min-line index] [--max-line index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -24,14 +24,17 @@ if __name__ == "__main__":
     min_line_next = False
     max_line_next = False
 
+    ext = None
+    files = []
+    ext_next = False
+    target_next = False
+
     has_list = []
     not_list = []
     has_next = False
     not_next = False
-
-    files = []
-    files_next = False
-    folder_next = False
+    has_these_next = False
+    not_these_next = False
 
     idx = 0
     for p in sys.argv[1:]:
@@ -45,6 +48,16 @@ if __name__ == "__main__":
 
     plugin_params["lint-select-filter-include"] = has_list
     plugin_params["lint-select-filter-exclude"] = not_list
+
+    print("mvdebug begin")
+    print(min_line)
+    print(max_line)
+    print(ext)
+    print(files)
+    print(has_list)
+    print(not_list)
+    print(filters)
+    print("mvdebug end")
 
     v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, files)
     if not v:
