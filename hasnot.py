@@ -149,17 +149,6 @@ if __name__ == "__main__":
     plugin_params["lint-select-filter-include"] = has_list
     plugin_params["lint-select-filter-exclude"] = not_list
 
-    print("mvdebug begin")
-    print(min_line)
-    print(max_line)
-    print(ext)
-    print(files)
-    print(has_list)
-    print(not_list)
-    print(filters)
-    print("mvdebug end")
-    sys.exit(21) # mvtodo
-
     v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
