@@ -7,7 +7,7 @@ import path_utils
 import terminal_colors
 import codelint
 
-def puaq(selfhelp):
+def puaq(selfhelp): # print usage and quit
     print("Usage: %s [--help] [--min-line index] [--max-line index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
@@ -36,12 +36,29 @@ if __name__ == "__main__":
     has_these_next = False
     not_these_next = False
 
-    idx = 0
     for p in sys.argv[1:]:
-        idx += 1
 
+        # states
+        if min_line_next:
+            min_line_next = False
+            min_line = p
+            continue
+        elif max_line_next:
+            max_line_next = False
+            max_line = p
+            continue
+
+        # switches
         if p == "--help":
             puaq(True)
+        elif p == "--min-line":
+            min_line_next = True
+            continue
+        elif p == "--max-line":
+            max_line_next = True
+            continue
+
+    # mvtodo: check for any leftover states
 
     plugin_params = {}
     filters = {}
