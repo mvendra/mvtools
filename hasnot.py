@@ -7,6 +7,18 @@ import path_utils
 import terminal_colors
 import codelint
 
+def process_target(storage, source, exts):
+
+    if os.path.isdir(source):
+        v, r = codelint.files_from_folder(source, exts)
+        if not v:
+            return False, r
+        storage += r
+    else:
+        storage.append(source)
+
+    return True, None
+
 def puaq(selfhelp): # print usage and quit
     print("Usage: %s [--help] [--min-line index] [--max-line index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
     if selfhelp:
@@ -53,6 +65,13 @@ if __name__ == "__main__":
                 ext = []
             ext.append(p)
             continue
+        elif target_next:
+            target_next = False
+            v, r = process_target(files, p, ext)
+            if not v:
+                print(r)
+                sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
+            continue
 
         # switches
         if p == "--help":
@@ -65,6 +84,9 @@ if __name__ == "__main__":
             continue
         elif p == "--ext":
             ext_next = True
+            continue
+        elif p == "--target":
+            target_next = True
             continue
 
     # mvtodo: check for any leftover states
