@@ -47,7 +47,7 @@ class CodelintPluginTest(unittest.TestCase):
     def testCodelintPluginReadParams1(self):
 
         local_params = {}
-        local_params["files"] = "dummy_value2"
+        local_params["files"] = "dummy_value1"
         self.codelint_task.params = local_params
 
         v, r = self.codelint_task._read_params()
@@ -71,7 +71,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, False, ["dummy_value2"], None, None))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, ["dummy_value2"], None, None))
 
     def testCodelintPluginReadParams4(self):
 
@@ -83,7 +83,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], ["dummy_value2", "dummy_value3"], False, ["dummy_value4"], None, None))
+        self.assertEqual(r, (["dummy_value1"], ["dummy_value2", "dummy_value3"], None, False, ["dummy_value4"], None, None))
 
     def testCodelintPluginReadParams5(self):
 
@@ -95,7 +95,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, True, ["dummy_value2"], None, None))
+        self.assertEqual(r, (["dummy_value1"], None, None, True, ["dummy_value2"], None, None))
 
     def testCodelintPluginReadParams6(self):
 
@@ -106,7 +106,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, False, None, "dummy_value2", None))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, None, "dummy_value2", None))
 
     def testCodelintPluginReadParams7(self):
 
@@ -118,7 +118,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, False, None, "dummy_value2", ["dummy_value3"]))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, None, "dummy_value2", ["dummy_value3"]))
 
     def testCodelintPluginReadParams8(self):
 
@@ -130,7 +130,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, False, None, "dummy_value2", ["dummy_value3", "dummy_value4"]))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, None, "dummy_value2", ["dummy_value3", "dummy_value4"]))
 
     def testCodelintPluginReadParams9(self):
 
@@ -176,7 +176,7 @@ class CodelintPluginTest(unittest.TestCase):
             v, r = self.codelint_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
     def testCodelintPluginRunTask2(self):
 
@@ -190,7 +190,7 @@ class CodelintPluginTest(unittest.TestCase):
             v, r = self.codelint_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with(["dummy_value1"], {"dummy_value2": ["dummy_value3"]}, False, ["dummy_value4"])
+            dummy.assert_called_with(["dummy_value1"], {"dummy_value2": ["dummy_value3"]}, {}, False, ["dummy_value4"])
 
     def testCodelintPluginRunTask3(self):
 
@@ -204,7 +204,7 @@ class CodelintPluginTest(unittest.TestCase):
             v, r = self.codelint_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with(["dummy_value1"], {"dummy_value2": ["dummy_value3", "dummy_value4"]}, False, ["dummy_value5"])
+            dummy.assert_called_with(["dummy_value1"], {"dummy_value2": ["dummy_value3", "dummy_value4"]}, {}, False, ["dummy_value5"])
 
     def testCodelintPluginRunTask4(self):
 
@@ -218,7 +218,7 @@ class CodelintPluginTest(unittest.TestCase):
                 v, r = self.codelint_task.run_task(print, "exe_name")
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                dummy1.assert_called_with(["dummy_value1"], {}, False, ["dummy_value3"])
+                dummy1.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value3"])
                 dummy2.assert_called_with("dummy_value2", None)
 
     def testCodelintPluginRunTask5(self):
@@ -226,16 +226,16 @@ class CodelintPluginTest(unittest.TestCase):
         local_params = {}
         local_params["plugins"] = "dummy_value1"
         local_params["folder"] = "dummy_value2"
-        local_params["extensions"] = ["dummy_value4"]
+        local_params["extensions"] = ["dummy_value3"]
         self.codelint_task.params = local_params
 
         with mock.patch("codelint.codelint", return_value=(True, [])) as dummy1:
-            with mock.patch("codelint.files_from_folder", return_value=(True, ["dummy_value3"])) as dummy2:
+            with mock.patch("codelint.files_from_folder", return_value=(True, ["dummy_value4"])) as dummy2:
                 v, r = self.codelint_task.run_task(print, "exe_name")
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                dummy1.assert_called_with(["dummy_value1"], {}, False, ["dummy_value3"])
-                dummy2.assert_called_with("dummy_value2", ["dummy_value4"])
+                dummy1.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value4"])
+                dummy2.assert_called_with("dummy_value2", ["dummy_value3"])
 
     def testCodelintPluginRunTask6(self):
 
@@ -250,7 +250,7 @@ class CodelintPluginTest(unittest.TestCase):
                 v, r = self.codelint_task.run_task(print, "exe_name")
                 self.assertTrue(v)
                 self.assertEqual(r, None)
-                dummy1.assert_called_with(["dummy_value1"], {}, True, ["dummy_value4"])
+                dummy1.assert_called_with(["dummy_value1"], {}, {}, True, ["dummy_value4"])
                 dummy2.assert_called_with("dummy_value3", None)
 
     def testCodelintPluginRunTask7(self):
@@ -264,7 +264,7 @@ class CodelintPluginTest(unittest.TestCase):
             v, r = self.codelint_task.run_task(print, "exe_name")
             self.assertFalse(v)
             self.assertEqual(r, "dummy_value3")
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
     def testCodelintPluginRunTask8(self):
 
@@ -281,7 +281,7 @@ class CodelintPluginTest(unittest.TestCase):
             self.assertEqual(self.feedback_obj_mock_stash[0], "Partially generated report:")
             self.assertEqual(self.feedback_obj_mock_stash[1], "dummy_value4")
             self.assertEqual(self.feedback_obj_mock_stash[2], "dummy_value5")
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
     def testCodelintPluginRunTask9(self):
 
@@ -295,7 +295,7 @@ class CodelintPluginTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, "(1 finding): #1: dummy_value3.")
             self.assertEqual(len(self.feedback_obj_mock_stash), 0)
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
     def testCodelintPluginRunTask10(self):
 
@@ -309,7 +309,7 @@ class CodelintPluginTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, "(2 findings): #1: dummy_value3. #2: dummy_value4.")
             self.assertEqual(len(self.feedback_obj_mock_stash), 0)
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
     def testCodelintPluginRunTask11(self):
 
@@ -324,7 +324,7 @@ class CodelintPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             self.assertEqual(len(self.feedback_obj_mock_stash), 1)
             self.assertEqual(self.feedback_obj_mock_stash[0], "dummy_value3")
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
     def testCodelintPluginRunTask12(self):
 
@@ -340,7 +340,7 @@ class CodelintPluginTest(unittest.TestCase):
             self.assertEqual(len(self.feedback_obj_mock_stash), 2)
             self.assertEqual(self.feedback_obj_mock_stash[0], "dummy_value3")
             self.assertEqual(self.feedback_obj_mock_stash[1], "dummy_value4")
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
     def testCodelintPluginRunTask13(self):
 
@@ -355,7 +355,7 @@ class CodelintPluginTest(unittest.TestCase):
             self.assertEqual(r, "(1 finding): #1: dummy_value3.")
             self.assertEqual(len(self.feedback_obj_mock_stash), 1)
             self.assertEqual(self.feedback_obj_mock_stash[0], "dummy_value4")
-            dummy.assert_called_with(["dummy_value1"], {}, False, ["dummy_value2"])
+            dummy.assert_called_with(["dummy_value1"], {}, {}, False, ["dummy_value2"])
 
 if __name__ == "__main__":
     unittest.main()

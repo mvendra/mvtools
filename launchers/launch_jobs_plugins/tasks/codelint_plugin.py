@@ -13,6 +13,21 @@ def select_suf(target_size):
     else:
         return "s"
 
+def resolve_even_array_into_map(source_map):
+
+    result_map = {}
+    if source_map is None:
+        return result_map
+
+    if len(source_map) > 0:
+        for idx in range(0, len(source_map), 2):
+            if source_map[idx] in result_map:
+                result_map[source_map[idx]].append(source_map[idx+1])
+            else:
+                result_map[source_map[idx]] = [source_map[idx+1]]
+
+    return result_map
+
 class CustomTask(launch_jobs.BaseTask):
 
     def get_desc(self):
@@ -22,6 +37,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         plugins = None
         plugins_params = None
+        filters = None
         autocorrect = None
         files = None
         folder = None
@@ -44,6 +60,16 @@ class CustomTask(launch_jobs.BaseTask):
                 plugins_params = plugins_params_read
             else:
                 plugins_params = [plugins_params_read]
+        except KeyError:
+            pass # optional
+
+        # filters
+        try:
+            filters_read = self.params["filters"]
+            if isinstance(filters_read, list):
+                filters = filters_read
+            else:
+                filters = [filters_read]
         except KeyError:
             pass # optional
 
@@ -83,6 +109,10 @@ class CustomTask(launch_jobs.BaseTask):
             if (len(plugins_params) % 2) != 0:
                 return False, "plugins_params must be of even length (would be converted into a map)"
 
+        if filters is not None:
+            if (len(filters) % 2) != 0:
+                return False, "filters must be of even length (would be converted into a map)"
+
         if files is None and folder is None:
             return False, "either files or folder must be selected"
 
@@ -92,7 +122,7 @@ class CustomTask(launch_jobs.BaseTask):
         if files is not None and extensions is not None:
             return False, "extensions cannot be used with files"
 
-        return True, (plugins, plugins_params, autocorrect, files, folder, extensions)
+        return True, (plugins, plugins_params, filters, autocorrect, files, folder, extensions)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -100,17 +130,10 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        plugins, plugins_params, autocorrect, files, folder, extensions = r
+        plugins, plugins_params, filters, autocorrect, files, folder, extensions = r
 
-        plugins_params_resolved = {}
-
-        if plugins_params is not None:
-            if len(plugins_params) > 0:
-                for idx in range(0, len(plugins_params), 2):
-                    if plugins_params[idx] in plugins_params_resolved:
-                        plugins_params_resolved[plugins_params[idx]].append(plugins_params[idx+1])
-                    else:
-                        plugins_params_resolved[plugins_params[idx]] = [plugins_params[idx+1]]
+        plugins_params_resolved = resolve_even_array_into_map(plugins_params)
+        filters_resolved = resolve_even_array_into_map(filters)
 
         if folder is not None:
             v, r = codelint.files_from_folder(folder, extensions)
@@ -121,7 +144,7 @@ class CustomTask(launch_jobs.BaseTask):
         findings_final = None
         findings_interm = []
 
-        v, r = codelint.codelint(plugins, plugins_params_resolved, autocorrect, files)
+        v, r = codelint.codelint(plugins, plugins_params_resolved, filters_resolved, autocorrect, files)
         if not v:
             errmsg, partial_report = r
             if len(partial_report) > 0:
