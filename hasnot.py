@@ -7,6 +7,12 @@ import path_utils
 import terminal_colors
 import codelint
 
+def check_leftover_state(source, name):
+
+    if source:
+        print("Switch [%s] was left unfinished" % name)
+        sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
+
 def process_target(storage, source, exts):
 
     if os.path.isdir(source):
@@ -130,7 +136,12 @@ if __name__ == "__main__":
             not_these_next = True
             continue
 
-    # mvtodo: check for any leftover states
+    check_leftover_state(min_line_next, "--min-line")
+    check_leftover_state(max_line_next, "--max-line")
+    check_leftover_state(ext_next, "--ext")
+    check_leftover_state(target_next, "--target")
+    check_leftover_state(has_next, "--has")
+    check_leftover_state(not_next, "--not")
 
     plugin_params = {}
     filters = {}
