@@ -50,7 +50,15 @@ if __name__ == "__main__":
 
     for p in sys.argv[1:]:
 
-        # states
+        # continuous states
+        if has_these_next:
+            has_list.append(p)
+            continue
+        elif not_these_next:
+            not_list.append(p)
+            continue
+
+        # repeatable states
         if min_line_next:
             min_line_next = False
             min_line = p
@@ -112,6 +120,14 @@ if __name__ == "__main__":
 
         elif p == "--not":
             not_next = True
+            continue
+
+        elif p == "--has-these":
+            has_these_next = True
+            continue
+
+        elif p == "--not-these":
+            not_these_next = True
             continue
 
     # mvtodo: check for any leftover states
