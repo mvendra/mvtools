@@ -55,16 +55,19 @@ if __name__ == "__main__":
             min_line_next = False
             min_line = p
             continue
+
         elif max_line_next:
             max_line_next = False
             max_line = p
             continue
+
         elif ext_next:
             ext_next = False
             if ext is None:
                 ext = []
             ext.append(p)
             continue
+
         elif target_next:
             target_next = False
             v, r = process_target(files, p, ext)
@@ -73,20 +76,33 @@ if __name__ == "__main__":
                 sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
             continue
 
+        elif has_next:
+            has_next = False
+            has_list.append(p)
+            continue
+
         # switches
         if p == "--help":
             puaq(True)
+
         elif p == "--min-line":
             min_line_next = True
             continue
+
         elif p == "--max-line":
             max_line_next = True
             continue
+
         elif p == "--ext":
             ext_next = True
             continue
+
         elif p == "--target":
             target_next = True
+            continue
+
+        elif p == "--has":
+            has_next = True
             continue
 
     # mvtodo: check for any leftover states
