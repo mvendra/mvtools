@@ -81,6 +81,11 @@ if __name__ == "__main__":
             has_list.append(p)
             continue
 
+        elif not_next:
+            not_next = False
+            not_list.append(p)
+            continue
+
         # switches
         if p == "--help":
             puaq(True)
@@ -103,6 +108,10 @@ if __name__ == "__main__":
 
         elif p == "--has":
             has_next = True
+            continue
+
+        elif p == "--not":
+            not_next = True
             continue
 
     # mvtodo: check for any leftover states
