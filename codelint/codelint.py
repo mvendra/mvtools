@@ -145,8 +145,17 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
     if not isinstance(plugins_params, dict):
         return False, ("plugins_params is not a dict", report)
 
+    for key in plugins_params:
+        if not isinstance(plugins_params[key], list):
+            return False, ("plugins_params[%s] is not a list" % key, report)
+        for e in plugins_params[key]:
+            if not isinstance(e, str):
+                return False, ("plugins_params[%s]'s entry [%s] is not a string" % (key, e), report)
+
     if not isinstance(filters, dict):
         return False, ("filters is not a dict", report)
+
+    # mvtodo: check if all within filters is a list of strs
 
     if not isinstance(autocorrect, bool):
         return False, ("autocorrect is not a bool", report)
