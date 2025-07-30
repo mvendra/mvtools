@@ -47,6 +47,12 @@ if __name__ == "__main__":
             max_line_next = False
             max_line = p
             continue
+        elif ext_next:
+            ext_next = False
+            if ext is None:
+                ext = []
+            ext.append(p)
+            continue
 
         # switches
         if p == "--help":
@@ -56,6 +62,9 @@ if __name__ == "__main__":
             continue
         elif p == "--max-line":
             max_line_next = True
+            continue
+        elif p == "--ext":
+            ext_next = True
             continue
 
     # mvtodo: check for any leftover states
@@ -75,6 +84,7 @@ if __name__ == "__main__":
     print(not_list)
     print(filters)
     print("mvdebug end")
+    sys.exit(21) # mvtodo
 
     v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, files)
     if not v:
