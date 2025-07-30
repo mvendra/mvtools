@@ -5,11 +5,10 @@ import os
 
 import path_utils
 import terminal_colors
-import fsquery
 import codelint
 
 def puaq(selfhelp):
-    print("Usage: %s [--has [patterns]] [--not [patterns]] [--files [targets] | --folder target [extensions] | (omitted -> cwd will be used with all extensions)] [--help]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--min-line index] [--max-line index] [--has [patterns]] [--not [patterns]] [--files [targets] | --folder target [extensions] | (omitted -> cwd will be used with all extensions)] [--help]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -17,11 +16,13 @@ def puaq(selfhelp):
 
 if __name__ == "__main__":
 
-    if "--help" in sys.argv[1:]:
-        puaq(True)
-
     if len(sys.argv) < 2:
         puaq(False)
+
+    min_line = None
+    max_line = None
+    min_line_next = False
+    max_line_next = False
 
     has_list = []
     not_list = []
@@ -36,66 +37,8 @@ if __name__ == "__main__":
     for p in sys.argv[1:]:
         idx += 1
 
-        if p == "--has":
-            if (idx+1) == len(sys.argv):
-                print("--has requires parameters")
-                sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
-            has_next = True
-            not_next = False
-            continue
-        elif p == "--not":
-            if (idx+1) == len(sys.argv):
-                print("--not requires parameters")
-                sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
-            has_next = False
-            not_next = True
-            continue
-        elif p == "--files":
-            files_next = True
-            break
-        elif p == "--folder":
-            folder_next = True
-            break
-
-        if has_next:
-            has_list.append(p)
-            continue
-
-        if not_next:
-            not_list.append(p)
-            continue
-
-    if files_next:
-
-        if not len(sys.argv) > (idx+1):
-            print("--files chosen but no target files were provided")
-            sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
-        files = sys.argv[idx+1:]
-
-    elif folder_next:
-
-        if not len(sys.argv) > (idx+1):
-            print("--folder chosen but no target folder was provided")
-            sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
-        folder = sys.argv[idx+1]
-
-        extensions = None
-        if len(sys.argv) > (idx+2):
-            extensions = sys.argv[idx+2:]
-
-        v, r = fsquery.makecontentlist(folder, True, True, True, False, True, False, True, extensions)
-        if not v:
-            print(r)
-            sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
-        files = r
-
-    else:
-
-        v, r = fsquery.makecontentlist(os.getcwd(), True, True, True, False, True, False, True, None)
-        if not v:
-            print(r)
-            sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
-        files = r
+        if p == "--help":
+            puaq(True)
 
     plugin_params = {}
     filters = {}
