@@ -149,6 +149,12 @@ if __name__ == "__main__":
     plugin_params["lint-select-filter-include"] = has_list
     plugin_params["lint-select-filter-exclude"] = not_list
 
+    if min_line is not None:
+        filters["min-line"] = [min_line]
+
+    if max_line is not None:
+        filters["max-line"] = [max_line]
+
     v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
