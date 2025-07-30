@@ -26,7 +26,7 @@ def process_target(storage, source, exts):
     return True, None
 
 def puaq(selfhelp): # print usage and quit
-    print("Usage: %s [--help] [--min-line index] [--max-line index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--min index] [--max index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -37,10 +37,10 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         puaq(False)
 
-    min_line = None
-    max_line = None
-    min_line_next = False
-    max_line_next = False
+    min_str = None
+    max_str = None
+    min_next = False
+    max_next = False
 
     ext = None
     files = []
@@ -65,14 +65,14 @@ if __name__ == "__main__":
             continue
 
         # repeatable states
-        if min_line_next:
-            min_line_next = False
-            min_line = p
+        if min_next:
+            min_next = False
+            min_str = p
             continue
 
-        elif max_line_next:
-            max_line_next = False
-            max_line = p
+        elif max_next:
+            max_next = False
+            max_str = p
             continue
 
         elif ext_next:
@@ -104,12 +104,12 @@ if __name__ == "__main__":
         if p == "--help":
             puaq(True)
 
-        elif p == "--min-line":
-            min_line_next = True
+        elif p == "--min":
+            min_next = True
             continue
 
-        elif p == "--max-line":
-            max_line_next = True
+        elif p == "--max":
+            max_next = True
             continue
 
         elif p == "--ext":
@@ -136,8 +136,8 @@ if __name__ == "__main__":
             not_these_next = True
             continue
 
-    check_leftover_state(min_line_next, "--min-line")
-    check_leftover_state(max_line_next, "--max-line")
+    check_leftover_state(min_next, "--min")
+    check_leftover_state(max_next, "--max")
     check_leftover_state(ext_next, "--ext")
     check_leftover_state(target_next, "--target")
     check_leftover_state(has_next, "--has")
@@ -149,11 +149,11 @@ if __name__ == "__main__":
     plugin_params["lint-select-filter-include"] = has_list
     plugin_params["lint-select-filter-exclude"] = not_list
 
-    if min_line is not None:
-        filters["min-line"] = [min_line]
+    if min_str is not None:
+        filters["min-line"] = [min_str]
 
-    if max_line is not None:
-        filters["max-line"] = [max_line]
+    if max_str is not None:
+        filters["max-line"] = [max_str]
 
     v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, files)
     if not v:
