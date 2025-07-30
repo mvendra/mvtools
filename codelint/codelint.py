@@ -190,12 +190,14 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
             return False, ("Plugin [%s] does not exist" % p, report)
         plugins_resolved.append(p_mod)
 
-    filter_min_line = None
+    filter_min_line = 0
     filter_max_line = None
     filter_max_findings = None
 
     if "min-line" in filters:
         filter_min_line = int(filters["min-line"][0])
+        if filter_min_line > 0:
+            filter_min_line -= 1
     if "max-line" in filters:
         filter_max_line = int(filters["max-line"][0])
     if "max-findings" in filters:
@@ -227,7 +229,7 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
             if not v:
                 return False, ("Plugin [%s] failed (pre): [%s]" % (p.lint_name(), r), report)
 
-            for idx in range(len(lines)):
+            for idx in range(filter_min_line, len(lines)):
 
                 if filter_max_findings is not None:
                     if num_findings == filter_max_findings:
@@ -236,10 +238,6 @@ def codelint(plugins, plugins_params, filters, autocorrect, files):
                 if filter_max_line is not None:
                     if (idx+1) == filter_max_line:
                         break
-
-                if filter_min_line is not None:
-                    if not (idx+1) >= filter_min_line:
-                        continue
 
                 v, r = p.lint_cycle(plugins_params, fn, shared_state, (idx+1), lines[idx])
                 if not v:
