@@ -98,10 +98,12 @@ if __name__ == "__main__":
         files = r
 
     plugin_params = {}
+    filters = {}
+
     plugin_params["lint-select-filter-include"] = has_list
     plugin_params["lint-select-filter-exclude"] = not_list
 
-    v, r = codelint.codelint(["lint-select-filter"], plugin_params, False, files)
+    v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
         if len(r[1]) > 0:
