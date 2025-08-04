@@ -4,8 +4,16 @@ import sys
 import os
 
 import path_utils
+import miniparse
 import terminal_colors
 import codelint
+
+COLOR_TABLE = {}
+COLOR_TABLE[0] = terminal_colors.TTY_YELLOW
+COLOR_TABLE[1] = terminal_colors.TTY_GREEN
+COLOR_TABLE[2] = terminal_colors.TTY_BLUE
+COLOR_TABLE[3] = terminal_colors.TTY_PURPLE
+COLOR_TABLE[4] = terminal_colors.TTY_CYAN
 
 def check_leftover_state(source, name):
 
@@ -28,7 +36,26 @@ def process_target(storage, source, exts):
 def print_color_patterns(line, has_patterns):
 
     line_local = line
-    line_result = line_local
+    line_result = ""
+    pattern_countdown = 0
+
+    for i in range(len(line_local)):
+
+        if pattern_countdown > 0:
+            pattern_countdown -= 1
+            if pattern_countdown == 0:
+                line_result += terminal_colors.get_standard_color()
+
+        largest = miniparse.scan_largest_of(line_local, i, has_patterns)
+        if largest is not None:
+
+            pattern = has_patterns[largest]
+            selected_color = COLOR_TABLE[largest % len(COLOR_TABLE)]
+            line_result += selected_color
+            pattern_countdown = len(pattern)
+
+        line_result += line_local[i]
+
     print(line_result)
 
 def puaq(selfhelp): # print usage and quit
@@ -168,9 +195,9 @@ if __name__ == "__main__":
 
     v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, files)
     if not v:
-        print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
+        print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         if len(r[1]) > 0:
-            print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.TTY_WHITE))
+            print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.get_standard_color()))
             codelint.print_report(r[1])
         sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
 
