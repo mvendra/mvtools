@@ -77,7 +77,7 @@ def read_config(config_file):
 
     # read the cfg file and setup the dsl parser
     if not os.path.exists(config_file):
-        print("%sConfig file [%s] does not exist.%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.TTY_WHITE))
+        print("%sConfig file [%s] does not exist.%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.get_standard_color()))
         return False, ()
 
     cfg_contents = ""
@@ -87,7 +87,7 @@ def read_config(config_file):
     dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(True, True))
     v, r = dsl.parse(cfg_contents)
     if not v:
-        print("%sFailed parsing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.TTY_WHITE))
+        print("%sFailed parsing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.get_standard_color()))
         return False, ()
 
     # define toplevel vars
@@ -102,7 +102,7 @@ def read_config(config_file):
 
     v, r = dsl.get_all_variables()
     if not v:
-        print("%sFailed fetching variables from config file [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.TTY_WHITE))
+        print("%sFailed fetching variables from config file [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.get_standard_color()))
         return False, ()
     vars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
     for v in vars:
@@ -114,7 +114,7 @@ def read_config(config_file):
         # assign values to policy variables
         if var_name == "BKPREPARATION":
             if not os.path.exists(var_value):
-                print("%sBKPREPARATION does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
+                print("%sBKPREPARATION does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                 return False, ()
             BKPREPARATION = var_value
             for o in var_options:
@@ -143,7 +143,7 @@ def read_config(config_file):
                 elif o[0] == "warn_size":
                     bv, sr = convert_unit.convert_to_bytes(o[1])
                     if not bv:
-                        print("%sBKSOURCE's warn_size option is malformed: [%s]%s" % (terminal_colors.TTY_RED, o[1], terminal_colors.TTY_WHITE))
+                        print("%sBKSOURCE's warn_size option is malformed: [%s]%s" % (terminal_colors.TTY_RED, o[1], terminal_colors.get_standard_color()))
                         return False, ()
                     warn_size = sr
                 elif o[0] == "warn_abort":
@@ -152,17 +152,17 @@ def read_config(config_file):
             new_art_base = ArtifactBase(var_value, BKSOURCE_EXCEPTIONS, descend, abort, warn_size, warn_abort)
             r, v = new_art_base.validate_exceptions()
             if not r:
-                print("%sBKSOURCE_EXCEPTIONS does not point to a valid path: [%s]. BKSOURCE is: [%s]%s" % (terminal_colors.TTY_RED, v, var_value, terminal_colors.TTY_WHITE))
+                print("%sBKSOURCE_EXCEPTIONS does not point to a valid path: [%s]. BKSOURCE is: [%s]%s" % (terminal_colors.TTY_RED, v, var_value, terminal_colors.get_standard_color()))
                 return False, ()
             BKSOURCE.append(new_art_base)
 
         elif var_name == "BKTARGETS_ROOT":
             if not os.path.exists(var_value):
-                print("%sBKTARGETS_ROOT does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
+                print("%sBKTARGETS_ROOT does not point to a valid path: [%s]%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                 return False, ()
             if not dsl_type20.hasopt_var(v, "nocheckmount"):
                 if not check_mounted.checkmounted(var_value):
-                    print("%sFailed to validate mountpoint of %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
+                    print("%sFailed to validate mountpoint of %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                     return False, ()
 
             BKTARGETS_ROOT.append(var_value)
@@ -176,7 +176,7 @@ def read_config(config_file):
         elif var_name == "BKWARNING_EACH":
             bv, sr = convert_unit.convert_to_bytes(var_value)
             if not bv:
-                print("%sFailed to convert %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
+                print("%sFailed to convert %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                 return False, ()
             conv_value = sr
             warn_each_abort = dsl_type20.hasopt_var(v, "abort")
@@ -185,27 +185,27 @@ def read_config(config_file):
         elif var_name == "BKWARNING_FINAL":
             bv, sr = convert_unit.convert_to_bytes(var_value)
             if not bv:
-                print("%sFailed to convert %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.TTY_WHITE))
+                print("%sFailed to convert %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                 return False, ()
             conv_value = sr
             warn_each_abort = dsl_type20.hasopt_var(v, "abort")
             BKWARNING_FINAL = (conv_value, warn_each_abort)
 
         else:
-            print("%sUnrecognized variable: [%s]%s" % (terminal_colors.TTY_RED, var_name, terminal_colors.TTY_WHITE))
+            print("%sUnrecognized variable: [%s]%s" % (terminal_colors.TTY_RED, var_name, terminal_colors.get_standard_color()))
             return False, ()
 
     if len(BKSOURCE) == 0:
-        print("%sBKSOURCE can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sBKSOURCE can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
         return False, ()
     if len(BKTARGETS_ROOT) == 0:
-        print("%sBKTARGETS_ROOT can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sBKTARGETS_ROOT can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
         return False, ()
     if len(BKTEMP) == 0:
-        print("%sBKTEMP can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sBKTEMP can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
         return False, ()
     if len(BKTARGETS_BASEDIR) == 0:
-        print("%sBKTARGETS_BASEDIR can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sBKTARGETS_BASEDIR can't be empty.%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
         return False, ()
 
     ret = True, ( (BKPREPARATION, BKPREPARATION_PARAMS), BKSOURCE, BKTARGETS_ROOT, BKTARGETS_BASEDIR, BKTEMP, (BKWARNING_EACH, BKWARNING_FINAL) )
@@ -216,13 +216,13 @@ def run_backup(config_file, pass_hash_file):
     # reads config file
     r_cfg, v_cfg = read_config(config_file)
     if not r_cfg:
-        print("%sFailed reading config file: [%s]%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.TTY_WHITE))
+        print("%sFailed reading config file: [%s]%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.get_standard_color()))
         return False
 
     # gets and checks the passphrase
     r_pp, passphrase = input_checked_passphrase.get_checked_passphrase(pass_hash_file)
     if not r_pp:
-        print("%sHash doesn't check. Aborting...%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sHash doesn't check. Aborting...%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
         return False
 
     # call the backup engine
@@ -247,5 +247,5 @@ if __name__ == "__main__":
 
     v = run_backup(config_file, pass_hash_file)
     if not v:
-        print("%sBackup failed. Config file: [%s]%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.TTY_WHITE))
+        print("%sBackup failed. Config file: [%s]%s" % (terminal_colors.TTY_RED, config_file, terminal_colors.get_standard_color()))
         sys.exit(1)
