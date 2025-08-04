@@ -466,11 +466,11 @@ if __name__ == "__main__":
     print("Preparation begins...")
     v, r = backup_preparation(config_file)
     if not v:
-        print("%sPreparation failed: [%s]%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
+        print("%sPreparation failed: [%s]%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         sys.exit(1)
     if len(r) == 0:
-        print("%sPreparation is complete - no issues reported.%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("%sPreparation is complete - no issues reported.%s" % (terminal_colors.TTY_GREEN, terminal_colors.get_standard_color()))
     else:
-        print("%sPreparation completed with issues:%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE))
+        print("%sPreparation completed with issues:%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.get_standard_color()))
         for i in r:
-            print("%s%s%s" % (terminal_colors.TTY_YELLOW, i, terminal_colors.TTY_WHITE))
+            print("%s%s%s" % (terminal_colors.TTY_YELLOW, i, terminal_colors.get_standard_color()))
