@@ -276,7 +276,7 @@ def print_report(report):
     any_findings = False
     for e in report:
         if e[0]:
-            print("%s%s%s" % (terminal_colors.TTY_YELLOW, e[1], terminal_colors.TTY_WHITE))
+            print("%s%s%s" % (terminal_colors.TTY_YELLOW, e[1], terminal_colors.get_standard_color()))
             any_findings = True
         else:
             print(e[1])
@@ -286,17 +286,17 @@ def applet_helper(plugins, plugins_params, filters, autocorrect, files):
 
     v, r = codelint(plugins, plugins_params, filters, autocorrect, files)
     if not v:
-        print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.TTY_WHITE))
+        print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         if len(r[1]) > 0:
-            print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.TTY_WHITE))
+            print("\n%sPartially generated report:%s\n" % (terminal_colors.TTY_RED_BOLD, terminal_colors.get_standard_color()))
             print_report(r[1])
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
-    print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.TTY_WHITE))
+    print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.get_standard_color()))
     if print_report(r):
-        print("\n%sAll operations suceeded - with findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.TTY_WHITE))
+        print("\n%sAll operations suceeded - with findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.get_standard_color()))
         sys.exit(CODELINT_CMDLINE_RETURN_PLUGIN_FINDING)
     else:
-        print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.get_standard_color()))
 
 def files_from_folder(folder, extensions):
 
