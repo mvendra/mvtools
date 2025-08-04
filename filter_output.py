@@ -319,7 +319,7 @@ def filter_asan_echo(contents):
             elif "AddressSanitizer:DEADLYSIGNAL" == l:
                 contents_list_result += "%s\n" % l
             elif is_line_error_asan_segv_unk_addr(l):
-                contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_RED_BOLD, l, terminal_colors.TTY_WHITE)
+                contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_RED_BOLD, l, terminal_colors.get_standard_color())
             elif is_line_sig_caused_by_read_or_write_mem_acc(l):
                 contents_list_result += "%s\n" % l
             elif is_line_hint_addr_point_zero_page(l):
@@ -327,9 +327,9 @@ def filter_asan_echo(contents):
                 exp_idx = 0
                 stack_mode = True
             elif "ERROR: LeakSanitizer: detected memory leaks" in l:
-                contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_RED_BOLD, l, terminal_colors.TTY_WHITE)
+                contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_RED_BOLD, l, terminal_colors.get_standard_color())
             elif "Direct leak of" in l or "Indirect leak of" in l:
-                contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_BLUE_BOLD, l, terminal_colors.TTY_WHITE)
+                contents_list_result += "%s%s%s\n" % (terminal_colors.TTY_BLUE_BOLD, l, terminal_colors.get_standard_color())
                 exp_idx = 0
                 stack_mode = True
             elif "SUMMARY: AddressSanitizer:" in l:

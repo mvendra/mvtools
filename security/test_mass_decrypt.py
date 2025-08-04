@@ -21,9 +21,9 @@ def print_report(v, r):
 
     errcode = 0
     if v:
-        print("%sAll passed!%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("%sAll passed!%s" % (terminal_colors.TTY_GREEN, terminal_colors.get_standard_color()))
     else:
-        print("%s\nThere were %s errors:%s" % (terminal_colors.TTY_RED, len(r), terminal_colors.TTY_WHITE))
+        print("%s\nThere were %s errors:%s" % (terminal_colors.TTY_RED, len(r), terminal_colors.get_standard_color()))
         errcode = 5
 
     for x in r:
