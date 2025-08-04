@@ -19,7 +19,7 @@ def _get_dirname_helper(path):
     dn = path_utils.dirname_filtered(path)
     if dn is None:
         _msg = "WARNING! Path [%s] was deduced to be inside root. It will be placed inside the '(root)' folder!" % path
-        print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
+        print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.get_standard_color()))
         return "(root)"
     return dn
 
@@ -43,61 +43,61 @@ class BackupEngine:
         for it in _self.BKARTIFACTS:
             if not os.path.exists(it[0]):
                 if it[1]:
-                    print("%sThe path [%s] is marked for backing up, but does not exist. Aborting%s" % (terminal_colors.TTY_RED, it[0], terminal_colors.TTY_WHITE))
+                    print("%sThe path [%s] is marked for backing up, but does not exist. Aborting%s" % (terminal_colors.TTY_RED, it[0], terminal_colors.get_standard_color()))
                     return False
                 else:
-                    print("%sThe path [%s] is marked for backing up, but does not exist.%s" % (terminal_colors.TTY_YELLOW_BOLD, it[0], terminal_colors.TTY_WHITE))
+                    print("%sThe path [%s] is marked for backing up, but does not exist.%s" % (terminal_colors.TTY_YELLOW_BOLD, it[0], terminal_colors.get_standard_color()))
             else:
                 art_filtered.append(it)
         _self.BKARTIFACTS = art_filtered
 
         if os.path.exists(_self.BKTEMP):
-            print("%s[%s] already exists. For safety reasons, this script is aborted.%s" % (terminal_colors.TTY_RED, _self.BKTEMP, terminal_colors.TTY_WHITE))
+            print("%s[%s] already exists. For safety reasons, this script is aborted.%s" % (terminal_colors.TTY_RED, _self.BKTEMP, terminal_colors.get_standard_color()))
             return False
 
-        print("%sBeginning backup operations at %s.%s" % (terminal_colors.TTY_GREEN, maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
+        print("%sBeginning backup operations at %s.%s" % (terminal_colors.TTY_GREEN, maketimestamp.get_timestamp_now(), terminal_colors.get_standard_color()))
 
         for it in _self.BKTARGETS_ROOT:
             if not os.path.isdir(it):
-                print("%sThe path [%s] is marked as a writing target, but does not exist. Aborting.%s" % (terminal_colors.TTY_RED, it, terminal_colors.TTY_WHITE))
+                print("%sThe path [%s] is marked as a writing target, but does not exist. Aborting.%s" % (terminal_colors.TTY_RED, it, terminal_colors.get_standard_color()))
                 return False
 
         if len(_self.BKPREPARATION) == 2:
             if len(_self.BKPREPARATION[0]) > 0:
-                print("%sPreparing...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
+                print("%sPreparing...%s" % (terminal_colors.TTY_BLUE, terminal_colors.get_standard_color()))
                 prep_cmd = [_self.BKPREPARATION[0]]
                 for prep_arg in _self.BKPREPARATION[1]:
                     prep_cmd.append(prep_arg)
                 prepv, prepr = generic_run.run_cmd_simple(prep_cmd)
                 if not prepv:
-                    print("%sFailed preparing backup: [%s]. Aborting.%s" % (terminal_colors.TTY_RED, prepr, terminal_colors.TTY_WHITE))
+                    print("%sFailed preparing backup: [%s]. Aborting.%s" % (terminal_colors.TTY_RED, prepr, terminal_colors.get_standard_color()))
                     return False
                 print(prepr.rstrip())
 
-        print("%sDeleting old backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
+        print("%sDeleting old backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.get_standard_color()))
         for it in _self.BKTARGETS_ROOT:
             test_subj = path_utils.concat_path(it, _self.BKTARGETS_BASEDIR)
             if not path_utils.scratchfolder(test_subj):
-                print("%sCannot scratch %s - are the external media available/attached?%s" % (terminal_colors.TTY_RED, it, terminal_colors.TTY_WHITE))
+                print("%sCannot scratch %s - are the external media available/attached?%s" % (terminal_colors.TTY_RED, it, terminal_colors.get_standard_color()))
                 return False
             else:
                 shutil.rmtree(test_subj) # redundant but necessary
 
-        print("%sCreating backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
+        print("%sCreating backup...%s" % (terminal_colors.TTY_BLUE, terminal_colors.get_standard_color()))
 
         if not path_utils.scratchfolder(_self.BKTEMP):
-            print("%sUnable to create temporary path [%s]. Aborting.%s" % (terminal_colors.TTY_RED, _self.BKTEMP, terminal_colors.TTY_WHITE))
+            print("%sUnable to create temporary path [%s]. Aborting.%s" % (terminal_colors.TTY_RED, _self.BKTEMP, terminal_colors.get_standard_color()))
             return False
         BKTEMP_AND_BASEDIR = path_utils.concat_path(_self.BKTEMP, _self.BKTARGETS_BASEDIR)
         os.mkdir(BKTEMP_AND_BASEDIR)
         if not os.path.exists(BKTEMP_AND_BASEDIR):
-            print("%sUnable to create temporary+base path [%s]. Aborting.%s" % (terminal_colors.TTY_RED, BKTEMP_AND_BASEDIR, terminal_colors.TTY_WHITE))
+            print("%sUnable to create temporary+base path [%s]. Aborting.%s" % (terminal_colors.TTY_RED, BKTEMP_AND_BASEDIR, terminal_colors.get_standard_color()))
             return False
         with open(path_utils.concat_path(BKTEMP_AND_BASEDIR, "bk_date.txt"), "w+") as f:
             f.write(maketimestamp.get_timestamp_now() + "\n")
 
         for it in _self.BKARTIFACTS:
-            print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
+            print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.get_standard_color()))
 
             dn = _get_dirname_helper(it[0])
             bn_of_dn = path_utils.basename_filtered(dn)
@@ -106,17 +106,17 @@ class BackupEngine:
             if bn_of_dn in dirname_sentinel:
                 if dirname_sentinel[bn_of_dn] != dn: # same basename-of-dirname but different dirname overall. issue a warning about risk of overwrites.
                     _msg = "WARNING! Path [%s] has a common dirname with another artifact (%s). Both artifacts will be placed inside the same folder in the target backup base folder!" % (it[0], dirname_sentinel[bn_of_dn])
-                    print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
+                    print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.get_standard_color()))
             else:
                 dirname_sentinel[bn_of_dn] = dn
 
             BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTEMP_AND_BASEDIR, bn_of_dn)
             if path_utils.basename_filtered(BKTMP_PLUS_ARTBASE) == path_utils.basename_filtered(BKTEMP_AND_BASEDIR):
                 _msg = "WARNING! Path [%s] was deduced to be inside root. It will be placed inside the '(root)' folder!" % it[0]
-                print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.TTY_WHITE))
+                print("%s%s%s" % (terminal_colors.TTY_YELLOW_BOLD, _msg, terminal_colors.get_standard_color()))
                 BKTMP_PLUS_ARTBASE = path_utils.concat_path(BKTMP_PLUS_ARTBASE, "(root)")
             if not path_utils.guaranteefolder(BKTMP_PLUS_ARTBASE):
-                print("%sFailed attempting to guarantee [%s].%s" % (terminal_colors.TTY_RED, BKTMP_PLUS_ARTBASE, terminal_colors.TTY_WHITE))
+                print("%sFailed attempting to guarantee [%s].%s" % (terminal_colors.TTY_RED, BKTMP_PLUS_ARTBASE, terminal_colors.get_standard_color()))
                 return False
 
             CURPAK = path_utils.concat_path(BKTMP_PLUS_ARTBASE, path_utils.basename_filtered(it[0]))
@@ -127,25 +127,25 @@ class BackupEngine:
 
             # check if there are any preexisting artifacts
             if os.path.exists(CURPAK):
-                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK, terminal_colors.TTY_WHITE))
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK, terminal_colors.get_standard_color()))
                 return False
             if os.path.exists(CURPAK_TAR):
-                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR, terminal_colors.TTY_WHITE))
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR, terminal_colors.get_standard_color()))
                 return False
             if os.path.exists(CURPAK_TAR_BZ2):
-                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.TTY_WHITE))
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.get_standard_color()))
                 return False
             if os.path.exists(CURPAK_TAR_BZ2_ENC):
-                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.TTY_WHITE))
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.get_standard_color()))
                 return False
             if os.path.exists(CURPAK_TAR_BZ2_ENC_HASH):
-                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC_HASH, terminal_colors.TTY_WHITE))
+                print("%sFailed generating [%s] - duplicated artifact - aborting to avoid overwrites.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC_HASH, terminal_colors.get_standard_color()))
                 return False
 
             # create the package
             v, r = pakgen.pakgen(CURPAK, False, [it[0]]) # hash will be generated later (from the encrypted package)
             if not v:
-                print("%sFailed generating [%s].%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.TTY_WHITE))
+                print("%sFailed generating [%s].%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.get_standard_color()))
                 return False
             if len(r) > 0:
                 print("Output from pakgen: %s" % r)
@@ -153,13 +153,13 @@ class BackupEngine:
             # encrypt plain package
             v, r = encrypt.symmetric_encrypt(CURPAK_TAR_BZ2, CURPAK_TAR_BZ2_ENC, _self.PASSPHRASE)
             if not v:
-                print("%sFailed encrypting package: [%s].%s" % (terminal_colors.TTY_RED, r, terminal_colors.TTY_WHITE))
+                print("%sFailed encrypting package: [%s].%s" % (terminal_colors.TTY_RED, r, terminal_colors.get_standard_color()))
                 return False
 
             # shred plain package
             v, r = shred_wrapper.shred_target(CURPAK_TAR_BZ2)
             if not v:
-                print("%sFailed shredding plain package: [%s].%s" % (terminal_colors.TTY_RED, r, terminal_colors.TTY_WHITE))
+                print("%sFailed shredding plain package: [%s].%s" % (terminal_colors.TTY_RED, r, terminal_colors.get_standard_color()))
                 return False
 
             warn_size_each_active_local = (_self.BKWARNINGS[0][0] is not None) and (_self.BKWARNINGS[0][1] is not None)
@@ -179,15 +179,15 @@ class BackupEngine:
             if warn_size_each_active_local:
                 if dirsize.get_dir_size(CURPAK_TAR_BZ2_ENC, False) > warn_size_each_local:
                     if warn_size_each_abort_local:
-                        print("%sGenerated package [%s] exceeds the size limit. Aborting.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.TTY_WHITE))
+                        print("%sGenerated package [%s] exceeds the size limit. Aborting.%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.get_standard_color()))
                         return False
                     else:
-                        print("%sGenerated package [%s] exceeds the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, CURPAK_TAR_BZ2_ENC, terminal_colors.TTY_WHITE))
+                        print("%sGenerated package [%s] exceeds the size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, CURPAK_TAR_BZ2_ENC, terminal_colors.get_standard_color()))
 
             # create hash from the encrypted package
             v, r = sha512_wrapper.hash_sha_512_app_file(CURPAK_TAR_BZ2_ENC)
             if not v:
-                print("%sFailed generating hash for [%s].%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.TTY_WHITE))
+                print("%sFailed generating hash for [%s].%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2_ENC, terminal_colors.get_standard_color()))
                 return False
             create_and_write_file.create_file_contents(CURPAK_TAR_BZ2_ENC_HASH, r)
 
@@ -195,20 +195,20 @@ class BackupEngine:
         if warn_size_final_active_local:
             if dirsize.get_dir_size(BKTEMP_AND_BASEDIR, False) > _self.BKWARNINGS[1][0]:
                 if _self.BKWARNINGS[1][1]: # abort
-                    print("%sGenerated backup exceeds size limit. Aborting.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+                    print("%sGenerated backup exceeds size limit. Aborting.%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
                     return False
                 else:
-                    print("%sGenerated backup exceeds size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.TTY_WHITE))
+                    print("%sGenerated backup exceeds size limit.%s" % (terminal_colors.TTY_YELLOW_BOLD, terminal_colors.get_standard_color()))
 
-        print("%sWriting to targets...%s" % (terminal_colors.TTY_BLUE, terminal_colors.TTY_WHITE))
+        print("%sWriting to targets...%s" % (terminal_colors.TTY_BLUE, terminal_colors.get_standard_color()))
 
         for it in _self.BKTARGETS_ROOT:
             shutil.copytree(BKTEMP_AND_BASEDIR, path_utils.concat_path(it, _self.BKTARGETS_BASEDIR))
             v, r = umount_wrapper.umount(it)
             if not v:
-                print("%sWARNING! umount for target [%s] failed: [%s]%s" % (terminal_colors.TTY_YELLOW_BOLD, it, r, terminal_colors.TTY_WHITE))
+                print("%sWARNING! umount for target [%s] failed: [%s]%s" % (terminal_colors.TTY_YELLOW_BOLD, it, r, terminal_colors.get_standard_color()))
 
         shutil.rmtree(_self.BKTEMP)
-        print("%sDone at %s%s" % (terminal_colors.TTY_GREEN, maketimestamp.get_timestamp_now(), terminal_colors.TTY_WHITE))
+        print("%sDone at %s%s" % (terminal_colors.TTY_GREEN, maketimestamp.get_timestamp_now(), terminal_colors.get_standard_color()))
 
         return True
