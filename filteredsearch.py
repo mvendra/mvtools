@@ -21,7 +21,7 @@ def filteredsearch(path, search, extensions):
         v, r = ag_wrapper.silversearch(tg, search)
         if r != "":
             print("%s%s" % (terminal_colors.TTY_BLUE, tg))
-            print("%s%s" % (terminal_colors.TTY_WHITE, r))
+            print("%s%s" % (terminal_colors.get_standard_color(), r))
 
 def puaq(selfhelp):
     print("Usage: %s path search extensions " % path_utils.basename_filtered(__file__))

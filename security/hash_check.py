@@ -53,7 +53,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     if sha512sum_check(archive_file, hash_file):
-        print("%sCorrect match%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("%sCorrect match%s" % (terminal_colors.TTY_GREEN, terminal_colors.get_standard_color()))
     else:
-        print("%sCheck failed!%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sCheck failed!%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
         sys.exit(1)

@@ -17,7 +17,7 @@ def secure_file(target_file, pass_hash_file):
     # gets and checks the passphrase
     r_pp, passphrase = input_checked_passphrase.get_checked_passphrase(pass_hash_file)
     if not r_pp:
-        print("%sHash doesn't check. Aborting...%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sHash doesn't check. Aborting...%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
         return False
 
     target_file_out = target_file + ".enc"
@@ -25,13 +25,13 @@ def secure_file(target_file, pass_hash_file):
     # creates the new encrypted file
     v, r = encrypt.symmetric_encrypt(target_file, target_file_out, passphrase)
     if not v:
-        print("%sEncryption failed (%s). Aborting...%s" % (terminal_colors.TTY_RED, r, terminal_colors.TTY_WHITE))
+        print("%sEncryption failed (%s). Aborting...%s" % (terminal_colors.TTY_RED, r, terminal_colors.get_standard_color()))
         return False
 
     # shreds the original plain file
     v, r = shred_wrapper.shred_target(target_file)
     if not v:
-        print("%sShred failed (%s). Aborting...%s" % (terminal_colors.TTY_RED, r, terminal_colors.TTY_WHITE))
+        print("%sShred failed (%s). Aborting...%s" % (terminal_colors.TTY_RED, r, terminal_colors.get_standard_color()))
         return False
 
     # changes the permission of the new file
