@@ -423,8 +423,11 @@ def scan_largest_of(target_str, target_str_offset, source_str_list):
     largest_available = 0
     map_src_offsets = {}
 
-    for e in source_str_list:
-        map_src_offsets[e] = 0
+    for i in range(len(source_str_list)):
+        e = source_str_list[i]
+        if e in map_src_offsets:
+            continue
+        map_src_offsets[e] = [i, 0]
         if len(e) > largest_available:
             largest_available = len(e)
 
@@ -435,18 +438,18 @@ def scan_largest_of(target_str, target_str_offset, source_str_list):
         c = target_str[idx]
 
         no_matches = True
-        for e in source_str_list:
+        for e in map_src_offsets:
 
             if scan_count > len(e):
                 continue
 
-            if c == e[map_src_offsets[e]]:
-                map_src_offsets[e] += 1
+            if c == e[map_src_offsets[e][1]]:
+                map_src_offsets[e][1] += 1
                 no_matches = False
             else:
-                map_src_offsets[e] = 0
+                map_src_offsets[e][1] = 0
 
-            if map_src_offsets[e] == len(e):
+            if map_src_offsets[e][1] == len(e):
                 if len(e) > largest_found:
                     largest_found = len(e)
 
