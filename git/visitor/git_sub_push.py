@@ -55,9 +55,9 @@ def push_subs(path):
     print(os.linesep)
 
     if anyfailed:
-        print("%sErrors detected, see above.%s" % (terminal_colors.TTY_RED, terminal_colors.TTY_WHITE))
+        print("%sErrors detected, see above.%s" % (terminal_colors.TTY_RED, terminal_colors.get_standard_color()))
     else:
-        print("%sAll succeeded.%s" % (terminal_colors.TTY_GREEN, terminal_colors.TTY_WHITE))
+        print("%sAll succeeded.%s" % (terminal_colors.TTY_GREEN, terminal_colors.get_standard_color()))
 
 if __name__ == "__main__":
 

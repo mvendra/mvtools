@@ -283,7 +283,7 @@ if __name__ == "__main__":
     try:
         bd.run()
     except mvtools_exception.mvtools_exception as mvtex:
-        print("%s%s%s" % (terminal_colors.TTY_RED, mvtex, terminal_colors.TTY_WHITE))
+        print("%s%s%s" % (terminal_colors.TTY_RED, mvtex, terminal_colors.get_standard_color()))
         sys.exit(1)
 
-    print("%s%s%s" % (terminal_colors.TTY_GREEN, "All succeeded.", terminal_colors.TTY_WHITE))
+    print("%s%s%s" % (terminal_colors.TTY_GREEN, "All succeeded.", terminal_colors.get_standard_color()))
