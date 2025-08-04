@@ -162,7 +162,7 @@ def read_config(config_file):
                 return False, ()
             if not dsl_type20.hasopt_var(v, "nocheckmount"):
                 if not check_mounted.checkmounted(var_value):
-                    print("%sFailed to validate mountpoint of %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
+                    print("%sFailed to validate mountpoint of [%s]. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                     return False, ()
 
             BKTARGETS_ROOT.append(var_value)
@@ -176,7 +176,7 @@ def read_config(config_file):
         elif var_name == "BKWARNING_EACH":
             bv, sr = convert_unit.convert_to_bytes(var_value)
             if not bv:
-                print("%sFailed to convert %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
+                print("%sFailed to convert [%s]. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                 return False, ()
             conv_value = sr
             warn_each_abort = dsl_type20.hasopt_var(v, "abort")
@@ -185,7 +185,7 @@ def read_config(config_file):
         elif var_name == "BKWARNING_FINAL":
             bv, sr = convert_unit.convert_to_bytes(var_value)
             if not bv:
-                print("%sFailed to convert %s. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
+                print("%sFailed to convert [%s]. Aborting.%s" % (terminal_colors.TTY_RED, var_value, terminal_colors.get_standard_color()))
                 return False, ()
             conv_value = sr
             warn_each_abort = dsl_type20.hasopt_var(v, "abort")
