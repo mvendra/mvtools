@@ -78,7 +78,7 @@ class BackupEngine:
         for it in _self.BKTARGETS_ROOT:
             test_subj = path_utils.concat_path(it, _self.BKTARGETS_BASEDIR)
             if not path_utils.scratchfolder(test_subj):
-                print("%sCannot scratch %s - are the external media available/attached?%s" % (terminal_colors.TTY_RED, it, terminal_colors.get_standard_color()))
+                print("%sCannot scratch [%s] - are the external media available/attached?%s" % (terminal_colors.TTY_RED, it, terminal_colors.get_standard_color()))
                 return False
             else:
                 shutil.rmtree(test_subj) # redundant but necessary
@@ -97,7 +97,7 @@ class BackupEngine:
             f.write(maketimestamp.get_timestamp_now() + "\n")
 
         for it in _self.BKARTIFACTS:
-            print("%sCurrent: %s, started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.get_standard_color()))
+            print("%sCurrent: [%s], started at %s%s" % (terminal_colors.TTY_BLUE, it[0], maketimestamp.get_timestamp_now(), terminal_colors.get_standard_color()))
 
             dn = _get_dirname_helper(it[0])
             bn_of_dn = path_utils.basename_filtered(dn)
@@ -148,7 +148,7 @@ class BackupEngine:
                 print("%sFailed generating [%s].%s" % (terminal_colors.TTY_RED, CURPAK_TAR_BZ2, terminal_colors.get_standard_color()))
                 return False
             if len(r) > 0:
-                print("Output from pakgen: %s" % r)
+                print("Output from pakgen: [%s]" % r)
 
             # encrypt plain package
             v, r = encrypt.symmetric_encrypt(CURPAK_TAR_BZ2, CURPAK_TAR_BZ2_ENC, _self.PASSPHRASE)
