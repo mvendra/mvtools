@@ -420,6 +420,7 @@ def scan_simple(thestr, theregex):
 def scan_largest_of(target_str, target_str_offset, source_str_list):
 
     largest_found = 0
+    index_largest_found = None
     largest_available = 0
     map_src_offsets = {}
 
@@ -452,6 +453,7 @@ def scan_largest_of(target_str, target_str_offset, source_str_list):
             if map_src_offsets[e][1] == len(e):
                 if len(e) > largest_found:
                     largest_found = len(e)
+                    index_largest_found = map_src_offsets[e][0]
 
         if no_matches:
             break
@@ -459,7 +461,7 @@ def scan_largest_of(target_str, target_str_offset, source_str_list):
         if largest_found == largest_available:
             break
 
-    return largest_found
+    return index_largest_found
 
 def descape(thestr, escape_char):
 
