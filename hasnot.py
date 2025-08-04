@@ -25,8 +25,14 @@ def process_target(storage, source, exts):
 
     return True, None
 
+def print_color_patterns(line, has_patterns):
+
+    line_local = line
+    line_result = line_local
+    print(line_result)
+
 def puaq(selfhelp): # print usage and quit
-    print("Usage: %s [--help] [--min index] [--max index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--color] [--min index] [--max index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -37,6 +43,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         puaq(False)
 
+    color = False
     min_str = None
     max_str = None
     min_next = False
@@ -104,6 +111,10 @@ if __name__ == "__main__":
         if p == "--help":
             puaq(True)
 
+        elif p == "--color":
+            color = True
+            continue
+
         elif p == "--min":
             min_next = True
             continue
@@ -167,7 +178,10 @@ if __name__ == "__main__":
     for e in r:
         if e[0]:
             any_findings = True
-            print(e[1])
+            if color:
+                print_color_patterns(e[1], has_list)
+            else:
+                print(e[1])
 
     if any_findings:
         sys.exit(codelint.CODELINT_CMDLINE_RETURN_PLUGIN_FINDING)
