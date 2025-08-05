@@ -30,8 +30,8 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test paths
-        self.existent_dir = path_utils.concat_path(self.test_dir, "existent_dir1")
-        self.existent_file = path_utils.concat_path(self.test_dir, "existent_file1.txt")
+        self.existent_dir = path_utils.concat_path(self.test_dir, "existent_dir")
+        self.existent_file = path_utils.concat_path(self.test_dir, "existent_file.txt")
 
         os.mkdir(self.existent_dir)
         create_and_write_file.create_file_contents(self.existent_file, "contents")
