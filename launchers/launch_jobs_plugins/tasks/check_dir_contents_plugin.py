@@ -85,14 +85,14 @@ class CustomTask(launch_jobs.BaseTask):
         # has_only
         if has_only is not None:
 
-            found_only = False
+            found_keeper = False
             for f in all_files:
                 if f == has_only:
-                    found_only = True
+                    found_keeper = True
                 else:
                     report.append("[%s] is unexpectedly contained on [%s] (has-only)" % (f, target_path))
 
-            if not found_only:
+            if not found_keeper:
                 report.append("[%s] was expected on [%s] (has-only)" % (has_only, target_path))
 
         else:
