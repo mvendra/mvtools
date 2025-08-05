@@ -169,7 +169,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] does not exist" % self.nonexistent_path1)
 
     def testCheckPathPluginRunTask5(self):
 
@@ -179,7 +179,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] does not exist. [%s] does not exist" % (self.nonexistent_path1, self.nonexistent_path2))
 
     def testCheckPathPluginRunTask6(self):
 
@@ -189,7 +189,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] does not exist" % self.nonexistent_path2)
 
     def testCheckPathPluginRunTask7(self):
 
@@ -199,7 +199,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] exists but is a directory" % self.existent_dir1)
 
     def testCheckPathPluginRunTask8(self):
 
@@ -209,7 +209,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] exists but is a directory. [%s] exists but is a directory" % (self.existent_dir1, self.existent_dir2))
 
     def testCheckPathPluginRunTask9(self):
 
@@ -219,7 +219,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] exists but is a directory" % self.existent_dir2)
 
     def testCheckPathPluginRunTask10(self):
 
@@ -229,7 +229,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] exists but is not a directory" % self.existent_file1)
 
     def testCheckPathPluginRunTask11(self):
 
@@ -239,7 +239,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] exists but is not a directory. [%s] exists but is not a directory" % (self.existent_file1, self.existent_file2))
 
     def testCheckPathPluginRunTask12(self):
 
@@ -249,7 +249,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] does not exist" % self.nonexistent_path1)
 
     def testCheckPathPluginRunTask13(self):
 
@@ -259,7 +259,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] does not exist. [%s] does not exist" % (self.nonexistent_path1, self.nonexistent_path2))
 
     def testCheckPathPluginRunTask14(self):
 
@@ -269,7 +269,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] exists but is not a directory. [%s] does not exist" % (self.existent_file1, self.nonexistent_path2))
 
     def testCheckPathPluginRunTask15(self):
 
@@ -299,7 +299,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] exists but is not a directory" % self.existent_file1)
 
     def testCheckPathPluginRunTask18(self):
 
@@ -309,7 +309,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] exists" % self.existent_file1)
 
     def testCheckPathPluginRunTask19(self):
 
@@ -319,7 +319,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] exists. [%s] exists" % (self.existent_file1, self.existent_file2))
 
     def testCheckPathPluginRunTask20(self):
 
@@ -349,7 +349,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] exists" % self.existent_file1)
 
     def testCheckPathPluginRunTask23(self):
 
@@ -359,7 +359,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 1)
+        self.assertEqual(r, "[%s] exists" % self.existent_dir1)
 
     def testCheckPathPluginRunTask24(self):
 
@@ -369,7 +369,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] exists. [%s] exists" % (self.existent_dir1, self.existent_dir2))
 
     def testCheckPathPluginRunTask25(self):
 
@@ -379,7 +379,7 @@ class CheckPathPluginTest(unittest.TestCase):
 
         v, r = self.check_path_task.run_task(print, "exe_name")
         self.assertFalse(v)
-        self.assertEqual(len(r), 2)
+        self.assertEqual(r, "[%s] exists. [%s] exists" % (self.existent_file1, self.existent_dir2))
 
 if __name__ == "__main__":
     unittest.main()
