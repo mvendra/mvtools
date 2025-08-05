@@ -5,6 +5,7 @@ import os
 import launch_jobs
 import path_utils
 import fsquery
+import format_list_str
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -112,4 +113,4 @@ class CustomTask(launch_jobs.BaseTask):
         final_msg = None
         if len(report) > 0:
             final_msg = report
-        return (len(report) == 0), final_msg
+        return (len(report) == 0), format_list_str.format_list_str(final_msg, ". ")
