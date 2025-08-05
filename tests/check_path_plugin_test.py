@@ -59,7 +59,7 @@ class CheckPathPluginTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testCheckPathReadParams1(self):
+    def testCheckPathPluginReadParams1(self):
 
         local_params = {}
         self.check_path_task.params = local_params
@@ -67,7 +67,7 @@ class CheckPathPluginTest(unittest.TestCase):
         v, r = self.check_path_task._read_params()
         self.assertFalse(v)
 
-    def testCheckPathReadParams2(self):
+    def testCheckPathPluginReadParams2(self):
 
         local_params = {}
         local_params["path_file_exist"] = "dummy_value1"
@@ -77,7 +77,7 @@ class CheckPathPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1"], None, None))
 
-    def testCheckPathReadParams3(self):
+    def testCheckPathPluginReadParams3(self):
 
         local_params = {}
         local_params["path_file_exist"] = ["dummy_value1", "dummy_value2"]
@@ -87,7 +87,7 @@ class CheckPathPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1", "dummy_value2"], None, None))
 
-    def testCheckPathReadParams4(self):
+    def testCheckPathPluginReadParams4(self):
 
         local_params = {}
         local_params["path_file_exist"] = ["dummy_value1", "dummy_value2"]
@@ -98,7 +98,7 @@ class CheckPathPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1", "dummy_value2"], ["dummy_value3"], None))
 
-    def testCheckPathReadParams5(self):
+    def testCheckPathPluginReadParams5(self):
 
         local_params = {}
         local_params["path_file_exist"] = ["dummy_value1", "dummy_value2"]
@@ -109,7 +109,7 @@ class CheckPathPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1", "dummy_value2"], ["dummy_value3", "dummy_value4"], None))
 
-    def testCheckPathReadParams6(self):
+    def testCheckPathPluginReadParams6(self):
 
         local_params = {}
         local_params["path_file_exist"] = ["dummy_value1", "dummy_value2"]
@@ -121,7 +121,7 @@ class CheckPathPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1", "dummy_value2"], ["dummy_value3", "dummy_value4"], ["dummy_value5"]))
 
-    def testCheckPathReadParams7(self):
+    def testCheckPathPluginReadParams7(self):
 
         local_params = {}
         local_params["path_file_exist"] = ["dummy_value1", "dummy_value2"]
