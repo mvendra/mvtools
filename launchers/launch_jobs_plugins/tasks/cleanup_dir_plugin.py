@@ -5,7 +5,6 @@ import os
 import launch_jobs
 import path_utils
 import fsquery
-
 import format_list_str
 
 class CustomTask(launch_jobs.BaseTask):
