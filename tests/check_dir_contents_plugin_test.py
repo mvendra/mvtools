@@ -30,6 +30,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.test_dir = r[1] # test folder, specific for each test case (i.e. one level above self.test_base_dir)
 
         # test paths
+        self.nonexistent = path_utils.concat_path(self.test_dir, "nonexistent")
         self.existent_dir = path_utils.concat_path(self.test_dir, "existent_dir")
         self.existent_file = path_utils.concat_path(self.test_dir, "existent_file.txt")
 
@@ -112,6 +113,17 @@ class CheckDirContentsPluginTest(unittest.TestCase):
     def testCheckDirContentsPluginReadParams7(self):
 
         local_params = {}
+        local_params["target_path"] = self.nonexistent
+        local_params["has_only"] = "dummy_value1"
+        self.check_dir_contents_task.params = local_params
+
+        v, r = self.check_dir_contents_task._read_params()
+        self.assertFalse(v)
+        self.assertEqual(r, "target path [%s] does not exist" % self.nonexistent)
+
+    def testCheckDirContentsPluginReadParams8(self):
+
+        local_params = {}
         local_params["target_path"] = self.existent_file
         local_params["has_only"] = "dummy_value1"
         self.check_dir_contents_task.params = local_params
@@ -120,7 +132,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "target path [%s] is not a folder" % self.existent_file)
 
-    def testCheckDirContentsPluginReadParams8(self):
+    def testCheckDirContentsPluginReadParams9(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -130,7 +142,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "no checks selected")
 
-    def testCheckDirContentsPluginReadParams9(self):
+    def testCheckDirContentsPluginReadParams10(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -142,7 +154,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "has_only cannot be selected with either has or not")
 
-    def testCheckDirContentsPluginReadParams10(self):
+    def testCheckDirContentsPluginReadParams11(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir

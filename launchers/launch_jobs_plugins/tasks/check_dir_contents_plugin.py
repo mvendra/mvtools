@@ -53,6 +53,9 @@ class CustomTask(launch_jobs.BaseTask):
             pass # optional
 
         # pre-validate params
+        if not os.path.exists(target_path):
+            return False, "target path [%s] does not exist" % target_path
+
         if not os.path.isdir(target_path):
             return False, "target path [%s] is not a folder" % target_path
 
