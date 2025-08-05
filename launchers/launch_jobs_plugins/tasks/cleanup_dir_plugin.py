@@ -6,15 +6,7 @@ import launch_jobs
 import path_utils
 import fsquery
 
-def format_list_str(input_list):
-    if input_list is None:
-        return None
-    out_msg = ""
-    for i in range(len(input_list)):
-        out_msg += input_list[i]
-        if i < (len(input_list)-1):
-            out_msg += ". "
-    return out_msg
+import format_list_str
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -109,4 +101,4 @@ class CustomTask(launch_jobs.BaseTask):
         final_msg = None
         if len(report) > 0:
             final_msg = report
-        return True, format_list_str(final_msg)
+        return True, format_list_str.format_list_str(final_msg, ". ")
