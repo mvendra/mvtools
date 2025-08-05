@@ -21,6 +21,7 @@ class FormatListStrTest(unittest.TestCase):
         self.assertEqual(format_list_str.format_list_str(["first"], ". "), "first")
         self.assertEqual(format_list_str.format_list_str(["first", "second"], ". "), "first. second")
         self.assertEqual(format_list_str.format_list_str(["first", "second", "third"], ". "), "first. second. third")
+        self.assertEqual(format_list_str.format_list_str(["first", "second", "third"], "+++"), "first+++second+++third")
 
 if __name__ == "__main__":
     unittest.main()
