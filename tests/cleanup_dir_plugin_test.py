@@ -172,7 +172,7 @@ class CleanupDirPluginTest(unittest.TestCase):
             with mock.patch("path_utils.remove_path", return_value=(True)) as dummy2:
                 v, r = self.cleanup_dir_task.run_task(print, "exe_name")
                 self.assertTrue(v)
-                self.assertEqual(r, ["[dummy_value1] was not found on [%s] (keep-only)" % self.existent_dir])
+                self.assertEqual(r, "[dummy_value1] was not found on [%s] (keep-only)" % self.existent_dir)
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_called_with("/base/dummy_value2")
 
@@ -232,7 +232,7 @@ class CleanupDirPluginTest(unittest.TestCase):
             with mock.patch("path_utils.remove_path", return_value=(True)) as dummy2:
                 v, r = self.cleanup_dir_task.run_task(print, "exe_name")
                 self.assertTrue(v)
-                self.assertEqual(r, ["[dummy_value1] was not found on [%s] (ditch)" % self.existent_dir])
+                self.assertEqual(r, "[dummy_value1] was not found on [%s] (ditch)" % self.existent_dir)
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_not_called()
 
