@@ -4,7 +4,6 @@ import os
 
 import path_utils
 import launch_jobs
-
 import codelint
 
 def select_suf(target_size):
