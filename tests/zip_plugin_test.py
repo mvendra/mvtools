@@ -131,6 +131,7 @@ class ZipPluginTest(unittest.TestCase):
         with mock.patch("zip_plugin.CustomTask.task_create_package", return_value=(True, None)) as dummy:
             v, r = self.zip_task.run_task(print, "exe_name")
             self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called_with(print, "dummy_value1", "dummy_value2")
 
     def testZipPluginRunTask_ExtractPackage1(self):
@@ -146,6 +147,7 @@ class ZipPluginTest(unittest.TestCase):
         with mock.patch("zip_plugin.CustomTask.task_extract_package", return_value=(True, None)) as dummy:
             v, r = self.zip_task.run_task(print, "exe_name")
             self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called_with(print, "dummy_value1", "dummy_value2")
 
     def testZipPluginTaskCreatePackage1(self):
@@ -190,6 +192,7 @@ class ZipPluginTest(unittest.TestCase):
         with mock.patch("zip_wrapper.make_pack", return_value=(True, None)) as dummy:
             v, r = self.zip_task.task_create_package(print, self.nonexistent_archive1, [self.existent_path1])
             self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called_with(self.nonexistent_archive1, [self.existent_path1])
 
     def testZipPluginTaskCreatePackage6(self):
@@ -200,6 +203,7 @@ class ZipPluginTest(unittest.TestCase):
         with mock.patch("zip_wrapper.make_pack", return_value=(True, None)) as dummy:
             v, r = self.zip_task.task_create_package(print, self.nonexistent_archive1, self.existent_path1)
             self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called_with(self.nonexistent_archive1, [self.existent_path1])
 
     def testZipPluginTaskExtractPackage1(self):
@@ -236,6 +240,7 @@ class ZipPluginTest(unittest.TestCase):
         with mock.patch("zip_wrapper.extract", return_value=(True, None)) as dummy:
             v, r = self.zip_task.task_extract_package(print, self.existent_path1, self.existent_path2)
             self.assertTrue(v)
+            self.assertEqual(r, None)
             dummy.assert_called_with(self.existent_path1, self.existent_path2)
 
 if __name__ == "__main__":
