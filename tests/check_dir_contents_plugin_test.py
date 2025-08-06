@@ -169,7 +169,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = self.existent_dir
         local_params["has_only"] = "dummy_value1"
-        local_params["has"] = "dummy_value2"
+        local_params["nothing"] = "dummy_value2"
         self.check_dir_contents_task.params = local_params
 
         v, r = self.check_dir_contents_task._read_params()
@@ -181,12 +181,48 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         local_params = {}
         local_params["target_path"] = self.existent_dir
         local_params["has_only"] = "dummy_value1"
+        local_params["has"] = "dummy_value2"
+        self.check_dir_contents_task.params = local_params
+
+        v, r = self.check_dir_contents_task._read_params()
+        self.assertFalse(v)
+        self.assertEqual(r, "has_only cannot be selected with anything else")
+
+    def testCheckDirContentsPluginReadParams14(self):
+
+        local_params = {}
+        local_params["target_path"] = self.existent_dir
+        local_params["has_only"] = "dummy_value1"
         local_params["not"] = "dummy_value2"
         self.check_dir_contents_task.params = local_params
 
         v, r = self.check_dir_contents_task._read_params()
         self.assertFalse(v)
         self.assertEqual(r, "has_only cannot be selected with anything else")
+
+    def testCheckDirContentsPluginReadParams15(self):
+
+        local_params = {}
+        local_params["target_path"] = self.existent_dir
+        local_params["nothing"] = "dummy_value1"
+        local_params["has"] = "dummy_value2"
+        self.check_dir_contents_task.params = local_params
+
+        v, r = self.check_dir_contents_task._read_params()
+        self.assertFalse(v)
+        self.assertEqual(r, "nothing cannot be selected with anything else")
+
+    def testCheckDirContentsPluginReadParams16(self):
+
+        local_params = {}
+        local_params["target_path"] = self.existent_dir
+        local_params["nothing"] = "dummy_value1"
+        local_params["not"] = "dummy_value2"
+        self.check_dir_contents_task.params = local_params
+
+        v, r = self.check_dir_contents_task._read_params()
+        self.assertFalse(v)
+        self.assertEqual(r, "nothing cannot be selected with anything else")
 
     def testCheckDirContentsPluginRunTask1(self):
 
