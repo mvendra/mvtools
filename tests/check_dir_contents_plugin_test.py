@@ -226,7 +226,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value2"])) as dummy:
             v, r = self.check_dir_contents_task.run_task(print, "exe_name")
             self.assertFalse(v)
-            self.assertEqual(r, "[dummy_value2] is unexpectedly contained on [%s] (has-only). not all expected entries found on [%s] (has-only)" % (self.existent_dir, self.existent_dir))
+            self.assertEqual(r, "[dummy_value2] is unexpectedly contained on [%s] (has-only). found none of the [1] expected on [%s] (has-only)" % (self.existent_dir, self.existent_dir))
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
     def testCheckDirContentsPluginRunTask5(self):
@@ -239,7 +239,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         with mock.patch("fsquery.makecontentlist", return_value=(True, [])) as dummy:
             v, r = self.check_dir_contents_task.run_task(print, "exe_name")
             self.assertFalse(v)
-            self.assertEqual(r, "not all expected entries found on [%s] (has-only)" % self.existent_dir)
+            self.assertEqual(r, "found none of the [1] expected on [%s] (has-only)" % self.existent_dir)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
     def testCheckDirContentsPluginRunTask6(self):
@@ -252,7 +252,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value3", "/base/dummy_value4"])) as dummy:
             v, r = self.check_dir_contents_task.run_task(print, "exe_name")
             self.assertFalse(v)
-            self.assertEqual(r, "[dummy_value3] is unexpectedly contained on [%s] (has-only). [dummy_value4] is unexpectedly contained on [%s] (has-only). not all expected entries found on [%s] (has-only)" % (self.existent_dir, self.existent_dir, self.existent_dir))
+            self.assertEqual(r, "[dummy_value3] is unexpectedly contained on [%s] (has-only). [dummy_value4] is unexpectedly contained on [%s] (has-only). found none of the [2] expected on [%s] (has-only)" % (self.existent_dir, self.existent_dir, self.existent_dir))
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
     def testCheckDirContentsPluginRunTask7(self):

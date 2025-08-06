@@ -98,8 +98,10 @@ class CustomTask(launch_jobs.BaseTask):
                 else:
                     report.append("[%s] is unexpectedly contained on [%s] (has-only)" % (f, target_path))
 
-            if found_keepers < len(has_only):
-                report.append("not all expected entries found on [%s] (has-only)" % target_path)
+            if found_keepers == 0:
+                report.append("found none of the [%s] expected on [%s] (has-only)" % (len(has_only), target_path))
+            elif found_keepers != len(has_only):
+                report.append("found only [%s] out of [%s] expected on [%s] (has-only)" % (found_keepers, len(has_only), target_path))
 
         else:
 
