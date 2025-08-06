@@ -198,7 +198,7 @@ class CleanupDirPluginTest(unittest.TestCase):
             with mock.patch("path_utils.remove_path", return_value=(True)) as dummy2:
                 v, r = self.cleanup_dir_task.run_task(print, "exe_name")
                 self.assertTrue(v)
-                self.assertEqual(r, "not all expected entries found on [%s] (keep-only)" % self.existent_dir)
+                self.assertEqual(r, "found none of the [1] expected on [%s] (keep-only)" % self.existent_dir)
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_called_with("/base/dummy_value2")
 
@@ -213,11 +213,26 @@ class CleanupDirPluginTest(unittest.TestCase):
             with mock.patch("path_utils.remove_path", return_value=(True)) as dummy2:
                 v, r = self.cleanup_dir_task.run_task(print, "exe_name")
                 self.assertTrue(v)
-                self.assertEqual(r, "not all expected entries found on [%s] (keep-only)" % self.existent_dir)
+                self.assertEqual(r, "found none of the [2] expected on [%s] (keep-only)" % self.existent_dir)
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_has_calls([call("/base/dummy_value3"), call("/base/dummy_value4")])
 
     def testCleanupDirPluginRunTask6(self):
+
+        local_params = {}
+        local_params["target_path"] = self.existent_dir
+        local_params["keep_only"] = ["dummy_value1", "dummy_value2"]
+        self.cleanup_dir_task.params = local_params
+
+        with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value2", "/base/dummy_value3"])) as dummy1:
+            with mock.patch("path_utils.remove_path", return_value=(True)) as dummy2:
+                v, r = self.cleanup_dir_task.run_task(print, "exe_name")
+                self.assertTrue(v)
+                self.assertEqual(r, "found only [1] out of [2] expected on [%s] (keep-only)" % self.existent_dir)
+                dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
+                dummy2.assert_has_calls([call("/base/dummy_value3")])
+
+    def testCleanupDirPluginRunTask7(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -232,7 +247,7 @@ class CleanupDirPluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_has_calls([call("/base/dummy_value2"), call("/base/dummy_value3")])
 
-    def testCleanupDirPluginRunTask7(self):
+    def testCleanupDirPluginRunTask8(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -247,7 +262,7 @@ class CleanupDirPluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_called_with("/base/dummy_value2")
 
-    def testCleanupDirPluginRunTask8(self):
+    def testCleanupDirPluginRunTask9(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -262,7 +277,7 @@ class CleanupDirPluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_called_with("/base/dummy_value1")
 
-    def testCleanupDirPluginRunTask9(self):
+    def testCleanupDirPluginRunTask10(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -277,7 +292,7 @@ class CleanupDirPluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_not_called()
 
-    def testCleanupDirPluginRunTask10(self):
+    def testCleanupDirPluginRunTask11(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -292,7 +307,7 @@ class CleanupDirPluginTest(unittest.TestCase):
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_called_with("/base/dummy_value1")
 
-    def testCleanupDirPluginRunTask11(self):
+    def testCleanupDirPluginRunTask12(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir

@@ -86,8 +86,10 @@ class CustomTask(launch_jobs.BaseTask):
                 if not path_utils.remove_path(f):
                     return False, "could not remove [%s] (keep-only)" % f
 
-            if found_keepers != len(keep_only):
-                report.append("not all expected entries found on [%s] (keep-only)" % target_path)
+            if found_keepers == 0:
+                report.append("found none of the [%s] expected on [%s] (keep-only)" % (len(keep_only), target_path))
+            elif found_keepers != len(keep_only):
+                report.append("found only [%s] out of [%s] expected on [%s] (keep-only)" % (found_keepers, len(keep_only), target_path))
 
         else: # ditch
 
