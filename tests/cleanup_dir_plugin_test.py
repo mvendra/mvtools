@@ -65,9 +65,20 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         v, r = self.cleanup_dir_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_dir, "dummy_value1", None))
+        self.assertEqual(r, (self.existent_dir, ["dummy_value1"], None))
 
     def testCleanupDirPluginReadParams3(self):
+
+        local_params = {}
+        local_params["target_path"] = self.existent_dir
+        local_params["keep_only"] = ["dummy_value1", "dummy_value2"]
+        self.cleanup_dir_task.params = local_params
+
+        v, r = self.cleanup_dir_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.existent_dir, ["dummy_value1", "dummy_value2"], None))
+
+    def testCleanupDirPluginReadParams4(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -78,7 +89,7 @@ class CleanupDirPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_dir, None, ["dummy_value1"]))
 
-    def testCleanupDirPluginReadParams4(self):
+    def testCleanupDirPluginReadParams5(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -89,7 +100,7 @@ class CleanupDirPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_dir, None, ["dummy_value1", "dummy_value2"]))
 
-    def testCleanupDirPluginReadParams5(self):
+    def testCleanupDirPluginReadParams6(self):
 
         local_params = {}
         local_params["target_path"] = self.nonexistent
@@ -100,7 +111,7 @@ class CleanupDirPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "target path [%s] does not exist" % self.nonexistent)
 
-    def testCleanupDirPluginReadParams6(self):
+    def testCleanupDirPluginReadParams7(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_file
@@ -111,7 +122,7 @@ class CleanupDirPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "target path [%s] is not a folder" % self.existent_file)
 
-    def testCleanupDirPluginReadParams7(self):
+    def testCleanupDirPluginReadParams8(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -121,7 +132,7 @@ class CleanupDirPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "no operations selected")
 
-    def testCleanupDirPluginReadParams8(self):
+    def testCleanupDirPluginReadParams9(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -172,7 +183,7 @@ class CleanupDirPluginTest(unittest.TestCase):
             with mock.patch("path_utils.remove_path", return_value=(True)) as dummy2:
                 v, r = self.cleanup_dir_task.run_task(print, "exe_name")
                 self.assertTrue(v)
-                self.assertEqual(r, "[dummy_value1] was not found on [%s] (keep-only)" % self.existent_dir)
+                self.assertEqual(r, "not all expected entries found on [%s] (keep-only)" % self.existent_dir)
                 dummy1.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
                 dummy2.assert_called_with("/base/dummy_value2")
 

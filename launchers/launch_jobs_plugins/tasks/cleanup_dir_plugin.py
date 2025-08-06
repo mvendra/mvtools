@@ -26,7 +26,12 @@ class CustomTask(launch_jobs.BaseTask):
 
         # keep_only
         try:
-            keep_only = self.params["keep_only"]
+            keep_only_read = self.params["keep_only"]
+            if isinstance(keep_only_read, list):
+                keep_only = keep_only_read
+            else:
+                keep_only = []
+                keep_only.append(keep_only_read)
         except KeyError:
             pass # optional
 
@@ -73,16 +78,16 @@ class CustomTask(launch_jobs.BaseTask):
         # keep_only
         if keep_only is not None:
 
-            found_keeper = False
+            found_keepers = 0
             for f in all_files:
-                if path_utils.basename_filtered(f) == keep_only:
-                    found_keeper = True
+                if path_utils.basename_filtered(f) in keep_only:
+                    found_keepers += 1
                     continue
                 if not path_utils.remove_path(f):
                     return False, "could not remove [%s] (keep-only)" % f
 
-            if not found_keeper:
-                report.append("[%s] was not found on [%s] (keep-only)" % (keep_only, target_path))
+            if found_keepers != len(keep_only):
+                report.append("not all expected entries found on [%s] (keep-only)" % target_path)
 
         else: # ditch
 
