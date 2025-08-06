@@ -27,7 +27,12 @@ class CustomTask(launch_jobs.BaseTask):
 
         # has_only
         try:
-            has_only = self.params["has_only"]
+            has_only_read = self.params["has_only"]
+            if isinstance(has_only_read, list):
+                has_only = has_only_read
+            else:
+                has_only = []
+                has_only.append(has_only_read)
         except KeyError:
             pass # optional
 
@@ -86,15 +91,15 @@ class CustomTask(launch_jobs.BaseTask):
         # has_only
         if has_only is not None:
 
-            found_keeper = False
+            found_keepers = 0
             for f in all_files:
-                if f == has_only:
-                    found_keeper = True
+                if f in has_only:
+                    found_keepers += 1
                 else:
                     report.append("[%s] is unexpectedly contained on [%s] (has-only)" % (f, target_path))
 
-            if not found_keeper:
-                report.append("[%s] was expected on [%s] (has-only)" % (has_only, target_path))
+            if found_keepers < len(has_only):
+                report.append("not all expected entries found on [%s] (has-only)" % target_path)
 
         else:
 

@@ -64,9 +64,20 @@ class CheckDirContentsPluginTest(unittest.TestCase):
 
         v, r = self.check_dir_contents_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_dir, "dummy_value1", None, None))
+        self.assertEqual(r, (self.existent_dir, ["dummy_value1"], None, None))
 
     def testCheckDirContentsPluginReadParams3(self):
+
+        local_params = {}
+        local_params["target_path"] = self.existent_dir
+        local_params["has_only"] = ["dummy_value1", "dummy_value2"]
+        self.check_dir_contents_task.params = local_params
+
+        v, r = self.check_dir_contents_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.existent_dir, ["dummy_value1", "dummy_value2"], None, None))
+
+    def testCheckDirContentsPluginReadParams4(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -77,7 +88,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_dir, None, ["dummy_value1"], None))
 
-    def testCheckDirContentsPluginReadParams4(self):
+    def testCheckDirContentsPluginReadParams5(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -88,7 +99,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_dir, None, ["dummy_value1", "dummy_value2"], None))
 
-    def testCheckDirContentsPluginReadParams5(self):
+    def testCheckDirContentsPluginReadParams6(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -99,7 +110,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_dir, None, None, ["dummy_value1"]))
 
-    def testCheckDirContentsPluginReadParams6(self):
+    def testCheckDirContentsPluginReadParams7(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -110,7 +121,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.existent_dir, None, None, ["dummy_value1", "dummy_value2"]))
 
-    def testCheckDirContentsPluginReadParams7(self):
+    def testCheckDirContentsPluginReadParams8(self):
 
         local_params = {}
         local_params["target_path"] = self.nonexistent
@@ -121,7 +132,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "target path [%s] does not exist" % self.nonexistent)
 
-    def testCheckDirContentsPluginReadParams8(self):
+    def testCheckDirContentsPluginReadParams9(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_file
@@ -132,7 +143,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "target path [%s] is not a folder" % self.existent_file)
 
-    def testCheckDirContentsPluginReadParams9(self):
+    def testCheckDirContentsPluginReadParams10(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -142,7 +153,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "no checks selected")
 
-    def testCheckDirContentsPluginReadParams10(self):
+    def testCheckDirContentsPluginReadParams11(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -154,7 +165,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         self.assertFalse(v)
         self.assertEqual(r, "has_only cannot be selected with either has or not")
 
-    def testCheckDirContentsPluginReadParams11(self):
+    def testCheckDirContentsPluginReadParams12(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -202,7 +213,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value2"])) as dummy:
             v, r = self.check_dir_contents_task.run_task(print, "exe_name")
             self.assertFalse(v)
-            self.assertEqual(r, "[dummy_value2] is unexpectedly contained on [%s] (has-only). [dummy_value1] was expected on [%s] (has-only)" % (self.existent_dir, self.existent_dir))
+            self.assertEqual(r, "[dummy_value2] is unexpectedly contained on [%s] (has-only). not all expected entries found on [%s] (has-only)" % (self.existent_dir, self.existent_dir))
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
     def testCheckDirContentsPluginRunTask4(self):
@@ -215,7 +226,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
         with mock.patch("fsquery.makecontentlist", return_value=(True, [])) as dummy:
             v, r = self.check_dir_contents_task.run_task(print, "exe_name")
             self.assertFalse(v)
-            self.assertEqual(r, "[dummy_value1] was expected on [%s] (has-only)" % self.existent_dir)
+            self.assertEqual(r, "not all expected entries found on [%s] (has-only)" % self.existent_dir)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
     def testCheckDirContentsPluginRunTask5(self):
