@@ -259,6 +259,19 @@ class CheckDirContentsPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
+        local_params["has_only"] = ["dummy_value1", "dummy_value2"]
+        self.check_dir_contents_task.params = local_params
+
+        with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value2", "/base/dummy_value3"])) as dummy:
+            v, r = self.check_dir_contents_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "[dummy_value3] is unexpectedly contained on [%s] (has-only). found only [1] out of [2] expected on [%s] (has-only)" % (self.existent_dir, self.existent_dir))
+            dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
+
+    def testCheckDirContentsPluginRunTask8(self):
+
+        local_params = {}
+        local_params["target_path"] = self.existent_dir
         local_params["has_only"] = "dummy_value1"
         self.check_dir_contents_task.params = local_params
 
@@ -268,7 +281,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
             self.assertEqual(r, "[dummy_value2] is unexpectedly contained on [%s] (has-only)" % self.existent_dir)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
-    def testCheckDirContentsPluginRunTask8(self):
+    def testCheckDirContentsPluginRunTask9(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -281,7 +294,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
             self.assertEqual(r, "[dummy_value2] is unexpectedly contained on [%s] (has-only)" % self.existent_dir)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
-    def testCheckDirContentsPluginRunTask9(self):
+    def testCheckDirContentsPluginRunTask10(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -294,7 +307,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
-    def testCheckDirContentsPluginRunTask10(self):
+    def testCheckDirContentsPluginRunTask11(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -307,7 +320,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
-    def testCheckDirContentsPluginRunTask11(self):
+    def testCheckDirContentsPluginRunTask12(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -320,7 +333,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
             self.assertEqual(r, "[dummy_value2] was expected on [%s] (has)" % self.existent_dir)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
-    def testCheckDirContentsPluginRunTask12(self):
+    def testCheckDirContentsPluginRunTask13(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -333,7 +346,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
-    def testCheckDirContentsPluginRunTask13(self):
+    def testCheckDirContentsPluginRunTask14(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
@@ -346,7 +359,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.existent_dir, False, False, True, True, True, True, True, None)
 
-    def testCheckDirContentsPluginRunTask14(self):
+    def testCheckDirContentsPluginRunTask15(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
