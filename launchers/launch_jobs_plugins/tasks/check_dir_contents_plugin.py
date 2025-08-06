@@ -114,7 +114,11 @@ class CustomTask(launch_jobs.BaseTask):
         # nothing
         elif nothing:
 
-            pass # mvtodo
+            if len(all_files) > 0:
+                plural_str = ""
+                if len(all_files) > 1:
+                    plural_str = "s"
+                report.append("found [%s] item%s while expecting nothing inside of [%s]" % (len(all_files), plural_str, target_path))
 
         else:
 
