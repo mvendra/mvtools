@@ -16,6 +16,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         target_path = None
         has_only = None
+        nothing = None
         has_list = None
         not_list = None
 
@@ -35,6 +36,10 @@ class CustomTask(launch_jobs.BaseTask):
                 has_only.append(has_only_read)
         except KeyError:
             pass # optional
+
+        # nothing
+        if "nothing" in self.params:
+            nothing = True
 
         # has
         try:
@@ -65,12 +70,16 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.isdir(target_path):
             return False, "target path [%s] is not a folder" % target_path
 
-        if (has_only is None) and (has_list is None) and (not_list is None):
+        if (has_only is None) and (nothing is None) and (has_list is None) and (not_list is None):
             return False, "no checks selected"
 
         if has_only is not None:
-            if (has_list is not None) or (not_list is not None):
-                return False, "has_only cannot be selected with either has or not"
+            if (nothing is not None) or (has_list is not None) or (not_list is not None):
+                return False, "has_only cannot be selected with anything else"
+
+        if nothing is not None:
+            if (has_only is not None) or (has_list is not None) or (not_list is not None):
+                return False, "nothing cannot be selected with anything else"
 
         return True, (target_path, has_only, has_list, not_list)
 

@@ -163,7 +163,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
 
         v, r = self.check_dir_contents_task._read_params()
         self.assertFalse(v)
-        self.assertEqual(r, "has_only cannot be selected with either has or not")
+        self.assertEqual(r, "has_only cannot be selected with anything else")
 
     def testCheckDirContentsPluginReadParams12(self):
 
@@ -175,7 +175,7 @@ class CheckDirContentsPluginTest(unittest.TestCase):
 
         v, r = self.check_dir_contents_task._read_params()
         self.assertFalse(v)
-        self.assertEqual(r, "has_only cannot be selected with either has or not")
+        self.assertEqual(r, "has_only cannot be selected with anything else")
 
     def testCheckDirContentsPluginRunTask1(self):
 
