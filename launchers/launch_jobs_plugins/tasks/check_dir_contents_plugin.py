@@ -81,14 +81,14 @@ class CustomTask(launch_jobs.BaseTask):
             if (has_only is not None) or (has_list is not None) or (not_list is not None):
                 return False, "nothing cannot be selected with anything else"
 
-        return True, (target_path, has_only, has_list, not_list)
+        return True, (target_path, has_only, nothing, has_list, not_list)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, has_only, has_list, not_list = r
+        target_path, has_only, nothing, has_list, not_list = r
 
         report = []
 
@@ -111,6 +111,11 @@ class CustomTask(launch_jobs.BaseTask):
                 report.append("found none of the [%s] expected on [%s] (has-only)" % (len(has_only), target_path))
             elif found_keepers != len(has_only):
                 report.append("found only [%s] out of [%s] expected on [%s] (has-only)" % (found_keepers, len(has_only), target_path))
+
+        # nothing
+        elif nothing is not None:
+
+            pass # mvtodo
 
         else:
 
