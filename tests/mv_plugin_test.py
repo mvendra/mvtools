@@ -4,6 +4,8 @@ import sys
 import os
 import shutil
 import unittest
+from unittest import mock
+from unittest.mock import patch
 
 import mvtools_test_fixture
 import path_utils
@@ -128,6 +130,32 @@ class MvPluginTest(unittest.TestCase):
 
         v, r = self.mv_task._read_params()
         self.assertFalse(v)
+
+    def testMvPluginRunTask1(self):
+
+        local_params = {}
+        local_params["source_path"] = self.path1
+        local_params["target_path"] = self.path2
+        self.mv_task.params = local_params
+
+        with mock.patch("mv_wrapper.move", return_value=(False, "dummy_error_msg")) as dummy:
+            v, r = self.mv_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "dummy_error_msg")
+            dummy.assert_called_with(self.path1, self.path2)
+
+    def testMvPluginRunTask2(self):
+
+        local_params = {}
+        local_params["source_path"] = self.path1
+        local_params["target_path"] = self.path2
+        self.mv_task.params = local_params
+
+        with mock.patch("mv_wrapper.move", return_value=(True, (True, "stdout", "stderr"))) as dummy:
+            v, r = self.mv_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.path1, self.path2)
 
 if __name__ == "__main__":
     unittest.main()
