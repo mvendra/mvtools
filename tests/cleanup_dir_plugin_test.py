@@ -49,7 +49,7 @@ class CleanupDirPluginTest(unittest.TestCase):
     def testCleanupDirPluginReadParams1(self):
 
         local_params = {}
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         v, r = self.cleanup_dir_task._read_params()
@@ -60,7 +60,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         v, r = self.cleanup_dir_task._read_params()
@@ -71,7 +71,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = ["dummy_value1", "dummy_value2"]
+        local_params["keep"] = ["dummy_value1", "dummy_value2"]
         self.cleanup_dir_task.params = local_params
 
         v, r = self.cleanup_dir_task._read_params()
@@ -104,7 +104,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.nonexistent
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         v, r = self.cleanup_dir_task._read_params()
@@ -115,7 +115,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_file
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         v, r = self.cleanup_dir_task._read_params()
@@ -136,19 +136,19 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         local_params["ditch"] = "dummy_value2"
         self.cleanup_dir_task.params = local_params
 
         v, r = self.cleanup_dir_task._read_params()
         self.assertFalse(v)
-        self.assertEqual(r, "keep_only cannot be selected with ditch")
+        self.assertEqual(r, "either keep or ditch must be used - not both")
 
     def testCleanupDirPluginRunTask1(self):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(False, "dummy_error_msg")) as dummy:
@@ -161,7 +161,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value1"])) as dummy1:
@@ -176,7 +176,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = ["dummy_value1", "dummy_value2"]
+        local_params["keep"] = ["dummy_value1", "dummy_value2"]
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value1", "/base/dummy_value2"])) as dummy1:
@@ -191,7 +191,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value2"])) as dummy1:
@@ -206,7 +206,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = ["dummy_value1", "dummy_value2"]
+        local_params["keep"] = ["dummy_value1", "dummy_value2"]
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value3", "/base/dummy_value4"])) as dummy1:
@@ -221,7 +221,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = ["dummy_value1", "dummy_value2"]
+        local_params["keep"] = ["dummy_value1", "dummy_value2"]
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value2", "/base/dummy_value3"])) as dummy1:
@@ -236,7 +236,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value1", "/base/dummy_value2", "/base/dummy_value3"])) as dummy1:
@@ -251,7 +251,7 @@ class CleanupDirPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["target_path"] = self.existent_dir
-        local_params["keep_only"] = "dummy_value1"
+        local_params["keep"] = "dummy_value1"
         self.cleanup_dir_task.params = local_params
 
         with mock.patch("fsquery.makecontentlist", return_value=(True, ["/base/dummy_value2"])) as dummy1:

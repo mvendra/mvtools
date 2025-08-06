@@ -15,7 +15,7 @@ class CustomTask(launch_jobs.BaseTask):
     def _read_params(self):
 
         target_path = None
-        keep_only = None
+        keep = None
         ditch = None
 
         # target_path
@@ -24,14 +24,14 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "target_path is a required parameter"
 
-        # keep_only
+        # keep
         try:
-            keep_only_read = self.params["keep_only"]
-            if isinstance(keep_only_read, list):
-                keep_only = keep_only_read
+            keep_read = self.params["keep"]
+            if isinstance(keep_read, list):
+                keep = keep_read
             else:
-                keep_only = []
-                keep_only.append(keep_only_read)
+                keep = []
+                keep.append(keep_read)
         except KeyError:
             pass # optional
 
@@ -53,20 +53,20 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.isdir(target_path):
             return False, "target path [%s] is not a folder" % target_path
 
-        if (keep_only is None) and (ditch is None):
+        if (keep is None) and (ditch is None):
             return False, "no operations selected"
 
-        if (keep_only is not None) and (ditch is not None):
-            return False, "keep_only cannot be selected with ditch"
+        if (keep is not None) and (ditch is not None):
+            return False, "either keep or ditch must be used - not both"
 
-        return True, (target_path, keep_only, ditch)
+        return True, (target_path, keep, ditch)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        target_path, keep_only, ditch = r
+        target_path, keep, ditch = r
 
         report = []
 
@@ -75,21 +75,21 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         all_files = r
 
-        # keep_only
-        if keep_only is not None:
+        # keep
+        if keep is not None:
 
             found_keepers = 0
             for f in all_files:
-                if path_utils.basename_filtered(f) in keep_only:
+                if path_utils.basename_filtered(f) in keep:
                     found_keepers += 1
                     continue
                 if not path_utils.remove_path(f):
                     return False, "could not remove [%s] (keep-only)" % f
 
             if found_keepers == 0:
-                report.append("found none of the [%s] expected on [%s] (keep-only)" % (len(keep_only), target_path))
-            elif found_keepers != len(keep_only):
-                report.append("found only [%s] out of [%s] expected on [%s] (keep-only)" % (found_keepers, len(keep_only), target_path))
+                report.append("found none of the [%s] expected on [%s] (keep-only)" % (len(keep), target_path))
+            elif found_keepers != len(keep):
+                report.append("found only [%s] out of [%s] expected on [%s] (keep-only)" % (found_keepers, len(keep), target_path))
 
         else: # ditch
 
