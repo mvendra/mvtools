@@ -159,12 +159,12 @@ class MakePluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value2"
         local_params["prefix"] = "dummy_value3"
         local_params["save_output"] = "dummy_value4"
-        local_params["save_error_output"] = "dummy_value5"
+        local_params["filter_output"] = self.existent_path2
         self.make_task.params = local_params
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, "dummy_value5", None, False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", [self.existent_path2], None, None, False))
 
     def testMakePluginReadParams11(self):
 
@@ -173,13 +173,43 @@ class MakePluginTest(unittest.TestCase):
         local_params["target"] = "dummy_value2"
         local_params["prefix"] = "dummy_value3"
         local_params["save_output"] = "dummy_value4"
+        local_params["filter_output"] = [self.existent_path2, "param1", "param2", "param3"]
+        self.make_task.params = local_params
+
+        v, r = self.make_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", [self.existent_path2, "param1", "param2", "param3"], None, None, False))
+
+    def testMakePluginReadParams12(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
+        local_params["target"] = "dummy_value2"
+        local_params["prefix"] = "dummy_value3"
+        local_params["save_output"] = "dummy_value4"
+        local_params["filter_output"] = self.existent_path2
+        local_params["save_error_output"] = "dummy_value5"
+        self.make_task.params = local_params
+
+        v, r = self.make_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", [self.existent_path2], "dummy_value5", None, False))
+
+    def testMakePluginReadParams13(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
+        local_params["target"] = "dummy_value2"
+        local_params["prefix"] = "dummy_value3"
+        local_params["save_output"] = "dummy_value4"
+        local_params["filter_output"] = self.existent_path2
         local_params["save_error_output"] = "dummy_value5"
         local_params["suppress_stderr_warnings"] = "dummy_value6"
         self.make_task.params = local_params
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, "dummy_value5", None, True))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", [self.existent_path2], "dummy_value5", None, True))
 
     def testMakePluginRunTask1(self):
 

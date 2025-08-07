@@ -58,7 +58,12 @@ class CustomTask(launch_jobs.BaseTask):
 
         # filter_output
         try:
-            filter_output = self.params["filter_output"]
+            filter_output_read = self.params["filter_output"]
+            if isinstance(filter_output_read, list):
+                filter_output = filter_output_read
+            else:
+                filter_output = []
+                filter_output.append(filter_output_read)
         except KeyError:
             pass # optional
 
