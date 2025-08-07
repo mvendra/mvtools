@@ -64,7 +64,7 @@ class DiffPluginTest(unittest.TestCase):
         right_filter_contents = ""
         right_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
         right_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
-        right_filter_contents += "    return \"filtered contents\"" + os.linesep
+        right_filter_contents += "    return \"right filtered contents\"" + os.linesep
         create_and_write_file.create_file_contents(self.right_filter_full, right_filter_contents)
         os.chmod(self.right_filter_full, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
@@ -228,7 +228,7 @@ class DiffPluginTest(unittest.TestCase):
             v, r = self.diff_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with(self.left_path, "filtered contents")
+            dummy.assert_called_with(self.left_path, "right filtered contents")
 
     def testDiffPluginRunTask2(self):
 
@@ -257,7 +257,7 @@ class DiffPluginTest(unittest.TestCase):
             v, r = self.diff_task.run_task(print, "exe_name")
             self.assertFalse(v)
             self.assertEqual(r, "contents of [%s] and [%s (filtered)] are equal" % (self.left_path, self.right_path))
-            dummy.assert_called_with(self.left_path, "filtered contents")
+            dummy.assert_called_with(self.left_path, "right filtered contents")
 
     def testDiffPluginRunTask4(self):
 
@@ -300,7 +300,7 @@ class DiffPluginTest(unittest.TestCase):
             v, r = self.diff_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, "contents of [%s] and [%s (filtered)] are equal" % (self.left_path, self.right_path))
-            dummy.assert_called_with(self.left_path, "filtered contents")
+            dummy.assert_called_with(self.left_path, "right filtered contents")
 
     def testDiffPluginRunTask7(self):
 
@@ -357,7 +357,7 @@ class DiffPluginTest(unittest.TestCase):
             v, r = self.diff_task.run_task(print, "exe_name")
             self.assertFalse(v)
             self.assertEqual(r, "contents of [%s] and [%s (filtered)] are not equal" % (self.left_path, self.right_path))
-            dummy.assert_called_with(self.left_path, "filtered contents")
+            dummy.assert_called_with(self.left_path, "right filtered contents")
 
     def testDiffPluginRunTask11(self):
 
@@ -400,7 +400,7 @@ class DiffPluginTest(unittest.TestCase):
             v, r = self.diff_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, "contents of [%s] and [%s (filtered)] are not equal" % (self.left_path, self.right_path))
-            dummy.assert_called_with(self.left_path, "filtered contents")
+            dummy.assert_called_with(self.left_path, "right filtered contents")
 
 if __name__ == "__main__":
     unittest.main()
