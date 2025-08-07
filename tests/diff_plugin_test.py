@@ -86,7 +86,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, "eq-fail"))
+        self.assertEqual(r, (self.left_path, self.right_path, None, "eq-fail"))
 
     def testDiffPluginReadParams5(self):
 
@@ -98,7 +98,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, "eq-warn"))
+        self.assertEqual(r, (self.left_path, self.right_path, None, "eq-warn"))
 
     def testDiffPluginReadParams6(self):
 
@@ -110,7 +110,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, "ne-fail"))
+        self.assertEqual(r, (self.left_path, self.right_path, None, "ne-fail"))
 
     def testDiffPluginReadParams7(self):
 
@@ -122,7 +122,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, "ne-warn"))
+        self.assertEqual(r, (self.left_path, self.right_path, None, "ne-warn"))
 
     def testDiffPluginRunTask1(self):
 
