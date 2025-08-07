@@ -70,7 +70,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, None, None, None, None, False))
+        self.assertEqual(r, (self.existent_path1, None, None, None, None, None, None, None, False))
 
     def testMakePluginReadParams3(self):
 
@@ -90,7 +90,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, "8", None, None, None, None, False))
+        self.assertEqual(r, (self.existent_path1, "8", None, None, None, None, None, None, False))
 
     def testMakePluginReadParams5(self):
 
@@ -121,7 +121,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", None, None, None, False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", None, None, None, None, None, False))
 
     def testMakePluginReadParams8(self):
 
@@ -133,7 +133,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", None, None, False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", None, None, None, None, False))
 
     def testMakePluginReadParams9(self):
 
@@ -146,7 +146,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, None, None, False))
 
     def testMakePluginReadParams10(self):
 
@@ -160,7 +160,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", False))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, "dummy_value5", None, False))
 
     def testMakePluginReadParams11(self):
 
@@ -175,7 +175,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", True))
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", None, "dummy_value5", None, True))
 
     def testMakePluginRunTask1(self):
 

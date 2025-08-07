@@ -21,7 +21,9 @@ class CustomTask(launch_jobs.BaseTask):
         target = None
         prefix = None
         save_output = None
+        filter_output = None
         save_error_output = None
+        filter_error_output = None
         suppress_stderr_warnings = None
 
         # work_dir
@@ -54,9 +56,21 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # filter_output
+        try:
+            filter_output = self.params["filter_output"]
+        except KeyError:
+            pass # optional
+
         # save_error_output
         try:
             save_error_output = self.params["save_error_output"]
+        except KeyError:
+            pass # optional
+
+        # filter_error_output
+        try:
+            filter_error_output = self.params["filter_error_output"]
         except KeyError:
             pass # optional
 
@@ -77,7 +91,7 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
-        return True, (work_dir, jobs, target, prefix, save_output, save_error_output, suppress_stderr_warnings)
+        return True, (work_dir, jobs, target, prefix, save_output, filter_output, save_error_output, filter_error_output, suppress_stderr_warnings)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -87,7 +101,7 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        work_dir, jobs, target, prefix, save_output, save_error_output, suppress_stderr_warnings = r
+        work_dir, jobs, target, prefix, save_output, filter_output, save_error_output, filter_error_output, suppress_stderr_warnings = r
 
         # actual execution
         v, r = make_wrapper.make(work_dir, jobs, target, prefix)
@@ -100,6 +114,9 @@ class CustomTask(launch_jobs.BaseTask):
         # dump outputs
         output_backup_helper.dump_output(feedback_object, save_output, proc_stdout, ("Make's stdout has been saved to: [%s]" % save_output))
         output_backup_helper.dump_output(feedback_object, save_error_output, proc_stderr, ("Make's stderr has been saved to: [%s]" % save_error_output))
+
+        # filter outputs
+        # mvtodo
 
         # autobackup outputs
         output_list = [("make_plugin_stdout", proc_stdout, "Make's stdout"), ("make_plugin_stderr", proc_stderr, "Make's stderr")]
