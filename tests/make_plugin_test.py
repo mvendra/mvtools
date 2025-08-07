@@ -46,6 +46,10 @@ class MakePluginTest(unittest.TestCase):
         self.existent_path2 = path_utils.concat_path(self.test_dir, "existent_path2")
         os.mkdir(self.existent_path2)
 
+        # existent path 3
+        self.existent_path3 = path_utils.concat_path(self.test_dir, "existent_path3")
+        os.mkdir(self.existent_path3)
+
         # nonexistent path 1
         self.nonexistent_path1 = path_utils.concat_path(self.test_dir, "nonexistent_path1")
 
@@ -196,6 +200,38 @@ class MakePluginTest(unittest.TestCase):
         self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", [self.existent_path2], "dummy_value5", None, False))
 
     def testMakePluginReadParams13(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
+        local_params["target"] = "dummy_value2"
+        local_params["prefix"] = "dummy_value3"
+        local_params["save_output"] = "dummy_value4"
+        local_params["filter_output"] = self.existent_path2
+        local_params["save_error_output"] = "dummy_value5"
+        local_params["filter_error_output"] = self.existent_path3
+        self.make_task.params = local_params
+
+        v, r = self.make_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", [self.existent_path2], "dummy_value5", [self.existent_path3], False))
+
+    def testMakePluginReadParams14(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
+        local_params["target"] = "dummy_value2"
+        local_params["prefix"] = "dummy_value3"
+        local_params["save_output"] = "dummy_value4"
+        local_params["filter_output"] = self.existent_path2
+        local_params["save_error_output"] = "dummy_value5"
+        local_params["filter_error_output"] = [self.existent_path3, "param1", "param2", "param3"]
+        self.make_task.params = local_params
+
+        v, r = self.make_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.existent_path1, None, "dummy_value2", "dummy_value3", "dummy_value4", [self.existent_path2], "dummy_value5", [self.existent_path3, "param1", "param2", "param3"], False))
+
+    def testMakePluginReadParams15(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1

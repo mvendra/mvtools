@@ -75,7 +75,12 @@ class CustomTask(launch_jobs.BaseTask):
 
         # filter_error_output
         try:
-            filter_error_output = self.params["filter_error_output"]
+            filter_error_output_read = self.params["filter_error_output"]
+            if isinstance(filter_error_output_read, list):
+                filter_error_output = filter_error_output_read
+            else:
+                filter_error_output = []
+                filter_error_output.append(filter_error_output_read)
         except KeyError:
             pass # optional
 
