@@ -67,23 +67,28 @@ class CustomTask(launch_jobs.BaseTask):
             return False, r
         left_path, right_path, right_filter, mode = r
 
+        left_filter_str = "" # mvtodo
+        right_filter_str = ""
+
+        if right_filter is not None:
+            right_filter_str = " (filtered)"
+
         v, r = diff_wrapper.do_diff(left_path, plug_filter.plug_filter(right_filter, right_path))
         if not v:
             return False, r
         contents = r
 
-        # mvtodo: inform about filters being used or not
         if mode == "eq-fail":
             if len(contents) == 0:
-                return False, "contents of [%s] and [%s] are equal" % (left_path, right_path)
+                return False, "contents of [%s%s] and [%s%s] are equal" % (left_path, left_filter_str, right_path, right_filter_str)
         elif mode == "eq-warn":
             if len(contents) == 0:
-                return True, "contents of [%s] and [%s] are equal" % (left_path, right_path)
+                return True, "contents of [%s%s] and [%s%s] are equal" % (left_path, left_filter_str, right_path, right_filter_str)
         elif mode == "ne-fail":
             if len(contents) > 0:
-                return False, "contents of [%s] and [%s] are not equal" % (left_path, right_path)
+                return False, "contents of [%s%s] and [%s%s] are not equal" % (left_path, left_filter_str, right_path, right_filter_str)
         elif mode == "ne-warn":
             if len(contents) > 0:
-                return True, "contents of [%s] and [%s] are not equal" % (left_path, right_path)
+                return True, "contents of [%s%s] and [%s%s] are not equal" % (left_path, left_filter_str, right_path, right_filter_str)
 
         return True, None
