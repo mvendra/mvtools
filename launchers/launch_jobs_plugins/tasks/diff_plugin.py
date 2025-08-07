@@ -63,13 +63,13 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "mode is a required parameter"
 
         # params validation
-        if right_filter is not None:
-            if not os.path.exists(right_filter[0]):
-                return False, "filter script [%s] does not exist" % right_filter[0]
-
         if left_filter is not None:
             if not os.path.exists(left_filter[0]):
-                return False, "filter script [%s] does not exist" % left_filter[0]
+                return False, "left filter script [%s] does not exist" % left_filter[0]
+
+        if right_filter is not None:
+            if not os.path.exists(right_filter[0]):
+                return False, "right filter script [%s] does not exist" % right_filter[0]
 
         if not mode in ["eq-fail", "eq-warn", "ne-fail", "ne-warn"]:
             return False, "mode [%s] is invalid" % mode
