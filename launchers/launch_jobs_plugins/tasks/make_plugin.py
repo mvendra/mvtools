@@ -7,6 +7,8 @@ import log_helper
 import output_backup_helper
 
 import launch_jobs
+import plug_filter
+
 import make_wrapper
 
 class CustomTask(launch_jobs.BaseTask):
@@ -131,12 +133,14 @@ class CustomTask(launch_jobs.BaseTask):
         proc_stdout = r[1]
         proc_stderr = r[2]
 
+        # filter outputs
+        if proc_result:
+            proc_stdout = plug_filter.plug_filter(filter_output, proc_stdout)
+            proc_stderr = plug_filter.plug_filter(filter_error_output, proc_stderr)
+
         # dump outputs
         output_backup_helper.dump_output(feedback_object, save_output, proc_stdout, ("Make's stdout has been saved to: [%s]" % save_output))
         output_backup_helper.dump_output(feedback_object, save_error_output, proc_stderr, ("Make's stderr has been saved to: [%s]" % save_error_output))
-
-        # filter outputs
-        # mvtodo
 
         # autobackup outputs
         output_list = [("make_plugin_stdout", proc_stdout, "Make's stdout"), ("make_plugin_stderr", proc_stderr, "Make's stderr")]
