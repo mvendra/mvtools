@@ -86,10 +86,20 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_output):
                 return False, "save_output [%s] points to a preexisting path" % save_output
 
+        # filter_output
+        if filter_output is not None:
+            if not os.path.exists(filter_output[0]):
+                return False, "filter_output [%s] does not exist" % filter_output[0]
+
         # save_error_output
         if save_error_output is not None:
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
+
+        # filter_error_output
+        if filter_error_output is not None:
+            if not os.path.exists(filter_error_output[0]):
+                return False, "filter_error_output [%s] does not exist" % filter_error_output[0]
 
         return True, (work_dir, jobs, target, prefix, save_output, filter_output, save_error_output, filter_error_output, suppress_stderr_warnings)
 
