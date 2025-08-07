@@ -79,7 +79,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         # pre-validate parameters
         if not os.path.exists(work_dir):
-            return False, "work_dir [%s] does not exist." % work_dir
+            return False, "work_dir [%s] does not exist" % work_dir
 
         # save_output
         if save_output is not None:

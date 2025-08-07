@@ -61,6 +61,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "work_dir is a required parameter")
 
     def testMakePluginReadParams2(self):
 
@@ -80,6 +81,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "work_dir [%s] does not exist" % self.nonexistent_path1)
 
     def testMakePluginReadParams4(self):
 
@@ -101,6 +103,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "save_output [%s] points to a preexisting path" % self.existent_path2)
 
     def testMakePluginReadParams6(self):
 
@@ -111,6 +114,7 @@ class MakePluginTest(unittest.TestCase):
 
         v, r = self.make_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "save_error_output [%s] points to a preexisting path" % self.existent_path2)
 
     def testMakePluginReadParams7(self):
 
