@@ -115,7 +115,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, [self.right_filter_full], "eq-fail"))
+        self.assertEqual(r, (self.left_path, None, self.right_path, [self.right_filter_full], "eq-fail"))
 
     def testDiffPluginReadParams6(self):
 
@@ -128,7 +128,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, [self.right_filter_full, "param1", "param2", "param3"], "eq-fail"))
+        self.assertEqual(r, (self.left_path, None, self.right_path, [self.right_filter_full, "param1", "param2", "param3"], "eq-fail"))
 
     def testDiffPluginReadParams7(self):
 
@@ -140,7 +140,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, None, "eq-fail"))
+        self.assertEqual(r, (self.left_path, None, self.right_path, None, "eq-fail"))
 
     def testDiffPluginReadParams8(self):
 
@@ -152,7 +152,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, None, "eq-warn"))
+        self.assertEqual(r, (self.left_path, None, self.right_path, None, "eq-warn"))
 
     def testDiffPluginReadParams9(self):
 
@@ -164,7 +164,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, None, "ne-fail"))
+        self.assertEqual(r, (self.left_path, None, self.right_path, None, "ne-fail"))
 
     def testDiffPluginReadParams10(self):
 
@@ -176,7 +176,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (self.left_path, self.right_path, None, "ne-warn"))
+        self.assertEqual(r, (self.left_path, None, self.right_path, None, "ne-warn"))
 
     def testDiffPluginRunTask1(self):
 

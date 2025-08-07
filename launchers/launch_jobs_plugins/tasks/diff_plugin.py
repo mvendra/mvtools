@@ -17,6 +17,7 @@ class CustomTask(launch_jobs.BaseTask):
     def _read_params(self):
 
         left_path = None
+        left_filter = None
         right_path = None
         right_filter = None
         mode = None
@@ -26,6 +27,17 @@ class CustomTask(launch_jobs.BaseTask):
             left_path = self.params["left_path"]
         except KeyError:
             return False, "left_path is a required parameter"
+
+        # left_filter
+        try:
+            left_filter_read = self.params["left_filter"]
+            if isinstance(left_filter_read, list):
+                left_filter = left_filter_read
+            else:
+                left_filter = []
+                left_filter.append(left_filter_read)
+        except KeyError:
+            pass # optional
 
         # right_path
         try:
@@ -55,25 +67,31 @@ class CustomTask(launch_jobs.BaseTask):
             if not os.path.exists(right_filter[0]):
                 return False, "filter script [%s] does not exist" % right_filter[0]
 
+        if left_filter is not None:
+            if not os.path.exists(left_filter[0]):
+                return False, "filter script [%s] does not exist" % left_filter[0]
+
         if not mode in ["eq-fail", "eq-warn", "ne-fail", "ne-warn"]:
             return False, "mode [%s] is invalid" % mode
 
-        return True, (left_path, right_path, right_filter, mode)
+        return True, (left_path, left_filter, right_path, right_filter, mode)
 
     def run_task(self, feedback_object, execution_name=None):
 
         v, r = self._read_params()
         if not v:
             return False, r
-        left_path, right_path, right_filter, mode = r
+        left_path, left_filter, right_path, right_filter, mode = r
 
-        left_filter_str = "" # mvtodo
+        left_filter_str = ""
+        if left_filter is not None:
+            left_filter_str = " (filtered)"
+
         right_filter_str = ""
-
         if right_filter is not None:
             right_filter_str = " (filtered)"
 
-        v, r = diff_wrapper.do_diff(left_path, plug_filter.plug_filter(right_filter, right_path))
+        v, r = diff_wrapper.do_diff(plug_filter.plug_filter(left_filter, left_path), plug_filter.plug_filter(right_filter, right_path))
         if not v:
             return False, r
         contents = r
