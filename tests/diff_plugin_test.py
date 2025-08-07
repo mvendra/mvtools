@@ -275,6 +275,21 @@ class DiffPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["left_path"] = self.left_path
+        local_params["left_filter"] = self.left_filter_full
+        local_params["right_path"] = self.right_path
+        local_params["mode"] = "eq-fail"
+        self.diff_task.params = local_params
+
+        with mock.patch("diff_wrapper.do_diff", return_value=(True, "")) as dummy:
+            v, r = self.diff_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "contents of [%s (filtered)] and [%s] are equal" % (self.left_path, self.right_path))
+            dummy.assert_called_with("left filtered contents", self.right_path)
+
+    def testDiffPluginRunTask5(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
         local_params["right_filter"] = self.right_filter_full
         local_params["mode"] = "eq-fail"
@@ -286,7 +301,7 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, "contents of [%s] and [%s (filtered)] are equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, "right filtered contents")
 
-    def testDiffPluginRunTask5(self):
+    def testDiffPluginRunTask6(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -300,7 +315,7 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.left_path, self.right_path)
 
-    def testDiffPluginRunTask6(self):
+    def testDiffPluginRunTask7(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -314,7 +329,22 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, "contents of [%s] and [%s] are equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, self.right_path)
 
-    def testDiffPluginRunTask7(self):
+    def testDiffPluginRunTask8(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["left_filter"] = self.left_filter_full
+        local_params["right_path"] = self.right_path
+        local_params["mode"] = "eq-warn"
+        self.diff_task.params = local_params
+
+        with mock.patch("diff_wrapper.do_diff", return_value=(True, "")) as dummy:
+            v, r = self.diff_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, "contents of [%s (filtered)] and [%s] are equal" % (self.left_path, self.right_path))
+            dummy.assert_called_with("left filtered contents", self.right_path)
+
+    def testDiffPluginRunTask9(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -329,7 +359,7 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, "contents of [%s] and [%s (filtered)] are equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, "right filtered contents")
 
-    def testDiffPluginRunTask8(self):
+    def testDiffPluginRunTask10(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -343,7 +373,7 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.left_path, self.right_path)
 
-    def testDiffPluginRunTask9(self):
+    def testDiffPluginRunTask11(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -357,7 +387,7 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.left_path, self.right_path)
 
-    def testDiffPluginRunTask10(self):
+    def testDiffPluginRunTask12(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -371,7 +401,22 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, "contents of [%s] and [%s] are not equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, self.right_path)
 
-    def testDiffPluginRunTask11(self):
+    def testDiffPluginRunTask13(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["left_filter"] = self.left_filter_full
+        local_params["right_path"] = self.right_path
+        local_params["mode"] = "ne-fail"
+        self.diff_task.params = local_params
+
+        with mock.patch("diff_wrapper.do_diff", return_value=(True, "mocked contents")) as dummy:
+            v, r = self.diff_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "contents of [%s (filtered)] and [%s] are not equal" % (self.left_path, self.right_path))
+            dummy.assert_called_with("left filtered contents", self.right_path)
+
+    def testDiffPluginRunTask14(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -386,7 +431,7 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, "contents of [%s] and [%s (filtered)] are not equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, "right filtered contents")
 
-    def testDiffPluginRunTask12(self):
+    def testDiffPluginRunTask15(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -400,7 +445,7 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(self.left_path, self.right_path)
 
-    def testDiffPluginRunTask13(self):
+    def testDiffPluginRunTask16(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -414,7 +459,22 @@ class DiffPluginTest(unittest.TestCase):
             self.assertEqual(r, "contents of [%s] and [%s] are not equal" % (self.left_path, self.right_path))
             dummy.assert_called_with(self.left_path, self.right_path)
 
-    def testDiffPluginRunTask14(self):
+    def testDiffPluginRunTask17(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["left_filter"] = self.left_filter_full
+        local_params["right_path"] = self.right_path
+        local_params["mode"] = "ne-warn"
+        self.diff_task.params = local_params
+
+        with mock.patch("diff_wrapper.do_diff", return_value=(True, "mocked contents")) as dummy:
+            v, r = self.diff_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, "contents of [%s (filtered)] and [%s] are not equal" % (self.left_path, self.right_path))
+            dummy.assert_called_with("left filtered contents", self.right_path)
+
+    def testDiffPluginRunTask18(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
