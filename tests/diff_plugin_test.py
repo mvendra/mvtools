@@ -81,6 +81,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "right_path is a required parameter")
 
     def testDiffPluginReadParams2(self):
 
@@ -91,6 +92,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "mode is a required parameter")
 
     def testDiffPluginReadParams3(self):
 
@@ -102,6 +104,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "mode [invalid] is invalid")
 
     def testDiffPluginReadParams4(self):
 
@@ -114,6 +117,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "left filter script [%s] does not exist" % self.nonexistent_full)
 
     def testDiffPluginReadParams5(self):
 
@@ -126,6 +130,7 @@ class DiffPluginTest(unittest.TestCase):
 
         v, r = self.diff_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "right filter script [%s] does not exist" % self.nonexistent_full)
 
     def testDiffPluginReadParams6(self):
 
