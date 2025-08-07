@@ -2,6 +2,7 @@
 
 import sys
 import os
+import stat
 import shutil
 import unittest
 from unittest import mock
@@ -52,6 +53,28 @@ class MakePluginTest(unittest.TestCase):
 
         # nonexistent path 1
         self.nonexistent_path1 = path_utils.concat_path(self.test_dir, "nonexistent_path1")
+
+        # stdout_filter
+        self.stdout_filter = "stdout_filter.py"
+        self.stdout_filter_full = path_utils.concat_path(self.test_dir, self.stdout_filter)
+
+        stdout_filter_contents = ""
+        stdout_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        stdout_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
+        stdout_filter_contents += "    return \"filtered stdout contents: [%s]\" % source_input" + os.linesep
+        create_and_write_file.create_file_contents(self.stdout_filter_full, stdout_filter_contents)
+        os.chmod(self.stdout_filter_full, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
+
+        # stderr_filter
+        self.stderr_filter = "stderr_filter.py"
+        self.stderr_filter_full = path_utils.concat_path(self.test_dir, self.stderr_filter)
+
+        stderr_filter_contents = ""
+        stderr_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        stderr_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
+        stderr_filter_contents += "    return \"filtered stderr contents: [%s]\" % source_input" + os.linesep
+        create_and_write_file.create_file_contents(self.stderr_filter_full, stderr_filter_contents)
+        os.chmod(self.stderr_filter_full, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
         return True, ""
 
@@ -401,6 +424,46 @@ class MakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
+        local_params["save_output"] = "dummy_value5"
+        local_params["filter_output"] = self.stdout_filter_full
+        local_params["save_error_output"] = "dummy_value6"
+        local_params["filter_error_output"] = self.stderr_filter_full
+        self.make_task.params = local_params
+
+        with mock.patch("make_wrapper.make", return_value=(True, (True, "test1", "test2"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
+
+                    v, r = self.make_task.run_task(print, "exe_name")
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
+                    dummy2.assert_has_calls([call(print, "dummy_value5", "filtered stdout contents: [test1]", ("Make's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "filtered stderr contents: [test2]", ("Make's stderr has been saved to: [dummy_value6]"))])
+                    dummy3.assert_called_with(True, print, [("make_plugin_stdout", "filtered stdout contents: [test1]", "Make's stdout"), ("make_plugin_stderr", "filtered stderr contents: [test2]", "Make's stderr")])
+
+    def testMakePluginRunTask9(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
+        local_params["save_output"] = "dummy_value5"
+        local_params["filter_output"] = self.stdout_filter_full
+        local_params["save_error_output"] = "dummy_value6"
+        local_params["filter_error_output"] = self.stderr_filter_full
+        self.make_task.params = local_params
+
+        with mock.patch("make_wrapper.make", return_value=(True, (False, "test1", "test2"))) as dummy1:
+            with mock.patch("output_backup_helper.dump_output") as dummy2:
+                with mock.patch("output_backup_helper.dump_outputs_autobackup", return_value=None) as dummy3:
+
+                    v, r = self.make_task.run_task(print, "exe_name")
+                    self.assertTrue(v)
+                    dummy1.assert_called_with(self.existent_path1, None, None, None)
+                    dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Make's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Make's stderr has been saved to: [dummy_value6]"))])
+                    dummy3.assert_called_with(False, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
+
+    def testMakePluginRunTask10(self):
+
+        local_params = {}
+        local_params["work_dir"] = self.existent_path1
         local_params["target"] = "dummy_value2"
         self.make_task.params = local_params
 
@@ -414,7 +477,7 @@ class MakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, None, "test1", ("Make's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Make's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("make_plugin_stdout", "test1", "Make's stdout"), ("make_plugin_stderr", "test2", "Make's stderr")])
 
-    def testMakePluginRunTask9(self):
+    def testMakePluginRunTask11(self):
 
         local_params = {}
         local_params["work_dir"] = self.existent_path1
