@@ -2,6 +2,7 @@
 
 import sys
 import os
+import stat
 import shutil
 import unittest
 from unittest import mock
@@ -32,6 +33,10 @@ class DiffPluginTest(unittest.TestCase):
         # the test task
         self.diff_task = diff_plugin.CustomTask()
 
+        # nonexistent
+        self.nonexistent = "nonexistent_path"
+        self.nonexistent_full = path_utils.concat_path(self.test_dir, self.nonexistent)
+
         # left path
         self.left_path = "left_path"
         self.left_path_full = path_utils.concat_path(self.test_dir, self.left_path)
@@ -40,6 +45,17 @@ class DiffPluginTest(unittest.TestCase):
         # right path
         self.right_path = "right_path"
         self.right_path_full = path_utils.concat_path(self.test_dir, self.right_path)
+
+        # right_filter
+        self.right_filter = "right_filter.py"
+        self.right_filter_full = path_utils.concat_path(self.test_dir, self.right_filter)
+
+        right_filter_contents = ""
+        right_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        right_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
+        right_filter_contents += "    return \"mvtodo\"" + os.linesep
+        create_and_write_file.create_file_contents(self.right_filter_full, right_filter_contents)
+        os.chmod(self.right_filter_full, stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
 
         return True, ""
 
@@ -81,6 +97,44 @@ class DiffPluginTest(unittest.TestCase):
         local_params = {}
         local_params["left_path"] = self.left_path
         local_params["right_path"] = self.right_path
+        local_params["right_filter"] = self.nonexistent_full
+        local_params["mode"] = "eq-fail"
+        self.diff_task.params = local_params
+
+        v, r = self.diff_task._read_params()
+        self.assertFalse(v)
+
+    def testDiffPluginReadParams5(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["right_path"] = self.right_path
+        local_params["right_filter"] = self.right_filter_full
+        local_params["mode"] = "eq-fail"
+        self.diff_task.params = local_params
+
+        v, r = self.diff_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.left_path, self.right_path, [self.right_filter_full], "eq-fail"))
+
+    def testDiffPluginReadParams6(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["right_path"] = self.right_path
+        local_params["right_filter"] = [self.right_filter_full, "param1", "param2", "param3"]
+        local_params["mode"] = "eq-fail"
+        self.diff_task.params = local_params
+
+        v, r = self.diff_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (self.left_path, self.right_path, [self.right_filter_full, "param1", "param2", "param3"], "eq-fail"))
+
+    def testDiffPluginReadParams7(self):
+
+        local_params = {}
+        local_params["left_path"] = self.left_path
+        local_params["right_path"] = self.right_path
         local_params["mode"] = "eq-fail"
         self.diff_task.params = local_params
 
@@ -88,7 +142,7 @@ class DiffPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.left_path, self.right_path, None, "eq-fail"))
 
-    def testDiffPluginReadParams5(self):
+    def testDiffPluginReadParams8(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -100,7 +154,7 @@ class DiffPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.left_path, self.right_path, None, "eq-warn"))
 
-    def testDiffPluginReadParams6(self):
+    def testDiffPluginReadParams9(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
@@ -112,7 +166,7 @@ class DiffPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (self.left_path, self.right_path, None, "ne-fail"))
 
-    def testDiffPluginReadParams7(self):
+    def testDiffPluginReadParams10(self):
 
         local_params = {}
         local_params["left_path"] = self.left_path
