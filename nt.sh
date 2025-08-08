@@ -9,12 +9,11 @@ COMMAND=$2
 WORKDIR=`pwd -P`
 
 if [ ! -z $3 ]; then
-  WORKDIR=$3
+    WORKDIR=$3
 fi
 
 if [ -z $COMMAND ]; then
-  COMMAND="ls"
+    COMMAND="ls"
 fi
 
 $TERMINAL --tab --working-directory="$WORKDIR" -T "$TITLE" -e 'bash -ic "'$COMMAND'; exec bash"'
-

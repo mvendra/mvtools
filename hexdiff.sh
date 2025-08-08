@@ -2,7 +2,7 @@
 
 # borrowed from https://superuser.com/questions/125376/how-do-i-compare-binary-files-in-linux
 
-puaq(){ # puaq stands for Print Usage And Quit
+function puaq(){ # puaq stands for Print Usage And Quit
     echo "Usage: `basename $0` file1 file2"
     if [ "$1" = true ]; then
         exit 0
