@@ -317,10 +317,7 @@ class RecipeProcessor:
         exec_name = r[2]
 
         v, r = launch_jobs.begin_execution(mainjob, print, exec_name, options)
-        if not v:
-            return False, r
-
-        return True, None
+        return v, r
 
     def _bootstrap_dsl_object(self, local_recipe):
 

@@ -387,6 +387,7 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorVanilla(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file1)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorNonexistentScript(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file2)
@@ -399,10 +400,12 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorCustomNamespace(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file4)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessor2JobsBothSucceed(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file5)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessor2JobsOneFails(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file6)
@@ -411,10 +414,12 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorCustomNamespaceCustomJobParams(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file7)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorCustomNamespaceCustomTaskParams(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file8)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorRecipeNoEarlyAbort(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file9)
@@ -436,10 +441,12 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorCustomJobCustomNamespace2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file13)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorCustomMainJobCustomNamespace1(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file14)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorCustomMainJobCustomNamespace1Fails(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file15)
@@ -448,6 +455,7 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorCustomExecutionName1(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file16)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorCustomExecutionName2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file17)
@@ -456,26 +464,35 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorTimeDelay1(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file18)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorTimeDelay2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file19)
         self.assertFalse(v)
 
     def testRecipeProcessorSignalDelay1(self):
+
         v, r = toolbus.set_signal("test-signal", "set")
         self.assertTrue(v)
+        self.assertFalse(r)
+
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file20)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorSignalDelay2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file21)
         self.assertFalse(v)
 
     def testRecipeProcessorExecutionDelay1(self):
+
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file16)
         self.assertTrue(v)
+        self.assertFalse(r)
+
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file22)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorExecutionDelay2(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file23)
@@ -484,10 +501,12 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorCustomTaskUseExecutionName(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file24)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorStringlistParam(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file25)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorNamespaceExclusiveNotFound(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file26)
@@ -496,6 +515,7 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorNamespaceInclusiveIsFoundAtBuiltInsFirst(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file27)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorNamespaceExclusiveIsFoundButFails(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file28)
@@ -504,6 +524,7 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorNamespaceExclusiveIsFoundAndDoesWork(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file29)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorNestedJobsDepthFail(self):
         stashed_depth_limit = recipe_processor.DEPTH_TRACKER_LIMIT
