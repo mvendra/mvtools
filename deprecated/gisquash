@@ -2,15 +2,14 @@
 
 # mvtodo: this currently does not work when you try to squash 2 commits, and there are only two commits in the repo
 
-puaq(){
-  echo "Usage: `basename $0` number_of_commits"
-  exit 1
+function puaq(){
+    echo "Usage: `basename $0` number_of_commits"
+    exit 1
 }
 
 if [ -z $1 ]; then
-  puaq
+    puaq
 fi
 
 git reset --soft HEAD~$1
 git commit --edit -m"$(git log --format=%B HEAD..HEAD@{1})"
-
