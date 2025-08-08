@@ -1,6 +1,6 @@
 #!/bin/bash
 
-puaq(){ # puaq stands for Print Usage And Quit
+function puaq(){ # puaq stands for Print Usage And Quit
     echo "Usage: `basename $0` file1 file2"
     if [ "$1" = true ]; then
         exit 0

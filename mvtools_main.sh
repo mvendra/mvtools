@@ -1,6 +1,6 @@
 #!/bin/bash
 
-add2path(){
+function add2path(){
 
     if [ -z "$PATH" ]; then
         # first use. dont add the comma at the beginning
@@ -17,7 +17,7 @@ add2path(){
 
 }
 
-add2pythonpath(){
+function add2pythonpath(){
 
     if [ -z $PYTHONPATH ]; then
         # first use. dont add the comma at the beginning
