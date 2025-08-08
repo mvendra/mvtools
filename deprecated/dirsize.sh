@@ -1,8 +1,8 @@
 #!/bin/bash
 
-puaq(){ # puaq stands for Print Usage And Quit
-  echo "Usage: `basename $0` folder"
-  exit 1
+function puaq(){ # puaq stands for Print Usage And Quit
+    echo "Usage: `basename $0` folder"
+    exit 1
 }
 
 echo "WARNING: `basename $0` has been deprecated. Consider using dirsize.py instead"
@@ -15,12 +15,11 @@ cd $TARGET_DIR
 TARGET_DIR=`pwd -P`
 
 if [ -z $TARGET_DIR ]; then
-  puaq
+    puaq
 fi
 
 if [ ! -d $TARGET_DIR ]; then
-  echo "$TARGET_DIR does not exist or is not a directory"
+    echo "$TARGET_DIR does not exist or is not a directory"
 fi
 
 du -h $TARGET_DIR | tail -n 1
-

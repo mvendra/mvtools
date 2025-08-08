@@ -2,7 +2,7 @@
 
 # this script was deprecated in L24 - pakgen.py should eventually take over the functionality of generating packages of/with multiple formats
 
-puaq(){ # puaq stands for Print Usage And Quit
+function puaq(){ # puaq stands for Print Usage And Quit
     echo "Usage: `basename $0` [--hash] file_or_folder"
     exit 1
 }
