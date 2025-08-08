@@ -63,7 +63,7 @@ def _format_job_info_msg_failed(job, parent_job_name, detail):
         p_str = "(child of [%s])" % parent_job_name
     return "%sJob:  [%s][%s][%s]%s: failed: [%s]%s" % (terminal_colors.TTY_WHITE_BOLD, maketimestamp.get_timestamp_now(), job.name, job.get_desc(), p_str, detail, terminal_colors.get_standard_color())
 
-def _format_task_info_msg(task, detail):
+def _format_task_info_msg(task):
     return "Task: [%s][%s][%s]: succeeded." % (maketimestamp.get_timestamp_now(), task.name, task.get_desc())
 
 def _format_task_error_msg(task, detail):

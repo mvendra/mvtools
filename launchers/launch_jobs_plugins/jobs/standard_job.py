@@ -48,7 +48,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
             if r is not None:
                 feedback_object(launch_jobs._format_task_warning_msg_console_output(entry, r))
             else:
-                feedback_object(launch_jobs._format_task_info_msg(entry, r))
+                feedback_object(launch_jobs._format_task_info_msg(entry))
 
         if intermediary_failure:
             return False, "Intermediary failures"
