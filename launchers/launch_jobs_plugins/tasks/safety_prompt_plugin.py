@@ -7,12 +7,23 @@ class CustomTask(launch_jobs.BaseTask):
     def get_desc(self):
         return "safety_prompt"
 
-    def run_task(self, feedback_object, execution_name=None):
+    def _read_params(self):
+
+        message = None
 
         try:
             message = self.params["msg"]
         except KeyError:
-            return False, "safety_prompt failed - msg is a required parameter"
+            return False, "msg is a required parameter"
+
+        return True, (message)
+
+    def run_task(self, feedback_object, execution_name=None):
+
+        v, r = self._read_params()
+        if not v:
+            return False, r
+        message = r
 
         feedback_object("")
         feedback_object(message)
