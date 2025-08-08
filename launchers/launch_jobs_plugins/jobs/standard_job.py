@@ -14,7 +14,9 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
 
     def run_job(self, feedback_object, execution_name=None, options=None):
 
+        any_warnings = False
         intermediary_failure = False
+
         for entry in self.entries_list:
 
             if entry.get_type() == launch_jobs.BASE_TYPE_JOB:
@@ -46,10 +48,11 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                 return False, "Failed task: [%s]" % r
 
             if r is not None:
+                any_warnings = True
                 feedback_object(launch_jobs._format_task_warning_msg_console_output(entry, r))
             else:
                 feedback_object(launch_jobs._format_task_info_msg(entry))
 
         if intermediary_failure:
             return False, "Intermediary failures"
-        return True, None
+        return True, any_warnings
