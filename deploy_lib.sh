@@ -12,6 +12,11 @@ quit_ok_if_defined(){
     fi
 }
 
+quit_combo(){
+    quit_any_err $1
+    quit_ok_if_defined $2
+}
+
 deploy_lib(){
     mkdir_if_needed_and_possible.sh $4
     rm -rf $4/$3
