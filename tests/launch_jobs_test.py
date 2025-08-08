@@ -28,10 +28,14 @@ class CustomJob(launch_jobs.BaseJob):
         return True, None
     def run_job(self, feedback_object, execution_name=None, options=None):
         res = True
+        warns = False
         for t in self.entries_list:
             if t.get_type() == launch_jobs.BASE_TYPE_TASK: # UT's CustomJob impl does not support nested jobs (yet)
-                res &= (t.run_task(feedback_object, execution_name))[0]
-        return res, False
+                v, r = t.run_task(feedback_object, execution_name)
+                res &= v
+                if r is not None:
+                    warns = True
+        return res, warns
 
 class CustomTaskTrue(launch_jobs.BaseTask):
     def run_task(self, feedback_object, execution_name=None):
