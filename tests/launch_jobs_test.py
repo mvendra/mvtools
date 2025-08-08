@@ -70,6 +70,13 @@ class CustomTaskException(launch_jobs.BaseTask):
         raise mvtools_exception.mvtools_exception("test-showstopper")
         return True, None
 
+class CustomTaskTrueWithDetail(launch_jobs.BaseTask):
+    def run_task(self, feedback_object, execution_name=None):
+        if "internal_testing_context" in self.params:
+            test_ctx = self.params["internal_testing_context"]
+            test_ctx.call_stack.append("CustomTaskTrue.run_task,%s" % self.name)
+        return True, "test detail"
+
 class LaunchJobsTest(unittest.TestCase):
 
     def setUp(self):
@@ -123,6 +130,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testLaunchJobsVanillaNestedStandard(self):
 
@@ -136,6 +144,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testLaunchJobsVanillaNestedStandardFalse(self):
 
@@ -213,8 +222,18 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testLaunchJobsCustomTask2(self):
+
+        job1 = CustomJob()
+        job1.add_entry(CustomTaskTrueWithDetail())
+
+        v, r = launch_jobs.begin_execution(job1, print)
+        self.assertTrue(v)
+        self.assertTrue(r)
+
+    def testLaunchJobsCustomTask3(self):
 
         job1 = CustomJob()
         job1.add_entry(CustomTaskTrue())
@@ -231,6 +250,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testLaunchJobsCustomTaskParams2(self):
 
@@ -264,6 +284,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print)
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testLaunchJobsCustomTaskParams5(self):
 
@@ -354,6 +375,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print, options=launch_jobs.RunOptions(time_delay="2s"))
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testLaunchJobsRunOptionsSignalDelay1(self):
 
@@ -365,6 +387,7 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print, options=launch_jobs.RunOptions(signal_delay="mvtools-launch-jobs-test-signal-delay-option"))
         self.assertTrue(v)
+        self.assertFalse(r)
 
     def testLaunchJobsRunOptionsExecutionDelay1(self):
 
@@ -375,9 +398,11 @@ class LaunchJobsTest(unittest.TestCase):
 
         v, r = launch_jobs.begin_execution(job1, print, first_exec)
         self.assertTrue(v)
+        self.assertFalse(r)
 
         v, r = launch_jobs.begin_execution(job1, print, options=launch_jobs.RunOptions(execution_delay=first_exec))
         self.assertTrue(v)
+        self.assertFalse(r)
 
 if __name__ == "__main__":
     unittest.main()

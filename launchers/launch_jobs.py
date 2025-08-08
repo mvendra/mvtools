@@ -269,9 +269,7 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
     feedback_object("Execution context [%s] will begin running at [%s]" % (execution_name, begin_timestamp))
 
     v, r = run_single_job(main_job, None, feedback_object, execution_name, options)
-    if not v:
-        return False, r
-    return True, None
+    return v, r
 
 def run_single_job(target_job, parent_job_name, feedback_object, execution_name, options):
 
@@ -294,8 +292,10 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
         feedback_object(_format_job_info_msg_pause_failed(target_job, r))
         return False, "Job [%s][%s]: Failed attempting to wait: [%s]" % (target_job.name, target_job.get_desc(), r)
 
+    soft_fail = False
     try:
         v, r = target_job.run_job(feedback_object, execution_name, options)
+        soft_fail = r
     except mvtools_exception.mvtools_exception as mvtex:
         return False, "Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)
     except Exception as ex:
@@ -320,7 +320,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     if not v:
         return False, "Job [%s][%s]: Unable to write depth limit back onto toolbus database. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
 
-    return True, None
+    return True, soft_fail
 
 def get_current_executions():
 
