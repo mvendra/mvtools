@@ -628,8 +628,12 @@ def menu_run_recipe(recipe_file, execution_name, recipe_namespace, requested_opt
     v, r = run_jobs_from_recipe_file(recipe_file, execution_name, recipe_namespace, requested_options)
     if not v:
         print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.get_standard_color()))
-    else:
-        print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.get_standard_color()))
+        sys.exit(ERROR_CODE_HARD_FAIL)
+    if r:
+        print("%sExecution of recipe [%s] succeeded - with warnings.%s" % (terminal_colors.TTY_YELLOW_BOLD, recipe_file, terminal_colors.get_standard_color()))
+        sys.exit(ERROR_CODE_SOFT_FAIL)
+    print("%sExecution of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.get_standard_color()))
+    sys.exit(ERROR_CODE_NONE)
 
 def puaq(selfhelp):
     print("Usage: %s [--help] [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --recipe-namespace the-recipe-namespace --recipe-namespace-mode inclusive/exclusive --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
