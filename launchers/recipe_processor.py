@@ -16,6 +16,11 @@ import terminal_colors
 
 import mvtools_envvars
 
+ERROR_CODE_NONE = 0
+ERROR_CODE_INPUT = 1
+ERROR_CODE_SOFT_FAIL = 2
+ERROR_CODE_HARD_FAIL = 3
+
 # minimal automation framework
 # dsltype20-based recipes are supported, syntax as follows:
 #
@@ -629,9 +634,9 @@ def menu_run_recipe(recipe_file, execution_name, recipe_namespace, requested_opt
 def puaq(selfhelp):
     print("Usage: %s [--help] [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --recipe-namespace the-recipe-namespace --recipe-namespace-mode inclusive/exclusive --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
     if selfhelp:
-        sys.exit(0)
+        sys.exit(ERROR_CODE_NONE)
     else:
-        sys.exit(1)
+        sys.exit(ERROR_CODE_INPUT)
 
 if __name__ == "__main__":
 
@@ -687,7 +692,7 @@ if __name__ == "__main__":
                 recipe_namespace_mode = True
             else:
                 print("Option [--recipe-namespace-mode] received an invalid value: [%s]. Valid values are [inclusive/exclusive]" % p)
-                sys.exit(1)
+                sys.exit(ERROR_CODE_INPUT)
             continue
 
         if early_abort_next:
@@ -698,7 +703,7 @@ if __name__ == "__main__":
                 early_abort = False
             else:
                 print("Option [--early-abort] received an invalid value: [%s]. Valid values are [yes/no]" % p)
-                sys.exit(1)
+                sys.exit(ERROR_CODE_INPUT)
             continue
 
         if time_delay_next:
@@ -719,13 +724,13 @@ if __name__ == "__main__":
         if p == "--test":
             if operation is not None:
                 print("Operation should only be specified once (either --test or --run)")
-                sys.exit(1)
+                sys.exit(ERROR_CODE_INPUT)
             operation = "test"
             recipe_next = True
         elif p == "--run":
             if operation is not None:
                 print("Operation should only be specified once (either --test or --run)")
-                sys.exit(1)
+                sys.exit(ERROR_CODE_INPUT)
             operation = "run"
             recipe_next = True
         elif p == "--execution-name":
@@ -744,7 +749,7 @@ if __name__ == "__main__":
             execution_delay_next = True
         else:
             print("Invalid commandline argument: [%s]" % p)
-            sys.exit(1)
+            sys.exit(ERROR_CODE_INPUT)
 
     req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
@@ -757,4 +762,6 @@ if __name__ == "__main__":
         menu_run_recipe(recipe_file, execution_name, recipe_namespace, req_opts)
     else:
         print("Invalid operation: [%s]" % operation)
-        sys.exit(1)
+        sys.exit(ERROR_CODE_INPUT)
+
+    sys.exit(ERROR_CODE_NONE)
