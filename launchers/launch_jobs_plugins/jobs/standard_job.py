@@ -27,6 +27,8 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
                         return False, "Failed job: [%s]" % r
                     else:
                         intermediary_failure = True
+                if v and r:
+                    any_warnings = True
 
                 continue
 

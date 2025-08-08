@@ -138,7 +138,7 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_job_script_contents += "        self.entries_list.append(task)\n"
         sample_custom_job_script_contents += "    def run_job(self, feedback_object, execution_name=None, options=None):\n"
         sample_custom_job_script_contents += "        if len(self.entries_list) % 2 == 0:\n"
-        sample_custom_job_script_contents += "            return True, False\n"
+        sample_custom_job_script_contents += "            return True, \"trigger_soft_fail\" in self.params\n"
         sample_custom_job_script_contents += "        else:\n"
         sample_custom_job_script_contents += "            return False, None\n"
         self.sample_custom_job_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_job.py")
@@ -376,6 +376,14 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file30 = path_utils.concat_path(self.test_dir, "recipe_test30.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file30, recipe_test_contents30)
 
+        recipe_test_contents31 = "[\n@%s\n" % recipe_processor.RECIPE_PROCESSOR_CONFIG_METAJOB
+        recipe_test_contents31 += "* recipe-namespace = \"%s\"\n" % self.namespace2
+        recipe_test_contents31 += "* custom-job-implementation {test-job} = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
+        recipe_test_contents31 += "]\n"
+        recipe_test_contents31 += "[\n@test-job {trigger_soft_fail}\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
+        self.recipe_test_file31 = path_utils.concat_path(self.test_dir, "recipe_test31.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file31, recipe_test_contents31)
+
         return True, ""
 
     def tearDown(self):
@@ -552,6 +560,11 @@ class RecipeProcessorTest(unittest.TestCase):
 
         v, r = recipe_processor.run_jobs_from_recipe_file(blanksub_blankfile)
         self.assertTrue(v)
+
+    def testRecipeProcessorCustomJobCustomNamespaceSoftFail(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file31)
+        self.assertTrue(v)
+        self.assertTrue(r)
 
 if __name__ == "__main__":
     unittest.main()

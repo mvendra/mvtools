@@ -295,7 +295,8 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     soft_fail = False
     try:
         v, r = target_job.run_job(feedback_object, execution_name, options)
-        soft_fail = r
+        if v and r:
+            soft_fail = True
     except mvtools_exception.mvtools_exception as mvtex:
         return False, "Job [%s][%s] caused an mvtools exception. Aborting: [%s]" % (target_job.name, target_job.get_desc(), mvtex)
     except Exception as ex:
