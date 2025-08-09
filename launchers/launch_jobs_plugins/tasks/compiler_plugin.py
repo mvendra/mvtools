@@ -5,6 +5,7 @@ import os
 import path_utils
 import launch_jobs
 import gcc_wrapper
+import clang_wrapper
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -45,6 +46,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         valid_compilers = {}
         valid_compilers["gcc"] = gcc_wrapper
+        valid_compilers["clang"] = clang_wrapper
 
         if not compiler in valid_compilers:
             return False, "Compiler [%s] is unknown/not supported" % compiler

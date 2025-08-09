@@ -11,6 +11,7 @@ from unittest.mock import call
 import mvtools_test_fixture
 import path_utils
 import gcc_wrapper
+import clang_wrapper
 
 import compiler_plugin
 
@@ -111,6 +112,17 @@ class CompilerPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (None, gcc_wrapper, ["dummy_value1"]))
 
+    def testCompilerPluginReadParams7(self):
+
+        local_params = {}
+        local_params["compiler"] = "clang"
+        local_params["params"] = "dummy_value1"
+        self.compiler_task.params = local_params
+
+        v, r = self.compiler_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (None, clang_wrapper, ["dummy_value1"]))
+
     def testCompilerPluginRunTask1(self):
 
         local_params = {}
@@ -148,6 +160,47 @@ class CompilerPluginTest(unittest.TestCase):
         self.compiler_task.params = local_params
 
         with mock.patch("gcc_wrapper.exec", return_value=(True, None)) as dummy:
+            v, r = self.compiler_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(test_path_local, ["dummy_value1"])
+
+    def testCompilerPluginRunTask4(self):
+
+        local_params = {}
+        local_params["compiler"] = "clang"
+        local_params["params"] = "dummy_value1"
+        self.compiler_task.params = local_params
+
+        with mock.patch("clang_wrapper.exec", return_value=(True, None)) as dummy:
+            v, r = self.compiler_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(None, ["dummy_value1"])
+
+    def testCompilerPluginRunTask5(self):
+
+        local_params = {}
+        local_params["compiler"] = "clang"
+        local_params["params"] = ["dummy_value1", "dummy_value2"]
+        self.compiler_task.params = local_params
+
+        with mock.patch("clang_wrapper.exec", return_value=(True, None)) as dummy:
+            v, r = self.compiler_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(None, ["dummy_value1", "dummy_value2"])
+
+    def testCompilerPluginRunTask6(self):
+
+        test_path_local = path_utils.concat_path(self.test_dir, "test_path_local")
+        os.mkdir(test_path_local)
+        self.assertTrue(os.path.exists(test_path_local))
+
+        local_params = {}
+        local_params["compiler_base"] = test_path_local
+        local_params["compiler"] = "clang"
+        local_params["params"] = "dummy_value1"
+        self.compiler_task.params = local_params
+
+        with mock.patch("clang_wrapper.exec", return_value=(True, None)) as dummy:
             v, r = self.compiler_task.run_task(print, "exe_name")
             self.assertTrue(v)
             dummy.assert_called_with(test_path_local, ["dummy_value1"])
