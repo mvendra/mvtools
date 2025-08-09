@@ -4,6 +4,8 @@ import sys
 import os
 import shutil
 import unittest
+from unittest import mock
+from unittest.mock import patch
 
 import mvtools_test_fixture
 import create_and_write_file
@@ -43,20 +45,48 @@ class GccWrapperTest(unittest.TestCase):
 
         create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
 
-        v, r = gcc_wrapper.exec(self.main_c_full, self.test_dir)
+        v, r = gcc_wrapper.exec(None, self.main_c_full, self.test_dir)
         self.assertFalse(v)
         self.assertEqual(r, "options_list must be a list")
 
     def testExec2(self):
 
-        v, r = gcc_wrapper.exec([self.main_c_full], self.test_dir)
+        v, r = gcc_wrapper.exec(None, [self.main_c_full], self.test_dir)
         self.assertFalse(v)
 
     def testExec3(self):
 
         create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
 
-        v, r = gcc_wrapper.exec([self.main_c_full], self.test_dir)
+        v, r = gcc_wrapper.exec([], [self.main_c_full], self.test_dir)
+        self.assertFalse(v)
+        self.assertEqual(r, "compiler_base, when present, must be a string")
+
+    def testExec4(self):
+
+        create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
+
+        with mock.patch("generic_run.run_cmd_simple", return_value=(False, "dummy_error_msg")) as dummy:
+            v, r = gcc_wrapper.exec(None, [self.main_c_full])
+            self.assertFalse(v)
+            self.assertEqual(r, "Failed running gcc command: [dummy_error_msg]")
+            dummy.assert_called_with(["gcc", self.main_c_full], use_cwd=None)
+
+    def testExec5(self):
+
+        create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
+
+        with mock.patch("generic_run.run_cmd_simple", return_value=(True, None)) as dummy:
+            v, r = gcc_wrapper.exec("custom_install_path", [self.main_c_full])
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with([path_utils.concat_path("custom_install_path", "bin", "gcc"), self.main_c_full], use_cwd=None)
+
+    def testExec6(self):
+
+        create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
+
+        v, r = gcc_wrapper.exec(None, [self.main_c_full], self.test_dir)
         self.assertTrue(v)
         self.assertEqual(r, None)
 

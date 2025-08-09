@@ -6,12 +6,19 @@ import os
 import path_utils
 import generic_run
 
-def exec(options_list, cwd = None):
+def exec(compiler_base, options_list, cwd = None):
 
     if not isinstance(options_list, list):
         return False, "options_list must be a list"
 
-    full_cmd = ["gcc"]
+    compiler_path = "gcc"
+    if compiler_base is not None:
+        if not isinstance(compiler_base, str):
+            return False, "compiler_base, when present, must be a string"
+        compiler_path = path_utils.concat_path(compiler_base, "bin", compiler_path)
+
+    full_cmd = [compiler_path]
+
     for opt in options_list:
         full_cmd.append(opt)
 
