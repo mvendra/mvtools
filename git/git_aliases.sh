@@ -51,8 +51,8 @@ alias gisho="git show"
 gishogui(){
 
     # mvtodo: does not work on the first commit of a repository
-    HASH=$1
-    if [ -z $1 ]; then
+    HASH="$1"
+    if [ -z "$1" ]; then
         HASH="HEAD"
     fi
     git difftool -y --no-prompt $HASH~1 $HASH
@@ -61,7 +61,7 @@ gishogui(){
 
 gishofi(){
 
-    HASH=$1
+    HASH="$1"
 
     if [ -z $HASH ]; then
         echo "Hash is a required parameter. Aborting."
@@ -88,7 +88,7 @@ gikill(){
     fi
 
     TEMP_FOLDER="$MVTOOLS_TEMP_PATH"
-    if [ ! -d $TEMP_FOLDER ]; then
+    if [ ! -d "$TEMP_FOLDER" ]; then
         echo "No [$TEMP_FOLDER] (MVTOOLS_TEMP_PATH envvar) folder found. Aborting."
         return
     fi
