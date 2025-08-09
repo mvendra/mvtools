@@ -80,6 +80,7 @@ if __name__ == "__main__":
     ext = None
     files = []
     ext_next = False
+    target = []
     target_next = False
 
     has_list = []
@@ -119,10 +120,7 @@ if __name__ == "__main__":
 
         elif target_next:
             target_next = False
-            v, r = process_target(files, p, ext)
-            if not v:
-                print(r)
-                sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
+            target.append(p)
             continue
 
         elif has_next:
@@ -185,6 +183,12 @@ if __name__ == "__main__":
     check_leftover_state(target_next, "--target")
     check_leftover_state(has_next, "--has")
     check_leftover_state(not_next, "--not")
+
+    for t in target:
+        v, r = process_target(files, t, ext)
+        if not v:
+            print(r)
+            sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
 
     plugin_params = {}
     filters = {}
