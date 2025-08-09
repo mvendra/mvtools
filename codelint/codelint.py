@@ -284,7 +284,7 @@ def print_report(report):
 
 def applet_helper(plugins, plugins_params, filters, autocorrect, files):
 
-    v, r = codelint(plugins, plugins_params, filters, autocorrect, files)
+    v, r = codelint(plugins, plugins_params, filters, autocorrect, False, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         if len(r[1]) > 0:

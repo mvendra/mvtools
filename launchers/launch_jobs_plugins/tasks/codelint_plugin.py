@@ -143,7 +143,7 @@ class CustomTask(launch_jobs.BaseTask):
         findings_final = None
         findings_interm = []
 
-        v, r = codelint.codelint(plugins, plugins_params_resolved, filters_resolved, autocorrect, files)
+        v, r = codelint.codelint(plugins, plugins_params_resolved, filters_resolved, autocorrect, False, files)
         if not v:
             errmsg, partial_report = r
             if len(partial_report) > 0:
