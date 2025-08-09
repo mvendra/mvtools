@@ -10,16 +10,16 @@ function puaq(){ # puaq stands for Print Usage And Quit
 }
 
 # testing input params
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-FILENAME=$1
+FILENAME="$1"
 
 EXTENSION="${FILENAME##*.}"
 
-if [ $EXTENSION == "zip" ]; then
-    unzip -l ./$FILENAME
-elif [ $EXTENSION == "tar" ] || [ $EXTENSION == "gz" ] || [ $EXTENSION == "bz2" ]; then
-    tar -tf ./$FILENAME
+if [ "$EXTENSION" == "zip" ]; then
+    unzip -l "./$FILENAME"
+elif [ "$EXTENSION" == "tar" ] || [ "$EXTENSION" == "gz" ] || [ "$EXTENSION" == "bz2" ]; then
+    tar -tf "./$FILENAME"
 fi
