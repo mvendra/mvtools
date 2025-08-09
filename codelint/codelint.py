@@ -215,6 +215,7 @@ def codelint(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files
             contents = getcontents.getcontents(f)
         except UnicodeDecodeError as ex:
             if skip_non_utf8:
+                report.append((False, "Skipped processing [%s] for being non-utf8" % f))
                 continue
             return False, ("File [%s] is not UTF8 decodable" % f, report)
         lines = contents.split("\n")

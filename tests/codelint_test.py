@@ -777,7 +777,7 @@ class CodeLintTest(unittest.TestCase):
     def testCodelint23(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
-        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+        create_and_write_file.create_file_contents_hex(test_file1, "ffffff")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
 
@@ -790,21 +790,17 @@ class CodeLintTest(unittest.TestCase):
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
 
         expected_report = []
-        expected_report.append((False, "Processing [%s] - begin" % test_file1))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
-        expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
-        expected_report.append((False, "Processing [%s] - end" % test_file1))
 
         v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, False, test_files)
-        self.assertTrue(v)
-        self.assertEqual(r, expected_report)
-
-        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+        self.assertFalse(v)
+        self.assertEqual(r, ("File [%s] is not UTF8 decodable" % test_file1, expected_report))
 
     def testCodelint24(self):
 
+        test_file0 = path_utils.concat_path(self.test_dir, "file0.bin")
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+
+        create_and_write_file.create_file_contents_hex(test_file0, "ffffff")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
         codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
@@ -812,24 +808,24 @@ class CodeLintTest(unittest.TestCase):
         test_plugins = ["lint-test-helper"]
         test_plugins_params = {}
         test_filters = {}
-        test_files = [test_file1]
+        test_files = [test_file0, test_file1]
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-        test_plugins_params["lint-test-helper-pre-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
+        expected_report.append((False, "Skipped processing [%s] for being non-utf8" % test_file0))
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
         expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
         expected_report.append((True, "detected pattern [third-line] at line [3]"))
-        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding, applied 1 patch)"))
         expected_report.append((False, "Processing [%s] - end" % test_file1))
 
-        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, False, test_files)
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, True, True, test_files)
         self.assertTrue(v)
         self.assertEqual(r, expected_report)
 
-        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nmodified-third-line\nfourth-line\nfifth-line")
 
     def testCodelint25(self):
 
@@ -845,7 +841,6 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-        test_plugins_params["lint-test-helper-cycle-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -874,7 +869,7 @@ class CodeLintTest(unittest.TestCase):
 
         test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
         test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
-        test_plugins_params["lint-test-helper-post-verify-filename"] = [path_utils.basename_filtered(test_file1)]
+        test_plugins_params["lint-test-helper-pre-verify-filename"] = [path_utils.basename_filtered(test_file1)]
 
         expected_report = []
         expected_report.append((False, "Processing [%s] - begin" % test_file1))
@@ -890,6 +885,64 @@ class CodeLintTest(unittest.TestCase):
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
     def testCodelint27(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
+        test_plugins_params = {}
+        test_filters = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-cycle-verify-filename"] = [path_utils.basename_filtered(test_file1)]
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "detected pattern [third-line] at line [3]"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
+        expected_report.append((False, "Processing [%s] - end" % test_file1))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, False, test_files)
+        self.assertTrue(v)
+        self.assertEqual(r, expected_report)
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+    def testCodelint28(self):
+
+        test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
+        create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+        codelint.plugin_table["lint-test-helper"] = (lint_test_helper, "")
+
+        test_plugins = ["lint-test-helper"]
+        test_plugins_params = {}
+        test_filters = {}
+        test_files = [test_file1]
+
+        test_plugins_params["lint-test-helper-cycle-pattern-match"] = ["third-line"]
+        test_plugins_params["lint-test-helper-cycle-pattern-replace"] = ["modified-third-line"]
+        test_plugins_params["lint-test-helper-post-verify-filename"] = [path_utils.basename_filtered(test_file1)]
+
+        expected_report = []
+        expected_report.append((False, "Processing [%s] - begin" % test_file1))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - begin"))
+        expected_report.append((True, "detected pattern [third-line] at line [3]"))
+        expected_report.append((False, "Plugin: [lint_test_helper.py] - end (detected 1 finding)"))
+        expected_report.append((False, "Processing [%s] - end" % test_file1))
+
+        v, r = codelint.codelint(test_plugins, test_plugins_params, test_filters, False, False, test_files)
+        self.assertTrue(v)
+        self.assertEqual(r, expected_report)
+
+        self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
+
+    def testCodelint29(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -920,7 +973,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint28(self):
+    def testCodelint30(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -949,7 +1002,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint29(self):
+    def testCodelint31(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -979,7 +1032,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint30(self):
+    def testCodelint32(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -1007,7 +1060,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "modified-header\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint31(self):
+    def testCodelint33(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -1035,7 +1088,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint32(self):
+    def testCodelint34(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         test_file2 = path_utils.concat_path(self.test_dir, "file2.txt")
@@ -1080,7 +1133,7 @@ class CodeLintTest(unittest.TestCase):
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
         self.assertEqual(getcontents.getcontents(test_file2), "some-stuff\nsome-other-stuff")
 
-    def testCodelint33(self):
+    def testCodelint35(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -1109,7 +1162,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint34(self):
+    def testCodelint36(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
@@ -1138,7 +1191,7 @@ class CodeLintTest(unittest.TestCase):
 
         self.assertEqual(getcontents.getcontents(test_file1), "first-line\nsecond-line\nthird-line\nfourth-line\nfifth-line")
 
-    def testCodelint35(self):
+    def testCodelint37(self):
 
         test_file1 = path_utils.concat_path(self.test_dir, "file1.txt")
         create_and_write_file.create_file_contents(test_file1, "everyline\neveryline\neveryline\neveryline\neveryline")
