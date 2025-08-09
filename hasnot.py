@@ -59,7 +59,7 @@ def print_color_patterns(line, has_patterns):
     print(line_result)
 
 def puaq(selfhelp): # print usage and quit
-    print("Usage: %s [--help] [--color] [--min index] [--max index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--color] [--skip_non_utf8] [--min index] [--max index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -71,6 +71,7 @@ if __name__ == "__main__":
         puaq(False)
 
     color = False
+    skip_non_utf8 = False
     min_str = None
     max_str = None
     min_next = False
@@ -142,6 +143,10 @@ if __name__ == "__main__":
             color = True
             continue
 
+        elif p == "--skip_non_utf8":
+            skip_non_utf8 = True
+            continue
+
         elif p == "--min":
             min_next = True
             continue
@@ -193,7 +198,7 @@ if __name__ == "__main__":
     if max_str is not None:
         filters["max-line"] = [max_str]
 
-    v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, False, files)
+    v, r = codelint.codelint(["lint-select-filter"], plugin_params, filters, False, skip_non_utf8, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         if len(r[1]) > 0:
