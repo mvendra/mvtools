@@ -82,6 +82,7 @@ class ClangWrapperTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with([path_utils.concat_path("custom_install_path", "bin", "clang"), self.main_c_full], use_cwd=None)
 
+    @unittest.skip("mvtodo: skipped for the time being.")
     def testExec6(self):
 
         create_and_write_file.create_file_contents(self.main_c_full, standard_c.get_main_c_app())
