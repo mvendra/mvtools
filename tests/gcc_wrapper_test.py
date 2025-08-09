@@ -10,6 +10,7 @@ import create_and_write_file
 import path_utils
 import standard_c
 import generic_run
+import get_platform
 
 import gcc_wrapper
 
@@ -59,10 +60,17 @@ class GccWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
-        a_out = "a.out"
-        a_out_full = path_utils.concat_path(self.test_dir, a_out)
+        compiled_applet = ""
+        local_plat = get_platform.getplat()
+        if (local_plat == get_platform.PLAT_LINUX) or (local_plat == get_platform.PLAT_MACOS):
+            compiled_applet = "a.out"
+        elif (local_plat == get_platform.PLAT_WINDOWS) or (local_plat == get_platform.PLAT_CYGWIN) or (local_plat == get_platform.PLAT_MSYS):
+            compiled_applet = "a.exe"
+        else:
+            self.fail("Unsupported platform")
 
-        v, r = generic_run.run_cmd_simple([a_out_full], use_cwd=self.test_dir)
+        compiled_applet_full = path_utils.concat_path(self.test_dir, compiled_applet)
+        v, r = generic_run.run_cmd_simple([compiled_applet_full], use_cwd=self.test_dir)
         self.assertTrue(v)
         self.assertEqual(r.strip(), "test for echo")
 
