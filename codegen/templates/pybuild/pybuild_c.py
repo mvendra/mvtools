@@ -63,9 +63,10 @@ def unroll_path_dirname(path):
 
 class Builder():
 
-    def __init__(self, compiler, basepath, appname, sources, options):
+    def __init__(self, compiler_base, compiler, basepath, appname, sources, options):
 
         self.basepath = basepath
+        self.compiler_base = compiler_base
         self.compiler = self.select_compiler(compiler)
         self.options = self.parse_options(options)
 
@@ -270,7 +271,7 @@ class Builder():
             cmd_str += "%s " % c
         cmd_str = cmd_str.rstrip()
 
-        v, r = self.compiler.exec(None, cmd)
+        v, r = self.compiler.exec(self.compiler_base, cmd)
         if not v:
             raise mvtools_exception.mvtools_exception("%s: Failed: [%s]" % (cmd_str, r.rstrip()))
 
@@ -278,6 +279,7 @@ class Builder():
 
 if __name__ == "__main__":
 
+    compiler_base = None
     compiler = "gcc"
     appname = "testapp"
     src = ["main.c", "subfolder/second.c"]
@@ -288,7 +290,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         opt = sys.argv[1:]
 
-    bd = Builder(compiler, basepath, appname, src, opt)
+    bd = Builder(compiler_base, compiler, basepath, appname, src, opt)
 
     try:
         bd.run()
