@@ -261,7 +261,7 @@ class Builder():
             cmd_str += "%s " % c
         cmd_str = cmd_str.rstrip()
 
-        v, r = gcc_wrapper.exec(cmd)
+        v, r = gcc_wrapper.exec(None, cmd)
         if not v:
             raise mvtools_exception.mvtools_exception("%s: Failed: [%s]" % (cmd_str, r.rstrip()))
 
