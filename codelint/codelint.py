@@ -165,6 +165,9 @@ def codelint(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files
     if not isinstance(autocorrect, bool):
         return False, ("autocorrect is not a bool", report)
 
+    if not isinstance(skip_non_utf8, bool):
+        return False, ("skip_non_utf8 is not a bool", report)
+
     if not isinstance(files, list):
         return False, ("files is not a list", report)
 
@@ -211,6 +214,8 @@ def codelint(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files
         try:
             contents = getcontents.getcontents(f)
         except UnicodeDecodeError as ex:
+            if skip_non_utf8:
+                continue
             return False, ("File [%s] is not UTF8 decodable" % f, report)
         lines = contents.split("\n")
         lines_copy = None
