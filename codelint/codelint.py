@@ -134,7 +134,7 @@ def helper_make_extra_plugin_end_str(num_findings, num_patches_applied):
         extra_str = " (%s%s%s)" % (findings_str, inbetween_str, patches_str)
     return extra_str
 
-def codelint(plugins, plugins_params, filters, autocorrect, files):
+def codelint(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files):
 
     report = []
 
