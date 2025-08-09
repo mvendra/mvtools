@@ -7,6 +7,7 @@ import mvtools_exception
 import terminal_colors
 import get_platform
 import gcc_wrapper
+import clang_wrapper
 import path_utils
 import standard_c
 
@@ -62,11 +63,11 @@ def unroll_path_dirname(path):
 
 class Builder():
 
-    def __init__(self, basepath, appname, sources, options):
+    def __init__(self, compiler, basepath, appname, sources, options):
 
         self.basepath = basepath
-        self.options = self.parseoptions(options)
-        self.compiler = gcc_wrapper
+        self.compiler = self.select_compiler(compiler)
+        self.options = self.parse_options(options)
 
         self.appname = appname
         self.src = sources
@@ -160,7 +161,15 @@ class Builder():
         if self.mode == "release" and self.compiler == gcc_wrapper:
             self.linker_libs_release += standard_c.get_c_linker_libs_linux_release_gcc()
 
-    def parseoptions(self, options):
+    def select_compiler(self, compiler):
+
+        if compiler == "gcc":
+            return gcc_wrapper
+        elif compiler == "clang":
+            return clang_wrapper
+        return None
+
+    def parse_options(self, options):
 
         opts = {}
 
@@ -261,7 +270,7 @@ class Builder():
             cmd_str += "%s " % c
         cmd_str = cmd_str.rstrip()
 
-        v, r = gcc_wrapper.exec(None, cmd)
+        v, r = self.compiler.exec(None, cmd)
         if not v:
             raise mvtools_exception.mvtools_exception("%s: Failed: [%s]" % (cmd_str, r.rstrip()))
 
@@ -269,6 +278,7 @@ class Builder():
 
 if __name__ == "__main__":
 
+    compiler = "gcc"
     appname = "testapp"
     src = ["main.c", "subfolder/second.c"]
 
@@ -278,7 +288,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         opt = sys.argv[1:]
 
-    bd = Builder(basepath, appname, src, opt)
+    bd = Builder(compiler, basepath, appname, src, opt)
 
     try:
         bd.run()
