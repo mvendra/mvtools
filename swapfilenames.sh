@@ -9,16 +9,16 @@ function puaq(){ # puaq stands for Print Usage And Quit
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-if [ -z $2 ]; then
+if [ -z "$2" ]; then
     puaq false
 fi
 
-FILE1=$1
-FILE2=$2
+FILE1="$1"
+FILE2="$2"
 
 FILEAUX=`randomfilenamegen.sh`
 if [ $? != 0 ]; then
@@ -26,6 +26,6 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-mv $FILE1 $FILEAUX
-mv $FILE2 $FILE1
-mv $FILEAUX $FILE2
+mv "$FILE1" "$FILEAUX"
+mv "$FILE2" "$FILE1"
+mv "$FILEAUX" "$FILE2"
