@@ -38,6 +38,7 @@ class CustomTask(launch_jobs.BaseTask):
         plugins_params = None
         filters = None
         autocorrect = None
+        skip_non_utf8 = None
         files = None
         folder = None
         extensions = None
@@ -74,6 +75,9 @@ class CustomTask(launch_jobs.BaseTask):
 
         # autocorrect
         autocorrect = "autocorrect" in self.params
+
+        # skip_non_utf8
+        skip_non_utf8 = "skip_non_utf8" in self.params
 
         # files
         try:
@@ -121,7 +125,7 @@ class CustomTask(launch_jobs.BaseTask):
         if files is not None and extensions is not None:
             return False, "extensions cannot be used with files"
 
-        return True, (plugins, plugins_params, filters, autocorrect, files, folder, extensions)
+        return True, (plugins, plugins_params, filters, autocorrect, skip_non_utf8, files, folder, extensions)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -129,7 +133,7 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        plugins, plugins_params, filters, autocorrect, files, folder, extensions = r
+        plugins, plugins_params, filters, autocorrect, skip_non_utf8, files, folder, extensions = r
 
         plugins_params_resolved = resolve_even_array_into_map(plugins_params)
         filters_resolved = resolve_even_array_into_map(filters)
@@ -143,7 +147,7 @@ class CustomTask(launch_jobs.BaseTask):
         findings_final = None
         findings_interm = []
 
-        v, r = codelint.codelint(plugins, plugins_params_resolved, filters_resolved, autocorrect, False, files)
+        v, r = codelint.codelint(plugins, plugins_params_resolved, filters_resolved, autocorrect, skip_non_utf8, files)
         if not v:
             errmsg, partial_report = r
             if len(partial_report) > 0:

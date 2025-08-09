@@ -71,7 +71,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, None, False, ["dummy_value2"], None, None))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, False, ["dummy_value2"], None, None))
 
     def testCodelintPluginReadParams4(self):
 
@@ -83,7 +83,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], ["dummy_value2", "dummy_value3"], None, False, ["dummy_value4"], None, None))
+        self.assertEqual(r, (["dummy_value1"], ["dummy_value2", "dummy_value3"], None, False, False, ["dummy_value4"], None, None))
 
     def testCodelintPluginReadParams5(self):
 
@@ -95,7 +95,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, ["dummy_value2", "dummy_value3"], False, ["dummy_value4"], None, None))
+        self.assertEqual(r, (["dummy_value1"], None, ["dummy_value2", "dummy_value3"], False, False, ["dummy_value4"], None, None))
 
     def testCodelintPluginReadParams6(self):
 
@@ -107,7 +107,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, None, True, ["dummy_value2"], None, None))
+        self.assertEqual(r, (["dummy_value1"], None, None, True, False, ["dummy_value2"], None, None))
 
     def testCodelintPluginReadParams7(self):
 
@@ -118,7 +118,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, None, False, None, "dummy_value2", None))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, False, None, "dummy_value2", None))
 
     def testCodelintPluginReadParams8(self):
 
@@ -130,7 +130,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, None, False, None, "dummy_value2", ["dummy_value3"]))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, False, None, "dummy_value2", ["dummy_value3"]))
 
     def testCodelintPluginReadParams9(self):
 
@@ -142,7 +142,7 @@ class CodelintPluginTest(unittest.TestCase):
 
         v, r = self.codelint_task._read_params()
         self.assertTrue(v)
-        self.assertEqual(r, (["dummy_value1"], None, None, False, None, "dummy_value2", ["dummy_value3", "dummy_value4"]))
+        self.assertEqual(r, (["dummy_value1"], None, None, False, False, None, "dummy_value2", ["dummy_value3", "dummy_value4"]))
 
     def testCodelintPluginReadParams10(self):
 
