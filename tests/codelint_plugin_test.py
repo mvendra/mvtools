@@ -113,6 +113,18 @@ class CodelintPluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["plugins"] = "dummy_value1"
+        local_params["files"] = "dummy_value2"
+        local_params["skip_non_utf8"] = "dummy_value3"
+        self.codelint_task.params = local_params
+
+        v, r = self.codelint_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (["dummy_value1"], None, None, False, True, ["dummy_value2"], None, None))
+
+    def testCodelintPluginReadParams8(self):
+
+        local_params = {}
+        local_params["plugins"] = "dummy_value1"
         local_params["folder"] = "dummy_value2"
         self.codelint_task.params = local_params
 
@@ -120,7 +132,7 @@ class CodelintPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1"], None, None, False, False, None, "dummy_value2", None))
 
-    def testCodelintPluginReadParams8(self):
+    def testCodelintPluginReadParams9(self):
 
         local_params = {}
         local_params["plugins"] = "dummy_value1"
@@ -132,7 +144,7 @@ class CodelintPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1"], None, None, False, False, None, "dummy_value2", ["dummy_value3"]))
 
-    def testCodelintPluginReadParams9(self):
+    def testCodelintPluginReadParams10(self):
 
         local_params = {}
         local_params["plugins"] = "dummy_value1"
@@ -144,7 +156,7 @@ class CodelintPluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, (["dummy_value1"], None, None, False, False, None, "dummy_value2", ["dummy_value3", "dummy_value4"]))
 
-    def testCodelintPluginReadParams10(self):
+    def testCodelintPluginReadParams11(self):
 
         local_params = {}
         local_params["plugins"] = "dummy_value1"
@@ -155,7 +167,7 @@ class CodelintPluginTest(unittest.TestCase):
         v, r = self.codelint_task._read_params()
         self.assertFalse(v)
 
-    def testCodelintPluginReadParams11(self):
+    def testCodelintPluginReadParams12(self):
 
         local_params = {}
         local_params["plugins"] = "dummy_value1"
@@ -166,7 +178,7 @@ class CodelintPluginTest(unittest.TestCase):
         v, r = self.codelint_task._read_params()
         self.assertFalse(v)
 
-    def testCodelintPluginReadParams12(self):
+    def testCodelintPluginReadParams13(self):
 
         local_params = {}
         local_params["plugins"] = "dummy_value1"
@@ -177,7 +189,7 @@ class CodelintPluginTest(unittest.TestCase):
         v, r = self.codelint_task._read_params()
         self.assertFalse(v)
 
-    def testCodelintPluginReadParams13(self):
+    def testCodelintPluginReadParams14(self):
 
         local_params = {}
         local_params["plugins"] = "dummy_value1"
