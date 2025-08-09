@@ -13,8 +13,15 @@ class CustomTask(launch_jobs.BaseTask):
 
     def _read_params(self):
 
+        compiler_base = None
         compiler = None
         params = []
+
+        # compiler_base
+        try:
+            compiler_base = self.params["compiler_base"]
+        except KeyError:
+            pass # optional
 
         # compiler
         try:
@@ -32,13 +39,17 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "params is a required parameter"
 
+        if compiler_base is not None:
+            if not os.path.exists(compiler_base):
+                return False, "compiler_base [%s] does not exist" % compiler_base
+
         valid_compilers = {}
         valid_compilers["gcc"] = gcc_wrapper
 
         if not compiler in valid_compilers:
             return False, "Compiler [%s] is unknown/not supported" % compiler
 
-        return True, (valid_compilers[compiler], params)
+        return True, (compiler_base, valid_compilers[compiler], params)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -46,10 +57,10 @@ class CustomTask(launch_jobs.BaseTask):
         v, r = self._read_params()
         if not v:
             return False, r
-        compiler, params = r
+        compiler_base, compiler, params = r
 
         # actual execution
-        v, r = compiler.exec(params)
+        v, r = compiler.exec(compiler_base, params)
         if not v:
             return False, r
         return True, None

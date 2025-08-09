@@ -46,6 +46,7 @@ class CompilerPluginTest(unittest.TestCase):
 
         v, r = self.compiler_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "compiler is a required parameter")
 
     def testCompilerPluginReadParams2(self):
 
@@ -55,18 +56,51 @@ class CompilerPluginTest(unittest.TestCase):
 
         v, r = self.compiler_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "params is a required parameter")
 
     def testCompilerPluginReadParams3(self):
 
+        test_path_local = path_utils.concat_path(self.test_dir, "test_path_local")
+        self.assertFalse(os.path.exists(test_path_local))
+
         local_params = {}
-        local_params["compiler"] = "not-supported-compiler"
+        local_params["compiler_base"] = test_path_local
+        local_params["compiler"] = "gcc"
+        local_params["params"] = "dummy_value2"
+        self.compiler_task.params = local_params
+
+        v, r = self.compiler_task._read_params()
+        self.assertFalse(v)
+        self.assertEqual(r, "compiler_base [%s] does not exist" % test_path_local)
+
+    def testCompilerPluginReadParams4(self):
+
+        local_params = {}
+        local_params["compiler"] = "unsupported-compiler"
         local_params["params"] = "dummy_value1"
         self.compiler_task.params = local_params
 
         v, r = self.compiler_task._read_params()
         self.assertFalse(v)
+        self.assertEqual(r, "Compiler [unsupported-compiler] is unknown/not supported")
 
-    def testCompilerPluginReadParams4(self):
+    def testCompilerPluginReadParams5(self):
+
+        test_path_local = path_utils.concat_path(self.test_dir, "test_path_local")
+        os.mkdir(test_path_local)
+        self.assertTrue(os.path.exists(test_path_local))
+
+        local_params = {}
+        local_params["compiler_base"] = test_path_local
+        local_params["compiler"] = "gcc"
+        local_params["params"] = "dummy_value2"
+        self.compiler_task.params = local_params
+
+        v, r = self.compiler_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual(r, (test_path_local, gcc_wrapper, ["dummy_value2"]))
+
+    def testCompilerPluginReadParams6(self):
 
         local_params = {}
         local_params["compiler"] = "gcc"
@@ -75,7 +109,7 @@ class CompilerPluginTest(unittest.TestCase):
 
         v, r = self.compiler_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, (gcc_wrapper, ["dummy_value1"]) )
+        self.assertEqual(r, (None, gcc_wrapper, ["dummy_value1"]))
 
     def testCompilerPluginRunTask1(self):
 
@@ -87,7 +121,7 @@ class CompilerPluginTest(unittest.TestCase):
         with mock.patch("gcc_wrapper.exec", return_value=(True, None)) as dummy:
             v, r = self.compiler_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.called_with(["dummy_value1"])
+            dummy.assert_called_with(None, ["dummy_value1"])
 
     def testCompilerPluginRunTask2(self):
 
@@ -99,7 +133,24 @@ class CompilerPluginTest(unittest.TestCase):
         with mock.patch("gcc_wrapper.exec", return_value=(True, None)) as dummy:
             v, r = self.compiler_task.run_task(print, "exe_name")
             self.assertTrue(v)
-            dummy.called_with(["dummy_value1", "dummy_value2"])
+            dummy.assert_called_with(None, ["dummy_value1", "dummy_value2"])
+
+    def testCompilerPluginRunTask3(self):
+
+        test_path_local = path_utils.concat_path(self.test_dir, "test_path_local")
+        os.mkdir(test_path_local)
+        self.assertTrue(os.path.exists(test_path_local))
+
+        local_params = {}
+        local_params["compiler_base"] = test_path_local
+        local_params["compiler"] = "gcc"
+        local_params["params"] = "dummy_value1"
+        self.compiler_task.params = local_params
+
+        with mock.patch("gcc_wrapper.exec", return_value=(True, None)) as dummy:
+            v, r = self.compiler_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(test_path_local, ["dummy_value1"])
 
 if __name__ == "__main__":
     unittest.main()
