@@ -9,20 +9,20 @@ function puaq(){ # puaq stands for Print Usage And Quit
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-if [ ! -f $1 ]; then
+if [ ! -f "$1" ]; then
     echo "$1 does not exist."
     exit 2
 fi
 
-HASHFNAME=$1.sha512
+HASHFNAME="$1.sha512"
 
-if [ -e $HASHFNAME ]; then
+if [ -e "$HASHFNAME" ]; then
     echo "$HASHFNAME exists. Refusing to overwrite."
     exit 3
 fi
 
-sha512sum $1 > $HASHFNAME
+sha512sum "$1" > "$HASHFNAME"
