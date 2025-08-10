@@ -20,9 +20,8 @@ FILES=`ls -R "$PWD" | awk '
 /:$/&&!f{sub(/:$/,"");s=$0;f=1;next}
 NF&&f{ print s"/"$0 }'`
 
-for f in "$FILES"
-do
-    if [ -f $f ]; then
+for f in "$FILES"; do
+    if [ -f "$f" ]; then
         if [ "$SELF" != "$f" ]; then
             sed -i "s/$FINDWHAT/$CHANGETO/g" "$f"
         fi
