@@ -8,7 +8,7 @@ function puaq(){ # puaq stands for Print Usage And Quit
 }
 
 # testing input params
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq
 fi
 
@@ -17,24 +17,24 @@ TARGET=""
 
 if [ "$1" == "--hash" ]; then
     DO_HASH=true
-    TARGET=$2
+    TARGET="$2"
 else
-    TARGET=$1
+    TARGET="$1"
 fi
 
-if [ -z $TARGET ]; then
+if [ -z "$TARGET" ]; then
     puaq
 fi
 
-if [[ ! -f $TARGET && ! -d $TARGET ]]; then
+if [[ ! -f "$TARGET" && ! -d "$TARGET" ]]; then
     echo "Does $TARGET even exist?"
     exit 2
 fi
 
 FILENAME=`basename $TARGET`
 
-zip -r $FILENAME.zip $TARGET
+zip -r "$FILENAME.zip" "$TARGET"
 
 if $DO_HASH; then
-    sha512sum $FILENAME.zip > $FILENAME.zip.sha512
+    sha512sum "$FILENAME.zip" > "$FILENAME.zip.sha512"
 fi
