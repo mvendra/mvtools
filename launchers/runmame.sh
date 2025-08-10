@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mame genesis -cart "$1"
+mame genesis -window -cart "$1"
