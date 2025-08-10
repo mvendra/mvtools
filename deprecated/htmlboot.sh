@@ -12,4 +12,4 @@ fi
 
 touch "./$HTMLBOOTFILE"
 
-echo "<html>\n    <head>\n        <title>\n            Title\n        </title>\n    </head>\n    <body>\n        Test For Echo\n    </body>\n</html>" > "./$HTMLBOOTFILE"
+echo "<html>\n  <head>\n    <title>\n      Title\n    </title>\n  </head>\n  <body>\n    Test For Echo\n  </body>\n</html>" > "./$HTMLBOOTFILE"
