@@ -9,8 +9,8 @@ function puaq(){ # puaq stands for Print Usage And Quit
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-play -qn synth 2 pluck $1 &
+play -qn synth 2 pluck "$1" &
