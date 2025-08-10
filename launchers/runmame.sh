@@ -1,4 +1,3 @@
 #!/bin/bash
 
-mame genesis -cart $1
-
+mame genesis -cart "$1"
