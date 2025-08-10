@@ -9,12 +9,12 @@ function puaq(){ # puaq stands for Print Usage And Quit
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-TARGET_PATH=$1
+TARGET_PATH="$1"
 
-if [ ! -e $TARGET_PATH ]; then
-    mkdir $TARGET_PATH
+if [ ! -e "$TARGET_PATH" ]; then
+    mkdir "$TARGET_PATH"
 fi
