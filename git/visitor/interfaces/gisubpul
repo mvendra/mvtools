@@ -2,14 +2,14 @@
 
 TARGET=""
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     # target repo not specified. lets use current working dir
     TARGET=`pwd -P`
 else
     # target repo has been specified. lets use it
-    TARGET=$1
+    TARGET="$1"
 fi
 
-TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
-#gifet_all.py $TARGET
-git_sub_pull.py $TARGET
+TARGET=(`git_discover_repo_root.py "$TARGET"`) # resolve to the actual repo
+#gifet_all.py "$TARGET"
+git_sub_pull.py "$TARGET"
