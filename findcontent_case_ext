@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ag -G"\.$1$" --hidden -s $2 2>/dev/null
+ag -G"\.$1$" --hidden -s "$2" 2>/dev/null
