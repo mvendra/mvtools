@@ -1,13 +1,13 @@
 #!/bin/bash
 
-CMD=$1
-TOOLBUS_SIGNAME=$2
+CMD="$1"
+TOOLBUS_SIGNAME="$2"
 
-$CMD
+"$CMD"
 RUN_RESULT=$?
 
 # send the result over to the caller via toolbus
-toolbus.py --set-signal $TOOLBUS_SIGNAME $RUN_RESULT
+toolbus.py --set-signal "$TOOLBUS_SIGNAME" "$RUN_RESULT"
 TOOLBUS_SETSIG_RET=$?
 
 if [ ! $TOOLBUS_SETSIG_RET -eq 0 ]; then
