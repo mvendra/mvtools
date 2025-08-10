@@ -3,10 +3,10 @@
 # lsrfp = ls -R (and show Full Path)
 # borrowed from https://stackoverflow.com/questions/1767384/ls-command-how-can-i-get-a-recursive-full-path-listing-one-line-per-file
 
-THEPATH=$1
+THEPATH="$1"
 
-if [ -z $THEPATH ]; then
+if [ -z "$THEPATH" ]; then
     THEPATH=`pwd -P`
 fi
 
-ls -R $THEPATH | awk '/:$/&&f{s=$0;f=0}/:$/&&!f{sub(/:$/,"");s=$0;f=1;next}NF&&f{ print s"/"$0 }'
+ls -R "$THEPATH" | awk '/:$/&&f{s=$0;f=0}/:$/&&!f{sub(/:$/,"");s=$0;f=1;next}NF&&f{ print s"/"$0 }'
