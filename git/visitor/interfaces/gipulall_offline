@@ -4,7 +4,7 @@ TARGET=""
 
 if [ -z "$1" ]; then
     # target repo not specified. lets use current working dir
-    TARGET=`pwd -P`
+    TARGET=("`pwd -P`")
 else
     # target repo has been specified. lets use it
     TARGET="$1"
