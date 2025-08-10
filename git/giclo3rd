@@ -9,10 +9,10 @@ function puaq(){ # puaq stands for Print Usage And Quit
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-URL=$1
+URL="$1"
 
-git clone $URL --origin thirdparty
+git clone "$URL" --origin thirdparty
