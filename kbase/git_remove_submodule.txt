@@ -1,2 +1,3 @@
-git rm ./submodule_name
+
+git rm "./submodule_name"
 thats all

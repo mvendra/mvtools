@@ -3,4 +3,3 @@
 2) gibis good (hash-good-commmit)
 3) gibis bad (hash-bad-commit)
 4) gibis will iterate. then you test the state at which gibis put you at currently, then declare it good or bad.
-
