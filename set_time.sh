@@ -9,10 +9,10 @@ function puaq(){ # puaq stands for Print Usage And Quit
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-TIMETOSET=$1
+TIMETOSET="$1"
 
-date +%T -s $TIMETOSET
+date +%T -s "$TIMETOSET"
