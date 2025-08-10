@@ -14,4 +14,3 @@ TARGET=(`git_discover_repo_root.py $TARGET`) # resolve to the actual repo
 #gifet_all.py $TARGET
 #gifet_all_no_offline.py $TARGET
 gifet_offline_only.py $TARGET
-

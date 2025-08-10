@@ -1,4 +1,3 @@
 #!/bin/bash
 
-git_visitor_pull.py --xor-remotename offline
-
+git_visitor_pull.py "--xor-remotename" "offline"
