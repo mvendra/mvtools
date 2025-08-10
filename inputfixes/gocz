@@ -1,5 +1,3 @@
 #!/bin/bash
 
 setxkbmap cz
-swap_caps_esc.sh
-
