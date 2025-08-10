@@ -10,6 +10,6 @@ else
     TARGET="$1"
 fi
 
-TARGET=(`git_discover_repo_root.py "$TARGET"`) # resolve to the actual repo
+TARGET=("`git_discover_repo_root.py "$TARGET"`") # resolve to the actual repo
 #gifet_all.py "$TARGET"
 git_sub_push.py "$TARGET"

@@ -10,7 +10,7 @@ else
     TARGET="$1"
 fi
 
-TARGET=(`git_discover_repo_root.py "$TARGET"`) # resolve to the actual repo
+TARGET=("`git_discover_repo_root.py "$TARGET"`") # resolve to the actual repo
 
 #gifet_all_no_offline.py "$TARGET"
 gifet_all.py "$TARGET"

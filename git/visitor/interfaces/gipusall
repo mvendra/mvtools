@@ -10,7 +10,7 @@ else
     TARGET="$1"
 fi
 
-RESOLVED_TARGET=(`git_discover_repo_root.py "$TARGET"`) # resolve to the actual repo
+TARGET=("`git_discover_repo_root.py "$TARGET"`") # resolve to the actual repo
 #gipus_all_remotes_current_branch.py "$TARGET"
 #gipus_all_remotes_no_offline_all_branches.py "$TARGET"
 
@@ -19,4 +19,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-gipus_all_remotes_all_branches.py "$RESOLVED_TARGET"
+gipus_all_remotes_all_branches.py "$TARGET"
