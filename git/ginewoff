@@ -9,20 +9,20 @@ function puaq(){ # puaq stands for Print Usage And Quit
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     puaq false
 fi
 
-NEW_REPO_NAME=$1
+NEW_REPO_NAME="$1"
 
-if [ -e $NEW_REPO_NAME ]; then
+if [ -e "$NEW_REPO_NAME" ]; then
     echo "Path [$NEW_REPO_NAME] already exists."
     exit 1
 fi
 
-mkdir $NEW_REPO_NAME
-cd $NEW_REPO_NAME
+mkdir "$NEW_REPO_NAME"
+cd "$NEW_REPO_NAME"
 git init --bare
 NEW_REPO_FULL_PATH=(`pwd -P`)
-sendtoclipboard.py $NEW_REPO_FULL_PATH
+sendtoclipboard.py "$NEW_REPO_FULL_PATH"
 echo "Sent path [$NEW_REPO_FULL_PATH] to the clipboard."
