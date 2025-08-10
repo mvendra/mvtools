@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TG=`pwd -P`
+TG=("`pwd -P`")
 PORT=2121
 
 # to install the pyftpdlib dependency: pip install --user pyftpdlib

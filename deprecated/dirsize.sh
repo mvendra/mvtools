@@ -12,7 +12,7 @@ TARGET_DIR=`resolve_and_escape_path.py $TARGET_DIR`
 
 # resolve symlinks
 cd "$TARGET_DIR"
-TARGET_DIR=`pwd -P`
+TARGET_DIR=("`pwd -P`")
 
 if [ -z "$TARGET_DIR" ]; then
     puaq

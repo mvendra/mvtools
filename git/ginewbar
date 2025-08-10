@@ -23,6 +23,6 @@ fi
 mkdir "$NEW_REPO_NAME"
 cd "$NEW_REPO_NAME"
 git init --bare
-NEW_REPO_FULL_PATH=(`pwd -P`)
+NEW_REPO_FULL_PATH=("`pwd -P`")
 sendtoclipboard.py "$NEW_REPO_FULL_PATH"
 echo "Sent path [$NEW_REPO_FULL_PATH] to the clipboard."

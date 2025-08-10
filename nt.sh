@@ -6,7 +6,7 @@ exit
 TERMINAL="xfce4-terminal"
 TITLE="$1"
 COMMAND="$2"
-WORKDIR=`pwd -P`
+WORKDIR=("`pwd -P`")
 
 if [ ! -z "$3" ]; then
     WORKDIR="$3"
