@@ -6,10 +6,11 @@ import os
 import mvtools_exception
 import terminal_colors
 import get_platform
-import gcc_wrapper
-import clang_wrapper
 import path_utils
 import standard_c
+
+import gcc_wrapper
+import clang_wrapper
 
 """
 build.py
@@ -61,7 +62,7 @@ def unroll_path_dirname(path):
 
     return local_path
 
-class Builder():
+class PybuildC():
 
     def __init__(self, compiler_base, compiler, basepath, appname, sources, options):
 
@@ -168,7 +169,7 @@ class Builder():
             return gcc_wrapper
         elif compiler == "clang":
             return clang_wrapper
-        return None
+        raise mvtools_exception.mvtools_exception("Invalid/unknown compiler: [%s]" % compiler)
 
     def parse_options(self, options):
 
@@ -277,25 +278,58 @@ class Builder():
 
         print("%s: Command succeeded." % cmd_str)
 
+def puaq(selfhelp): # print usage and quit
+    print("Usage: %s [--help] [--compiler-base] [--compiler [gcc | clang]] [any-other-options]" % path_utils.basename_filtered(__file__))
+    if selfhelp:
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
 if __name__ == "__main__":
 
-    compiler_base = None
-    compiler = "gcc"
     appname = "testapp"
-    src = ["main.c", "subfolder/second.c"]
+    sources = ["main.c", "subfolder/second.c"]
+
+    compiler_base = None
+    compiler_base_next = False
+
+    compiler = "gcc"
+    compiler_next = False
 
     basepath = os.path.abspath(path_utils.dirname_filtered(sys.argv[0]))
+    options = []
 
-    opt = None
-    if len(sys.argv) > 1:
-        opt = sys.argv[1:]
+    for p in sys.argv[1:]:
 
-    bd = Builder(compiler_base, compiler, basepath, appname, src, opt)
+        if compiler_base_next:
+            compiler_base_next = False
+            compiler_base = p
+            continue
+
+        if compiler_next:
+            compiler_next = False
+            compiler = p
+            continue
+
+        if p == "--help":
+            puaq(True)
+
+        elif p == "--compiler-base":
+            compiler_base_next = True
+            continue
+
+        elif p == "--compiler":
+            compiler_next = True
+            continue
+
+        else:
+            options.append(p)
+            continue
 
     try:
+        bd = PybuildC(compiler_base, compiler, basepath, appname, sources, options)
         bd.run()
     except mvtools_exception.mvtools_exception as mvtex:
         print("%s%s%s" % (terminal_colors.TTY_RED, mvtex, terminal_colors.get_standard_color()))
         sys.exit(1)
-
     print("%s%s%s" % (terminal_colors.TTY_GREEN, "All succeeded.", terminal_colors.get_standard_color()))
