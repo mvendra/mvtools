@@ -56,11 +56,15 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
         return True, None
     content_line_local = content_line_local[:len(content_line_local) - len(rp)] # remove right
 
-    if not string_utils.is_dec_string(content_line_local):
-        return True, None
     shared_state["lint-func-indexer-counter"] += 1
 
-    if not int(content_line_local) == shared_state["lint-func-indexer-counter"]:
+    logic_sieve = False
+    if not string_utils.is_dec_string(content_line_local):
+        logic_sieve = True
+    elif not int(content_line_local) == shared_state["lint-func-indexer-counter"]:
+        logic_sieve = True
+
+    if logic_sieve:
         ret_msg = "[%s:%s]: expected index [%s], have [%s]." % (filename, line_index, shared_state["lint-func-indexer-counter"], content_line_local)
         corrected_line = "%s%s%s" % (lp, shared_state["lint-func-indexer-counter"], rp)
         return True, (ret_msg, [(line_index, corrected_line)])
