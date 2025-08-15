@@ -48,7 +48,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     lp = None
     rp = None
 
-    for p in plugins_params["lint-func-indexer-param-left"]: # mvtodo: coverage also
+    for p in plugins_params["lint-func-indexer-param-left"]:
         if content_line_local.startswith(p):
             lp = p
             break
