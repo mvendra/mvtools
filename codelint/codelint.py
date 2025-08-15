@@ -203,6 +203,8 @@ def codelint(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files
             filter_min_line -= 1
     if "max-line" in filters:
         filter_max_line = int(filters["max-line"][0])
+        if (filter_min_line+1) > filter_max_line:
+            return False, ("min-line [%s] is larger than max-line [%s]" % (filter_min_line+1, filter_max_line), report)
     if "max-findings" in filters:
         filter_max_findings = int(filters["max-findings"][0])
 
