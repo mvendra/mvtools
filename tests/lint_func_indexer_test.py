@@ -98,57 +98,14 @@ class LintFuncIndexerTest(unittest.TestCase):
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = []
-        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
-
-        v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
-        self.assertFalse(v)
-        self.assertEqual(r, "the parameter {lint-func-indexer-param-left} must contain at least one entry")
-
-        expected_shared_state = {}
-        expected_shared_state["lint-func-indexer-counter"] = 0
-
-        self.assertEqual(test_shared_state, expected_shared_state)
-
-    def testLintPre5(self):
-
-        test_file = "test_file.txt"
-        test_lines = ["left1right", "left2right", "left3right"]
-        test_plugins_params = {}
-        test_shared_state = {}
-
-        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
-        test_plugins_params["lint-func-indexer-param-right"] = []
-
-        v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
-        self.assertFalse(v)
-        self.assertEqual(r, "the parameter {lint-func-indexer-param-right} must contain at least one entry")
-
-        expected_shared_state = {}
-        expected_shared_state["lint-func-indexer-counter"] = 0
-
-        self.assertEqual(test_shared_state, expected_shared_state)
-
-    def testLintPre6(self):
-
-        test_file = "test_file.txt"
-        test_lines = ["left1right", "left2right", "left3right"]
-        test_plugins_params = {}
-        test_shared_state = {}
-
         test_plugins_params["lint-func-indexer-param-left"] = [""]
         test_plugins_params["lint-func-indexer-param-right"] = ["right"]
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertFalse(v)
-        self.assertEqual(r, "the parameter {lint-func-indexer-param-left} cannot be empty")
+        self.assertEqual(r, "parameters from {lint-func-indexer-param-left} cannot be empty")
 
-        expected_shared_state = {}
-        expected_shared_state["lint-func-indexer-counter"] = 0
-
-        self.assertEqual(test_shared_state, expected_shared_state)
-
-    def testLintPre7(self):
+    def testLintPre5(self):
 
         test_file = "test_file.txt"
         test_lines = ["left1right", "left2right", "left3right"]
@@ -160,14 +117,9 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertFalse(v)
-        self.assertEqual(r, "the parameter {lint-func-indexer-param-right} cannot be empty")
+        self.assertEqual(r, "parameters from {lint-func-indexer-param-right} cannot be empty")
 
-        expected_shared_state = {}
-        expected_shared_state["lint-func-indexer-counter"] = 0
-
-        self.assertEqual(test_shared_state, expected_shared_state)
-
-    def testLintPre8(self):
+    def testLintPre6(self):
 
         test_file = "test_file.txt"
         test_lines = ["left1right", "left2right", "left3right"]
@@ -562,12 +514,12 @@ class LintFuncIndexerTest(unittest.TestCase):
     def testLintComplete(self):
 
         test_file = "test_file.txt"
-        test_lines = ["left3right", "left2right", "left1right"]
+        test_lines = ["leftXright", "leftlargerYright", "leftZright", "leftQlargerright"]
         test_plugins_params = {}
         test_shared_state = {}
 
-        test_plugins_params["lint-func-indexer-param-left"] = ["left"]
-        test_plugins_params["lint-func-indexer-param-right"] = ["right"]
+        test_plugins_params["lint-func-indexer-param-left"] = ["left", "leftlarger"]
+        test_plugins_params["lint-func-indexer-param-right"] = ["right", "largerright"]
 
         expected_shared_state1 = {}
         expected_shared_state1["lint-func-indexer-counter"] = 1
@@ -578,13 +530,17 @@ class LintFuncIndexerTest(unittest.TestCase):
         expected_shared_state3 = {}
         expected_shared_state3["lint-func-indexer-counter"] = 3
 
-        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+        expected_shared_state4 = {}
+        expected_shared_state4["lint-func-indexer-counter"] = 4
 
-        expected_result1 = ("[test_file.txt:1]: expected index [1], have [3].", [(1, "left1right")])
-        expected_result2 = None
-        expected_result3 = ("[test_file.txt:3]: expected index [3], have [1].", [(3, "left3right")])
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3, expected_shared_state4]
 
-        expected_results = [expected_result1, expected_result2, expected_result3]
+        expected_result1 = ("[test_file.txt:1]: expected index [1], have [X].", [(1, "left1right")])
+        expected_result2 = ("[test_file.txt:2]: expected index [2], have [Y].", [(2, "leftlarger2right")])
+        expected_result3 = ("[test_file.txt:3]: expected index [3], have [Z].", [(3, "left3right")])
+        expected_result4 = ("[test_file.txt:4]: expected index [4], have [Q].", [(4, "left4largerright")])
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4]
 
         v, r = lint_func_indexer.lint_pre(test_plugins_params, test_file, test_shared_state, len(test_lines))
         self.assertTrue(v)

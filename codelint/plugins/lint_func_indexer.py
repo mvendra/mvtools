@@ -24,17 +24,13 @@ def lint_pre(plugins_params, filename, shared_state, num_lines):
     if not "lint-func-indexer-param-right" in plugins_params:
         return False, "required parameter {lint-func-indexer-param-right} was not provided"
 
-    if len(plugins_params["lint-func-indexer-param-left"]) != 1:
-        return False, "the parameter {lint-func-indexer-param-left} must contain at least one entry"
+    for p in plugins_params["lint-func-indexer-param-left"]:
+        if len(p) < 1:
+            return False, "parameters from {lint-func-indexer-param-left} cannot be empty"
 
-    if len(plugins_params["lint-func-indexer-param-right"]) != 1:
-        return False, "the parameter {lint-func-indexer-param-right} must contain at least one entry"
-
-    if len(plugins_params["lint-func-indexer-param-left"][0]) < 1:
-        return False, "the parameter {lint-func-indexer-param-left} cannot be empty"
-
-    if len(plugins_params["lint-func-indexer-param-right"][0]) < 1:
-        return False, "the parameter {lint-func-indexer-param-right} cannot be empty"
+    for p in plugins_params["lint-func-indexer-param-right"]:
+        if len(p) < 1:
+            return False, "parameters from {lint-func-indexer-param-right} cannot be empty"
 
     return True, None
 
