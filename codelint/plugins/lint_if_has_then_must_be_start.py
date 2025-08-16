@@ -30,11 +30,23 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     if len(content_line_local) == 0:
         return True, None
 
+    start_tolerate = []
+    try:
+        start_tolerate = plugins_params["lint-if-has-then-must-be-start-tolerate-start"]
+    except KeyError:
+        pass
+
     for p in plugins_params["lint-if-has-then-must-be-start-pattern"]:
         if p in content_line_local:
             if not content_line_local.startswith(p):
-                ret_msg = "[%s:%s]: line [%s] has the pattern [%s] - but not at the beginning." % (filename, line_index, content_line_local, p)
-                return True, (ret_msg, [])
+                tolerate = False
+                for t in start_tolerate:
+                    if content_line_local.startswith(t):
+                        tolerate = True
+                        break
+                if not tolerate:
+                    ret_msg = "[%s:%s]: line [%s] has the pattern [%s] - but not at the beginning." % (filename, line_index, content_line_local, p)
+                    return True, (ret_msg, [])
 
     return True, None
 

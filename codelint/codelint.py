@@ -30,7 +30,7 @@ plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer
 plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [patterns] / lint-select-filter-exclude -> [patterns]}")
 plugin_table["lint-c-check-header-guards"] = (lint_c_check_header_guards, "{}")
 plugin_table["lint-line-tidy"] = (lint_line_tidy, "{}")
-plugin_table["lint-if-has-then-must-be-start"] = (lint_if_has_then_must_be_start, "{lint-if-has-then-must-be-start-pattern -> [patterns]}")
+plugin_table["lint-if-has-then-must-be-start"] = (lint_if_has_then_must_be_start, "{lint-if-has-then-must-be-start-pattern -> [patterns] / lint-if-has-then-must-be-start-tolerate-start -> [patterns]}")
 plugin_table["lint-if-start-this-then-end-that"] = (lint_if_start_this_then_end_that, "{lint-if-start-this-then-end-that-start-pattern -> pattern / lint-if-start-this-then-end-that-end-pattern -> pattern}")
 
 filter_table = {}

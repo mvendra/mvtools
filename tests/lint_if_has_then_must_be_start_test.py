@@ -169,6 +169,36 @@ class LintIfHasThenMustBeStartTest(unittest.TestCase):
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
+    def testLintCycle4(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["some pattern", "else something", "some other thing"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-if-has-then-must-be-start-pattern"] = ["some"]
+        test_plugins_params["lint-if-has-then-must-be-start-tolerate-start"] = ["else"]
+
+        expected_shared_state1 = {}
+        expected_shared_state2 = {}
+        expected_shared_state3 = {}
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        expected_result1 = None
+        expected_result2 = None
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_if_has_then_must_be_start.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"
