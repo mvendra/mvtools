@@ -201,6 +201,37 @@ class LintIfStartThisThenEndThatTest(unittest.TestCase):
 
             self.assertEqual(test_shared_state, expected_shared_states[test_index])
 
+    def testLintCycle3(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["start other", "start stuff end", "stuff start end"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_plugins_params["lint-if-start-this-then-end-that-start-pattern"] = ["start"]
+        test_plugins_params["lint-if-start-this-then-end-that-end-pattern"] = ["end"]
+        test_plugins_params["lint-if-start-this-then-end-that-tolerate"] = ["start other"]
+
+        expected_shared_state1 = {}
+        expected_shared_state2 = {}
+        expected_shared_state3 = {}
+
+        expected_shared_states = [expected_shared_state1, expected_shared_state2, expected_shared_state3]
+
+        expected_result1 = None
+        expected_result2 = None
+        expected_result3 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_if_start_this_then_end_that.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+            self.assertEqual(test_shared_state, expected_shared_states[test_index])
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"

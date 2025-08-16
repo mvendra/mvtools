@@ -44,10 +44,17 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
     sp = plugins_params["lint-if-start-this-then-end-that-start-pattern"][0]
     ep = plugins_params["lint-if-start-this-then-end-that-end-pattern"][0]
 
+    tolerate = []
+    try:
+        tolerate = plugins_params["lint-if-start-this-then-end-that-tolerate"]
+    except KeyError:
+        pass
+
     if content_line_local.startswith(sp):
         if not content_line_local.endswith(ep):
-            ret_msg = "[%s:%s]: line [%s] has the pattern [%s] in the beginning - but not the pattern [%s] at the end." % (filename, line_index, content_line_local, sp, ep)
-            return True, (ret_msg, [])
+            if not content_line_local in tolerate:
+                ret_msg = "[%s:%s]: line [%s] has the pattern [%s] in the beginning - but not the pattern [%s] at the end." % (filename, line_index, content_line_local, sp, ep)
+                return True, (ret_msg, [])
 
     return True, None
 
