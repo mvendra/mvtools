@@ -62,6 +62,10 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
         if content_line_local.endswith(p):
             rp = p
 
+    if (lp is not None) and (rp is None):
+        ret_msg = "[%s:%s]: WARNING: left pattern (\"%s\") detected, right pattern not detected: [%s]." % (filename, line_index, lp, content_line_local)
+        return True, (ret_msg, [])
+
     if (lp is None) or (rp is None):
         return True, None
 

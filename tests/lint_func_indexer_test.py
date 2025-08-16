@@ -415,7 +415,7 @@ class LintFuncIndexerTest(unittest.TestCase):
 
         expected_result1 = ("[test_file.txt:1]: expected index [1], have [X].", [(1, "left1right // needs fixing")])
         expected_result2 = ("[test_file.txt:2]: expected index [2], have [0].", [(2, "left2right")])
-        expected_result3 = None
+        expected_result3 = ("[test_file.txt:3]: WARNING: left pattern (\"left\") detected, right pattern not detected: [leftZright // also needs fixing].", [])
 
         expected_results = [expected_result1, expected_result2, expected_result3]
 
