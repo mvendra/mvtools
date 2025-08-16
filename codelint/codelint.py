@@ -12,11 +12,12 @@ import terminal_colors
 
 # plugins
 import lint_sample_echo
-import lint_c_check_header_guards
 import lint_func_indexer
-import lint_line_tidy
 import lint_c_integer_suffix
 import lint_select_filter
+import lint_c_check_header_guards
+import lint_line_tidy
+import lint_if_has_then_must_be_start
 
 CODELINT_CMDLINE_RETURN_PLUGIN_FINDING = 1
 CODELINT_CMDLINE_RETURN_ERROR = 2
@@ -25,9 +26,10 @@ plugin_table = {}
 plugin_table["lint-sample-echo"] = (lint_sample_echo, "{lint-sample-echo-pattern-match -> pattern}")
 plugin_table["lint-func-indexer"] = (lint_func_indexer, "{lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
 plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer-suffix-warn-no-suffix}")
-plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [] / lint-select-filter-exclude -> []}")
+plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [patterns] / lint-select-filter-exclude -> [patterns]}")
 plugin_table["lint-c-check-header-guards"] = (lint_c_check_header_guards, "{}")
 plugin_table["lint-line-tidy"] = (lint_line_tidy, "{}")
+plugin_table["lint-if-has-then-must-be-start"] = (lint_if_has_then_must_be_start, "{lint-if-has-then-must-be-start-pattern -> [patterns]}")
 
 filter_table = {}
 filter_table["min-line"] = ("{index}", "skips lines below this index")
@@ -313,10 +315,10 @@ def files_from_folder(folder, extensions):
 
 def puaq(selfhelp):
     print("Usage: %s [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]] [--help]" % path_utils.basename_filtered(__file__))
-    print("Plugin list:")
+    print("\nPlugin list:")
     for p in plugin_table:
         print("* %s %s (%s)" % (p, plugin_table[p][1], plugin_table[p][0].lint_desc()))
-    print("Filter list:")
+    print("\nFilter list:")
     for f in filter_table:
         print("* %s %s (%s)" % (f, filter_table[f][0], filter_table[f][1]))
     if selfhelp:
