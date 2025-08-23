@@ -59,7 +59,7 @@ def print_color_patterns(line, has_patterns):
     print(line_result)
 
 def puaq(selfhelp): # print usage and quit
-    print("Usage: %s [--help] [--color] [--skip_non_utf8] [--min index] [--max index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--color] [--skip-non-utf8] [--min index] [--max index] [--ext extension] [--target file/folder] [--has pattern] [--not pattern] [--has-these [patterns] | --not-these [patterns]]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -141,7 +141,7 @@ if __name__ == "__main__":
             color = True
             continue
 
-        elif p == "--skip_non_utf8":
+        elif p == "--skip-non-utf8":
             skip_non_utf8 = True
             continue
 
