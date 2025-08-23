@@ -305,10 +305,10 @@ def applet_helper(plugins, plugins_params, filters, autocorrect, skip_non_utf8, 
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
     print("%sComplete report%s:\n" % (terminal_colors.TTY_WHITE_BOLD, terminal_colors.get_standard_color()))
     if print_report(r):
-        print("\n%sAll operations suceeded - with findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.get_standard_color()))
+        print("\n%sAll operations succeeded - with findings%s" % (terminal_colors.TTY_GREEN_BOLD, terminal_colors.get_standard_color()))
         sys.exit(CODELINT_CMDLINE_RETURN_PLUGIN_FINDING)
     else:
-        print("\n%sAll operations suceeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.get_standard_color()))
+        print("\n%sAll operations succeeded - no findings%s" % (terminal_colors.TTY_GREEN, terminal_colors.get_standard_color()))
 
 def files_from_folder(folder, extensions):
 
