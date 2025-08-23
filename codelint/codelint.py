@@ -294,9 +294,9 @@ def print_report(report):
             print(e[1])
     return any_findings
 
-def applet_helper(plugins, plugins_params, filters, autocorrect, files):
+def applet_helper(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files):
 
-    v, r = codelint(plugins, plugins_params, filters, autocorrect, False, files)
+    v, r = codelint(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         if len(r[1]) > 0:
@@ -459,4 +459,4 @@ if __name__ == "__main__":
         print("Neither --files nor --folder chosen")
         sys.exit(CODELINT_CMDLINE_RETURN_ERROR)
 
-    applet_helper(plugins, plugins_params, filters, autocorrect, files)
+    applet_helper(plugins, plugins_params, filters, autocorrect, skip_non_utf8, files)
