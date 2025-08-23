@@ -316,7 +316,7 @@ def files_from_folder(folder, extensions):
     return v, r
 
 def puaq(selfhelp):
-    print("Usage: %s [--help] [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--skip-non-utf8] [--files [targets] | --folder target [extensions]]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--plugin (see below)] [--plugin-param name value] [--filter name value] [--autocorrect (only one plugin allowed per run)] [--skip-non-utf8] [--files [targets] | --folder target [extensions]]" % path_utils.basename_filtered(__file__))
     print("\nPlugin list:")
     for p in plugin_table:
         print("* %s %s (%s)" % (p, plugin_table[p][1], plugin_table[p][0].lint_desc()))
