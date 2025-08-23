@@ -316,7 +316,7 @@ def files_from_folder(folder, extensions):
     return v, r
 
 def puaq(selfhelp):
-    print("Usage: %s [--help] [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--files [targets] | --folder target [extensions]]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--plugin (see below)] [--plugin-param name value] [--autocorrect (only one plugin allowed per run)] [--skip-non-utf8] [--files [targets] | --folder target [extensions]]" % path_utils.basename_filtered(__file__))
     print("\nPlugin list:")
     for p in plugin_table:
         print("* %s %s (%s)" % (p, plugin_table[p][1], plugin_table[p][0].lint_desc()))
@@ -340,6 +340,7 @@ if __name__ == "__main__":
     plugins_params = {}
     filters = {}
     autocorrect = False
+    skip_non_utf8 = False
     files = None
     folder = None
     extensions = None
@@ -405,14 +406,22 @@ if __name__ == "__main__":
 
         if p == "--plugin":
             plugin_next = True
+
         elif p == "--plugin-param":
             plugin_param_name_next = True
+
         elif p == "--autocorrect":
             autocorrect = True
+
+        elif p == "--skip-non-utf8":
+            skip_non_utf8 = True
+
         elif p == "--filter":
             filter_name_next = True
+
         elif p == "--folder":
             folder_next = True
+
         elif p == "--files":
             files_next = True
             break
