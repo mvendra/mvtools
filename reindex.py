@@ -151,7 +151,7 @@ if __name__ == "__main__":
     if max_str is not None:
         filters["max-line"] = [max_str]
 
-    v, r = codelint.codelint(["lint-func-indexer"], plugin_params, filters, True, False, files)
+    v, r = codelint.codelint(["lint-func-indexer"], plugin_params, filters, True, True, files)
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         if len(r[1]) > 0:
