@@ -60,7 +60,7 @@ def run_genlinks(mvtools_path, links_path):
     except Exception as ex:
         return False, "genlinks process call failed: [%s]." % (str(ex))
 
-def generate_mvtools_profile(mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, cygwin_install_path):
+def generate_mvtools_profile(mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, cygwin_install_path, pip_venv_install_path):
 
     contents = ""
 
@@ -71,6 +71,8 @@ def generate_mvtools_profile(mvtools_path, temp_path, links_path, toolbus_dbs_pa
     contents += "export MVTOOLS_GIT_VISITOR_BASE=\"%s\"\n" % git_visitor_path
     if cygwin_install_path is not None:
         contents += "export MVTOOLS_CYGWIN_INSTALL_PATH=\"%s\"\n" % cygwin_install_path
+    if pip_venv_install_path is not None:
+        contents += "export MVTOOLS_PIP_VENV_INSTALL_PATH=\"%s\"\n" % pip_venv_install_path
     contents += "source \"$MVTOOLS/mvtools_main.sh\""
 
     return contents
@@ -93,7 +95,7 @@ def run_uts(mvtools_path, links_path):
     except Exception as ex:
         return False, "run_all_mvtools_tests process call failed: [%s]." % (str(ex))
 
-def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, cygwin_install_path, run_unit_tests):
+def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, cygwin_install_path, pip_venv_install_path, run_unit_tests):
 
     if profile_filename is not None:
         profile_filename = _resolve_path(profile_filename)
@@ -149,7 +151,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
         print("")
     toolbus_dbs_path_copy = toolbus_dbs_path
     toolbus_dbs_path = _resolve_path(toolbus_dbs_path)
-    if not os.path.exists(toolbus_dbs_path):
+    if not os.path.exists(_resolve_path(toolbus_dbs_path)):
         print("The chosen path for toolbus's databases path [%s] is invalid. Aborting..." % toolbus_dbs_path)
         return False
 
@@ -160,7 +162,7 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
         print("")
     git_visitor_path_copy = git_visitor_path
     git_visitor_path = _resolve_path(git_visitor_path)
-    if not os.path.exists(git_visitor_path):
+    if not os.path.exists(_resolve_path(git_visitor_path)):
         print("The chosen path for git-visitor's path [%s] is invalid. Aborting..." % git_visitor_path)
         return False
 
@@ -175,8 +177,23 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     else:
         cygwin_install_path_copy = cygwin_install_path_read
         cygwin_install_path = cygwin_install_path_read
-        if not os.path.exists(cygwin_install_path):
+        if not os.path.exists(_resolve_path(cygwin_install_path)):
             print("The chosen path for this system's cygwin installation path [%s] is invalid. Aborting..." % cygwin_install_path)
+            return False
+
+    # pip venv install path
+    pip_venv_install_path_read = ""
+    if pip_venv_install_path is None:
+        print("Mvtools can be hooked with the local system's pip virtual environment installation path. This is optional.")
+        pip_venv_install_path_read = input("Choose your local path that points to this system's pip virtual environment installation path (optional - can be left blank):")
+        print("")
+    if pip_venv_install_path_read == "":
+        pip_venv_install_path_copy = None
+    else:
+        pip_venv_install_path_copy = pip_venv_install_path_read
+        pip_venv_install_path = pip_venv_install_path_read
+        if not os.path.exists(_resolve_path(pip_venv_install_path)):
+            print("The chosen path for this system's pip virtual environment installation path [%s] is invalid. Aborting..." % pip_venv_install_path)
             return False
 
     # links
@@ -196,10 +213,11 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
     print("[%s] for MVTOOLS_TOOLBUS_BASE" % toolbus_dbs_path_copy)
     print("[%s] for MVTOOLS_GIT_VISITOR_BASE" % git_visitor_path_copy)
     print("[%s] for MVTOOLS_CYGWIN_INSTALL_PATH" % cygwin_install_path_copy)
+    print("[%s] for MVTOOLS_PIP_VENV_INSTALL_PATH" % pip_venv_install_path_copy)
     print("")
 
     # generate profile
-    generated_contents = generate_mvtools_profile(mvtools_path_copy, temp_path_copy, links_path_copy, toolbus_dbs_path_copy, git_visitor_path_copy, cygwin_install_path_copy)
+    generated_contents = generate_mvtools_profile(mvtools_path_copy, temp_path_copy, links_path_copy, toolbus_dbs_path_copy, git_visitor_path_copy, cygwin_install_path_copy, pip_venv_install_path_copy)
     if profile_filename is None:
         print("# --- BEGIN GENERATED PROFILE CONTENTS ---")
         print(generated_contents)
@@ -238,6 +256,7 @@ def puaq(selfhelp):
     print("[--toolbus-db-path] -> defines the MVTOOLS_TOOLBUS_BASE envvar. If ommitted, it will be prompted from stdin.")
     print("[--git-visitor-path] -> defines the MVTOOLS_GIT_VISITOR_BASE envvar. If ommitted, it will be prompted from stdin.")
     print("[--cygwin-install-path] -> defines the MVTOOLS_CYGWIN_INSTALL_PATH envvar (must be a windows path, not a cygwin path, can't contain environment variables or any other aliases of any kind). If ommitted, it will be prompted from stdin.")
+    print("[--pip-venv-install-path] -> defines the MVTOOLS_PIP_VENV_INSTALL_PATH envvar. If ommitted, it will be prompted from stdin.")
     print("[--run-uts] -> runs mvtools's unit tests after setup.")
     if selfhelp:
         sys.exit(0)
@@ -276,6 +295,9 @@ if __name__ == "__main__":
     cygwin_install_path = None
     cygwin_install_path_next = False
 
+    pip_venv_install_path = None
+    pip_venv_install_path_next = False
+
     for o in options:
 
         if profile_filename_next:
@@ -313,6 +335,11 @@ if __name__ == "__main__":
             cygwin_install_path = o
             continue
 
+        if pip_venv_install_path_next:
+            pip_venv_install_path_next = False
+            pip_venv_install_path = o
+            continue
+
         if o == "--profile-filename":
             profile_filename_next = True
             continue
@@ -341,9 +368,13 @@ if __name__ == "__main__":
             cygwin_install_path_next = True
             continue
 
+        if o == "--pip-venv-install-path":
+            pip_venv_install_path_next = True
+            continue
+
         if o == "--run-uts":
             run_unit_tests = True
             continue
 
-    if not mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, cygwin_install_path, run_unit_tests):
+    if not mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus_dbs_path, git_visitor_path, cygwin_install_path, pip_venv_install_path, run_unit_tests):
         sys.exit(1)
