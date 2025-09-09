@@ -18,6 +18,7 @@ class Mvtools_Envvars:
         self.register_mvtools_envvar("MVTOOLS_TOOLBUS_BASE")
         self.register_mvtools_envvar("MVTOOLS_GIT_VISITOR_BASE")
         self.register_mvtools_envvar("MVTOOLS_CYGWIN_INSTALL_PATH")
+        self.register_mvtools_envvar("MVTOOLS_PIP_VENV_INSTALL_PATH")
 
         self.register_mvtools_envvar("MVTOOLS_TEST_GENERIC_RUN_RESERVED_1")
         self.register_mvtools_envvar("MVTOOLS_TEST_DSLTYPE20_RESERVED_1")
@@ -102,6 +103,12 @@ def mvtools_envvar_read_cygwin_install_path():
     return Mvtools_Envvars()._read_envvar("MVTOOLS_CYGWIN_INSTALL_PATH")
 def mvtools_envvar_write_cygwin_install_path(val):
     return Mvtools_Envvars()._write_envvar("MVTOOLS_CYGWIN_INSTALL_PATH", val)
+
+# MVTOOLS_PIP_VENV_INSTALL_PATH
+def mvtools_envvar_read_pip_venv_install_path():
+    return Mvtools_Envvars()._read_envvar("MVTOOLS_PIP_VENV_INSTALL_PATH")
+def mvtools_envvar_write_pip_venv_install_path(val):
+    return Mvtools_Envvars()._write_envvar("MVTOOLS_PIP_VENV_INSTALL_PATH", val)
 
 # MVTOOLS_TEST_GENERIC_RUN_RESERVED_1
 def mvtools_envvar_read_test_generic_run_reserved_1():

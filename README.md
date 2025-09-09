@@ -46,6 +46,8 @@ iat
 
 7z
 
+pyftpdlib (pip)
+
 palletapp (nonpublic)
 
 autoselfext

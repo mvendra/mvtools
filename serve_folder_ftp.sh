@@ -3,5 +3,6 @@
 TG=("`pwd -P`")
 PORT=2121
 
-# to install the pyftpdlib dependency: pip install --user pyftpdlib
+source "$MVTOOLS_PIP_VENV_INSTALL_PATH/bin/activate"
 python -m pyftpdlib --directory="$TG" --port="$PORT" --write
+deactivate
