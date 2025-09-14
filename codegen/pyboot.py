@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -10,7 +10,7 @@ def default_py_app():
 
     local_contents = ""
 
-    local_contents += "#!/usr/bin/env python3\n\n"
+    local_contents += "#!/usr/bin/env python\n\n"
     local_contents += "import sys\n"
     local_contents += "import os\n\n"
     local_contents += "import path_utils\n\n"

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -46,7 +46,7 @@ class GenericRunTest(unittest.TestCase):
         self.reserved_test_env_var_1 = r
 
         # first script
-        self.test_script_ret_0_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_ret_0_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_ret_0_content += "import sys" + os.linesep
         self.test_script_ret_0_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_ret_0_content += "    sys.exit(0)"
@@ -56,7 +56,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_ret_0_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # second script
-        self.test_script_ret_1_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_ret_1_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_ret_1_content += "import sys" + os.linesep
         self.test_script_ret_1_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_ret_1_content += "    sys.exit(1)"
@@ -66,7 +66,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_ret_1_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # third script
-        self.test_script_fail_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_fail_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_fail_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_fail_content += "    print..." # malformed instruction
 
@@ -75,7 +75,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_fail_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fourth script
-        self.test_script_print_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_print_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_print_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_content += "    print(\"the test output\")"
 
@@ -84,7 +84,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_print_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fifth script
-        self.test_script_print_err_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_print_err_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_print_err_content += "import sys" + os.linesep
         self.test_script_print_err_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_err_content += "    sys.stderr.write(\"the test error\")"
@@ -94,7 +94,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_print_err_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # sixth script
-        self.test_script_print_err_ret_1_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_print_err_ret_1_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_print_err_ret_1_content += "import sys" + os.linesep
         self.test_script_print_err_ret_1_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_err_ret_1_content += "    sys.stderr.write(\"the test error\")" + os.linesep
@@ -105,7 +105,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_print_err_ret_1_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # seventh script
-        self.test_script_print_input_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_print_input_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_print_input_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_input_content += "    p = input(\"asking for input\")" + os.linesep
         self.test_script_print_input_content += "    print(\"echoing back: {%s}\" % p)"
@@ -115,7 +115,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_print_input_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # eight script
-        self.test_script_print_cmdlineargs_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_print_cmdlineargs_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_print_cmdlineargs_content += "import sys" + os.linesep
         self.test_script_print_cmdlineargs_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_cmdlineargs_content += "    v = sys.argv[1]" + os.linesep
@@ -126,7 +126,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_print_cmdlineargs_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # ninth script
-        self.test_script_print_utf8_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_print_utf8_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_print_utf8_content += "import sys" + os.linesep
         self.test_script_print_utf8_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_script_print_utf8_content += "    print(\"おはようございます\")" + os.linesep
@@ -137,7 +137,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_script_print_utf8_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # tenth script
-        self.test_print_file_cwd_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_print_file_cwd_content = "#!/usr/bin/env python" + os.linesep
         self.test_print_file_cwd_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_print_file_cwd_content += ("    fn = \"./%s\"" + os.linesep) % self.file_test_filename
         self.test_print_file_cwd_content += "    with open(fn) as f:"  + os.linesep
@@ -148,7 +148,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_print_file_cwd_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # eleventh script
-        self.test_custom_env_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_custom_env_content = "#!/usr/bin/env python" + os.linesep
         self.test_custom_env_content += "import os" + os.linesep
         self.test_custom_env_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_custom_env_content += ("    print(os.environ[\"%s\"])" + os.linesep) % self.reserved_test_env_var_1
@@ -158,7 +158,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_custom_env_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # twelvth script
-        self.test_malformed_output_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_malformed_output_content = "#!/usr/bin/env python" + os.linesep
         self.test_malformed_output_content += "import sys" + os.linesep
         self.test_malformed_output_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_malformed_output_content += "    sys.stdout.buffer.write(b\"\\xff\")"
@@ -168,7 +168,7 @@ class GenericRunTest(unittest.TestCase):
         os.chmod(self.test_malformed_output_filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # thirteenth script
-        self.test_sleepy_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_sleepy_content = "#!/usr/bin/env python" + os.linesep
         self.test_sleepy_content += "import time" + os.linesep
         self.test_sleepy_content += "if __name__ == \"__main__\":" + os.linesep
         self.test_sleepy_content += "    time.sleep(2)" + os.linesep

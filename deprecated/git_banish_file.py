@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # NOTE: this approach has two major issues:
 # 1) git filter-branch is rather abrasive. not advisable generally to begin with

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 TTY_WHITE = "\033[0m"
 TTY_WHITE_BOLD = "\033[01m"

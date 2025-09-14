@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import os
 import shutil
@@ -43,7 +43,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.namespace2 = path_utils.concat_path(self.test_dir, "namespace2")
         os.mkdir(self.namespace2)
 
-        sample_custom_echo_true_script_contents = "#!/usr/bin/env python3\n\n"
+        sample_custom_echo_true_script_contents = "#!/usr/bin/env python\n\n"
         sample_custom_echo_true_script_contents += "import launch_jobs\n\n"
         sample_custom_echo_true_script_contents += "class CustomTask(launch_jobs.BaseTask):\n"
         sample_custom_echo_true_script_contents += "    def get_desc(self):\n"
@@ -55,7 +55,7 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_script_file_namespace1, sample_custom_echo_true_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_script_file_namespace2, sample_custom_echo_true_script_contents)
 
-        sample_custom_echo_true_params_script_contents = "#!/usr/bin/env python3\n\n"
+        sample_custom_echo_true_params_script_contents = "#!/usr/bin/env python\n\n"
         sample_custom_echo_true_params_script_contents += "import launch_jobs\n\n"
         sample_custom_echo_true_params_script_contents += "class CustomTask(launch_jobs.BaseTask):\n"
         sample_custom_echo_true_params_script_contents += "    def get_desc(self):\n"
@@ -70,7 +70,7 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_params_script_file_namespace1, sample_custom_echo_true_params_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_params_script_file_namespace2, sample_custom_echo_true_params_script_contents)
 
-        sample_custom_exe_name_contents1 = "#!/usr/bin/env python3\n\n"
+        sample_custom_exe_name_contents1 = "#!/usr/bin/env python\n\n"
         sample_custom_exe_name_contents1 += "import launch_jobs\n"
         sample_custom_exe_name_contents1 += "import toolbus\n\n"
         sample_custom_exe_name_contents1 += "class CustomTask(launch_jobs.BaseTask):\n"
@@ -87,7 +87,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.sample_custom_exe_name_contents_file1 = path_utils.concat_path(self.test_dir, "sample_custom_exe_name1.py")
         create_and_write_file.create_file_contents(self.sample_custom_exe_name_contents_file1, sample_custom_exe_name_contents1)
 
-        sample_custom_exe_name_contents2 = "#!/usr/bin/env python3\n\n"
+        sample_custom_exe_name_contents2 = "#!/usr/bin/env python\n\n"
         sample_custom_exe_name_contents2 += "import launch_jobs\n"
         sample_custom_exe_name_contents2 += "import toolbus\n\n"
         sample_custom_exe_name_contents2 += "class CustomTask(launch_jobs.BaseTask):\n"
@@ -103,7 +103,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.sample_custom_exe_name_contents_file2 = path_utils.concat_path(self.test_dir, "sample_custom_exe_name2.py")
         create_and_write_file.create_file_contents(self.sample_custom_exe_name_contents_file2, sample_custom_exe_name_contents2)
 
-        sample_custom_echo_true_repeated_params_script_contents = "#!/usr/bin/env python3\n\n"
+        sample_custom_echo_true_repeated_params_script_contents = "#!/usr/bin/env python\n\n"
         sample_custom_echo_true_repeated_params_script_contents += "import launch_jobs\n\n"
         sample_custom_echo_true_repeated_params_script_contents += "class CustomTask(launch_jobs.BaseTask):\n"
         sample_custom_echo_true_repeated_params_script_contents += "    def get_desc(self):\n"
@@ -117,7 +117,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.sample_custom_echo_true_repeated_params_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_echo_true_repeated_params.py")
         create_and_write_file.create_file_contents(self.sample_custom_echo_true_repeated_params_script_file_namespace1, sample_custom_echo_true_repeated_params_script_contents)
 
-        sample_echo_true_plugin_dupe_contents = "#!/usr/bin/env python3\n\n"
+        sample_echo_true_plugin_dupe_contents = "#!/usr/bin/env python\n\n"
         sample_echo_true_plugin_dupe_contents += "import launch_jobs\n\n"
         sample_echo_true_plugin_dupe_contents += "class CustomTask(launch_jobs.BaseTask):\n"
         sample_echo_true_plugin_dupe_contents += "    def get_desc(self):\n"
@@ -129,7 +129,7 @@ class RecipeProcessorTest(unittest.TestCase):
         self.sample_echo_true_plugin_dupe_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_echo_true_plugin.py")
         create_and_write_file.create_file_contents(self.sample_echo_true_plugin_dupe_file_namespace2, sample_echo_true_plugin_dupe_contents)
 
-        sample_custom_job_script_contents = "#!/usr/bin/env python3\n\n"
+        sample_custom_job_script_contents = "#!/usr/bin/env python\n\n"
         sample_custom_job_script_contents += "import launch_jobs\n\n"
         sample_custom_job_script_contents += "class CustomJob(launch_jobs.BaseJob):\n"
         sample_custom_job_script_contents += "    def get_desc(self):\n"

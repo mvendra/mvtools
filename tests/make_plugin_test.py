@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -59,7 +59,7 @@ class MakePluginTest(unittest.TestCase):
         self.stdout_filter_full = path_utils.concat_path(self.test_dir, self.stdout_filter)
 
         stdout_filter_contents = ""
-        stdout_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        stdout_filter_contents = "#!/usr/bin/env python" + os.linesep + os.linesep
         stdout_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
         stdout_filter_contents += "    return \"filtered stdout contents: [%s]\" % source_input" + os.linesep
         create_and_write_file.create_file_contents(self.stdout_filter_full, stdout_filter_contents)
@@ -70,7 +70,7 @@ class MakePluginTest(unittest.TestCase):
         self.stderr_filter_full = path_utils.concat_path(self.test_dir, self.stderr_filter)
 
         stderr_filter_contents = ""
-        stderr_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        stderr_filter_contents = "#!/usr/bin/env python" + os.linesep + os.linesep
         stderr_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
         stderr_filter_contents += "    return \"filtered stderr contents: [%s]\" % source_input" + os.linesep
         create_and_write_file.create_file_contents(self.stderr_filter_full, stderr_filter_contents)

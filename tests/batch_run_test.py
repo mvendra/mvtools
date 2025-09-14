@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -46,7 +46,7 @@ class BatchRunTest(unittest.TestCase):
         self.dummy_taget_full = path_utils.concat_path(self.scripts_folder, self.dummy_taget)
 
         # first script
-        self.test_script_first_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_first_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_first_content += "import os" + os.linesep
         self.test_script_first_content += "import sys" + os.linesep
         self.test_script_first_content += "import path_utils" + os.linesep
@@ -72,7 +72,7 @@ class BatchRunTest(unittest.TestCase):
         os.chmod(self.test_script_first_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # second script
-        self.test_script_second_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_second_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_second_content += "import os" + os.linesep
         self.test_script_second_content += "import sys" + os.linesep
         self.test_script_second_content += "import path_utils" + os.linesep
@@ -99,7 +99,7 @@ class BatchRunTest(unittest.TestCase):
         os.chmod(self.test_script_second_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # third script
-        self.test_script_third_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_third_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_third_content += "import os" + os.linesep
         self.test_script_third_content += "import sys" + os.linesep
         self.test_script_third_content += "import path_utils" + os.linesep
@@ -125,7 +125,7 @@ class BatchRunTest(unittest.TestCase):
         os.chmod(self.test_script_third_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fourth script
-        self.test_script_fourth_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_fourth_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_fourth_content += "import os" + os.linesep
         self.test_script_fourth_content += "import sys" + os.linesep
         self.test_script_fourth_content += "import path_utils" + os.linesep
@@ -152,7 +152,7 @@ class BatchRunTest(unittest.TestCase):
         os.chmod(self.test_script_fourth_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # fifth script
-        self.test_script_fifth_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_fifth_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_fifth_content += "import os" + os.linesep
         self.test_script_fifth_content += "import sys" + os.linesep
         self.test_script_fifth_content += "import path_utils" + os.linesep
@@ -184,7 +184,7 @@ class BatchRunTest(unittest.TestCase):
         os.chmod(self.test_script_fifth_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # sixth script
-        self.test_script_sixth_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_sixth_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_sixth_content += "import os" + os.linesep
         self.test_script_sixth_content += "import sys" + os.linesep
         self.test_script_sixth_content += "import path_utils" + os.linesep
@@ -217,7 +217,7 @@ class BatchRunTest(unittest.TestCase):
         os.chmod(self.test_script_sixth_full, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # seventh script
-        self.test_script_seventh_content = "#!/usr/bin/env python3" + os.linesep
+        self.test_script_seventh_content = "#!/usr/bin/env python" + os.linesep
         self.test_script_seventh_content += "import os" + os.linesep
         self.test_script_seventh_content += "import sys" + os.linesep
         self.test_script_seventh_content += "import path_utils" + os.linesep

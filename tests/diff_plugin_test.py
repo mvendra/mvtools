@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -47,7 +47,7 @@ class DiffPluginTest(unittest.TestCase):
         self.left_filter_full = path_utils.concat_path(self.test_dir, self.left_filter)
 
         left_filter_contents = ""
-        left_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        left_filter_contents = "#!/usr/bin/env python" + os.linesep + os.linesep
         left_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
         left_filter_contents += "    return \"left filtered contents\"" + os.linesep
         create_and_write_file.create_file_contents(self.left_filter_full, left_filter_contents)
@@ -62,7 +62,7 @@ class DiffPluginTest(unittest.TestCase):
         self.right_filter_full = path_utils.concat_path(self.test_dir, self.right_filter)
 
         right_filter_contents = ""
-        right_filter_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        right_filter_contents = "#!/usr/bin/env python" + os.linesep + os.linesep
         right_filter_contents += "def filter_function(source_input, source_params):" + os.linesep
         right_filter_contents += "    return \"right filtered contents\"" + os.linesep
         create_and_write_file.create_file_contents(self.right_filter_full, right_filter_contents)

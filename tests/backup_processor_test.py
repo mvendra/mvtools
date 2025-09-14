@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -194,7 +194,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.prep_filename_space_2 = path_utils.concat_path(self.test_dir, "  preptest.py")
         self.prep_filename_space_3 = path_utils.concat_path(self.test_dir, "preptest.py  ")
         self.prep_generated_test_filename = path_utils.concat_path(self.test_dir, "preptest_generated.txt")
-        prep_file_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        prep_file_contents = "#!/usr/bin/env python" + os.linesep + os.linesep
         prep_file_contents += "import create_and_write_file" + os.linesep + os.linesep
         prep_file_contents += "if __name__ == \"__main__\":" + os.linesep
         prep_file_contents += "    contents = \"test\"" + os.linesep
@@ -213,7 +213,7 @@ class BackupProcessorTest(unittest.TestCase):
         self.prep_param_filename = path_utils.concat_path(self.test_dir, "preptest_expects_params.py")
         self.prep_generated_param_test_filename = path_utils.concat_path(self.test_dir, "preptest_generated_param.txt")
         self.prep_generated_param_test_content = "generated content"
-        prep_param_file_contents = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        prep_param_file_contents = "#!/usr/bin/env python" + os.linesep + os.linesep
         prep_param_file_contents += "import sys" + os.linesep
         prep_param_file_contents += "import create_and_write_file" + os.linesep + os.linesep
         prep_param_file_contents += "if __name__ == \"__main__\":" + os.linesep
@@ -227,7 +227,7 @@ class BackupProcessorTest(unittest.TestCase):
 
         # prep script that fails
         self.prep_filename_fail = path_utils.concat_path(self.test_dir, "preptest_fail.py")
-        self.prep_file_contents_fail = "#!/usr/bin/env python3" + os.linesep + os.linesep
+        self.prep_file_contents_fail = "#!/usr/bin/env python" + os.linesep + os.linesep
         self.prep_file_contents_fail += "import sys" + os.linesep + os.linesep
         self.prep_file_contents_fail += "if __name__ == \"__main__\":" + os.linesep
         self.prep_file_contents_fail += "    sys.exit(1)" + os.linesep

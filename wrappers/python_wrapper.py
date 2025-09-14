@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -17,7 +17,7 @@ def exec(script, cwd, args):
     if not isinstance(args, list):
         return False, "args must be a list"
 
-    full_cmd = ["python3", script]
+    full_cmd = ["python", script]
 
     for a in args:
         full_cmd.append(a)

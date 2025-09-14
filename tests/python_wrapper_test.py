@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -57,19 +57,19 @@ class PythonWrapperTest(unittest.TestCase):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = python_wrapper.exec("test-script.py", None, [])
             self.assertTrue(v)
-            dummy.assert_called_with(["python3", "test-script.py"])
+            dummy.assert_called_with(["python", "test-script.py"])
 
     def testExec5(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = python_wrapper.exec("test-script.py", "test-cwd", [])
             self.assertTrue(v)
-            dummy.assert_called_with(["python3", "test-script.py"], use_cwd="test-cwd")
+            dummy.assert_called_with(["python", "test-script.py"], use_cwd="test-cwd")
 
     def testExec6(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = python_wrapper.exec("test-script.py", "test-cwd", ["param1", "param2"])
             self.assertTrue(v)
-            dummy.assert_called_with(["python3", "test-script.py", "param1", "param2"], use_cwd="test-cwd")
+            dummy.assert_called_with(["python", "test-script.py", "param1", "param2"], use_cwd="test-cwd")
 
 if __name__ == "__main__":
     unittest.main()

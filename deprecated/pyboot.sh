@@ -11,5 +11,5 @@ if [ -e "./$PYBOOTFILE" ]; then
 fi
 
 touch "./$PYBOOTFILE"
-echo "#!/usr/bin/env python3\n\nimport sys\nimport os\n\nimport path_utils\n\ndef puaq():\n    print(\"Usage: %s params\" % path_utils.basename_filtered(__file__))\n    sys.exit(1)\n\nif __name__ == \"__main__\":\n\n    if len(sys.argv) < 2:\n        puaq()\n    print(\"elo\")\n" > ./$PYBOOTFILE
+echo "#!/usr/bin/env python\n\nimport sys\nimport os\n\nimport path_utils\n\ndef puaq():\n    print(\"Usage: %s params\" % path_utils.basename_filtered(__file__))\n    sys.exit(1)\n\nif __name__ == \"__main__\":\n\n    if len(sys.argv) < 2:\n        puaq()\n    print(\"elo\")\n" > ./$PYBOOTFILE
 chmod +x "./$PYBOOTFILE"

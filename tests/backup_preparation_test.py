@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import os
@@ -110,7 +110,7 @@ class BackupPreparationTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.test_config_file4, cfg_file_contents4)
 
         file_cnav1_contents = ""
-        file_cnav1_contents += "#!/usr/bin/env python3" + os.linesep
+        file_cnav1_contents += "#!/usr/bin/env python" + os.linesep
         file_cnav1_contents += "import sys" + os.linesep
         file_cnav1_contents += "import os" + os.linesep
         file_cnav1_contents += "def visit_path(path):" + os.linesep
@@ -133,7 +133,7 @@ class BackupPreparationTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.test_config_file6, cfg_file_contents6)
 
         file_cnav2_contents = ""
-        file_cnav2_contents += "#!/usr/bin/env python3" + os.linesep
+        file_cnav2_contents += "#!/usr/bin/env python" + os.linesep
         file_cnav2_contents += "def invalid_interface(path):" + os.linesep
         file_cnav2_contents += "    return []" + os.linesep
         self.test_cnav2_file = path_utils.concat_path(self.test_dir, "test_cnav2_file.py")
