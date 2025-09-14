@@ -30,9 +30,15 @@ xsel
 
 silversearcher-ag
 
+make
+
+cmake
+
 meld
 
 openssl
+
+ffmpeg
 
 sox
 
