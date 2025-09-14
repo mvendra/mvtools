@@ -12,7 +12,7 @@ def get_main_c_app():
     contents += "\n"
     contents += "#include <stdio.h>\n"
     contents += "\n"
-    contents += "int main(int argc, char *argv[]){\n"
+    contents += "int main(int argc, char **argv){\n"
     contents += "\n"
     contents += "    (void)argc; (void)argv;\n"
     contents += "    printf(\"test for echo\\n\");\n"
@@ -20,7 +20,6 @@ def get_main_c_app():
     contents += "    return 0;\n"
     contents += "\n"
     contents += "}\n"
-    contents += "\n"
 
     return contents
 
