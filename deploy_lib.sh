@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function quit_fail_any_err(){
-    if [ "$1" != 0 ]; then
+    if [ "$1" != "0" ]; then
         exit 1
     fi
 }
@@ -22,5 +22,7 @@ function deploy_lib(){
     rm -rf "$4/$3"
     export "$1"="$4"
     run_recipe.sh "$2"
-    quit_fail_any_err $?
+    recipe_ret="$?"
+    echo ""
+    quit_fail_any_err "$recipe_ret"
 }
