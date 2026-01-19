@@ -16,5 +16,5 @@ fi
 TARGET_PATH="$1"
 
 if [ ! -e "$TARGET_PATH" ]; then
-    mkdir "$TARGET_PATH"
+    mkdir -p "$TARGET_PATH"
 fi
