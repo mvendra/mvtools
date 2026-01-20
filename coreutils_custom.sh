@@ -1,7 +1,7 @@
 #!/bin/bash
 
 platform=`get_platform.py`
-if [[ "$platform" == "linux" || "$platform" == "cygwin" || "$platform" == "msys" ]]; then
+if [[ "$platform" == "linux" || "$platform" == "cygwin" || "$platform" == "msys" || "$platform" == "mingw" ]]; then
     alias ls="ls --color --group-directories-first --sort=extension"
 fi
 
