@@ -20,7 +20,7 @@ def checkmounted_linux(path):
         return True
     return False
 
-def checkmounted_cygwin_or_msys(path):
+def checkmounted_cygwin_or_msys_or_mingw(path):
     return os.path.ismount(path)
 
 def checkmounted(path):
@@ -34,8 +34,8 @@ def checkmounted(path):
     plat_local = get_platform.getplat()
     if plat_local == get_platform.PLAT_LINUX:
         return checkmounted_linux(path)
-    if plat_local == get_platform.PLAT_CYGWIN or plat_local == get_platform.PLAT_MSYS:
-        return checkmounted_cygwin_or_msys(path)
+    if plat_local == get_platform.PLAT_CYGWIN or plat_local == get_platform.PLAT_MSYS or plat_local == get_platform.PLAT_MINGW:
+        return checkmounted_cygwin_or_msys_or_mingw(path)
     raise mvtools_exception.mvtools_exception("Unsupported platform")
 
 def puaq(selfhelp):
