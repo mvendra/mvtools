@@ -16,7 +16,7 @@ def sendtoclipboard_linux(contents):
         return False, r
     return True, None
 
-def sendtoclipboard_cygwin_or_msys(contents):
+def sendtoclipboard_cygwin_or_msys_or_mingw(contents):
     if contents is None:
         return False, "Contents can't be None"
     try:
@@ -32,8 +32,8 @@ def sendtoclipboard(contents):
 
     if plat == get_platform.PLAT_LINUX:
         return sendtoclipboard_linux(contents)
-    if plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS:
-        return sendtoclipboard_cygwin_or_msys(contents)
+    if plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS or plat == get_platform.PLAT_MINGW:
+        return sendtoclipboard_cygwin_or_msys_or_mingw(contents)
 
     clipboard_app = ""
     if plat == get_platform.PLAT_WINDOWS:
