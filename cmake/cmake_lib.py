@@ -46,6 +46,9 @@ def set_option_toolchain(options, option_value):
 def set_option_install_prefix(options, option_value):
     return set_option(options, "CMAKE_INSTALL_PREFIX", "STRING", option_value)
 
+def set_option_prefix_path(options, option_value):
+    return set_option(options, "CMAKE_PREFIX_PATH", "STRING", option_value)
+
 def set_option_build_type(options, option_value):
 
     valid_values = ["debug", "release", "relwithdebinfo", "minsizerel"]

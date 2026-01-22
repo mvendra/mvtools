@@ -56,6 +56,9 @@ class CmakeLibTest(unittest.TestCase):
     def testSetOptionInstallPrefix(self):
         self.assertEqual(cmake_lib.set_option_install_prefix(self.test_opts, "optval"), {"CMAKE_INSTALL_PREFIX": ("STRING", "optval")})
 
+    def testSetOptionPrefixPath(self):
+        self.assertEqual(cmake_lib.set_option_prefix_path(self.test_opts, "optval"), {"CMAKE_PREFIX_PATH": ("STRING", "optval")})
+
     def testSetOptionBuildTypeFail(self):
         self.assertEqual(cmake_lib.set_option_build_type(self.test_opts, "invalid"), None)
         self.assertEqual(cmake_lib.set_option_build_type(self.test_opts, None), None)
