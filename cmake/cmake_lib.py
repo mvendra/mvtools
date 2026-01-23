@@ -85,3 +85,6 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
         local_generator_type = "Ninja"
 
     return cmake_wrapper.configure_and_generate(cmake_path, source_path, output_path, local_generator_type, options)
+
+def build(cmake_path, target_path, parallel):
+    return cmake_wrapper.build(cmake_path, target_path, parallel)
