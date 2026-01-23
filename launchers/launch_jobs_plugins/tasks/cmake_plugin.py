@@ -9,7 +9,7 @@ import output_backup_helper
 import launch_jobs
 import cmake_lib
 
-def _assemble_options(build_type, install_prefix, toolchain, custom_options):
+def _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options):
 
     options = cmake_lib.boot_options()
 
@@ -20,6 +20,10 @@ def _assemble_options(build_type, install_prefix, toolchain, custom_options):
     # install_prefix
     if install_prefix is not None:
         options = cmake_lib.set_option_install_prefix(options, install_prefix)
+
+    # prefix_path
+    if prefix_path is not None:
+        options = cmake_lib.set_option_prefix_path(options, prefix_path)
 
     # toolchain
     if toolchain is not None:
@@ -47,6 +51,7 @@ class CustomTask(launch_jobs.BaseTask):
         gen_type = None
         build_type = None
         install_prefix = None
+        prefix_path = None
         toolchain = None
         custom_options = None
         save_output = None
@@ -103,6 +108,12 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             pass # optional
 
+        # prefix_path
+        try:
+            prefix_path = self.params["prefix_path"]
+        except KeyError:
+            pass # optional
+
         # toolchain
         try:
             toolchain = self.params["toolchain"]
@@ -152,7 +163,7 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
-        return True, (cmake_path, source_path, output_path, gen_type, build_type, install_prefix, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings)
+        return True, (cmake_path, source_path, output_path, gen_type, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -168,10 +179,10 @@ class CustomTask(launch_jobs.BaseTask):
             cmake_path, extract_options, temp_path, output_path = r
             return cmake_lib.extract_options(cmake_path, extract_options, temp_path, output_path)
 
-        cmake_path, source_path, output_path, gen_type, build_type, install_prefix, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings = r
+        cmake_path, source_path, output_path, gen_type, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings = r
 
         # assemble options
-        options = _assemble_options(build_type, install_prefix, toolchain, custom_options)
+        options = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
 
         # actual execution
         v, r = cmake_lib.configure_and_generate(cmake_path, source_path, output_path, gen_type, options)

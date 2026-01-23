@@ -232,7 +232,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", None, None, None, None, None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", None, None, None, None, None, None, None, False) )
 
     def testCmakePluginReadParams16(self):
 
@@ -246,7 +246,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", None, None, None, None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", None, None, None, None, None, None, False) )
 
     def testCmakePluginReadParams17(self):
 
@@ -261,7 +261,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, None, None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, None, None, None, None, False) )
 
     def testCmakePluginReadParams18(self):
 
@@ -277,7 +277,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", None, None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", None, None, None, False) )
 
     def testCmakePluginReadParams19(self):
 
@@ -294,7 +294,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], None, None, False) )
 
     def testCmakePluginReadParams20(self):
 
@@ -311,7 +311,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8", "dummy_value9"], None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8", "dummy_value9"], None, None, False) )
 
     def testCmakePluginReadParams21(self):
 
@@ -329,7 +329,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], "dummy_value9", None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], "dummy_value9", None, False) )
 
     def testCmakePluginReadParams22(self):
 
@@ -348,7 +348,7 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", False) )
 
     def testCmakePluginReadParams23(self):
 
@@ -368,27 +368,27 @@ class CmakePluginTest(unittest.TestCase):
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", True) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", True) )
 
     def testCmakePluginAssembleOptions1(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None), self.test_opts)
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, None), self.test_opts)
 
     def testCmakePluginAssembleOptions2(self):
-        self.assertEqual(cmake_plugin._assemble_options("test1", None, None, None), None)
+        self.assertEqual(cmake_plugin._assemble_options("test1", None, None, None, None), None)
 
     def testCmakePluginAssembleOptions3(self):
-        self.assertEqual(cmake_plugin._assemble_options("release", None, None, None), {"CMAKE_BUILD_TYPE": ("STRING", "release")})
+        self.assertEqual(cmake_plugin._assemble_options("release", None, None, None, None), {"CMAKE_BUILD_TYPE": ("STRING", "release")})
 
     def testCmakePluginAssembleOptions4(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, "test1", None, None), {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
+        self.assertEqual(cmake_plugin._assemble_options(None, "test1", None, None, None), {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions5(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, "test1", None), {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1", None), {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions6(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1"), None)
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1:test2"), None)
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, ["test1:test2=test3"]), {"test1" : ("test2", "test3")})
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, "test1"), None)
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, "test1:test2"), None)
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, ["test1:test2=test3"]), {"test1" : ("test2", "test3")})
 
     def testCmakePluginRunTask1(self):
 
