@@ -126,11 +126,17 @@ class CmakeLibTest(unittest.TestCase):
 
         self.assertEqual(read_contents, "test1")
 
-    def testConfigureAndGenerate(self):
+    def testConfigureAndGenerate1(self):
 
         with mock.patch("cmake_wrapper.configure_and_generate", return_value=(True, None, None)) as dummy:
             self.assertEqual(cmake_lib.configure_and_generate("test-cmake-path", "test-source-path", "test-output-path", "makefile", self.test_opts), (True, None, None))
             dummy.assert_called_with("test-cmake-path", "test-source-path", "test-output-path", "Unix Makefiles", self.test_opts)
+
+    def testConfigureAndGenerate2(self):
+
+        with mock.patch("cmake_wrapper.configure_and_generate", return_value=(True, None, None)) as dummy:
+            self.assertEqual(cmake_lib.configure_and_generate("test-cmake-path", "test-source-path", "test-output-path", "ninja", self.test_opts), (True, None, None))
+            dummy.assert_called_with("test-cmake-path", "test-source-path", "test-output-path", "Ninja", self.test_opts)
 
 if __name__ == "__main__":
     unittest.main()
