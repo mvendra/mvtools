@@ -196,5 +196,110 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertEqual(r, (True, "test1", "test2"))
             dummy.assert_called_with(["test3", "--build", self.folder1_full, "--parallel"])
 
+    def testInstall1(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+
+        self.folder1 = "folder1"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.install(None, self.folder1_full, None)
+            self.assertFalse(v)
+            self.assertEqual(r, "Target path [%s] does not exist." % self.folder1_full)
+
+    def testInstall2(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+
+        self.folder1 = "folder1"
+        self.folder2 = "folder2"
+
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+        self.folder2_full = path_utils.concat_path(self.test_dir, self.folder2)
+
+        os.mkdir(self.folder1_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.install("test3", self.folder1_full, self.folder2_full)
+            self.assertFalse(v)
+            self.assertEqual(r, "Prefix (path) [%s] does not exist." % self.folder2_full)
+
+    def testInstall3(self):
+
+        self.result_obj.success = False
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+
+        self.folder1 = "folder1"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+
+        os.mkdir(self.folder1_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(False, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.install(None, self.folder1_full, None)
+            self.assertFalse(v)
+            self.assertEqual(r, "Failed running cmake install command: [test1][test2]")
+            dummy.assert_called_with(["cmake", "--install", self.folder1_full])
+
+    def testInstall4(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+
+        self.folder1 = "folder1"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+
+        os.mkdir(self.folder1_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.install(None, self.folder1_full, None)
+            self.assertTrue(v)
+            self.assertEqual(r, (True, "test1", "test2"))
+            dummy.assert_called_with(["cmake", "--install", self.folder1_full])
+
+    def testInstall5(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+
+        self.folder1 = "folder1"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+
+        os.mkdir(self.folder1_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.install("test3", self.folder1_full, None)
+            self.assertTrue(v)
+            self.assertEqual(r, (True, "test1", "test2"))
+            dummy.assert_called_with(["test3", "--install", self.folder1_full])
+
+    def testInstall6(self):
+
+        self.result_obj.success = True
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+
+        self.folder1 = "folder1"
+        self.folder2 = "folder2"
+
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+        self.folder2_full = path_utils.concat_path(self.test_dir, self.folder2)
+
+        os.mkdir(self.folder1_full)
+        os.mkdir(self.folder2_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.install("test3", self.folder1_full, self.folder2_full)
+            self.assertTrue(v)
+            self.assertEqual(r, (True, "test1", "test2"))
+            dummy.assert_called_with(["test3", "--install", self.folder1_full, "--prefix", self.folder2_full])
+
 if __name__ == "__main__":
     unittest.main()

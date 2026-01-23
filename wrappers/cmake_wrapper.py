@@ -71,6 +71,29 @@ def build(cmake_path, target_path, parallel):
         return False, "Failed running cmake build command: [%s][%s]" % (r.stdout, r.stderr)
     return True, (r.success, r.stdout, r.stderr)
 
+def install(cmake_path, target_path, prefix):
+
+    if not os.path.exists(target_path):
+        return False, "Target path [%s] does not exist." % target_path
+
+    if cmake_path is None:
+        cmake_path = "cmake" # use whichever cmake is in the user's path
+
+    full_cmd = [cmake_path]
+    full_cmd.append("--install")
+    full_cmd.append(target_path)
+
+    if prefix is not None:
+        if not os.path.exists(prefix):
+            return False, "Prefix (path) [%s] does not exist." % prefix
+        full_cmd.append("--prefix")
+        full_cmd.append(prefix)
+
+    v, r = generic_run.run_cmd(full_cmd)
+    if not v:
+        return False, "Failed running cmake install command: [%s][%s]" % (r.stdout, r.stderr)
+    return True, (r.success, r.stdout, r.stderr)
+
 def puaq(selfhelp):
     print("Hello from %s" % path_utils.basename_filtered(__file__))
     if selfhelp:
