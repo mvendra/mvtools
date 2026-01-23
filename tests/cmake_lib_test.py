@@ -146,5 +146,13 @@ class CmakeLibTest(unittest.TestCase):
             self.assertEqual(r, (None, None, None))
             dummy.assert_called_with("test-cmake-path", "test-target-path", "test-parallel")
 
+    def testInstall1(self):
+
+        with mock.patch("cmake_wrapper.install", return_value=(True, (None, None, None))) as dummy:
+            v, r = cmake_lib.install("test-cmake-path", "test-target-path", "test-prefix")
+            self.assertTrue(v)
+            self.assertEqual(r, (None, None, None))
+            dummy.assert_called_with("test-cmake-path", "test-target-path", "test-prefix")
+
 if __name__ == "__main__":
     unittest.main()

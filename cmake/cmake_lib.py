@@ -88,3 +88,6 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
 
 def build(cmake_path, target_path, parallel):
     return cmake_wrapper.build(cmake_path, target_path, parallel)
+
+def install(cmake_path, target_path, prefix):
+    return cmake_wrapper.install(cmake_path, target_path, prefix)
