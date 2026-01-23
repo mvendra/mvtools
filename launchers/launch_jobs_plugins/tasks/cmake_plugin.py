@@ -156,8 +156,12 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "Operation [%s] is unknown." % operation
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
-        if not os.path.exists(output_path):
-            return False, "output_path [%s] does not exist." % output_path
+        if operation == "ext-opts":
+            if os.path.exists(output_path):
+                return False, "output_path [%s] already exists." % output_path
+        else:
+            if not os.path.exists(output_path):
+                return False, "output_path [%s] does not exist." % output_path
 
         # save_output
         if save_output is not None:
@@ -182,6 +186,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         operation, cmake_path, source_path, output_path, gen_type, temp_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings = r
 
+        # ext-opts operation
         if operation == "ext-opts":
             return cmake_lib.extract_options(cmake_path, source_path, output_path, temp_path)
 

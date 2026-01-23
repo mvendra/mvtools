@@ -211,7 +211,73 @@ class CmakePluginTest(unittest.TestCase):
                     dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Cmake's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Cmake's stderr has been saved to: [dummy_value6]"))])
                     dummy3.assert_called_with(True, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
-    # mvtodo: remake run_rask coverage for {extract_options}
+    def testCmakePluginRunTask7(self):
+
+        local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["cmake_path"] = None
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["temp_path"] = self.nonexistent_path2
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(False, "err-msg")) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "err-msg")
+            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+
+    def testCmakePluginRunTask8(self):
+
+        local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["temp_path"] = self.nonexistent_path2
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(False, "err-msg")) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertFalse(v)
+            self.assertEqual(r, "err-msg")
+            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+
+    def testCmakePluginRunTask9(self):
+
+        local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["cmake_path"] = None
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["temp_path"] = self.nonexistent_path2
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+
+    def testCmakePluginRunTask10(self):
+
+        local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["temp_path"] = self.nonexistent_path2
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
 
 if __name__ == "__main__":
     unittest.main()
