@@ -147,6 +147,23 @@ class CmakeWrapperTest(unittest.TestCase):
 
     def testBuild2(self):
 
+        self.result_obj.success = False
+        self.result_obj.stdout = "test1"
+        self.result_obj.stderr = "test2"
+
+        self.folder1 = "folder1"
+        self.folder1_full = path_utils.concat_path(self.test_dir, self.folder1)
+
+        os.mkdir(self.folder1_full)
+
+        with mock.patch("generic_run.run_cmd", return_value=(False, self.result_obj)) as dummy:
+            v, r = cmake_wrapper.build(None, self.folder1_full, False)
+            self.assertFalse(v)
+            self.assertEqual(r, "Failed running cmake build command: [test1][test2]")
+            dummy.assert_called_with(["cmake", "--build", self.folder1_full])
+
+    def testBuild3(self):
+
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
@@ -162,7 +179,7 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertEqual(r, (True, "test1", "test2"))
             dummy.assert_called_with(["cmake", "--build", self.folder1_full])
 
-    def testBuild3(self):
+    def testBuild4(self):
 
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
@@ -179,7 +196,7 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertEqual(r, (True, "test1", "test2"))
             dummy.assert_called_with(["test3", "--build", self.folder1_full])
 
-    def testBuild4(self):
+    def testBuild5(self):
 
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
