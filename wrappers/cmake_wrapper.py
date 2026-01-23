@@ -52,6 +52,25 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
         return False, "Failed running cmake configure-and-generate command: [%s][%s]" % (r.stdout, r.stderr)
     return True, (r.success, r.stdout, r.stderr)
 
+def build(cmake_path, target_path, parallel):
+
+    if not os.path.exists(target_path):
+        return False, "Target path [%s] does not exist." % target_path
+
+    if cmake_path is None:
+        cmake_path = "cmake" # use whichever cmake is in the user's path
+
+    full_cmd = [cmake_path]
+    full_cmd.append("--build")
+    full_cmd.append(target_path)
+    if parallel:
+        full_cmd.append("--parallel")
+
+    v, r = generic_run.run_cmd(full_cmd)
+    if not v:
+        return False, "Failed running cmake build command: [%s][%s]" % (r.stdout, r.stderr)
+    return True, (r.success, r.stdout, r.stderr)
+
 def puaq(selfhelp):
     print("Hello from %s" % path_utils.basename_filtered(__file__))
     if selfhelp:
