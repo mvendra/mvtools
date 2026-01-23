@@ -272,12 +272,12 @@ class CmakePluginTest(unittest.TestCase):
         local_params["gen_type"] = "dummy_value4"
         local_params["build_type"] = "dummy_value5"
         local_params["install_prefix"] = "dummy_value6"
-        local_params["toolchain"] = "dummy_value7"
+        local_params["prefix_path"] = "dummy_value7"
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", None, None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", None, None, None, None, False) )
 
     def testCmakePluginReadParams19(self):
 
@@ -288,13 +288,13 @@ class CmakePluginTest(unittest.TestCase):
         local_params["gen_type"] = "dummy_value4"
         local_params["build_type"] = "dummy_value5"
         local_params["install_prefix"] = "dummy_value6"
-        local_params["toolchain"] = "dummy_value7"
-        local_params["option"] = "dummy_value8"
+        local_params["prefix_path"] = "dummy_value7"
+        local_params["toolchain"] = "dummy_value8"
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", "dummy_value8", None, None, None, False) )
 
     def testCmakePluginReadParams20(self):
 
@@ -305,13 +305,14 @@ class CmakePluginTest(unittest.TestCase):
         local_params["gen_type"] = "dummy_value4"
         local_params["build_type"] = "dummy_value5"
         local_params["install_prefix"] = "dummy_value6"
-        local_params["toolchain"] = "dummy_value7"
-        local_params["option"] = ["dummy_value8", "dummy_value9"]
+        local_params["prefix_path"] = "dummy_value7"
+        local_params["toolchain"] = "dummy_value8"
+        local_params["option"] = "dummy_value9"
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8", "dummy_value9"], None, None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", "dummy_value8", ["dummy_value9"], None, None, False) )
 
     def testCmakePluginReadParams21(self):
 
@@ -322,14 +323,14 @@ class CmakePluginTest(unittest.TestCase):
         local_params["gen_type"] = "dummy_value4"
         local_params["build_type"] = "dummy_value5"
         local_params["install_prefix"] = "dummy_value6"
-        local_params["toolchain"] = "dummy_value7"
-        local_params["option"] = "dummy_value8"
-        local_params["save_output"] = "dummy_value9"
+        local_params["prefix_path"] = "dummy_value7"
+        local_params["toolchain"] = "dummy_value8"
+        local_params["option"] = ["dummy_value9", "dummy_value10"]
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], "dummy_value9", None, False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", "dummy_value8", ["dummy_value9", "dummy_value10"], None, None, False) )
 
     def testCmakePluginReadParams22(self):
 
@@ -340,15 +341,15 @@ class CmakePluginTest(unittest.TestCase):
         local_params["gen_type"] = "dummy_value4"
         local_params["build_type"] = "dummy_value5"
         local_params["install_prefix"] = "dummy_value6"
-        local_params["toolchain"] = "dummy_value7"
-        local_params["option"] = "dummy_value8"
-        local_params["save_output"] = "dummy_value9"
-        local_params["save_error_output"] = "dummy_value10"
+        local_params["prefix_path"] = "dummy_value7"
+        local_params["toolchain"] = "dummy_value8"
+        local_params["option"] = "dummy_value9"
+        local_params["save_output"] = "dummy_value10"
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", False) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", "dummy_value8", ["dummy_value9"], "dummy_value10", None, False) )
 
     def testCmakePluginReadParams23(self):
 
@@ -359,16 +360,37 @@ class CmakePluginTest(unittest.TestCase):
         local_params["gen_type"] = "dummy_value4"
         local_params["build_type"] = "dummy_value5"
         local_params["install_prefix"] = "dummy_value6"
-        local_params["toolchain"] = "dummy_value7"
-        local_params["option"] = "dummy_value8"
-        local_params["save_output"] = "dummy_value9"
-        local_params["save_error_output"] = "dummy_value10"
-        local_params["suppress_stderr_warnings"] = "dummy_value11"
+        local_params["prefix_path"] = "dummy_value7"
+        local_params["toolchain"] = "dummy_value8"
+        local_params["option"] = "dummy_value9"
+        local_params["save_output"] = "dummy_value10"
+        local_params["save_error_output"] = "dummy_value11"
         self.cmake_task.params = local_params
 
         v, r = self.cmake_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", None, "dummy_value7", ["dummy_value8"], "dummy_value9", "dummy_value10", True) )
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", "dummy_value8", ["dummy_value9"], "dummy_value10", "dummy_value11", False) )
+
+    def testCmakePluginReadParams24(self):
+
+        local_params = {}
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.existent_path2
+        local_params["gen_type"] = "dummy_value4"
+        local_params["build_type"] = "dummy_value5"
+        local_params["install_prefix"] = "dummy_value6"
+        local_params["prefix_path"] = "dummy_value7"
+        local_params["toolchain"] = "dummy_value8"
+        local_params["option"] = "dummy_value9"
+        local_params["save_output"] = "dummy_value10"
+        local_params["save_error_output"] = "dummy_value11"
+        local_params["suppress_stderr_warnings"] = "dummy_value12"
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", "dummy_value8", ["dummy_value9"], "dummy_value10", "dummy_value11", True) )
 
     def testCmakePluginAssembleOptions1(self):
         self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, None), self.test_opts)
@@ -383,9 +405,12 @@ class CmakePluginTest(unittest.TestCase):
         self.assertEqual(cmake_plugin._assemble_options(None, "test1", None, None, None), {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions5(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1", None), {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
+        self.assertEqual(cmake_plugin._assemble_options(None, None, "test1", None, None), {"CMAKE_PREFIX_PATH": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions6(self):
+        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1", None), {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
+
+    def testCmakePluginAssembleOptions7(self):
         self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, "test1"), None)
         self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, "test1:test2"), None)
         self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, ["test1:test2=test3"]), {"test1" : ("test2", "test3")})
