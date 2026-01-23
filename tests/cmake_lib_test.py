@@ -128,14 +128,14 @@ class CmakeLibTest(unittest.TestCase):
 
     def testConfigureAndGenerate1(self):
 
-        with mock.patch("cmake_wrapper.configure_and_generate", return_value=(True, None, None)) as dummy:
-            self.assertEqual(cmake_lib.configure_and_generate("test-cmake-path", "test-source-path", "test-output-path", "makefile", self.test_opts), (True, None, None))
+        with mock.patch("cmake_wrapper.configure_and_generate", return_value=(True, (None, None, None))) as dummy:
+            self.assertEqual(cmake_lib.configure_and_generate("test-cmake-path", "test-source-path", "test-output-path", "makefile", self.test_opts), (True, (None, None, None)))
             dummy.assert_called_with("test-cmake-path", "test-source-path", "test-output-path", "Unix Makefiles", self.test_opts)
 
     def testConfigureAndGenerate2(self):
 
-        with mock.patch("cmake_wrapper.configure_and_generate", return_value=(True, None, None)) as dummy:
-            self.assertEqual(cmake_lib.configure_and_generate("test-cmake-path", "test-source-path", "test-output-path", "ninja", self.test_opts), (True, None, None))
+        with mock.patch("cmake_wrapper.configure_and_generate", return_value=(True, (None, None, None))) as dummy:
+            self.assertEqual(cmake_lib.configure_and_generate("test-cmake-path", "test-source-path", "test-output-path", "ninja", self.test_opts), (True, (None, None, None)))
             dummy.assert_called_with("test-cmake-path", "test-source-path", "test-output-path", "Ninja", self.test_opts)
 
     def testBuild1(self):
