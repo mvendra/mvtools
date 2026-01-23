@@ -43,12 +43,12 @@ class CustomTask(launch_jobs.BaseTask):
 
     def _read_params(self):
 
+        operation = None
         cmake_path = None
-        output_path = None
-        extract_options = None
-        temp_path = None
         source_path = None
+        output_path = None
         gen_type = None
+        temp_path = None
         build_type = None
         install_prefix = None
         prefix_path = None
@@ -58,29 +58,15 @@ class CustomTask(launch_jobs.BaseTask):
         save_error_output = None
         suppress_stderr_warnings = None
 
+        # operation
+        try:
+            operation = self.params["operation"]
+        except KeyError:
+            return False, "operation is a required parameter"
+
         # cmake_path
         try:
             cmake_path = self.params["cmake_path"]
-        except KeyError:
-            pass # optional
-
-        # output_path
-        try:
-            output_path = self.params["output_path"]
-        except KeyError:
-            return False, "output_path is a required parameter"
-
-        # extract_options - special case (ie. hack)
-        try:
-            extract_options = self.params["extract_options"]
-            if len(self.params) != 3 and len(self.params) != 4:
-                return False, "extract_options requires three or four parameters"
-            # temp_path
-            try:
-                temp_path = self.params["temp_path"]
-            except KeyError:
-                return False, "temp_path is a required parameter (for extract_options)"
-            return True, (cmake_path, extract_options, temp_path, output_path)
         except KeyError:
             pass # optional
 
@@ -90,11 +76,29 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "source_path is a required parameter"
 
-        # gen_type
+        # output_path
         try:
-            gen_type = self.params["gen_type"]
+            output_path = self.params["output_path"]
         except KeyError:
-            return False, "gen_type is a required parameter"
+            return False, "output_path is a required parameter"
+
+        # cfg-and-gen
+        if operation == "cfg-and-gen":
+
+            # gen_type
+            try:
+                gen_type = self.params["gen_type"]
+            except KeyError:
+                return False, "gen_type is a required parameter (for the cfg-and-gen operation)"
+
+        # ext-opts
+        elif operation == "ext-opts":
+
+            # temp_path
+            try:
+                temp_path = self.params["temp_path"]
+            except KeyError:
+                return False, "temp_path is a required parameter (for the ext-opts operation)"
 
         # build_type
         try:
@@ -148,6 +152,8 @@ class CustomTask(launch_jobs.BaseTask):
         suppress_stderr_warnings = "suppress_stderr_warnings" in self.params
 
         # pre-validate parameters
+        if not operation in ["cfg-and-gen", "ext-opts"]:
+            return False, "Operation [%s] is unknown." % operation
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
         if not os.path.exists(output_path):
@@ -163,7 +169,7 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
-        return True, (cmake_path, source_path, output_path, gen_type, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings)
+        return True, (operation, cmake_path, source_path, output_path, gen_type, temp_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -174,12 +180,10 @@ class CustomTask(launch_jobs.BaseTask):
         if not v:
             return False, r
 
-        # special case/hack - extract options and early-quit
-        if len(r) == 4:
-            cmake_path, extract_options, temp_path, output_path = r
-            return cmake_lib.extract_options(cmake_path, extract_options, temp_path, output_path)
+        operation, cmake_path, source_path, output_path, gen_type, temp_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings = r
 
-        cmake_path, source_path, output_path, gen_type, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings = r
+        if operation == "ext-opts":
+            return cmake_lib.extract_options(cmake_path, source_path, output_path, temp_path)
 
         # assemble options
         options = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
