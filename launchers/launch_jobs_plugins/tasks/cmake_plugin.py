@@ -71,44 +71,23 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "source_path is a required parameter"
 
-        # cfg-and-gen
-        if operation == "cfg-and-gen":
+        # output_path
+        try:
+            output_path = self.params["output_path"]
+        except KeyError:
+            pass # optional
 
-            # output_path
-            try:
-                output_path = self.params["output_path"]
-            except KeyError:
-                return False, "output_path is a required parameter (for the cfg-and-gen and ext-opts operations)"
+        # gen_type
+        try:
+            gen_type = self.params["gen_type"]
+        except KeyError:
+            pass # optional
 
-            # gen_type
-            try:
-                gen_type = self.params["gen_type"]
-            except KeyError:
-                return False, "gen_type is a required parameter (for the cfg-and-gen operation)"
-
-        # ext-opts
-        elif operation == "ext-opts":
-
-            # output_path
-            try:
-                output_path = self.params["output_path"]
-            except KeyError:
-                return False, "output_path is a required parameter (for the cfg-and-gen and ext-opts operations)"
-
-            # temp_path
-            try:
-                temp_path = self.params["temp_path"]
-            except KeyError:
-                return False, "temp_path is a required parameter (for the ext-opts operation)"
-
-        # install
-        elif operation == "install":
-
-            # output_path
-            try:
-                output_path = self.params["output_path"]
-            except KeyError:
-                pass # optional
+        # temp_path
+        try:
+            temp_path = self.params["temp_path"]
+        except KeyError:
+            pass # optional
 
         # cmake_path
         try:
@@ -176,9 +155,17 @@ class CustomTask(launch_jobs.BaseTask):
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
         if operation == "cfg-and-gen":
+            if output_path is None:
+                return False, "output_path is a required parameter (for the cfg-and-gen operation)"
+            if gen_type is None:
+                return False, "gen_type is a required parameter (for the cfg-and-gen operation)"
             if not os.path.exists(output_path):
                 return False, "output_path [%s] does not exist." % output_path
         elif operation == "ext-opts":
+            if output_path is None:
+                return False, "output_path is a required parameter (for the ext-opts operation)"
+            if temp_path is None:
+                return False, "temp_path is a required parameter (for the ext-opts operation)"
             if os.path.exists(output_path):
                 return False, "output_path [%s] already exists." % output_path
 
