@@ -43,6 +43,10 @@ class CmakePluginTest(unittest.TestCase):
         self.existent_path2 = path_utils.concat_path(self.test_dir, "existent_path2")
         os.mkdir(self.existent_path2)
 
+        # existent path 3
+        self.existent_path3 = path_utils.concat_path(self.test_dir, "existent_path3")
+        os.mkdir(self.existent_path3)
+
         # nonexistent path 1
         self.nonexistent_path1 = path_utils.concat_path(self.test_dir, "nonexistent_path1")
 
@@ -1167,6 +1171,32 @@ class CmakePluginTest(unittest.TestCase):
     def testCmakePluginReadParams66(self):
 
         local_params = {}
+        local_params["operation"] = "cfg-and-gen"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.existent_path2
+        local_params["gen_type"] = "dummy_value1"
+        local_params["save_output"] = self.existent_path3
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams67(self):
+
+        local_params = {}
+        local_params["operation"] = "cfg-and-gen"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.existent_path2
+        local_params["gen_type"] = "dummy_value1"
+        local_params["save_error_output"] = self.existent_path3
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams68(self):
+
+        local_params = {}
         local_params["operation"] = "ext-opts"
         local_params["source_path"] = self.existent_path1
         local_params["temp_path"] = "dummy_value1"
@@ -1175,7 +1205,7 @@ class CmakePluginTest(unittest.TestCase):
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
-    def testCmakePluginReadParams67(self):
+    def testCmakePluginReadParams69(self):
 
         local_params = {}
         local_params["operation"] = "ext-opts"
@@ -1186,7 +1216,7 @@ class CmakePluginTest(unittest.TestCase):
         v, r = self.cmake_task._read_params()
         self.assertFalse(v)
 
-    def testCmakePluginReadParams68(self):
+    def testCmakePluginReadParams70(self):
 
         local_params = {}
         local_params["operation"] = "ext-opts"

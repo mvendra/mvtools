@@ -154,6 +154,7 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "Operation [%s] is unknown." % operation
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
+
         if operation == "cfg-and-gen":
             if output_path is None:
                 return False, "output_path is a required parameter (for the cfg-and-gen operation)"
@@ -161,6 +162,13 @@ class CustomTask(launch_jobs.BaseTask):
                 return False, "gen_type is a required parameter (for the cfg-and-gen operation)"
             if not os.path.exists(output_path):
                 return False, "output_path [%s] does not exist." % output_path
+            if save_output is not None:
+                if os.path.exists(save_output):
+                    return False, "save_output [%s] points to a preexisting path" % save_output
+            if save_error_output is not None:
+                if os.path.exists(save_error_output):
+                    return False, "save_error_output [%s] points to a preexisting path" % save_error_output
+
         elif operation == "ext-opts":
             if output_path is None:
                 return False, "output_path is a required parameter (for the ext-opts operation)"
@@ -168,16 +176,6 @@ class CustomTask(launch_jobs.BaseTask):
                 return False, "temp_path is a required parameter (for the ext-opts operation)"
             if os.path.exists(output_path):
                 return False, "output_path [%s] already exists." % output_path
-
-        # save_output
-        if save_output is not None:
-            if os.path.exists(save_output):
-                return False, "save_output [%s] points to a preexisting path" % save_output
-
-        # save_error_output
-        if save_error_output is not None:
-            if os.path.exists(save_error_output):
-                return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
         return True, (operation, source_path, output_path, gen_type, temp_path, cmake_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings, parallel)
 
