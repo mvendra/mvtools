@@ -321,5 +321,49 @@ class CmakePluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(None, self.existent_path1, True)
 
+    def testCmakePluginRunTask14(self):
+
+        local_params = {}
+        local_params["operation"] = "install"
+        local_params["source_path"] = self.existent_path1
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.install", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(None, self.existent_path1, None)
+
+    def testCmakePluginRunTask15(self):
+
+        local_params = {}
+        local_params["operation"] = "install"
+        local_params["source_path"] = self.existent_path1
+        local_params["cmake_path"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.install", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("dummy_value1", self.existent_path1, None)
+
+    def testCmakePluginRunTask16(self):
+
+        local_params = {}
+        local_params["operation"] = "install"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.existent_path2
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.install", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(None, self.existent_path1, self.existent_path2)
+
 if __name__ == "__main__":
     unittest.main()

@@ -101,6 +101,15 @@ class CustomTask(launch_jobs.BaseTask):
             except KeyError:
                 return False, "temp_path is a required parameter (for the ext-opts operation)"
 
+        # install
+        elif operation == "install":
+
+            # output_path
+            try:
+                output_path = self.params["output_path"]
+            except KeyError:
+                pass # optional
+
         # cmake_path
         try:
             cmake_path = self.params["cmake_path"]
@@ -162,7 +171,7 @@ class CustomTask(launch_jobs.BaseTask):
         parallel = "parallel" in self.params
 
         # pre-validate parameters
-        if not operation in ["cfg-and-gen", "ext-opts", "build"]:
+        if not operation in ["cfg-and-gen", "ext-opts", "build", "install"]:
             return False, "Operation [%s] is unknown." % operation
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
@@ -203,6 +212,12 @@ class CustomTask(launch_jobs.BaseTask):
         # build operation
         if operation == "build":
             return cmake_lib.build(cmake_path, source_path, parallel)
+
+        # install operation
+        if operation == "install":
+            return cmake_lib.install(cmake_path, source_path, output_path)
+
+        # default - cfg-and-gen operation
 
         # assemble options
         options = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
