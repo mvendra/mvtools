@@ -1108,6 +1108,96 @@ class CmakePluginTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual( r, ("install", self.existent_path1, self.existent_path2, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5", "dummy_value6", "dummy_value7", ["dummy_value8", "dummy_value9"], "dummy_value10", "dummy_value11", True, True) )
 
+    def testCmakePluginReadParams61(self):
+
+        local_params = {}
+        local_params["operation"] = "unknown"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.existent_path2
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams62(self):
+
+        local_params = {}
+        local_params["operation"] = "build"
+        local_params["source_path"] = self.nonexistent_path1
+        local_params["output_path"] = self.existent_path2
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams63(self):
+
+        local_params = {}
+        local_params["operation"] = "cfg-and-gen"
+        local_params["source_path"] = self.existent_path1
+        local_params["gen_type"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams64(self):
+
+        local_params = {}
+        local_params["operation"] = "cfg-and-gen"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.existent_path2
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams65(self):
+
+        local_params = {}
+        local_params["operation"] = "cfg-and-gen"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["gen_type"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams66(self):
+
+        local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["source_path"] = self.existent_path1
+        local_params["temp_path"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams67(self):
+
+        local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.nonexistent_path1
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
+    def testCmakePluginReadParams68(self):
+
+        local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.existent_path2
+        local_params["temp_path"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        v, r = self.cmake_task._read_params()
+        self.assertFalse(v)
+
     def testCmakePluginAssembleOptions1(self):
         self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, None), self.test_opts)
 
