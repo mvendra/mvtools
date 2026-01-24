@@ -89,10 +89,10 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "cfg-and-gen"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.existent_path2
-        local_params["gen_type"] = "dummy_value4"
+        local_params["gen_type"] = "dummy_value1"
+        local_params["cmake_path"] = "dummy_value2"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(False, (True, "test1", "test2"))) as dummy1:
@@ -101,7 +101,7 @@ class CmakePluginTest(unittest.TestCase):
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertFalse(v)
-                    dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
+                    dummy1.assert_called_with("dummy_value2", self.existent_path1, self.existent_path2, "dummy_value1", {})
                     dummy2.assert_not_called()
                     dummy3.assert_not_called()
 
@@ -109,10 +109,10 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "cfg-and-gen"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.existent_path2
-        local_params["gen_type"] = "dummy_value4"
+        local_params["gen_type"] = "dummy_value1"
+        local_params["cmake_path"] = "dummy_value2"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
@@ -122,7 +122,7 @@ class CmakePluginTest(unittest.TestCase):
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test2")
-                    dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
+                    dummy1.assert_called_with("dummy_value2", self.existent_path1, self.existent_path2, "dummy_value1", {})
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
@@ -130,10 +130,10 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "cfg-and-gen"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.existent_path2
-        local_params["gen_type"] = "dummy_value4"
+        local_params["gen_type"] = "dummy_value1"
+        local_params["cmake_path"] = "dummy_value2"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
@@ -143,7 +143,7 @@ class CmakePluginTest(unittest.TestCase):
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%stest2" % os.linesep)
-                    dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
+                    dummy1.assert_called_with("dummy_value2", self.existent_path1, self.existent_path2, "dummy_value1", {})
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
@@ -151,11 +151,11 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "cfg-and-gen"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.existent_path2
-        local_params["gen_type"] = "dummy_value4"
-        local_params["suppress_stderr_warnings"] = "dummy_value5"
+        local_params["gen_type"] = "dummy_value1"
+        local_params["cmake_path"] = "dummy_value2"
+        local_params["suppress_stderr_warnings"] = "dummy_value3"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (False, "test1", "test2"))) as dummy1:
@@ -165,7 +165,7 @@ class CmakePluginTest(unittest.TestCase):
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
                     self.assertEqual(r, "test-warning-msg%scmake's stderr has been suppressed" % os.linesep)
-                    dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
+                    dummy1.assert_called_with("dummy_value2", self.existent_path1, self.existent_path2, "dummy_value1", {})
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(False, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
@@ -173,10 +173,10 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "cfg-and-gen"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.existent_path2
-        local_params["gen_type"] = "dummy_value4"
+        local_params["gen_type"] = "dummy_value1"
+        local_params["cmake_path"] = "dummy_value2"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (True, "test1", "test2"))) as dummy1:
@@ -185,7 +185,7 @@ class CmakePluginTest(unittest.TestCase):
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
+                    dummy1.assert_called_with("dummy_value2", self.existent_path1, self.existent_path2, "dummy_value1", {})
                     dummy2.assert_has_calls([call(print, None, "test1", ("Cmake's stdout has been saved to: [%s]" % None)), call(print, None, "test2", ("Cmake's stderr has been saved to: [%s]" % None))])
                     dummy3.assert_called_with(True, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
@@ -193,12 +193,12 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "cfg-and-gen"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.existent_path2
-        local_params["gen_type"] = "dummy_value4"
-        local_params["save_output"] = "dummy_value5"
-        local_params["save_error_output"] = "dummy_value6"
+        local_params["gen_type"] = "dummy_value1"
+        local_params["cmake_path"] = "dummy_value2"
+        local_params["save_output"] = "dummy_value3"
+        local_params["save_error_output"] = "dummy_value4"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.configure_and_generate", return_value=(True, (True, "test1", "test2"))) as dummy1:
@@ -207,15 +207,14 @@ class CmakePluginTest(unittest.TestCase):
 
                     v, r = self.cmake_task.run_task(print, "exe_name")
                     self.assertTrue(v)
-                    dummy1.assert_called_with("dummy_value1", self.existent_path1, self.existent_path2, "dummy_value4", {})
-                    dummy2.assert_has_calls([call(print, "dummy_value5", "test1", ("Cmake's stdout has been saved to: [dummy_value5]")), call(print, "dummy_value6", "test2", ("Cmake's stderr has been saved to: [dummy_value6]"))])
+                    dummy1.assert_called_with("dummy_value2", self.existent_path1, self.existent_path2, "dummy_value1", {})
+                    dummy2.assert_has_calls([call(print, "dummy_value3", "test1", ("Cmake's stdout has been saved to: [dummy_value3]")), call(print, "dummy_value4", "test2", ("Cmake's stderr has been saved to: [dummy_value4]"))])
                     dummy3.assert_called_with(True, print, [("cmake_plugin_stdout", "test1", "Cmake's stdout"), ("cmake_plugin_stderr", "test2", "Cmake's stderr")])
 
     def testCmakePluginRunTask7(self):
 
         local_params = {}
         local_params["operation"] = "ext-opts"
-        local_params["cmake_path"] = None
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.nonexistent_path1
         local_params["temp_path"] = self.nonexistent_path2
@@ -232,10 +231,10 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "ext-opts"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.nonexistent_path1
         local_params["temp_path"] = self.nonexistent_path2
+        local_params["cmake_path"] = "dummy_value1"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.extract_options", return_value=(False, "err-msg")) as dummy:
@@ -249,7 +248,6 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "ext-opts"
-        local_params["cmake_path"] = None
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.nonexistent_path1
         local_params["temp_path"] = self.nonexistent_path2
@@ -266,10 +264,10 @@ class CmakePluginTest(unittest.TestCase):
 
         local_params = {}
         local_params["operation"] = "ext-opts"
-        local_params["cmake_path"] = "dummy_value1"
         local_params["source_path"] = self.existent_path1
         local_params["output_path"] = self.nonexistent_path1
         local_params["temp_path"] = self.nonexistent_path2
+        local_params["cmake_path"] = "dummy_value1"
         self.cmake_task.params = local_params
 
         with mock.patch("cmake_lib.extract_options", return_value=(True, None)) as dummy:
@@ -278,6 +276,50 @@ class CmakePluginTest(unittest.TestCase):
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+
+    def testCmakePluginRunTask11(self):
+
+        local_params = {}
+        local_params["operation"] = "build"
+        local_params["source_path"] = self.existent_path1
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.build", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(None, self.existent_path1, False)
+
+    def testCmakePluginRunTask12(self):
+
+        local_params = {}
+        local_params["operation"] = "build"
+        local_params["source_path"] = self.existent_path1
+        local_params["cmake_path"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.build", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("dummy_value1", self.existent_path1, False)
+
+    def testCmakePluginRunTask13(self):
+
+        local_params = {}
+        local_params["operation"] = "build"
+        local_params["source_path"] = self.existent_path1
+        local_params["parallel"] = "dummy_value1"
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.build", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(None, self.existent_path1, True)
 
 if __name__ == "__main__":
     unittest.main()

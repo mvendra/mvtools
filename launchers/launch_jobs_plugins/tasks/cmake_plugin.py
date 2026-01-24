@@ -44,11 +44,11 @@ class CustomTask(launch_jobs.BaseTask):
     def _read_params(self):
 
         operation = None
-        cmake_path = None
         source_path = None
         output_path = None
         gen_type = None
         temp_path = None
+        cmake_path = None
         build_type = None
         install_prefix = None
         prefix_path = None
@@ -57,6 +57,7 @@ class CustomTask(launch_jobs.BaseTask):
         save_output = None
         save_error_output = None
         suppress_stderr_warnings = None
+        parallel = None
 
         # operation
         try:
@@ -64,26 +65,20 @@ class CustomTask(launch_jobs.BaseTask):
         except KeyError:
             return False, "operation is a required parameter"
 
-        # cmake_path
-        try:
-            cmake_path = self.params["cmake_path"]
-        except KeyError:
-            pass # optional
-
         # source_path
         try:
             source_path = self.params["source_path"]
         except KeyError:
             return False, "source_path is a required parameter"
 
-        # output_path
-        try:
-            output_path = self.params["output_path"]
-        except KeyError:
-            return False, "output_path is a required parameter"
-
         # cfg-and-gen
         if operation == "cfg-and-gen":
+
+            # output_path
+            try:
+                output_path = self.params["output_path"]
+            except KeyError:
+                return False, "output_path is a required parameter (for the cfg-and-gen and ext-opts operations)"
 
             # gen_type
             try:
@@ -94,11 +89,23 @@ class CustomTask(launch_jobs.BaseTask):
         # ext-opts
         elif operation == "ext-opts":
 
+            # output_path
+            try:
+                output_path = self.params["output_path"]
+            except KeyError:
+                return False, "output_path is a required parameter (for the cfg-and-gen and ext-opts operations)"
+
             # temp_path
             try:
                 temp_path = self.params["temp_path"]
             except KeyError:
                 return False, "temp_path is a required parameter (for the ext-opts operation)"
+
+        # cmake_path
+        try:
+            cmake_path = self.params["cmake_path"]
+        except KeyError:
+            pass # optional
 
         # build_type
         try:
@@ -151,17 +158,20 @@ class CustomTask(launch_jobs.BaseTask):
         # suppress_stderr_warnings
         suppress_stderr_warnings = "suppress_stderr_warnings" in self.params
 
+        # parallel
+        parallel = "parallel" in self.params
+
         # pre-validate parameters
-        if not operation in ["cfg-and-gen", "ext-opts"]:
+        if not operation in ["cfg-and-gen", "ext-opts", "build"]:
             return False, "Operation [%s] is unknown." % operation
         if not os.path.exists(source_path):
             return False, "source_path [%s] does not exist." % source_path
-        if operation == "ext-opts":
-            if os.path.exists(output_path):
-                return False, "output_path [%s] already exists." % output_path
-        else:
+        if operation == "cfg-and-gen":
             if not os.path.exists(output_path):
                 return False, "output_path [%s] does not exist." % output_path
+        elif operation == "ext-opts":
+            if os.path.exists(output_path):
+                return False, "output_path [%s] already exists." % output_path
 
         # save_output
         if save_output is not None:
@@ -173,7 +183,7 @@ class CustomTask(launch_jobs.BaseTask):
             if os.path.exists(save_error_output):
                 return False, "save_error_output [%s] points to a preexisting path" % save_error_output
 
-        return True, (operation, cmake_path, source_path, output_path, gen_type, temp_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings)
+        return True, (operation, source_path, output_path, gen_type, temp_path, cmake_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings, parallel)
 
     def run_task(self, feedback_object, execution_name=None):
 
@@ -184,11 +194,15 @@ class CustomTask(launch_jobs.BaseTask):
         if not v:
             return False, r
 
-        operation, cmake_path, source_path, output_path, gen_type, temp_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings = r
+        operation, source_path, output_path, gen_type, temp_path, cmake_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings, parallel = r
 
         # ext-opts operation
         if operation == "ext-opts":
             return cmake_lib.extract_options(cmake_path, source_path, output_path, temp_path)
+
+        # build operation
+        if operation == "build":
+            return cmake_lib.build(cmake_path, source_path, parallel)
 
         # assemble options
         options = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
