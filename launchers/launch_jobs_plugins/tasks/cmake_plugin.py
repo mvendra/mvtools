@@ -192,7 +192,7 @@ class CustomTask(launch_jobs.BaseTask):
 
         # ext-opts operation
         if operation == "ext-opts":
-            return cmake_lib.extract_options(cmake_path, source_path, output_path, temp_path)
+            return cmake_lib.extract_options(cmake_path, source_path, output_path, temp_path, {})
 
         # build operation
         if operation == "build":

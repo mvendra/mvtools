@@ -60,12 +60,12 @@ def set_option_build_type(options, option_value):
 
     return set_option(options, "CMAKE_BUILD_TYPE", "STRING", option_value)
 
-def extract_options(cmake_path, source_path, output_path, temp_path):
+def extract_options(cmake_path, source_path, output_path, temp_path, options):
 
     if os.path.exists(output_path):
         return False, "Output path [%s] already exists" % output_path
 
-    v, r = cmake_wrapper.extract_options(cmake_path, source_path, temp_path, {})
+    v, r = cmake_wrapper.extract_options(cmake_path, source_path, temp_path, options)
     if not v:
         return False, r
 

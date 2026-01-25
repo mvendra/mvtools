@@ -1391,7 +1391,7 @@ class CmakePluginTest(unittest.TestCase):
             v, r = self.cmake_task.run_task(print, "exe_name")
             self.assertFalse(v)
             self.assertEqual(r, "err-msg")
-            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path1, self.nonexistent_path2, {})
 
     def testCmakePluginRunTask8(self):
 
@@ -1408,7 +1408,7 @@ class CmakePluginTest(unittest.TestCase):
             v, r = self.cmake_task.run_task(print, "exe_name")
             self.assertFalse(v)
             self.assertEqual(r, "err-msg")
-            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2, {})
 
     def testCmakePluginRunTask9(self):
 
@@ -1424,7 +1424,7 @@ class CmakePluginTest(unittest.TestCase):
             v, r = self.cmake_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+            dummy.assert_called_with(None, self.existent_path1, self.nonexistent_path1, self.nonexistent_path2, {})
 
     def testCmakePluginRunTask10(self):
 
@@ -1441,7 +1441,7 @@ class CmakePluginTest(unittest.TestCase):
             v, r = self.cmake_task.run_task(print, "exe_name")
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2)
+            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2, {})
 
     def testCmakePluginRunTask11(self):
 
