@@ -48,7 +48,7 @@ class CmakeWrapperTest(unittest.TestCase):
         self.folder2_full = path_utils.concat_path(self.test_dir, self.folder2)
 
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full, {})
             self.assertFalse(v)
             self.assertEqual(r, "Source path [%s] does not exist." % self.folder1_full)
             dummy.assert_not_called()
@@ -67,8 +67,8 @@ class CmakeWrapperTest(unittest.TestCase):
         os.mkdir(self.folder2_full)
 
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
-            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full, {})
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full, {})
             self.assertFalse(v)
             self.assertEqual(r, "Temp path [%s] already exists." % self.folder2_full)
             dummy.assert_not_called()
@@ -86,7 +86,7 @@ class CmakeWrapperTest(unittest.TestCase):
         os.mkdir(self.folder1_full)
 
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
-            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full)
+            v, r = cmake_wrapper.extract_options("test1", self.folder1_full, self.folder2_full, {})
             self.assertTrue(v)
             self.assertTrue(r[0])
             self.assertEqual(r[1], "test2")

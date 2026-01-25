@@ -6,7 +6,14 @@ import os
 import path_utils
 import generic_run
 
-def extract_options(cmake_path, source_path, temp_path):
+def _unfold_options(input_options):
+
+    options_list = []
+    for k in input_options:
+        options_list.append("-D%s:%s=%s" % ( k, input_options[k][0], input_options[k][1] ))
+    return options_list
+
+def extract_options(cmake_path, source_path, temp_path, options):
 
     if cmake_path is None:
         cmake_path = "cmake" # use whichever cmake is in the user's path
@@ -17,11 +24,17 @@ def extract_options(cmake_path, source_path, temp_path):
     if os.path.exists(temp_path):
         return False, "Temp path [%s] already exists." % temp_path
 
+    if options is None:
+        return False, "Invalid options"
+
     os.mkdir(temp_path)
+
+    options_cmdline = _unfold_options(options)
 
     full_cmd = [cmake_path]
     full_cmd.append(source_path)
     full_cmd.append("-LAH")
+    full_cmd += options_cmdline
 
     v, r = generic_run.run_cmd(full_cmd, use_cwd=temp_path)
     if not v:
@@ -36,10 +49,7 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
     if options is None:
         return False, "Invalid options"
 
-    options_cmdline = []
-    # unfold options
-    for k in options:
-        options_cmdline.append("-D%s:%s=%s" % ( k, options[k][0], options[k][1] ))
+    options_cmdline = _unfold_options(options)
 
     full_cmd = [cmake_path]
     full_cmd.append(source_path)
