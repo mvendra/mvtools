@@ -36,18 +36,18 @@ class CmakeLibTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def testSetOptionFail(self):
+    def testSetOption1(self):
         self.assertEqual(cmake_lib.set_option(None, "", "", ""), None)
 
-    def testSetOption(self):
+    def testSetOption2(self):
         self.assertEqual(cmake_lib.set_option(self.test_opts, "optname", "opttype", "optval"), {"optname": ("opttype", "optval")})
 
-    def testSetOptionParseFail(self):
+    def testSetOptionParse1(self):
         self.assertEqual(cmake_lib.set_option_parse(self.test_opts, "optname-opttype=optval"), None)
         self.assertEqual(cmake_lib.set_option_parse(self.test_opts, "optname:opttype-optval"), None)
         self.assertEqual(cmake_lib.set_option_parse(self.test_opts, "optname-opttype+optval"), None)
 
-    def testSetOptionParse(self):
+    def testSetOptionParse2(self):
         self.assertEqual(cmake_lib.set_option_parse(self.test_opts, "optname:opttype=optval"), {"optname": ("opttype", "optval")})
 
     def testSetOptionToolchain(self):
@@ -59,11 +59,11 @@ class CmakeLibTest(unittest.TestCase):
     def testSetOptionPrefixPath(self):
         self.assertEqual(cmake_lib.set_option_prefix_path(self.test_opts, "optval"), {"CMAKE_PREFIX_PATH": ("STRING", "optval")})
 
-    def testSetOptionBuildTypeFail(self):
+    def testSetOptionBuildType1(self):
         self.assertEqual(cmake_lib.set_option_build_type(self.test_opts, "invalid"), None)
         self.assertEqual(cmake_lib.set_option_build_type(self.test_opts, None), None)
 
-    def testSetOptionBuildType(self):
+    def testSetOptionBuildType2(self):
         self.assertEqual(cmake_lib.set_option_build_type(self.test_opts, "Debug"), {"CMAKE_BUILD_TYPE": ("STRING", "Debug")})
         self.assertEqual(cmake_lib.set_option_build_type(self.test_opts, "Release"), {"CMAKE_BUILD_TYPE": ("STRING", "Release")})
         self.assertEqual(cmake_lib.set_option_build_type(self.test_opts, "RelWithDebInfo"), {"CMAKE_BUILD_TYPE": ("STRING", "RelWithDebInfo")})
