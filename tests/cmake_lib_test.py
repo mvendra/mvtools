@@ -115,7 +115,7 @@ class CmakeLibTest(unittest.TestCase):
         os.mkdir(self.folder1_full)
 
         with mock.patch("cmake_wrapper.extract_options", return_value=(True, (True, "test1", "test2"))) as dummy:
-            v, r = cmake_lib.extract_options("test-cmake-path", self.folder1_full, self.file1_full, self.folder2_full, {})
+            v, r = cmake_lib.extract_options("test-cmake-path", self.folder1_full, self.file1_full, self.folder2_full, self.test_opts)
             self.assertTrue(v)
             self.assertEqual(r, None)
             dummy.assert_called_with("test-cmake-path", self.folder1_full, self.folder2_full, {})
