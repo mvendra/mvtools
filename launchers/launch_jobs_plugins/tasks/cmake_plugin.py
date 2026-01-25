@@ -190,6 +190,9 @@ class CustomTask(launch_jobs.BaseTask):
 
         operation, source_path, output_path, gen_type, temp_path, cmake_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings, parallel = r
 
+        # assemble options
+        options = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
+
         # ext-opts operation
         if operation == "ext-opts":
             return cmake_lib.extract_options(cmake_path, source_path, output_path, temp_path, {})
@@ -203,9 +206,6 @@ class CustomTask(launch_jobs.BaseTask):
             return cmake_lib.install(cmake_path, source_path, output_path)
 
         # default - cfg-and-gen operation
-
-        # assemble options
-        options = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
 
         # actual execution
         v, r = cmake_lib.configure_and_generate(cmake_path, source_path, output_path, gen_type, options)
