@@ -100,7 +100,7 @@ class CmakeLibTest(unittest.TestCase):
             v, r = cmake_lib.extract_options("test-cmake-path", self.folder1_full, self.file1_full, self.folder2_full)
             self.assertFalse(v)
             self.assertEqual(r, "test error message [test1][test2]")
-            dummy.assert_called_with("test-cmake-path", self.folder1_full, self.folder2_full)
+            dummy.assert_called_with("test-cmake-path", self.folder1_full, self.folder2_full, {})
 
         self.assertFalse(os.path.exists(self.file1_full))
 
@@ -118,7 +118,7 @@ class CmakeLibTest(unittest.TestCase):
             v, r = cmake_lib.extract_options("test-cmake-path", self.folder1_full, self.file1_full, self.folder2_full)
             self.assertTrue(v)
             self.assertEqual(r, None)
-            dummy.assert_called_with("test-cmake-path", self.folder1_full, self.folder2_full)
+            dummy.assert_called_with("test-cmake-path", self.folder1_full, self.folder2_full, {})
 
         read_contents = None
         with open(self.file1_full, "r") as f:
