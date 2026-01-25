@@ -1249,16 +1249,40 @@ class CmakePluginTest(unittest.TestCase):
         self.assertEqual(r, {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions5(self):
+
+        with mock.patch("cmake_lib.set_option_install_prefix", return_value=None) as dummy:
+            v, r = cmake_plugin._assemble_options(None, "test1", None, None, None)
+            self.assertFalse(v)
+            self.assertEqual(r, "Invalid option value (install_prefix): [test1]")
+            dummy.assert_called_with(cmake_lib.boot_options(), "test1")
+
+    def testCmakePluginAssembleOptions6(self):
         v, r = cmake_plugin._assemble_options(None, None, "test1", None, None)
         self.assertTrue(v)
         self.assertEqual(r, {"CMAKE_PREFIX_PATH": ("STRING", "test1")})
 
-    def testCmakePluginAssembleOptions6(self):
+    def testCmakePluginAssembleOptions7(self):
+
+        with mock.patch("cmake_lib.set_option_prefix_path", return_value=None) as dummy:
+            v, r = cmake_plugin._assemble_options(None, None, "test1", None, None)
+            self.assertFalse(v)
+            self.assertEqual(r, "Invalid option value (prefix_path): [test1]")
+            dummy.assert_called_with(cmake_lib.boot_options(), "test1")
+
+    def testCmakePluginAssembleOptions8(self):
         v, r = cmake_plugin._assemble_options(None, None, None, "test1", None)
         self.assertTrue(v)
         self.assertEqual(r, {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
 
-    def testCmakePluginAssembleOptions7(self):
+    def testCmakePluginAssembleOptions9(self):
+
+        with mock.patch("cmake_lib.set_option_toolchain", return_value=None) as dummy:
+            v, r = cmake_plugin._assemble_options(None, None, None, "test1", None)
+            self.assertFalse(v)
+            self.assertEqual(r, "Invalid option value (toolchain): [test1]")
+            dummy.assert_called_with(cmake_lib.boot_options(), "test1")
+
+    def testCmakePluginAssembleOptions10(self):
 
         v, r = cmake_plugin._assemble_options(None, None, None, None, "test1")
         self.assertFalse(v)
