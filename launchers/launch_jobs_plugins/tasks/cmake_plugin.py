@@ -202,6 +202,8 @@ class CustomTask(launch_jobs.BaseTask):
 
         # assemble options
         v, r = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
+        if not v:
+            return False, r
         options = r
 
         # ext-opts operation
