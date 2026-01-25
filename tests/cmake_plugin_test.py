@@ -1446,6 +1446,28 @@ class CmakePluginTest(unittest.TestCase):
     def testCmakePluginRunTask11(self):
 
         local_params = {}
+        local_params["operation"] = "ext-opts"
+        local_params["source_path"] = self.existent_path1
+        local_params["output_path"] = self.nonexistent_path1
+        local_params["temp_path"] = self.nonexistent_path2
+        local_params["cmake_path"] = "dummy_value1"
+        local_params["build_type"] = "debug"
+        local_params["install_prefix"] = "dummy_value2"
+        local_params["prefix_path"] = "dummy_value3"
+        local_params["toolchain"] = "dummy_value4"
+        local_params["custom_options"] = "dummy_value5"
+        self.cmake_task.params = local_params
+
+        with mock.patch("cmake_lib.extract_options", return_value=(True, None)) as dummy:
+
+            v, r = self.cmake_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with("dummy_value1", self.existent_path1, self.nonexistent_path1, self.nonexistent_path2, {"CMAKE_BUILD_TYPE": ("STRING", "debug"), "CMAKE_INSTALL_PREFIX": ("STRING", "dummy_value2"), "CMAKE_PREFIX_PATH": ("STRING", "dummy_value3"), "CMAKE_TOOLCHAIN_FILE": ("STRING", "dummy_value4")})
+
+    def testCmakePluginRunTask12(self):
+
+        local_params = {}
         local_params["operation"] = "build"
         local_params["source_path"] = self.existent_path1
         self.cmake_task.params = local_params
@@ -1457,7 +1479,7 @@ class CmakePluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(None, self.existent_path1, False)
 
-    def testCmakePluginRunTask12(self):
+    def testCmakePluginRunTask13(self):
 
         local_params = {}
         local_params["operation"] = "build"
@@ -1472,7 +1494,7 @@ class CmakePluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with("dummy_value1", self.existent_path1, False)
 
-    def testCmakePluginRunTask13(self):
+    def testCmakePluginRunTask14(self):
 
         local_params = {}
         local_params["operation"] = "build"
@@ -1487,7 +1509,7 @@ class CmakePluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(None, self.existent_path1, True)
 
-    def testCmakePluginRunTask14(self):
+    def testCmakePluginRunTask15(self):
 
         local_params = {}
         local_params["operation"] = "install"
@@ -1501,7 +1523,7 @@ class CmakePluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with(None, self.existent_path1, None)
 
-    def testCmakePluginRunTask15(self):
+    def testCmakePluginRunTask16(self):
 
         local_params = {}
         local_params["operation"] = "install"
@@ -1516,7 +1538,7 @@ class CmakePluginTest(unittest.TestCase):
             self.assertEqual(r, None)
             dummy.assert_called_with("dummy_value1", self.existent_path1, None)
 
-    def testCmakePluginRunTask16(self):
+    def testCmakePluginRunTask17(self):
 
         local_params = {}
         local_params["operation"] = "install"
