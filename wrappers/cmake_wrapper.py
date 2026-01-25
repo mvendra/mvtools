@@ -8,6 +8,9 @@ import generic_run
 
 def extract_options(cmake_path, source_path, temp_path):
 
+    if cmake_path is None:
+        cmake_path = "cmake" # use whichever cmake is in the user's path
+
     if not os.path.exists(source_path):
         return False, "Source path [%s] does not exist." % source_path
 
@@ -15,9 +18,6 @@ def extract_options(cmake_path, source_path, temp_path):
         return False, "Temp path [%s] already exists." % temp_path
 
     os.mkdir(temp_path)
-
-    if cmake_path is None:
-        cmake_path = "cmake" # use whichever cmake is in the user's path
 
     full_cmd = [cmake_path]
     full_cmd.append(source_path)
@@ -30,11 +30,11 @@ def extract_options(cmake_path, source_path, temp_path):
 
 def configure_and_generate(cmake_path, source_path, output_path, generator_type, options):
 
-    if options is None:
-        return False, "Invalid options"
-
     if cmake_path is None:
         cmake_path = "cmake" # use whichever cmake is in the user's path
+
+    if options is None:
+        return False, "Invalid options"
 
     options_cmdline = []
     # unfold options
@@ -54,11 +54,11 @@ def configure_and_generate(cmake_path, source_path, output_path, generator_type,
 
 def build(cmake_path, target_path, parallel):
 
-    if not os.path.exists(target_path):
-        return False, "Target path [%s] does not exist." % target_path
-
     if cmake_path is None:
         cmake_path = "cmake" # use whichever cmake is in the user's path
+
+    if not os.path.exists(target_path):
+        return False, "Target path [%s] does not exist." % target_path
 
     full_cmd = [cmake_path]
     full_cmd.append("--build")
@@ -73,11 +73,11 @@ def build(cmake_path, target_path, parallel):
 
 def install(cmake_path, target_path, prefix):
 
-    if not os.path.exists(target_path):
-        return False, "Target path [%s] does not exist." % target_path
-
     if cmake_path is None:
         cmake_path = "cmake" # use whichever cmake is in the user's path
+
+    if not os.path.exists(target_path):
+        return False, "Target path [%s] does not exist." % target_path
 
     full_cmd = [cmake_path]
     full_cmd.append("--install")
