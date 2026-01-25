@@ -16,25 +16,35 @@ def _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom
     # build_type
     if build_type is not None:
         options = cmake_lib.set_option_build_type(options, build_type)
+    if options is None:
+        return False, "Invalid option value (build_type): [%s]" % build_type
 
     # install_prefix
     if install_prefix is not None:
         options = cmake_lib.set_option_install_prefix(options, install_prefix)
+    if options is None:
+        return False, "Invalid option value (install_prefix): [%s]" % install_prefix
 
     # prefix_path
     if prefix_path is not None:
         options = cmake_lib.set_option_prefix_path(options, prefix_path)
+    if options is None:
+        return False, "Invalid option value (prefix_path): [%s]" % prefix_path
 
     # toolchain
     if toolchain is not None:
         options = cmake_lib.set_option_toolchain(options, toolchain)
+    if options is None:
+        return False, "Invalid option value (toolchain): [%s]" % toolchain
 
     # generic options
     if custom_options is not None:
         for opt in custom_options:
             options = cmake_lib.set_option_parse(options, opt)
+            if options is None:
+                return False, "Invalid custom option: [%s]" % (opt)
 
-    return options
+    return True, options
 
 class CustomTask(launch_jobs.BaseTask):
 
@@ -191,7 +201,8 @@ class CustomTask(launch_jobs.BaseTask):
         operation, source_path, output_path, gen_type, temp_path, cmake_path, build_type, install_prefix, prefix_path, toolchain, custom_options, save_output, save_error_output, suppress_stderr_warnings, parallel = r
 
         # assemble options
-        options = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
+        v, r = _assemble_options(build_type, install_prefix, prefix_path, toolchain, custom_options)
+        options = r
 
         # ext-opts operation
         if operation == "ext-opts":

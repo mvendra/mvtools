@@ -1229,27 +1229,48 @@ class CmakePluginTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testCmakePluginAssembleOptions1(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, None), self.test_opts)
+        v, r = cmake_plugin._assemble_options(None, None, None, None, None)
+        self.assertTrue(v)
+        self.assertEqual(r, self.test_opts)
 
     def testCmakePluginAssembleOptions2(self):
-        self.assertEqual(cmake_plugin._assemble_options("test1", None, None, None, None), None)
+        v, r = cmake_plugin._assemble_options("test1", None, None, None, None)
+        self.assertFalse(v)
+        self.assertEqual(r, "Invalid option value (build_type): [test1]")
 
     def testCmakePluginAssembleOptions3(self):
-        self.assertEqual(cmake_plugin._assemble_options("release", None, None, None, None), {"CMAKE_BUILD_TYPE": ("STRING", "release")})
+        v, r = cmake_plugin._assemble_options("release", None, None, None, None)
+        self.assertTrue(v)
+        self.assertEqual(r, {"CMAKE_BUILD_TYPE": ("STRING", "release")})
 
     def testCmakePluginAssembleOptions4(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, "test1", None, None, None), {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
+        v, r = cmake_plugin._assemble_options(None, "test1", None, None, None)
+        self.assertTrue(v)
+        self.assertEqual(r, {"CMAKE_INSTALL_PREFIX": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions5(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, "test1", None, None), {"CMAKE_PREFIX_PATH": ("STRING", "test1")})
+        v, r = cmake_plugin._assemble_options(None, None, "test1", None, None)
+        self.assertTrue(v)
+        self.assertEqual(r, {"CMAKE_PREFIX_PATH": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions6(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, "test1", None), {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
+        v, r = cmake_plugin._assemble_options(None, None, None, "test1", None)
+        self.assertTrue(v)
+        self.assertEqual(r, {"CMAKE_TOOLCHAIN_FILE": ("STRING", "test1")})
 
     def testCmakePluginAssembleOptions7(self):
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, "test1"), None)
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, "test1:test2"), None)
-        self.assertEqual(cmake_plugin._assemble_options(None, None, None, None, ["test1:test2=test3"]), {"test1" : ("test2", "test3")})
+
+        v, r = cmake_plugin._assemble_options(None, None, None, None, "test1")
+        self.assertFalse(v)
+        self.assertEqual(r, "Invalid custom option: [t]")
+
+        v, r = cmake_plugin._assemble_options(None, None, None, None, "test1:test2")
+        self.assertFalse(v)
+        self.assertEqual(r, "Invalid custom option: [t]")
+
+        v, r = cmake_plugin._assemble_options(None, None, None, None, ["test1:test2=test3"])
+        self.assertTrue(v)
+        self.assertEqual(r, {"test1" : ("test2", "test3")})
 
     def testCmakePluginRunTask1(self):
 
