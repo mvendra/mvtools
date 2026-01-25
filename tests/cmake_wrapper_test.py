@@ -93,12 +93,12 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertEqual(r[2], "test3")
             dummy.assert_called_with(["test1", self.folder1_full, "-LAH"], use_cwd=self.folder2_full)
 
-    def testConfigureAndGenerateFail1(self):
+    def testConfigureAndGenerate1(self):
         with mock.patch("generic_run.run_cmd", return_value=(True, self.result_obj)) as dummy:
             v, r = cmake_wrapper.configure_and_generate("test3", "test4", "test5", "test6", None)
             self.assertFalse(v)
 
-    def testConfigureAndGenerateFail2(self):
+    def testConfigureAndGenerate2(self):
         self.result_obj.success = False
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
@@ -107,7 +107,7 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertFalse(v)
             self.assertEqual(r, "Failed running cmake configure-and-generate command: [test1][test2]")
 
-    def testConfigureAndGenerate1(self):
+    def testConfigureAndGenerate3(self):
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
@@ -115,7 +115,7 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertEqual(cmake_wrapper.configure_and_generate("test3", "test4", "test5", "test6", {}), (True, (True, "test1", "test2")))
             dummy.assert_called_with(["test3", "test4", "-G", "test6"], use_cwd="test5")
 
-    def testConfigureAndGenerate2(self):
+    def testConfigureAndGenerate4(self):
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
@@ -123,7 +123,7 @@ class CmakeWrapperTest(unittest.TestCase):
             self.assertEqual(cmake_wrapper.configure_and_generate("test3", "test4", "test5", "test6", {"optname": ("opttype", "optval")}), (True, (True, "test1", "test2")))
             dummy.assert_called_with(["test3", "test4", "-G", "test6", "-Doptname:opttype=optval"], use_cwd="test5")
 
-    def testConfigureAndGenerate3(self):
+    def testConfigureAndGenerate5(self):
         self.result_obj.success = True
         self.result_obj.stdout = "test1"
         self.result_obj.stderr = "test2"
