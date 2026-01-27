@@ -63,6 +63,12 @@ class CustomTask(launch_jobs.BaseTask):
             return False, "mode is a required parameter"
 
         # params validation
+        if not os.path.exists(left_path):
+            return False, "left source [%s] does not exist" % left_path
+
+        if not os.path.exists(right_path):
+            return False, "right source [%s] does not exist" % right_path
+
         if left_filter is not None:
             if not os.path.exists(left_filter[0]):
                 return False, "left filter script [%s] does not exist" % left_filter[0]
