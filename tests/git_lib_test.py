@@ -4990,21 +4990,21 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone_bare(first_rel_path, self.nonexistent_repo)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo)
 
-            nonexistent_rel_path = path_utils.concat_path("./", os.path.basename(self.nonexistent_repo))
+            nonexistent_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.nonexistent_repo))
             with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone_bare(self.first_repo, nonexistent_rel_path)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo)
 
-            networked_path = "192.168.1.1:%s" % os.path.basename(self.first_repo)
+            networked_path = "192.168.1.1:%s" % path_utils.basename_filtered(self.first_repo)
             with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone_bare(networked_path, self.nonexistent_repo, True)
                 self.assertTrue(v)
@@ -5042,21 +5042,21 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone(first_rel_path, self.nonexistent_repo)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
 
-            nonexistent_rel_path = path_utils.concat_path("./", os.path.basename(self.nonexistent_repo))
+            nonexistent_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.nonexistent_repo))
             with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone(self.first_repo, nonexistent_rel_path)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
 
-            networked_path = "192.168.1.1:%s" % os.path.basename(self.first_repo)
+            networked_path = "192.168.1.1:%s" % path_utils.basename_filtered(self.first_repo)
             with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone(networked_path, self.nonexistent_repo, None, True)
                 self.assertTrue(v)
@@ -5094,21 +5094,21 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone_ext(first_rel_path, self.nonexistent_repo)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
 
-            nonexistent_rel_path = path_utils.concat_path("./", os.path.basename(self.nonexistent_repo))
+            nonexistent_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.nonexistent_repo))
             with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone_ext(self.first_repo, nonexistent_rel_path)
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
 
-            networked_path = "192.168.1.1:%s" % os.path.basename(self.first_repo)
+            networked_path = "192.168.1.1:%s" % path_utils.basename_filtered(self.first_repo)
             with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
                 v, r = git_lib.clone_ext(networked_path, self.nonexistent_repo, None, True)
                 self.assertTrue(v)
@@ -5135,7 +5135,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.pull_default", return_value=(True, None)) as dummy:
                 v, r = git_lib.pull_default(first_rel_path)
                 self.assertTrue(v)
@@ -5162,7 +5162,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.pull", return_value=(True, None)) as dummy:
                 v, r = git_lib.pull(first_rel_path, "remotename", "branchname")
                 self.assertTrue(v)
@@ -5189,7 +5189,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.push", return_value=(True, None)) as dummy:
                 v, r = git_lib.push(first_rel_path, "remotename", "branchname")
                 self.assertTrue(v)
@@ -5222,7 +5222,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.log", return_value=(True, None)) as dummy:
                 v, r = git_lib.log(first_rel_path)
                 self.assertTrue(v)
@@ -5249,7 +5249,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.fetch_multiple", return_value=(True, None)) as dummy:
                 v, r = git_lib.fetch_multiple(first_rel_path, ["remotes"])
                 self.assertTrue(v)
@@ -5276,7 +5276,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.fetch_all", return_value=(True, None)) as dummy:
                 v, r = git_lib.fetch_all(first_rel_path)
                 self.assertTrue(v)
@@ -5303,7 +5303,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.rev_parse_head", return_value=(True, None)) as dummy:
                 v, r = git_lib.rev_parse_head(first_rel_path)
                 self.assertTrue(v)
@@ -5330,7 +5330,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.commit_direct", return_value=(True, None)) as dummy:
                 v, r = git_lib.commit_direct(first_rel_path, "the-params")
                 self.assertTrue(v)
@@ -5357,7 +5357,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.status_simple", return_value=(True, None)) as dummy:
                 v, r = git_lib.status_simple(first_rel_path)
                 self.assertTrue(v)
@@ -5384,7 +5384,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
                 v, r = git_lib.show(first_rel_path, "the-commit-id")
                 self.assertTrue(v)
@@ -5411,7 +5411,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.show", return_value=(True, None)) as dummy:
                 v, r = git_lib.show_msg_only(first_rel_path, "the-commit-id")
                 self.assertTrue(v)
@@ -5438,7 +5438,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.stash_show", return_value=(True, None)) as dummy:
                 v, r = git_lib.stash_show(first_rel_path, "the-stash-name")
                 self.assertTrue(v)
@@ -5465,7 +5465,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.stash_show_diff", return_value=(True, None)) as dummy:
                 v, r = git_lib.stash_show_diff(first_rel_path, "the-stash-name")
                 self.assertTrue(v)
@@ -5492,7 +5492,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.stash_clear", return_value=(True, None)) as dummy:
                 v, r = git_lib.stash_clear(first_rel_path)
                 self.assertTrue(v)
@@ -5519,7 +5519,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.stash_drop", return_value=(True, None)) as dummy:
                 v, r = git_lib.stash_drop(first_rel_path)
                 self.assertTrue(v)
@@ -5546,7 +5546,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.stash_pop", return_value=(True, None)) as dummy:
                 v, r = git_lib.stash_pop(first_rel_path)
                 self.assertTrue(v)
@@ -5573,7 +5573,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.remote_change_url", return_value=(True, None)) as dummy:
                 v, r = git_lib.remote_change_url(first_rel_path, "remotename", "new-url")
                 self.assertTrue(v)
@@ -5649,8 +5649,8 @@ class GitLibTest(unittest.TestCase):
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
-            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo), path_utils.basename_filtered(self.first_file1))
 
             with mock.patch("git_wrapper.checkout", return_value=(True, None)) as dummy:
                 v, r = git_lib.checkout(first_rel_path)
@@ -5708,8 +5708,8 @@ class GitLibTest(unittest.TestCase):
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
-            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo), path_utils.basename_filtered(self.first_file1))
 
             with mock.patch("git_wrapper.diff", return_value=(True, None)) as dummy:
                 v, r = git_lib.diff(first_rel_path)
@@ -5764,8 +5764,8 @@ class GitLibTest(unittest.TestCase):
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
-            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo), path_utils.basename_filtered(self.first_file1))
 
             with mock.patch("git_wrapper.diff_indexed", return_value=(True, None)) as dummy:
                 v, r = git_lib.diff_indexed(first_rel_path, [self.first_file1])
@@ -5823,8 +5823,8 @@ class GitLibTest(unittest.TestCase):
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
-            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo), path_utils.basename_filtered(self.first_file1))
 
             with mock.patch("git_wrapper.diff_cached", return_value=(True, None)) as dummy:
                 v, r = git_lib.diff_cached(first_rel_path)
@@ -5879,8 +5879,8 @@ class GitLibTest(unittest.TestCase):
         saved_wd = os.getcwd()
         try:
             os.chdir(self.test_dir)
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
-            first_file1_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo), os.path.basename(self.first_file1))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
+            first_file1_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo), path_utils.basename_filtered(self.first_file1))
 
             with mock.patch("git_wrapper.diff_cached_indexed", return_value=(True, None)) as dummy:
                 v, r = git_lib.diff_cached_indexed(self.first_repo, [first_file1_rel_path])
@@ -5913,7 +5913,7 @@ class GitLibTest(unittest.TestCase):
         try:
             os.chdir(self.test_dir)
 
-            first_rel_path = path_utils.concat_path("./", os.path.basename(self.first_repo))
+            first_rel_path = path_utils.concat_path("./", path_utils.basename_filtered(self.first_repo))
             with mock.patch("git_wrapper.reset_hard_head", return_value=(True, None)) as dummy:
                 v, r = git_lib.kill_previous(first_rel_path, 1)
                 self.assertTrue(v)
