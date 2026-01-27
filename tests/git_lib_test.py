@@ -5004,6 +5004,13 @@ class GitLibTest(unittest.TestCase):
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo)
 
+            networked_path = "192.168.1.1:%s" % os.path.basename(self.first_repo)
+            with mock.patch("git_wrapper.clone_bare", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone_bare(networked_path, self.nonexistent_repo, True)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(networked_path, self.nonexistent_repo)
+
         finally:
             os.chdir(saved_wd)
 
@@ -5049,6 +5056,13 @@ class GitLibTest(unittest.TestCase):
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
 
+            networked_path = "192.168.1.1:%s" % os.path.basename(self.first_repo)
+            with mock.patch("git_wrapper.clone", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone(networked_path, self.nonexistent_repo, None, True)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(networked_path, self.nonexistent_repo, None)
+
         finally:
             os.chdir(saved_wd)
 
@@ -5093,6 +5107,13 @@ class GitLibTest(unittest.TestCase):
                 self.assertTrue(v)
                 self.assertEqual(r, None)
                 dummy.assert_called_with(self.first_repo, self.nonexistent_repo, None)
+
+            networked_path = "192.168.1.1:%s" % os.path.basename(self.first_repo)
+            with mock.patch("git_wrapper.clone_ext", return_value=(True, None)) as dummy:
+                v, r = git_lib.clone_ext(networked_path, self.nonexistent_repo, None, True)
+                self.assertTrue(v)
+                self.assertEqual(r, None)
+                dummy.assert_called_with(networked_path, self.nonexistent_repo, None)
 
         finally:
             os.chdir(saved_wd)

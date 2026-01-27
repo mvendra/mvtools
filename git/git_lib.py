@@ -961,30 +961,33 @@ def unstage(repo, file_list=None):
 
     return git_wrapper.reset_head(repo, file_list_final)
 
-def clone_bare(repo_source, repo_target):
+def clone_bare(repo_source, repo_target, networked_remote=False): # networked_remote == True means "might be"
     if repo_source is None:
         return False, "No source repo specified"
     if repo_target is None:
         return False, "No target repo specified"
-    repo_source = os.path.abspath(repo_source)
+    if not networked_remote:
+        repo_source = os.path.abspath(repo_source)
     repo_target = os.path.abspath(repo_target)
     return git_wrapper.clone_bare(repo_source, repo_target)
 
-def clone(repo_source, repo_target, remotename=None):
+def clone(repo_source, repo_target, remotename=None, networked_remote=False): # networked_remote == True means "might be"
     if repo_source is None:
         return False, "No source repo specified"
     if repo_target is None:
         return False, "No target repo specified"
-    repo_source = os.path.abspath(repo_source)
+    if not networked_remote:
+        repo_source = os.path.abspath(repo_source)
     repo_target = os.path.abspath(repo_target)
     return git_wrapper.clone(repo_source, repo_target, remotename)
 
-def clone_ext(repo_source, repo_target, remotename=None):
+def clone_ext(repo_source, repo_target, remotename=None, networked_remote=False): # networked_remote == True means "might be"
     if repo_source is None:
         return False, "No source repo specified"
     if repo_target is None:
         return False, "No target repo specified"
-    repo_source = os.path.abspath(repo_source)
+    if not networked_remote:
+        repo_source = os.path.abspath(repo_source)
     repo_target = os.path.abspath(repo_target)
     return git_wrapper.clone_ext(repo_source, repo_target, remotename)
 
