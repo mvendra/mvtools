@@ -21,9 +21,9 @@ def check_template_example(repos, options):
         remotes = r
         for rmn in remotes:
             for rmop in remotes[rmn]:
-                local_folder_name = os.path.basename(rp) # local folder name
+                local_folder_name = path_utils.basename_filtered(rp) # local folder name
                 remote_path = remotes[rmn][rmop] # remote path
-                remote_path_base_name = os.path.basename(remote_path) # remote path base name
+                remote_path_base_name = path_utils.basename_filtered(remote_path) # remote path base name
                 remote_path_base_name_no_git_folder = git_visitor_base.pluck_dotgit([remote_path_base_name])[0]
 
                 print("rmn: %s " % rmn)
@@ -37,10 +37,10 @@ def check_template_example(repos, options):
     return result
 
 def print_success(msg):
-    print("%s: %s%s%s" % (os.path.basename(__file__), terminal_colors.TTY_GREEN, msg, terminal_colors.get_standard_color()))
+    print("%s: %s%s%s" % (path_utils.basename_filtered(__file__), terminal_colors.TTY_GREEN, msg, terminal_colors.get_standard_color()))
 
 def print_error(msg):
-    print("%s: %s%s%s" % (os.path.basename(__file__), terminal_colors.TTY_RED, msg, terminal_colors.get_standard_color()))
+    print("%s: %s%s%s" % (path_utils.basename_filtered(__file__), terminal_colors.TTY_RED, msg, terminal_colors.get_standard_color()))
 
 def filter_bare_git_repos(repos):
 
@@ -66,7 +66,7 @@ def sanitize_remote_path(path):
 
 def search_dupes(repo, repo_tuple_list):
 
-    repo_bn = os.path.basename(repo)
+    repo_bn = path_utils.basename_filtered(repo)
     for rp in repo_tuple_list:
         if repo_bn == rp[0]:
             return True, rp[1]
@@ -86,7 +86,7 @@ def no_duplicated_check(repos):
             print_error("%s and %s are duplicated." % (rp, what_is_it))
             result = False
         else:
-            all_repos_tuple_list.append((os.path.basename(rp), rp))
+            all_repos_tuple_list.append((path_utils.basename_filtered(rp), rp))
 
     return result
 
@@ -99,7 +99,7 @@ def remotes_check(repos):
     for rp in repos:
         v, r = git_lib.get_remotes(rp)
         remotes = r
-        local_basename = os.path.basename(rp)
+        local_basename = path_utils.basename_filtered(rp)
 
         if remotes is None:
             print_error("%s has no remotes at all." % rp)
@@ -147,7 +147,7 @@ def basenames_check(repos):
     for rp in repos:
         v, r = git_lib.get_remotes(rp)
         remotes = r
-        local_basename = os.path.basename(rp)
+        local_basename = path_utils.basename_filtered(rp)
 
         if remotes is None:
             print("Skipping basename check for %s because it has no remotes." % rp)
@@ -157,7 +157,7 @@ def basenames_check(repos):
             for rops in remotes[rnames]:
                 rpath = remotes[rnames][rops]
 
-                remote_basename = os.path.basename(sanitize_remote_path(rpath))
+                remote_basename = path_utils.basename_filtered(sanitize_remote_path(rpath))
                 if remote_basename.endswith(".git"):
                     remote_basename = remote_basename[0:len(remote_basename)-4]
                 if remote_basename != local_basename:
