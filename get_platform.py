@@ -3,12 +3,15 @@
 import platform
 
 PLAT_LINUX = "linux"
+
 PLAT_WINDOWS = "windows"
 PLAT_CYGWIN = "cygwin"
 PLAT_MSYS = "msys"
 PLAT_MINGW = "mingw"
 PLAT_MSYS_MINGW_GRAY = "msys_mingw_gray" # gray-area -> not conventionally detected
+
 PLAT_MACOS = "macos"
+
 PLAT_UNKNOWN = "unknown_platform"
 
 def getplat():
