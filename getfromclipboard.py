@@ -32,7 +32,7 @@ def getfromclipboard():
         if contents is None:
             return False, "Failed getting clipboard. Make sure xclip is installed."
 
-    elif plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS or plat == get_platform.PLAT_MINGW:
+    elif plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS or plat == get_platform.PLAT_MINGW or plat == get_platform.PLAT_MSYS_MINGW_GRAY:
 
         contents = _get_for_cygwin_or_msys_or_mingw()
         if contents is None:

@@ -32,7 +32,7 @@ def sendtoclipboard(contents):
 
     if plat == get_platform.PLAT_LINUX:
         return sendtoclipboard_linux(contents)
-    if plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS or plat == get_platform.PLAT_MINGW:
+    if plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS or plat == get_platform.PLAT_MINGW or plat == get_platform.PLAT_MSYS_MINGW_GRAY:
         return sendtoclipboard_cygwin_or_msys_or_mingw(contents)
 
     clipboard_app = ""

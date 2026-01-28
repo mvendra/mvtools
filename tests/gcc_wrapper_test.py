@@ -94,7 +94,7 @@ class GccWrapperTest(unittest.TestCase):
         local_plat = get_platform.getplat()
         if (local_plat == get_platform.PLAT_LINUX) or (local_plat == get_platform.PLAT_MACOS):
             compiled_applet = "a.out"
-        elif (local_plat == get_platform.PLAT_WINDOWS) or (local_plat == get_platform.PLAT_CYGWIN) or (local_plat == get_platform.PLAT_MSYS) or (local_plat == get_platform.PLAT_MINGW):
+        elif (local_plat == get_platform.PLAT_WINDOWS) or (local_plat == get_platform.PLAT_CYGWIN) or (local_plat == get_platform.PLAT_MSYS) or (local_plat == get_platform.PLAT_MINGW) or (local_plat == get_platform.PLAT_MSYS_MINGW_GRAY):
             compiled_applet = "a.exe"
         else:
             self.fail("Unsupported platform")
