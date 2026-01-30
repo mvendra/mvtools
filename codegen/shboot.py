@@ -19,7 +19,7 @@ def default_sh_app():
     local_contents += "        exit 1\n"
     local_contents += "    fi\n"
     local_contents += "}\n\n"
-    local_contents += "if [ -z $1 ]; then\n"
+    local_contents += "if [ -z \"$1\" ]; then\n"
     local_contents += "    puaq false\n"
     local_contents += "fi\n\n"
     local_contents += "# code goes here\n"
