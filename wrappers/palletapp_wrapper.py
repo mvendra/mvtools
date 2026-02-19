@@ -23,7 +23,7 @@ def create(source_path, target_archive):
         return False, "%s already exists." % target_archive_filtered
 
     # actual command
-    plt_cmd = ["palletapp", "--create", source_path_filtered, target_archive_filtered]
+    plt_cmd = ["palletapp", "--create", target_archive_filtered, source_path_filtered]
     v, r = generic_run.run_cmd_simple(plt_cmd)
     if not v:
         return False, "Failed running palletapp create command: [%s]" % r
