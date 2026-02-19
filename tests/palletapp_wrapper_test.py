@@ -182,7 +182,7 @@ class PalletappWrapperTest(unittest.TestCase):
 
         plat_local = get_platform.getplat()
 
-        v, r = palletapp_wrapper.create(conv_cyg_if_needed(self.source_base_folder_full), conv_cyg_if_needed(self.pallet_file_full))
+        v, r = palletapp_wrapper.create(conv_cyg_if_needed(self.pallet_file_full), conv_cyg_if_needed(self.source_base_folder_full))
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.pallet_file_full))
 

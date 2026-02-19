@@ -6,21 +6,21 @@ import os
 import path_utils
 import generic_run
 
-def create(source_path, target_archive):
+def create(target_archive, source_path):
 
-    # source_path: path to the input. either a file or a folder containing whatever.
     # target_archive: path to the resulting archive to be created. should not pre-exist.
+    # source_path: path to the input. either a file or a folder containing whatever.
 
-    source_path_filtered = path_utils.filter_remove_trailing_sep(source_path)
     target_archive_filtered = path_utils.filter_remove_trailing_sep(target_archive)
+    source_path_filtered = path_utils.filter_remove_trailing_sep(source_path)
 
     # prechecks
-    if source_path_filtered is None:
-        return False, "Invalid source path"
     if target_archive_filtered is None:
         return False, "Invalid target archive path"
     if os.path.exists(target_archive_filtered):
         return False, "%s already exists." % target_archive_filtered
+    if source_path_filtered is None:
+        return False, "Invalid source path"
 
     # actual command
     plt_cmd = ["palletapp", "--create", target_archive_filtered, source_path_filtered]
