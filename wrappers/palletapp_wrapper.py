@@ -178,7 +178,7 @@ def list(source_archive):
     if not v:
         return False, "Failed running palletapp list command: [%s]" % r
 
-    return True, None
+    return True, r
 
 def puaq(selfhelp):
     print("Usage: %s source_path target_archive.plt" % path_utils.basename_filtered(__file__))

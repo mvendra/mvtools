@@ -407,9 +407,10 @@ class PalletappWrapperTest(unittest.TestCase):
 
         create_and_write_file.create_file_contents(self.pallet_file_full, "test contents")
 
-        with mock.patch("generic_run.run_cmd_simple", return_value=(True, None)) as dummy:
+        with mock.patch("generic_run.run_cmd_simple", return_value=(True, "test listed contents")) as dummy:
             v, r = palletapp_wrapper.list(self.pallet_file_full)
             self.assertTrue(v)
+            self.assertEqual(r, "test listed contents")
             dummy.assert_called_with(["palletapp", "--list", self.pallet_file_full])
 
     def testList4(self):
