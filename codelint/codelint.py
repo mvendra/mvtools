@@ -16,6 +16,7 @@ import lint_func_indexer
 import lint_c_integer_prefix
 import lint_c_integer_suffix
 import lint_c_check_header_guards
+import lint_c_unsigned_integer_hex
 import lint_select_filter
 import lint_line_tidy
 import lint_if_has_then_must_be_start
@@ -30,6 +31,7 @@ plugin_table["lint-func-indexer"] = (lint_func_indexer, "{lint-func-indexer-para
 plugin_table["lint-c-integer-prefix"] = (lint_c_integer_prefix, "{lint-c-integer-prefix-warn-no-prefix}")
 plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer-suffix-warn-no-suffix}")
 plugin_table["lint-c-check-header-guards"] = (lint_c_check_header_guards, "{}")
+plugin_table["lint-c-unsigned-integer-hex"] = (lint_c_unsigned_integer_hex, "{}")
 plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [patterns] / lint-select-filter-exclude -> [patterns]}")
 plugin_table["lint-line-tidy"] = (lint_line_tidy, "{}")
 plugin_table["lint-if-has-then-must-be-start"] = (lint_if_has_then_must_be_start, "{lint-if-has-then-must-be-start-pattern -> [patterns] / lint-if-has-then-must-be-start-tolerate-start -> [patterns]}")
