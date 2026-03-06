@@ -13,6 +13,7 @@ import terminal_colors
 # plugins
 import lint_sample_echo
 import lint_func_indexer
+import lint_c_integer_prefix
 import lint_c_integer_suffix
 import lint_select_filter
 import lint_c_check_header_guards
@@ -26,6 +27,7 @@ CODELINT_CMDLINE_RETURN_ERROR = 2
 plugin_table = {}
 plugin_table["lint-sample-echo"] = (lint_sample_echo, "{lint-sample-echo-pattern-match -> pattern}")
 plugin_table["lint-func-indexer"] = (lint_func_indexer, "{lint-func-indexer-param-left -> pattern / lint-func-indexer-param-right -> pattern}")
+plugin_table["lint-c-integer-prefix"] = (lint_c_integer_prefix, "{lint-c-integer-prefix-warn-no-prefix}")
 plugin_table["lint-c-integer-suffix"] = (lint_c_integer_suffix, "{lint-c-integer-suffix-warn-no-suffix}")
 plugin_table["lint-select-filter"] = (lint_select_filter, "{lint-select-filter-include -> [patterns] / lint-select-filter-exclude -> [patterns]}")
 plugin_table["lint-c-check-header-guards"] = (lint_c_check_header_guards, "{}")
