@@ -146,7 +146,7 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
             parsing_suffix = False
             current_suffix = ""
 
-        # main part - pasing numbers
+        # main part - parsing numbers
         if parsing_number:
 
             if hex_candidate or bin_candidate:
