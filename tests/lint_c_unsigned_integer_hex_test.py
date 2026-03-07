@@ -270,6 +270,34 @@ class LintCUnsignedIntegerHexTest(unittest.TestCase):
 
         self.assertEqual(test_shared_state, expected_shared_state)
 
+    def testLintCycle8(self):
+
+        test_file = "test_file.txt"
+        test_lines = ["0x01", "0x23", "0x45", "0x67", "0x89"]
+        test_plugins_params = {}
+        test_shared_state = {}
+
+        test_shared_state["lint-c-unsigned-integer-hex-internal-slash-asterisk-state"] = False
+
+        expected_shared_state = {}
+        expected_shared_state["lint-c-unsigned-integer-hex-internal-slash-asterisk-state"] = False
+
+        expected_result1 = None
+        expected_result2 = None
+        expected_result3 = None
+        expected_result4 = None
+        expected_result5 = None
+
+        expected_results = [expected_result1, expected_result2, expected_result3, expected_result4, expected_result5]
+
+        for test_index in range(len(test_lines)):
+
+            v, r = lint_c_unsigned_integer_hex.lint_cycle(test_plugins_params, test_file, test_shared_state, test_index+1, test_lines[test_index])
+            self.assertTrue(v)
+            self.assertEqual(r, expected_results[test_index])
+
+        self.assertEqual(test_shared_state, expected_shared_state)
+
     def testLintPost1(self):
 
         test_file = "test_file.txt"

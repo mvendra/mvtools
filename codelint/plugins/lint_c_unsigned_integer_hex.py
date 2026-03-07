@@ -131,10 +131,11 @@ def lint_cycle(plugins_params, filename, shared_state, line_index, content_line)
 
             if parsing_hex:
                 if string_utils.is_hex_string(c):
-                    if not c.isupper() and not parsing_hex_found_issue:
+                    cup = c.upper()
+                    if not c.isupper() and cup in ['A', 'B', 'C', 'D', 'E', 'F'] and not parsing_hex_found_issue:
                         findings += 1
                         parsing_hex_found_issue = True
-                    corrected_line += c.upper()
+                    corrected_line += cup
                     continue
 
             if string_utils.is_dec_string(c):
