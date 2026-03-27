@@ -316,7 +316,7 @@ def windows_codelite15_c_projfile_contents(project_name):
     r += "      <ResourceCompiler Options=\"\"/>\n"
     r += "    </GlobalSettings>\n"
 
-    r += "    <Configuration Name=\"Windows / Debug (LLVM)\" CompilerType=\"CLANG\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
+    r += "    <Configuration Name=\"Windows / Debug (LLVM)\" CompilerType=\"CLANG-MINGW\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
     r += "      <Compiler Options=\"-g;-O0;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_windows_debug_gcc() + standard_c.get_c_compiler_flags_windows_common_gcc())
     r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "      </Compiler>\n"
@@ -358,7 +358,7 @@ def windows_codelite15_c_projfile_contents(project_name):
     r += "      </Completion>\n"
     r += "    </Configuration>\n"
 
-    r += "    <Configuration Name=\"Windows / Release (LLVM)\" CompilerType=\"CLANG\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
+    r += "    <Configuration Name=\"Windows / Release (LLVM)\" CompilerType=\"CLANG-MINGW\" DebuggerType=\"GNU gdb debugger\" Type=\"Executable\" BuildCmpWithGlobalSettings=\"append\" BuildLnkWithGlobalSettings=\"append\" BuildResWithGlobalSettings=\"append\">\n"
     r += "      <Compiler Options=\"-O2;-Wall\" C_Options=\"%s\" Assembler=\"\" Required=\"yes\" PreCompiledHeader=\"\" PCHInCommandLine=\"no\" PCHFlags=\"\" PCHFlagsPolicy=\"0\">\n" % prjboot_util.inline_opts(";", standard_c.get_c_compiler_flags_windows_release_gcc() + standard_c.get_c_compiler_flags_windows_common_gcc())
     r += "        <IncludePath Value=\"../../../src\"/>\n"
     r += "        <Preprocessor Value=\"NDEBUG\"/>\n"
