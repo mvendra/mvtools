@@ -375,6 +375,39 @@ def dirname_filtered(path, windows_path = "auto"):
 
     return assembled_path
 
+def rebase_relative(source_base_path, source_relative_path, windows_path = "auto"):
+
+    if source_base_path is None:
+        return None
+    if source_base_path == "":
+        return None
+
+    if source_relative_path is None:
+        return None
+    if source_relative_path == "":
+        return None
+
+    path_pieces = splitpath(source_relative_path, windows_path)
+    if path_pieces is None:
+        return None
+    if len(path_pieces) == 0:
+        return None
+
+    resulting_path = source_base_path
+
+    for pp in path_pieces:
+
+        if pp == ".":
+            continue
+        elif pp == "..":
+            if getpathroot(resulting_path) == resulting_path:
+                return None
+            resulting_path = dirname_filtered(resulting_path)
+        else:
+            resulting_path = concat_path(resulting_path, pp)
+
+    return resulting_path
+
 def copy_to_and_rename(source_path, target_path, new_name):
 
     if source_path is None:

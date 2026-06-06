@@ -527,6 +527,27 @@ class PathUtilsTest(unittest.TestCase):
             self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt\\", "auto"), "/home/user/more/sub1/sub2/yetmore")
             self.assertEqual(path_utils.dirname_filtered("home\\user/more/sub1\\sub2/yetmore/file.txt\\", "auto"), "home/user/more/sub1/sub2/yetmore")
 
+    def testRebaseRelative(self):
+
+        self.assertEqual(path_utils.rebase_relative(None, "."), None)
+        self.assertEqual(path_utils.rebase_relative("", "."), None)
+        self.assertEqual(path_utils.rebase_relative("/base", None), None)
+        self.assertEqual(path_utils.rebase_relative("/base", ""), None)
+        self.assertEqual(path_utils.rebase_relative("/base", "../.."), None)
+
+        self.assertEqual(path_utils.rebase_relative("/base", "."), "/base")
+        self.assertEqual(path_utils.rebase_relative("/base", "./././."), "/base")
+        self.assertEqual(path_utils.rebase_relative("/base", ".."), "/")
+        self.assertEqual(path_utils.rebase_relative("/base/first/second", "./../././.././././../."), "/")
+        self.assertEqual(path_utils.rebase_relative("/base/first/second", "target/subfolder/more"), "/base/first/second/target/subfolder/more")
+        self.assertEqual(path_utils.rebase_relative("/base/first/second", "./target/subfolder/../more"), "/base/first/second/target/more")
+        self.assertEqual(path_utils.rebase_relative("/base/first/second", "../target/subfolder/.././../more/./something/./further/../still/going/."), "/base/first/more/something/still/going")
+        self.assertEqual(path_utils.rebase_relative("/base/first/second", "./a/b/c/../d/././e/f/g/../.././z"), "/base/first/second/a/b/d/e/z")
+        self.assertEqual(path_utils.rebase_relative("\\base\\first\\second", ".\\a\\b\\c\\..\\d\\.\\.\\e\\f\\g\\..\\..\\.\\z", "yes"), "\\base\\first\\second/a/b/d/e/z")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_WINDOWS):
+            self.assertEqual(path_utils.rebase_relative("\\base\\first\\second", ".\\a\\b\\c\\..\\d\\.\\.\\e\\f\\g\\..\\..\\.\\z"), "base/first/second/a/b/d/e/z")
+
     def testCopyToFail1(self):
 
         folder1_nonexistent = path_utils.concat_path(self.folder1, "nonexistent.txt")
