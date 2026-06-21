@@ -2,6 +2,9 @@
 
 import os
 
+import importlib.machinery
+import importlib.util
+
 import launch_jobs
 import path_utils
 
@@ -74,11 +77,22 @@ class CustomTask(launch_jobs.BaseTask):
         if os.path.isdir(target_path):
             return False, "target_path [%s] is a folder" % target_path
 
+        internal_process = (target_index is not None) and (target_len is not None) and (source is not None)
+
         if external_script is not None:
 
-            pass # mvtodo
+            loader = importlib.machinery.SourceFileLoader("patcher_plugin_callee_mod", external_script) # (partly) red meat
+            spec = importlib.util.spec_from_loader(loader.name, loader) # pork
+            mod = importlib.util.module_from_spec(spec) # pork
+            loader.exec_module(mod) # pork
 
-        else:
+            try:
+                di = mod.patcher_plugin_callee
+                di(target_path)
+            except:
+                return False, "External script [%s] has no function named patcher_plugin_callee." % external_script
+
+        if internal_process:
 
             contents = ""
             with open(target_path) as f:

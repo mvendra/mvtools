@@ -49,6 +49,38 @@ class PatcherPluginTest(unittest.TestCase):
         # nonexistent path
         self.nonexistent_path = path_utils.concat_path(self.test_dir, "nonexistent_path")
 
+        sample_script_contents1 = "#!/usr/bin/env python\n\n"
+        sample_script_contents1 += "import os\n"
+        sample_script_contents1 += "import create_and_write_file\n\n"
+        sample_script_contents1 += "def patcher_plugin_callee(input_param):\n"
+        sample_script_contents1 += "    contents = \"\"\n"
+        sample_script_contents1 += "    with open(input_param) as f:\n"
+        sample_script_contents1 += "        contents = f.read()\n"
+        sample_script_contents1 += "    contents = str(int(contents) + 1)\n"
+        sample_script_contents1 += "    os.unlink(input_param)\n"
+        sample_script_contents1 += "    create_and_write_file.create_file_contents(input_param, contents)\n"
+        self.sample_script_contents_file1 = path_utils.concat_path(self.test_dir, "sample_script_contents_file1.py")
+        create_and_write_file.create_file_contents(self.sample_script_contents_file1, sample_script_contents1)
+
+        sample_script_contents2 = "#!/usr/bin/env python\n\n"
+        sample_script_contents2 += "import os\n"
+        sample_script_contents2 += "import create_and_write_file\n\n"
+        sample_script_contents2 += "def patcher_plugin_callee(input_param):\n"
+        sample_script_contents2 += "    contents = \"\"\n"
+        sample_script_contents2 += "    with open(input_param) as f:\n"
+        sample_script_contents2 += "        contents = f.read()\n"
+        sample_script_contents2 += "    contents = \"%s%s%s\" % (chr(ord(contents[0]) + 23), chr(ord(contents[1]) + 23), chr(ord(contents[2]) + 23))\n"
+        sample_script_contents2 += "    os.unlink(input_param)\n"
+        sample_script_contents2 += "    create_and_write_file.create_file_contents(input_param, contents)\n"
+        self.sample_script_contents_file2 = path_utils.concat_path(self.test_dir, "sample_script_contents_file2.py")
+        create_and_write_file.create_file_contents(self.sample_script_contents_file2, sample_script_contents2)
+
+        sample_script_contents3 = "#!/usr/bin/env python\n\n"
+        sample_script_contents3 += "def patcher_plugin_callee_wrong_name(input_param):\n"
+        sample_script_contents3 += "    pass\n"
+        self.sample_script_contents_file3 = path_utils.concat_path(self.test_dir, "sample_script_contents_file3.py")
+        create_and_write_file.create_file_contents(self.sample_script_contents_file3, sample_script_contents3)
+
         return True, ""
 
     def tearDown(self):
@@ -231,6 +263,49 @@ class PatcherPluginTest(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertTrue(is_file_contents(self.target_file, "ac"))
+
+    def testPatcherPluginRunTask8(self):
+
+        local_params = {}
+        local_params["target_path"] = self.target_file
+        local_params["external_script"] = self.sample_script_contents_file3
+        self.patcher_task.params = local_params
+
+        create_and_write_file.create_file_contents(self.target_file, "abc")
+
+        v, r = self.patcher_task.run_task(print, "exe_name")
+        self.assertFalse(v)
+
+    def testPatcherPluginRunTask9(self):
+
+        local_params = {}
+        local_params["target_path"] = self.target_file
+        local_params["external_script"] = self.sample_script_contents_file1
+        self.patcher_task.params = local_params
+
+        create_and_write_file.create_file_contents(self.target_file, "1")
+
+        v, r = self.patcher_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+
+        self.assertTrue(is_file_contents(self.target_file, "2"))
+
+    def testPatcherPluginRunTask10(self):
+
+        local_params = {}
+        local_params["target_path"] = self.target_file
+        local_params["target_index"] = "1"
+        local_params["target_len"] = "1"
+        local_params["source"] = ""
+        local_params["external_script"] = self.sample_script_contents_file2
+        self.patcher_task.params = local_params
+
+        create_and_write_file.create_file_contents(self.target_file, "abc")
+
+        v, r = self.patcher_task.run_task(print, "exe_name")
+        self.assertTrue(v)
+
+        self.assertTrue(is_file_contents(self.target_file, "xz"))
 
 if __name__ == "__main__":
     unittest.main()
