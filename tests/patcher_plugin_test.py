@@ -103,7 +103,32 @@ class PatcherPluginTest(unittest.TestCase):
 
         v, r = self.patcher_task._read_params()
         self.assertTrue(v)
-        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4") )
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", None) )
+
+    def testPatcherPluginReadParams6(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["external_script"] = "dummy_value2"
+        self.patcher_task.params = local_params
+
+        v, r = self.patcher_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", None, None, None, "dummy_value2") )
+
+    def testPatcherPluginReadParams7(self):
+
+        local_params = {}
+        local_params["target_path"] = "dummy_value1"
+        local_params["target_index"] = "dummy_value2"
+        local_params["target_len"] = "dummy_value3"
+        local_params["source"] = "dummy_value4"
+        local_params["external_script"] = "dummy_value5"
+        self.patcher_task.params = local_params
+
+        v, r = self.patcher_task._read_params()
+        self.assertTrue(v)
+        self.assertEqual( r, ("dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5") )
 
     def testPatcherPluginRunTask1(self):
 
