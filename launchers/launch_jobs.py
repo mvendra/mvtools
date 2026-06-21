@@ -12,7 +12,7 @@ import terminal_colors
 import mvtools_exception
 
 LAUNCHJOBS_TOOLBUS_DATABASE = "mvtools_launch_jobs"
-NESTED_JOB_DEPTH_LIMIT = 200
+#NESTED_JOB_DEPTH_LIMIT = 200
 
 BASE_TYPE_JOB = 1
 BASE_TYPE_TASK = 2
@@ -254,10 +254,12 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
     if not v:
         return False, "Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
+    """
     # setup depth tracker of the soon-to-start execution
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", "0", [])
     if not v:
         return False, "Unable to start execution: execution name [%s]'s depth tracker couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
+    """
 
     begin_timestamp = maketimestamp.get_timestamp_now()
 
@@ -273,6 +275,7 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
 
 def run_single_job(target_job, parent_job_name, feedback_object, execution_name, options):
 
+    """
     # depth tracker, increase
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker")
     if not v:
@@ -284,6 +287,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), [])
     if not v:
         return False, "Job [%s][%s]: Unable to write depth limit back onto toolbus database. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
+    """
 
     feedback_object(_format_job_info_msg_started(target_job, parent_job_name))
 
@@ -311,6 +315,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
 
     feedback_object(_format_job_info_msg_succeeded(target_job, parent_job_name))
 
+    """
     # depth tracker, decrease
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker")
     if not v:
@@ -320,6 +325,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), [])
     if not v:
         return False, "Job [%s][%s]: Unable to write depth limit back onto toolbus database. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
+    """
 
     return True, soft_fail
 
