@@ -127,8 +127,17 @@ gikill(){
         FN+="_"
         FN+="$i.patch"
 
-        # do the backup
-        git show HEAD~$i > $FN
+        if [ -e $FN ]; then
+
+            echo "The file [$FN] already exists - will not overwrite. Press any key to proceed."
+            read
+
+        else
+
+            # do the backup
+            git show HEAD~$i > $FN
+
+        fi
 
     done
 
