@@ -316,6 +316,8 @@ def filter_asan_echo(contents):
 
             if "=================================================================" == l:
                 contents_list_result += "%s\n" % l
+            elif "Too many leaks! Only the first 5000 leaks encountered will be reported." == l:
+                contents_list_result += "%s\n" % l
             elif "AddressSanitizer:DEADLYSIGNAL" == l:
                 contents_list_result += "%s\n" % l
             elif is_line_error_asan_segv_unk_addr(l):
