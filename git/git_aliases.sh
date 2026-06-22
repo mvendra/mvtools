@@ -106,23 +106,30 @@ gikill(){
         return
     fi
 
-    # binary patches safety
-    gisho --oneline | egrep "Binary files (.)* differ"
-    if [ $? -eq 0 ]; then
-        echo "The last commit was binary. The backup patch will be ineffective. Press any key to proceed."
-        read
-    fi
-
-    # backs up all commits to be deleted
     MAX=$RANGE
     (( MAX-- ))
+
+    # backs up all commits to be deleted
     for i in `seq 0 $MAX`; do
+
         HASH=`get_git_hash.py $i`
+
+        # binary patches safety
+        gisho --oneline $HASH | egrep "Binary files (.)* differ"
+        if [ $? -eq 0 ]; then
+            echo "The commit at [$HASH] was binary. The backup patch will be ineffective. Press any key to proceed."
+            read
+        fi
+
+        # backup filename
         FN="$TEMP_FOLDER/gikill_backup_"
         FN+=$HASH
         FN+="_"
         FN+="$i.patch"
+
+        # do the backup
         git show HEAD~$i > $FN
+
     done
 
     # carries out the removal
