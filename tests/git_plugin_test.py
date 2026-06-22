@@ -1313,6 +1313,46 @@ class GitPluginTest(unittest.TestCase):
             self.assertTrue(v)
             dummy.assert_called_with(self.existent_path1, [head_patch], [staged_patch], [stash_patch], [(unversioned_base_folder, path_utils.concat_path(unversioned_base_folder, unversioned_file))])
 
+    def testGitPluginTaskSwitchBranchRepo1(self):
+
+        self.assertFalse(os.path.exists(self.nonexistent_path1))
+
+        with mock.patch("git_lib.switch_branch", return_value=(True, None)) as dummy:
+            v, r = self.git_task.task_switch_branch_repo(print, self.nonexistent_path1, "dummy_value1")
+            self.assertFalse(v)
+            self.assertEqual(r, "Target path [%s] does not exist" % self.nonexistent_path1)
+            dummy.assert_not_called()
+
+    def testGitPluginTaskSwitchBranchRepo2(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("git_lib.switch_branch", return_value=(True, None)) as dummy:
+            v, r = self.git_task.task_switch_branch_repo(print, self.existent_path1, None)
+            self.assertFalse(v)
+            self.assertEqual(r, "Branch name is required for task_switch_branch_repo")
+            dummy.assert_not_called()
+
+    def testGitPluginTaskSwitchBranchRepo3(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("git_lib.switch_branch", return_value=(True, None)) as dummy:
+            v, r = self.git_task.task_switch_branch_repo(print, self.existent_path1, "dummy_value1")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+            dummy.assert_called_with(self.existent_path1, "dummy_value1")
+
+    def testGitPluginTaskSwitchBranchRepo4(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        with mock.patch("git_lib.switch_branch", return_value=(False, "test-error-msg")) as dummy:
+            v, r = self.git_task.task_switch_branch_repo(print, self.existent_path1, "dummy_value1")
+            self.assertFalse(v)
+            self.assertEqual(r, "test-error-msg")
+            dummy.assert_called_with(self.existent_path1, "dummy_value1")
+
     def testGitPluginRunTask1(self):
 
         local_params = {}
@@ -1729,6 +1769,21 @@ class GitPluginTest(unittest.TestCase):
             v, r = self.git_task.run_task(print, "exe_name")
             self.assertTrue(v)
             dummy.assert_called_with(print, self.existent_path1, "dummy_value1", "dummy_value2", "dummy_value3", "dummy_value4", "dummy_value5")
+
+    def testGitPluginRunTask_SwitchBranchRepo1(self):
+
+        self.assertTrue(os.path.exists(self.existent_path1))
+
+        local_params = {}
+        local_params["target_path"] = self.existent_path1
+        local_params["operation"] = "switch_branch_repo"
+        local_params["branch_name"] = "dummy_value1"
+        self.git_task.params = local_params
+
+        with mock.patch("git_plugin.CustomTask.task_switch_branch_repo", return_value=(True, None)) as dummy:
+            v, r = self.git_task.run_task(print, "exe_name")
+            self.assertTrue(v)
+            dummy.assert_called_with(print, self.existent_path1, "dummy_value1")
 
 if __name__ == "__main__":
     unittest.main()

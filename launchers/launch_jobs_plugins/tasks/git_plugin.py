@@ -248,6 +248,8 @@ class CustomTask(launch_jobs.BaseTask):
             return self.task_rewind_repo(feedback_object, target_path, source_path, rewind_to_hash, rewind_like_source)
         elif operation == "patch_repo":
             return self.task_patch_repo(feedback_object, target_path, patch_head_files, patch_staged_files, patch_stash_files, patch_unversioned_base, patch_unversioned_files)
+        elif operation == "switch_branch_repo":
+            return self.task_switch_branch_repo(feedback_object, target_path, branch_name)
         else:
             return False, "Operation [%s] is invalid" % operation
 
@@ -462,6 +464,20 @@ class CustomTask(launch_jobs.BaseTask):
             unversioned_patches.append( (patch_unversioned_base, path_utils.concat_path(patch_unversioned_base, puf)) )
 
         v, r = apply_git_patch.apply_git_patch(target_path, patch_head_files, patch_staged_files, patch_stash_files, unversioned_patches)
+        if not v:
+            return False, r
+
+        return True, None
+
+    def task_switch_branch_repo(self, feedback_object, target_path, branch_name):
+
+        if not os.path.exists(target_path):
+            return False, "Target path [%s] does not exist" % target_path
+
+        if branch_name is None:
+            return False, "Branch name is required for task_switch_branch_repo"
+
+        v, r = git_lib.switch_branch(target_path, branch_name)
         if not v:
             return False, r
 
