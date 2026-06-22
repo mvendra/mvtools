@@ -351,6 +351,64 @@ class GitLibTest(unittest.TestCase):
         finally:
             os.chdir(saved_wd)
 
+    def testSwitchBranch(self):
+
+        fifth_file1 = path_utils.concat_path(self.fifth_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.fifth_repo, path_utils.basename_filtered(fifth_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        v, r = git_lib.create_branch(self.fifth_repo, "new-test-branch")
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        sixth_repo = path_utils.concat_path(self.test_dir, "sixth")
+        v, r = git_wrapper.clone(self.fifth_repo, sixth_repo)
+        self.assertTrue(v)
+
+        v, r = git_lib.get_current_branch(sixth_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "master")
+
+        v, r = git_lib.switch_branch(sixth_repo, "new-test-branch")
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+        v, r = git_lib.get_current_branch(sixth_repo)
+        self.assertTrue(v)
+        self.assertEqual(r, "new-test-branch")
+
+    def testSwitchBranchRelativePath(self):
+
+        fifth_file1 = path_utils.concat_path(self.fifth_repo, "file1.txt")
+        v, r = git_test_fixture.git_createAndCommit(self.fifth_repo, path_utils.basename_filtered(fifth_file1), "file1-content1", "commit_msg_file1")
+        self.assertTrue(v)
+
+        saved_wd = os.getcwd()
+        try:
+            os.chdir(self.test_dir)
+
+            v, r = git_lib.create_branch("./fifth", "new-test-branch")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+
+            v, r = git_wrapper.clone("./fifth", "./sixth")
+            self.assertTrue(v)
+
+            v, r = git_lib.get_current_branch("./sixth")
+            self.assertTrue(v)
+            self.assertEqual(r, "master")
+
+            v, r = git_lib.switch_branch("./sixth", "new-test-branch")
+            self.assertTrue(v)
+            self.assertEqual(r, None)
+
+            v, r = git_lib.get_current_branch("./sixth")
+            self.assertTrue(v)
+            self.assertEqual(r, "new-test-branch")
+
+        finally:
+            os.chdir(saved_wd)
+
     def testRepoHasAnyNotOfStatesFail(self):
 
         v, r = git_lib.repo_has_any_not_of_states(self.first_repo, None)

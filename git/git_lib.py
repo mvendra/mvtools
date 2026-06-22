@@ -389,6 +389,24 @@ def create_branch(repo, new_branch_name):
         return False, "create_branch failed: [%s]" % r
     return True, None
 
+def switch_branch(repo, remote_branch_name):
+
+    if repo is None:
+        return False, "No repo specified"
+
+    repo = os.path.abspath(repo)
+
+    t1 = is_repo_working_tree(repo)
+    if t1 is None:
+        return False, "%s does not exist." % repo
+    elif t1 is False:
+        return False, "%s is not a git work tree." % repo
+
+    v, r = git_wrapper.switch(repo, remote_branch_name)
+    if not v:
+        return False, "switch_branch failed: [%s]" % r
+    return True, None
+
 def repo_has_any_not_of_states(repo, states):
 
     list_unexpected = []
