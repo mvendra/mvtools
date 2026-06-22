@@ -8,3 +8,6 @@ def get_timestamp_now():
 
 def get_timestamp_now_compact():
     return datetime.datetime.fromtimestamp(time.time()).strftime("%d%m%Y_%H%M%S")
+
+if __name__ == "__main__":
+    print(get_timestamp_now_compact())
