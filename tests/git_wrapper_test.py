@@ -1430,6 +1430,31 @@ class GitWrapperTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertTrue("* offline" in r)
 
+    def testSwitch(self):
+
+        test_file = path_utils.concat_path(self.second_repo, "test_file.txt")
+        create_and_write_file.create_file_contents(test_file, "test-branch-create-and-switch, test contents")
+
+        v, r = git_wrapper.stage(self.second_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.commit(self.second_repo, "test-branch-create-and-switch, test commit msg")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.branch(self.second_repo, ["test_branch"])
+        self.assertTrue(v)
+
+        third_repo = path_utils.concat_path(self.test_dir, "third")
+        v, r = git_wrapper.clone(self.second_repo, third_repo)
+        self.assertTrue(v)
+
+        v, r = git_wrapper.switch(third_repo, "test_branch")
+        self.assertTrue(v)
+
+        v, r = git_wrapper.branch(third_repo)
+        self.assertTrue(v)
+        self.assertTrue("* test_branch" in r)
+
     def testPull_and_PullDefault(self):
 
         test_file1 = path_utils.concat_path(self.second_repo, "test_file1.txt")
