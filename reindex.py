@@ -20,20 +20,8 @@ def check_undefined_required(source, name):
         print("Switch [%s] was left undefined" % name)
         sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
 
-def process_target(storage, source, exts):
-
-    if os.path.isdir(source):
-        v, r = codelint.files_from_folder(source, exts)
-        if not v:
-            return False, r
-        storage += r
-    else:
-        storage.append(source)
-
-    return True, None
-
 def puaq(selfhelp): # print usage and quit
-    print("Usage: %s [--help] [--min index] [--max index] [--ext extension] [--target file/folder] [--left pattern] [--right pattern]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--min index] [--max index] [--ext extension] [--target file] [--left pattern] [--right pattern]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -50,9 +38,8 @@ if __name__ == "__main__":
     max_next = False
 
     ext = None
-    files = []
     ext_next = False
-    target = []
+    target = None
     target_next = False
 
     left = None
@@ -82,7 +69,7 @@ if __name__ == "__main__":
 
         elif target_next:
             target_next = False
-            target.append(p)
+            target = p
             continue
 
         elif left_next:
@@ -132,12 +119,7 @@ if __name__ == "__main__":
 
     check_undefined_required(left, "--left")
     check_undefined_required(right, "--right")
-
-    for t in target:
-        v, r = process_target(files, t, ext)
-        if not v:
-            print(r)
-            sys.exit(codelint.CODELINT_CMDLINE_RETURN_ERROR)
+    check_undefined_required(target, "--target")
 
     plugin_params = {}
     filters = {}
@@ -151,7 +133,7 @@ if __name__ == "__main__":
     if max_str is not None:
         filters["max-line"] = [max_str]
 
-    v, r = codelint.codelint(["lint-func-indexer"], plugin_params, filters, True, True, files)
+    v, r = codelint.codelint(["lint-func-indexer"], plugin_params, filters, True, False, [target])
     if not v:
         print("%s%s%s" % (terminal_colors.TTY_RED, r[0], terminal_colors.get_standard_color()))
         if len(r[1]) > 0:
