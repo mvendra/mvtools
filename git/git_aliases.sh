@@ -113,6 +113,7 @@ gikill(){
     for i in `seq 0 $MAX`; do
 
         HASH=`get_git_hash.py $i`
+        TS=`maketimestamp.py`
 
         # binary patches safety
         gisho --oneline $HASH | egrep "Binary files (.)* differ"
@@ -123,6 +124,8 @@ gikill(){
 
         # backup filename
         FN="$TEMP_FOLDER/gikill_backup_"
+        FN+=$TS
+        FN+="_"
         FN+=$HASH
         FN+="_"
         FN+="$i.patch"
