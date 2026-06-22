@@ -117,7 +117,7 @@ gikill(){
     MAX=$RANGE
     (( MAX-- ))
     for i in `seq 0 $MAX`; do
-        HASH=`get_git_hash.py`
+        HASH=`get_git_hash.py $i`
         FN="$TEMP_FOLDER/gikill_backup_"
         FN+=$HASH
         FN+="_"
