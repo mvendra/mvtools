@@ -341,6 +341,17 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_name("name\x2a"))
         self.assertFalse(dsl_type20.validate_name("name\x2c"))
         self.assertFalse(dsl_type20.validate_name("name\x23"))
+        self.assertFalse(dsl_type20.validate_name("name\x21"))
+        self.assertFalse(dsl_type20.validate_name("name\x25"))
+        self.assertFalse(dsl_type20.validate_name("name\x5e"))
+        self.assertFalse(dsl_type20.validate_name("name\x26"))
+        self.assertFalse(dsl_type20.validate_name("name\x2b"))
+        self.assertFalse(dsl_type20.validate_name("name\x3c"))
+        self.assertFalse(dsl_type20.validate_name("name\x3e"))
+        self.assertFalse(dsl_type20.validate_name("name\x2e"))
+        self.assertFalse(dsl_type20.validate_name("name\x27"))
+        self.assertFalse(dsl_type20.validate_name("name\x3f"))
+        self.assertFalse(dsl_type20.validate_name("name\x7c"))
         self.assertFalse(dsl_type20.validate_name(""))
         self.assertTrue(dsl_type20.validate_name("a"))
         self.assertTrue(dsl_type20.validate_name("거물사냥꾼"))
@@ -1982,7 +1993,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestAddContext25(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.add_context("ok!", [], None)
+        v, r = dsl.add_context("ok", [], None)
         self.assertTrue(v)
 
     def testDslType20_TestAddContext26(self):
