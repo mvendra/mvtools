@@ -352,6 +352,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_name("name\x27"))
         self.assertFalse(dsl_type20.validate_name("name\x3f"))
         self.assertFalse(dsl_type20.validate_name("name\x7c"))
+        self.assertFalse(dsl_type20.validate_name("name\x60"))
         self.assertFalse(dsl_type20.validate_name(""))
         self.assertTrue(dsl_type20.validate_name("a"))
         self.assertTrue(dsl_type20.validate_name("거물사냥꾼"))
