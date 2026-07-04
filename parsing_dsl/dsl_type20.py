@@ -64,22 +64,22 @@ def expand_value_single(configs, str_input):
 
     return True, local_str_input
 
-def expand_value(configs, input):
+def expand_value(configs, input_val):
 
-    if not isinstance(input, list):
-        return expand_value_single(configs, input)
+    if not isinstance(input_val, list):
+        return expand_value_single(configs, input_val)
     else:
 
         idx = 0
-        for entry in input:
+        for entry in input_val:
 
             v, r = expand_value_single(configs, entry)
             if not v:
                 return False, r
-            input[idx] = r
+            input_val[idx] = r
             idx += 1
 
-        return True, input
+        return True, input_val
 
 def sanitize_line(line_in, multiline_comment_flag):
 
