@@ -81,20 +81,20 @@ def expand_value(configs, input):
 
         return True, input
 
-def sanitize_line(line_in):
+def sanitize_line(line_in, multiline_comment_flag):
 
     line_out = line_in.strip()
     if line_out == "":
-        return ""
+        return "", False
 
     for c in COMMENTS:
         line_out = miniparse.guarded_right_cut(line_out, list(c), miniparse.QUOTE)
         if line_out is None:
-            return None
+            return None, False
         if line_out == "":
-            return ""
+            return "", False
 
-    return line_out.strip()
+    return line_out.strip(), False
 
 def validate_name(name):
 
@@ -575,7 +575,7 @@ class DSLType20:
         for line in lines:
             line_num += 1
 
-            line_t = sanitize_line(line)
+            line_t, multiline_flag = sanitize_line(line, False)
             if line_t is None:
                 return False, "Unable to sanitize line: [%s]" % line
             if line_t == "":

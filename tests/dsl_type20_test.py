@@ -301,19 +301,58 @@ class DSLType20Test(unittest.TestCase):
         return v
 
     def testSanitizeLine(self):
-        self.assertEqual(dsl_type20.sanitize_line(""), "")
-        self.assertEqual(dsl_type20.sanitize_line("abc"), "abc")
-        self.assertEqual(dsl_type20.sanitize_line("#abc"), "")
-        self.assertEqual(dsl_type20.sanitize_line("abc//def"), "abc")
-        self.assertEqual(dsl_type20.sanitize_line("//abc def"), "")
-        self.assertEqual(dsl_type20.sanitize_line("abc#def"), "abc")
-        self.assertEqual(dsl_type20.sanitize_line("   abc   "), "abc")
-        self.assertEqual(dsl_type20.sanitize_line(" #   abc   "), "")
-        self.assertEqual(dsl_type20.sanitize_line("   abc   #"), "abc")
-        self.assertEqual(dsl_type20.sanitize_line("   abc   // def   # xyz"), "abc")
-        self.assertEqual(dsl_type20.sanitize_line("   abc   # def   // xyz"), "abc")
-        self.assertEqual(dsl_type20.sanitize_line("   abc   \"#\" def   // xyz"), "abc   \"#\" def")
-        self.assertEqual(dsl_type20.sanitize_line("   abc   \"//\" def   // xyz"), "abc   \"//\" def")
+
+        v, r = dsl_type20.sanitize_line("", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("#abc", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc//def", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("//abc def", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc#def", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("   abc   ", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line(" #   abc   ", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("   abc   #", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("   abc   // def   # xyz", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("   abc   # def   // xyz", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("   abc   \"#\" def   // xyz", False)
+        self.assertEqual(v, "abc   \"#\" def")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("   abc   \"//\" def   // xyz", False)
+        self.assertEqual(v, "abc   \"//\" def")
+        self.assertEqual(r, False)
 
     def testValidateName(self):
         self.assertFalse(dsl_type20.validate_name(None))
