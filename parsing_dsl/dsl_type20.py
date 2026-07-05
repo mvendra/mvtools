@@ -8,7 +8,8 @@ import miniparse
 import mvtools_exception
 
 # string parsing
-COMMENTS = ["#", "//"]
+COMMENTS_SINGLE = ["#", "//"]
+COMMENT_MULTI = ("/*", "*/")
 
 # basic types
 DSLTYPE20_ENTRY_TYPE_VAR = 1
@@ -87,7 +88,11 @@ def sanitize_line(line_in, multiline_comment_flag):
     if line_out == "":
         return "", False
 
-    for c in COMMENTS:
+    # multiline comments
+    # mvtodo
+
+    # singleline comments
+    for c in COMMENTS_SINGLE:
         line_out = miniparse.guarded_right_cut(line_out, list(c), miniparse.QUOTE)
         if line_out is None:
             return None, False
@@ -1320,7 +1325,7 @@ class DSLType20:
         if context.get_name() != self.root_context_id:
             result += (miniparse.NEWLINE + local_indent + miniparse.LBRACKET + miniparse.NEWLINE + local_indent + miniparse.ATSIGN + context.get_name() + (" %s" % ( self._produce_options(context.get_options()) ) )).rstrip()
             if _ctx_end_comment:
-                end_comment = "%s%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS[0], miniparse.SINGLESPACE, miniparse.ATSIGN, context.get_name())
+                end_comment = "%s%s%s%s%s" % (miniparse.SINGLESPACE, COMMENTS_SINGLE[0], miniparse.SINGLESPACE, miniparse.ATSIGN, context.get_name())
 
         ctx_prev = False
         idx = 0
