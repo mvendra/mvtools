@@ -120,6 +120,67 @@ def guarded_split(thestr, sep_ch, guard_chs):
 
     return ret
 
+def guarded_scan(thestr, thematch, guard_ch):
+
+    if not isinstance(thestr, str):
+        return None
+    if thestr == "":
+        return None
+    if not isinstance(thematch, str):
+        return None
+    if thematch == "":
+        return None
+    if not isinstance(guard_ch, str):
+        return None
+    if len(guard_ch) != 1:
+        return None
+    if guard_ch in thematch:
+        return None
+
+    guarded = False
+    matching = False
+    thematch_index = 0
+    match_begin_index = None
+
+    for i in range(len(thestr)):
+
+        if matching:
+
+            if thestr[i] == thematch[thematch_index]:
+                # keep on matching
+                thematch_index += 1
+                if thematch_index == len(thematch):
+                    # successful match
+                    matching = False
+                    thematch_index = 0
+                    if not guarded:
+                        return match_begin_index
+
+            else:
+                # matching failed - reset
+                thematch_index = 0
+                matching = False
+                match_begin_index = None
+
+        else:
+
+            if thestr[i] == thematch[0]:
+                # start matching
+                matching = True
+                thematch_index = 1
+                match_begin_index = i
+                if thematch_index == len(thematch):
+                    # successful match
+                    matching = False
+                    thematch_index = 0
+                    if not guarded:
+                        return match_begin_index
+
+        if thestr[i] == guard_ch:
+            guarded = not guarded
+
+    return -1
+
 def guarded_right_cut(thestr, sep_seq, guard_ch):
 
     if not isinstance(thestr, str):

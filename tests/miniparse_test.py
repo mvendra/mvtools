@@ -146,6 +146,66 @@ class MiniparseTest(unittest.TestCase):
         p = miniparse.guarded_split("aaa{b[]=bb}=ccc", "=", [("[", "]"), ("{", "}")])
         self.assertEqual(p, ["aaa{b[]=bb}", "ccc"])
 
+    def testGuardedScan1(self):
+        p = miniparse.guarded_scan([], "#", "'")
+        self.assertEqual(p, None)
+
+    def testGuardedScan2(self):
+        p = miniparse.guarded_scan("", "#", "'")
+        self.assertEqual(p, None)
+
+    def testGuardedScan3(self):
+        p = miniparse.guarded_scan("abc", [], "'")
+        self.assertEqual(p, None)
+
+    def testGuardedScan4(self):
+        p = miniparse.guarded_scan("abc", "", "'")
+        self.assertEqual(p, None)
+
+    def testGuardedScan5(self):
+        p = miniparse.guarded_scan("abc", "#", [])
+        self.assertEqual(p, None)
+
+    def testGuardedScan6(self):
+        p = miniparse.guarded_scan("abc", "#", "")
+        self.assertEqual(p, None)
+
+    def testGuardedScan7(self):
+        p = miniparse.guarded_scan("abc", "#", "&*")
+        self.assertEqual(p, None)
+
+    def testGuardedScan8(self):
+        p = miniparse.guarded_scan("abc", "!@#", "@")
+        self.assertEqual(p, None)
+
+    def testGuardedScan9(self):
+        p = miniparse.guarded_scan("abc", "#", "'")
+        self.assertEqual(p, -1)
+
+    def testGuardedScan10(self):
+        p = miniparse.guarded_scan("#abc", "#", "'")
+        self.assertEqual(p, 0)
+
+    def testGuardedScan11(self):
+        p = miniparse.guarded_scan("abc#", "#", "'")
+        self.assertEqual(p, 3)
+
+    def testGuardedScan12(self):
+        p = miniparse.guarded_scan("abcde#fxyz", "#", "'")
+        self.assertEqual(p, 5)
+
+    def testGuardedScan13(self):
+        p = miniparse.guarded_scan("abcde'#'fxyz", "#", "'")
+        self.assertEqual(p, -1)
+
+    def testGuardedScan14(self):
+        p = miniparse.guarded_scan("abcde'#'f#xyz", "#", "'")
+        self.assertEqual(p, 9)
+
+    def testGuardedScan15(self):
+        p = miniparse.guarded_scan("ab#cde'#'f#xyz", "#", "'")
+        self.assertEqual(p, 2)
+
     def testGuardedRightCut1(self):
         p = miniparse.guarded_right_cut([], ["#"], "'")
         self.assertEqual(p, None)
