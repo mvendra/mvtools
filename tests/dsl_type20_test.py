@@ -300,7 +300,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse(contents)
         return v
 
-    def testSanitizeLine(self):
+    def testSanitizeLineSingle(self):
 
         v, r = dsl_type20.sanitize_line("", False)
         self.assertEqual(v, "")
@@ -353,6 +353,138 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.sanitize_line("   abc   \"//\" def   // xyz", False)
         self.assertEqual(v, "abc   \"//\" def")
         self.assertEqual(r, False)
+
+    def testSanitizeLineMulti(self):
+
+        # begin with unfinished multiline
+
+        v, r = dsl_type20.sanitize_line("", True)
+        self.assertEqual(v, "")
+        self.assertEqual(r, True)
+
+        v, r = dsl_type20.sanitize_line("abc", True)
+        self.assertEqual(v, "")
+        self.assertEqual(r, True)
+
+        v, r = dsl_type20.sanitize_line("*/", True)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc*/", True)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("*/a", True)
+        self.assertEqual(v, "a")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc*/ def ", True)
+        self.assertEqual(v, "def")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("/*abc*/ def ", True)
+        self.assertEqual(v, "def")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("//abc*/ def ", True)
+        self.assertEqual(v, "def")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("#abc*/ def ", True)
+        self.assertEqual(v, "def")
+        self.assertEqual(r, False)
+
+        # try apply singleline
+
+        v, r = dsl_type20.sanitize_line("# abc", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("// abc", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abcdef #more", False)
+        self.assertEqual(v, "abcdef")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abcdef //more", False)
+        self.assertEqual(v, "abcdef")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abcde//f #more", False)
+        self.assertEqual(v, "abcde")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abcde#f //more", False)
+        self.assertEqual(v, "abcde")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("# abc /*", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("// abc /*", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line(" a#bc // def /*", False)
+        self.assertEqual(v, "a")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line(" a//bc # def /*", False)
+        self.assertEqual(v, "a")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line(" \"#// /*\"a#bc // def /*", False)
+        self.assertEqual(v, "\"#// /*\"a")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line(" \"#// /*\"a//bc # def /*", False)
+        self.assertEqual(v, "\"#// /*\"a")
+        self.assertEqual(r, False)
+
+        # try apply multiline
+
+        v, r = dsl_type20.sanitize_line("*/ /*", False)
+        self.assertEqual(v, None)
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc /*def*/ --- /*xyz*/", False)
+        self.assertEqual(v, "abc  ---")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc /*def", False)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, True)
+
+        v, r = dsl_type20.sanitize_line("abc */def", True)
+        self.assertEqual(v, "def")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc */ def /*xyz*/ more ", True)
+        self.assertEqual(v, "def  more")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc */ def /*xyz*/ more /*extra", True)
+        self.assertEqual(v, "def  more")
+        self.assertEqual(r, True)
+
+        v, r = dsl_type20.sanitize_line("*/", False)
+        self.assertEqual(v, None)
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("abc \"/*\" def /*xyz*//*", False)
+        self.assertEqual(v, "abc \"/*\" def")
+        self.assertEqual(r, True)
+
+        v, r = dsl_type20.sanitize_line("\"*/ abc /*def*/", True)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("\"*/ abc /*def*/ /*xyz", True)
+        self.assertEqual(v, "abc")
+        self.assertEqual(r, True)
 
     def testValidateName(self):
         self.assertFalse(dsl_type20.validate_name(None))

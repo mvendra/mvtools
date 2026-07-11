@@ -84,20 +84,84 @@ def expand_value(configs, input_val):
 
 def sanitize_line(line_in, multiline_comment_flag):
 
+    # first input
     line_out = line_in.strip()
+
+    # finish multiline comment
+    if multiline_comment_flag:
+
+        pr = line_out.find(COMMENT_MULTI[1])
+        if pr == -1:
+            return "", True
+        line_out = (line_out[pr + len(COMMENT_MULTI[1]):]).strip()
+
     if line_out == "":
         return "", False
 
-    # multiline comments
-    # mvtodo
+    # process comments (single / multi)
+    while True:
 
-    # singleline comments
-    for c in COMMENTS_SINGLE:
-        line_out = miniparse.guarded_right_cut(line_out, list(c), miniparse.QUOTE)
-        if line_out is None:
+        ps = []
+        for c in COMMENTS_SINGLE:
+            ps_temp = miniparse.guarded_scan(line_out, c, miniparse.QUOTE)
+            if ps_temp is None:
+                return None, False
+            if ps_temp > -1:
+                ps.append((c, ps_temp))
+
+        pl = miniparse.guarded_scan(line_out, COMMENT_MULTI[0], miniparse.QUOTE)
+        if pl is None:
             return None, False
-        if line_out == "":
-            return "", False
+
+        pr = miniparse.guarded_scan(line_out, COMMENT_MULTI[1], miniparse.QUOTE)
+        if pr is None:
+            return None, False
+
+        # try to process a single-line comment
+        pc = None
+        for p in ps:
+
+            if pl > -1:
+
+                if pc is None:
+                    if p[1] < pl:
+                        pc = p
+                else:
+                    if p[1] < pc[1] and p[1] < pl:
+                        pc = p
+
+            else:
+
+                if pc is None:
+                    pc = p
+                else:
+                    if p[1] < pc[1]:
+                        pc = p
+
+        if pc is not None:
+            line_out = (line_out[:pc[1]]).strip()
+            if line_out == "":
+                return "", False
+            continue
+
+        # try to process a multi-line comment
+        if pl > -1:
+
+            if pr > -1:
+                if pr < pl:
+                    return None, False
+
+                line_out = (line_out[:pl] + line_out[pr + len(COMMENT_MULTI[1]):]).strip()
+
+            else:
+                line_out = (line_out[:pl]).strip()
+                return line_out, True
+
+        else:
+
+            if pr > -1:
+                return None, False
+            break
 
     return line_out.strip(), False
 
