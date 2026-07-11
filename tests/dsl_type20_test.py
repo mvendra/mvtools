@@ -1732,6 +1732,12 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1} == \"val1\"")
         self.assertFalse(v)
 
+    def testDslType20_TestLeftoversFail12(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("var1 {opt1} = \"val1\"/*")
+        self.assertFalse(v)
+
     def testDslType20_TestExceedMaxNumberOptionsFail(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())

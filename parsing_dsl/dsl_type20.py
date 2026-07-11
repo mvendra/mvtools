@@ -641,10 +641,12 @@ class DSLType20:
         lines = contents.replace(miniparse.WIN_NEWLINE, miniparse.NEWLINE).split(miniparse.NEWLINE)
 
         line_num = 0
+        multiline_flag = False
+
         for line in lines:
             line_num += 1
 
-            line_t, multiline_flag = sanitize_line(line, False)
+            line_t, multiline_flag = sanitize_line(line, multiline_flag)
             if line_t is None:
                 return False, "Unable to sanitize line: [%s]" % line
             if line_t == "":
@@ -653,6 +655,9 @@ class DSLType20:
             v, r = self._parse_line_delegate(ipc, line_t, line_num)
             if not v:
                 return False, r
+
+        if multiline_flag:
+            return False, "Unterminated multiline comment"
 
         if len(ipc.bracket_stack) > 0:
             return False, "Unterminated context"
