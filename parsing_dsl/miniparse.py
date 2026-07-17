@@ -146,8 +146,8 @@ def guarded_scan(source, target, guard_ch, escape_ch):
         return None
 
     guarded = False
-    matching_target = False
     target_index = 0
+    matching_target = False
     match_begin_index = None
     escaping = False
 
@@ -190,8 +190,8 @@ def guarded_scan(source, target, guard_ch, escape_ch):
 
                 if source[i] == target[0]:
                     # start matching target
-                    matching_target = True
                     target_index = 1
+                    matching_target = True
                     match_begin_index = i
                     if target_index == len(target):
                         # successful target match
