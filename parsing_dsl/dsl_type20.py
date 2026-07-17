@@ -103,17 +103,17 @@ def sanitize_line(line_in, multiline_comment_flag):
 
         ps = []
         for c in COMMENTS_SINGLE:
-            ps_temp = miniparse.guarded_find(line_out, c, miniparse.QUOTE)
+            ps_temp = miniparse.guarded_find(line_out, c, miniparse.QUOTE, miniparse.BSLASH)
             if ps_temp is None:
                 return None, False
             if ps_temp > -1:
                 ps.append((c, ps_temp))
 
-        pl = miniparse.guarded_find(line_out, COMMENT_MULTI[0], miniparse.QUOTE)
+        pl = miniparse.guarded_find(line_out, COMMENT_MULTI[0], miniparse.QUOTE, miniparse.BSLASH)
         if pl is None:
             return None, False
 
-        pr = miniparse.guarded_find(line_out, COMMENT_MULTI[1], miniparse.QUOTE)
+        pr = miniparse.guarded_find(line_out, COMMENT_MULTI[1], miniparse.QUOTE, miniparse.BSLASH)
         if pr is None:
             return None, False
 
