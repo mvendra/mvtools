@@ -67,58 +67,44 @@ def pop_surrounding_char(thestr, cl, cr):
         res = True
     return res, thestr
 
-def guarded_split(thestr, sep_ch, guard_chs):
-    """
-    guarded_split allows you to split a string by sep_ch, while
-    preserving contents that come inside of guard_chs (a list of tuples that specify
-    a beginning guard char and an ending guard char)
-    for example, guarded_split("variable = |val=ue|", "=", [("|", "|")]) would
-    return ["variable ", " |val=ue|"]
-    """
+def guarded_split(source, separator, guard_ch, escape_ch):
 
-    if thestr == "":
-        return []
-    if not isinstance(thestr, str):
+    if not isinstance(source, str):
         return None
-    if not isinstance(guard_chs, list):
+    if source == "":
         return None
-    for t in guard_chs:
-        if not isinstance(t, tuple):
+    if not isinstance(separator, str):
+        return None
+    if len(separator) != 1:
+        return None
+    if not isinstance(guard_ch, str):
+        return None
+    if len(guard_ch) != 1:
+        return None
+    if not isinstance(escape_ch, str):
+        return None
+    if len(escape_ch) != 1:
+        return None
+    if guard_ch == escape_ch:
+        return None
+
+    source_local = source
+    result = []
+
+    while True:
+
+        p = guarded_find(source_local, separator, guard_ch, escape_ch)
+        if p is None:
             return None
-        if len(t) != 2:
-            return None
+        if p == -1:
+            break
 
-    ret = []
-    flag_guard_on = False
-    last_piece_beg = 0
-    ecg = None # expected closing guard
-    for i in range(len(thestr)):
+        next_piece = source_local[:p]
+        source_local = source_local[p + len(separator):]
+        result.append(next_piece)
 
-        if i == len(thestr) - 1:
-            ret.append(thestr[last_piece_beg:])
-
-        c = thestr[i]
-
-        if flag_guard_on:
-            if c == ecg:
-                flag_guard_on = False
-                ecg = None
-                continue
-        else:
-            for g in guard_chs:
-                if c == g[0]:
-                    ecg = g[1]
-                    flag_guard_on = True
-                    continue
-
-        if c == sep_ch:
-            if flag_guard_on or not i > last_piece_beg:
-                continue
-
-            ret.append(thestr[last_piece_beg:i])
-            last_piece_beg = i+1
-
-    return ret
+    result.append(source_local)
+    return result
 
 def guarded_find(source, target, guard_ch, escape_ch):
 

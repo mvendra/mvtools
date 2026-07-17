@@ -99,52 +99,64 @@ class MiniparseTest(unittest.TestCase):
         self.assertEqual(p2, "value ")
 
     def testGuardedSplit1(self):
-        p = miniparse.guarded_split("var", "=", [("\"", "\"")])
-        self.assertEqual(p, ["var"])
+        p = miniparse.guarded_split([], "N", "Q", "B")
+        self.assertEqual(p, None)
 
     def testGuardedSplit2(self):
-        p = miniparse.guarded_split("", "=", [("\"", "\"")])
-        self.assertEqual(p, [])
+        p = miniparse.guarded_split("", "N", "Q", "B")
+        self.assertEqual(p, None)
 
     def testGuardedSplit3(self):
-        p = miniparse.guarded_split(None, "=", [("\"", "\"")])
+        p = miniparse.guarded_split("var", [], "Q", "B")
         self.assertEqual(p, None)
 
     def testGuardedSplit4(self):
-        p = miniparse.guarded_split("a=b", "=", [("\"", "\"")])
-        self.assertEqual(p, ["a", "b"])
+        p = miniparse.guarded_split("var", "RN", "Q", "B")
+        self.assertEqual(p, None)
 
     def testGuardedSplit5(self):
-        p = miniparse.guarded_split("variable = \"val=ue\"", "=", [("\"", "\"")])
-        self.assertEqual(p, ["variable ", " \"val=ue\""])
+        p = miniparse.guarded_split("var", "N", [], "B")
+        self.assertEqual(p, None)
 
     def testGuardedSplit6(self):
-        p = miniparse.guarded_split("variable {param1: \"pval1\"} = \"value1\"", "=", [("\"", "\"")])
-        self.assertEqual(p, ["variable {param1: \"pval1\"} ", " \"value1\""])
+        p = miniparse.guarded_split("var", "N", "++", "B")
+        self.assertEqual(p, None)
 
     def testGuardedSplit7(self):
-        p = miniparse.guarded_split("variable {param1 = \"pval1\"} = \"value1\"", "=", [("\"", "\"")])
-        self.assertEqual(p, ["variable {param1 ", " \"pval1\"} ", " \"value1\""])
+        p = miniparse.guarded_split("var", "N", "Q", [])
+        self.assertEqual(p, None)
 
     def testGuardedSplit8(self):
-        p = miniparse.guarded_split("variable {param1 = \"pval1\"} = \"value1\"", "=", [("\"", "\""), ("{", "}")])
-        self.assertEqual(p, ["variable {param1 = \"pval1\"} ", " \"value1\""])
+        p = miniparse.guarded_split("var", "N", "Q", "++")
+        self.assertEqual(p, None)
 
     def testGuardedSplit9(self):
-        p = miniparse.guarded_split("aaa{b]=bb}=ccc", "=", [("[", "]"), ("{", "}")])
-        self.assertEqual(p, ["aaa{b]=bb}", "ccc"])
+        p = miniparse.guarded_split("var", "N", "Q", "Q")
+        self.assertEqual(p, None)
 
     def testGuardedSplit10(self):
-        p = miniparse.guarded_split("aaa{b[=bb}=ccc", "=", [("[", "]"), ("{", "}")])
-        self.assertEqual(p, ["aaa{b[=bb}", "ccc"])
+        p = miniparse.guarded_split("var", "N", "Q", "B")
+        self.assertEqual(p, ["var"])
 
     def testGuardedSplit11(self):
-        p = miniparse.guarded_split("aaa{b[]=bb}=ccc", "=", [("[", "]"), ("{", "}")])
-        self.assertEqual(p, ["aaa{b[]=bb}", "ccc"])
+        p = miniparse.guarded_split("var1Nvar2", "N", "Q", "B")
+        self.assertEqual(p, ["var1", "var2"])
 
     def testGuardedSplit12(self):
-        p = miniparse.guarded_split("aaa{b[]=bb}=ccc", "=", [("[", "]"), ("{", "}")])
-        self.assertEqual(p, ["aaa{b[]=bb}", "ccc"])
+        p = miniparse.guarded_split("var1Nvar2 = QabcNdefQNvar3", "N", "Q", "B")
+        self.assertEqual(p, ["var1", "var2 = QabcNdefQ", "var3"])
+
+    def testGuardedSplit13(self):
+        p = miniparse.guarded_split("var1Nvar2 = QabQcNdefQNvar3", "N", "Q", "B")
+        self.assertEqual(p, ["var1", "var2 = QabQc", "defQNvar3"])
+
+    def testGuardedSplit14(self):
+        p = miniparse.guarded_split("var1Nvar2 = QabBQcNdefQNvar3", "N", "Q", "B")
+        self.assertEqual(p, ["var1", "var2 = QabBQcNdefQ", "var3"])
+
+    def testGuardedSplit15(self):
+        p = miniparse.guarded_split("var1Nvar2 = QabBBQcNdefQNvar3", "N", "Q", "B")
+        self.assertEqual(p, ["var1", "var2 = QabBBQc", "defQNvar3"])
 
     def testGuardedFind1(self):
         p = miniparse.guarded_find([], "#", "'", "B")
