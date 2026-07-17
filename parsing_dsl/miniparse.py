@@ -158,13 +158,13 @@ def guarded_scan(source, target, guard_ch, escape_ch):
             target_index = 0
             matching_target = False
             match_begin_index = None
-            # mvtodo: more reset
+            escaping = False
             continue
 
         if guarded:
 
             if escaping:
-                escaping = False # mvtodo: works everytime?
+                escaping = False
             else:
                 if source[i] == escape_ch:
                     escaping = True

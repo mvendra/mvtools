@@ -226,6 +226,14 @@ class MiniparseTest(unittest.TestCase):
         p = miniparse.guarded_scan("abcQdeBQ#fQxyz", "#", "Q", "B")
         self.assertEqual(p, -1)
 
+    def testGuardedScan21(self):
+        p = miniparse.guarded_scan("abcQdeBBQ#fQxyz", "#", "Q", "B")
+        self.assertEqual(p, 9)
+
+    def testGuardedScan22(self):
+        p = miniparse.guarded_scan("abcQdeBBBQ#fQxyz", "#", "Q", "B")
+        self.assertEqual(p, -1)
+
     def testGuardedRightCut1(self):
         p = miniparse.guarded_right_cut([], ["#"], "'")
         self.assertEqual(p, None)
