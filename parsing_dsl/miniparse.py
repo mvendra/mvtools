@@ -149,20 +149,27 @@ def guarded_scan(source, target, guard_ch, escape_ch):
     matching_target = False
     target_index = 0
     match_begin_index = None
-    matching_escaped_guard = False
-    escaped_guard_index = 0
-    escaped_guard = "%s%s" % (guard_ch, escape_ch)
+    escaping = False
 
     for i in range(len(source)):
 
-        if source[i] == guard_ch:
+        if source[i] == guard_ch and not escaping:
             guarded = not guarded
             target_index = 0
             matching_target = False
             match_begin_index = None
+            # mvtodo: more reset
             continue
 
-        if not guarded:
+        if guarded:
+
+            if escaping:
+                escaping = False # mvtodo: works everytime?
+            else:
+                if source[i] == escape_ch:
+                    escaping = True
+
+        else:
 
             if matching_target:
 
@@ -170,7 +177,7 @@ def guarded_scan(source, target, guard_ch, escape_ch):
                     # keep on matching target
                     target_index += 1
                     if target_index == len(target):
-                        # successful match
+                        # successful target match
                         return match_begin_index
 
                 else:
@@ -187,7 +194,7 @@ def guarded_scan(source, target, guard_ch, escape_ch):
                     target_index = 1
                     match_begin_index = i
                     if target_index == len(target):
-                        # successful match
+                        # successful target match
                         return match_begin_index
 
     return -1
