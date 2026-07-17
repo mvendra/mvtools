@@ -120,63 +120,70 @@ def guarded_split(thestr, sep_ch, guard_chs):
 
     return ret
 
-def guarded_scan(thestr, thematch, guard_ch):
+def guarded_scan(source, target, guard_ch, escape_ch):
 
-    if not isinstance(thestr, str):
+    if not isinstance(source, str):
         return None
-    if thestr == "":
+    if source == "":
         return None
-    if not isinstance(thematch, str):
+    if not isinstance(target, str):
         return None
-    if thematch == "":
+    if target == "":
         return None
     if not isinstance(guard_ch, str):
         return None
     if len(guard_ch) != 1:
         return None
-    if guard_ch in thematch:
+    if guard_ch in target:
+        return None
+    if not isinstance(escape_ch, str):
+        return None
+    if len(escape_ch) != 1:
+        return None
+    if escape_ch in target:
+        return None
+    if guard_ch == escape_ch:
         return None
 
     guarded = False
-    matching = False
-    thematch_index = 0
+    matching_target = False
+    target_index = 0
     match_begin_index = None
+    matching_escaped_guard = False
+    escaped_guard_index = 0
+    escaped_guard = "%s%s" % (guard_ch, escape_ch)
 
-    for i in range(len(thestr)):
+    for i in range(len(source)):
 
-        if matching:
+        if not guarded:
 
-            if thestr[i] == thematch[thematch_index]:
-                # keep on matching
-                thematch_index += 1
-                if thematch_index == len(thematch):
-                    # successful match
-                    matching = False
-                    thematch_index = 0
-                    if not guarded:
+            if matching_target:
+
+                if source[i] == target[target_index]:
+                    # keep on matching target
+                    target_index += 1
+                    if target_index == len(target):
+                        # successful match
                         return match_begin_index
+
+                else:
+                    # matching target failed - reset
+                    target_index = 0
+                    matching_target = False
+                    match_begin_index = None
 
             else:
-                # matching failed - reset
-                thematch_index = 0
-                matching = False
-                match_begin_index = None
 
-        else:
-
-            if thestr[i] == thematch[0]:
-                # start matching
-                matching = True
-                thematch_index = 1
-                match_begin_index = i
-                if thematch_index == len(thematch):
-                    # successful match
-                    matching = False
-                    thematch_index = 0
-                    if not guarded:
+                if source[i] == target[0]:
+                    # start matching target
+                    matching_target = True
+                    target_index = 1
+                    match_begin_index = i
+                    if target_index == len(target):
+                        # successful match
                         return match_begin_index
 
-        if thestr[i] == guard_ch:
+        if source[i] == guard_ch:
             guarded = not guarded
 
     return -1
