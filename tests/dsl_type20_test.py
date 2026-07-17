@@ -444,6 +444,30 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(v, "\"#// /*\"a")
         self.assertEqual(r, False)
 
+        v, r = dsl_type20.sanitize_line("\"#\"abc", False)
+        self.assertEqual(v, "\"#\"abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("\"#\"#abc", False)
+        self.assertEqual(v, "\"#\"")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("\"#\"#abc", False)
+        self.assertEqual(v, "\"#\"")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("\"#\\\"#abc", False)
+        self.assertEqual(v, "\"#\\\"#abc")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("\"//\"//abc", False)
+        self.assertEqual(v, "\"//\"")
+        self.assertEqual(r, False)
+
+        v, r = dsl_type20.sanitize_line("\"//\\\"//abc", False)
+        self.assertEqual(v, "\"//\\\"//abc")
+        self.assertEqual(r, False)
+
         # try apply multiline
 
         v, r = dsl_type20.sanitize_line("*/ /*", False)
@@ -485,6 +509,14 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.sanitize_line("\"*/ abc /*def*/ /*xyz", True)
         self.assertEqual(v, "abc")
         self.assertEqual(r, True)
+
+        v, r = dsl_type20.sanitize_line("\"/*\"/*abc", False)
+        self.assertEqual(v, "\"/*\"")
+        self.assertEqual(r, True)
+
+        v, r = dsl_type20.sanitize_line("\"/*\\\"//abc", False)
+        self.assertEqual(v, "\"/*\\\"//abc")
+        self.assertEqual(r, False)
 
     def testValidateName(self):
         self.assertFalse(dsl_type20.validate_name(None))
