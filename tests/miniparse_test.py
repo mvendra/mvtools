@@ -146,92 +146,92 @@ class MiniparseTest(unittest.TestCase):
         p = miniparse.guarded_split("aaa{b[]=bb}=ccc", "=", [("[", "]"), ("{", "}")])
         self.assertEqual(p, ["aaa{b[]=bb}", "ccc"])
 
-    def testGuardedScan1(self):
-        p = miniparse.guarded_scan([], "#", "'", "B")
+    def testGuardedFind1(self):
+        p = miniparse.guarded_find([], "#", "'", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan2(self):
-        p = miniparse.guarded_scan("", "#", "'", "B")
+    def testGuardedFind2(self):
+        p = miniparse.guarded_find("", "#", "'", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan3(self):
-        p = miniparse.guarded_scan("abc", [], "'", "B")
+    def testGuardedFind3(self):
+        p = miniparse.guarded_find("abc", [], "'", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan4(self):
-        p = miniparse.guarded_scan("abc", "", "'", "B")
+    def testGuardedFind4(self):
+        p = miniparse.guarded_find("abc", "", "'", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan5(self):
-        p = miniparse.guarded_scan("abc", "#", [], "B")
+    def testGuardedFind5(self):
+        p = miniparse.guarded_find("abc", "#", [], "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan6(self):
-        p = miniparse.guarded_scan("abc", "#", "", "B")
+    def testGuardedFind6(self):
+        p = miniparse.guarded_find("abc", "#", "", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan7(self):
-        p = miniparse.guarded_scan("abc", "#", "&*", "B")
+    def testGuardedFind7(self):
+        p = miniparse.guarded_find("abc", "#", "&*", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan8(self):
-        p = miniparse.guarded_scan("abc", "!@#", "@", "B")
+    def testGuardedFind8(self):
+        p = miniparse.guarded_find("abc", "!@#", "@", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan9(self):
-        p = miniparse.guarded_scan("abc", "#", "Q", [])
+    def testGuardedFind9(self):
+        p = miniparse.guarded_find("abc", "#", "Q", [])
         self.assertEqual(p, None)
 
-    def testGuardedScan10(self):
-        p = miniparse.guarded_scan("abc", "#", "Q", "++")
+    def testGuardedFind10(self):
+        p = miniparse.guarded_find("abc", "#", "Q", "++")
         self.assertEqual(p, None)
 
-    def testGuardedScan11(self):
-        p = miniparse.guarded_scan("abc", "#", "Q", "#")
+    def testGuardedFind11(self):
+        p = miniparse.guarded_find("abc", "#", "Q", "#")
         self.assertEqual(p, None)
 
-    def testGuardedScan12(self):
-        p = miniparse.guarded_scan("abc", "#", "B", "B")
+    def testGuardedFind12(self):
+        p = miniparse.guarded_find("abc", "#", "B", "B")
         self.assertEqual(p, None)
 
-    def testGuardedScan13(self):
-        p = miniparse.guarded_scan("abc", "#", "'", "B")
+    def testGuardedFind13(self):
+        p = miniparse.guarded_find("abc", "#", "'", "B")
         self.assertEqual(p, -1)
 
-    def testGuardedScan14(self):
-        p = miniparse.guarded_scan("#abc", "#", "'", "B")
+    def testGuardedFind14(self):
+        p = miniparse.guarded_find("#abc", "#", "'", "B")
         self.assertEqual(p, 0)
 
-    def testGuardedScan15(self):
-        p = miniparse.guarded_scan("abc#", "#", "'", "B")
+    def testGuardedFind15(self):
+        p = miniparse.guarded_find("abc#", "#", "'", "B")
         self.assertEqual(p, 3)
 
-    def testGuardedScan16(self):
-        p = miniparse.guarded_scan("abcde#fxyz", "#", "'", "B")
+    def testGuardedFind16(self):
+        p = miniparse.guarded_find("abcde#fxyz", "#", "'", "B")
         self.assertEqual(p, 5)
 
-    def testGuardedScan17(self):
-        p = miniparse.guarded_scan("abcde'#'fxyz", "#", "'", "B")
+    def testGuardedFind17(self):
+        p = miniparse.guarded_find("abcde'#'fxyz", "#", "'", "B")
         self.assertEqual(p, -1)
 
-    def testGuardedScan18(self):
-        p = miniparse.guarded_scan("abcde'#'f#xyz", "#", "'", "B")
+    def testGuardedFind18(self):
+        p = miniparse.guarded_find("abcde'#'f#xyz", "#", "'", "B")
         self.assertEqual(p, 9)
 
-    def testGuardedScan19(self):
-        p = miniparse.guarded_scan("ab#cde'#'f#xyz", "#", "'", "B")
+    def testGuardedFind19(self):
+        p = miniparse.guarded_find("ab#cde'#'f#xyz", "#", "'", "B")
         self.assertEqual(p, 2)
 
-    def testGuardedScan20(self):
-        p = miniparse.guarded_scan("abcQdeBQ#fQxyz", "#", "Q", "B")
+    def testGuardedFind20(self):
+        p = miniparse.guarded_find("abcQdeBQ#fQxyz", "#", "Q", "B")
         self.assertEqual(p, -1)
 
-    def testGuardedScan21(self):
-        p = miniparse.guarded_scan("abcQdeBBQ#fQxyz", "#", "Q", "B")
+    def testGuardedFind21(self):
+        p = miniparse.guarded_find("abcQdeBBQ#fQxyz", "#", "Q", "B")
         self.assertEqual(p, 9)
 
-    def testGuardedScan22(self):
-        p = miniparse.guarded_scan("abcQdeBBBQ#fQxyz", "#", "Q", "B")
+    def testGuardedFind22(self):
+        p = miniparse.guarded_find("abcQdeBBBQ#fQxyz", "#", "Q", "B")
         self.assertEqual(p, -1)
 
     def testGuardedRightCut1(self):

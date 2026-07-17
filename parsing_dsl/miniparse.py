@@ -120,7 +120,7 @@ def guarded_split(thestr, sep_ch, guard_chs):
 
     return ret
 
-def guarded_scan(source, target, guard_ch, escape_ch):
+def guarded_find(source, target, guard_ch, escape_ch):
 
     if not isinstance(source, str):
         return None
