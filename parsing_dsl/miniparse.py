@@ -93,6 +93,9 @@ def guarded_split(source, separator, guard_ch, escape_ch):
 
     while True:
 
+        if len(source_local) == 0:
+            return result
+
         p = guarded_find(source_local, separator, guard_ch, escape_ch)
         if p is None:
             return None
@@ -101,7 +104,8 @@ def guarded_split(source, separator, guard_ch, escape_ch):
 
         next_piece = source_local[:p]
         source_local = source_local[p + len(separator):]
-        result.append(next_piece)
+        if len(next_piece) > 0:
+            result.append(next_piece)
 
     result.append(source_local)
     return result

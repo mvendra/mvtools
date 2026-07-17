@@ -158,6 +158,14 @@ class MiniparseTest(unittest.TestCase):
         p = miniparse.guarded_split("var1Nvar2 = QabBBQcNdefQNvar3", "N", "Q", "B")
         self.assertEqual(p, ["var1", "var2 = QabBBQc", "defQNvar3"])
 
+    def testGuardedSplit16(self):
+        p = miniparse.guarded_split("var1N", "N", "Q", "B")
+        self.assertEqual(p, ["var1"])
+
+    def testGuardedSplit17(self):
+        p = miniparse.guarded_split("Nvar1", "N", "Q", "B")
+        self.assertEqual(p, ["var1"])
+
     def testGuardedFind1(self):
         p = miniparse.guarded_find([], "#", "'", "B")
         self.assertEqual(p, None)
