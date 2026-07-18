@@ -148,7 +148,6 @@ def guarded_find(source, target, guard_ch, escape_ch):
             target_index = 0
             matching_target = False
             match_begin_index = None
-            escaping = False
             continue
 
         if guarded:
