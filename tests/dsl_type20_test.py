@@ -474,6 +474,10 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(v, None)
         self.assertEqual(r, False)
 
+        v, r = dsl_type20.sanitize_line("/*", False)
+        self.assertEqual(v, "")
+        self.assertEqual(r, True)
+
         v, r = dsl_type20.sanitize_line("abc /*def*/ --- /*xyz*/", False)
         self.assertEqual(v, "abc  ---")
         self.assertEqual(r, False)
