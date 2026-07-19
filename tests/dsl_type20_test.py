@@ -861,6 +861,34 @@ class DSLType20Test(unittest.TestCase):
         r = test_val.get_serialized()
         self.assertEqual(r, "\"abc\" + " + self.reserved_test_env_var_1)
 
+    def testDSLType20_Value2(self):
+
+        test_val = dsl_type20.DSLType20_Value()
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        ex_flag = False
+        try:
+            test_val.add_immediate("abc\ndef")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
     def testDSLType20_Variable1(self):
         ex_flag = False
         try:

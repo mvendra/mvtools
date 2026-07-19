@@ -196,6 +196,8 @@ def _validate_value_single(value_str):
 
 def validate_value(value):
 
+    # mvtodo: dephased eventually
+
     if value is None:
         return True
 
@@ -318,6 +320,8 @@ class DSLType20_Value:
         self.internal_data = []
 
     def add_immediate(self, source):
+        if not _validate_value_single(source):
+            raise mvtools_exception.mvtools_exception("Invalid value [%s]" % source)
         self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, source))
 
     def add_plus(self):
