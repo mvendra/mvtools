@@ -11,7 +11,12 @@ import mvtools_exception
 COMMENTS_SINGLE = ["#", "//"]
 COMMENT_MULTI = ("/*", "*/")
 
-# basic types
+# basic types - values
+DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE = 1
+DSLTYPE20_ENTRY_VALUE_TYPE_PLUS = 2
+DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR = 3
+
+# basic types - general
 DSLTYPE20_ENTRY_TYPE_VAR = 1
 DSLTYPE20_ENTRY_TYPE_OPT = 2
 DSLTYPE20_ENTRY_TYPE_CTX = 3
@@ -307,7 +312,63 @@ def inherit_options_helper(parent_options, new_options):
 
     return result
 
+class DSLType20_Value:
+
+    def __init__(self):
+        self.internal_data = []
+
+    def add_immediate(self, source):
+        self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, source))
+
+    def add_plus(self):
+        self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None))
+
+    def add_envvar(self, source):
+        self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, source))
+
+    def get_resolved(self):
+
+        result = None
+        if len(self.internal_data) > 0:
+            result = ""
+
+        for v in self.internal_data:
+
+            v_res = ""
+            if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
+                v_res = v[1]
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
+                pass
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
+                try:
+                    v_res = os.environ[v[1]]
+                except KeyError as ex:
+                    raise mvtools_exception.mvtools_exception("Unable to resolve envvar [%s]" % v[1])
+            result += v_res
+
+        return result
+
+    def get_serialized(self):
+
+        result = None
+        if len(self.internal_data) > 0:
+            result = ""
+
+        for v in self.internal_data:
+
+            v_res = ""
+            if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
+                v_res = "\"" + v[1] + "\""
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
+                v_res = " + "
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
+                v_res = "$%s" % v[1]
+            result += v_res
+
+        return result
+
 class DSLType20_Variable:
+
     def __init__(self, configs, name, value, options):
 
         self.configs = configs
@@ -338,6 +399,7 @@ class DSLType20_Variable:
         return self.options
 
 class DSLType20_Option:
+
     def __init__(self, configs, name, value):
 
         self.configs = configs
@@ -364,6 +426,7 @@ class DSLType20_Option:
         return self.value
 
 class DSLType20_Context:
+
     def __init__(self, ptr_parent, name, options):
 
         self.ptr_parent = ptr_parent
@@ -394,6 +457,7 @@ class DSLType20_Context:
         self.entries.append(new_entry)
 
 class DSLType20_Config:
+
     def __init__(self, expand_user = False, allow_var_dupes = True, inherit_options = False, var_decorator = ""):
 
         self.expand_user = expand_user
@@ -402,12 +466,14 @@ class DSLType20_Config:
         self.var_decorator = var_decorator
 
 class _internal_parse_context:
+
     def __init__(self):
         self.bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
         self.context_stack = [None]
 
 INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX = 200
 class internal_dfs_context:
+
     def __init__(self, init_node):
         self.current_node = init_node
         self.vars = []
@@ -416,6 +482,7 @@ class internal_dfs_context:
         self.depth_sentinel = 0
 
 class DSLType20:
+
     def __init__(self, _configs):
 
         # internal

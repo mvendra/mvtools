@@ -818,6 +818,49 @@ class DSLType20Test(unittest.TestCase):
         new_opts = r
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
 
+    def testDSLType20_Value1(self):
+
+        test_val = dsl_type20.DSLType20_Value()
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_immediate("abc")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc")])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, "abc")
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "\"abc\"")
+
+        test_val.add_plus()
+        self.assertEqual(len(test_val.internal_data), 2)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None)])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, "abc")
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "\"abc\" + ")
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+        test_val.add_envvar(self.reserved_test_env_var_1[1:])
+        self.assertEqual(len(test_val.internal_data), 3)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, "abctest-value-1")
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "\"abc\" + " + self.reserved_test_env_var_1)
+
     def testDSLType20_Variable1(self):
         ex_flag = False
         try:
