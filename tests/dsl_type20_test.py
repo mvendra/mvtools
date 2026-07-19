@@ -110,8 +110,8 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_3 += "var2 = \"val2\"\n"
         self.cfg_test_ok_3 = path_utils.concat_path(self.test_dir, "test_ok_3.t20")
 
-        self.contents_cfg_test_ok_4 = ("var1 = \"%s\"\n") % self.reserved_test_env_var_1
-        self.contents_cfg_test_ok_4 += ("var2 {opt1: \"%s\"} = \"val1\"\n") % self.reserved_test_env_var_2
+        self.contents_cfg_test_ok_4 = ("var1 = \"%s\"\n") % self.reserved_test_env_var_1 # mvtodo
+        self.contents_cfg_test_ok_4 += ("var2 {opt1: \"%s\"} = \"val1\"\n") % self.reserved_test_env_var_2 # mvtodo
         self.contents_cfg_test_ok_4 += ("var3 = \"%s\"\n") % self.reserved_path_with_user_1
         self.cfg_test_ok_4 = path_utils.concat_path(self.test_dir, "test_ok_4.t20")
 
@@ -1250,6 +1250,8 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetAllVariables2(self):
 
+        # mvtodo
+
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
         os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
@@ -1863,20 +1865,24 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestNewContextWithOptions6(self):
 
+        # mvtodo
+
         test_envvar_value = "dsltype20-test-value"
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = test_envvar_value
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True, expand_envvars=True))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True))
         v, r = dsl.parse("[\n@ctx1 {opt1: \"%s\"}\nvar1 = \"val2\"\n]" % self.reserved_test_env_var_1)
         self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")), [("var1", "val2", [("opt1", test_envvar_value)])])
         self.assertTrue(v)
 
     def testDslType20_TestNewContextWithOptions7(self):
 
+        # mvtodo
+
         test_envvar_value = "dsltype20-test-value"
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = test_envvar_value
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True, expand_envvars=False))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options=True))
         v, r = dsl.parse("[\n@ctx1 {opt1: \"%s\"}\nvar1 = \"val2\"\n]" % self.reserved_test_env_var_1)
         self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")), [("var1", "val2", [("opt1", self.reserved_test_env_var_1)])])
         self.assertTrue(v)
