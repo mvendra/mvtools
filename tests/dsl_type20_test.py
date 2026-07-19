@@ -567,19 +567,10 @@ class DSLType20Test(unittest.TestCase):
     def testValidateValue(self):
         self.assertTrue(dsl_type20.validate_value(None))
         self.assertFalse(dsl_type20.validate_value(()))
-        self.assertFalse(dsl_type20.validate_value("value\x0a"))
-        self.assertFalse(dsl_type20.validate_value("value\x00"))
-        self.assertTrue(dsl_type20.validate_value("name\x20"))
-        self.assertTrue(dsl_type20.validate_value("name\x09"))
-        self.assertTrue(dsl_type20.validate_value("a"))
-        self.assertTrue(dsl_type20.validate_value("거물사냥꾼"))
-        self.assertTrue(dsl_type20.validate_value(""))
         self.assertTrue(dsl_type20.validate_value([]))
-        self.assertTrue(dsl_type20.validate_value(["first"]))
-        self.assertTrue(dsl_type20.validate_value(["first", "second"]))
-        self.assertFalse(dsl_type20.validate_value(["first", 1]))
-        self.assertFalse(dsl_type20.validate_value(["first", ["second"]]))
-        self.assertFalse(dsl_type20.validate_value(["first", None]))
+        self.assertTrue(dsl_type20.validate_value( dsl_type20.DSLType20_Value() ))
+        self.assertTrue(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(), dsl_type20.DSLType20_Value()] ))
+        self.assertFalse(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(), "test-val2"] ))
 
     def testValidateVariable(self):
         self.assertTrue(dsl_type20.validate_variable("a", "a")[0])

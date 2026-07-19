@@ -196,19 +196,17 @@ def _validate_value_single(value_str):
 
 def validate_value(value):
 
-    # mvtodo: dephased eventually
-
     if value is None:
         return True
 
-    if isinstance(value, str):
-        return _validate_value_single(value)
+    if isinstance(value, DSLType20_Value):
+        return True
 
     if not isinstance(value, list):
         return False
 
     for entry in value:
-        if not _validate_value_single(entry):
+        if not isinstance(entry, DSLType20_Value):
             return False
 
     return True
@@ -383,6 +381,8 @@ class DSLType20_Variable:
         v, r = validate_variable(self.name, self.value)
         if not v:
             raise mvtools_exception.mvtools_exception(r)
+
+        # mvtodo: below: kill
 
         # expand the value
         v, r = expand_value(self.configs, self.value)
