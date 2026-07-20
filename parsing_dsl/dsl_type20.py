@@ -384,14 +384,6 @@ class DSLType20_Variable:
         if not v:
             raise mvtools_exception.mvtools_exception(r)
 
-        # mvtodo: below: kill
-
-        # expand the value
-        v, r = expand_value(self.configs, self.value)
-        if not v:
-            raise mvtools_exception.mvtools_exception("Unable to expand variable's value: [%s : %s]" % (self.name, self.value))
-        self.value = r
-
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_VAR
 
