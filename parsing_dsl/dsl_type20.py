@@ -67,6 +67,8 @@ def expand_value_single(configs, str_input):
 
 def expand_value(configs, input_val):
 
+    # mvtodo: eventually ditch
+
     if not isinstance(input_val, list):
         return expand_value_single(configs, input_val)
     else:
@@ -413,6 +415,8 @@ class DSLType20_Option:
         v, r = validate_option(self.name, self.value)
         if not v:
             raise mvtools_exception.mvtools_exception(r)
+
+        # mvtodo: below: kill
 
         # expand the value
         v, r = expand_value(self.configs, self.value)
