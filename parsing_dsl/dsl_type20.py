@@ -393,6 +393,10 @@ class DSLType20_Variable:
     def get_value(self):
         return self.value
 
+    # mvtodo: get_value_resolved
+
+    # mvtodo: get_value_serialized
+
     def get_options(self):
         return self.options
 
