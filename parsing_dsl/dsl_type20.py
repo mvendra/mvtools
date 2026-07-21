@@ -444,7 +444,22 @@ class DSLType20_Variable:
             result.append(res_str)
         return result
 
-    # mvtodo: get_value_serialized
+    def get_value_serialized(self):
+
+        if self.value is None:
+            return None
+        elif isinstance(self.value, DSLType20_Value):
+            return self.value.get_serialized()
+
+        add_comma = False
+        result = "("
+        for e in self.value:
+            if add_comma:
+                result += ", "
+            result += e.get_serialized()
+            add_comma = True
+        result += ")"
+        return result
 
     def get_options(self):
         return self.options
