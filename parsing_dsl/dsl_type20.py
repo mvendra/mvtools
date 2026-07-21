@@ -417,7 +417,19 @@ class DSLType20_Variable:
             val_ptr.add_plus()
         val_ptr.add_immediate(value)
 
-    # mvtodo: add_value_envvar
+    def add_value_envvar(self, envvar):
+
+        val_ptr = None
+        if self.value is None:
+            raise mvtools_exception.mvtools_exception("Environment variable [%s] cannot be added - value container is empty" % envvar)
+        elif isinstance(self.value, DSLType20_Value):
+            val_ptr = self.value
+        else:
+            val_ptr = self.value[len(self.value)-1]
+
+        if len(val_ptr.internal_data) > 0:
+            val_ptr.add_plus()
+        val_ptr.add_envvar(envvar)
 
     # mvtodo: get_value_resolved
 

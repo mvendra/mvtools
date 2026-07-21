@@ -987,6 +987,41 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.value[0].internal_data, [])
         self.assertEqual(var_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val2")])
 
+    def testDSLType20_Variable_AddValueEnvvar1(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        ex_flag = False
+        try:
+            var_inst.add_value_envvar("envvar")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Variable_AddValueEnvvar2(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        self.assertEqual(var_inst.value, None)
+        var_inst.new_value()
+        self.assertTrue(isinstance(var_inst.value, dsl_type20.DSLType20_Value))
+        self.assertEqual(var_inst.value.internal_data, [])
+        var_inst.add_value_envvar("envvar1")
+        self.assertEqual(var_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1")])
+        var_inst.add_value_envvar("envvar2")
+        self.assertEqual(var_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar2")])
+
+    def testDSLType20_Variable_AddValueEnvvar3(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        self.assertEqual(var_inst.value, None)
+        var_inst.new_value()
+        var_inst.new_value()
+        self.assertTrue(isinstance(var_inst.value, list))
+        self.assertEqual(var_inst.value[0].internal_data, [])
+        self.assertEqual(var_inst.value[1].internal_data, [])
+        var_inst.add_value_envvar("envvar1")
+        self.assertEqual(var_inst.value[0].internal_data, [])
+        self.assertEqual(var_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1")])
+        var_inst.add_value_envvar("envvar2")
+        self.assertEqual(var_inst.value[0].internal_data, [])
+        self.assertEqual(var_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar2")])
+
     def testDSLType20_Option1(self):
         ex_flag = False
         try:
