@@ -215,6 +215,8 @@ def validate_value(value):
 
 def validate_variable(name, value):
 
+    # mvtodo: ditch?
+
     # validate name
     if not validate_name(name):
         return False, "Variable name is invalid"
@@ -373,16 +375,15 @@ class DSLType20_Value:
 
 class DSLType20_Variable:
 
-    def __init__(self, configs, name, value, options):
+    def __init__(self, configs, name, options):
 
         self.configs = configs
         self.name = name
-        self.value = value
+        self.value = None
         self.options = options
 
-        v, r = validate_variable(self.name, self.value)
-        if not v:
-            raise mvtools_exception.mvtools_exception(r)
+        if not validate_name(self.name):
+            raise mvtools_exception.mvtools_exception("Variable name is invalid")
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_VAR
@@ -390,8 +391,12 @@ class DSLType20_Variable:
     def get_name(self):
         return self.name
 
-    def get_value(self):
+    def get_value(self): # mvtodo: ditch
         return self.value
+
+    # mvtodo: new_value
+
+    # mvtodo: add_value {multitypes}
 
     # mvtodo: get_value_resolved
 
@@ -638,7 +643,7 @@ class DSLType20:
     def add_variable(self, var_name, var_val, var_opts, context = None):
 
         # pre-validate variable
-        v, r = validate_variable(var_name, var_val)
+        v, r = validate_variable(var_name, var_val) # mvtodo: ditch? change?
         if not v:
             return False, r
 

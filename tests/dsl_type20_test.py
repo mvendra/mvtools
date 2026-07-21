@@ -911,13 +911,13 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable1(self):
         ex_flag = False
         try:
-            var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "", None, [])
+            var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "", [])
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
 
     def testDSLType20_Variable2(self):
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", None, [])
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
         self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
         self.assertEqual(var_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR)
@@ -925,44 +925,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.get_name(), "a")
         self.assertEqual(var_inst.value, None)
         self.assertEqual(var_inst.get_value(), None)
-        self.assertEqual(var_inst.options, [])
-        self.assertEqual(var_inst.get_options(), [])
-
-    def testDSLType20_Variable3(self):
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [], [])
-        self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
-        self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
-        self.assertEqual(var_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR)
-        self.assertEqual(var_inst.name, "a")
-        self.assertEqual(var_inst.get_name(), "a")
-        self.assertEqual(var_inst.value, [])
-        self.assertEqual(var_inst.get_value(), [])
-        self.assertEqual(var_inst.options, [])
-        self.assertEqual(var_inst.get_options(), [])
-
-    def testDSLType20_Variable4(self):
-        var_value = dsl_type20.DSLType20_Value()
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", var_value, [])
-        self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
-        self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
-        self.assertEqual(var_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR)
-        self.assertEqual(var_inst.name, "a")
-        self.assertEqual(var_inst.get_name(), "a")
-        self.assertEqual(var_inst.value, var_value)
-        self.assertEqual(var_inst.get_value(), var_value)
-        self.assertEqual(var_inst.options, [])
-        self.assertEqual(var_inst.get_options(), [])
-
-    def testDSLType20_Variable5(self):
-        var_value_list = [dsl_type20.DSLType20_Value()]
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", var_value_list, [])
-        self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
-        self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
-        self.assertEqual(var_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR)
-        self.assertEqual(var_inst.name, "a")
-        self.assertEqual(var_inst.get_name(), "a")
-        self.assertEqual(var_inst.value, var_value_list)
-        self.assertEqual(var_inst.get_value(), var_value_list)
         self.assertEqual(var_inst.options, [])
         self.assertEqual(var_inst.get_options(), [])
 
