@@ -431,7 +431,18 @@ class DSLType20_Variable:
             val_ptr.add_plus()
         val_ptr.add_envvar(envvar)
 
-    # mvtodo: get_value_resolved
+    def get_value_resolved(self):
+
+        if self.value is None:
+            return None
+        elif isinstance(self.value, DSLType20_Value):
+            return self.value.get_resolved()
+
+        result = []
+        for e in self.value:
+            res_str = e.get_resolved()
+            result.append(res_str)
+        return result
 
     # mvtodo: get_value_serialized
 
