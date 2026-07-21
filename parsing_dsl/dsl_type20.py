@@ -403,7 +403,21 @@ class DSLType20_Variable:
         else:
             self.value.append(DSLType20_Value())
 
-    # mvtodo: add_value {multitypes}
+    def add_value_immediate(self, value):
+
+        val_ptr = None
+        if self.value is None:
+            raise mvtools_exception.mvtools_exception("Variable value [%s] cannot be added - value container is empty" % value)
+        elif isinstance(self.value, DSLType20_Value):
+            val_ptr = self.value
+        else:
+            val_ptr = self.value[len(self.value)-1]
+
+        if len(val_ptr.internal_data) > 0:
+            val_ptr.add_plus()
+        val_ptr.add_immediate(value)
+
+    # mvtodo: add_value_envvar
 
     # mvtodo: get_value_resolved
 
