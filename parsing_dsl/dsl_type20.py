@@ -394,7 +394,14 @@ class DSLType20_Variable:
     def get_value(self): # mvtodo: ditch
         return self.value
 
-    # mvtodo: new_value
+    def new_value(self):
+
+        if self.value is None:
+            self.value = DSLType20_Value()
+        elif isinstance(self.value, DSLType20_Value):
+            self.value = [self.value, DSLType20_Value()]
+        else:
+            self.value.append(DSLType20_Value())
 
     # mvtodo: add_value {multitypes}
 

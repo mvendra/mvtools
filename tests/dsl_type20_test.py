@@ -928,6 +928,17 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.options, [])
         self.assertEqual(var_inst.get_options(), [])
 
+    def testDSLType20_Variable_NewValue1(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        self.assertEqual(var_inst.value, None)
+        var_inst.new_value()
+        self.assertTrue(isinstance(var_inst.value, dsl_type20.DSLType20_Value))
+        var_inst.new_value()
+        self.assertTrue(isinstance(var_inst.value, list))
+        self.assertEqual(len(var_inst.value), 2)
+        self.assertTrue(isinstance(var_inst.value[0], dsl_type20.DSLType20_Value))
+        self.assertTrue(isinstance(var_inst.value[1], dsl_type20.DSLType20_Value))
+
     def testDSLType20_Option1(self):
         ex_flag = False
         try:
