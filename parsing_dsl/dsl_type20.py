@@ -229,6 +229,8 @@ def validate_variable(name, value):
 
 def validate_option(name, value):
 
+    # mvtodo: ditch?
+
     # validate name
     if not validate_name(name):
         return False, "Option name is invalid"
