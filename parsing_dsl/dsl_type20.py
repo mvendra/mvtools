@@ -1705,7 +1705,7 @@ if __name__ == "__main__":
         the_deco = sys.argv[2]
         file_to_parse = sys.argv[3]
 
-    dsl = DSLType20(DSLType20_Config(expand_user=True, allow_var_dupes=True, inherit_options=True, var_decorator=the_deco))
+    dsl = DSLType20(DSLType20_Config(expand_user = True, allow_var_dupes = True, inherit_options = True, var_decorator = the_deco))
 
     if not os.path.exists(file_to_parse):
         print("File [%s] does not exist." % file_to_parse)

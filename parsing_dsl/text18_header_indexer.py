@@ -52,7 +52,7 @@ def gen_from_t20(input_file, prod_ctx):
     with open(input_file, "r") as f:
         t20_contents = f.read()
 
-    dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
+    dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
 
     v, r = dsl.parse(t20_contents)
     if not v:
