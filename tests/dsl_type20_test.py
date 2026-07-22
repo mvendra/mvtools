@@ -572,20 +572,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()), dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config())] ))
         self.assertFalse(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()), "test-val2"] ))
 
-    def testValidateVariable(self):
-        self.assertTrue(dsl_type20.validate_variable("a", "a")[0])
-        self.assertTrue(dsl_type20.validate_variable("거물사냥꾼", "거물사냥꾼")[0])
-        self.assertFalse(dsl_type20.validate_variable("", "a")[0])
-        self.assertFalse(dsl_type20.validate_variable(None, "a")[0])
-        self.assertFalse(dsl_type20.validate_variable([], "a")[0])
-        self.assertFalse(dsl_type20.validate_variable((), "a")[0])
-        self.assertTrue(dsl_type20.validate_variable("a", None)[0])
-        self.assertTrue(dsl_type20.validate_variable("a", "")[0])
-        self.assertTrue(dsl_type20.validate_variable("a", [])[0])
-        self.assertTrue(dsl_type20.validate_variable("a", ["more"])[0])
-        self.assertFalse(dsl_type20.validate_variable("a", ["more", 1])[0])
-        self.assertFalse(dsl_type20.validate_variable("a", ())[0])
-
     def testValidateOption(self):
         self.assertTrue(dsl_type20.validate_option("a", "a")[0])
         self.assertTrue(dsl_type20.validate_option("거물사냥꾼", "거물사냥꾼")[0])

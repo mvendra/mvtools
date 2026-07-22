@@ -215,20 +215,6 @@ def validate_value(value):
 
     return True
 
-def validate_variable(name, value):
-
-    # mvtodo: ditch?
-
-    # validate name
-    if not validate_name(name):
-        return False, "Variable name is invalid"
-
-    # validate value
-    if not validate_value(value):
-        return False, "Variable value is invalid"
-
-    return True, None
-
 def validate_option(name, value):
 
     # mvtodo: ditch?
@@ -705,12 +691,11 @@ class DSLType20:
 
         return True, None
 
-    def add_variable(self, var_name, var_val, var_opts, context = None):
+    def add_variable(self, variable, context = None):
 
         # pre-validate variable
-        v, r = validate_variable(var_name, var_val) # mvtodo: ditch? change?
-        if not v:
-            return False, r
+        if not isinstance(variable, DSLType20_Variable)
+            return False, "Wrong input variable type"
 
         # pre-validate options
         v, r = validate_options_list(var_opts)
