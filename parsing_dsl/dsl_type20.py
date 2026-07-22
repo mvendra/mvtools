@@ -198,6 +198,8 @@ def _validate_value_single(value_str):
 
 def validate_value(value):
 
+    # mvtodo: ditch?
+
     if value is None:
         return True
 
