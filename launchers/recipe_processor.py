@@ -370,7 +370,7 @@ class RecipeProcessor:
 
                 task_params = _convert_dsl_opts_into_py_map(dsl_type20.convert_opt_obj_list_to_neutral_format(entry.get_options()))
 
-                v, r = _get_task_instance(entry.get_value(), namespace)
+                v, r = _get_task_instance(entry.get_value_resolved(), namespace)
                 if not v:
                     return False, r
 
@@ -463,7 +463,7 @@ class RecipeProcessor:
 
                 task_params = _convert_dsl_opts_into_py_map(dsl_type20.convert_opt_obj_list_to_neutral_format(entry.get_options()))
 
-                v, r = _get_task_instance(entry.get_value(), namespace)
+                v, r = _get_task_instance(entry.get_value_resolved(), namespace)
                 if not v:
                     return False, r
 
