@@ -318,7 +318,8 @@ def inherit_options_helper(parent_options, new_options):
 
 class DSLType20_Value:
 
-    def __init__(self):
+    def __init__(self, configs):
+        self.configs = configs
         self.internal_data = []
 
     def add_immediate(self, source):

@@ -568,9 +568,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_type20.validate_value(None))
         self.assertFalse(dsl_type20.validate_value(()))
         self.assertTrue(dsl_type20.validate_value([]))
-        self.assertTrue(dsl_type20.validate_value( dsl_type20.DSLType20_Value() ))
-        self.assertTrue(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(), dsl_type20.DSLType20_Value()] ))
-        self.assertFalse(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(), "test-val2"] ))
+        self.assertTrue(dsl_type20.validate_value( dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()) ))
+        self.assertTrue(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()), dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config())] ))
+        self.assertFalse(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()), "test-val2"] ))
 
     def testValidateVariable(self):
         self.assertTrue(dsl_type20.validate_variable("a", "a")[0])
@@ -811,7 +811,9 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Value1(self):
 
-        test_val = dsl_type20.DSLType20_Value()
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -854,7 +856,9 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Value2(self):
 
-        test_val = dsl_type20.DSLType20_Value()
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -882,7 +886,9 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Value3(self):
 
-        test_val = dsl_type20.DSLType20_Value()
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
