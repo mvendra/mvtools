@@ -391,9 +391,6 @@ class DSLType20_Variable:
     def get_name(self):
         return self.name
 
-    def get_value(self): # mvtodo: ditch
-        return self.value
-
     def new_value(self):
 
         if self.value is None:
