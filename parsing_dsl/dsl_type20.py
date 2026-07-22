@@ -807,8 +807,7 @@ class DSLType20:
         ctx.all.append(self._ctx_shallow_copy(this_current_node.get_parent_ptr(), this_current_node))
         for entry in this_current_node.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                # mvtodo
-                ctx.all.append(DSLType20_Variable(self._config_copy(), entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(this_current_node, entry))))
+                ctx.all.append(self._var_copy(this_current_node, entry))
             elif entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 ctx.current_node = entry
                 if not self._get_entire_dfs(ctx):
