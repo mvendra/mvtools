@@ -1041,6 +1041,18 @@ class DSLType20:
 
         return new_inst
 
+    def _var_val_copy(self, var_ptr):
+
+        if var_ptr.value is None:
+            return None
+        elif isinstance(var_ptr.value, DSLType20_Value):
+            return _val_copy(var_ptr.value)
+
+        ret = []
+        for x in var_ptr.value:
+            ret.append(_val_copy(x))
+        return ret
+
     def _var_copy(self, original_parent_ptr, var_ptr):
         # mvtodo
         return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
