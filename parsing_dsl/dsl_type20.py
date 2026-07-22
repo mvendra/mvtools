@@ -1025,6 +1025,22 @@ class DSLType20:
     def _config_copy(self):
         return DSLType20_Config(self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.var_decorator)
 
+    def _val_copy(self, val_ptr):
+
+        new_inst = DSLType20_Value()
+        for x in val_ptr.internal_data:
+
+            if x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
+                new_inst.add_immediate(x[1])
+            elif x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
+                new_inst.add_plus()
+            elif x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
+                new_inst.add_envvar(x[1])
+            else:
+                raise mvtools_exception.mvtools_exception("Unexpected value type [%s]" % x)
+
+        return new_inst
+
     def _var_copy(self, original_parent_ptr, var_ptr):
         # mvtodo
         return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
