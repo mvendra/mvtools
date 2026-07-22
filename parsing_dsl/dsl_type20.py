@@ -344,6 +344,10 @@ class DSLType20_Value:
             v_res = ""
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
                 v_res = v[1]
+                if self.configs.expand_user:
+                    v_res = os.path.expanduser(v_res)
+                    if "~" in v_res:
+                        raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % v[1])
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
                 pass
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
