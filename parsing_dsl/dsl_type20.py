@@ -395,11 +395,11 @@ class DSLType20_Variable:
     def new_value(self):
 
         if self.value is None:
-            self.value = DSLType20_Value()
+            self.value = DSLType20_Value(self.configs)
         elif isinstance(self.value, DSLType20_Value):
-            self.value = [self.value, DSLType20_Value()]
+            self.value = [self.value, DSLType20_Value(self.configs)]
         else:
-            self.value.append(DSLType20_Value())
+            self.value.append(DSLType20_Value(self.configs))
 
     def add_value_immediate(self, value):
 
@@ -1026,7 +1026,7 @@ class DSLType20:
 
     def _val_copy(self, val_ptr):
 
-        new_inst = DSLType20_Value()
+        new_inst = DSLType20_Value(self._config_copy())
         for x in val_ptr.internal_data:
 
             if x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
