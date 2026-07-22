@@ -810,6 +810,7 @@ class DSLType20:
         ctx.all.append(self._ctx_shallow_copy(this_current_node.get_parent_ptr(), this_current_node))
         for entry in this_current_node.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                # mvtodo
                 ctx.all.append(DSLType20_Variable(self._config_copy(), entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(this_current_node, entry))))
             elif entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 ctx.current_node = entry
@@ -845,6 +846,7 @@ class DSLType20:
         this_current_node = ctx.current_node
         for entry in this_current_node.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
+                # mvtodo
                 ctx.vars.append(DSLType20_Variable(self._config_copy(), entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(this_current_node, entry))))
             elif entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 ctx.current_node = entry
@@ -1027,6 +1029,7 @@ class DSLType20:
         return DSLType20_Config(self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.var_decorator)
 
     def _var_copy(self, original_parent_ptr, var_ptr):
+        # mvtodo
         return DSLType20_Variable(self._config_copy(), var_ptr.get_name(), var_ptr.get_value(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
 
     def _ctx_hollow_copy(self, original_parent_ptr, target_ptr, ctx_ptr):
@@ -1071,6 +1074,7 @@ class DSLType20:
                 if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
                     return False, "Variable [%s] already exists" % var_name
 
+        # mvtodo
         new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
         ptr.add_entry(new_var)
         return True, None
@@ -1081,6 +1085,7 @@ class DSLType20:
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
+                # mvtodo
                 var_copy = DSLType20_Variable(self._config_copy(), entry.get_name(), entry.get_value(), self._opt_list_copy(self._inherit_options(ptr, entry)))
                 list_ptr.append(var_copy)
 
@@ -1601,19 +1606,23 @@ class DSLType20:
             variable_result = ("%s %s" %  (variable_result, prod_opts))
 
         # add the variable's value - if it has it
+        # mvtodo
         if input_variable.get_value() is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
 
+            # mvtodo
             if isinstance(input_variable.get_value(), list):
                 variable_result += miniparse.LPARENT
 
             # add escaped value(s)
+            # mvtodo
             new_val = self._produce_values(input_variable.get_value())
             if new_val is None:
                 return None
             variable_result += new_val
 
+            # mvtodo
             if isinstance(input_variable.get_value(), list):
                 variable_result += miniparse.RPARENT
 
