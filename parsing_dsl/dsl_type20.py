@@ -231,6 +231,8 @@ def validate_option(name, value):
 
 def validate_options_list(options):
 
+    # mvtodo: ditch?
+
     if options is None:
         return False, "Options are None"
 
