@@ -215,46 +215,26 @@ def validate_value(value):
 
     return True
 
-def validate_option(name, value):
-
-    # mvtodo: ditch?
-
-    # validate name
-    if not validate_name(name):
-        return False, "Option name is invalid"
-
-    # validate value
-    if not validate_value(value):
-        return False, "Option value is invalid"
-
-    return True, None
-
-def validate_options_list(options):
-
-    # mvtodo: ditch?
+def validate_options(options):
 
     if options is None:
-        return False, "Options are None"
+        return True, None
+
+    if isinstance(options, DSLType20_Option):
+        return True, None
 
     if not isinstance(options, list):
-        return False, "Options are not a list"
+        return False, "Options [%s] are invalid" % options
 
     opt_name_map = {}
-    for opt in options:
+    for x in options:
 
-        if not isinstance(opt, tuple):
-            return False, "Options are not tuples in a list"
+        if not isinstance(x, DSLType20_Option):
+            return False, "Option [%s] is invalid" % x
 
-        if not len(opt) == 2:
-            return False, "Options are not pair of tuples in a list"
-
-        v, r = validate_option(opt[0], opt[1])
-        if not v:
-            return False, r
-
-        if opt[0] in opt_name_map:
-            return False, "Duplicated option: [%s]" % opt[0]
-        opt_name_map[opt[0]] = True
+        if x.get_name() in opt_name_map:
+            return False, "Duplicated option: [%s]" % x
+        opt_name_map[x.get_name()] = True
 
     return True, None
 
@@ -270,7 +250,7 @@ def make_obj_opt_list(configs, options):
 
     result = []
 
-    v, r = validate_options_list(options)
+    v, r = validate_options(options) # mvtodo
     if not v:
         return False, r
 
@@ -455,6 +435,10 @@ class DSLType20_Variable(DSLType20_ValueHolder):
         if not validate_name(self.name):
             raise mvtools_exception.mvtools_exception("Variable name is invalid")
 
+        v, r = validate_options(self.options)
+        if not v:
+            raise mvtools_exception.mvtools_exception("Options are invalid: [%s]" % r)
+
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_VAR
 
@@ -582,7 +566,7 @@ class DSLType20:
             return False, r
 
         # pre-validate options
-        v, r = validate_options_list(ctx_options)
+        v, r = validate_options(ctx_options) # mvtodo
         if not v:
             return False, r
 
@@ -696,11 +680,6 @@ class DSLType20:
         # pre-validate variable
         if not isinstance(variable, DSLType20_Variable):
             return False, "Wrong input variable type"
-
-        # pre-validate options
-        v, r = validate_options_list(var_opts)
-        if not v:
-            return False, r
 
         # convert incoming options from "neutral" format into options objects list
         v, r = make_obj_opt_list(self.configs, var_opts)
