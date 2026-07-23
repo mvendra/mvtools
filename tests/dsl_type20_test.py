@@ -1258,8 +1258,277 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(obj_inst.value, None)
         self.assertEqual(obj_inst.get_value(), None)
 
-    # mvtodo begin
-    # mvtodo end
+    def testDSLType20_Option_NewValue1(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.value, None)
+        obj_inst.new_value()
+        self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
+        obj_inst.new_value()
+        self.assertTrue(isinstance(obj_inst.value, list))
+        self.assertEqual(len(obj_inst.value), 2)
+        self.assertTrue(isinstance(obj_inst.value[0], dsl_type20.DSLType20_Value))
+        self.assertTrue(isinstance(obj_inst.value[1], dsl_type20.DSLType20_Value))
+
+    def testDSLType20_Option_AddValueImmediate1(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        ex_flag = False
+        try:
+            obj_inst.add_value_immediate("val")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Option_AddValueImmediate2(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.value, None)
+        obj_inst.new_value()
+        self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
+        self.assertEqual(obj_inst.value.internal_data, [])
+        ex_flag = False
+        try:
+            obj_inst.add_value_immediate("val\n")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Option_AddValueImmediate3(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.value, None)
+        obj_inst.new_value()
+        self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
+        self.assertEqual(obj_inst.value.internal_data, [])
+        obj_inst.add_value_immediate("val1")
+        self.assertEqual(obj_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val1")])
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val2")])
+
+    def testDSLType20_Option_AddValueImmediate4(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.value, None)
+        obj_inst.new_value()
+        obj_inst.new_value()
+        self.assertTrue(isinstance(obj_inst.value, list))
+        self.assertEqual(obj_inst.value[0].internal_data, [])
+        self.assertEqual(obj_inst.value[1].internal_data, [])
+        obj_inst.add_value_immediate("val1")
+        self.assertEqual(obj_inst.value[0].internal_data, [])
+        self.assertEqual(obj_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val1")])
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.value[0].internal_data, [])
+        self.assertEqual(obj_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "val2")])
+
+    def testDSLType20_Option_AddValueEnvvar1(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        ex_flag = False
+        try:
+            obj_inst.add_value_envvar("envvar")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Option_AddValueEnvvar2(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.value, None)
+        obj_inst.new_value()
+        self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
+        self.assertEqual(obj_inst.value.internal_data, [])
+        obj_inst.add_value_envvar("envvar1")
+        self.assertEqual(obj_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1")])
+        obj_inst.add_value_envvar("envvar2")
+        self.assertEqual(obj_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar2")])
+
+    def testDSLType20_Option_AddValueEnvvar3(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.value, None)
+        obj_inst.new_value()
+        obj_inst.new_value()
+        self.assertTrue(isinstance(obj_inst.value, list))
+        self.assertEqual(obj_inst.value[0].internal_data, [])
+        self.assertEqual(obj_inst.value[1].internal_data, [])
+        obj_inst.add_value_envvar("envvar1")
+        self.assertEqual(obj_inst.value[0].internal_data, [])
+        self.assertEqual(obj_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1")])
+        obj_inst.add_value_envvar("envvar2")
+        self.assertEqual(obj_inst.value[0].internal_data, [])
+        self.assertEqual(obj_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar2")])
+
+    def testDSLType20_Option_GetValueResolved1(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.get_value_resolved(), None)
+
+    def testDSLType20_Option_GetValueResolved2(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        self.assertEqual(obj_inst.get_value_resolved(), None)
+
+    def testDSLType20_Option_GetValueResolved3(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        self.assertEqual(obj_inst.get_value_resolved(), "")
+
+    def testDSLType20_Option_GetValueResolved4(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        obj_inst.add_value_immediate("")
+        self.assertEqual(obj_inst.get_value_resolved(), "")
+
+    def testDSLType20_Option_GetValueResolved5(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_resolved(), "val1val2")
+
+    def testDSLType20_Option_GetValueResolved6(self):
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_resolved(), "val1-envvar-value-1-val2")
+
+    def testDSLType20_Option_GetValueResolved7(self):
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_resolved(), "val1-envvar-value-1-val2")
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
+        self.assertEqual(obj_inst.get_value_resolved(), "val1-envvar-value-3-val2")
+
+    def testDSLType20_Option_GetValueResolved8(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        self.assertEqual(obj_inst.get_value_resolved(), ["", ""])
+
+    def testDSLType20_Option_GetValueResolved9(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "val2"])
+
+    def testDSLType20_Option_GetValueResolved10(self):
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "-envvar-value-1-", "val2"])
+
+    def testDSLType20_Option_GetValueResolved11(self):
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "-envvar-value-1-", "val2"])
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
+        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "-envvar-value-3-", "val2"])
+
+    def testDSLType20_Option_GetValueResolved12(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(True), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("~")
+        self.assertEqual(obj_inst.get_value_resolved(), os.path.expanduser("~"))
+
+    def testDSLType20_Option_GetValueResolved13(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(False), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("~")
+        self.assertEqual(obj_inst.get_value_resolved(), "~")
+
+    def testDSLType20_Option_GetValueSerialized1(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(obj_inst.get_value_serialized(), None)
+
+    def testDSLType20_Option_GetValueSerialized2(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        self.assertEqual(obj_inst.get_value_serialized(), None)
+
+    def testDSLType20_Option_GetValueSerialized3(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        self.assertEqual(obj_inst.get_value_serialized(), "\"\"")
+
+    def testDSLType20_Option_GetValueSerialized4(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        obj_inst.add_value_immediate("")
+        self.assertEqual(obj_inst.get_value_serialized(), "\"\" + \"\"")
+
+    def testDSLType20_Option_GetValueSerialized5(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_serialized(), "\"val1\" + \"val2\"")
+
+    def testDSLType20_Option_GetValueSerialized6(self):
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_serialized(), "\"val1\" + $%s + \"val2\"" % self.reserved_test_env_var_1[1:])
+
+    def testDSLType20_Option_GetValueSerialized7(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        self.assertEqual(obj_inst.get_value_serialized(), "(\"\", \"\")")
+
+    def testDSLType20_Option_GetValueSerialized8(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_serialized(), "(\"val1\", \"val2\")")
+
+    def testDSLType20_Option_GetValueSerialized9(self):
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(obj_inst.get_value_serialized(), "(\"val1\", $%s, \"val2\")" % self.reserved_test_env_var_1[1:])
+
+    def testDSLType20_Option_GetValueSerialized10(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(True), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("~")
+        self.assertEqual(obj_inst.get_value_serialized(), "\"~\"")
+
+    def testDSLType20_Option_GetValueSerialized11(self):
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(False), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("~")
+        self.assertEqual(obj_inst.get_value_serialized(), "\"~\"")
 
     def testDSLType20_Context1(self):
         ctx_inst = dsl_type20.DSLType20_Context(None, "a", [])
