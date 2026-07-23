@@ -276,7 +276,7 @@ def make_obj_opt_list(configs, options):
 
     for opt in options:
         opt_name, opt_val = opt
-        opt_obj = DSLType20_Option(configs, opt_name, opt_val)
+        opt_obj = DSLType20_Option(configs, opt_name, opt_val) # mvtodo
         result.append(opt_obj)
 
     return True, result
