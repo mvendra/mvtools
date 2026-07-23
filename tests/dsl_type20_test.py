@@ -964,7 +964,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.name, "a")
         self.assertEqual(var_inst.get_name(), "a")
         self.assertEqual(var_inst.value, None)
-        self.assertEqual(var_inst.get_value(), None)
+        self.assertEqual(var_inst.get_value_resolved(), None)
         self.assertEqual(var_inst.options, [])
         self.assertEqual(var_inst.get_options(), [])
 

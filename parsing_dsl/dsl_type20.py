@@ -368,23 +368,10 @@ class DSLType20_Value:
 
         return result
 
-class DSLType20_Variable:
+class DSLType20_ValueHolder:
 
-    def __init__(self, configs, name, options):
-
+    def __init__(self, configs):
         self.configs = configs
-        self.name = name
-        self.value = None
-        self.options = options
-
-        if not validate_name(self.name):
-            raise mvtools_exception.mvtools_exception("Variable name is invalid")
-
-    def get_type(self):
-        return DSLTYPE20_ENTRY_TYPE_VAR
-
-    def get_name(self):
-        return self.name
 
     def new_value(self):
 
@@ -452,6 +439,25 @@ class DSLType20_Variable:
             add_comma = True
         result += ")"
         return result
+
+class DSLType20_Variable(DSLType20_ValueHolder):
+
+    def __init__(self, configs, name, options):
+
+        super().__init__(configs)
+
+        self.name = name
+        self.value = None
+        self.options = options
+
+        if not validate_name(self.name):
+            raise mvtools_exception.mvtools_exception("Variable name is invalid")
+
+    def get_type(self):
+        return DSLTYPE20_ENTRY_TYPE_VAR
+
+    def get_name(self):
+        return self.name
 
     def get_options(self):
         return self.options
