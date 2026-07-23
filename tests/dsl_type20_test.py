@@ -1151,6 +1151,18 @@ class DSLType20Test(unittest.TestCase):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
         self.assertEqual(var_inst.get_value_resolved(), ["val1", "-envvar-value-3-", "val2"])
 
+    def testDSLType20_Variable_GetValueResolved12(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("~")
+        self.assertEqual(var_inst.get_value_resolved(), os.path.expanduser("~"))
+
+    def testDSLType20_Variable_GetValueResolved13(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(False), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("~")
+        self.assertEqual(var_inst.get_value_resolved(), "~")
+
     def testDSLType20_Variable_GetValueSerialized1(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         self.assertEqual(var_inst.get_value_serialized(), None)
