@@ -1228,6 +1228,18 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("val2")
         self.assertEqual(var_inst.get_value_serialized(), "(\"val1\", $%s, \"val2\")" % self.reserved_test_env_var_1[1:])
 
+    def testDSLType20_Variable_GetValueSerialized10(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("~")
+        self.assertEqual(var_inst.get_value_serialized(), "\"~\"")
+
+    def testDSLType20_Variable_GetValueSerialized11(self):
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(False), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("~")
+        self.assertEqual(var_inst.get_value_serialized(), "\"~\"")
+
     def testDSLType20_Option1(self):
         ex_flag = False
         try:
@@ -1245,6 +1257,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(obj_inst.get_name(), "a")
         self.assertEqual(obj_inst.value, None)
         self.assertEqual(obj_inst.get_value(), None)
+
+    # mvtodo begin
+    # mvtodo end
 
     def testDSLType20_Context1(self):
         ctx_inst = dsl_type20.DSLType20_Context(None, "a", [])
