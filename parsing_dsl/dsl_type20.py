@@ -1033,21 +1033,21 @@ class DSLType20:
 
         return new_inst
 
-    def _var_val_copy(self, var_val_ptr):
+    def _obj_val_copy(self, obj_val_ptr):
 
-        if var_val_ptr is None:
+        if obj_val_ptr is None:
             return None
-        elif isinstance(var_val_ptr, DSLType20_Value):
-            return _val_copy(var_val_ptr)
+        elif isinstance(obj_val_ptr, DSLType20_Value):
+            return _val_copy(obj_val_ptr)
 
         ret = []
-        for x in var_val_ptr:
+        for x in obj_val_ptr:
             ret.append(_val_copy(x))
         return ret
 
     def _var_copy(self, original_parent_ptr, var_ptr):
         new_inst = DSLType20_Variable(self._config_copy(), var_ptr.get_name(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
-        new_inst.value = self._var_val_copy(var_ptr.value)
+        new_inst.value = self._obj_val_copy(var_ptr.value)
         return new_inst
 
     def _ctx_hollow_copy(self, original_parent_ptr, target_ptr, ctx_ptr):
