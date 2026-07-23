@@ -1054,7 +1054,8 @@ class DSLType20:
         return DSLType20_Context(target_ptr, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(original_parent_ptr, ctx_ptr)))
 
     def _opt_copy(self, opt_ptr):
-        return DSLType20_Option(self._config_copy(), opt_ptr.get_name(), opt_ptr.get_value())
+        new_inst = DSLType20_Option(self._config_copy(), opt_ptr.get_name())
+        return new_inst
 
     def _opt_list_copy(self, opt_ptr_list):
         result = []
