@@ -464,25 +464,17 @@ class DSLType20_Variable(DSLType20_ValueHolder):
     def get_options(self):
         return self.options
 
-class DSLType20_Option:
+class DSLType20_Option(DSLType20_ValueHolder):
 
-    def __init__(self, configs, name, value):
+    def __init__(self, configs, name):
 
-        self.configs = configs
+        super().__init__(configs)
+
         self.name = name
-        self.value = value
+        self.value = None
 
-        v, r = validate_option(self.name, self.value)
-        if not v:
-            raise mvtools_exception.mvtools_exception(r)
-
-        # mvtodo: below: kill
-
-        # expand the value
-        v, r = expand_value(self.configs, self.value)
-        if not v:
-            raise mvtools_exception.mvtools_exception("Unable to expand option's value: [%s : %s]" % (self.name, self.value))
-        self.value = r
+        if not validate_name(self.name):
+            raise mvtools_exception.mvtools_exception("Option name is invalid")
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_OPT
