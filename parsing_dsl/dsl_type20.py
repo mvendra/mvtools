@@ -386,7 +386,7 @@ class DSLType20_ValueHolder:
 
         val_ptr = None
         if self.value is None:
-            raise mvtools_exception.mvtools_exception("Variable value [%s] cannot be added - value container is empty" % value)
+            raise mvtools_exception.mvtools_exception("Immediate value [%s] cannot be added - value container is empty" % value)
         elif isinstance(self.value, DSLType20_Value):
             val_ptr = self.value
         else:
