@@ -1055,6 +1055,7 @@ class DSLType20:
 
     def _opt_copy(self, opt_ptr):
         new_inst = DSLType20_Option(self._config_copy(), opt_ptr.get_name())
+        new_inst.value = self._obj_val_copy(opt_ptr.value)
         return new_inst
 
     def _opt_list_copy(self, opt_ptr_list):
