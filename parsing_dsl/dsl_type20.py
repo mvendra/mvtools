@@ -694,7 +694,7 @@ class DSLType20:
     def add_variable(self, variable, context = None):
 
         # pre-validate variable
-        if not isinstance(variable, DSLType20_Variable)
+        if not isinstance(variable, DSLType20_Variable):
             return False, "Wrong input variable type"
 
         # pre-validate options
