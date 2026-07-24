@@ -2099,11 +2099,11 @@ class DSLType20Test(unittest.TestCase):
     def testDslType20_GetVariables3(self):
 
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
-        dsl = dsl_type20.DSLType20(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
-        v, r = dsl.add_context("ctx1", test_opt1, None)
+        v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
         test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
         test_opt2.new_value()
@@ -2111,13 +2111,13 @@ class DSLType20Test(unittest.TestCase):
         test_var = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
         test_var.new_value()
         test_var.add_value_immediate("val2")
-        v, r = dsl.add_variable(test_var, "ctx1")
+        v, r = test_dsl.add_variable(test_var, "ctx1")
         self.assertTrue(v)
-        v, r = dsl.get_variables("var1", "ctx1")
+        v, r = test_dsl.get_variables("var1", "ctx1")
         self.assertTrue(v)
-        self.assertEqual(r[0].get_name(), dsl.data.entries[0].entries[0].get_name())
-        self.assertNotEqual(r[0], dsl.data.entries[0].entries[0])
-        self.assertNotEqual(r[0].options[1], dsl.data.entries[0].entries[0].options)
+        self.assertEqual(r[0].get_name(), test_dsl.data.entries[0].entries[0].get_name())
+        self.assertNotEqual(r[0], test_dsl.data.entries[0].entries[0])
+        self.assertNotEqual(r[0].options[1], test_dsl.data.entries[0].entries[0].options)
 
     def testDslType20_GetVariables4(self):
 
