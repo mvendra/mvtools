@@ -1007,11 +1007,11 @@ class DSLType20:
         if obj_val_ptr is None:
             return None
         elif isinstance(obj_val_ptr, DSLType20_Value):
-            return _val_copy(obj_val_ptr)
+            return self._val_copy(obj_val_ptr)
 
         ret = []
         for x in obj_val_ptr:
-            ret.append(_val_copy(x))
+            ret.append(self._val_copy(x))
         return ret
 
     def _var_copy(self, original_parent_ptr, var_ptr):
