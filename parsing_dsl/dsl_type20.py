@@ -479,6 +479,10 @@ class DSLType20_Context:
         if not validate_name(self.name):
             raise mvtools_exception.mvtools_exception("Context name is invalid")
 
+        v, r = validate_options(self.options)
+        if not v:
+            raise mvtools_exception.mvtools_exception("Options are invalid: [%s]" % r)
+
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_CTX
 
@@ -489,6 +493,10 @@ class DSLType20_Context:
         return self.name
 
     def get_options(self):
+        if self.options is None:
+            return []
+        if isinstance(self.options, DSLType20_Option):
+            return [self.options]
         return self.options
 
     def get_entries(self):

@@ -1521,7 +1521,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(ctx_inst.get_parent_ptr(), None)
         self.assertEqual(ctx_inst.name, "a")
         self.assertEqual(ctx_inst.get_name(), "a")
-        self.assertEqual(ctx_inst.options, [])
+        self.assertEqual(ctx_inst.options, None)
         self.assertEqual(ctx_inst.get_options(), [])
         self.assertEqual(ctx_inst.entries, [])
 
@@ -1532,6 +1532,45 @@ class DSLType20Test(unittest.TestCase):
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
+
+    def testDSLType20_Context3(self):
+        test_opt = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        ctx_inst = dsl_type20.DSLType20_Context(None, "a", test_opt)
+        self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
+        self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
+        self.assertEqual(ctx_inst.ptr_parent, None)
+        self.assertEqual(ctx_inst.get_parent_ptr(), None)
+        self.assertEqual(ctx_inst.name, "a")
+        self.assertEqual(ctx_inst.get_name(), "a")
+        self.assertEqual(ctx_inst.options, test_opt)
+        self.assertEqual(ctx_inst.get_options(), [test_opt])
+        self.assertEqual(ctx_inst.entries, [])
+
+    def testDSLType20_Context4(self):
+        ctx_inst = dsl_type20.DSLType20_Context(None, "a", [])
+        self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
+        self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
+        self.assertEqual(ctx_inst.ptr_parent, None)
+        self.assertEqual(ctx_inst.get_parent_ptr(), None)
+        self.assertEqual(ctx_inst.name, "a")
+        self.assertEqual(ctx_inst.get_name(), "a")
+        self.assertEqual(ctx_inst.options, [])
+        self.assertEqual(ctx_inst.get_options(), [])
+        self.assertEqual(ctx_inst.entries, [])
+
+    def testDSLType20_Context5(self):
+        test_opt1 = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        test_opt2 = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")
+        ctx_inst = dsl_type20.DSLType20_Context(None, "a", [test_opt1, test_opt2])
+        self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
+        self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
+        self.assertEqual(ctx_inst.ptr_parent, None)
+        self.assertEqual(ctx_inst.get_parent_ptr(), None)
+        self.assertEqual(ctx_inst.name, "a")
+        self.assertEqual(ctx_inst.get_name(), "a")
+        self.assertEqual(ctx_inst.options, [test_opt1, test_opt2])
+        self.assertEqual(ctx_inst.get_options(), [test_opt1, test_opt2])
+        self.assertEqual(ctx_inst.entries, [])
 
     def testDslType20_GetEntireDFS1(self):
 
