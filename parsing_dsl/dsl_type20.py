@@ -690,7 +690,7 @@ class DSLType20:
             self.add_context(context, [], None)
 
         # add new variable to internal data
-        v, r = self._find_context(context, self._add_variable_helper, (var_name, var_val, opts_obj_list))
+        v, r = self._find_context(context, self._add_variable_helper, variable)
         if not v:
             return False, r
         if not r:
