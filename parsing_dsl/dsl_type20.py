@@ -248,6 +248,8 @@ def validate_context(context_name):
 
 def make_obj_opt_list(configs, options):
 
+    # mvtodo: ditch?
+
     result = []
 
     v, r = validate_options(options) # mvtodo
