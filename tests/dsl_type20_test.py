@@ -1838,7 +1838,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r[0].get_name(), dsl.data.entries[0].entries[0].get_name())
         self.assertNotEqual(r[0], dsl.data.entries[0].entries[0])
-        self.assertNotEqual(r[0].options[1], dsl.data.entries[0].entries[0].options[0])
+        self.assertNotEqual(r[0].options[1], dsl.data.entries[0].entries[0].options)
 
     def testDslType20_GetVariables4(self):
 
