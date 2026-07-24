@@ -683,12 +683,6 @@ class DSLType20:
         if not isinstance(variable, DSLType20_Variable):
             return False, "Wrong input variable type"
 
-        # convert incoming options from "neutral" format into options objects list
-        v, r = make_obj_opt_list(self.configs, var_opts)
-        if not v:
-            return False, r
-        opts_obj_list = r
-
         # add context to the root context if it does not preexist
         if context is None:
             context = self.root_context_id
