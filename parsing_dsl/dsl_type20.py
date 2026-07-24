@@ -1062,16 +1062,12 @@ class DSLType20:
 
     def _add_variable_helper(self, ptr, cb_data_add):
 
-        var_name, var_val, var_opts = cb_data_add
-
         if not self.configs.allow_var_dupes:
             for entry in ptr.get_entries():
-                if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == var_name:
-                    return False, "Variable [%s] already exists" % var_name
+                if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and entry.get_name() == cb_data_add.get_name():
+                    return False, "Variable [%s] already exists" % cb_data_add.get_name()
 
-        # mvtodo
-        new_var = DSLType20_Variable(self.configs, var_name, var_val, var_opts)
-        ptr.add_entry(new_var)
+        ptr.add_entry(cb_data_add)
         return True, None
 
     def _get_variable_helper(self, ptr, cb_data_get):
