@@ -1212,7 +1212,7 @@ class DSLType20:
         if var_name == "":
             return False, "Empty var name: [%s]" % str_input
 
-        v, r = self.add_variable(var_name, var_value, parsed_opts, local_context)
+        v, r = self.add_variable(var_name, var_value, parsed_opts, local_context) # mvtodo
         if not v:
             return False, "Unable to add variable [%s]: [%s]" % (var_name, r)
 
