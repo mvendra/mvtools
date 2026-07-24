@@ -245,7 +245,10 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
                 return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # add/set new variable
-    v, r = _dh_handle.add_variable(_var, _val, _opts, _context) # mvtodo
+    new_var = dsl_type20.DSLType20_Variable(_dh_handle.configs, _var, _opts)
+    new_var.new_value()
+    new_var.add_value_immediate(_val)
+    v, r = _dh_handle.add_variable(new_var, _context)
     if not v:
         return False, "Unable to add variable [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
 
@@ -264,7 +267,7 @@ def set_signal(_sig_name, _sig_val):
     if not v:
         return False, r
 
-    return _set_internal(r, "(internal toolbus database)", ext, TOOLBUS_SIGNAL_CONTEXT, _sig_name, _sig_val, [], False)
+    return _set_internal(r, "(internal toolbus database)", ext, TOOLBUS_SIGNAL_CONTEXT, _sig_name, _sig_val, None, False)
 
 def set_field(_db_name, _context, _var, _val, _opts):
 
