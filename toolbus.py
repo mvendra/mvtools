@@ -48,6 +48,43 @@ def _bootstrap_internal_toolbus_db(_filename): # this is supposed to be a "priva
 
     return True, None
 
+def _convert_neutral_format_obj_list(dh_handle, opts_input):
+
+    opts_converted = None
+
+    if opts_input is not None:
+
+        if isinstance(opts_input, tuple):
+
+            if len(opts_input) != 2:
+                return False, "Option [%s] is not a tupled pair" % opts_input
+
+            optname, optval = opts_input
+            opts_converted = dsl_type20.DSLType20_Option(dh_handle.configs, optname)
+            opts_converted.new_value()
+            opts_converted.add_value_immediate(optval)
+
+        elif isinstance(opts_input, list):
+
+            opts_converted = []
+
+            for entry in opts_input:
+
+                if len(entry) != 2:
+                    return False, "(listed) option [%s] is not a tupled pair" % entry
+
+                optname, optval = entry
+                current_opt = dsl_type20.DSLType20_Option(dh_handle.configs, optname)
+                current_opt.new_value()
+                current_opt.add_value_immediate(optval)
+
+                opts_converted.append(current_opt)
+
+        else:
+            return False, "Invalid options: [%s]" % opts_input
+
+    return True, opts_converted
+
 def get_db_handle(_db_name, bootstrap_internal=False):
 
     if _db_name is None:
@@ -274,8 +311,15 @@ def set_field(_db_name, _context, _var, _val, _opts):
     v, r, ext = get_handle_custom_db(_db_name)
     if not v:
         return False, r
+    dh_handle = r
 
-    return _set_internal(r, _db_name, ext, _context, _var, _val, _opts, True)
+    # convert from "neutral" format into object list
+    v, r = _convert_neutral_format_obj_list(dh_handle, _opts)
+    if not v:
+        return False, "Invalid options [%s]: [%s] (database: [%s], context: [%s])" % (_opts, r, _db_name, _context)
+    opts_local = r
+
+    return _set_internal(dh_handle, _db_name, ext, _context, _var, _val, opts_local, True)
 
 def error_only_one_op_allowed():
     print("Only one operation is allowed (either --get-signal or --set-signal)")
