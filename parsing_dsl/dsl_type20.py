@@ -448,6 +448,10 @@ class DSLType20_Variable(DSLType20_ValueHolder):
         return self.name
 
     def get_options(self):
+        if self.options is None:
+            return []
+        if isinstance(self.options, DSLType20_Option):
+            return [self.options]
         return self.options
 
 class DSLType20_Option(DSLType20_ValueHolder):

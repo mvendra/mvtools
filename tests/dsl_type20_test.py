@@ -943,7 +943,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.value, None)
         self.assertEqual(var_inst.get_value_resolved(), None)
         self.assertEqual(var_inst.options, None)
-        self.assertEqual(var_inst.get_options(), None)
+        self.assertEqual(var_inst.get_options(), [])
 
     def testDSLType20_Variable3(self):
         opt_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")
@@ -956,7 +956,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.value, None)
         self.assertEqual(var_inst.get_value_resolved(), None)
         self.assertEqual(var_inst.options, opt_inst)
-        self.assertEqual(var_inst.get_options(), opt_inst)
+        self.assertEqual(var_inst.get_options(), [opt_inst])
 
     def testDSLType20_Variable4(self):
         opt_inst1 = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")
