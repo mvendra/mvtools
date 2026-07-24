@@ -238,14 +238,6 @@ def validate_options(options):
 
     return True, None
 
-def validate_context(context_name):
-
-    # validate name
-    if not validate_name(context_name):
-        return False, "Context name is invalid"
-
-    return True, None
-
 def make_obj_opt_list(configs, options):
 
     # mvtodo: ditch?
@@ -484,9 +476,8 @@ class DSLType20_Context:
         self.options = options
         self.entries = []
 
-        v, r = validate_context(self.name)
-        if not v:
-            raise mvtools_exception.mvtools_exception(r)
+        if not validate_name(self.name):
+            raise mvtools_exception.mvtools_exception("Context name is invalid")
 
     def get_type(self):
         return DSLTYPE20_ENTRY_TYPE_CTX
@@ -565,9 +556,8 @@ class DSLType20:
             parent_ctx = self.root_context_id
 
         # pre-validate context name
-        v, r = validate_context(ctx_name)
-        if not v:
-            return False, r
+        if not validate_name(ctx_name):
+            return False, "Invalid context name: [%s]" % ctx_name
 
         # pre-validate options
         v, r = validate_options(ctx_options)

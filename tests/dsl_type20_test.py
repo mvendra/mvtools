@@ -582,36 +582,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_options( [1, dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")] )[0])
         self.assertFalse(dsl_type20.validate_options( [dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a"), dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")] )[0])
 
-    def testValidateContext(self):
-        self.assertFalse(dsl_type20.validate_context(None)[0])
-        self.assertFalse(dsl_type20.validate_context([])[0])
-        self.assertFalse(dsl_type20.validate_context(())[0])
-        self.assertFalse(dsl_type20.validate_context("name\x0a")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x00")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x20")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x09")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x5b")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x5d")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x7b")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x7d")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x28")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x29")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x3d")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x2f")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x5c")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x24")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x7e")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x40")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x22")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x3a")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x3b")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x2a")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x2c")[0])
-        self.assertFalse(dsl_type20.validate_context("name\x23")[0])
-        self.assertFalse(dsl_type20.validate_context("")[0])
-        self.assertTrue(dsl_type20.validate_context("a")[0])
-        self.assertTrue(dsl_type20.validate_context("거물사냥꾼")[0])
-
     def testMakeObjOptList1(self):
         v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("a", "b") ])
         self.assertFalse(v)
@@ -1544,7 +1514,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(obj_inst.get_value_serialized(), "\"~\"")
 
     def testDSLType20_Context1(self):
-        ctx_inst = dsl_type20.DSLType20_Context(None, "a", [])
+        ctx_inst = dsl_type20.DSLType20_Context(None, "a", None)
         self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
         self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
         self.assertEqual(ctx_inst.ptr_parent, None)
@@ -1558,7 +1528,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Context2(self):
         ex_flag = False
         try:
-            ctx_inst = dsl_type20.DSLType20_Context(None, "", [])
+            ctx_inst = dsl_type20.DSLType20_Context(None, "", None)
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
