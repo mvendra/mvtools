@@ -80,7 +80,7 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_exe_name_contents1 += "        v, r = toolbus.bootstrap_custom_toolbus_db(execution_name)\n"
         sample_custom_exe_name_contents1 += "        if not v:\n"
         sample_custom_exe_name_contents1 += "            return False, \"Failure in test infrastructure: [%s]\" % r\n"
-        sample_custom_exe_name_contents1 += "        v, r = toolbus.set_field(execution_name, \"test-ctx-custom\", \"test-var-name\", \"test-var-val\", [])\n"
+        sample_custom_exe_name_contents1 += "        v, r = toolbus.set_field(execution_name, \"test-ctx-custom\", \"test-var-name\", \"test-var-val\", None)\n"
         sample_custom_exe_name_contents1 += "        if not v:\n"
         sample_custom_exe_name_contents1 += "            return False, \"Failure in test infrastructure: [%s]\" % r\n"
         sample_custom_exe_name_contents1 += "        return True, None\n"

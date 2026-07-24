@@ -177,7 +177,7 @@ def _handle_delayed_start_delegate(feedback_object, execution_name, time_delay, 
         return True, None
 
     # setup initial delayed state
-    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status", "delayed", [])
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status", "delayed", None)
     if not v:
         return False, "Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
@@ -250,13 +250,13 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
         return False, r
 
     # setup the status of the soon-to-start execution
-    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status", "running", [])
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "status", "running", None)
     if not v:
         return False, "Unable to start execution: execution name [%s]'s status couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
     """
     # setup depth tracker of the soon-to-start execution
-    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", "0", [])
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", "0", None)
     if not v:
         return False, "Unable to start execution: execution name [%s]'s depth tracker couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
     """
@@ -264,7 +264,7 @@ def begin_execution_delegate(main_job, feedback_object, execution_name, options)
     begin_timestamp = maketimestamp.get_timestamp_now()
 
     # register timestamp in the execution context
-    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "begin-timestamp", begin_timestamp, [])
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "begin-timestamp", begin_timestamp, None)
     if not v:
         return False, "Unable to start execution: execution name [%s]'s begin-timestamp couldn't be registered on launch_jobs's toolbus database: [%s]" % (execution_name, r)
 
@@ -284,7 +284,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     depth_tracker += 1
     if depth_tracker > NESTED_JOB_DEPTH_LIMIT:
         return False, "Job [%s][%s]: Depth limit (%s) reached" % (target_job.name, target_job.get_desc(), NESTED_JOB_DEPTH_LIMIT)
-    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), [])
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), None)
     if not v:
         return False, "Job [%s][%s]: Unable to write depth limit back onto toolbus database. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
     """
@@ -322,7 +322,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
         return False, "Job [%s][%s]: Unable to resolve depth tracker. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
     depth_tracker = int(r[1])
     depth_tracker -= 1
-    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), [])
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), None)
     if not v:
         return False, "Job [%s][%s]: Unable to write depth limit back onto toolbus database. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
     """
@@ -356,7 +356,7 @@ def _change_status(exec_name, status_val, log_noun, log_verb):
         print("Execution [%s] is not registered on launch_jobs toolbus database." % exec_name)
         return
 
-    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, exec_name, "status", status_val, [])
+    v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, exec_name, "status", status_val, None)
     if not v:
         print("Unable to %s execution [%s]: [%s]" % (log_noun, exec_name, r))
         return

@@ -25,7 +25,7 @@ def _ensure_toolbus_db():
     if not v:
         first_error = r # save it - this might be recoverable (if the db file is simply empty)
 
-    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, "0", [])
+    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, "0", None)
     if not v:
         errmsg = ""
         if first_error is None:
@@ -114,7 +114,7 @@ def clipstack_push():
         return False, r
 
     # update the header count
-    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, str(int(field_header_count[1]) + 1), [])
+    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, str(int(field_header_count[1]) + 1), None)
     if not v:
         return False, r
 
@@ -187,7 +187,7 @@ def clipstack_pop():
         return False, r
 
     # update the header count
-    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, str(header_count-1), [])
+    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, str(header_count-1), None)
     if not v:
         return False, r
 

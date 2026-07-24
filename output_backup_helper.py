@@ -26,7 +26,7 @@ def _ensure_toolbus_db():
     if not v:
         first_error = r # save it - this might be recoverable (if the db file is simply empty)
 
-    v, r = toolbus.set_field(OUTPUT_BACKUP_HELPER_TOOLBUS_DATABASE, OUTPUT_BACKUP_HELPER_TOOLBUS_CONTEXT, OUTPUT_BACKUP_HELPER_TOOLBUS_INDEX, "0", [])
+    v, r = toolbus.set_field(OUTPUT_BACKUP_HELPER_TOOLBUS_DATABASE, OUTPUT_BACKUP_HELPER_TOOLBUS_CONTEXT, OUTPUT_BACKUP_HELPER_TOOLBUS_INDEX, "0", None)
     if not v:
         errmsg = ""
         if first_error is None:
@@ -67,7 +67,7 @@ def dump_single_autobackup(feedback_object, base_path, output_fn_prefix, output_
     if backup_file_index > OUTPUT_BACKUP_HELPER_MAX_INDEX:
         backup_file_index = 0
 
-    v, r = toolbus.set_field(OUTPUT_BACKUP_HELPER_TOOLBUS_DATABASE, OUTPUT_BACKUP_HELPER_TOOLBUS_CONTEXT, OUTPUT_BACKUP_HELPER_TOOLBUS_INDEX, str(backup_file_index+1), [])
+    v, r = toolbus.set_field(OUTPUT_BACKUP_HELPER_TOOLBUS_DATABASE, OUTPUT_BACKUP_HELPER_TOOLBUS_CONTEXT, OUTPUT_BACKUP_HELPER_TOOLBUS_INDEX, str(backup_file_index+1), None)
     if not v:
         return "toolbus error: [%s]" % r
 
