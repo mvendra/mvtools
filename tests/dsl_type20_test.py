@@ -1810,8 +1810,12 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetVariables3(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        v, r = dsl.add_context("ctx1", [("opt1", "val1")], None)
+        test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
+        dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt.new_value()
+        test_opt.add_value_immediate("val1")
+        v, r = dsl.add_context("ctx1", test_opt, None)
         self.assertTrue(v)
         v, r = dsl.add_variable("var1", "val2", [("opt2", "val2")], "ctx1")
         self.assertTrue(v)

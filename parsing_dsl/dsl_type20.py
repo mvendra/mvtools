@@ -554,8 +554,6 @@ class DSLType20:
 
     def add_context(self, ctx_name, ctx_options, parent_ctx = None):
 
-        # ctx_options: expected as a list of tuples ("neutral" format)
-
         if ctx_name == self.root_context_id:
             return False, "Tried to add context: [%s] - error. This is a reserved context name" % (self.root_context_id)
 
@@ -568,15 +566,9 @@ class DSLType20:
             return False, r
 
         # pre-validate options
-        v, r = validate_options(ctx_options) # mvtodo
+        v, r = validate_options(ctx_options)
         if not v:
             return False, r
-
-        # convert incoming options from "neutral" format into options objects list
-        v, r = make_obj_opt_list(self.configs, ctx_options)
-        if not v:
-            return False, r
-        opts_obj_list = r
 
         # first check if the context doesn't already exist
         v, r = self._find_context(ctx_name, None, None)
@@ -586,7 +578,7 @@ class DSLType20:
             return False, "Failed adding new context: [%s] already exists" % ctx_name
 
         # add new context to the internal datastructure
-        v, r = self._find_context(parent_ctx, self._add_ctx_helper, (ctx_name, opts_obj_list))
+        v, r = self._find_context(parent_ctx, self._add_ctx_helper, (ctx_name, ctx_options))
         if not v:
             return False, r
         if not r:
