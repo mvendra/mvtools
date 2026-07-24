@@ -546,7 +546,7 @@ class DSLType20:
 
     def clear(self):
         self.data = None
-        self.data = DSLType20_Context(None, self.root_context_id, [])
+        self.data = DSLType20_Context(None, self.root_context_id, None)
 
     def get_entire_dfs(self):
 
