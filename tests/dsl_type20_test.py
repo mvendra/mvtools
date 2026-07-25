@@ -4327,14 +4327,22 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt1", "val2"), ("opt2", "val3"), ("opt3", "val4"), ("opt4", "val5")])
 
     def testDslType20_TestAddVariable16(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertTrue(dsl.add_variable("var1", "val1", [], "ctx1")[0])
-        v, r = dsl.get_all_variables("ctx1")
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        self.assertTrue(test_dsl.add_variable(test_var1, "ctx1")[0])
+
+        v, r = test_dsl.get_all_variables("ctx1")
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value(), "val1")
+        self.assertEqual(var_obj.get_value_resolved(), "val1")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [])
 
     def testDslType20_TestAddVariable17(self):
