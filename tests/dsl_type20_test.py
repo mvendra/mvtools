@@ -3369,21 +3369,31 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx2")), [ ("opt2", "val2"), ("opt3", "val3"), ("opt1", "val4") ])
 
     def testDslType20_TestAddContext23(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        v, r = dsl.add_context("ctx1", None, None)
+
+        test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
-        v, r = dsl.add_context("ctx2", None, "ctx1")
+        v, r = test_dsl.add_context("ctx2", None, "ctx1")
         self.assertTrue(v)
-        v, r = dsl.add_variable("var1", None, [], "ctx1")
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var4", None)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
         self.assertTrue(v)
-        v, r = dsl.add_variable("var2", None, [], "ctx1")
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
         self.assertTrue(v)
-        v, r = dsl.add_variable("var3", None, [], "ctx2")
+        v, r = test_dsl.add_variable(test_var3, "ctx2")
         self.assertTrue(v)
-        v, r = dsl.add_variable("var4", None, [], "ctx2")
+        v, r = test_dsl.add_variable(test_var4, "ctx2")
         self.assertTrue(v)
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")), [("var1", None, []), ("var2", None, [])])
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx2")), [("var3", None, []), ("var4", None, [])])
+
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx1")), [("var1", None, []), ("var2", None, [])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx2")), [("var3", None, []), ("var4", None, [])])
 
     def testDslType20_TestAddContext24(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
