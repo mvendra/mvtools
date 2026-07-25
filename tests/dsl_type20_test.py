@@ -4482,10 +4482,22 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_variable(test_var2)[0])
 
     def testDslType20_TestDisallowDupes4(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes = False))
-        self.assertTrue(dsl.add_context("ctx1", None, None)[0])
-        self.assertTrue(dsl.add_variable("var1", "val1", [], "ctx1")[0])
-        self.assertFalse(dsl.add_variable("var1", "val2", [], "ctx1")[0])
+
+        test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = False)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        self.assertTrue(test_dsl.add_context("ctx1", None, None)[0])
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        self.assertTrue(test_dsl.add_variable(test_var1, "ctx1")[0])
+        self.assertFalse(test_dsl.add_variable(test_var2, "ctx1")[0])
 
     def testDslType20_TestDisallowDupes5(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes = False))
