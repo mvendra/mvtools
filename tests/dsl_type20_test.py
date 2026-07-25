@@ -3630,16 +3630,30 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r.get_entries()[0].get_parent_ptr().get_parent_ptr(), None)
 
     def testDslType20_TestGetContext15(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        v, r = dsl.add_context("ctx1", [("opt1", None)], None)
+
+        test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+
+        v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
-        v, r = dsl.add_context("ctx2", [("opt2", None)], "ctx1")
+        v, r = test_dsl.add_context("ctx2", test_opt2, "ctx1")
         self.assertTrue(v)
-        v, r = dsl.add_context("ctx3", [("opt3", None)], "ctx2")
+        v, r = test_dsl.add_context("ctx3", test_opt3, "ctx2")
         self.assertTrue(v)
-        v, r = dsl.add_variable("var1", "val1", [("opt4", None)], "ctx3")
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt4)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        v, r = test_dsl.add_variable(test_var1, "ctx3")
         self.assertTrue(v)
-        v, r = dsl.get_context("ctx3")
+
+        v, r = test_dsl.get_context("ctx3")
         self.assertTrue(v)
         self.assertEqual(r.get_entries()[0].get_name(), "var1")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(r.get_entries()[0].get_options()), [("opt1", None), ("opt2", None), ("opt3", None), ("opt4", None)])
