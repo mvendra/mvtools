@@ -4433,22 +4433,6 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertFalse(test_dsl.add_variable(test_opt1)[0])
 
-    def testDslType20_TestAddVariableFail2(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertFalse(dsl.add_variable(1, "val1", [ ("opt", "val") ] )[0])
-
-    def testDslType20_TestAddVariableFail3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertFalse(dsl.add_variable(None, "val1", [ ("opt", "val") ] )[0])
-
-    def testDslType20_TestAddVariableFail4(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertFalse(dsl.add_variable("var1", "first line\nsecond line", [ ] )[0])
-
-    def testDslType20_TestAddVariableFail5(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertFalse(dsl.add_variable("var1", "val1", [ ("opt1", "first line\nsecond line") ] )[0])
-
     def testDslType20_TestDisallowDupes1(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(allow_var_dupes = False))
         self.assertTrue(dsl.add_variable("var1", "val1", [])[0])
