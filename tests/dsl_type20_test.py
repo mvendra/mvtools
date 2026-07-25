@@ -4944,30 +4944,52 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestRemAllVariables4(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertTrue(dsl.add_variable("var1", "val1", [], "ctx1")[0])
-        self.assertTrue(dsl.add_variable("var2", "val2", [], "ctx1")[0])
-        self.assertTrue(dsl.add_variable("var3", "val3", [], "ctx1")[0])
-        self.assertTrue(dsl.add_variable("var3", "val3", [])[0])
-        v, r = dsl.get_all_variables("ctx1")
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var4.new_value()
+        test_var4.add_value_immediate("val3")
+
+        self.assertTrue(test_dsl.add_variable(test_var1, "ctx1")[0])
+        self.assertTrue(test_dsl.add_variable(test_var2, "ctx1")[0])
+        self.assertTrue(test_dsl.add_variable(test_var3, "ctx1")[0])
+        self.assertTrue(test_dsl.add_variable(test_var4)[0])
+
+        v, r = test_dsl.get_all_variables("ctx1")
         self.assertTrue(v)
         self.assertEqual(len(r), 3)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value(), "val1")
+        self.assertEqual(var_obj.get_value_resolved(), "val1")
         self.assertEqual(var_obj.get_options(), [])
         var_obj = r[1]
         self.assertEqual(var_obj.get_name(), "var2")
-        self.assertEqual(var_obj.get_value(), "val2")
+        self.assertEqual(var_obj.get_value_resolved(), "val2")
         self.assertEqual(var_obj.get_options(), [])
         var_obj = r[2]
         self.assertEqual(var_obj.get_name(), "var3")
-        self.assertEqual(var_obj.get_value(), "val3")
+        self.assertEqual(var_obj.get_value_resolved(), "val3")
         self.assertEqual(var_obj.get_options(), [])
-        v, r = dsl.rem_all_variables("ctx1")
+
+        v, r = test_dsl.rem_all_variables("ctx1")
         self.assertTrue(v)
         self.assertEqual(r, ["var1", "var2", "var3"])
-        v, r = dsl.get_all_variables("ctx1")
+
+        v, r = test_dsl.get_all_variables("ctx1")
         self.assertTrue(v)
         self.assertEqual(len(r), 0)
         self.assertEqual(r, [])
