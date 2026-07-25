@@ -276,7 +276,7 @@ def inherit_options_helper(parent_options, new_options):
     for n_opt in new_options:
         v, r = opt_list_has(parent_options, n_opt.get_name())
         if v: # common option - let's look further
-            if r.get_value() is None and n_opt.get_value() is None:
+            if r.get_value_resolved() is None and n_opt.get_value_resolved() is None:
                 continue # doubletapped, valueless option. drop/skip
         result.append(n_opt)
 
