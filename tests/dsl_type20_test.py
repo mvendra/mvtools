@@ -3685,18 +3685,25 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r.get_entries()), 1)
 
     def testDslType20_TestGetSubContext3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.add_variable("ctx1", None, [])
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "ctx1", None)
+
+        v, r = test_dsl.add_variable(test_var1)
         self.assertTrue(v)
-        v, r = dsl.add_context("ctx1", None, None)
+
+        v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
-        v, r = dsl.add_context("ctx2", None, "ctx1")
+        v, r = test_dsl.add_context("ctx2", None, "ctx1")
         self.assertTrue(v)
-        v, r = dsl.get_sub_context("ctx1")
+
+        v, r = test_dsl.get_sub_context("ctx1")
         self.assertTrue(v)
         self.assertTrue(isinstance(r, dsl_type20.DSLType20_Context))
-        self.assertEqual(r.get_name(), dsl.data.entries[1].get_name())
-        self.assertNotEqual(r, dsl.data.entries[1])
+        self.assertEqual(r.get_name(), test_dsl.data.entries[1].get_name())
+        self.assertNotEqual(r, test_dsl.data.entries[1])
         self.assertEqual(len(r.get_entries()), 1)
         self.assertTrue("ctx2" in [x.get_name() for x in r.get_entries()] )
 
