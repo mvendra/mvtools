@@ -2341,10 +2341,26 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_GetAllVariables6(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
-        self.assertTrue(dsl.add_variable("var1", "val2", [("opt2", "val3")], "ctx1" )[0])
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables("ctx1")), [("var1", "val2", [("opt1", "val1"), ("opt2", "val3")])])
+        test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val3")
+
+        self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val2")
+
+        self.assertTrue(test_dsl.add_variable(test_var1, "ctx1" )[0])
+
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx1")), [("var1", "val2", [("opt1", "val1"), ("opt2", "val3")])])
 
     def testDslType20_GetAllVariables7(self):
 
