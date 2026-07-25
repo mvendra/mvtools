@@ -37,7 +37,7 @@ def convert_var_obj_list_to_neutral_format(var_obj_list):
     return [(x.get_name(), x.get_value_resolved(), [(y.get_name(), y.get_value_resolved()) for y in x.get_options()]) for x in var_obj_list]
 
 def convert_opt_obj_list_to_neutral_format(opt_obj_list):
-    return [(x.get_name(), x.get_value()) for x in opt_obj_list]
+    return [(x.get_name(), x.get_value_resolved()) for x in opt_obj_list]
 
 def read_list_top_prev(target_list):
     return target_list[len(target_list)-2]
@@ -463,9 +463,6 @@ class DSLType20_Option(DSLType20_ValueHolder):
 
     def get_name(self):
         return self.name
-
-    def get_value(self):
-        return self.value
 
 class DSLType20_Context:
 
