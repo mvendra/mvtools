@@ -1615,6 +1615,8 @@ class DSLType20:
 
     def _produce_values(self, input_val):
 
+        # mvtodo: ditch?
+
         result = ""
         local_input_val = []
 
