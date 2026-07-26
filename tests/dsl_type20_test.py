@@ -24,7 +24,7 @@ def opt_fmt_helper(opt_list):
     v, r = opt_list
     if not v:
         raise mvtools_exception.mvtools_exception("Failed test")
-    return dsl_type20.convert_opt_obj_list_to_neutral_format(r)
+    return dsl_type20.convert_opt_obj_list_to_neutral_format(r.get_options())
 
 def find_context_callback_report_chain(node_ptr, node_data):
 
@@ -3202,13 +3202,25 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_name(), "ctx3")
 
     def testDslType20_TestAddContext7(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.add_context("ctx1", [("a", "b")], None)
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "a")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("b")
+
+        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "1")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("2")
+
+        v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
-        v, r = dsl.add_context("ctx2", [("1", "2")], "ctx1")
+        v, r = test_dsl.add_context("ctx2", test_opt2, "ctx1")
         self.assertTrue(v)
-        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx1")), [ ("a", "b") ])
-        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx2")), [ ("1", "2") ])
+
+        self.assertEqual(opt_fmt_helper(test_dsl.get_context("ctx1")), [ ("a", "b") ])
+        self.assertEqual(opt_fmt_helper(test_dsl.get_context("ctx2")), [ ("1", "2") ])
 
     def testDslType20_TestAddContext8(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
@@ -5803,24 +5815,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r, None)
         self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
-
-    def testDslType20_TestGetContextOptions1(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
-        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx1")), [("opt1", "val1")])
-
-    def testDslType20_TestGetContextOptions2(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1"), ("opt2", "val2")], None)[0])
-        self.assertEqual(opt_fmt_helper(dsl.get_context_options("ctx1")), [("opt1", "val1"), ("opt2", "val2")])
-
-    def testDslType20_TestGetContextOptions3(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
-        v, r = dsl.get_context_options("ctx1")
-        self.assertTrue(v)
-        self.assertEqual(len(r), 1)
-        self.assertNotEqual(r[0], dsl.data.entries[0].options[0])
 
     def testDslType20_TestFindContext1(self):
 

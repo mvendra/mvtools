@@ -623,13 +623,6 @@ class DSLType20:
             r = r[0]
         return True, r
 
-    def get_context_options(self, context_name = None):
-
-        v, r = self.get_context(context_name)
-        if not v:
-            return False, r
-        return True, self._opt_list_copy(r.get_options())
-
     def rem_context(self, context_name):
 
         ctx_info = []
