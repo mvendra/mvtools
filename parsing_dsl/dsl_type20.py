@@ -1585,18 +1585,7 @@ class DSLType20:
         if var_val_local is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
-
-            if isinstance(input_variable.get_value(), list): # mvtodo
-                variable_result += miniparse.LPARENT
-
-            # add escaped value(s)
-            new_val = self._produce_values(input_variable.get_value()) # mvtodo
-            if new_val is None:
-                return None
-            variable_result += new_val
-
-            if isinstance(input_variable.get_value(), list): # mvtodo
-                variable_result += miniparse.RPARENT
+            variable_result += var_val_local.get_value_serialized() # mvtodo: missing escaping
 
         return variable_result
 
