@@ -407,13 +407,13 @@ class DSLType20_ValueHolder:
             return self.value.get_serialized()
 
         add_comma = False
-        result = "("
+        result = miniparse.LPARENT
         for e in self.value:
             if add_comma:
                 result += ", "
             result += e.get_serialized()
             add_comma = True
-        result += ")"
+        result += miniparse.RPARENT
         return result
 
 class DSLType20_Variable(DSLType20_ValueHolder):
