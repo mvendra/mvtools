@@ -339,7 +339,7 @@ class DSLType20_Value:
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
                 v_res = " + "
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
-                v_res = "$%s" % v[1]
+                v_res = "%s%s" % (miniparse.DOLLARSIGN, v[1])
             result += v_res
 
         return result
