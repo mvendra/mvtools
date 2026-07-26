@@ -1581,7 +1581,8 @@ class DSLType20:
             variable_result = ("%s %s" %  (variable_result, prod_opts))
 
         # add the variable's value - if it has it
-        if input_variable.get_value() is not None: # mvtodo
+        var_val_local = input_variable.get_value_resolved()
+        if var_val_local is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
 
