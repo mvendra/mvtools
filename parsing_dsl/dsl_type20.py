@@ -335,7 +335,7 @@ class DSLType20_Value:
 
             v_res = ""
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
-                v_res = "\"" + v[1] + "\""
+                v_res = miniparse.QUOTE + v[1] + miniparse.QUOTE
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
                 v_res = " + "
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
