@@ -1557,12 +1557,14 @@ class DSLType20:
             options_result += opt.get_name()
 
             opt_val_local = opt.get_value_resolved()
+            opt_val_multi = isinstance(opt_val_local, list)
+
             if opt_val_local is not None:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
 
-                if isinstance(opt.get_value(), list): # mvtodo
+                if opt_val_multi:
                     options_result += miniparse.LPARENT
 
                 # add escaped value(s)
@@ -1571,7 +1573,7 @@ class DSLType20:
                     return None
                 options_result += new_val
 
-                if isinstance(opt.get_value(), list): # mvtodo
+                if opt_val_multi:
                     options_result += miniparse.RPARENT
 
             if idx == len(input_options):
