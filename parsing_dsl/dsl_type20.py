@@ -1556,7 +1556,8 @@ class DSLType20:
 
             options_result += opt.get_name()
 
-            if opt.get_value() is not None: # mvtodo
+            opt_val_local = opt.get_value_resolved()
+            if opt_val_local is not None:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
