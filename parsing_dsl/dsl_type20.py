@@ -335,7 +335,14 @@ class DSLType20_Value:
 
             v_res = ""
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
-                v_res = miniparse.QUOTE + v[1] + miniparse.QUOTE
+
+                if v[1] != "":
+                    v, r = miniparse.escape(v[1], miniparse.BSLASH, [miniparse.QUOTE])
+                    if not v:
+                        raise mvtools_exception.mvtools_exception("Unable to ecape value [%s]" % v[1])
+                    v_res = r
+                v_res = miniparse.QUOTE + v_res + miniparse.QUOTE
+
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
                 v_res = "%s%s%s" % (miniparse.SINGLESPACE, miniparse.PLUSSIGN, miniparse.SINGLESPACE)
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
