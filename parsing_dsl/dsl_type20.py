@@ -1085,7 +1085,7 @@ class DSLType20:
 
         local_str_input = str_input.strip()
         parsed_context_name = None
-        parsed_opts = []
+        parsed_opts = None
 
         v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ATSIGN + miniparse.ANYSPACE + miniparse.IDENTIFIER)
         if not v:
