@@ -60,7 +60,7 @@ def expand_value_single(configs, str_input):
 
     if configs.expand_user:
         local_str_input = os.path.expanduser(local_str_input)
-        if "~" in local_str_input:
+        if miniparse.TILDA in local_str_input:
             return False, str_input
 
     return True, local_str_input
