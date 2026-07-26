@@ -1320,7 +1320,7 @@ class DSLType20:
             if counter >= self.max_number_options:
                 return False, "Failed parsing: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_options), None
 
-            v, r1, r2, r3 = self._parse_next_option(local_str_input) # mvtodo
+            v, r1, r2, r3 = self._parse_next_option(local_str_input)
             if not v:
                 return False, "Failed parsing options: [%s]" % r1, None
             if parsed_opts is None:
