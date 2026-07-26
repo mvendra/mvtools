@@ -410,7 +410,7 @@ class DSLType20_ValueHolder:
         result = miniparse.LPARENT
         for e in self.value:
             if add_comma:
-                result += ", "
+                result += "%s%s" % (miniparse.COMMA, miniparse.SINGLESPACE)
             result += e.get_serialized()
             add_comma = True
         result += miniparse.RPARENT
