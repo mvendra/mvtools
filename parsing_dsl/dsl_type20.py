@@ -1563,18 +1563,7 @@ class DSLType20:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
-
-                if opt_val_multi:
-                    options_result += miniparse.LPARENT
-
-                # add escaped value(s)
-                new_val = self._produce_values(opt.get_value()) # mvtodo
-                if new_val is None:
-                    return None
-                options_result += new_val
-
-                if opt_val_multi:
-                    options_result += miniparse.RPARENT
+                options_result += opt_val_local.get_value_serialized() # mvtodo: missing escaping
 
             if idx == len(input_options):
                 options_result += miniparse.RCBRACKET
