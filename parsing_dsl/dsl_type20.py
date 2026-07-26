@@ -1124,9 +1124,10 @@ class DSLType20:
 
     def _parse_variable(self, str_input, context = None):
 
+        var_inst = None
         var_name = None
         var_value = None
-        parsed_opts = []
+        parsed_opts = None
 
         local_str_input = str_input.strip()
 
@@ -1188,7 +1189,10 @@ class DSLType20:
         if var_name == "":
             return False, "Empty var name: [%s]" % str_input
 
-        v, r = self.add_variable(var_name, var_value, parsed_opts, local_context) # mvtodo
+        var_inst = DSLType20_Variable(self.configs, var_name, parsed_opts)
+        var_inst.new_value()
+        var_inst.add_value_immediate(var_value)
+        v, r = self.add_variable(var_inst, local_context)
         if not v:
             return False, "Unable to add variable [%s]: [%s]" % (var_name, r)
 
