@@ -1414,7 +1414,7 @@ class DSLType20:
                 return False, "Parsing option failed: [%s]" % str_input, None, None
             opt_name = r.strip()
 
-        opt_inst = DSLType20_Option(self.config, opt_name)
+        opt_inst = DSLType20_Option(self.configs, opt_name)
         opt_inst.new_value()
         opt_inst.new_immediate_value(opt_val)
         return True, opt_inst, local_str_input, more_options
