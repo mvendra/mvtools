@@ -1358,7 +1358,6 @@ class DSLType20:
 
             # option has value
 
-            opt_val = None
             opt_name = (r[0]).strip()
             local_str_input = (r[1]).strip()
 
@@ -1369,15 +1368,10 @@ class DSLType20:
             opt_name = r.strip()
             opt_inst = DSLType20_Option(self.configs, opt_name)
 
-            v, r = self._parse_value(str_input, local_str_input)
+            v, r = self._parse_value(str_input, local_str_input, opt_inst)
             if not v:
                 return False, r, None, None
-            local_str_input = (r[0]).strip()
-            opt_val = r[1]
-
-            # mvtodo
-            opt_inst.new_value()
-            opt_inst.add_value_immediate(opt_val)
+            local_str_input = r.strip()
 
             # need to advance past this option to look ahead for the next
             v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.FSLASH)
@@ -1423,7 +1417,13 @@ class DSLType20:
 
         return True, opt_inst, local_str_input, more_options
 
-    def _parse_value(self, str_input, local_str_input):
+    def _parse_value(self, str_input, local_str_input, opt_inst):
+
+        # mvtodo begin
+        # mvtodo: api change and single v, r returns
+        opt_inst.new_value()
+        opt_inst.add_value_immediate(opt_val)
+        # mvtodo end
 
         opt_val = None
 
