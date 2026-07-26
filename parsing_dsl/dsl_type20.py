@@ -1556,21 +1556,21 @@ class DSLType20:
 
             options_result += opt.get_name()
 
-            if opt.get_value() is not None:
+            if opt.get_value() is not None: # mvtodo
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
 
-                if isinstance(opt.get_value(), list):
+                if isinstance(opt.get_value(), list): # mvtodo
                     options_result += miniparse.LPARENT
 
                 # add escaped value(s)
-                new_val = self._produce_values(opt.get_value())
+                new_val = self._produce_values(opt.get_value()) # mvtodo
                 if new_val is None:
                     return None
                 options_result += new_val
 
-                if isinstance(opt.get_value(), list):
+                if isinstance(opt.get_value(), list): # mvtodo
                     options_result += miniparse.RPARENT
 
             if idx == len(input_options):
@@ -1591,24 +1591,20 @@ class DSLType20:
             variable_result = ("%s %s" %  (variable_result, prod_opts))
 
         # add the variable's value - if it has it
-        # mvtodo
-        if input_variable.get_value() is not None:
+        if input_variable.get_value() is not None: # mvtodo
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
 
-            # mvtodo
-            if isinstance(input_variable.get_value(), list):
+            if isinstance(input_variable.get_value(), list): # mvtodo
                 variable_result += miniparse.LPARENT
 
             # add escaped value(s)
-            # mvtodo
-            new_val = self._produce_values(input_variable.get_value())
+            new_val = self._produce_values(input_variable.get_value()) # mvtodo
             if new_val is None:
                 return None
             variable_result += new_val
 
-            # mvtodo
-            if isinstance(input_variable.get_value(), list):
+            if isinstance(input_variable.get_value(), list): # mvtodo
                 variable_result += miniparse.RPARENT
 
         return variable_result
