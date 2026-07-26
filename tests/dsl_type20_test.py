@@ -6234,11 +6234,15 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestParseValue1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl._parse_value("opt1: \"\"}", "\"\"}")
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+
+        v, r = test_dsl._parse_value("opt1: \"\"}", "\"\"}", test_opt)
         self.assertTrue(v)
-        self.assertEqual(r[0], "}")
-        self.assertEqual(r[1], "")
+        self.assertEqual(r, "}")
+
+        self.assertEqual(test_opt.get_value_resolved(), "")
 
     def testDslType20_TestParseValue2(self):
 

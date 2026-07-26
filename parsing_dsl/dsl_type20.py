@@ -1419,18 +1419,8 @@ class DSLType20:
 
     def _parse_value(self, str_input, local_str_input, opt_inst):
 
-        # mvtodo begin
-        # mvtodo: api change and single v, r returns
-        opt_inst.new_value()
-        opt_inst.add_value_immediate(opt_val)
-        # mvtodo end
-
-        opt_val = None
-
         v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.LPARENT)
         if v:
-
-            opt_val = []
 
             # option value is a stringlist
             local_str_input = (r[1]).strip()
@@ -1459,7 +1449,9 @@ class DSLType20:
                 local_opt_val = r[1]
                 if local_opt_val is None:
                     return False, "Failed parsing options: [%s]" % str_input
-                opt_val.append(local_opt_val)
+
+                opt_inst.new_value()
+                opt_inst.add_value_immediate(local_opt_val)
 
                 # try to parse comma, if present
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.COMMA)
@@ -1473,9 +1465,10 @@ class DSLType20:
             if not v:
                 return False, r
             local_str_input = (r[0]).strip()
-            opt_val = r[1]
+            opt_inst.new_value()
+            opt_inst.add_value_immediate(r[1])
 
-        return True, (local_str_input, opt_val)
+        return True, local_str_input
 
     def _parse_value_single(self, str_input, local_str_input):
 
