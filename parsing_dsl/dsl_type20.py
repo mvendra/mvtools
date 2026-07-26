@@ -1568,7 +1568,7 @@ class DSLType20:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
-                options_result += opt_val_local.get_value_serialized() # mvtodo: missing escaping
+                options_result += opt_val_local.get_value_serialized()
 
             if idx == len(input_options):
                 options_result += miniparse.RCBRACKET
@@ -1592,38 +1592,9 @@ class DSLType20:
         if var_val_local is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
-            variable_result += var_val_local.get_value_serialized() # mvtodo: missing escaping
+            variable_result += var_val_local.get_value_serialized()
 
         return variable_result
-
-    def _produce_values(self, input_val):
-
-        # mvtodo: ditch?
-
-        result = ""
-        local_input_val = []
-
-        if isinstance(input_val, list):
-            local_input_val = input_val
-        else:
-            local_input_val.append(input_val)
-
-        idx = 0
-        for iv in local_input_val:
-            idx += 1
-
-            var_escaped_value = ""
-            if iv != "":
-                v, r = miniparse.escape(iv, miniparse.BSLASH, [miniparse.QUOTE])
-                if not v:
-                    return None
-                var_escaped_value = r
-
-            result += miniparse.QUOTE + var_escaped_value + miniparse.QUOTE
-            if idx < len(local_input_val):
-                result += miniparse.COMMA + miniparse.SINGLESPACE
-
-        return result
 
     def _inc_indent(self):
         self.indent += "    "
