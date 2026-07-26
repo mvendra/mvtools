@@ -1416,7 +1416,7 @@ class DSLType20:
 
         opt_inst = DSLType20_Option(self.configs, opt_name)
         opt_inst.new_value()
-        opt_inst.new_immediate_value(opt_val)
+        opt_inst.add_immediate_value(opt_val)
         return True, opt_inst, local_str_input, more_options
 
     def _parse_value(self, str_input, local_str_input):
