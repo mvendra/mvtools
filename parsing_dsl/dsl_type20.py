@@ -1555,9 +1555,7 @@ class DSLType20:
                 options_result += miniparse.LCBRACKET
 
             options_result += opt.get_name()
-
             opt_val_local = opt.get_value_resolved()
-            opt_val_multi = isinstance(opt_val_local, list)
 
             if opt_val_local is not None:
 
