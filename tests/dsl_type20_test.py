@@ -1263,7 +1263,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(obj_inst.name, "a")
         self.assertEqual(obj_inst.get_name(), "a")
         self.assertEqual(obj_inst.value, None)
-        self.assertEqual(obj_inst.get_value(), None)
+        self.assertEqual(obj_inst.get_value_resolved(), None)
 
     def testDSLType20_Option_NewValue1(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
