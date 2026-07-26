@@ -1308,10 +1308,10 @@ class DSLType20:
 
         opt_name = None
         opt_val = None
-        parsed_opts = []
+        parsed_opts = None
 
         if local_str_input == miniparse.RCBRACKET: # tolerate empty option list
-            return True, [], ""
+            return True, None, ""
 
         counter = -1
         while True:
@@ -1323,7 +1323,12 @@ class DSLType20:
             v, r1, r2, r3 = self._parse_next_option(local_str_input)
             if not v:
                 return False, "Failed parsing options: [%s]" % r1, None
-            parsed_opts.append(r1)
+            if parsed_opts is None:
+                parsed_opts = r1
+            elif isinstance(parsed_opts, DSLType20_Option):
+                parsed_opts = [parsed_opts, r1]
+            else:
+                parsed_opts.append(r1)
             local_str_input = r2
             if not r3: # there are no more options
                 break
