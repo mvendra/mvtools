@@ -3198,8 +3198,15 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
     def testDslType20_TestAddContext4(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl.add_context("ok", [("var1", "val1")], None)
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "var1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        v, r = test_dsl.add_context("ok", test_opt1, None)
         self.assertTrue(v)
 
     def testDslType20_TestAddContext5(self):
