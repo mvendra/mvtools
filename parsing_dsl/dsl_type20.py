@@ -1133,7 +1133,6 @@ class DSLType20:
 
         var_inst = DSLType20_Variable(self.configs, "dummy-name", None)
         var_name = None
-        var_value = None
         parsed_opts = None
 
         local_str_input = str_input.strip()
@@ -1150,11 +1149,10 @@ class DSLType20:
             return False, "Can't parse variable: [%s]: Context doesn't exist: [%s]." % (str_input, context)
 
         # start by parsing the variable's value - if it has it
-        v, r = self._parse_value_end(local_str_input)
+        v, r = self._parse_value_end(local_str_input, var_inst)
         if not v:
             return False, "Can't parse variable: [%s]: [%s]." % (str_input, r)
-        local_str_input = r[0]
-        var_value = r[1]
+        local_str_input = r
 
         v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE + miniparse.LCBRACKET)
         if v:
@@ -1194,8 +1192,6 @@ class DSLType20:
 
         var_inst.name = var_name
         var_inst.options = parsed_opts
-        var_inst.new_value()
-        var_inst.add_value_immediate(var_value)
         v, r = self.add_variable(var_inst, local_context)
         if not v:
             return False, "Unable to add variable [%s]: [%s]" % (var_name, r)
@@ -1203,6 +1199,11 @@ class DSLType20:
         return True, None
 
     def _parse_value_end(self, whole_str_input):
+
+        # mvtodo begin
+        var_inst.new_value()
+        var_inst.add_value_immediate(var_value)
+        # mvtodo end
 
         local_str_input = whole_str_input
         var_value = None
