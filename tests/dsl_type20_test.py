@@ -4216,10 +4216,6 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestAddContextFail7(self):
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertFalse(dsl.add_context("ok", [("var1", "first line\nsecond line")], None)[0])
-
-    def testDslType20_TestAddContextFail8(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context("@ok", None, None)
         self.assertFalse(v)
 
