@@ -1555,13 +1555,12 @@ class DSLType20:
                 options_result += miniparse.LCBRACKET
 
             options_result += opt.get_name()
-            opt_val_local = opt.get_value_resolved()
 
-            if opt_val_local is not None:
+            if opt.get_value_resolved() is not None:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
-                options_result += opt_val_local.get_value_serialized()
+                options_result += opt.get_value_serialized()
 
             if idx == len(input_options):
                 options_result += miniparse.RCBRACKET
