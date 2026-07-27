@@ -1131,7 +1131,7 @@ class DSLType20:
 
     def _parse_variable(self, str_input, context = None):
 
-        var_inst = None
+        var_inst = DSLType20_Variable(self.configs, "dummy-name", None)
         var_name = None
         var_value = None
         parsed_opts = None
@@ -1192,7 +1192,8 @@ class DSLType20:
             if len(local_str_input) != 0:
                 return False, "Malformed variable: [%s]: Remaining unparseable contents: [%s]." % (str_input, local_str_input)
 
-        var_inst = DSLType20_Variable(self.configs, var_name, parsed_opts)
+        var_inst.name = var_name
+        var_inst.options = parsed_opts
         var_inst.new_value()
         var_inst.add_value_immediate(var_value)
         v, r = self.add_variable(var_inst, local_context)
