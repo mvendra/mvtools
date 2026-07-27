@@ -1200,20 +1200,13 @@ class DSLType20:
 
     def _parse_value_end(self, whole_str_input, var_inst):
 
-        # mvtodo begin
-        var_inst.new_value()
-        var_inst.add_value_immediate(var_value)
-        # mvtodo end
-
         local_str_input = whole_str_input
-        var_value = None
         eqsign_expected = False
 
         v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.RPARENT)
         if v:
 
             # value is a string list
-            var_value = []
             local_str_input = (r[1]).strip()
             eqsign_expected = True
 
@@ -1237,7 +1230,9 @@ class DSLType20:
                 local_eqsign_expected = r[2]
                 if not local_eqsign_expected or local_var_value is None:
                     return False, "Malformed variable: [%s]: failed parsing string item of string-list." % whole_str_input
-                var_value.append(local_var_value)
+
+                var_inst.new_value()
+                var_inst.add_value_immediate(local_var_value)
 
                 # try to parse comma, if present
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.COMMA)
@@ -1251,16 +1246,19 @@ class DSLType20:
                 return False, "Malformed variable: [%s]: string-list value must be be enclosed with parentheses (failed at the second/left parenthesis)." % whole_str_input
             local_str_input = (r[1]).strip()
 
-            var_value.reverse()
+            if isinstance(var_inst.value, list):
+                var_inst.value.reverse()
 
         else:
 
-            # value is either None/NULL (valueless) or a single string
+            # value is either None (valueless) or a single string
             v, r = self._parse_value_end_single(whole_str_input)
             if not v:
                 return False, r
             local_str_input = (r[0]).strip()
-            var_value = r[1]
+            if r[1] is not None:
+                var_inst.new_value()
+                var_inst.add_value_immediate(r[1])
             eqsign_expected = r[2]
 
         # remove equal sign just before the variable's value

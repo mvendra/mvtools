@@ -6159,7 +6159,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), "var1")
+        self.assertEqual(test_var.get_value_resolved(), None)
 
     def testDslType20_TestParseValueEnd2(self):
 
