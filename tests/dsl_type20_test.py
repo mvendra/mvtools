@@ -4053,12 +4053,24 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r, None)
 
     def testDslType20_TestGetSubContext6(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        v, r = dsl.add_context("ctx1", [("opt1", "val1")], None)
+
+        test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val2")
+
+        v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
-        v, r = dsl.add_context("ctx2", [("opt2", "val2")], "ctx1")
+        v, r = test_dsl.add_context("ctx2", test_opt2, "ctx1")
         self.assertTrue(v)
-        v, r = dsl.get_sub_context("ctx2", "ctx1")
+
+        v, r = test_dsl.get_sub_context("ctx2", "ctx1")
         self.assertTrue(v)
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(r.get_options()), [("opt1", "val1"), ("opt2", "val2")])
 
