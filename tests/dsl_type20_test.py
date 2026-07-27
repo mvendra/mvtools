@@ -4285,10 +4285,17 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(r[0].get_options()), [("opt1", "val2")])
 
     def testDslType20_TestGetSubContexts7(self):
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        self.assertTrue(dsl.add_context("ctx1", [("opt1", None)], None)[0])
-        self.assertTrue(dsl.add_context("ctx2", [("opt1", None)], "ctx1")[0])
-        v, r = dsl.get_all_sub_contexts("ctx1")
+
+        test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+
+        self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
+        self.assertTrue(test_dsl.add_context("ctx2", test_opt2, "ctx1")[0])
+
+        v, r = test_dsl.get_all_sub_contexts("ctx1")
         self.assertTrue(v)
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(r[0].get_options()), [])
 
