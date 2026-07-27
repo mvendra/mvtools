@@ -6094,9 +6094,16 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestFindContext2(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        self.assertTrue(dsl.add_context("ctx1", [("opt1", "val1")], None)[0])
-        v, r = dsl._find_context("no-ctx", None, None)
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
+
+        v, r = test_dsl._find_context("no-ctx", None, None)
         self.assertTrue(v)
         self.assertFalse(r)
 
