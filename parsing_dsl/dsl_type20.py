@@ -1192,10 +1192,6 @@ class DSLType20:
             if len(local_str_input) != 0:
                 return False, "Malformed variable: [%s]: Remaining unparseable contents: [%s]." % (str_input, local_str_input)
 
-        # final validations
-        if var_name == "":
-            return False, "Empty var name: [%s]" % str_input
-
         var_inst = DSLType20_Variable(self.configs, var_name, parsed_opts)
         var_inst.new_value()
         var_inst.add_value_immediate(var_value)
