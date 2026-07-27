@@ -1581,11 +1581,10 @@ class DSLType20:
             variable_result = ("%s %s" %  (variable_result, prod_opts))
 
         # add the variable's value - if it has it
-        var_val_local = input_variable.get_value_resolved()
-        if var_val_local is not None:
+        if input_variable.get_value_resolved() is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
-            variable_result += var_val_local.get_value_serialized()
+            variable_result += input_variable.get_value_serialized()
 
         return variable_result
 
