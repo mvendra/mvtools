@@ -1198,7 +1198,7 @@ class DSLType20:
 
         return True, None
 
-    def _parse_value_end(self, whole_str_input):
+    def _parse_value_end(self, whole_str_input, var_inst):
 
         # mvtodo begin
         var_inst.new_value()
@@ -1270,7 +1270,7 @@ class DSLType20:
                 return False, "Malformed variable: [%s]: Failed to parse the equal sign before the variable's value." % whole_str_input
             local_str_input = (r[1]).strip()
 
-        return True, (local_str_input, var_value)
+        return True, local_str_input
 
     def _parse_value_end_single(self, str_input):
 

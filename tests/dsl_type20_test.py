@@ -6151,10 +6151,15 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestParseValueEnd1(self):
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl._parse_value_end("var1")
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+
+        v, r = test_dsl._parse_value_end("var1", test_var)
         self.assertTrue(v)
-        self.assertEqual(r, ("var1", None))
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(test_var.get_value_resolved(), "var1")
 
     def testDslType20_TestParseValueEnd2(self):
 
