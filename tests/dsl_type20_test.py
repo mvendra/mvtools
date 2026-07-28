@@ -593,11 +593,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
         self.assertEqual(r[0].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[0].get_name(), "a")
-        self.assertEqual(r[0].get_value(), "b")
+        self.assertEqual(r[0].get_value_resolved(), "b")
         self.assertTrue(isinstance(r[1], dsl_type20.DSLType20_Option))
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
-        self.assertEqual(r[1].get_value(), None)
+        self.assertEqual(r[1].get_value_resolved(), None)
 
     def testMakeObjOptList3(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", []) ])
@@ -606,11 +606,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
         self.assertEqual(r[0].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[0].get_name(), "a")
-        self.assertEqual(r[0].get_value(), "b")
+        self.assertEqual(r[0].get_value_resolved(), "b")
         self.assertTrue(isinstance(r[1], dsl_type20.DSLType20_Option))
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
-        self.assertEqual(r[1].get_value(), [])
+        self.assertEqual(r[1].get_value_resolved(), [])
 
     def testMakeObjOptList4(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", "def"]) ])
@@ -619,11 +619,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
         self.assertEqual(r[0].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[0].get_name(), "a")
-        self.assertEqual(r[0].get_value(), "b")
+        self.assertEqual(r[0].get_value_resolved(), "b")
         self.assertTrue(isinstance(r[1], dsl_type20.DSLType20_Option))
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
-        self.assertEqual(r[1].get_value(), ["abc", "def"])
+        self.assertEqual(r[1].get_value_resolved(), ["abc", "def"])
 
     def testMakeObjOptList5(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", None]) ])

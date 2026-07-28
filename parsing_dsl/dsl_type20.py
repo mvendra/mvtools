@@ -67,6 +67,8 @@ def make_obj_opt_list_from_neutral_format(configs, options):
         if opt_val is not None:
             if isinstance(opt_val, list):
                 for x in opt_val:
+                    if x is None:
+                        return False, "Invalid option value in: [%s]" % opt_val
                     opt_obj.new_value()
                     opt_obj.add_value_immediate(x)
             else:
