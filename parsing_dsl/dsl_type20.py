@@ -64,8 +64,9 @@ def make_obj_opt_list_from_neutral_format(configs, options):
         opt_name_map[opt_name] = True
 
         opt_obj = DSLType20_Option(configs, opt_name)
-        opt_obj.new_value()
-        opt_obj.add_value_immediate(opt_val)
+        if opt_val is not None:
+            opt_obj.new_value()
+            opt_obj.add_value_immediate(opt_val)
         result.append(opt_obj)
 
     return True, result
