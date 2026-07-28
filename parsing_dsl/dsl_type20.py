@@ -1292,7 +1292,6 @@ class DSLType20:
         # mvtodo: should probably just stop returning the parsed value at any rate then
 
         local_str_input = str_input
-        var_value = None
         eqsign_expected = False
         add_new = True
         plus_state_flag = None
@@ -1310,7 +1309,7 @@ class DSLType20:
             if v: # new immediate value
 
                 if plus_required:
-                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign." % str_input
+                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing immediate value)." % str_input
                 plus_required = True
                 plus_state_flag = False
                 eqsign_expected = True
@@ -1335,7 +1334,7 @@ class DSLType20:
                 # remove first quote of value
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
                 if not v:
-                    return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
+                    return False, "Malformed variable: [%s]: value must be enclosed with quotes." % str_input
                 local_str_input = (r[1]).strip()
 
                 if add_new:
@@ -1345,7 +1344,30 @@ class DSLType20:
                 var_inst.add_value_immediate(var_value)
                 continue
 
-            # mvtodo: envvars parsing
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE)
+            if v: # new envvar
+
+                if plus_required:
+                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing envvar)." % str_input
+                plus_required = True
+                plus_state_flag = False
+                eqsign_expected = True
+
+                envvar_name = r[0]
+                local_str_input = (r[1]).strip()
+
+                # remove dollar sign
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_DOLLARSIGN)
+                if not v:
+                    return False, "Malformed variable: [%s]: envvar must be preceded with a dollar sign." % str_input
+                local_str_input = (r[1]).strip()
+
+                if add_new:
+                    var_inst.new_value()
+                    add_new = False
+
+                var_inst.add_value_envvar(envvar_name)
+                continue
 
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN)
             if v: # new plus sign
