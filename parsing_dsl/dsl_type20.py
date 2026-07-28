@@ -1295,7 +1295,7 @@ class DSLType20:
         var_value = None
         eqsign_expected = False
         add_new = True
-        plus_next_state = 0 # {0: not-allowed / 1: allowed}
+        plus_state_flag = None
 
         while True:
 
@@ -1309,7 +1309,7 @@ class DSLType20:
             if v: # new immediate value
 
                 eqsign_expected = True
-                plus_next_state = 1
+                plus_state_flag = False
 
                 if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
                     return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
@@ -1348,9 +1348,9 @@ class DSLType20:
 
                 # mvtodo: but it cannot be the last thing in the chain
 
-                if plus_next_state == 0:
+                if (plus_state_flag is None) or (plus_state_flag is True):
                     return False, "Malformed variable: [%s]: unexpected plus sign." % str_input
-                plus_next_state = 0
+                plus_state_flag = True
                 local_str_input = (r[1]).strip()
                 continue
 
