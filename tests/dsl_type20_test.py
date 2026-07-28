@@ -2704,7 +2704,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {} = ()")
         self.assertTrue(v)
 
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", [], [])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", None, [])])
 
     def testDslType20_TestVanilla22(self):
 
