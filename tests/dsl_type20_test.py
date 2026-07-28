@@ -6457,17 +6457,22 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(test_dsl_1.produce(), test_dsl_2.produce())
 
     def testDslType20_TestProduce44(self):
-        dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        self.assertTrue(dsl_1.parse("[\n@ctx1 {opt1: (\"\") / opt2: (\"\")}\nvar1 {opt3: (\"\") / opt4: (\"\")}\n]")[0])
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")), [("var1", None, [("opt1", [""]), ("opt2", [""]), ("opt3", [""]), ("opt4", [""])])])
-        self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1: (\"\") / opt2: (\"\")}\nvar1 {opt3: (\"\") / opt4: (\"\")}\n]")
 
-        dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl_2.parse(dsl_1.produce())
+        test_cfg_1 = dsl_type20.DSLType20_Config(inherit_options = True)
+        test_dsl_1 = dsl_type20.DSLType20(test_cfg_1)
+
+        self.assertTrue(test_dsl_1.parse("[\n@ctx1 {opt1: (\"\") / opt2: (\"\")}\nvar1 {opt3: (\"\") / opt4: (\"\")}\n]")[0])
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables("ctx1")), [("var1", None, [("opt1", ""), ("opt2", ""), ("opt3", ""), ("opt4", "")])])
+        self.assertEqual(test_dsl_1.produce(), "[\n@ctx1 {opt1: \"\" / opt2: \"\"}\nvar1 {opt3: \"\" / opt4: \"\"}\n]")
+
+        test_cfg_2 = dsl_type20.DSLType20_Config()
+        test_dsl_2 = dsl_type20.DSLType20(test_cfg_2)
+
+        v, r = test_dsl_2.parse(test_dsl_1.produce())
         self.assertTrue(v)
         self.assertEqual(r, None)
-        self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
-        self.assertEqual(dsl_1.produce(), dsl_2.produce())
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), var_fmt_helper(test_dsl_2.get_all_variables()))
+        self.assertEqual(test_dsl_1.produce(), test_dsl_2.produce())
 
     def testDslType20_TestProduce45(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
