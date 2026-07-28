@@ -1226,9 +1226,8 @@ class DSLType20:
         eqsign_expected = False
 
         v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.RPARENT)
-        if v:
+        if v: # value is a string list
 
-            # value is a string list
             local_str_input = (r[1]).strip()
             eqsign_expected = True
 
@@ -1271,13 +1270,13 @@ class DSLType20:
             if isinstance(var_inst.value, list):
                 var_inst.value.reverse()
 
-        else:
+        else: # value is either None (valueless) or a single string
 
-            # value is either None (valueless) or a single string
             v, r = self._parse_value_end_single(whole_str_input)
             if not v:
                 return False, r
             local_str_input = (r[0]).strip()
+
             if r[1] is not None:
                 var_inst.new_value()
                 var_inst.add_value_immediate(r[1])
