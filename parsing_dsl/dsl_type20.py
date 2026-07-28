@@ -1276,10 +1276,6 @@ class DSLType20:
             if not v:
                 return False, r
             local_str_input = (r[0]).strip()
-
-            if r[1] is not None:
-                var_inst.new_value()
-                var_inst.add_value_immediate(r[1])
             eqsign_expected = r[2]
 
         # remove equal sign just before the variable's value
@@ -1326,6 +1322,9 @@ class DSLType20:
             if not v:
                 return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
             local_str_input = (r[1]).strip()
+
+            var_inst.new_value()
+            var_inst.add_value_immediate(var_value)
 
         return True, (local_str_input, var_value, eqsign_expected)
 
