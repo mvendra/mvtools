@@ -1290,13 +1290,13 @@ class DSLType20:
     def _parse_value_end_single(self, str_input, var_inst):
 
         # mvtodo: should probably just stop returning the parsed value at any rate then
-        # mvtodo: plus sign is required inbetween
 
         local_str_input = str_input
         var_value = None
         eqsign_expected = False
         add_new = True
         plus_state_flag = None
+        plus_required = None
 
         while True:
 
@@ -1309,8 +1309,11 @@ class DSLType20:
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
             if v: # new immediate value
 
-                eqsign_expected = True
+                if plus_required:
+                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign." % str_input
+                plus_required = True
                 plus_state_flag = False
+                eqsign_expected = True
 
                 if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
                     return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
@@ -1350,6 +1353,7 @@ class DSLType20:
                 if (plus_state_flag is None) or (plus_state_flag is True):
                     return False, "Malformed variable: [%s]: unexpected plus sign." % str_input
                 plus_state_flag = True
+                plus_required = False
                 local_str_input = (r[1]).strip()
                 continue
 
