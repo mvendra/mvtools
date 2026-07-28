@@ -1289,43 +1289,75 @@ class DSLType20:
 
     def _parse_value_end_single(self, str_input, var_inst):
 
-        # mvtodo: would have to internal_data.reverse() as well, once done (inplace conjoined values)
         # mvtodo: should probably just stop returning the parsed value at any rate then
 
         local_str_input = str_input
         var_value = None
         eqsign_expected = False
+        add_new = True
+        plus_next_allowed = False
 
-        v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
-        if v:
-            eqsign_expected = True
+        while True:
 
-            if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
-                return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
-            local_str_input = r[1]
+            if eqsign_expected:
+                if len(local_str_input) < 1:
+                    return False, "Malformed variable: [%s]: termination quote expected." % str_input
+                if local_str_input[len(local_str_input)-1] == miniparse.EQSIGN:
+                    break
 
-            # find next nonescaped quote in reverse (beginning of the value)
-            v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
-            if not v:
-                return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
-            local_str_input = (r[1]).strip()
-            var_value = r[0]
-
-            # descape the variable's value
-            v, r = miniparse.descape(var_value, miniparse.BSLASH)
-            if not v:
-                return False, "Variable descaping failed: [%s]" % var_value
-            var_value = r
-
-            # remove first quote of value
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
-            if not v:
-                return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
-            local_str_input = (r[1]).strip()
+            if v: # new immediate value
 
-            var_inst.new_value()
-            var_inst.add_value_immediate(var_value)
+                eqsign_expected = True
+                plus_next_allowed = True
 
+                if r[1][len(r[1])-1] == miniparse.BSLASH: # variable value was indeed enclosed with quotes, but the last quote was escaped. error.
+                    return False, "Malformed variable: [%s]: value must be be enclosed with a nonescaped quote (failed at the second quote)." % str_input
+                local_str_input = r[1]
+
+                # find next nonescaped quote in reverse (beginning of the value)
+                v, r = miniparse.last_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
+                if not v:
+                    return False, "Malformed variable: [%s]: can't find first quote of the variable's value." % str_input
+                local_str_input = (r[1]).strip()
+                var_value = r[0]
+
+                # descape the variable's value
+                v, r = miniparse.descape(var_value, miniparse.BSLASH)
+                if not v:
+                    return False, "Variable descaping failed: [%s]" % var_value
+                var_value = r
+
+                # remove first quote of value
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
+                if not v:
+                    return False, "Malformed variable: [%s]: value must be be enclosed with quotes." % str_input
+                local_str_input = (r[1]).strip()
+
+                if add_new:
+                    var_inst.new_value()
+                    add_new = False
+
+                var_inst.add_value_immediate(var_value)
+                continue
+
+            # mvtodo: envvars parsing
+
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN)
+            if v: # new plus sign
+
+                # mvtodo: but it cannot be the last thing in the chain
+
+                if not plus_next_allowed:
+                    return False, "Malformed variable: [%s]: unexpected plus sign." % str_input
+                plus_next_allowed = False
+                local_str_input = (r[1]).strip()
+                continue
+
+            if not eqsign_expected:
+                break
+
+        var_inst.value.internal_data.reverse()
         return True, (local_str_input, var_value, eqsign_expected)
 
     def _parse_options(self, str_input):
