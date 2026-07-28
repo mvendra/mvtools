@@ -60,7 +60,7 @@ def make_obj_opt_list_from_neutral_format(configs, options):
         opt_name, opt_val = opt
 
         if opt_name in opt_name_map:
-            return False, "Duplicated option: [%s]" % opt
+            return False, "Duplicated option: [%s]" % opt_name
         opt_name_map[opt_name] = True
 
         opt_obj = DSLType20_Option(configs, opt_name)
