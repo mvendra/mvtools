@@ -1236,7 +1236,7 @@ class DSLType20:
                 while_sentinel += 1
 
                 if while_sentinel == 500:
-                    return False, "Unable to finish parsing variable: [%s] has too many values" % whole_str_input
+                    return False, "Unable to finish parsing variable: [%s] has too many values." % whole_str_input
 
                 # mvtodo: rework stoppage condition
 
@@ -1244,13 +1244,6 @@ class DSLType20:
                 if not v:
                     return False, r
                 local_str_input = (r[0]).strip()
-                local_var_value = r[1]
-                local_eqsign_expected = r[2]
-                if not local_eqsign_expected or local_var_value is None:
-                    return False, "Malformed variable: [%s]: failed parsing string item of string-list." % whole_str_input
-
-                var_inst.new_value()
-                var_inst.add_value_immediate(local_var_value)
 
                 # try to parse comma, if present
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.COMMA)
@@ -1273,7 +1266,7 @@ class DSLType20:
             if not v:
                 return False, r
             local_str_input = (r[0]).strip()
-            eqsign_expected = r[2]
+            eqsign_expected = r[1]
 
         # remove equal sign just before the variable's value
         if eqsign_expected:
@@ -1300,12 +1293,6 @@ class DSLType20:
 
             if while_sentinel == 500:
                 return False, "Unable to finish parsing variable: [%s] has too many (inline) values" % str_input
-
-            if eqsign_expected:
-                if len(local_str_input) < 1:
-                    return False, "Malformed variable: [%s]: termination quote expected." % str_input
-                if local_str_input[len(local_str_input)-1] == miniparse.EQSIGN:
-                    break
 
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
             if v: # new immediate value
@@ -1381,14 +1368,13 @@ class DSLType20:
                 local_str_input = (r[1]).strip()
                 continue
 
-            if not eqsign_expected:
-                break
+            break # something else - break out
 
         if plus_state_flag:
             return False, "Malformed variable: [%s]: Leftover plus sign." % str_input
 
         var_inst.value.internal_data.reverse()
-        return True, (local_str_input, var_value, eqsign_expected)
+        return True, (local_str_input, eqsign_expected)
 
     def _parse_options(self, str_input):
 
