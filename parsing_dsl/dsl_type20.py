@@ -1243,7 +1243,7 @@ class DSLType20:
                 if not v:
                     break
 
-                v, r = self._parse_value_end_single(local_str_input)
+                v, r = self._parse_value_end_single(local_str_input, var_inst)
                 if not v:
                     return False, r
                 local_str_input = (r[0]).strip()
@@ -1272,7 +1272,7 @@ class DSLType20:
 
         else: # value is either None (valueless) or a single string
 
-            v, r = self._parse_value_end_single(whole_str_input)
+            v, r = self._parse_value_end_single(whole_str_input, var_inst)
             if not v:
                 return False, r
             local_str_input = (r[0]).strip()
@@ -1291,7 +1291,7 @@ class DSLType20:
 
         return True, local_str_input
 
-    def _parse_value_end_single(self, str_input):
+    def _parse_value_end_single(self, str_input, var_inst):
 
         local_str_input = str_input
         var_value = None
