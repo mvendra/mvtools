@@ -610,7 +610,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(r[1], dsl_type20.DSLType20_Option))
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
-        self.assertEqual(r[1].get_value_resolved(), [])
+        self.assertEqual(r[1].get_value_resolved(), None)
 
     def testMakeObjOptList4(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", "def"]) ])
