@@ -1293,6 +1293,8 @@ class DSLType20:
 
     def _parse_value_end_single(self, str_input, var_inst):
 
+        # mvtodo: would have to internal_data.reverse() as well, once done (inplace conjoined values)
+
         local_str_input = str_input
         var_value = None
         eqsign_expected = False
