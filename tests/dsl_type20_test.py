@@ -582,11 +582,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_options( [1, dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")] )[0])
         self.assertFalse(dsl_type20.validate_options( [dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a"), dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")] )[0])
 
-    def testMakeObjOptList1(self):
+    def testMakeObjOptListFromNeutralFormat1(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("a", "b") ])
         self.assertFalse(v)
 
-    def testMakeObjOptList2(self):
+    def testMakeObjOptListFromNeutralFormat2(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", None) ])
         self.assertTrue(v)
         self.assertTrue(isinstance(r, list))
@@ -599,7 +599,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_name(), "c")
         self.assertEqual(r[1].get_value_resolved(), None)
 
-    def testMakeObjOptList3(self):
+    def testMakeObjOptListFromNeutralFormat3(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", []) ])
         self.assertTrue(v)
         self.assertTrue(isinstance(r, list))
@@ -612,7 +612,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_name(), "c")
         self.assertEqual(r[1].get_value_resolved(), None)
 
-    def testMakeObjOptList4(self):
+    def testMakeObjOptListFromNeutralFormat4(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", "def"]) ])
         self.assertTrue(v)
         self.assertTrue(isinstance(r, list))
@@ -625,7 +625,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r[1].get_name(), "c")
         self.assertEqual(r[1].get_value_resolved(), ["abc", "def"])
 
-    def testMakeObjOptList5(self):
+    def testMakeObjOptListFromNeutralFormat5(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", None]) ])
         self.assertFalse(v)
 
