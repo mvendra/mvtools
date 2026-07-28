@@ -644,10 +644,10 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(r.get_name(), "c")
 
     def testInheritOptionsHelper1(self):
-        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list(dsl_type20.DSLType20_Config(), [ ("1", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", "b"), ("1", "2") ])

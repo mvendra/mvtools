@@ -39,6 +39,37 @@ def convert_var_obj_list_to_neutral_format(var_obj_list):
 def convert_opt_obj_list_to_neutral_format(opt_obj_list):
     return [(x.get_name(), x.get_value_resolved()) for x in opt_obj_list]
 
+def make_obj_opt_list_from_neutral_format(configs, options):
+
+    result = []
+
+    if options is None:
+        return True, None
+
+    if isinstance(options, DSLType20_Option):
+        return True, None
+
+    if not isinstance(options, list):
+        return False, "Options [%s] are invalid" % options
+
+    opt_name_map = {}
+    for opt in options:
+
+        if not isinstance(opt, tuple):
+            return False, "Option [%s] is not a tuple" % opt
+        opt_name, opt_val = opt
+
+        if opt_name in opt_name_map:
+            return False, "Duplicated option: [%s]" % opt
+        opt_name_map[opt_name] = True
+
+        opt_obj = DSLType20_Option(configs, opt_name)
+        opt_obj.new_value()
+        opt_obj.add_value_immediate(opt_val)
+        result.append(opt_obj)
+
+    return True, result
+
 def read_list_top_prev(target_list):
     return target_list[len(target_list)-2]
 
@@ -237,23 +268,6 @@ def validate_options(options):
         opt_name_map[x.get_name()] = True
 
     return True, None
-
-def make_obj_opt_list(configs, options):
-
-    # mvtodo: ditch?
-
-    result = []
-
-    v, r = validate_options(options) # mvtodo
-    if not v:
-        return False, r
-
-    for opt in options:
-        opt_name, opt_val = opt
-        opt_obj = DSLType20_Option(configs, opt_name, opt_val) # mvtodo
-        result.append(opt_obj)
-
-    return True, result
 
 def opt_list_has(options, name):
 
