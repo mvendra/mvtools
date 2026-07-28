@@ -1297,7 +1297,12 @@ class DSLType20:
         plus_state_flag = None
         plus_required = None
 
+        while_sentinel = 0
         while True:
+            while_sentinel += 1
+
+            if while_sentinel == 500:
+                return False, "Unable to finish parsing variable: [%s] has too many (inline) values" % str_input
 
             if eqsign_expected:
                 if len(local_str_input) < 1:
