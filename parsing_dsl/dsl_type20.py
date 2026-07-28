@@ -1290,6 +1290,7 @@ class DSLType20:
     def _parse_value_end_single(self, str_input, var_inst):
 
         # mvtodo: should probably just stop returning the parsed value at any rate then
+        # mvtodo: plus sign is required inbetween
 
         local_str_input = str_input
         var_value = None
@@ -1346,8 +1347,6 @@ class DSLType20:
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN)
             if v: # new plus sign
 
-                # mvtodo: but it cannot be the last thing in the chain
-
                 if (plus_state_flag is None) or (plus_state_flag is True):
                     return False, "Malformed variable: [%s]: unexpected plus sign." % str_input
                 plus_state_flag = True
@@ -1356,6 +1355,9 @@ class DSLType20:
 
             if not eqsign_expected:
                 break
+
+        if plus_state_flag:
+            return False, "Malformed variable: [%s]: Leftover plus sign." % str_input
 
         var_inst.value.internal_data.reverse()
         return True, (local_str_input, var_value, eqsign_expected)
