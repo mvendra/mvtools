@@ -1533,15 +1533,11 @@ class DSLType20:
             v, r = self._parse_value_single(str_input, local_str_input, opt_inst)
             if not v:
                 return False, r
-            local_str_input = (r[0]).strip()
-            opt_inst.new_value()
-            opt_inst.add_value_immediate(r[1])
+            local_str_input = r.strip()
 
         return True, local_str_input
 
     def _parse_value_single(self, str_input, local_str_input, opt_inst):
-
-        # mvtodo: probably should stop returning val
 
         opt_val = None
 
@@ -1570,7 +1566,11 @@ class DSLType20:
             return False, "Failed parsing options: [%s]" % str_input
         opt_val = r
 
-        return True, (local_str_input, opt_val)
+        # mvtodo: valueless?
+        opt_inst.new_value()
+        opt_inst.add_value_immediate(opt_val)
+
+        return True, local_str_input
 
     def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent, _indent_skip = False):
 
