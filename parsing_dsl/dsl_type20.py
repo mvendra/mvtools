@@ -1550,14 +1550,14 @@ class DSLType20:
             if while_sentinel == 500:
                 return False, "Failed parsing options: [%s]" % str_input
 
-            # find next quote (option's value - first)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE) # find next quote (option's value - first)
             if v: # new immediate value
 
                 if plus_required:
                     return False, "Malformed option: [%s]: values should be joined with an intermediary plus sign (processing immediate value)." % str_input
                 plus_required = True
                 plus_state_flag = False
+                local_str_input = (r[1]).strip()
 
                 # forward until closing quote is found (the next not escaped)
                 v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
@@ -1566,8 +1566,7 @@ class DSLType20:
                 opt_val = r[0]
                 local_str_input = (r[1]).strip()
 
-                # find next quote (option's value - second)
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE) # find next quote (option's value - second)
                 if not v:
                     return False, "Failed parsing options: [%s]" % str_input
                 local_str_input = (r[1]).strip()
