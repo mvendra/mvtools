@@ -1511,7 +1511,7 @@ class DSLType20:
                     break
 
                 # read out current value
-                v, r = self._parse_value_single(str_input, local_str_input)
+                v, r = self._parse_value_single(str_input, local_str_input, opt_inst)
                 if not v:
                     return False, r
                 local_str_input = (r[0]).strip()
@@ -1530,7 +1530,7 @@ class DSLType20:
 
         else:
 
-            v, r = self._parse_value_single(str_input, local_str_input)
+            v, r = self._parse_value_single(str_input, local_str_input, opt_inst)
             if not v:
                 return False, r
             local_str_input = (r[0]).strip()
@@ -1539,7 +1539,9 @@ class DSLType20:
 
         return True, local_str_input
 
-    def _parse_value_single(self, str_input, local_str_input):
+    def _parse_value_single(self, str_input, local_str_input, opt_inst):
+
+        # mvtodo: probably should stop returning val
 
         opt_val = None
 
