@@ -1588,7 +1588,15 @@ class DSLType20:
 
             # mvtodo: envvar
 
-            # mvtodo: plus sign
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_PLUSSIGN)
+            if v: # new plus sign
+
+                if (plus_state_flag is None) or (plus_state_flag is True):
+                    return False, "Malformed option: [%s]: unexpected plus sign." % str_input
+                plus_state_flag = True
+                plus_required = False
+                local_str_input = (r[1]).strip()
+                continue
 
             break # something else - break out
 
