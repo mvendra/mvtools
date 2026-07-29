@@ -1332,6 +1332,9 @@ class DSLType20:
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE)
             if v: # new envvar
 
+                if (r[1]).strip() == "": # false positive - valueless variable
+                    break
+
                 if plus_required:
                     return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing envvar)." % str_input
                 plus_required = True
