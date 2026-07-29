@@ -1552,7 +1552,7 @@ class DSLType20:
                     return False, "Malformed option: [%s]: values should be joined with an intermediary plus sign (processing immediate value)." % str_input
                 plus_required = True
                 plus_state_flag = False
-                local_str_input = (r[1]).strip()
+                local_str_input = (r[1]).rstrip()
 
                 # forward until closing quote is found (the next not escaped)
                 v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
