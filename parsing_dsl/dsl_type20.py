@@ -1290,7 +1290,7 @@ class DSLType20:
             if while_sentinel == 500:
                 return False, "Unable to finish parsing variable: [%s] has too many (inline) values" % str_input
 
-            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE)
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.QUOTE + miniparse.ANYSPACE)
             if v: # new immediate value
 
                 if plus_required:
@@ -1354,7 +1354,7 @@ class DSLType20:
                 var_inst.add_value_envvar(envvar_name)
                 continue
 
-            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN)
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN + miniparse.ANYSPACE)
             if v: # new plus sign
 
                 if (plus_state_flag is None) or (plus_state_flag is True):
