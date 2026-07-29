@@ -1243,6 +1243,11 @@ class DSLType20:
                     return False, r
                 local_str_input = (r[0]).strip()
 
+                if not r[1]: # no value returned - only legal when empty parens used
+                    v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_LPARENT)
+                    if not v:
+                        return False, "Unable to parse variable value: [%s] empty value slot." % whole_str_input
+
                 # try to parse comma, if present
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.COMMA)
                 if not v:
@@ -1277,7 +1282,7 @@ class DSLType20:
 
     def _parse_value_end_single(self, str_input, var_inst):
 
-        local_str_input = str_input
+        local_str_input = str_input.strip()
         eqsign_expected = False
         add_new = True
         plus_state_flag = None
@@ -1534,6 +1539,7 @@ class DSLType20:
 
     def _parse_value_single(self, str_input, local_str_input, opt_inst):
 
+        local_str_input = local_str_input.strip()
         add_new = True
         plus_state_flag = None
         plus_required = None
