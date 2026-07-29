@@ -7004,5 +7004,53 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(test_opt.get_value_resolved(), ["   abc  ", "  def   "])
 
+    def testDslType20_TestParseValue11(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+
+        v, r = test_dsl._parse_value("opt1: \"abc\" + \"def\"}", "\"abc\" + \"def\"}", test_opt)
+        self.assertTrue(v)
+        self.assertEqual(r, "}")
+
+        self.assertEqual(test_opt.get_value_resolved(), "abcdef")
+
+    def testDslType20_TestParseValue12(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+
+        v, r = test_dsl._parse_value("opt1: \"abc\" +}", "\"abc\" +}", test_opt)
+        self.assertFalse(v)
+
+    def testDslType20_TestParseValue13(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+
+        v, r = test_dsl._parse_value("opt1: + \"abc\"}", "+ \"abc\"}", test_opt)
+        self.assertFalse(v)
+
+    def testDslType20_TestParseValue14(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+
+        v, r = test_dsl._parse_value("opt1: \"abc\" ++ \"def\"}", "\"abc\" ++ \"def\"}", test_opt)
+        self.assertFalse(v)
+
+    def testDslType20_TestParseValue15(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+
+        v, r = test_dsl._parse_value("opt1: \"abc\" +++ \"def\"}", "\"abc\" +++ \"def\"}", test_opt)
+        self.assertFalse(v)
+
 if __name__ == "__main__":
     unittest.main()
