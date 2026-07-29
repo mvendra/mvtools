@@ -1238,8 +1238,6 @@ class DSLType20:
                 if while_sentinel == 500:
                     return False, "Unable to finish parsing variable: [%s] has too many values." % whole_str_input
 
-                # mvtodo: rework stoppage condition
-
                 v, r = self._parse_value_end_single(local_str_input, var_inst)
                 if not v:
                     return False, r
