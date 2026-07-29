@@ -1540,6 +1540,8 @@ class DSLType20:
     def _parse_value_single(self, str_input, local_str_input, opt_inst):
 
         add_new = True
+        plus_state_flag = None
+        plus_required = None
 
         while_sentinel = 0
         while True:
@@ -1550,37 +1552,40 @@ class DSLType20:
 
             # find next quote (option's value - first)
             v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
-            if not v:
-                return False, "Failed parsing options: [%s]" % str_input
-            local_str_input = r[1]
+            if v: # new immediate value
 
-            # forward until closing quote is found (the next not escaped)
-            v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
-            if not v:
-                return False, "Failed parsing options: [%s]" % str_input
-            opt_val = r[0]
-            local_str_input = (r[1]).strip()
+                if plus_required:
+                    return False, "Malformed option: [%s]: values should be joined with an intermediary plus sign (processing immediate value)." % str_input
+                plus_required = True
+                plus_state_flag = False
 
-            # find next quote (option's value - second)
-            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
-            if not v:
-                return False, "Failed parsing options: [%s]" % str_input
-            local_str_input = (r[1]).strip()
+                # forward until closing quote is found (the next not escaped)
+                v, r = miniparse.next_not_escaped_slice(local_str_input, miniparse.QUOTE, miniparse.BSLASH)
+                if not v:
+                    return False, "Failed parsing options: [%s]" % str_input
+                opt_val = r[0]
+                local_str_input = (r[1]).strip()
 
-            # descape the value, and its ready for storage
-            v, r = miniparse.descape(opt_val, miniparse.BSLASH)
-            if not v:
-                return False, "Failed parsing options: [%s]" % str_input
-            opt_val = r
+                # find next quote (option's value - second)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.QUOTE)
+                if not v:
+                    return False, "Failed parsing options: [%s]" % str_input
+                local_str_input = (r[1]).strip()
 
-            # mvtodo: valueless?
+                # descape the value, and its ready for storage
+                v, r = miniparse.descape(opt_val, miniparse.BSLASH)
+                if not v:
+                    return False, "Failed parsing options: [%s]" % str_input
+                opt_val = r
 
-            if add_new:
-                opt_inst.new_value()
-                add_new = False
+                # mvtodo: valueless?
 
-            opt_inst.add_value_immediate(opt_val)
-            continue
+                if add_new:
+                    opt_inst.new_value()
+                    add_new = False
+
+                opt_inst.add_value_immediate(opt_val)
+                continue
 
         return True, local_str_input
 
