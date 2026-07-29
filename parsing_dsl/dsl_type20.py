@@ -1371,7 +1371,11 @@ class DSLType20:
         if plus_state_flag:
             return False, "Malformed variable: [%s]: Leftover plus sign." % str_input
 
-        var_inst.value.internal_data.reverse()
+        if isinstance(var_inst.value, DSLType20_Value):
+            var_inst.value.internal_data.reverse()
+        elif isinstance(var_inst.value, list):
+            var_inst.value[len(var_inst.value)-1].internal_data.reverse()
+
         return True, (local_str_input, eqsign_expected)
 
     def _parse_options(self, str_input):
