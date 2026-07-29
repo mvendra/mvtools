@@ -1514,13 +1514,7 @@ class DSLType20:
                 v, r = self._parse_value_single(str_input, local_str_input, opt_inst)
                 if not v:
                     return False, r
-                local_str_input = (r[0]).strip()
-                local_opt_val = r[1]
-                if local_opt_val is None:
-                    return False, "Failed parsing options: [%s]" % str_input
-
-                opt_inst.new_value()
-                opt_inst.add_value_immediate(local_opt_val)
+                local_str_input = r.strip()
 
                 # try to parse comma, if present
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.COMMA)
