@@ -2879,7 +2879,7 @@ class DSLType20Test(unittest.TestCase):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
 
         test_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = test_dsl.parse("var1 = $%s + \"val2\"" % self.reserved_test_env_var_1[1:])
+        v, r = test_dsl.parse("var1 = %s + \"val2\"" % self.reserved_test_env_var_1)
         self.assertTrue(v)
 
         self.assertEqual(var_fmt_helper(test_dsl.get_all_variables()), [("var1", "test-value-1val2", [])])
@@ -2942,6 +2942,16 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val3", [("opt1", "val1val2")])])
+
+    def testDslType20_TestOptValueParsing5(self):
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("var1 {opt1: %s + \"val2\"} = \"val3\"" % self.reserved_test_env_var_1)
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val3", [("opt1", "test-value-1val2")])])
 
     def testDslType20_TestUnspacing(self):
 

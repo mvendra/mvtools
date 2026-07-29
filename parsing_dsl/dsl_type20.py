@@ -1586,7 +1586,28 @@ class DSLType20:
                 opt_inst.add_value_immediate(opt_val)
                 continue
 
-            # mvtodo: envvar
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_DOLLARSIGN)
+            if v: # new envvar
+
+                if plus_required:
+                    return False, "Malformed option: [%s]: values should be joined with an intermediary plus sign (processing envvar)." % str_input
+                plus_required = True
+                plus_state_flag = False
+                local_str_input = (r[1]).strip()
+
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
+                if not v:
+                    return False, "Malformed option: [%s]: No (envvar) identifier after dollar sign." % str_input
+
+                envvar_name = r[0]
+                local_str_input = (r[1]).strip()
+
+                if add_new:
+                    opt_inst.new_value()
+                    add_new = False
+
+                opt_inst.add_value_envvar(envvar_name)
+                continue
 
             v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_PLUSSIGN)
             if v: # new plus sign
