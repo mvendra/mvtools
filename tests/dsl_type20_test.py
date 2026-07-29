@@ -2969,6 +2969,17 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val5", [("opt1", ["val1val2", "val3val4"])])])
 
+    def testDslType20_TestOptValueParsing8(self):
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+        os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("var1 {opt1: (\"val1\" + %s, %s + \"val4\")} = \"val5\"" % (self.reserved_test_env_var_1, self.reserved_test_env_var_2))
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val5", [("opt1", ["val1test-value-1", "test-value-2val4"])])])
+
     def testDslType20_TestUnspacing(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
