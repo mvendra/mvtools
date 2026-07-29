@@ -2980,6 +2980,14 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val5", [("opt1", ["val1test-value-1", "test-value-2val4"])])])
 
+    def testDslType20_TestOptValueParsing9(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.parse("var1 {opt1 / opt2} = \"val1\"")
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val1", [("opt1", None), ("opt2", None)])])
+
     def testDslType20_TestUnspacing(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())

@@ -1571,8 +1571,6 @@ class DSLType20:
                     return False, "Failed parsing options: [%s]" % str_input
                 opt_val = r
 
-                # mvtodo: valueless?
-
                 if add_new:
                     opt_inst.new_value()
                     add_new = False
