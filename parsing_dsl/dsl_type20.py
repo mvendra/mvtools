@@ -1586,14 +1586,14 @@ class DSLType20:
                     return False, "Malformed option: [%s]: values should be joined with an intermediary plus sign (processing envvar)." % str_input
                 plus_required = True
                 plus_state_flag = False
-                local_str_input = (r[1]).strip()
+                local_str_input = (r[1]).lstrip()
 
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
                 if not v:
                     return False, "Malformed option: [%s]: No (envvar) identifier after dollar sign." % str_input
 
                 envvar_name = r[0]
-                local_str_input = (r[1]).strip()
+                local_str_input = (r[1]).lstrip()
 
                 if add_new:
                     opt_inst.new_value()
