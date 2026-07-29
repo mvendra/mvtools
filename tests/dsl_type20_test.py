@@ -6839,6 +6839,54 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(test_var.get_value_resolved(), ["   abc  ", "  def   "])
 
+    def testDslType20_TestParseValueEnd13(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+
+        v, r = test_dsl._parse_value_end("var1 = \"abc\" + \"def\"", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(test_var.get_value_resolved(), "abcdef")
+
+    def testDslType20_TestParseValueEnd14(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+
+        v, r = test_dsl._parse_value_end("var1 = \"abc\" +", test_var)
+        self.assertFalse(v)
+
+    def testDslType20_TestParseValueEnd15(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+
+        v, r = test_dsl._parse_value_end("var1 = + \"abc\"", test_var)
+        self.assertFalse(v)
+
+    def testDslType20_TestParseValueEnd16(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+
+        v, r = test_dsl._parse_value_end("var1 = \"abc\" ++ \"def\"", test_var)
+        self.assertFalse(v)
+
+    def testDslType20_TestParseValueEnd17(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+
+        v, r = test_dsl._parse_value_end("var1 = \"abc\" +++ \"def\"", test_var)
+        self.assertFalse(v)
+
     def testDslType20_TestParseValue1(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
