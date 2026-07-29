@@ -6595,6 +6595,81 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
         self.assertEqual(dsl_1.produce(), dsl_2.produce())
 
+    def testDslType20_TestProduce48(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl_1 = dsl_type20.DSLType20(test_cfg)
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+        test_var1.add_value_immediate("val2")
+
+        self.assertTrue(test_dsl_1.add_variable(test_var1)[0])
+
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), [("var1", "val1val2", [])])
+        self.assertEqual(test_dsl_1.produce(), "var1 = \"val1\" + \"val2\"")
+
+        test_dsl_2 = dsl_type20.DSLType20(test_cfg)
+        v, r = test_dsl_2.parse(test_dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), var_fmt_helper(test_dsl_2.get_all_variables()))
+        self.assertEqual(test_dsl_1.produce(), test_dsl_2.produce())
+
+    def testDslType20_TestProduce49(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl_1 = dsl_type20.DSLType20(test_cfg)
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+        test_var1.add_value_immediate("val2")
+        test_var1.new_value()
+        test_var1.add_value_immediate("val3")
+        test_var1.add_value_immediate("val4")
+
+        self.assertTrue(test_dsl_1.add_variable(test_var1)[0])
+
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), [("var1", ["val1val2", "val3val4"], [])])
+        self.assertEqual(test_dsl_1.produce(), "var1 = (\"val1\" + \"val2\", \"val3\" + \"val4\")")
+
+        test_dsl_2 = dsl_type20.DSLType20(test_cfg)
+        v, r = test_dsl_2.parse(test_dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), var_fmt_helper(test_dsl_2.get_all_variables()))
+        self.assertEqual(test_dsl_1.produce(), test_dsl_2.produce())
+
+    def testDslType20_TestProduce50(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl_1 = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+        os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
+
+        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+        test_var1.add_value_envvar(self.reserved_test_env_var_1[1:])
+        test_var1.new_value()
+        test_var1.add_value_envvar(self.reserved_test_env_var_2[1:])
+        test_var1.add_value_immediate("val4")
+
+        self.assertTrue(test_dsl_1.add_variable(test_var1)[0])
+
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), [("var1", ["val1test-value-1", "test-value-2val4"], [])])
+        self.assertEqual(test_dsl_1.produce(), "var1 = (\"val1\" + %s, %s + \"val4\")" % (self.reserved_test_env_var_1, self.reserved_test_env_var_2))
+
+        test_dsl_2 = dsl_type20.DSLType20(test_cfg)
+        v, r = test_dsl_2.parse(test_dsl_1.produce())
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), var_fmt_helper(test_dsl_2.get_all_variables()))
+        self.assertEqual(test_dsl_1.produce(), test_dsl_2.produce())
+
     def testDslType20_TestFindContext1(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
