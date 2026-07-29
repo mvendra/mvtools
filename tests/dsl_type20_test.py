@@ -6526,8 +6526,8 @@ class DSLType20Test(unittest.TestCase):
         test_dsl_1 = dsl_type20.DSLType20(test_cfg_1)
 
         self.assertTrue(test_dsl_1.parse("[\n@ctx1 {opt1: () / opt2: ()}\nvar1 {opt3: () / opt4: ()}\n]")[0])
-        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables("ctx1")), [("var1", None, [("opt1", []), ("opt2", []), ("opt3", []), ("opt4", [])])])
-        self.assertEqual(test_dsl_1.produce(), "[\n@ctx1 {opt1: () / opt2: ()}\nvar1 {opt3: () / opt4: ()}\n]")
+        self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables("ctx1")), [("var1", None, [("opt1", None), ("opt2", None), ("opt3", None), ("opt4", None)])])
+        self.assertEqual(test_dsl_1.produce(), "[\n@ctx1 {opt1 / opt2}\nvar1 {opt3 / opt4}\n]")
 
         test_cfg_2 = dsl_type20.DSLType20_Config()
         test_dsl_2 = dsl_type20.DSLType20(test_cfg_2)
