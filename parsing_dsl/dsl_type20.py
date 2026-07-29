@@ -1342,7 +1342,7 @@ class DSLType20:
                 eqsign_expected = True
 
                 envvar_name = r[0]
-                local_str_input = (r[1]).strip()
+                local_str_input = r[1]
 
                 # remove dollar sign
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_DOLLARSIGN)
