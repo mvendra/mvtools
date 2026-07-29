@@ -3163,18 +3163,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")), [("var1", "val2", [("opt1", test_envvar_value)])])
         self.assertTrue(v)
 
-    def testDslType20_TestNewContextWithOptions7(self):
-
-        # mvtodo
-
-        test_envvar_value = "dsltype20-test-value"
-        os.environ[ (self.reserved_test_env_var_1[1:]) ] = test_envvar_value
-
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
-        v, r = dsl.parse("[\n@ctx1 {opt1: \"%s\"}\nvar1 = \"val2\"\n]" % self.reserved_test_env_var_1)
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")), [("var1", "val2", [("opt1", self.reserved_test_env_var_1)])])
-        self.assertTrue(v)
-
     def testDslType20_TestNewContextFail1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
