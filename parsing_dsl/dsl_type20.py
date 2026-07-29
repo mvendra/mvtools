@@ -1252,7 +1252,7 @@ class DSLType20:
                 local_str_input = (r[1]).strip()
 
             # remove enclosing left parenthesis
-            v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.LPARENT)
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_LPARENT)
             if not v:
                 return False, "Malformed variable: [%s]: string-list value must be be enclosed with parentheses (failed at the second/left parenthesis)." % whole_str_input
             local_str_input = (r[1]).strip()
@@ -1488,7 +1488,7 @@ class DSLType20:
 
     def _parse_value(self, str_input, local_str_input, opt_inst):
 
-        v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.LPARENT)
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_LPARENT)
         if v:
 
             # option value is a stringlist
