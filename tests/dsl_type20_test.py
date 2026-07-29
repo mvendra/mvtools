@@ -2900,6 +2900,17 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(var_fmt_helper(test_dsl.get_all_variables()), [("var1", ["val1val2", "val3val4"], [])])
 
+    def testDslType20_TestVarValueParsing8(self):
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+        os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
+
+        test_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = test_dsl.parse("var1 = (\"val1\" + %s, %s + \"val4\")" % (self.reserved_test_env_var_1, self.reserved_test_env_var_2))
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables()), [("var1", ["val1test-value-1", "test-value-2val4"], [])])
+
     def testDslType20_TestOptValueParsing1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
