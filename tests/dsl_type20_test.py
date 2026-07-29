@@ -110,8 +110,8 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_ok_3 += "var2 = \"val2\"\n"
         self.cfg_test_ok_3 = path_utils.concat_path(self.test_dir, "test_ok_3.t20")
 
-        self.contents_cfg_test_ok_4 = ("var1 = \"%s\"\n") % self.reserved_test_env_var_1 # mvtodo
-        self.contents_cfg_test_ok_4 += ("var2 {opt1: \"%s\"} = \"val1\"\n") % self.reserved_test_env_var_2 # mvtodo
+        self.contents_cfg_test_ok_4 = ("var1 = %s\n") % self.reserved_test_env_var_1
+        self.contents_cfg_test_ok_4 += ("var2 {opt1: %s} = \"val1\"\n") % self.reserved_test_env_var_2
         self.contents_cfg_test_ok_4 += ("var3 = \"%s\"\n") % self.reserved_path_with_user_1
         self.cfg_test_ok_4 = path_utils.concat_path(self.test_dir, "test_ok_4.t20")
 
@@ -2305,8 +2305,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", "val1", []), ("var2", "val2", [])])
 
     def testDslType20_GetAllVariables2(self):
-
-        # mvtodo
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
         os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
