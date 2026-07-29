@@ -1225,7 +1225,7 @@ class DSLType20:
         local_str_input = whole_str_input
         eqsign_expected = False
 
-        v, r = miniparse.scan_and_slice_end(local_str_input, "\\" + miniparse.RPARENT)
+        v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_RPARENT)
         if v: # value is a string list
 
             local_str_input = (r[1]).strip()
@@ -1503,7 +1503,7 @@ class DSLType20:
                     return False, "Failed parsing options: [%s]" % str_input
 
                 # checks if the right parenthesis has been reached
-                v, r = miniparse.scan_and_slice_beginning(local_str_input, "\\" + miniparse.RPARENT)
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_RPARENT)
                 if v:
                     if not r_paren_allowed:
                         return False, "Failed parsing options: [%s]" % str_input
