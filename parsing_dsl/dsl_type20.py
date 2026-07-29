@@ -1539,7 +1539,7 @@ class DSLType20:
 
     def _parse_value_single(self, str_input, local_str_input, opt_inst):
 
-        opt_val = None
+        add_new = True
 
         while_sentinel = 0
         while True:
@@ -1574,8 +1574,13 @@ class DSLType20:
             opt_val = r
 
             # mvtodo: valueless?
-            opt_inst.new_value()
+
+            if add_new:
+                opt_inst.new_value()
+                add_new = False
+
             opt_inst.add_value_immediate(opt_val)
+            continue
 
         return True, local_str_input
 
