@@ -1586,6 +1586,15 @@ class DSLType20:
                 opt_inst.add_value_immediate(opt_val)
                 continue
 
+            # mvtodo: envvar
+
+            # mvtodo: plus sign
+
+            break # something else - break out
+
+        if plus_state_flag:
+            return False, "Malformed option: [%s]: Leftover plus sign." % str_input
+
         return True, local_str_input
 
     def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent, _indent_skip = False):
