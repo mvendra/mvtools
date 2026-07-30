@@ -7313,17 +7313,34 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(test_prod1, test_prod2)
 
     def testDslType20_TestProduce47(self):
+
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
         self.assertTrue(dsl_1.parse("[\n@ctx1 {opt1: (\"   abc   \", \"   def   \") / opt2: (\"   xyz   \", \"   123   \")}\nvar1 {opt3: (\"   first   \", \"   second   \") / opt4: (\"   third   \", \"   fourth   \")}\n]")[0])
         self.assertEqual(var_fmt_helper(dsl_1.get_all_variables("ctx1")), [("var1", None, [("opt1", ["   abc   ", "   def   "]), ("opt2", ["   xyz   ", "   123   "]), ("opt3", ["   first   ", "   second   "]), ("opt4", ["   third   ", "   fourth   "])])])
-        self.assertEqual(dsl_1.produce(), "[\n@ctx1 {opt1: (\"   abc   \", \"   def   \") / opt2: (\"   xyz   \", \"   123   \")}\nvar1 {opt3: (\"   first   \", \"   second   \") / opt4: (\"   third   \", \"   fourth   \")}\n]")
+
+        v, r = dsl_1.produce()
+        self.assertTrue(v)
+        self.assertEqual(r, "[\n@ctx1 {opt1: (\"   abc   \", \"   def   \") / opt2: (\"   xyz   \", \"   123   \")}\nvar1 {opt3: (\"   first   \", \"   second   \") / opt4: (\"   third   \", \"   fourth   \")}\n]")
 
         dsl_2 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
-        v, r = dsl_2.parse(dsl_1.produce())
+
+        v, r = dsl_1.produce()
+        self.assertTrue(v)
+
+        v, r = dsl_2.parse(r)
         self.assertTrue(v)
         self.assertEqual(r, None)
         self.assertEqual(var_fmt_helper(dsl_1.get_all_variables()), var_fmt_helper(dsl_2.get_all_variables()))
-        self.assertEqual(dsl_1.produce(), dsl_2.produce())
+
+        v, r = dsl_1.produce()
+        self.assertTrue(v)
+        test_prod1 = r
+
+        v, r = dsl_2.produce()
+        self.assertTrue(v)
+        test_prod2 = r
+
+        self.assertEqual(test_prod1, test_prod2)
 
     def testDslType20_TestProduce48(self):
 
