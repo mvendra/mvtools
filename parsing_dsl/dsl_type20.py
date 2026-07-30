@@ -761,9 +761,11 @@ class DSLType20:
 
         result = ""
         self._clear_indent()
-        # mvtodo: exception
-        result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
-        return result.strip()
+        try:
+            result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Production failed: [%s]" % ex.get_message()
+        return True, result.strip()
 
     def _get_entire_dfs(self, ctx):
 
