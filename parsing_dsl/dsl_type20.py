@@ -597,9 +597,11 @@ class DSLType20:
     def get_all_contexts_dfs(self):
 
         dfs_ctx = internal_dfs_context(self.data)
-        # mvtodo: exception
-        if not self._get_all_contexts_dfs(dfs_ctx):
-            return False, "Recursive traversal failed"
+        try:
+            if not self._get_all_contexts_dfs(dfs_ctx):
+                return False, "Recursive traversal failed"
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Recursive traversal failed: [%s]" % ex.get_message()
         return True, dfs_ctx.ctxs
 
     def get_all_sub_contexts(self, parent_context = None):
