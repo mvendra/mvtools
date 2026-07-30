@@ -9,7 +9,7 @@
 
 # The "reset" option, if specified, will cause this folder to be deleted and then
 # recreated before the actual execution.
-SET_STORAGE_PATH {reset} = "$THE_PATH"
+SET_STORAGE_PATH {reset} = $THE_PATH
 
 # If any given target is bigger than the specified size, a warning is issued. If the
 # option "abort" is specified, then the preparation will also stop and fail. Sizes can
