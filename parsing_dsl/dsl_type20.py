@@ -755,6 +755,7 @@ class DSLType20:
 
         result = ""
         self._clear_indent()
+        # mvtodo: exception
         result += self._produce_context(self.data, _ctx_end_comment, _ctx_lvl_indent, True)
         return result.strip()
 
@@ -1321,6 +1322,7 @@ class DSLType20:
                     var_inst.new_value()
                     add_new = False
 
+                # mvtodo: exception
                 var_inst.add_value_immediate(var_value)
                 continue
 
@@ -1349,6 +1351,7 @@ class DSLType20:
                     var_inst.new_value()
                     add_new = False
 
+                # mvtodo: exception
                 var_inst.add_value_envvar(envvar_name)
                 continue
 
@@ -1576,6 +1579,7 @@ class DSLType20:
                     opt_inst.new_value()
                     add_new = False
 
+                # mvtodo: exception
                 opt_inst.add_value_immediate(opt_val)
                 continue
 
@@ -1599,6 +1603,7 @@ class DSLType20:
                     opt_inst.new_value()
                     add_new = False
 
+                # mvtodo: exception
                 opt_inst.add_value_envvar(envvar_name)
                 continue
 
