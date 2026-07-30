@@ -896,12 +896,14 @@ class DSLType20:
         if find_itself:
             local_parent_context = context_name
 
-        # mvtodo: exception
-        v, r = self._find_context(local_parent_context, self._get_context_helper, (context_name, result_ptr, find_itself))
-        if not v:
-            return False, r
-        if not r:
-            return False, "Unable to return context [%s] of/from [%s] - context not found." % (context_name, parent_context)
+        try:
+            v, r = self._find_context(local_parent_context, self._get_context_helper, (context_name, result_ptr, find_itself))
+            if not v:
+                return False, r
+            if not r:
+                return False, "Unable to return context [%s] of/from [%s] - context not found." % (context_name, parent_context)
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Unable to return context [%s] of/from [%s]: [%s]." % (context_name, parent_context, ex.get_message())
 
         return True, result_ptr
 
