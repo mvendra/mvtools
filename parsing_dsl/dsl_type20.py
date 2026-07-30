@@ -1322,8 +1322,10 @@ class DSLType20:
                     var_inst.new_value()
                     add_new = False
 
-                # mvtodo: exception
-                var_inst.add_value_immediate(var_value)
+                try:
+                    var_inst.add_value_immediate(var_value)
+                except mvtools_exception.mvtools_exception as ex:
+                    return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
                 continue
 
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE)
