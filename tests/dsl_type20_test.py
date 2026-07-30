@@ -1171,32 +1171,32 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetValueSerialized1(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
-        self.assertEqual(var_inst.get_value_serialized(), None)
+        self.assertEqual(var_inst.serialize(), None)
 
     def testDSLType20_Variable_GetValueSerialized2(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
-        self.assertEqual(var_inst.get_value_serialized(), None)
+        self.assertEqual(var_inst.serialize(), None)
 
     def testDSLType20_Variable_GetValueSerialized3(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
-        self.assertEqual(var_inst.get_value_serialized(), "\"\"")
+        self.assertEqual(var_inst.serialize(), "\"\"")
 
     def testDSLType20_Variable_GetValueSerialized4(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         var_inst.add_value_immediate("")
-        self.assertEqual(var_inst.get_value_serialized(), "\"\" + \"\"")
+        self.assertEqual(var_inst.serialize(), "\"\" + \"\"")
 
     def testDSLType20_Variable_GetValueSerialized5(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_serialized(), "\"val1\" + \"val2\"")
+        self.assertEqual(var_inst.serialize(), "\"val1\" + \"val2\"")
 
     def testDSLType20_Variable_GetValueSerialized6(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1205,7 +1205,7 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_serialized(), "\"val1\" + $%s + \"val2\"" % self.reserved_test_env_var_1[1:])
+        self.assertEqual(var_inst.serialize(), "\"val1\" + $%s + \"val2\"" % self.reserved_test_env_var_1[1:])
 
     def testDSLType20_Variable_GetValueSerialized7(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
@@ -1213,7 +1213,7 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("")
         var_inst.new_value()
         var_inst.add_value_immediate("")
-        self.assertEqual(var_inst.get_value_serialized(), "(\"\", \"\")")
+        self.assertEqual(var_inst.serialize(), "(\"\", \"\")")
 
     def testDSLType20_Variable_GetValueSerialized8(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
@@ -1221,7 +1221,7 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_serialized(), "(\"val1\", \"val2\")")
+        self.assertEqual(var_inst.serialize(), "(\"val1\", \"val2\")")
 
     def testDSLType20_Variable_GetValueSerialized9(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1232,19 +1232,19 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         var_inst.new_value()
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_serialized(), "(\"val1\", $%s, \"val2\")" % self.reserved_test_env_var_1[1:])
+        self.assertEqual(var_inst.serialize(), "(\"val1\", $%s, \"val2\")" % self.reserved_test_env_var_1[1:])
 
     def testDSLType20_Variable_GetValueSerialized10(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(True), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
-        self.assertEqual(var_inst.get_value_serialized(), "\"~\"")
+        self.assertEqual(var_inst.serialize(), "\"~\"")
 
     def testDSLType20_Variable_GetValueSerialized11(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(False), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
-        self.assertEqual(var_inst.get_value_serialized(), "\"~\"")
+        self.assertEqual(var_inst.serialize(), "\"~\"")
 
     def testDSLType20_Option1(self):
         ex_flag = False
@@ -1461,32 +1461,32 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetValueSerialized1(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
-        self.assertEqual(obj_inst.get_value_serialized(), None)
+        self.assertEqual(obj_inst.serialize(), None)
 
     def testDSLType20_Option_GetValueSerialized2(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
-        self.assertEqual(obj_inst.get_value_serialized(), None)
+        self.assertEqual(obj_inst.serialize(), None)
 
     def testDSLType20_Option_GetValueSerialized3(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
-        self.assertEqual(obj_inst.get_value_serialized(), "\"\"")
+        self.assertEqual(obj_inst.serialize(), "\"\"")
 
     def testDSLType20_Option_GetValueSerialized4(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         obj_inst.add_value_immediate("")
-        self.assertEqual(obj_inst.get_value_serialized(), "\"\" + \"\"")
+        self.assertEqual(obj_inst.serialize(), "\"\" + \"\"")
 
     def testDSLType20_Option_GetValueSerialized5(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_serialized(), "\"val1\" + \"val2\"")
+        self.assertEqual(obj_inst.serialize(), "\"val1\" + \"val2\"")
 
     def testDSLType20_Option_GetValueSerialized6(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1495,7 +1495,7 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_serialized(), "\"val1\" + $%s + \"val2\"" % self.reserved_test_env_var_1[1:])
+        self.assertEqual(obj_inst.serialize(), "\"val1\" + $%s + \"val2\"" % self.reserved_test_env_var_1[1:])
 
     def testDSLType20_Option_GetValueSerialized7(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
@@ -1503,7 +1503,7 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_immediate("")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
-        self.assertEqual(obj_inst.get_value_serialized(), "(\"\", \"\")")
+        self.assertEqual(obj_inst.serialize(), "(\"\", \"\")")
 
     def testDSLType20_Option_GetValueSerialized8(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
@@ -1511,7 +1511,7 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_serialized(), "(\"val1\", \"val2\")")
+        self.assertEqual(obj_inst.serialize(), "(\"val1\", \"val2\")")
 
     def testDSLType20_Option_GetValueSerialized9(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1522,19 +1522,19 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         obj_inst.new_value()
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_serialized(), "(\"val1\", $%s, \"val2\")" % self.reserved_test_env_var_1[1:])
+        self.assertEqual(obj_inst.serialize(), "(\"val1\", $%s, \"val2\")" % self.reserved_test_env_var_1[1:])
 
     def testDSLType20_Option_GetValueSerialized10(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(True), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
-        self.assertEqual(obj_inst.get_value_serialized(), "\"~\"")
+        self.assertEqual(obj_inst.serialize(), "\"~\"")
 
     def testDSLType20_Option_GetValueSerialized11(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(False), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
-        self.assertEqual(obj_inst.get_value_serialized(), "\"~\"")
+        self.assertEqual(obj_inst.serialize(), "\"~\"")
 
     def testDSLType20_Context1(self):
         ctx_inst = dsl_type20.DSLType20_Context(None, "a", None)

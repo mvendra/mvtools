@@ -394,7 +394,7 @@ class DSLType20_ValueHolder:
             result.append(res_str)
         return result
 
-    def get_value_serialized(self):
+    def serialize(self):
 
         if self.value is None:
             return None
@@ -1703,7 +1703,7 @@ class DSLType20:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
-                options_result += opt.get_value_serialized()
+                options_result += opt.serialize()
 
             if idx == len(input_options):
                 options_result += miniparse.RCBRACKET
@@ -1726,7 +1726,7 @@ class DSLType20:
         if input_variable.get_value() is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
-            variable_result += input_variable.get_value_serialized()
+            variable_result += input_variable.serialize()
 
         return variable_result
 
