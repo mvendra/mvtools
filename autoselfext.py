@@ -63,7 +63,7 @@ for sents in $FINDSENT; do
 done
 
 # check whether we did find the inst offset or not at all
-if [ -z $OFFSET_INST ]; then
+if [ -z "$OFFSET_INST" ]; then
     echo "Unable to find instructions offset. Bailing out."
     exit 1
 fi
@@ -73,18 +73,18 @@ OFFSET_INST=$((OFFSET_INST + 9))
 OFFSET_PACK=$((OFFSET_INST + SIZE_INST))
 
 # extracts instruction script
-dd skip=$OFFSET_INST count=$SIZE_INST if=$NAME_SELF of=$OUT_INST bs=1 &>/dev/null
-chmod +x $OUT_INST
+dd skip="$OFFSET_INST" count="$SIZE_INST" if="$NAME_SELF" of=$OUT_INST bs=1 &>/dev/null
+chmod +x "$OUT_INST"
 
 # extracts package file
-dd skip=$OFFSET_PACK count=$SIZE_PACK if=$NAME_SELF of=$OUT_PACK bs=1 &>/dev/null
+dd skip="$OFFSET_PACK" count="$SIZE_PACK" if="$NAME_SELF" of="$OUT_PACK" bs=1 &>/dev/null
 
 echo "Done. Will now run the embedded script."
 
 # runs instruction script
-source $OUT_INST
+source "$OUT_INST"
 
-rm -rf ./$OUT_INST
+rm -rf ./"$OUT_INST"
 
 exit 0 #SENTINEL\n"""
 
