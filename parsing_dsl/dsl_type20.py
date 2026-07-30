@@ -585,8 +585,11 @@ class DSLType20:
 
     def get_context(self, context_name = None):
 
-        if context_name is None or context_name == self.root_context_id:
-            return True, self._ctx_shallow_copy(None, self.data)
+        try:
+            if context_name is None or context_name == self.root_context_id:
+                return True, self._ctx_shallow_copy(None, self.data)
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Getting context failed: [%s]" % ex.get_message()
 
         v, r = self._get_context_internal(context_name, True, None)
         if not v:
@@ -612,8 +615,11 @@ class DSLType20:
 
     def get_sub_context(self, context_name, parent_context = None):
 
-        if context_name is None or context_name == self.root_context_id:
-            return True, self._ctx_shallow_copy(None, self.data)
+        try:
+            if context_name is None or context_name == self.root_context_id:
+                return True, self._ctx_shallow_copy(None, self.data)
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Getting sub context failed: [%s]" % ex.get_message()
 
         v, r = self._get_context_internal(context_name, False, parent_context)
         if not v:
