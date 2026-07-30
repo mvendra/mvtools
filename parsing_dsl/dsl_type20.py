@@ -63,23 +63,21 @@ def make_obj_opt_list_from_neutral_format(configs, options):
             return False, "Duplicated option: [%s]" % opt_name
         opt_name_map[opt_name] = True
 
-        opt_obj = None
         try:
             opt_obj = DSLType20_Option(configs, opt_name)
+            if opt_val is not None:
+                if isinstance(opt_val, list):
+                    for x in opt_val:
+                        if x is None:
+                            return False, "Invalid option value in: [%s]" % opt_val
+                        opt_obj.new_value()
+                        opt_obj.add_value_immediate(x)
+                else:
+                    opt_obj.new_value()
+                    opt_obj.add_value_immediate(opt_val)
+            result.append(opt_obj)
         except mvtools_exception.mvtools_exception as ex:
             return False, ex.get_message()
-
-        if opt_val is not None:
-            if isinstance(opt_val, list):
-                for x in opt_val:
-                    if x is None:
-                        return False, "Invalid option value in: [%s]" % opt_val
-                    opt_obj.new_value()
-                    opt_obj.add_value_immediate(x)
-            else:
-                opt_obj.new_value()
-                opt_obj.add_value_immediate(opt_val)
-        result.append(opt_obj)
 
     return True, result
 
