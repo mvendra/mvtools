@@ -1609,8 +1609,10 @@ class DSLType20:
                     opt_inst.new_value()
                     add_new = False
 
-                # mvtodo: exception
-                opt_inst.add_value_envvar(envvar_name)
+                try:
+                    opt_inst.add_value_envvar(envvar_name)
+                except mvtools_exception.mvtools_exception as ex:
+                    return False, "Unable to parse option value [%s]: [%s]." % (str_input, ex.get_message())
                 continue
 
             v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_PLUSSIGN)
