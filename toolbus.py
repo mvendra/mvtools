@@ -41,7 +41,10 @@ def _bootstrap_internal_toolbus_db(_filename): # this is supposed to be a "priva
 
     db_handle = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_user = False, allow_var_dupes = False, inherit_options = True, var_decorator = ""))
     db_handle.add_context(TOOLBUS_SIGNAL_CONTEXT, [])
-    bootstrap_contents = db_handle.produce()
+    v, r = db_handle.produce()
+    if not v:
+        return False, "Unable to bootstrap internal database file [%s] (database: [%s], context: [%s]): [%s]." % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT, r)
+    bootstrap_contents = r
 
     if not sync_write_file.sync_write_file(_filename, bootstrap_contents):
         return False, "Unable to acquire write lock on file [%s] (database: [%s], context: [%s])" % (_filename, INTERNAL_DB_FILENAME, TOOLBUS_SIGNAL_CONTEXT)
@@ -171,7 +174,10 @@ def get_signal(_sig_name, probe_only=False):
         if r == 0:
             return False, "Unable to remove variable (already used signal) [%s] (database: [%s], context: [%s])" % (_sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
 
-        new_contents = _db_handle.produce()
+        v, r = _db_handle.produce()
+        if not v:
+            return False, "Unable to remove variable (internal error): [%s] (signal: [%s], database: [%s], context: [%s])" % (r, _sig_name, "(internal toolbus database)", TOOLBUS_SIGNAL_CONTEXT)
+        new_contents = r
 
         # save changes to file
         if not sync_write_file.sync_write_file(ext, new_contents):
@@ -200,7 +206,10 @@ def remove_field(_db_name, _context, _var):
     if r == 0:
         return False, "Unable to remove variable [%s] (database: [%s], context: [%s])." % (_var, _db_name, _context)
 
-    new_contents = _db_handle.produce()
+    v, r = _db_handle.produce()
+    if not v:
+        return False, "Unable to update toolbus database - internal error: [%s] (database: [%s], context: [%s])." % (r, _db_name, _context)
+    new_contents = r
 
     # save changes to file
     if not sync_write_file.sync_write_file(ext, new_contents):
@@ -219,7 +228,10 @@ def remove_table(_db_name, _context):
     if not v:
         return False, "Unable to remove context [%s] (database: [%s]): [%s]." % (_context, _db_name, r)
 
-    new_contents = _db_handle.produce()
+    v, r = _db_handle.produce()
+    if not v:
+        return False, "Unable to remove context [%s] (database: [%s]): [%s]." % (_context, _db_name, r)
+    new_contents = r
 
     # save changes to file
     if not sync_write_file.sync_write_file(ext, new_contents):
@@ -290,7 +302,10 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
         return False, "Unable to add variable [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
 
     # serialize updated database
-    new_contents = _dh_handle.produce()
+    v, r = _dh_handle.produce()
+    if not v:
+        return False, "Unable to update toolbus database (database: [%s], context: [%s]): [%s]" % (_db_name, _context, r)
+    new_contents = r
 
     # save changes to file
     if not sync_write_file.sync_write_file(_db_full_file, new_contents):
