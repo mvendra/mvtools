@@ -258,8 +258,13 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
 
     # add/set new variable
     new_var = dsl_type20.DSLType20_Variable(_dh_handle.configs, _var, _opts)
-    new_var.new_value()
-    new_var.add_value_immediate(_val)
+    if isinstance(_val, list):
+        for x in _val:
+            new_var.new_value()
+            new_var.add_value_immediate(x)
+    else:
+        new_var.new_value()
+        new_var.add_value_immediate(_val)
     v, r = _dh_handle.add_variable(new_var, _context)
     if not v:
         return False, "Unable to add variable [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
