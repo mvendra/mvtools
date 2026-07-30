@@ -585,11 +585,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
         self.assertEqual(r[0].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[0].get_name(), "a")
-        self.assertEqual(r[0].get_value_resolved(), "b")
+        self.assertEqual(r[0].get_value(), "b")
         self.assertTrue(isinstance(r[1], dsl_type20.DSLType20_Option))
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
-        self.assertEqual(r[1].get_value_resolved(), None)
+        self.assertEqual(r[1].get_value(), None)
 
     def testMakeObjOptListFromNeutralFormat3(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", []) ])
@@ -598,11 +598,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
         self.assertEqual(r[0].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[0].get_name(), "a")
-        self.assertEqual(r[0].get_value_resolved(), "b")
+        self.assertEqual(r[0].get_value(), "b")
         self.assertTrue(isinstance(r[1], dsl_type20.DSLType20_Option))
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
-        self.assertEqual(r[1].get_value_resolved(), None)
+        self.assertEqual(r[1].get_value(), None)
 
     def testMakeObjOptListFromNeutralFormat4(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", "def"]) ])
@@ -611,11 +611,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
         self.assertEqual(r[0].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[0].get_name(), "a")
-        self.assertEqual(r[0].get_value_resolved(), "b")
+        self.assertEqual(r[0].get_value(), "b")
         self.assertTrue(isinstance(r[1], dsl_type20.DSLType20_Option))
         self.assertEqual(r[1].get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(r[1].get_name(), "c")
-        self.assertEqual(r[1].get_value_resolved(), ["abc", "def"])
+        self.assertEqual(r[1].get_value(), ["abc", "def"])
 
     def testMakeObjOptListFromNeutralFormat5(self):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", None]) ])
@@ -927,7 +927,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.name, "a")
         self.assertEqual(var_inst.get_name(), "a")
         self.assertEqual(var_inst.value, None)
-        self.assertEqual(var_inst.get_value_resolved(), None)
+        self.assertEqual(var_inst.get_value(), None)
         self.assertEqual(var_inst.options, None)
         self.assertEqual(var_inst.get_options(), [])
 
@@ -940,7 +940,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.name, "a")
         self.assertEqual(var_inst.get_name(), "a")
         self.assertEqual(var_inst.value, None)
-        self.assertEqual(var_inst.get_value_resolved(), None)
+        self.assertEqual(var_inst.get_value(), None)
         self.assertEqual(var_inst.options, opt_inst)
         self.assertEqual(var_inst.get_options(), [opt_inst])
 
@@ -954,7 +954,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.name, "a")
         self.assertEqual(var_inst.get_name(), "a")
         self.assertEqual(var_inst.value, None)
-        self.assertEqual(var_inst.get_value_resolved(), None)
+        self.assertEqual(var_inst.get_value(), None)
         self.assertEqual(var_inst.options, [opt_inst1, opt_inst2])
         self.assertEqual(var_inst.get_options(), [opt_inst1, opt_inst2])
 
@@ -1063,32 +1063,32 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetValueResolved1(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
-        self.assertEqual(var_inst.get_value_resolved(), None)
+        self.assertEqual(var_inst.get_value(), None)
 
     def testDSLType20_Variable_GetValueResolved2(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
-        self.assertEqual(var_inst.get_value_resolved(), None)
+        self.assertEqual(var_inst.get_value(), None)
 
     def testDSLType20_Variable_GetValueResolved3(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
-        self.assertEqual(var_inst.get_value_resolved(), "")
+        self.assertEqual(var_inst.get_value(), "")
 
     def testDSLType20_Variable_GetValueResolved4(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         var_inst.add_value_immediate("")
-        self.assertEqual(var_inst.get_value_resolved(), "")
+        self.assertEqual(var_inst.get_value(), "")
 
     def testDSLType20_Variable_GetValueResolved5(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_resolved(), "val1val2")
+        self.assertEqual(var_inst.get_value(), "val1val2")
 
     def testDSLType20_Variable_GetValueResolved6(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1097,7 +1097,7 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_resolved(), "val1-envvar-value-1-val2")
+        self.assertEqual(var_inst.get_value(), "val1-envvar-value-1-val2")
 
     def testDSLType20_Variable_GetValueResolved7(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1106,9 +1106,9 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_resolved(), "val1-envvar-value-1-val2")
+        self.assertEqual(var_inst.get_value(), "val1-envvar-value-1-val2")
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
-        self.assertEqual(var_inst.get_value_resolved(), "val1-envvar-value-3-val2")
+        self.assertEqual(var_inst.get_value(), "val1-envvar-value-3-val2")
 
     def testDSLType20_Variable_GetValueResolved8(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
@@ -1116,7 +1116,7 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("")
         var_inst.new_value()
         var_inst.add_value_immediate("")
-        self.assertEqual(var_inst.get_value_resolved(), ["", ""])
+        self.assertEqual(var_inst.get_value(), ["", ""])
 
     def testDSLType20_Variable_GetValueResolved9(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
@@ -1124,7 +1124,7 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_resolved(), ["val1", "val2"])
+        self.assertEqual(var_inst.get_value(), ["val1", "val2"])
 
     def testDSLType20_Variable_GetValueResolved10(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1135,7 +1135,7 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         var_inst.new_value()
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_resolved(), ["val1", "-envvar-value-1-", "val2"])
+        self.assertEqual(var_inst.get_value(), ["val1", "-envvar-value-1-", "val2"])
 
     def testDSLType20_Variable_GetValueResolved11(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1146,28 +1146,28 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         var_inst.new_value()
         var_inst.add_value_immediate("val2")
-        self.assertEqual(var_inst.get_value_resolved(), ["val1", "-envvar-value-1-", "val2"])
+        self.assertEqual(var_inst.get_value(), ["val1", "-envvar-value-1-", "val2"])
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
-        self.assertEqual(var_inst.get_value_resolved(), ["val1", "-envvar-value-3-", "val2"])
+        self.assertEqual(var_inst.get_value(), ["val1", "-envvar-value-3-", "val2"])
 
     def testDSLType20_Variable_GetValueResolved12(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(True), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
-        self.assertEqual(var_inst.get_value_resolved(), os.path.expanduser("~"))
+        self.assertEqual(var_inst.get_value(), os.path.expanduser("~"))
 
     def testDSLType20_Variable_GetValueResolved13(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(False), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
-        self.assertEqual(var_inst.get_value_resolved(), "~")
+        self.assertEqual(var_inst.get_value(), "~")
 
     def testDSLType20_Variable_GetValueResolved14(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "~"
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_user = True), "a", [])
         var_inst.new_value()
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
-        self.assertEqual(var_inst.get_value_resolved(), os.path.expanduser("~"))
+        self.assertEqual(var_inst.get_value(), os.path.expanduser("~"))
 
     def testDSLType20_Variable_GetValueSerialized1(self):
         var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
@@ -1262,7 +1262,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(obj_inst.name, "a")
         self.assertEqual(obj_inst.get_name(), "a")
         self.assertEqual(obj_inst.value, None)
-        self.assertEqual(obj_inst.get_value_resolved(), None)
+        self.assertEqual(obj_inst.get_value(), None)
 
     def testDSLType20_Option_NewValue1(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
@@ -1360,32 +1360,32 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetValueResolved1(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
-        self.assertEqual(obj_inst.get_value_resolved(), None)
+        self.assertEqual(obj_inst.get_value(), None)
 
     def testDSLType20_Option_GetValueResolved2(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
-        self.assertEqual(obj_inst.get_value_resolved(), None)
+        self.assertEqual(obj_inst.get_value(), None)
 
     def testDSLType20_Option_GetValueResolved3(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
-        self.assertEqual(obj_inst.get_value_resolved(), "")
+        self.assertEqual(obj_inst.get_value(), "")
 
     def testDSLType20_Option_GetValueResolved4(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         obj_inst.add_value_immediate("")
-        self.assertEqual(obj_inst.get_value_resolved(), "")
+        self.assertEqual(obj_inst.get_value(), "")
 
     def testDSLType20_Option_GetValueResolved5(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_resolved(), "val1val2")
+        self.assertEqual(obj_inst.get_value(), "val1val2")
 
     def testDSLType20_Option_GetValueResolved6(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1394,7 +1394,7 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_resolved(), "val1-envvar-value-1-val2")
+        self.assertEqual(obj_inst.get_value(), "val1-envvar-value-1-val2")
 
     def testDSLType20_Option_GetValueResolved7(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1403,9 +1403,9 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_resolved(), "val1-envvar-value-1-val2")
+        self.assertEqual(obj_inst.get_value(), "val1-envvar-value-1-val2")
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
-        self.assertEqual(obj_inst.get_value_resolved(), "val1-envvar-value-3-val2")
+        self.assertEqual(obj_inst.get_value(), "val1-envvar-value-3-val2")
 
     def testDSLType20_Option_GetValueResolved8(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
@@ -1413,7 +1413,7 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_immediate("")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
-        self.assertEqual(obj_inst.get_value_resolved(), ["", ""])
+        self.assertEqual(obj_inst.get_value(), ["", ""])
 
     def testDSLType20_Option_GetValueResolved9(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
@@ -1421,7 +1421,7 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "val2"])
+        self.assertEqual(obj_inst.get_value(), ["val1", "val2"])
 
     def testDSLType20_Option_GetValueResolved10(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1432,7 +1432,7 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         obj_inst.new_value()
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "-envvar-value-1-", "val2"])
+        self.assertEqual(obj_inst.get_value(), ["val1", "-envvar-value-1-", "val2"])
 
     def testDSLType20_Option_GetValueResolved11(self):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
@@ -1443,21 +1443,21 @@ class DSLType20Test(unittest.TestCase):
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         obj_inst.new_value()
         obj_inst.add_value_immediate("val2")
-        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "-envvar-value-1-", "val2"])
+        self.assertEqual(obj_inst.get_value(), ["val1", "-envvar-value-1-", "val2"])
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
-        self.assertEqual(obj_inst.get_value_resolved(), ["val1", "-envvar-value-3-", "val2"])
+        self.assertEqual(obj_inst.get_value(), ["val1", "-envvar-value-3-", "val2"])
 
     def testDSLType20_Option_GetValueResolved12(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(True), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
-        self.assertEqual(obj_inst.get_value_resolved(), os.path.expanduser("~"))
+        self.assertEqual(obj_inst.get_value(), os.path.expanduser("~"))
 
     def testDSLType20_Option_GetValueResolved13(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(False), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
-        self.assertEqual(obj_inst.get_value_resolved(), "~")
+        self.assertEqual(obj_inst.get_value(), "~")
 
     def testDSLType20_Option_GetValueSerialized1(self):
         obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
@@ -4421,7 +4421,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), None)
+        self.assertEqual(var_obj.get_value(), None)
         self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestAddVariable2(self):
@@ -4440,7 +4440,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "")
+        self.assertEqual(var_obj.get_value(), "")
         self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestAddVariable3(self):
@@ -4459,7 +4459,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestAddVariable4(self):
@@ -4482,7 +4482,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt1", "val2")])
 
     def testDslType20_TestAddVariable5(self):
@@ -4509,7 +4509,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [ ("opt1", "val2"), ("opt2", "val3") ])
 
     def testDslType20_TestAddVariable6(self):
@@ -4549,11 +4549,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 2)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [ ("opt1", "val2"), ("opt2", "val3") ])
         var_obj = r[1]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [ ("opt1", "val2"), ("opt2", "val3") ])
 
     def testDslType20_TestAddVariable7(self):
@@ -4582,7 +4582,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt1", "val1"), ("opt2", "val3")])
 
     def testDslType20_TestAddVariable8(self):
@@ -4611,7 +4611,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt1", "val3")])
 
     def testDslType20_TestAddVariable9(self):
@@ -4667,7 +4667,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt2", "val3")])
 
     def testDslType20_TestAddVariable12(self):
@@ -4694,7 +4694,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt1", "val3")])
 
     def testDslType20_TestAddVariable13(self):
@@ -4721,7 +4721,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt1", None)])
 
     def testDslType20_TestAddVariable14(self):
@@ -4745,7 +4745,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [])
 
     def testDslType20_TestAddVariable15(self):
@@ -4784,7 +4784,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [("opt1", "val2"), ("opt2", "val3"), ("opt3", "val4"), ("opt4", "val5")])
 
     def testDslType20_TestAddVariable16(self):
@@ -4803,7 +4803,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(var_obj.get_options()), [])
 
     def testDslType20_TestAddVariable17(self):
@@ -5003,7 +5003,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_variables("var1")
@@ -5030,7 +5030,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_variables("var1", "ctx1")
@@ -5057,11 +5057,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 2)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
         var_obj = r[1]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_variables("var1")
@@ -5089,7 +5089,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_variables("var2")
@@ -5101,7 +5101,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestRemVariables5(self):
@@ -5125,7 +5125,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.get_all_variables("ctx1")
@@ -5133,7 +5133,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val4")
+        self.assertEqual(var_obj.get_value(), "val4")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_variables("var1", "ctx1")
@@ -5145,7 +5145,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.get_all_variables("ctx1")
@@ -5335,7 +5335,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_all_variables()
@@ -5362,7 +5362,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_all_variables("ctx1")
@@ -5389,7 +5389,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_all_variables()
@@ -5401,7 +5401,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 1)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
 
     def testDslType20_TestRemAllVariables4(self):
@@ -5435,15 +5435,15 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(r), 3)
         var_obj = r[0]
         self.assertEqual(var_obj.get_name(), "var1")
-        self.assertEqual(var_obj.get_value_resolved(), "val1")
+        self.assertEqual(var_obj.get_value(), "val1")
         self.assertEqual(var_obj.get_options(), [])
         var_obj = r[1]
         self.assertEqual(var_obj.get_name(), "var2")
-        self.assertEqual(var_obj.get_value_resolved(), "val2")
+        self.assertEqual(var_obj.get_value(), "val2")
         self.assertEqual(var_obj.get_options(), [])
         var_obj = r[2]
         self.assertEqual(var_obj.get_name(), "var3")
-        self.assertEqual(var_obj.get_value_resolved(), "val3")
+        self.assertEqual(var_obj.get_value(), "val3")
         self.assertEqual(var_obj.get_options(), [])
 
         v, r = test_dsl.rem_all_variables("ctx1")
@@ -7578,7 +7578,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), None)
+        self.assertEqual(test_var.get_value(), None)
 
     def testDslType20_TestParseValueEnd2(self):
 
@@ -7590,7 +7590,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), "")
+        self.assertEqual(test_var.get_value(), "")
 
     def testDslType20_TestParseValueEnd3(self):
 
@@ -7602,7 +7602,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), "abc")
+        self.assertEqual(test_var.get_value(), "abc")
 
     def testDslType20_TestParseValueEnd4(self):
 
@@ -7614,7 +7614,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), None)
+        self.assertEqual(test_var.get_value(), None)
 
     def testDslType20_TestParseValueEnd5(self):
 
@@ -7626,7 +7626,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), "")
+        self.assertEqual(test_var.get_value(), "")
 
     def testDslType20_TestParseValueEnd6(self):
 
@@ -7638,7 +7638,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), "abc")
+        self.assertEqual(test_var.get_value(), "abc")
 
     def testDslType20_TestParseValueEnd7(self):
 
@@ -7650,7 +7650,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), "a\"c")
+        self.assertEqual(test_var.get_value(), "a\"c")
 
     def testDslType20_TestParseValueEnd8(self):
 
@@ -7662,7 +7662,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), ["", ""])
+        self.assertEqual(test_var.get_value(), ["", ""])
 
     def testDslType20_TestParseValueEnd9(self):
 
@@ -7674,7 +7674,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), ["abc", "def"])
+        self.assertEqual(test_var.get_value(), ["abc", "def"])
 
     def testDslType20_TestParseValueEnd10(self):
 
@@ -7686,7 +7686,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), ["a\"c", "d\"f"])
+        self.assertEqual(test_var.get_value(), ["a\"c", "d\"f"])
 
     def testDslType20_TestParseValueEnd11(self):
 
@@ -7707,7 +7707,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), ["   abc  ", "  def   "])
+        self.assertEqual(test_var.get_value(), ["   abc  ", "  def   "])
 
     def testDslType20_TestParseValueEnd13(self):
 
@@ -7719,7 +7719,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "var1")
 
-        self.assertEqual(test_var.get_value_resolved(), "abcdef")
+        self.assertEqual(test_var.get_value(), "abcdef")
 
     def testDslType20_TestParseValueEnd14(self):
 
@@ -7767,7 +7767,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), "")
+        self.assertEqual(test_opt.get_value(), "")
 
     def testDslType20_TestParseValue2(self):
 
@@ -7779,7 +7779,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), "abc")
+        self.assertEqual(test_opt.get_value(), "abc")
 
     def testDslType20_TestParseValue3(self):
 
@@ -7791,7 +7791,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), "a\"c")
+        self.assertEqual(test_opt.get_value(), "a\"c")
 
     def testDslType20_TestParseValue4(self):
 
@@ -7803,7 +7803,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), None)
+        self.assertEqual(test_opt.get_value(), None)
 
     def testDslType20_TestParseValue5(self):
 
@@ -7815,7 +7815,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), "")
+        self.assertEqual(test_opt.get_value(), "")
 
     def testDslType20_TestParseValue6(self):
 
@@ -7827,7 +7827,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), "abc")
+        self.assertEqual(test_opt.get_value(), "abc")
 
     def testDslType20_TestParseValue7(self):
 
@@ -7839,7 +7839,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), ["", ""])
+        self.assertEqual(test_opt.get_value(), ["", ""])
 
     def testDslType20_TestParseValue8(self):
 
@@ -7851,7 +7851,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), ["abc", "def"])
+        self.assertEqual(test_opt.get_value(), ["abc", "def"])
 
     def testDslType20_TestParseValue9(self):
 
@@ -7872,7 +7872,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), ["   abc  ", "  def   "])
+        self.assertEqual(test_opt.get_value(), ["   abc  ", "  def   "])
 
     def testDslType20_TestParseValue11(self):
 
@@ -7884,7 +7884,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, "}")
 
-        self.assertEqual(test_opt.get_value_resolved(), "abcdef")
+        self.assertEqual(test_opt.get_value(), "abcdef")
 
     def testDslType20_TestParseValue12(self):
 

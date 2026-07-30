@@ -34,10 +34,10 @@ def hasopt_var(var, optname):
     return False
 
 def convert_var_obj_list_to_neutral_format(var_obj_list):
-    return [(x.get_name(), x.get_value_resolved(), [(y.get_name(), y.get_value_resolved()) for y in x.get_options()]) for x in var_obj_list]
+    return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
 
 def convert_opt_obj_list_to_neutral_format(opt_obj_list):
-    return [(x.get_name(), x.get_value_resolved()) for x in opt_obj_list]
+    return [(x.get_name(), x.get_value()) for x in opt_obj_list]
 
 def make_obj_opt_list_from_neutral_format(configs, options):
 
@@ -263,7 +263,7 @@ def inherit_options_helper(parent_options, new_options):
     for n_opt in new_options:
         v, r = opt_list_has(parent_options, n_opt.get_name())
         if v: # common option - let's look further
-            if r.get_value_resolved() is None and n_opt.get_value_resolved() is None:
+            if r.get_value() is None and n_opt.get_value() is None:
                 continue # doubletapped, valueless option. drop/skip
         result.append(n_opt)
 
@@ -381,7 +381,7 @@ class DSLType20_ValueHolder:
             val_ptr.add_plus()
         val_ptr.add_envvar(envvar)
 
-    def get_value_resolved(self):
+    def get_value(self):
 
         if self.value is None:
             return None
@@ -1699,7 +1699,7 @@ class DSLType20:
 
             options_result += opt.get_name()
 
-            if opt.get_value_resolved() is not None:
+            if opt.get_value() is not None:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
@@ -1723,7 +1723,7 @@ class DSLType20:
             variable_result = ("%s %s" %  (variable_result, prod_opts))
 
         # add the variable's value - if it has it
-        if input_variable.get_value_resolved() is not None:
+        if input_variable.get_value() is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
             variable_result += input_variable.get_value_serialized()
