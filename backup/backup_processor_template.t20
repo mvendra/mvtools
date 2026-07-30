@@ -12,7 +12,7 @@
 # stuff from a home folder, for example - you'd want to have it copy files into another folder that will be marked
 # for backing up. You can pass parameters to this script using the "param" option. Multiple values can be specified as params.
 
-BKPREPARATION {param: ("$HOME/infra/prepconfig_first.t20", "$HOME/infra/prepconfig_second.t20")} = "$HOME/infra/prepbackup.py"
+BKPREPARATION {param: ($HOME + "/infra/prepconfig_first.t20", $HOME + "/infra/prepconfig_second.t20")} = $HOME + "/infra/prepbackup.py"
 
 # If any given source is bigger than the specified size, a warning is issued. If the
 # option "abort" is specified, then the backup will also stop and fail. Sizes can
@@ -37,8 +37,8 @@ BKWARNING_FINAL {abort} = "1024Mb"
 # "warn_wize" option. It is also possible to specify the "warn_abort" option, to cause the backup to be
 # aborted if the size limit in effect (either BKWARNING_EACH or warn_size) is exceeded.
 
-BKSOURCE = "$BACKUP_BASE_FOLDER/local_folder"
-BKSOURCE {descend} = "$BACKUP_BASE_FOLDER/local_folder"
+BKSOURCE = $BACKUP_BASE_FOLDER + "/local_folder"
+BKSOURCE {descend} = $BACKUP_BASE_FOLDER + "/local_folder"
 BKSOURCE {ex: ("excluded1", "excluded2")} = "/some/local/folder1"
 BKSOURCE {ex: "excluded_another" / descend} = "/some/local/folder2"
 BKSOURCE {abort / warn_size: "4Gb" / warn_abort} = "/some/local/folder3"
@@ -52,7 +52,7 @@ BKTARGETS_ROOT = "/media/username/EXTERNAL_DISK"
 # filesystem is desired, you have to specify the "nocheckmount" option as per
 # the following syntax:
 
-BKTARGETS_ROOT {nocheckmount} = "$HOME/local_backup_copy"
+BKTARGETS_ROOT {nocheckmount} = $HOME + "/local_backup_copy"
 
 #################################################################################
 
