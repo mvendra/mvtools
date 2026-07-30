@@ -1387,11 +1387,15 @@ class DSLType20:
             counter += 1
 
             if counter >= self.max_number_options:
-                return False, "Failed parsing: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_options), None
+                return False, "Failed parsing options: [%s]. Maximum number of options exceeded: [%s]." % (str_input, self.max_number_options), None
 
-            v, r1, r2, r3 = self._parse_next_option(local_str_input)
-            if not v:
-                return False, "Failed parsing options: [%s]" % r1, None
+            try:
+                v, r1, r2, r3 = self._parse_next_option(local_str_input)
+                if not v:
+                    return False, "Failed parsing options: [%s]" % r1, None
+            except mvtools_exception.mvtools_exception as ex:
+                return False, "Failed parsing options: [%s]" % ex.get_message()
+
             if parsed_opts is None:
                 parsed_opts = r1
             elif isinstance(parsed_opts, DSLType20_Option):
