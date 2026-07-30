@@ -6621,15 +6621,30 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl_1.add_variable(test_var1)[0])
 
         self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), [("var1", "//val1", [])])
-        self.assertEqual(test_dsl_1.produce(), "var1 = \"//val1\"")
+
+        v, r = test_dsl_1.produce()
+        self.assertTrue(v)
+        self.assertEqual(r, "var1 = \"//val1\"")
 
         test_dsl_2 = dsl_type20.DSLType20(test_cfg)
 
-        v, r = test_dsl_2.parse(test_dsl_1.produce())
+        v, r = test_dsl_1.produce()
+        self.assertTrue(v)
+
+        v, r = test_dsl_2.parse(r)
         self.assertTrue(v)
         self.assertEqual(r, None)
         self.assertEqual(var_fmt_helper(test_dsl_1.get_all_variables()), var_fmt_helper(test_dsl_2.get_all_variables()))
-        self.assertEqual(test_dsl_1.produce(), test_dsl_2.produce())
+
+        v, r = test_dsl_1.produce()
+        self.assertTrue(v)
+        test_prod1 = r
+
+        v, r = test_dsl_2.produce()
+        self.assertTrue(v)
+        test_prod2 = r
+
+        self.assertEqual(test_prod1, test_prod2)
 
     def testDslType20_TestProduce25(self):
         dsl_1 = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
