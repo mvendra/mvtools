@@ -294,10 +294,6 @@ class DSLType20_Value:
             v_res = ""
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
                 v_res = v[1]
-                if self.configs.expand_user:
-                    v_res = os.path.expanduser(v_res)
-                    if miniparse.TILDA in v_res:
-                        raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % v[1])
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
                 pass
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
@@ -305,6 +301,11 @@ class DSLType20_Value:
                     v_res = os.environ[v[1]]
                 except KeyError as ex:
                     raise mvtools_exception.mvtools_exception("Unable to resolve envvar [%s]" % v[1])
+
+            if self.configs.expand_user:
+                v_res = os.path.expanduser(v_res)
+                if miniparse.TILDA in v_res:
+                    raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % v_res)
             result += v_res
 
         return result
