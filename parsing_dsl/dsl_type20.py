@@ -698,12 +698,15 @@ class DSLType20:
             context = self.root_context_id
         result = []
 
-        # mvtodo: exception
-        v, r = self._find_context(context, self._get_variable_helper, (varname, result))
-        if not v:
-            return False, r
-        if not r:
-            return False, "Context [%s] does not exist." % context
+        try:
+            v, r = self._find_context(context, self._get_variable_helper, (varname, result))
+            if not v:
+                return False, r
+            if not r:
+                return False, "Context [%s] does not exist." % context
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Getting variables failed: [%s]" % ex.get_message()
+
         return True, result
 
     def rem_all_variables(self, context = None):
