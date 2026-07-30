@@ -1140,7 +1140,12 @@ class DSLType20:
 
     def _parse_variable(self, str_input, context = None):
 
-        var_inst = DSLType20_Variable(self.configs, "dummy-name", None)
+        var_inst = None
+        try:
+            var_inst = DSLType20_Variable(self.configs, "dummy-name", None)
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Unable to parse variable [%s]: [%s]" % (str_input, ex.get_message())
+
         var_name = None
         parsed_opts = None
 
