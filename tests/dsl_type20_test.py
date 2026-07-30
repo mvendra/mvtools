@@ -564,14 +564,6 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(dsl_type20.validate_name("a"))
         self.assertTrue(dsl_type20.validate_name("거물사냥꾼"))
 
-    def testValidateValue(self):
-        self.assertTrue(dsl_type20.validate_value(None))
-        self.assertFalse(dsl_type20.validate_value(()))
-        self.assertTrue(dsl_type20.validate_value([]))
-        self.assertTrue(dsl_type20.validate_value( dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()) ))
-        self.assertTrue(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()), dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config())] ))
-        self.assertFalse(dsl_type20.validate_value( [dsl_type20.DSLType20_Value(dsl_type20.DSLType20_Config()), "test-val2"] ))
-
     def testValidateOptions(self):
         self.assertTrue(dsl_type20.validate_options( None )[0])
         self.assertTrue(dsl_type20.validate_options( dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a") )[0])

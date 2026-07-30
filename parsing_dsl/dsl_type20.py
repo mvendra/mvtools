@@ -216,25 +216,6 @@ def _validate_value_single(value_str):
 
     return True
 
-def validate_value(value):
-
-    # mvtodo: ditch?
-
-    if value is None:
-        return True
-
-    if isinstance(value, DSLType20_Value):
-        return True
-
-    if not isinstance(value, list):
-        return False
-
-    for entry in value:
-        if not isinstance(entry, DSLType20_Value):
-            return False
-
-    return True
-
 def validate_options(options):
 
     if options is None:
