@@ -540,6 +540,7 @@ class DSLType20:
     def get_entire_dfs(self):
 
         dfs_ctx = internal_dfs_context(self.data)
+        # mvtodo: exception
         if not self._get_entire_dfs(dfs_ctx):
             return False, "Recursive traversal failed"
         return True, dfs_ctx.all
@@ -594,6 +595,7 @@ class DSLType20:
     def get_all_contexts_dfs(self):
 
         dfs_ctx = internal_dfs_context(self.data)
+        # mvtodo: exception
         if not self._get_all_contexts_dfs(dfs_ctx):
             return False, "Recursive traversal failed"
         return True, dfs_ctx.ctxs
@@ -676,6 +678,7 @@ class DSLType20:
     def get_all_variables_dfs(self):
 
         dfs_ctx = internal_dfs_context(self.data)
+        # mvtodo: exception
         if not self._get_all_variables_dfs(dfs_ctx):
             return False, "Recursive traversal failed"
         return True, dfs_ctx.vars
@@ -689,6 +692,7 @@ class DSLType20:
             context = self.root_context_id
         result = []
 
+        # mvtodo: exception
         v, r = self._find_context(context, self._get_variable_helper, (varname, result))
         if not v:
             return False, r
@@ -883,6 +887,7 @@ class DSLType20:
         if find_itself:
             local_parent_context = context_name
 
+        # mvtodo: exception
         v, r = self._find_context(local_parent_context, self._get_context_helper, (context_name, result_ptr, find_itself))
         if not v:
             return False, r
