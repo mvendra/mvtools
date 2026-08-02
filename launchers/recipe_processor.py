@@ -411,7 +411,11 @@ class RecipeProcessor:
             v, r = dsl.get_variables("recipe-namespace", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve recipe-namespace entries: [%s]" % r
-            var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            if not v:
+                return False, "Failed attempting to convert variable entries: [%s]" % r
+            var_rn = r
+
             if len(var_rn) > 1:
                 return False, "Recipe's recipe-namespace has been specified multiple times."
             elif len(var_rn) == 1:
@@ -430,7 +434,11 @@ class RecipeProcessor:
             v, r = dsl.get_variables("custom-job-implementation", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve custom-job-implementation entries: [%s]" % r
-            vars_cji = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            if not v:
+                return False, "Failed attempting to convert variable entries: [%s]" % r
+            vars_cji = r
+
             for cji in vars_cji:
                 for jopt in cji[2]:
                     if not jopt[0] in custom_job_impl:
@@ -442,7 +450,10 @@ class RecipeProcessor:
             v, r = dsl.get_variables("custom-main-job-implementation", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve custom-main-job-implementation entries: [%s]" % r
-            vars_cmji = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            if not v:
+                return False, "Failed attempting to convert variable entries: [%s]" % r
+            vars_cmji = r
             if len(vars_cmji) > 1:
                 return False, "Recipe's custom-main-job-implementation has been specified multiple times."
             elif len(vars_cmji) == 1:
@@ -499,7 +510,10 @@ class RecipeProcessor:
             v, r = dsl.get_variables(option, RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Unable to fetch option [%s]: [%s]." % (option, r)
-            var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            if not v:
+                return False, "Failed attempting to convert variable entries: [%s]" % r
+            var_rn = r
             if len(var_rn) > 1: # has been specified more than once. fail.
                 return False, "Recipe's %s option has been specified more than once." % option
             elif len(var_rn) == 1: # has been specified once in the recipe file
@@ -590,7 +604,10 @@ class RecipeProcessor:
         v, r = dsl.get_variables("execution-name", RECIPE_PROCESSOR_CONFIG_METAJOB)
         if not v:
             return False, "Failed retrieving execution-name: [%s]" % r
-        var_rn = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+        v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+        if not v:
+            return False, "Failed attempting to convert variable entries: [%s]" % r
+        var_rn = r
 
         if len(var_rn) > 1:
             return False, "Recipe's execution-name has been specified more than once."

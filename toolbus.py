@@ -112,7 +112,10 @@ def _get_internal(_dh_handle, _db_name, _context, _var):
     if len(vars) != 1:
         return False, "Unable to get variables: [%s] (variable: [%s], database: [%s], context: [%s]): More than one match found." % (_var, _db_name, _context)
 
-    return True, dsl_type20.convert_var_obj_list_to_neutral_format(vars)[0]
+    v, r = dsl_type20.convert_var_obj_list_to_neutral_format(vars)
+    if not v:
+        return False, "Unable to get variables: [%s] (variable: [%s], database: [%s], context: [%s])" % (r, _var, _db_name, _context)
+    return True, r[0]
 
 def get_signal(_sig_name, probe_only=False):
 
@@ -229,7 +232,10 @@ def get_all_fields(_db_name, _context):
     v, r = _db_handle.get_all_variables(_context)
     if not v:
         return False, "Unable to fetch all fields from table [%s] - internal error: [%s] (database: [%s])" % (_context, r, _db_name)
-    return True, dsl_type20.convert_var_obj_list_to_neutral_format(r)
+    v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+    if not v:
+        return False, "Unable to fetch all fields from table [%s]: [%s] (database: [%s])" % (_context, r, _db_name)
+    return True, r
 
 def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
