@@ -85,7 +85,7 @@ def make_obj_opt_list_from_neutral_format(configs, options):
                     opt_obj.add_value_immediate(opt_val)
             result.append(opt_obj)
         except mvtools_exception.mvtools_exception as ex:
-            return False, ex.get_message()
+            return False, "Unable to make options list: [%s]" % ex.get_message()
 
     return True, result
 
