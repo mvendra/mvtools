@@ -41,7 +41,7 @@ def convert_var_obj_list_to_neutral_format(var_obj_list):
 def convert_opt_obj_list_to_neutral_format(opt_obj_list):
 
     result = [(x.get_name(), x.get_value()) for x in opt_obj_list]
-    return result
+    return True, result
 
 def make_obj_opt_list_from_neutral_format(configs, options):
 
