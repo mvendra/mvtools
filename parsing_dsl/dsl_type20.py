@@ -34,10 +34,14 @@ def hasopt_var(var, optname):
     return False
 
 def convert_var_obj_list_to_neutral_format(var_obj_list):
-    return [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
+
+    result = [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
+    return result
 
 def convert_opt_obj_list_to_neutral_format(opt_obj_list):
-    return [(x.get_name(), x.get_value()) for x in opt_obj_list]
+
+    result = [(x.get_name(), x.get_value()) for x in opt_obj_list]
+    return result
 
 def make_obj_opt_list_from_neutral_format(configs, options):
 
