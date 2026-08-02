@@ -986,7 +986,7 @@ class DSLType20:
             ptr.add_entry(new_ctx)
             return True, None
         except mvtools_exception.mvtools_exception as ex:
-            return False, ex.get_message()
+            return False, "Unable to add and create context: [%s]" % ex.get_message()
 
     def _get_context_helper(self, ptr, cb_data_ctx):
 
