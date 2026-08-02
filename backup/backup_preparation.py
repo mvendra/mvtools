@@ -92,7 +92,10 @@ class BackupPreparation:
         v, r = self.dsl.get_all_variables()
         if not v:
             raise BackupPreparationException("Failed during setup: [%s]" % r)
-        vars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+        v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+        if not v:
+            raise BackupPreparationException("Failed during setup: [%s]" % r)
+        vars = r
         for v in vars:
             p = self.proc_single_config(v[0], v[1], v[2])
             if not p:
