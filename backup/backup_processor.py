@@ -104,7 +104,11 @@ def read_config(config_file):
     if not v:
         print("%sFailed fetching variables from config file [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.get_standard_color()))
         return False, ()
-    vars = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+    v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+    if not v:
+        print("%sFailed fetching variables from config file [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.get_standard_color()))
+        return False, ()
+    vars = r
     for v in vars:
 
         var_name = v[0]
