@@ -35,8 +35,12 @@ def hasopt_var(var, optname):
 
 def convert_var_obj_list_to_neutral_format(var_obj_list):
 
-    result = [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
-    return result
+    result = None
+    try:
+        result = [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
+    except mvtools_exception.mvtools_exception as ex:
+        return False, "Unable to convert variables: [%s]" % ex.get_message()
+    return True, result
 
 def convert_opt_obj_list_to_neutral_format(opt_obj_list):
 
