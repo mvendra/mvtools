@@ -66,8 +66,8 @@ def compare_t18_schemas(left_t20, right_t20):
     if not os.path.exists(right_t20):
         return False, "[%s] does not exist." % right_t20
 
-    left_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
-    right_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
+    left_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
+    right_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = VAR_DECO))
 
     t20_contents = ""
     with open(left_t20, "r") as f:

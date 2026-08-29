@@ -84,7 +84,7 @@ def read_config(config_file):
     with open(config_file) as f:
         cfg_contents = f.read()
 
-    dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(True))
+    dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True))
     v, r = dsl.parse(cfg_contents)
     if not v:
         print("%sFailed parsing [%s]: %s%s" % (terminal_colors.TTY_RED, config_file, r, terminal_colors.get_standard_color()))

@@ -511,8 +511,9 @@ class DSLType20_Context:
 
 class DSLType20_Config:
 
-    def __init__(self, expand_user = False, allow_var_dupes = True, inherit_options = False, var_decorator = ""):
+    def __init__(self, expand_envvars = False, expand_user = False, allow_var_dupes = False, inherit_options = False, var_decorator = ""):
 
+        self.expand_envvars = expand_envvars
         self.expand_user = expand_user
         self.allow_var_dupes = allow_var_dupes
         self.inherit_options = inherit_options
@@ -1009,7 +1010,7 @@ class DSLType20:
         return True, None
 
     def _config_copy(self):
-        return DSLType20_Config(self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.var_decorator)
+        return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.var_decorator)
 
     def _val_copy(self, val_ptr):
 
@@ -1770,7 +1771,7 @@ if __name__ == "__main__":
         the_deco = sys.argv[2]
         file_to_parse = sys.argv[3]
 
-    dsl = DSLType20(DSLType20_Config(expand_user = True, allow_var_dupes = True, inherit_options = True, var_decorator = the_deco))
+    dsl = DSLType20(DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True, inherit_options = True, var_decorator = the_deco))
 
     if not os.path.exists(file_to_parse):
         print("File [%s] does not exist." % file_to_parse)
