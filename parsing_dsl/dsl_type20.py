@@ -281,6 +281,12 @@ def inherit_options_helper(parent_options, new_options):
 
     return result
 
+class DSLType20_Result_Single:
+    pass
+
+class DSLType20_Result:
+    pass
+
 class DSLType20_Value:
 
     def __init__(self, configs):
