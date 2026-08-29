@@ -2169,7 +2169,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl.add_variable(test_var1, "ctx4" )[0])
 
-        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx4")), [("var1", "val6", [("opt1", ["val1"]), ("opt2", ["val2"]), ("opt3", ["val3"]), ("opt4", ["val4"]), ("opt5", ["val5"])])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx4")), [("var1", ["val6"], [("opt1", ["val1"]), ("opt2", ["val2"]), ("opt3", ["val3"]), ("opt4", ["val4"]), ("opt5", ["val5"])])])
 
     def testDslType20_GetAllVariables9(self):
 
@@ -2303,7 +2303,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.parse("var1 {opt1: \"val1\" / opt2}")
         self.assertTrue(v)
 
-        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", [], [("opt1", "val1"), ("opt2", [])])])
+        self.assertEqual(var_fmt_helper(dsl.get_all_variables()), [("var1", [], [("opt1", ["val1"]), ("opt2", [])])])
 
     def testDslType20_TestVanilla7(self):
 
