@@ -288,7 +288,10 @@ class DSLType20_Result_Single:
         self.values = values
 
 class DSLType20_Result:
-    pass
+
+    def __init__(self, variable, options):
+        self.variable = variable
+        self.options = options
 
 class DSLType20_Value:
 
