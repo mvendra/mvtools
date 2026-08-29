@@ -291,20 +291,33 @@ class DSLType20_Result_Single:
     def _validate(self):
 
         if not validate_name(self.name):
-            raise mvtools_exception.mvtools_exception("Invalid name [%s]" % self.name)
+            raise mvtools_exception.mvtools_exception("Invalid name: [%s]" % self.name)
 
         if not isinstance(self.values, list):
-            raise mvtools_exception.mvtools_exception("Invalid values [%s]" % self.values)
+            raise mvtools_exception.mvtools_exception("Invalid values: [%s]" % self.values)
 
         for x in self.values:
             if not _validate_value_single(x):
-                raise mvtools_exception.mvtools_exception("Invalid value [%s]" % x)
+                raise mvtools_exception.mvtools_exception("Invalid value: [%s]" % x)
 
 class DSLType20_Result:
 
     def __init__(self, variable, options):
         self.variable = variable
         self.options = options
+        self._validate()
+
+    def _validate(self):
+
+        if not isinstance(self.variable, DSLType20_Result_Single):
+            raise mvtools_exception.mvtools_exception("Invalid variable: [%s]" % self.variable)
+
+        if not isinstance(self.options, list):
+            raise mvtools_exception.mvtools_exception("Invalid options: [%s]" % self.options)
+
+        for x in self.options:
+            if not isinstance(x, DSLType20_Result_Single):
+                raise mvtools_exception.mvtools_exception("Invalid option: [%s]" % x)
 
 class DSLType20_Value:
 

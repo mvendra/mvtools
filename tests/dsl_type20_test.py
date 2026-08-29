@@ -800,6 +800,65 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertFalse(ex_raised)
 
+    def testDSLType20_Result1(self):
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result(None, [])
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testDSLType20_Result2(self):
+
+        test_res_var = dsl_type20.DSLType20_Result_Single("test-var-name", [])
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result(test_res_var, None)
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testDSLType20_Result3(self):
+
+        test_res_var = dsl_type20.DSLType20_Result_Single("test-var-name", [])
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result(test_res_var, [1])
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testDSLType20_Result4(self):
+
+        test_res_var = dsl_type20.DSLType20_Result_Single("test-var-name", [])
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result(test_res_var, [])
+        except:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+
+    def testDSLType20_Result5(self):
+
+        test_res_var = dsl_type20.DSLType20_Result_Single("test-var-name", [])
+        test_res_opt = dsl_type20.DSLType20_Result_Single("test-opt-name", [])
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result(test_res_var, [test_res_opt])
+        except:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+
     def testDSLType20_Value1(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
