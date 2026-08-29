@@ -740,6 +740,66 @@ class DSLType20Test(unittest.TestCase):
         new_opts = r
         self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
 
+    def testDSLType20_Result_Single1(self):
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result_Single(None, [])
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testDSLType20_Result_Single2(self):
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result_Single("test\n-name", [])
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testDSLType20_Result_Single3(self):
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result_Single("test-name", None)
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testDSLType20_Result_Single4(self):
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result_Single("test-name", [1])
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testDSLType20_Result_Single5(self):
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result_Single("test-name", [])
+        except:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+
+    def testDSLType20_Result_Single6(self):
+
+        ex_raised = False
+        try:
+            test_res_single = dsl_type20.DSLType20_Result_Single("test-name", [dsl_type20.DSLType20_Result_Single("test-other-name")])
+        except:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+
     def testDSLType20_Value1(self):
 
         test_cfg = dsl_type20.DSLType20_Config()

@@ -286,6 +286,19 @@ class DSLType20_Result_Single:
     def __init__(self, name, values):
         self.name = name
         self.values = values
+        self._validate()
+
+    def _validate(self):
+
+        if not validate_name(self.name):
+            raise mvtools_exception.mvtools_exception("Invalid name [%s]" % self.name)
+
+        if not isinstance(self.values, list):
+            raise mvtools_exception.mvtools_exception("Invalid values [%s]" % self.values)
+
+        for x in self.values:
+            if not _validate_value_single(x):
+                raise mvtools_exception.mvtools_exception("Invalid value [%s]" % x)
 
 class DSLType20_Result:
 
