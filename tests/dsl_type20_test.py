@@ -794,7 +794,7 @@ class DSLType20Test(unittest.TestCase):
 
         ex_raised = False
         try:
-            test_res_single = dsl_type20.DSLType20_Result_Single("test-name", [dsl_type20.DSLType20_Result_Single("test-other-name")])
+            test_res_single = dsl_type20.DSLType20_Result_Single("test-name", ["test-val"])
         except:
             ex_raised = True
 
