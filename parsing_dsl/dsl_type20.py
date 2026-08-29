@@ -599,7 +599,6 @@ class internal_dfs_context:
         self.current_node = init_node
         self.vars = []
         self.ctxs = []
-        self.all = []
         self.depth_sentinel = 0
 
 class DSLType20:
@@ -619,16 +618,6 @@ class DSLType20:
     def clear(self):
         self.data = None
         self.data = DSLType20_Context(None, self.root_context_id, None)
-
-    def get_entire_dfs(self):
-
-        dfs_ctx = internal_dfs_context(self.data)
-        try:
-            if not self._get_entire_dfs(dfs_ctx):
-                return False, "Recursive traversal failed"
-        except mvtools_exception.mvtools_exception as ex:
-            return False, "Recursive traversal failed: [%s]" % ex.get_message()
-        return True, dfs_ctx.all
 
     def add_context(self, ctx_name, ctx_options, parent_ctx = None):
 
@@ -846,25 +835,6 @@ class DSLType20:
         except mvtools_exception.mvtools_exception as ex:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
-
-    def _get_entire_dfs(self, ctx):
-
-        ctx.depth_sentinel += 1
-        if ctx.depth_sentinel == INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX:
-            return False
-
-        this_current_node = ctx.current_node
-        ctx.all.append(self._ctx_shallow_copy(this_current_node.get_parent_ptr(), this_current_node))
-        for entry in this_current_node.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                ctx.all.append(self._var_copy(this_current_node, entry))
-            elif entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                ctx.current_node = entry
-                if not self._get_entire_dfs(ctx):
-                    return False
-                ctx.depth_sentinel -= 1
-
-        return True
 
     def _get_all_contexts_dfs(self, ctx):
 
