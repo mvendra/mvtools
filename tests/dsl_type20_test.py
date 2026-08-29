@@ -5038,9 +5038,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         res_obj = r[0]
-        self.assertEqual(res_obj.get_name(), "var1")
-        self.assertEqual(res_obj.get_value(), "val1")
-        self.assertEqual(res_obj.get_options(), [])
+        self.assertEqual(res_obj.variable.name, "var1")
+        self.assertEqual(res_obj.variable.values, ["val1"])
+        self.assertEqual(res_obj.options, [])
 
         v, r = test_dsl.rem_all_variables()
         self.assertTrue(v)
@@ -5065,9 +5065,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         res_obj = r[0]
-        self.assertEqual(res_obj.get_name(), "var1")
-        self.assertEqual(res_obj.get_value(), "val1")
-        self.assertEqual(res_obj.get_options(), [])
+        self.assertEqual(res_obj.variable.name, "var1")
+        self.assertEqual(res_obj.variable.values, ["val1"])
+        self.assertEqual(res_obj.options, [])
 
         v, r = test_dsl.rem_all_variables("ctx1")
         self.assertTrue(v)
@@ -5092,9 +5092,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         res_obj = r[0]
-        self.assertEqual(res_obj.get_name(), "var1")
-        self.assertEqual(res_obj.get_value(), "val1")
-        self.assertEqual(res_obj.get_options(), [])
+        self.assertEqual(res_obj.variable.name, "var1")
+        self.assertEqual(res_obj.variable.values, ["val1"])
+        self.assertEqual(res_obj.options, [])
 
         v, r = test_dsl.rem_all_variables()
         self.assertTrue(v)
@@ -5104,9 +5104,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 1)
         res_obj = r[0]
-        self.assertEqual(res_obj.get_name(), "var1")
-        self.assertEqual(res_obj.get_value(), "val1")
-        self.assertEqual(res_obj.get_options(), [])
+        self.assertEqual(res_obj.variable.name, "var1")
+        self.assertEqual(res_obj.variable.values, ["val1"])
+        self.assertEqual(res_obj.options, [])
 
     def testDslType20_TestRemAllVariables4(self):
 
@@ -5138,17 +5138,17 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 3)
         res_obj = r[0]
-        self.assertEqual(res_obj.get_name(), "var1")
-        self.assertEqual(res_obj.get_value(), "val1")
-        self.assertEqual(res_obj.get_options(), [])
+        self.assertEqual(res_obj.variable.name, "var1")
+        self.assertEqual(res_obj.variable.values, ["val1"])
+        self.assertEqual(res_obj.options, [])
         res_obj = r[1]
-        self.assertEqual(res_obj.get_name(), "var2")
-        self.assertEqual(res_obj.get_value(), "val2")
-        self.assertEqual(res_obj.get_options(), [])
+        self.assertEqual(res_obj.variable.name, "var2")
+        self.assertEqual(res_obj.variable.values, ["val2"])
+        self.assertEqual(res_obj.options, [])
         res_obj = r[2]
-        self.assertEqual(res_obj.get_name(), "var3")
-        self.assertEqual(res_obj.get_value(), "val3")
-        self.assertEqual(res_obj.get_options(), [])
+        self.assertEqual(res_obj.variable.name, "var3")
+        self.assertEqual(res_obj.variable.values, ["val3"])
+        self.assertEqual(res_obj.options, [])
 
         v, r = test_dsl.rem_all_variables("ctx1")
         self.assertTrue(v)
@@ -5214,17 +5214,17 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_variable(test_var8, "ctx3")[0])
         self.assertTrue(test_dsl.add_variable(test_var9, "ctx3")[0])
 
-        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx1")), [("var1", "val1", []), ("var2", "val2", []), ("var3", "val3", [])])
-        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx2")), [("var4", "val4", []), ("var5", "val5", []), ("var6", "val6", [])])
-        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx3")), [("var7", "val7", []), ("var8", "val8", []), ("var9", "val9", [])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx1")), [("var1", ["val1"], []), ("var2", ["val2"], []), ("var3", ["val3"], [])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx2")), [("var4", ["val4"], []), ("var5", ["val5"], []), ("var6", ["val6"], [])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx3")), [("var7", ["val7"], []), ("var8", ["val8"], []), ("var9", ["val9"], [])])
 
         v, r = test_dsl.rem_all_variables("ctx1")
         self.assertTrue(v)
         self.assertEqual(r, ["var1", "var2", "var3"])
 
         self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx1")), [])
-        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx2")), [("var4", "val4", []), ("var5", "val5", []), ("var6", "val6", [])])
-        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx3")), [("var7", "val7", []), ("var8", "val8", []), ("var9", "val9", [])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx2")), [("var4", ["val4"], []), ("var5", ["val5"], []), ("var6", ["val6"], [])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx3")), [("var7", ["val7"], []), ("var8", ["val8"], []), ("var9", ["val9"], [])])
 
         v, r = test_dsl.rem_all_variables("ctx2")
         self.assertTrue(v)
@@ -5232,7 +5232,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx1")), [])
         self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx2")), [])
-        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx3")), [("var7", "val7", []), ("var8", "val8", []), ("var9", "val9", [])])
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx3")), [("var7", ["val7"], []), ("var8", ["val8"], []), ("var9", ["val9"], [])])
 
         v, r = test_dsl.rem_all_variables("ctx3")
         self.assertTrue(v)
