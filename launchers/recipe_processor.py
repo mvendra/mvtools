@@ -411,7 +411,7 @@ class RecipeProcessor:
             v, r = dsl.get_variables("recipe-namespace", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve recipe-namespace entries: [%s]" % r
-            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
             if not v:
                 return False, "Failed attempting to convert variable entries: [%s]" % r
             var_rn = r
@@ -434,7 +434,7 @@ class RecipeProcessor:
             v, r = dsl.get_variables("custom-job-implementation", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve custom-job-implementation entries: [%s]" % r
-            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
             if not v:
                 return False, "Failed attempting to convert variable entries: [%s]" % r
             vars_cji = r
@@ -450,7 +450,7 @@ class RecipeProcessor:
             v, r = dsl.get_variables("custom-main-job-implementation", RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Failed attempting to retrieve custom-main-job-implementation entries: [%s]" % r
-            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
             if not v:
                 return False, "Failed attempting to convert variable entries: [%s]" % r
             vars_cmji = r
@@ -510,7 +510,7 @@ class RecipeProcessor:
             v, r = dsl.get_variables(option, RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
                 return False, "Unable to fetch option [%s]: [%s]." % (option, r)
-            v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+            v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
             if not v:
                 return False, "Failed attempting to convert variable entries: [%s]" % r
             var_rn = r
@@ -604,7 +604,7 @@ class RecipeProcessor:
         v, r = dsl.get_variables("execution-name", RECIPE_PROCESSOR_CONFIG_METAJOB)
         if not v:
             return False, "Failed retrieving execution-name: [%s]" % r
-        v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+        v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
         if not v:
             return False, "Failed attempting to convert variable entries: [%s]" % r
         var_rn = r

@@ -33,13 +33,13 @@ def hasopt_var(var, optname):
             return True
     return False
 
-def convert_var_obj_list_to_neutral_format(var_obj_list):
+def convert_res_obj_list_to_neutral_format(res_obj_list):
 
     result = None
     try:
-        result = [(x.get_name(), x.get_value(), [(y.get_name(), y.get_value()) for y in x.get_options()]) for x in var_obj_list]
+        result = [(x.variable.name, x.variable.values, [(y.name, y.values) for y in x.options]) for x in res_obj_list]
     except mvtools_exception.mvtools_exception as ex:
-        return False, "Unable to convert variables: [%s]" % ex.get_message()
+        return False, "Unable to convert results: [%s]" % ex.get_message()
     return True, result
 
 def convert_opt_obj_list_to_neutral_format(opt_obj_list):
@@ -281,10 +281,34 @@ def inherit_options_helper(parent_options, new_options):
 
     return result
 
+def convert_vals_to_result_entry(input_value):
+
+    result = []
+
+    input_res = input_value.get_value()
+    if input_res is None:
+        pass
+
+    elif isinstance(input_res, str):
+        result.append(input_res)
+
+    else:
+        for e in input_res:
+            result.append(e)
+
+    return result
+
 def convert_var_to_result(input_variable):
 
-    # mvtodo
-    return input_variable
+    out_var = DSLType20_Result_Single(input_variable.get_name(), convert_vals_to_result_entry(input_variable))
+    out_opts = []
+
+    for o in input_variable.get_options():
+        new_opt = DSLType20_Result_Single(o.get_name(), convert_vals_to_result_entry(o))
+        out_opts.append(new_opt)
+
+    out_res = DSLType20_Result(out_var, out_opts)
+    return out_res
 
 class DSLType20_Result_Single:
 
@@ -382,7 +406,7 @@ class DSLType20_Value:
                 if v[1] != "":
                     v, r = miniparse.escape(v[1], miniparse.BSLASH, [miniparse.QUOTE])
                     if not v:
-                        raise mvtools_exception.mvtools_exception("Unable to ecape value [%s]" % v[1])
+                        raise mvtools_exception.mvtools_exception("Unable to escape value [%s]" % v[1])
                     v_res = r
                 v_res = miniparse.QUOTE + v_res + miniparse.QUOTE
 

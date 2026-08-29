@@ -18,7 +18,7 @@ def var_fmt_helper(var_list):
     v, r = var_list
     if not v:
         raise mvtools_exception.mvtools_exception("Failed test")
-    v, r = dsl_type20.convert_var_obj_list_to_neutral_format(r)
+    v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
     if not v:
         raise mvtools_exception.mvtools_exception("Failed test")
     return r
@@ -2223,11 +2223,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertEqual(var_fmt_helper(dsl.get_variables("var0")), [])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var1")), [("var1", "val1", [])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var2")), [("var2", "val2", [("opt1", None)])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var3")), [("var3", "val4", [("opt2", "val3")])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var4")), [("var4", "val7", [("opt3", "val5"), ("opt4", "val6")])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var5")), [("var5", "val10", [("opt5", None), ("opt6", "val8"), ("opt7", "val9")])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1")), [("var1", ["val1"], [])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var2")), [("var2", ["val2"], [("opt1", [])])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var3")), [("var3", ["val4"], [("opt2", ["val3"])])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var4")), [("var4", ["val7"], [("opt3", ["val5"]), ("opt4", ["val6"])])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var5")), [("var5", ["val10"], [("opt5", []), ("opt6", ["val8"]), ("opt7", ["val9"])])])
         self.assertEqual(var_fmt_helper(dsl.get_variables("var6")), [])
 
     def testDslType20_GetVariables2(self):
@@ -2237,11 +2237,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
         self.assertEqual(var_fmt_helper(dsl.get_variables("var0")), [])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var1")), [("var1", "val1", [])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var2")), [("var2", "a/path/valid1", [])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var3")), [("var3", "a/path/valid3", [("opt1", None), ("opt2", "a/path/valid2")])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var4")), [("var4", "$SOME_ENV_VAR", [])])
-        self.assertEqual(var_fmt_helper(dsl.get_variables("var5")), [("var5", "opts", [("r1", ""), ("r2", None)]), ("var5", "more-opts", [("r1", None), ("r2", None)])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var1")), [("var1", ["val1"], [])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var2")), [("var2", ["a/path/valid1"], [])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var3")), [("var3", ["a/path/valid3"], [("opt1", []), ("opt2", ["a/path/valid2"])])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var4")), [("var4", ["$SOME_ENV_VAR"], [])])
+        self.assertEqual(var_fmt_helper(dsl.get_variables("var5")), [("var5", ["opts"], [("r1", [""]), ("r2", [])]), ("var5", ["more-opts"], [("r1", []), ("r2", [])])])
         self.assertEqual(var_fmt_helper(dsl.get_variables("var6")), [])
 
     def testDslType20_GetVariables3(self):
