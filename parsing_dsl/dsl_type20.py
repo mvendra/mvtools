@@ -46,7 +46,7 @@ def convert_opt_obj_list_to_neutral_format(opt_obj_list):
 
     result = None
     try:
-        result = [(x.get_name(), x.get_value()) for x in opt_obj_list]
+        result = [(x.name, x.values) for x in opt_obj_list]
     except mvtools_exception.mvtools_exception as ex:
         return False, "Unable to convert options: [%s]" % ex.get_message()
     return True, result
