@@ -592,15 +592,6 @@ class _internal_parse_context:
         self.bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
         self.context_stack = [None]
 
-INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX = 200
-class internal_dfs_context:
-
-    def __init__(self, init_node):
-        self.current_node = init_node
-        self.vars = []
-        self.ctxs = []
-        self.depth_sentinel = 0
-
 class DSLType20:
 
     def __init__(self, _configs):
@@ -668,16 +659,6 @@ class DSLType20:
         else:
             r = r[0]
         return True, r
-
-    def get_all_contexts_dfs(self):
-
-        dfs_ctx = internal_dfs_context(self.data)
-        try:
-            if not self._get_all_contexts_dfs(dfs_ctx):
-                return False, "Recursive traversal failed"
-        except mvtools_exception.mvtools_exception as ex:
-            return False, "Recursive traversal failed: [%s]" % ex.get_message()
-        return True, dfs_ctx.ctxs
 
     def get_all_sub_contexts(self, parent_context = None):
         return self._get_context_internal(None, False, parent_context)
@@ -825,23 +806,6 @@ class DSLType20:
         except mvtools_exception.mvtools_exception as ex:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
-
-    def _get_all_contexts_dfs(self, ctx):
-
-        ctx.depth_sentinel += 1
-        if ctx.depth_sentinel == INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX:
-            return False
-
-        this_current_node = ctx.current_node
-        ctx.ctxs.append(self._ctx_shallow_copy(this_current_node.get_parent_ptr(), this_current_node))
-        for entry in this_current_node.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                ctx.current_node = entry
-                if not self._get_all_contexts_dfs(ctx):
-                    return False
-                ctx.depth_sentinel -= 1
-
-        return True
 
     def _parse_line_delegate(self, ipc, current_line, current_line_number):
 
