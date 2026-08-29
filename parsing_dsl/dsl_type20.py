@@ -281,6 +281,11 @@ def inherit_options_helper(parent_options, new_options):
 
     return result
 
+def convert_var_to_result(input_variable):
+
+    # mvtodo
+    return input_variable
+
 class DSLType20_Result_Single:
 
     def __init__(self, name, values):
@@ -1134,7 +1139,7 @@ class DSLType20:
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
-                list_ptr.append(self._var_copy(ptr, entry))
+                list_ptr.append(convert_var_to_result(self._var_copy(ptr, entry)))
 
         return True, None
 
