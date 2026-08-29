@@ -757,16 +757,6 @@ class DSLType20:
             return False, "Context [%s] does not exist." % context
         return True, None
 
-    def get_all_variables_dfs(self):
-
-        dfs_ctx = internal_dfs_context(self.data)
-        try:
-            if not self._get_all_variables_dfs(dfs_ctx):
-                return False, "Recursive traversal failed"
-        except mvtools_exception.mvtools_exception as ex:
-            return False, "Recursive traversal failed: [%s]" % ex.get_message()
-        return True, dfs_ctx.vars
-
     def get_all_variables(self, context = None):
         return self.get_variables(None, context)
 
@@ -848,24 +838,6 @@ class DSLType20:
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
                 ctx.current_node = entry
                 if not self._get_all_contexts_dfs(ctx):
-                    return False
-                ctx.depth_sentinel -= 1
-
-        return True
-
-    def _get_all_variables_dfs(self, ctx):
-
-        ctx.depth_sentinel += 1
-        if ctx.depth_sentinel == INTERNAL_DFS_CONTEXT_DEPTH_SENTINEL_MAX:
-            return False
-
-        this_current_node = ctx.current_node
-        for entry in this_current_node.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-                ctx.vars.append(self._var_copy(this_current_node, entry))
-            elif entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-                ctx.current_node = entry
-                if not self._get_all_variables_dfs(ctx):
                     return False
                 ctx.depth_sentinel -= 1
 
