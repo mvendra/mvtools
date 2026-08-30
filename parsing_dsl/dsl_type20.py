@@ -643,23 +643,6 @@ class DSLType20:
 
         return True, None
 
-    def get_context(self, context_name = None):
-
-        try:
-            if context_name is None or context_name == self.root_context_id:
-                return True, self._ctx_shallow_copy(None, self.data)
-        except mvtools_exception.mvtools_exception as ex:
-            return False, "Getting context failed: [%s]" % ex.get_message()
-
-        v, r = self._get_context_internal(context_name, True, None)
-        if not v:
-            return False, r
-        if len(r) == 0:
-            r = None
-        else:
-            r = r[0]
-        return True, r
-
     def get_sub_contexts(self, context_name = None):
 
         if context_name is None:
@@ -877,31 +860,6 @@ class DSLType20:
         # and finally return whilst also combining in the child's own options
         return inherit_options_helper(final_opts_list, child_ptr.get_options())
 
-    def _get_context_internal(self, context_name, find_itself, parent_context = None):
-
-        if parent_context is None:
-            parent_context = self.root_context_id
-
-        if context_name == parent_context:
-            return False, "Context [%s] and [%s] are the same" % (context_name, parent_context)
-
-        result_ptr = []
-
-        local_parent_context = parent_context
-        if find_itself:
-            local_parent_context = context_name
-
-        try:
-            v, r = self._find_context(local_parent_context, self._get_context_helper, (context_name, result_ptr, find_itself))
-            if not v:
-                return False, r
-            if not r:
-                return False, "Unable to return context [%s] of/from [%s] - context not found." % (context_name, parent_context)
-        except mvtools_exception.mvtools_exception as ex:
-            return False, "Unable to return context [%s] of/from [%s]: [%s]." % (context_name, parent_context, ex.get_message())
-
-        return True, result_ptr
-
     def _rem_variable_internal(self, var_name, context = None):
 
         if context is None:
@@ -963,22 +921,6 @@ class DSLType20:
         except mvtools_exception.mvtools_exception as ex:
             return False, "Unable to add and create context: [%s]" % ex.get_message()
 
-    def _get_context_helper(self, ptr, cb_data_ctx):
-
-        target_ctx_name, return_ptr, get_itself = cb_data_ctx
-
-        if get_itself:
-            return_ptr.append(self._ctx_shallow_copy(ptr.get_parent_ptr(), ptr))
-            return True, None
-
-        for entry in ptr.get_entries():
-            if entry.get_type() == DSLTYPE20_ENTRY_TYPE_CTX and (entry.get_name() == target_ctx_name or target_ctx_name is None):
-                return_ptr.append(self._ctx_shallow_copy(ptr, entry))
-                if target_ctx_name is not None:
-                    break
-
-        return True, None
-
     def _config_copy(self):
         return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.var_decorator)
 
@@ -1011,39 +953,23 @@ class DSLType20:
         return ret
 
     def _var_copy(self, original_parent_ptr, var_ptr):
+
         new_inst = DSLType20_Variable(self._config_copy(), var_ptr.get_name(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
         new_inst.value = self._obj_val_copy(var_ptr.value)
         return new_inst
 
-    def _ctx_hollow_copy(self, original_parent_ptr, target_ptr, ctx_ptr):
-        return DSLType20_Context(target_ptr, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(original_parent_ptr, ctx_ptr)))
-
     def _opt_copy(self, opt_ptr):
+
         new_inst = DSLType20_Option(self._config_copy(), opt_ptr.get_name())
         new_inst.value = self._obj_val_copy(opt_ptr.value)
         return new_inst
 
     def _opt_list_copy(self, opt_ptr_list):
+
         result = []
         for opt in opt_ptr_list:
             result.append(self._opt_copy(opt))
         return result
-
-    def _generic_copy_helper(self, original_parent_ptr, target_ptr, entry_ptr):
-
-        if entry_ptr.get_type() == DSLTYPE20_ENTRY_TYPE_VAR:
-            return self._var_copy(original_parent_ptr, entry_ptr)
-        elif entry_ptr.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
-            return self._ctx_hollow_copy(original_parent_ptr, target_ptr, entry_ptr)
-
-    def _ctx_shallow_copy(self, parent_ptr, ctx_ptr):
-
-        # creates a "shallow-ish" copy - child contexts are also copied, but hollowed
-
-        ctx_copy = DSLType20_Context(None, ctx_ptr.get_name(), self._opt_list_copy(self._inherit_options(parent_ptr, ctx_ptr)))
-        for ent in ctx_ptr.get_entries():
-            ctx_copy.add_entry(self._generic_copy_helper(ctx_ptr, ctx_copy, ent))
-        return ctx_copy
 
     def _rem_context_helper(self, ptr, cb_data_rem):
 
