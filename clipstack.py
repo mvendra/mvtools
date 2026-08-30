@@ -82,7 +82,9 @@ def clipstack_push():
     v, r = toolbus.get_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER)
     if not v:
         return False, r
-    field_header_count = r
+    if r is None:
+        return False, "Internal error"
+    field_header_count = r[1][0]
 
     v, r = toolbus.get_all_fields(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT)
     if not v:
@@ -90,7 +92,7 @@ def clipstack_push():
     all_entries = r
 
     # check for db tampering
-    if (int(field_header_count[1]) + 1) != len(all_entries):
+    if (int(field_header_count) + 1) != len(all_entries):
         return False, "Database is corrupted (nonmatching header-count vs number of actual entries)"
 
     # store the current clipboard contents
@@ -109,12 +111,12 @@ def clipstack_push():
     newlines_at_expanded = newlines_at_expanded[1:]
     if len(newlines_at_expanded) > 0:
         opts.append(("newlines_at", newlines_at_expanded))
-    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, str(int(field_header_count[1]) + 1), out_sans_newlines, opts)
+    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, str(int(field_header_count) + 1), out_sans_newlines, opts)
     if not v:
         return False, r
 
     # update the header count
-    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, str(int(field_header_count[1]) + 1), None)
+    v, r = toolbus.set_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER, str(int(field_header_count) + 1), None)
     if not v:
         return False, r
 
@@ -134,7 +136,9 @@ def clipstack_top_delegate():
     v, r = toolbus.get_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER)
     if not v:
         return False, r
-    field_header_count = r
+    if r is None:
+        return False, "Internal error"
+    field_header_count = r[1][0]
 
     v, r = toolbus.get_all_fields(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT)
     if not v:
@@ -142,15 +146,16 @@ def clipstack_top_delegate():
     all_entries = r
 
     # check for db tampering
-    if (int(field_header_count[1]) + 1) != len(all_entries):
+    if (int(field_header_count) + 1) != len(all_entries):
         return False, "Database is corrupted (nonmatching header-count vs number of actual entries)"
 
     # retrieve the header count
     v, r = toolbus.get_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, CLIPSTACK_TOOLBUS_HEADER)
     if not v:
         return False, r
-    header_count = r
-    header_count = int(header_count[1])
+    if r is None:
+        return False, "Internal error"
+    header_count = int(r[1][0])
 
     if header_count == 0:
         return False, "Clipboard stack is empty"
@@ -159,10 +164,9 @@ def clipstack_top_delegate():
     v, r = toolbus.get_field(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT, str(header_count))
     if not v:
         return False, r
-    last_saved = r
-
-    if last_saved is None:
-        return False, "Position [%s] is unexpectedly empty!" % header_count
+    if r is None:
+        return False, "Internal error"
+    last_saved = r[1][0]
 
     last_saved_resolved = _re_newlines_string(last_saved)
 
