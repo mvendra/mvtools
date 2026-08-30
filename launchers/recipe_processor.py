@@ -351,7 +351,7 @@ class RecipeProcessor:
         if self.depth_tracker > DEPTH_TRACKER_LIMIT:
             return False, "Reached depth limit of [%s] on context [%s]" % (DEPTH_TRACKER_LIMIT, ctx_name)
 
-        v, r = dsl.get_context(ctx_name)
+        v, r = dsl.get_context_mvtodo(ctx_name)
         if not v:
             return False, "Failed attempting to retrieve context [%s]: [%s]" % (ctx_name, r)
         ctx = r
@@ -404,7 +404,7 @@ class RecipeProcessor:
         custom_job_impl = {}
         main_custom_job_impl = None
 
-        has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
+        has_metajob, r_metajob = dsl.get_context_mvtodo(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if has_metajob:
 
             # recipe namespace (for tasks/plugins and jobs as well)
@@ -466,7 +466,7 @@ class RecipeProcessor:
         root_job = r()
 
         # root jobs and tasks
-        v, r = dsl.get_context()
+        v, r = dsl.get_context_mvtodo()
         if not v:
             return False, "Failed attempting to retrieve master context: [%s]" % r
         root_ctx = r
@@ -505,7 +505,7 @@ class RecipeProcessor:
 
         local_option = None
 
-        has_metajob, r_metajob = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
+        has_metajob, r_metajob = dsl.get_context_mvtodo(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if has_metajob:
             v, r = dsl.get_variables(option, RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
@@ -597,7 +597,7 @@ class RecipeProcessor:
 
     def _get_exec_name_from_recipe(self, dsl):
 
-        v, r = dsl.get_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
+        v, r = dsl.get_context_mvtodo(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if not v:
             return True, None
 
