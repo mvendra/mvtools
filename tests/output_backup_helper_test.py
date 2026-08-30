@@ -85,7 +85,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(False, "error msg")) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
                             self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
@@ -103,7 +103,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
                             self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
@@ -121,7 +121,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
                             self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
@@ -137,7 +137,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
                             self.assertEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
@@ -166,7 +166,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
                             self.assertEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
@@ -183,7 +183,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "saved stdout" ) , ( "app_stderr", "stderr-contents", "saved stderr" ) ]
                             self.assertNotEqual(output_backup_helper.dump_outputs_autobackup(False, print, out_list), None)
@@ -209,7 +209,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
                             self.assertEqual(output_backup_helper.dump_outputs_autobackup(True, print, out_list), None)
@@ -228,7 +228,7 @@ class OutputBackupHelperTest(unittest.TestCase):
         with mock.patch("mvtools_envvars.mvtools_envvar_read_temp_path", return_value=(True, self.output_backup_storage)) as dummy1:
             with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy2:
                 with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy3:
-                    with mock.patch("toolbus.get_field", return_value=(True, ("index", "5", []))) as dummy4:
+                    with mock.patch("toolbus.get_field", return_value=(True, ("index", ["5"], []))) as dummy4:
                         with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy5:
                             out_list = [ ( "app_stdout", "stdout-contents", "test-app-stdout" ) , ( "app_stderr", "stderr-contents", "test-app-stderr" ) ]
                             self.assertEqual(output_backup_helper.dump_outputs_autobackup(True, print, out_list), None)
@@ -243,7 +243,7 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy3:
+                with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy3:
                     with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy4:
                         self.assertEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
 
@@ -257,7 +257,7 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                with mock.patch("toolbus.get_field", return_value=(True, ("index", "0", []))) as dummy3:
+                with mock.patch("toolbus.get_field", return_value=(True, ("index", ["0"], []))) as dummy3:
                     with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy4:
                         self.assertNotEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
 
@@ -271,7 +271,7 @@ class OutputBackupHelperTest(unittest.TestCase):
 
         with mock.patch("toolbus.get_all_fields", return_value=(True, [])) as dummy1:
             with mock.patch("maketimestamp.get_timestamp_now_compact", return_value="test_timestamp") as dummy2:
-                with mock.patch("toolbus.get_field", return_value=(True, ("index", "8", []))) as dummy3:
+                with mock.patch("toolbus.get_field", return_value=(True, ("index", ["8"], []))) as dummy3:
                     with mock.patch("toolbus.set_field", return_value=(True, None)) as dummy4:
                         self.assertNotEqual(output_backup_helper.dump_single_autobackup(print, self.output_backup_storage, "app_out", "output contents", "test-app-out"), None)
 
