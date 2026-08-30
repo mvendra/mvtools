@@ -663,22 +663,22 @@ class DSLType20:
     def get_all_sub_contexts(self, parent_context = None):
         return self._get_context_internal(None, False, parent_context)
 
-    def get_sub_context(self, context_name, parent_context = None):
+    def get_sub_contexts(self, context_name = None):
+
+        if context_name is None:
+            context_name = self.root_context_id
+        result = []
 
         try:
-            if context_name is None or context_name == self.root_context_id:
-                return True, self._ctx_shallow_copy(None, self.data)
+            v, r = self._find_context(context_name, self._get_sub_contexts_helper, result)
+            if not v:
+                return False, r
+            if not r:
+                return False, "Context [%s] does not exist." % context_name
         except mvtools_exception.mvtools_exception as ex:
-            return False, "Getting sub context failed: [%s]" % ex.get_message()
+            return False, "Getting sub contexts failed: [%s]" % ex.get_message()
 
-        v, r = self._get_context_internal(context_name, False, parent_context)
-        if not v:
-            return False, r
-        if len(r) == 0:
-            r = None
-        else:
-            r = r[0]
-        return True, r
+        return True, result
 
     def rem_context(self, context_name):
 
@@ -1070,6 +1070,14 @@ class DSLType20:
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
                 list_ptr.append(convert_var_to_result(self._var_copy(ptr, entry)))
+
+        return True, None
+
+    def _get_sub_contexts_helper(self, ptr, cb_data):
+
+        for ent in ptr.get_entries():
+            if ent.get_type() == DSLTYPE20_ENTRY_TYPE_CTX:
+                cb_data.append(ent.get_name())
 
         return True, None
 
