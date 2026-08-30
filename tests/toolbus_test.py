@@ -537,11 +537,20 @@ class ToolbusTest(unittest.TestCase):
         v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val1", None)
         self.assertTrue(v)
 
+        v, r = toolbus.get_all_fields(self.db_test_empty, "ctxnonexistent")
+        self.assertTrue(v)
+        self.assertEqual(r, None)
+
+    def testGetAllFields2(self):
+
+        v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val1", None)
+        self.assertTrue(v)
+
         v, r = toolbus.get_all_fields(self.db_test_empty, "ctx1")
         self.assertTrue(v)
         self.assertEqual(r, [("var1", ["val1"], [])])
 
-    def testGetAllFields2(self):
+    def testGetAllFields3(self):
 
         v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val1", None)
         self.assertTrue(v)
@@ -553,7 +562,7 @@ class ToolbusTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, [("var2", ["val2"], [])])
 
-    def testGetAllFields3(self):
+    def testGetAllFields4(self):
 
         v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val1", None)
         self.assertTrue(v)
@@ -568,7 +577,7 @@ class ToolbusTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, [("var2", ["val2"], [])])
 
-    def testGetAllFields4(self):
+    def testGetAllFields5(self):
 
         v, r = toolbus.set_field(self.db_test_empty, "ctx1", "var1", "val1", None)
         self.assertTrue(v)
