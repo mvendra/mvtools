@@ -116,7 +116,7 @@ def _is_status_paused_delegate(execution_name):
         return False, r
     if r is None:
         return False, "Unable to fetch execution [%s]'s status (for pausing)." % execution_name
-    stat_val = (r[1].lower())
+    stat_val = ((r[1][0]).lower())
     if stat_val == "paused":
         return True, True
     elif stat_val == "running":
@@ -280,7 +280,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker")
     if not v:
         return False, "Job [%s][%s]: Unable to resolve depth tracker. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
-    depth_tracker = int(r[1])
+    depth_tracker = int(r[1][0])
     depth_tracker += 1
     if depth_tracker > NESTED_JOB_DEPTH_LIMIT:
         return False, "Job [%s][%s]: Depth limit (%s) reached" % (target_job.name, target_job.get_desc(), NESTED_JOB_DEPTH_LIMIT)
@@ -320,7 +320,7 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker")
     if not v:
         return False, "Job [%s][%s]: Unable to resolve depth tracker. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
-    depth_tracker = int(r[1])
+    depth_tracker = int(r[1][0])
     depth_tracker -= 1
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), None)
     if not v:
@@ -342,7 +342,7 @@ def get_current_executions():
             return False, "Unable to fetch execution [%s]'s status: [%s]" % (exe_name, r)
         if r is None:
             return False, "Unable to fetch execution [%s]'s status." % (exe_name)
-        report.append("%s: %s" % (exe_name, r[1]))
+        report.append("%s: %s" % (exe_name, (r[1][0])))
 
     return True, report
 
