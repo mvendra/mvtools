@@ -62,6 +62,8 @@ def dump_single_autobackup(feedback_object, base_path, output_fn_prefix, output_
     v, r = toolbus.get_field(OUTPUT_BACKUP_HELPER_TOOLBUS_DATABASE, OUTPUT_BACKUP_HELPER_TOOLBUS_CONTEXT, OUTPUT_BACKUP_HELPER_TOOLBUS_INDEX)
     if not v:
         return "toolbus error: [%s]" % r
+    if r is None:
+        return "internal error"
     backup_file_index = int(r[1][0])
 
     if backup_file_index > OUTPUT_BACKUP_HELPER_MAX_INDEX:

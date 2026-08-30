@@ -280,6 +280,8 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker")
     if not v:
         return False, "Job [%s][%s]: Unable to resolve depth tracker. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
+    if r is None:
+        return False, "Job [%s][%s]: Unable to resolve depth tracker - internal error." % (target_job.name, target_job.get_desc())
     depth_tracker = int(r[1][0])
     depth_tracker += 1
     if depth_tracker > NESTED_JOB_DEPTH_LIMIT:
@@ -320,6 +322,8 @@ def run_single_job(target_job, parent_job_name, feedback_object, execution_name,
     v, r = toolbus.get_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker")
     if not v:
         return False, "Job [%s][%s]: Unable to resolve depth tracker. Aborting: [%s]" % (target_job.name, target_job.get_desc(), r)
+    if r is None:
+        return False, "Job [%s][%s]: Unable to resolve depth tracker - internal error." % (target_job.name, target_job.get_desc())
     depth_tracker = int(r[1][0])
     depth_tracker -= 1
     v, r = toolbus.set_field(LAUNCHJOBS_TOOLBUS_DATABASE, execution_name, "job-depth-tracker", str(depth_tracker), None)

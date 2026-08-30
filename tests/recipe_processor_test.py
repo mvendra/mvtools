@@ -97,7 +97,9 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_exe_name_contents2 += "        v, r = toolbus.get_field(execution_name, \"test-ctx-custom\", \"test-var-name\")\n"
         sample_custom_exe_name_contents2 += "        if not v:\n"
         sample_custom_exe_name_contents2 += "            return False, \"Failure in test infrastructure: [%s]\" % r\n"
-        sample_custom_exe_name_contents2 += "        if r[1] == \"test-var-val\":\n"
+        sample_custom_exe_name_contents2 += "        if r is None:\n"
+        sample_custom_exe_name_contents2 += "            return False, \"Failure in test infrastructure\"\n"
+        sample_custom_exe_name_contents2 += "        if r[1][0] == \"test-var-val\":\n"
         sample_custom_exe_name_contents2 += "            return True, None\n"
         sample_custom_exe_name_contents2 += "        return False, r\n"
         self.sample_custom_exe_name_contents_file2 = path_utils.concat_path(self.test_dir, "sample_custom_exe_name2.py")
