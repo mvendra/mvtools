@@ -55,7 +55,7 @@ def _re_newlines_string(the_full_var):
     ret_string = ""
     newlines = []
 
-    var_val = the_full_var[1]
+    var_val = the_full_var[1][0]
     options = the_full_var[2]
 
     if len(options) == 0:
@@ -170,7 +170,7 @@ def clipstack_top_delegate():
         return False, r
     if r is None:
         return False, "Internal error"
-    last_saved = r[1][0]
+    last_saved = r
 
     last_saved_resolved = _re_newlines_string(last_saved)
 
@@ -243,7 +243,7 @@ def clipstack(operation):
     return False, "clipstack not_reached"
 
 def puaq(selfhelp):
-    print("Usage: %s [push | pop | top | clear | info]" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [help | push | pop | top | clear | info]" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(0)
     else:
@@ -251,10 +251,12 @@ def puaq(selfhelp):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 2:
+    if len(sys.argv) != 2:
         puaq(False)
-
     operation = sys.argv[1]
+    if operation == "help":
+        puaq(True)
+
     v, r = clipstack(operation)
     if r is not None:
         print(r)
