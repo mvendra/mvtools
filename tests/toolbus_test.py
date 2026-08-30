@@ -165,7 +165,7 @@ class ToolbusTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 3)
         self.assertEqual(r[0], "var1")
-        self.assertEqual(r[1], "val1")
+        self.assertEqual(r[1], ["val1"])
         self.assertEqual(r[2], [])
 
     def testGetField3(self):
@@ -174,7 +174,7 @@ class ToolbusTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 3)
         self.assertEqual(r[0], "var1")
-        self.assertEqual(r[1], "val1")
+        self.assertEqual(r[1], ["val1"])
         self.assertEqual(r[2], [])
 
     def testGetField4(self):
@@ -189,7 +189,7 @@ class ToolbusTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(len(r), 3)
         self.assertEqual(r[0], "var2")
-        self.assertEqual(r[1], "val2")
+        self.assertEqual(r[1], ["val2"])
         self.assertEqual(r[2], [])
 
     def testGetField6(self):
@@ -201,27 +201,27 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
         self.assertTrue(v)
-        self.assertEqual(r, ("var1", "val1", []))
+        self.assertEqual(r, ("var1", ["val1"], []))
 
         v, r = toolbus.set_field(self.db_test_ok_1, None, "var1", "val2", None)
         self.assertTrue(v)
 
         v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
         self.assertTrue(v)
-        self.assertEqual(r, ("var1", "val2", []))
+        self.assertEqual(r, ("var1", ["val2"], []))
 
     def testSetField2(self):
 
         v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
         self.assertTrue(v)
-        self.assertEqual(r, ("var1", "val1", []))
+        self.assertEqual(r, ("var1", ["val1"], []))
 
         v, r = toolbus.set_field(self.db_test_ok_1, None, "var1", "val3", [("a", "1")])
         self.assertTrue(v)
 
         v, r = toolbus.get_field(self.db_test_ok_1, None, "var1")
         self.assertTrue(v)
-        self.assertEqual(r, ("var1", "val3", [("a", "1")]))
+        self.assertEqual(r, ("var1", ["val3"], [("a", ["1"])]))
 
     def testSetField3(self):
 
@@ -234,20 +234,20 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_field(self.db_test_ok_1, None, "var2")
         self.assertTrue(v)
-        self.assertEqual(r, ("var2", "val2", [("b", "2")]))
+        self.assertEqual(r, ("var2", ["val2"], [("b", ["2"])]))
 
     def testSetField4(self):
 
         v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var2")
         self.assertTrue(v)
-        self.assertEqual(r, ("var2", "val2", []))
+        self.assertEqual(r, ("var2", ["val2"], []))
 
         v, r = toolbus.set_field(self.db_test_ok_2, "ctx1", "var2", "val2", [("c", "3")])
         self.assertTrue(v)
 
         v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var2")
         self.assertTrue(v)
-        self.assertEqual(r, ("var2", "val2", [("c", "3")]))
+        self.assertEqual(r, ("var2", ["val2"], [("c", ["3"])]))
 
     def testSetField5(self):
 
@@ -260,7 +260,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_field(self.db_test_ok_2, "ctx1", "var3")
         self.assertTrue(v)
-        self.assertEqual(r, ("var3", "val3", []))
+        self.assertEqual(r, ("var3", ["val3"], []))
 
     def testSetField6(self):
 
@@ -278,7 +278,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_field(self.db_test_ok_1, "new-ctx", "var5")
         self.assertTrue(v)
-        self.assertEqual(r, ("var5", "val5", [("a", "1")]))
+        self.assertEqual(r, ("var5", ["val5"], [("a", ["1"])]))
 
     def testSetField8(self):
 
@@ -311,7 +311,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_signal("var7")
         self.assertTrue(v)
-        self.assertEqual(r, "val7")
+        self.assertEqual(r, ["val7"])
 
         v, r = toolbus.get_signal("var8")
         self.assertTrue(v)
@@ -326,11 +326,11 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_signal("var14", True)
         self.assertTrue(v)
-        self.assertEqual(r, "val14")
+        self.assertEqual(r, ["val14"])
 
         v, r = toolbus.get_signal("var14")
         self.assertTrue(v)
-        self.assertEqual(r, "val14")
+        self.assertEqual(r, ["val14"])
 
         v, r = toolbus.get_signal("var14")
         self.assertTrue(v)
@@ -354,7 +354,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_signal("var11")
         self.assertTrue(v)
-        self.assertEqual(r, "val11")
+        self.assertEqual(r, ["val11"])
 
     def testSetSignal3(self):
 
@@ -379,7 +379,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_signal("var12")
         self.assertTrue(v)
-        self.assertEqual(r, "val12")
+        self.assertEqual(r, ["val12"])
 
         v, r = toolbus.get_signal("var12")
         self.assertTrue(v)
@@ -494,7 +494,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_field(self.db_test_empty, "ctx1", "var1")
         self.assertTrue(v)
-        self.assertEqual(r, ("var1", "val1", []))
+        self.assertEqual(r, ("var1", ["val1"], []))
 
     def testGetAllTables1(self):
 
@@ -539,7 +539,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_all_fields(self.db_test_empty, "ctx1")
         self.assertTrue(v)
-        self.assertEqual(r, [("var1", "val1", [])])
+        self.assertEqual(r, [("var1", ["val1"], [])])
 
     def testGetAllFields2(self):
 
@@ -551,7 +551,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_all_fields(self.db_test_empty, "ctx2")
         self.assertTrue(v)
-        self.assertEqual(r, [("var2", "val2", [])])
+        self.assertEqual(r, [("var2", ["val2"], [])])
 
     def testGetAllFields3(self):
 
@@ -566,7 +566,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_all_fields(self.db_test_empty, "ctx2")
         self.assertTrue(v)
-        self.assertEqual(r, [("var2", "val2", [])])
+        self.assertEqual(r, [("var2", ["val2"], [])])
 
     def testGetAllFields4(self):
 
@@ -585,7 +585,7 @@ class ToolbusTest(unittest.TestCase):
 
         v, r = toolbus.get_all_fields(self.db_test_empty, "ctx2")
         self.assertTrue(v)
-        self.assertEqual(r, [("var2", "val2", [])])
+        self.assertEqual(r, [("var2", ["val2"], [])])
 
 if __name__ == "__main__":
     unittest.main()
