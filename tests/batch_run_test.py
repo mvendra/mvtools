@@ -338,7 +338,7 @@ class BatchRunTest(unittest.TestCase):
             self.assertFalse(r)
             dummy.assert_called_with("test-stop-sig", False)
 
-        with mock.patch("toolbus.get_signal", return_value=(True, "test-stop-sig-val")) as dummy:
+        with mock.patch("toolbus.get_signal", return_value=(True, ["test-stop-sig-val"])) as dummy:
             v, r = batch_run._stop_tb_sig("test-stop-sig", 0, 0)
             self.assertTrue(v)
             self.assertTrue(r)
