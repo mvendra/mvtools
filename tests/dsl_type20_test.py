@@ -3793,12 +3793,24 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl.add_context("ctx2", None, "ctx1")
         self.assertTrue(v)
 
+        v, r = dsl.get_sub_contexts("unknown")
+        self.assertFalse(v)
+
+    def testDslType20_TestGetSubContexts2(self):
+
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        v, r = dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        v, r = dsl.add_context("ctx2", None, "ctx1")
+        self.assertTrue(v)
+
         v, r = dsl.get_sub_contexts(None)
         self.assertTrue(v)
 
         self.assertEqual(r, ["ctx1"])
 
-    def testDslType20_TestGetSubContexts2(self):
+    def testDslType20_TestGetSubContexts3(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context("ctx1", None, None)
@@ -3812,7 +3824,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(r, ["ctx1"])
 
-    def testDslType20_TestGetSubContexts3(self):
+    def testDslType20_TestGetSubContexts4(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
@@ -3832,7 +3844,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(r, ["ctx2"])
 
-    def testDslType20_TestGetSubContexts4(self):
+    def testDslType20_TestGetSubContexts5(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
         v, r = dsl.add_context("ctx1", None, None)
@@ -3846,7 +3858,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(r, [])
 
-    def testDslType20_TestGetSubContexts5(self):
+    def testDslType20_TestGetSubContexts6(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
@@ -3865,7 +3877,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(r, ["ctx1"])
 
-    def testDslType20_TestGetSubContexts6(self):
+    def testDslType20_TestGetSubContexts7(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
