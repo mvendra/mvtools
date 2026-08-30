@@ -89,6 +89,8 @@ def clipstack_push():
     v, r = toolbus.get_all_fields(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT)
     if not v:
         return False, r
+    if r is None:
+        return False, "Internal error"
     all_entries = r
 
     # check for db tampering
@@ -143,6 +145,8 @@ def clipstack_top_delegate():
     v, r = toolbus.get_all_fields(CLIPSTACK_TOOLBUS_DATABASE, CLIPSTACK_TOOLBUS_CONTEXT)
     if not v:
         return False, r
+    if r is None:
+        return False, "Internal error"
     all_entries = r
 
     # check for db tampering
