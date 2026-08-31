@@ -356,7 +356,7 @@ class RecipeProcessor:
             return False, "Failed attempting to retrieve context [%s]: [%s]" % (ctx_name, r)
         ctx = r
 
-        v, r = dsl_type20.convert_opt_obj_list_to_neutral_format(ctx.get_options())
+        v, r = dsl_type20.convert_opt_obj_list_to_neutral_format_mvtodo(ctx.get_options())
         if not v:
             return False, r
         job_params = _convert_dsl_opts_into_py_map(r)
@@ -372,7 +372,7 @@ class RecipeProcessor:
             # tasks
             if entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR:
 
-                v, r = dsl_type20.convert_opt_obj_list_to_neutral_format(entry.get_options())
+                v, r = dsl_type20.convert_opt_obj_list_to_neutral_format_mvtodo(entry.get_options())
                 if not v:
                     return False, r
                 task_params = _convert_dsl_opts_into_py_map(r)
@@ -479,7 +479,7 @@ class RecipeProcessor:
             # tasks
             if entry.get_type() == dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR:
 
-                v, r = dsl_type20.convert_opt_obj_list_to_neutral_format(entry.get_options())
+                v, r = dsl_type20.convert_opt_obj_list_to_neutral_format_mvtodo(entry.get_options())
                 if not v:
                     return False, r
                 task_params = _convert_dsl_opts_into_py_map(r)
