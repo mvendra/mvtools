@@ -112,7 +112,7 @@ def read_config(config_file):
     for v in vars:
 
         var_name = v[0]
-        var_value = v[1]
+        var_value = v[1][0]
         var_options = v[2]
 
         # assign values to policy variables
@@ -123,10 +123,7 @@ def read_config(config_file):
             BKPREPARATION = var_value
             for o in var_options:
                 if o[0] == "param":
-                    if isinstance(o[1], list):
-                        BKPREPARATION_PARAMS += o[1]
-                    else:
-                        BKPREPARATION_PARAMS.append(o[1])
+                    BKPREPARATION_PARAMS += o[1]
 
         elif var_name == "BKSOURCE":
             BKSOURCE_EXCEPTIONS = []
@@ -136,18 +133,15 @@ def read_config(config_file):
             warn_abort = None
             for o in var_options:
                 if o[0] == "ex":
-                    if isinstance(o[1], list):
-                        BKSOURCE_EXCEPTIONS += o[1]
-                    else:
-                        BKSOURCE_EXCEPTIONS.append(o[1])
+                    BKSOURCE_EXCEPTIONS += o[1]
                 elif o[0] == "descend":
                     descend = True
                 elif o[0] == "abort":
                     abort = True
                 elif o[0] == "warn_size":
-                    bv, sr = convert_unit.convert_to_bytes(o[1])
+                    bv, sr = convert_unit.convert_to_bytes(o[1][0])
                     if not bv:
-                        print("%sBKSOURCE's warn_size option is malformed: [%s]%s" % (terminal_colors.TTY_RED, o[1], terminal_colors.get_standard_color()))
+                        print("%sBKSOURCE's warn_size option is malformed: [%s]%s" % (terminal_colors.TTY_RED, o[1][0], terminal_colors.get_standard_color()))
                         return False, ()
                     warn_size = sr
                 elif o[0] == "warn_abort":
