@@ -40,6 +40,15 @@ def derivefilenameforcrontab():
     username = getpass.getuser()
     return "crontab_" + username + ".txt"
 
+def simplify_options(opts):
+    res = []
+    for o in opts:
+        if len(o[1]) > 0:
+            res.append((o[0], o[1][0]))
+        else:
+            res.append((o[0], None))
+    return res
+
 class BackupPreparation:
 
     def __init__(self, _config_file):
@@ -97,11 +106,10 @@ class BackupPreparation:
             raise BackupPreparationException("Failed during setup: [%s]" % r)
         vars = r
         for v in vars:
-            p = self.proc_single_config(v[0], v[1], v[2])
+            p = self.proc_single_config(v[0], v[1][0], simplify_options(v[2]))
             if not p:
-                # not handled by configuration. likely an instruction. separate it from the config variables
-                # so false instructions can be detected
-                self.instructions.append(v)
+                # not handled by configuration. likely an instruction. separate it from the config variables so false instructions can be detected
+                self.instructions.append((v[0], v[1][0], simplify_options(v[2])))
 
         # now process the configuration variables
         if self.storage_path_reset:
