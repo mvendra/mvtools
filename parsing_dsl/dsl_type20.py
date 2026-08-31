@@ -601,6 +601,16 @@ class DSLType20:
         self.data = None
         self.data = DSLType20_Context(None, self.root_context_id, None)
 
+    def has_context(self, ctx_name):
+
+        if ctx_name is None or ctx_name == self.root_context_id:
+            return False, "Trying to proble for the existence of the root context is invalid."
+
+        v, r = self._find_context(ctx_name, None, None)
+        if not v:
+            return False, r
+        return True, r
+
     def add_context(self, ctx_name, ctx_options, parent_ctx = None):
 
         if ctx_name == self.root_context_id:
