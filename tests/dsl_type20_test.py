@@ -24,6 +24,13 @@ def var_fmt_helper(var_list):
         raise mvtools_exception.mvtools_exception("Failed test")
     return r
 
+def opt_fmt_helper(opt_list):
+
+    res = []
+    for o in opt_list:
+        res.append((o.get_name(), o.get_value()))
+    return res
+
 def find_context_callback_report_chain(node_ptr, node_data):
 
     if node_ptr is None:
@@ -649,29 +656,39 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", "b"), ("1", "2") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", "b"), ("1", "2") ])
 
     def testInheritOptionsHelper2(self):
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", ["b", "c"]) ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", "2") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", ["b", "c"]), ("1", "2") ])
 
     def testInheritOptionsHelper3(self):
 
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "2") ])
+        self.assertTrue(v)
+        new_opts = r
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", "2") ])
+
+    def testInheritOptionsHelper4(self):
+
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None) ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "2") ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", "2") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", "2") ])
 
-    def testInheritOptionsHelper4(self):
+    def testInheritOptionsHelper5(self):
 
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b") ])
         self.assertTrue(v)
@@ -679,29 +696,29 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None) ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", None) ])
-
-    def testInheritOptionsHelper5(self):
-
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None), ("1", "2") ])
-        self.assertTrue(v)
-        parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None) ])
-        self.assertTrue(v)
-        new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("1", "2") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", None) ])
 
     def testInheritOptionsHelper6(self):
 
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None), ("1", "2") ])
+        self.assertTrue(v)
+        parent_opts = r
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None) ])
+        self.assertTrue(v)
+        new_opts = r
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("1", "2") ])
+
+    def testInheritOptionsHelper7(self):
+
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None) ])
         self.assertTrue(v)
         parent_opts = r
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None), ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("1", "2") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("1", "2") ])
 
-    def testInheritOptionsHelper7(self):
+    def testInheritOptionsHelper8(self):
 
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "") ])
         self.assertTrue(v)
@@ -709,9 +726,9 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", ""), ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", ""), ("1", "2") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", ""), ("1", "2") ])
 
-    def testInheritOptionsHelper8(self):
+    def testInheritOptionsHelper9(self):
 
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
@@ -719,9 +736,9 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("1", "2"), ("3", "4") ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", "b"), ("c", "d"), ("1", "2"), ("3", "4") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", "b"), ("c", "d"), ("1", "2"), ("3", "4") ])
 
-    def testInheritOptionsHelper9(self):
+    def testInheritOptionsHelper10(self):
 
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
@@ -729,9 +746,9 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", "b"), ("c", "d") ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", "b"), ("c", "d") ])
 
-    def testInheritOptionsHelper10(self):
+    def testInheritOptionsHelper11(self):
 
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
@@ -739,9 +756,9 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", None), ("c", None) ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", None), ("c", None) ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", None), ("c", None) ])
 
-    def testInheritOptionsHelper11(self):
+    def testInheritOptionsHelper12(self):
 
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
@@ -749,7 +766,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
         self.assertTrue(v)
         new_opts = r
-        self.assertEqual(dsl_type20.convert_opt_obj_list_to_neutral_format(dsl_type20.inherit_options_helper(parent_opts, new_opts))[1], [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
+        self.assertEqual(opt_fmt_helper(dsl_type20.inherit_options_helper(parent_opts, new_opts)), [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
 
     def testDSLType20_Result_Single1(self):
 
