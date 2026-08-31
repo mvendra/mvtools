@@ -240,8 +240,10 @@ def get_all_fields(_db_name, _context):
 def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _opts, allow_overwrite):
 
     # avoid checking pre-existence if the context does not exist
-    v, r = _dh_handle.get_context(_context)
-    ctx_already_exists = v
+    v, r = _dh_handle.has_context(_context)
+    if not v:
+        return False, "Unable to check contexts to get variables [%s] (database: [%s], context: [%s]): [%s]" % (_var, _db_name, _context, r)
+    ctx_already_exists = r
 
     if ctx_already_exists:
 
