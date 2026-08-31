@@ -79,6 +79,7 @@ class ToolbusTest(unittest.TestCase):
             self.fail(r)
 
     def testBootstrapCustomToolbusDb(self):
+
         v, r = toolbus.bootstrap_custom_toolbus_db(path_utils.poplastextension(path_utils.basename_filtered(self.db_test_custom_database)))
         self.assertTrue(v)
         self.assertTrue(os.path.exists(self.db_test_custom_database))
@@ -146,10 +147,12 @@ class ToolbusTest(unittest.TestCase):
         self.assertFalse(v)
 
     def testGetHandleCustomDb1(self):
+
         v, r, ext = toolbus.get_handle_custom_db( toolbus.INTERNAL_DB_FILENAME )
         self.assertFalse(v)
 
     def testGetHandleCustomDb2(self):
+
         v, r, ext = toolbus.get_handle_custom_db( self.db_test_ok_1 )
         self.assertTrue(v)
 
@@ -294,6 +297,7 @@ class ToolbusTest(unittest.TestCase):
         self.assertEqual(r, ("var3", ["abc", "def"], [("opt1", ["xyz", "123"])]))
 
     def testGetSignal1(self):
+
         self.assertFalse(os.path.exists( self.db_test_internal_database ))
         v, r = toolbus.get_signal("novar")
         self.assertTrue(os.path.exists( self.db_test_internal_database ))
