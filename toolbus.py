@@ -225,8 +225,10 @@ def get_all_fields(_db_name, _context):
     _db_handle = r
 
     # avoid trying to get variables if the context does not exist
-    v, r = _db_handle.get_context(_context)
+    v, r = _db_handle.has_context(_context)
     if not v:
+        return False, "Unable to fetch all fields from table [%s] - internal error: [%s] (database: [%s])" % (_context, r, _db_name)
+    if not r:
         return True, None
 
     v, r = _db_handle.get_all_variables(_context)
