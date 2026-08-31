@@ -42,15 +42,6 @@ def convert_res_obj_list_to_neutral_format(res_obj_list):
         return False, "Unable to convert results: [%s]" % ex.get_message()
     return True, result
 
-def convert_opt_obj_list_to_neutral_format(opt_obj_list):
-
-    result = None
-    try:
-        result = [(x.name, x.values) for x in opt_obj_list]
-    except mvtools_exception.mvtools_exception as ex:
-        return False, "Unable to convert options: [%s]" % ex.get_message()
-    return True, result
-
 def make_obj_opt_list_from_neutral_format(configs, options):
 
     result = []
