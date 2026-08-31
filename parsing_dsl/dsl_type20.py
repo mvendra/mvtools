@@ -604,7 +604,7 @@ class DSLType20:
     def has_context(self, ctx_name):
 
         if ctx_name is None or ctx_name == self.root_context_id:
-            return False, "Trying to proble for the existence of the root context is invalid."
+            return True, True
 
         v, r = self._find_context(ctx_name, None, None)
         if not v:

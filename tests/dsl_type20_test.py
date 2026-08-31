@@ -2982,7 +2982,8 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
         v, r = dsl.has_context(None)
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertTrue(r)
 
     def testDslType20_TestHasContext2(self):
 
@@ -2991,7 +2992,8 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
 
         v, r = dsl.has_context(dsl.root_context_id)
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertTrue(r)
 
     def testDslType20_TestHasContext3(self):
 
