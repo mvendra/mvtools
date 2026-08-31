@@ -232,8 +232,6 @@ def get_all_fields(_db_name, _context):
     v, r = _db_handle.get_all_variables(_context)
     if not v:
         return False, "Unable to fetch all fields from table [%s] - internal error: [%s] (database: [%s])" % (_context, r, _db_name)
-    if r is None:
-        return False, "Unable to fetch all fields from table [%s] - unknown internal error (database: [%s])" % (_context, _db_name)
     v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
     if not v:
         return False, "Unable to fetch all fields from table [%s]: [%s] (database: [%s])" % (_context, r, _db_name)
