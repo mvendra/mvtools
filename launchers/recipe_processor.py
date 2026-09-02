@@ -156,7 +156,7 @@ def _convert_dsl_opts_into_py_map(options):
         result[o[0]] = o[1]
     return result
 
-def _get_plugins_path(namespace=None):
+def _get_plugins_path(namespace = None):
 
     full_path = ""
 
@@ -177,7 +177,7 @@ def _get_plugins_path(namespace=None):
 
     return True, full_path
 
-def _get_task_instance(task_script, namespace=None):
+def _get_task_instance(task_script, namespace = None):
 
     if namespace is None:
         return _get_task_instance_delegate(task_script, None)
@@ -277,7 +277,7 @@ class RecipeProcessor:
         self.requested_options = requested_options
         self.depth_tracker = 0
 
-    def test(self, requested_execution_name=None):
+    def test(self, requested_execution_name = None):
 
         v, r = self._bootstrap_dsl_object(self.recipe)
         if not v:
@@ -311,7 +311,7 @@ class RecipeProcessor:
 
         return True, (jobs, options, exec_name)
 
-    def run(self, requested_execution_name=None):
+    def run(self, requested_execution_name = None):
 
         v, r = self.test(requested_execution_name)
         if not v:
