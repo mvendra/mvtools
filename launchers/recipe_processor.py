@@ -570,7 +570,11 @@ class RecipeProcessor:
 
         local_option = None
 
-        has_metajob, r_metajob = dsl.get_context_mvtodo(RECIPE_PROCESSOR_CONFIG_METAJOB)
+        v, r = dsl.has_context(RECIPE_PROCESSOR_CONFIG_METAJOB) # mvtodo: eventually this function will become part of the main/entrypoint ctx
+        if not v:
+            return False, r
+        has_metajob = r
+
         if has_metajob:
             v, r = dsl.get_variables(option, RECIPE_PROCESSOR_CONFIG_METAJOB)
             if not v:
