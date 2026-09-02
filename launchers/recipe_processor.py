@@ -284,7 +284,7 @@ class RecipeProcessor:
             return False, r
         dsl = r
 
-        v, r = self._translate_dsl_into_jobtree(dsl)
+        v, r = self._build_jobtree_from_dsl(dsl)
         if not v:
             return False, r
         jobs = r
@@ -396,7 +396,7 @@ class RecipeProcessor:
         self.depth_tracker -= 1
         return True, None
 
-    def _translate_dsl_into_jobtree(self, dsl):
+    def _translate_dsl_into_jobtree_mvtodo(self, dsl):
 
         self.depth_tracker = 0
 
@@ -500,6 +500,71 @@ class RecipeProcessor:
                     return False, r
 
         return True, root_job
+
+    def __load_tasks_onto_job(self, dsl, source_ctx_name, target_job, namespace):
+
+        # read out current job's task
+        v, r = dsl.get_all_variables(source_ctx_name)
+        if not v:
+            return False, r
+        source_tasks = r
+
+        for new_task in source_tasks:
+
+            v, r = _get_task_instance(new_task.variable.values[0], namespace)
+            if not v:
+                return False, r
+            new_task = r(new_task.variable.name)
+            # mvtodo: new_task.params = task_params
+            target_job.add_entry(new_task)
+
+        return True, None
+
+    def _build_jobtree_from_dsl(self, dsl):
+
+        entrypoint = "main" # mvtodo: for now, hardcoded
+        job_entry = "job" # mvtodo: not-hardcoded?
+        namespace = self.namespace
+        main_custom_job_impl = None # mvtodo: wire later
+
+        # read out main/entrypoint metadata
+        v, r = dsl.get_all_variables(entrypoint)
+        if not v:
+            return False, r
+        main_contexts = r
+
+        # instantiate main job
+        v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
+        if not v:
+            return False, r
+        main_job = r()
+
+        for var in main_contexts:
+
+            # mvtodo: metajob/info stuff takeover, here
+
+            if var.variable.name == job_entry:
+
+                for vals in var.variable.values:
+
+                    if not len(vals) > 1:
+                        return False, "Invalid job name: [%s]" % vals
+
+                    # instantiate new/current job
+                    v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
+                    if not v:
+                        return False, r
+                    target_job = r(vals[1:])
+                    # mvtodo: setup job params {maybe just stick with the single}
+
+                    # load up tasks onto target_job
+                    v, r = self.__load_tasks_onto_job(dsl, vals[1:], target_job, namespace)
+                    if not v:
+                        return False, r
+
+                    main_job.add_entry(target_job)
+
+        return True, main_job
 
     def _get_launch_options_helper(self, dsl, option, valid_values, value_filter_function):
 
