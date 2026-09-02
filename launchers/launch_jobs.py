@@ -31,9 +31,9 @@ class BaseJob:
         return False, "Not implemented"
 
 class BaseTask:
-    def __init__(self, name = None):
+    def __init__(self, name = None, params = {}):
         self.name = name
-        self.params = {}
+        self.params = params
     def get_type(self):
         return BASE_TYPE_TASK
     def get_desc(self):
