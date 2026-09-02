@@ -150,10 +150,12 @@ def _conditional_write(source1, source2):
     return source1
 
 def _convert_dsl_opts_into_py_map(options):
-
     result = {}
     for o in options:
-        result[o[0]] = o[1]
+        if len(o.values) == 1:
+            result[o.name] = o.values[0] # backwards compatibility patch (towards plugins)
+        else:
+            result[o.name] = o.values
     return result
 
 def _get_plugins_path(namespace = None):
@@ -514,8 +516,7 @@ class RecipeProcessor:
             v, r = _get_task_instance(new_task.variable.values[0], namespace)
             if not v:
                 return False, r
-            new_task = r(new_task.variable.name)
-            # mvtodo: new_task.params = task_params
+            new_task = r(new_task.variable.name, _convert_dsl_opts_into_py_map(new_task.options))
             target_job.add_entry(new_task)
 
         return True, None
