@@ -555,7 +555,6 @@ class RecipeProcessor:
                     if not v:
                         return False, r
                     target_job = r(vals[1:])
-                    # mvtodo: setup job params {maybe just stick with the single}
 
                     # load up tasks onto target_job
                     v, r = self.__load_tasks_onto_job(dsl, vals[1:], target_job, namespace)

@@ -20,7 +20,6 @@ BASE_TYPE_TASK = 2
 class BaseJob:
     def __init__(self, name = None):
         self.name = name
-        self.params = {}
         self.entries_list = []
     def get_type(self):
         return BASE_TYPE_JOB
