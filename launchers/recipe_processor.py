@@ -666,8 +666,10 @@ class RecipeProcessor:
 
     def _get_exec_name_from_recipe(self, dsl):
 
-        v, r = dsl.get_context_mvtodo(RECIPE_PROCESSOR_CONFIG_METAJOB)
+        v, r = dsl.has_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
         if not v:
+            return False, r
+        if not r:
             return True, None
 
         v, r = dsl.get_variables("execution-name", RECIPE_PROCESSOR_CONFIG_METAJOB)
