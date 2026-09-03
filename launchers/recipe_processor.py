@@ -126,6 +126,14 @@ ERROR_CODE_HARD_FAIL = 3
 
 RECIPE_PROCESSOR_CONFIG_METAJOB = "mvtools_recipe_processor_config"
 
+def _get_custom_job_from_opts(opts):
+    for o in opts:
+        if o.name == "impl":
+            if len(o.values) > 1:
+                return False, "A custom job implementation, when used, must be specified with a single value."
+            return True, o.values[0]
+    return True, None
+
 def _has_incl_opt(opts):
     for o in opts:
         if o.name == "inclusive":
@@ -395,13 +403,19 @@ class RecipeProcessor:
                         return False, r
                     main_job = r()
 
+                # select sub job implementation
+                v, r = _get_custom_job_from_opts(var.options)
+                if not v:
+                    return False, r
+                job_impl_to_use = r
+
                 for vals in var.variable.values:
 
                     if not len(vals) > 1:
                         return False, "Invalid job name: [%s]" % vals
 
                     # instantiate new/current job
-                    v, r = _get_job_instance(None, self.namespace) # mvtodo
+                    v, r = _get_job_instance(job_impl_to_use, self.namespace)
                     if not v:
                         return False, r
                     target_job = r(vals[1:])
