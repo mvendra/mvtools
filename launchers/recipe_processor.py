@@ -388,7 +388,7 @@ class RecipeProcessor:
                 if main_job is not None:
                     return False, "A custom implementation for the main job, when specified, must be the first entry in the entrypoint (main job)."
 
-                if len(var.variable.values) > 1:
+                if len(var.variable.values) != 1:
                     return False, "A custom implementation for the main job, when specified, must be given as a single value."
 
                 # instantiate main job with custom implementation
@@ -399,8 +399,8 @@ class RecipeProcessor:
 
             elif var.variable.name == "namespace":
 
-                if len(var.variable.values) > 1:
-                    return False, "Only one custom namespace may be specified per entry."
+                if len(var.variable.values) != 1:
+                    return False, "One (and only one) custom namespace must/may be specified per entry."
 
                 namespace_mode = True # exclusive mode - the default
                 if _has_incl_opt(var.options):
