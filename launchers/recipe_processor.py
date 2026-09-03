@@ -55,7 +55,7 @@ ERROR_CODE_HARD_FAIL = 3
 #
 # [
 # @mvtools_recipe_processor_config
-# * recipe-namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
+# * namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
 # ]
 #
 # it operates in two modes: exclusive mode (which is the default) and inclusive mode.
@@ -63,9 +63,8 @@ ERROR_CODE_HARD_FAIL = 3
 # mode, scripts will first be searched inside the built-in plugins
 # folder (MVTOOLS/launchers/launch_jobs_plugins/tasks), and if its not found there, then, and
 # only then, the custom path will be searched. example:
-# * recipe-namespace {inclusive} = "/home/user/custom_mvtools_launch_jobs_plugins"
-# it is not necessary to explicitly set "exclusive" to activate the exclusive mode, because
-# it is the default.
+# * namespace {inclusive} = "/home/user/custom_mvtools_launch_jobs_plugins"
+# it is not necessary to explicitly set "exclusive" to activate the exclusive mode, because it is the default.
 #
 # it is possible to define launch_jobs's execution options either via commandline
 # arguments (requested options) or using config variables inside the recipe's metajob (which
@@ -126,6 +125,12 @@ ERROR_CODE_HARD_FAIL = 3
 #
 
 RECIPE_PROCESSOR_CONFIG_METAJOB = "mvtools_recipe_processor_config"
+
+def _has_incl_opt(opts):
+    for o in opts:
+        if o.name == "inclusive":
+            return True
+    return False
 
 def _translate_namespace_mode(mode_val):
     if mode_val:
@@ -273,15 +278,15 @@ def _get_job_instance_internal(job_script, namespace):
 DEPTH_TRACKER_LIMIT = 200
 class RecipeProcessor:
 
-    def __init__(self, recipe, recipe_namespace, requested_options):
+    def __init__(self, recipe, namespace, requested_options):
         self.recipe = recipe
-        self.namespace = recipe_namespace
+        self.namespace = namespace
         self.requested_options = requested_options
         self.depth_tracker = 0
 
     def test(self, requested_execution_name = None):
 
-        v, r = self._bootstrap_dsl_object(self.recipe)
+        v, r = self._bootstrap_dsl_object()
         if not v:
             return False, r
         dsl = r
@@ -326,16 +331,16 @@ class RecipeProcessor:
         v, r = launch_jobs.begin_execution(mainjob, print, exec_name, options)
         return v, r
 
-    def _bootstrap_dsl_object(self, local_recipe):
+    def _bootstrap_dsl_object(self):
 
-        if not os.path.exists(local_recipe):
-            return False, "Recipe file [%s] does not exist." % local_recipe
+        if not os.path.exists(self.recipe):
+            return False, "Recipe file [%s] does not exist." % self.recipe
 
         file_contents = None
-        with open(local_recipe) as f:
+        with open(self.recipe) as f:
             file_contents = f.read()
         if file_contents is None or file_contents == "":
-            return False, "Recipe file [%s]'s contents are invalid." % local_recipe
+            return False, "Recipe file [%s]'s contents are invalid." % self.recipe
 
         dsl_opts = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True, inherit_options = True, var_decorator = "* ")
         dsl = dsl_type20.DSLType20(dsl_opts)
@@ -367,8 +372,8 @@ class RecipeProcessor:
     def _build_jobtree_from_dsl(self, dsl):
 
         entrypoint = "main" # mvtodo: for now, hardcoded
-        job_entry = "job" # mvtodo: not-hardcoded?
         main_custom_job_impl = None # mvtodo: wire later
+        namespace_switch = self.namespace is not None
 
         # read out main/entrypoint metadata
         v, r = dsl.get_all_variables(entrypoint)
@@ -386,7 +391,7 @@ class RecipeProcessor:
 
             # mvtodo: metajob/info stuff takeover, here
 
-            if var.variable.name == job_entry:
+            if var.variable.name == "job":
 
                 for vals in var.variable.values:
 
@@ -405,6 +410,18 @@ class RecipeProcessor:
                         return False, r
 
                     main_job.add_entry(target_job)
+
+            elif var.variable.name == "namespace":
+
+                if len(var.variable.values) > 1:
+                    return False, "Only one custom namespace may be specified per entry."
+
+                namespace_mode = True # exclusive mode - the default
+                if _has_incl_opt(var.options):
+                    namespace_mode = False
+                self.namespace = (var.variable.values[0], namespace_mode)
+                if namespace_switch:
+                    print("%sWarning: the [--namespace] switch has been overridden by the recipe with value [%s {%s}]%s" % (terminal_colors.TTY_YELLOW, self.namespace[0], _translate_namespace_mode(self.namespace[1]), terminal_colors.get_standard_color()))
 
         return True, main_job
 
@@ -468,7 +485,7 @@ class RecipeProcessor:
             return False, r
         local_execution_delay = r
 
-        return True, launch_jobs.RunOptions(early_abort=local_early_abort, time_delay=local_time_delay, signal_delay=local_signal_delay, execution_delay=local_execution_delay)
+        return True, launch_jobs.RunOptions(early_abort = local_early_abort, time_delay = local_time_delay, signal_delay = local_signal_delay, execution_delay = local_execution_delay)
 
     def _resolve_options(self, options):
 
@@ -541,20 +558,20 @@ class RecipeProcessor:
 
         return True, local_exec_name
 
-def test_jobs_from_recipe_file(recipe_file, execution_name = None, recipe_namespace = None, requested_options = None):
-    recipe_processor = RecipeProcessor(recipe_file, recipe_namespace, requested_options)
+def test_jobs_from_recipe_file(recipe_file, execution_name = None, namespace = None, requested_options = None):
+    recipe_processor = RecipeProcessor(recipe_file, namespace, requested_options)
     return recipe_processor.test(execution_name)
 
-def run_jobs_from_recipe_file(recipe_file, execution_name = None, recipe_namespace = None, requested_options = None):
-    recipe_processor = RecipeProcessor(recipe_file, recipe_namespace, requested_options)
+def run_jobs_from_recipe_file(recipe_file, execution_name = None, namespace = None, requested_options = None):
+    recipe_processor = RecipeProcessor(recipe_file, namespace, requested_options)
     return recipe_processor.run(execution_name)
 
 def assemble_requested_options(_early_abort, _time_delay, _signal_delay, _execution_delay):
-    return launch_jobs.RunOptions(early_abort=_early_abort, time_delay=_time_delay, signal_delay=_signal_delay, execution_delay=_execution_delay)
+    return launch_jobs.RunOptions(early_abort = _early_abort, time_delay = _time_delay, signal_delay = _signal_delay, execution_delay = _execution_delay)
 
-def menu_test_recipe(recipe_file, execution_name, recipe_namespace, requested_options):
+def menu_test_recipe(recipe_file, execution_name, namespace, requested_options):
 
-    v, r = test_jobs_from_recipe_file(recipe_file, execution_name, recipe_namespace, requested_options)
+    v, r = test_jobs_from_recipe_file(recipe_file, execution_name, namespace, requested_options)
     if not v:
         err_msg = r
         if len(err_msg) == 1:
@@ -563,9 +580,9 @@ def menu_test_recipe(recipe_file, execution_name, recipe_namespace, requested_op
     else:
         print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.get_standard_color()))
 
-def menu_run_recipe(recipe_file, execution_name, recipe_namespace, requested_options):
+def menu_run_recipe(recipe_file, execution_name, namespace, requested_options):
 
-    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, recipe_namespace, requested_options)
+    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, namespace, requested_options)
     if not v:
         print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.get_standard_color()))
         sys.exit(ERROR_CODE_HARD_FAIL)
@@ -576,7 +593,7 @@ def menu_run_recipe(recipe_file, execution_name, recipe_namespace, requested_opt
     sys.exit(ERROR_CODE_NONE)
 
 def puaq(selfhelp):
-    print("Usage: %s [--help] [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --recipe-namespace the-recipe-namespace --recipe-namespace-mode inclusive/exclusive --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --namespace the-namespace --namespace-mode inclusive/exclusive --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(ERROR_CODE_NONE)
     else:
@@ -598,10 +615,10 @@ if __name__ == "__main__":
     # launch_jobs options
     execution_name = None
     execution_name_next = False
-    recipe_namespace = None
-    recipe_namespace_next = False
-    recipe_namespace_mode = True # exclusive mode (the default)
-    recipe_namespace_mode_next = False
+    namespace = None
+    namespace_next = False
+    namespace_mode = True # exclusive mode (the default)
+    namespace_mode_next = False
     early_abort = None
     early_abort_next = False
     time_delay = None
@@ -623,19 +640,19 @@ if __name__ == "__main__":
             execution_name = p
             continue
 
-        if recipe_namespace_next:
-            recipe_namespace_next = False
-            recipe_namespace = p
+        if namespace_next:
+            namespace_next = False
+            namespace = p
             continue
 
-        if recipe_namespace_mode_next:
-            recipe_namespace_mode_next = False
+        if namespace_mode_next:
+            namespace_mode_next = False
             if p == "inclusive":
-                recipe_namespace_mode = False
+                namespace_mode = False
             elif p == "exclusive":
-                recipe_namespace_mode = True
+                namespace_mode = True
             else:
-                print("Option [--recipe-namespace-mode] received an invalid value: [%s]. Valid values are [inclusive/exclusive]" % p)
+                print("Option [--namespace-mode] received an invalid value: [%s]. Valid values are [inclusive/exclusive]" % p)
                 sys.exit(ERROR_CODE_INPUT)
             continue
 
@@ -679,10 +696,10 @@ if __name__ == "__main__":
             recipe_next = True
         elif p == "--execution-name":
             execution_name_next = True
-        elif p == "--recipe-namespace":
-            recipe_namespace_next = True
-        elif p == "--recipe-namespace-mode":
-            recipe_namespace_mode_next = True
+        elif p == "--namespace":
+            namespace_next = True
+        elif p == "--namespace-mode":
+            namespace_mode_next = True
         elif p == "--early-abort":
             early_abort_next = True
         elif p == "--time-delay":
@@ -697,13 +714,13 @@ if __name__ == "__main__":
 
     req_opts = assemble_requested_options(early_abort, time_delay, signal_delay, execution_delay)
 
-    if recipe_namespace is not None:
-        recipe_namespace = (recipe_namespace, recipe_namespace_mode)
+    if namespace is not None:
+        namespace = (namespace, namespace_mode)
 
     if operation == "test":
-        menu_test_recipe(recipe_file, execution_name, recipe_namespace, req_opts)
+        menu_test_recipe(recipe_file, execution_name, namespace, req_opts)
     elif operation == "run":
-        menu_run_recipe(recipe_file, execution_name, recipe_namespace, req_opts)
+        menu_run_recipe(recipe_file, execution_name, namespace, req_opts)
     else:
         print("Invalid operation: [%s]" % operation)
         sys.exit(ERROR_CODE_INPUT)
