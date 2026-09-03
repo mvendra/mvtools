@@ -224,6 +224,9 @@ def _get_task_instance_delegate(task_script, namespace):
 
 def _get_job_instance(job_script, namespace = None):
 
+    if job_script is None:
+        return True, standard_job.StandardJob
+
     if namespace is None:
         return _get_job_instance_delegate(job_script, None)
 
@@ -387,7 +390,7 @@ class RecipeProcessor:
                 if main_job is None:
 
                     # instantiate main job
-                    v, r = _get_job_instance(None, self.namespace) # mvtodo
+                    v, r = _get_job_instance(None, self.namespace)
                     if not v:
                         return False, r
                     main_job = r()
