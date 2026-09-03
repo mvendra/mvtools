@@ -372,8 +372,8 @@ class RecipeProcessor:
     def _build_jobtree_from_dsl(self, dsl):
 
         entrypoint = "main" # mvtodo: for now, hardcoded
-        main_custom_job_impl = None # mvtodo: wire later
         namespace_switch = self.namespace is not None
+        main_job = None
 
         # read out main/entrypoint metadata
         v, r = dsl.get_all_variables(entrypoint)
@@ -381,17 +381,22 @@ class RecipeProcessor:
             return False, r
         main_contexts = r
 
-        # instantiate main job
-        v, r = _get_job_instance(None, None, main_custom_job_impl, self.namespace)
-        if not v:
-            return False, r
-        main_job = r()
-
         for var in main_contexts:
 
-            # mvtodo: metajob/info stuff takeover, here
+            if var.variable.name == "main-job-impl":
 
-            if var.variable.name == "job":
+                if main_job is not None:
+                    return False, "A custom implementation for the main job, when specified, must be the first entry in the entrypoint (main job)"
+
+            elif var.variable.name == "job":
+
+                if main_job is None:
+
+                    # instantiate main job
+                    v, r = _get_job_instance(None, None, None, self.namespace) # mvtodo
+                    if not v:
+                        return False, r
+                    main_job = r()
 
                 for vals in var.variable.values:
 
@@ -399,7 +404,7 @@ class RecipeProcessor:
                         return False, "Invalid job name: [%s]" % vals
 
                     # instantiate new/current job
-                    v, r = _get_job_instance(None, None, main_custom_job_impl, self.namespace)
+                    v, r = _get_job_instance(None, None, None, self.namespace) # mvtodo
                     if not v:
                         return False, r
                     target_job = r(vals[1:])
