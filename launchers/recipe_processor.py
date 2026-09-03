@@ -124,8 +124,6 @@ ERROR_CODE_HARD_FAIL = 3
 # ]
 #
 
-RECIPE_PROCESSOR_CONFIG_METAJOB = "mvtools_recipe_processor_config"
-
 def _get_custom_job_from_opts(opts):
     for o in opts:
         if o.name == "impl":
@@ -281,7 +279,6 @@ class RecipeProcessor:
         self.recipe = recipe
         self.namespace = namespace
         self.requested_options = requested_options
-        self.depth_tracker = 0
         self.entrypoint_context_cache = None
 
     def test(self, entrypoint, requested_execution_name = None):
