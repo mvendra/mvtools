@@ -279,6 +279,7 @@ class RecipeProcessor:
         self.namespace = namespace
         self.requested_options = requested_options
         self.depth_tracker = 0
+        self.entrypoint_context_cache = None
 
     def test(self, requested_execution_name = None):
 
@@ -375,9 +376,9 @@ class RecipeProcessor:
         v, r = dsl.get_all_variables(entrypoint)
         if not v:
             return False, r
-        main_contexts = r
+        self.entrypoint_context_cache = r
 
-        for var in main_contexts:
+        for var in self.entrypoint_context_cache:
 
             if var.variable.name == "main-job-impl":
 
