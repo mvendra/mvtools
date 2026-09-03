@@ -376,13 +376,6 @@ class RecipeProcessor:
         namespace_switch = self.namespace is not None
         main_job = None
 
-        # check entrypoint
-        v, r = dsl.has_context(entrypoint)
-        if not v:
-            return False, r
-        if not r:
-            return False, "Entrypoint context [%s] cannot be found." % entrypoint
-
         # read out main/entrypoint metadata
         v, r = dsl.get_all_variables(entrypoint)
         if not v:
