@@ -543,26 +543,21 @@ class RecipeProcessor:
 
     def _get_exec_name_from_recipe(self, dsl):
 
-        v, r = dsl.has_context(RECIPE_PROCESSOR_CONFIG_METAJOB)
-        if not v:
-            return False, r
-        if not r:
-            return True, None
+        local_exec_name = None
 
-        v, r = dsl.get_variables("execution-name", RECIPE_PROCESSOR_CONFIG_METAJOB)
-        if not v:
-            return False, "Failed retrieving execution-name: [%s]" % r
-        v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
-        if not v:
-            return False, "Failed attempting to convert variable entries: [%s]" % r
-        var_rn = r
+        for var in self.entrypoint_context_cache:
 
-        if len(var_rn) > 1:
-            return False, "Recipe's execution-name has been specified more than once."
-        elif len(var_rn) == 1:
-            return True, (var_rn[0][1])
+            if var.variable.name == "execution-name":
 
-        return True, None
+                if local_exec_name is not None:
+                    return False, "A custom execution name, when specified, can only be specified once."
+
+                if len(var.variable.values) != 1:
+                    return False, "A custom execution name, when specified, must contain one and only one value."
+
+                local_exec_name = var.variable.values[0]
+
+        return True, local_exec_name
 
     def _resolve_exec_name(self, requested_execution_name, recipe_execution_name):
 
