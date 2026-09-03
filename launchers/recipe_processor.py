@@ -129,7 +129,7 @@ RECIPE_PROCESSOR_CONFIG_METAJOB = "mvtools_recipe_processor_config"
 def _get_custom_job_from_opts(opts):
     for o in opts:
         if o.name == "impl":
-            if len(o.values) > 1:
+            if len(o.values) != 1:
                 return False, "A custom job implementation, when used, must be specified with a single value."
             return True, o.values[0]
     return True, None
@@ -165,8 +165,11 @@ def _conditional_write(source1, source2):
 def _convert_dsl_opts_into_py_map(options):
     result = {}
     for o in options:
-        if len(o.values) == 1:
-            result[o.name] = o.values[0] # backwards compatibility patch (towards plugins)
+        # backwards compatibility (towards plugins)
+        if len(o.values) == 0:
+            result[o.name] = None
+        elif len(o.values) == 1:
+            result[o.name] = o.values[0]
         else:
             result[o.name] = o.values
     return result
