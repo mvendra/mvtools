@@ -442,32 +442,23 @@ class RecipeProcessor:
 
         return True, main_job
 
-    def _get_launch_options_helper(self, dsl, option, valid_values, value_filter_function):
+    def _get_launch_options_helper(self, previous, var_src, valid_values, value_filter_function):
+
+        if previous is not None:
+            return False, "Recipe's %s option has been specified more than once." % var_src.name
 
         local_option = None
 
-        v, r = dsl.has_context(RECIPE_PROCESSOR_CONFIG_METAJOB) # mvtodo: eventually this function will become part of the main/entrypoint ctx
-        if not v:
-            return False, r
-        has_metajob = r
+        if len(var_src.values) != 1:
+            return False, "Recipe's %s option, when specified, must be specified with one and only one value." % var_src.name
 
-        if has_metajob:
-            v, r = dsl.get_variables(option, RECIPE_PROCESSOR_CONFIG_METAJOB)
-            if not v:
-                return False, "Unable to fetch option [%s]: [%s]." % (option, r)
-            v, r = dsl_type20.convert_res_obj_list_to_neutral_format(r)
-            if not v:
-                return False, "Failed attempting to convert variable entries: [%s]" % r
-            var_rn = r
-            if len(var_rn) > 1: # has been specified more than once. fail.
-                return False, "Recipe's %s option has been specified more than once." % option
-            elif len(var_rn) == 1: # has been specified once in the recipe file
-                unfiltered_val = var_rn[0][1]
-                filtered_val = value_filter_function(unfiltered_val)
-                if valid_values is not None:
-                    if not filtered_val in valid_values:
-                        return False, "Recipe's %s option has an invalid value: [%s]" % (option, unfiltered_val)
-                local_option = filtered_val
+        unfiltered_val = var_src.values[0]
+        filtered_val = value_filter_function(unfiltered_val)
+
+        if valid_values is not None:
+            if not filtered_val in valid_values:
+                return False, "Recipe's %s option has an invalid value: [%s]" % (var_src.name, unfiltered_val)
+        local_option = filtered_val
 
         return True, local_option
 
@@ -478,29 +469,39 @@ class RecipeProcessor:
         local_signal_delay = None
         local_execution_delay = None
 
-        # early abort option
-        v, r = self._get_launch_options_helper(dsl, "early-abort", [True, False], _lowercase_bool_option_value_filter)
-        if not v:
-            return False, r
-        local_early_abort = r
+        for var in self.entrypoint_context_cache:
 
-        # time delay option
-        v, r = self._get_launch_options_helper(dsl, "time-delay", None, _lowercase_str_option_value_filter)
-        if not v:
-            return False, r
-        local_time_delay = r
+            if var.variable.name == "early-abort":
 
-        # signal delay option
-        v, r = self._get_launch_options_helper(dsl, "signal-delay", None, _lowercase_str_option_value_filter)
-        if not v:
-            return False, r
-        local_signal_delay = r
+                # early abort option
+                v, r = self._get_launch_options_helper(local_early_abort, var.variable, [True, False], _lowercase_bool_option_value_filter)
+                if not v:
+                    return False, r
+                local_early_abort = r
 
-        # execution delay option
-        v, r = self._get_launch_options_helper(dsl, "execution-delay", None, _lowercase_str_option_value_filter)
-        if not v:
-            return False, r
-        local_execution_delay = r
+            elif var.variable.name == "time-delay":
+
+                # time delay option
+                v, r = self._get_launch_options_helper(local_time_delay, var.variable, None, _lowercase_str_option_value_filter)
+                if not v:
+                    return False, r
+                local_time_delay = r
+
+            elif var.variable.name == "signal-delay":
+
+                # signal delay option
+                v, r = self._get_launch_options_helper(local_signal_delay, var.variable, None, _lowercase_str_option_value_filter)
+                if not v:
+                    return False, r
+                local_signal_delay = r
+
+            elif var.variable.name == "execution-delay":
+
+                # execution delay option
+                v, r = self._get_launch_options_helper(local_execution_delay, var.variable, None, _lowercase_str_option_value_filter)
+                if not v:
+                    return False, r
+                local_execution_delay = r
 
         return True, launch_jobs.RunOptions(early_abort = local_early_abort, time_delay = local_time_delay, signal_delay = local_signal_delay, execution_delay = local_execution_delay)
 
