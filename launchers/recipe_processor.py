@@ -163,7 +163,7 @@ def _convert_dsl_opts_into_py_map(options):
             result[o.name] = o.values
     return result
 
-def _get_plugins_path(namespace = None):
+def _get_scripts_path(namespace = None):
 
     full_path = ""
 
@@ -199,7 +199,7 @@ def _get_task_instance(task_script, namespace = None):
 
 def _get_task_instance_delegate(task_script, namespace):
 
-    v, r = _get_plugins_path(namespace)
+    v, r = _get_scripts_path(namespace)
     if not v:
         return False, r
     script_base_path = r
@@ -222,37 +222,22 @@ def _get_task_instance_delegate(task_script, namespace):
 
     return True, mod.CustomTask
 
-def _get_job_instance(job_name, custom_job_impl, direct_job_script, namespace):
+def _get_job_instance(job_script, namespace = None):
 
     if namespace is None:
-        return _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, None)
+        return _get_job_instance_delegate(job_script, None)
 
     if namespace[1]: # exclusive mode - only the custom namespace is tried
-        return _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, namespace[0])
+        return _get_job_instance_delegate(job_script, namespace[0])
     else: # inclusive mode - first the built-in namespace is tried, and if that fails, then the custom namespace is tried
-        v, r = _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, None)
+        v, r = _get_job_instance_delegate(job_script, None)
         if not v:
-            return _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, namespace[0])
+            return _get_job_instance_delegate(job_script, namespace[0])
         return v, r
 
-def _get_job_instance_delegate(job_name, custom_job_impl, direct_job_script, namespace):
+def _get_job_instance_delegate(job_script, namespace):
 
-    job_script = None
-
-    if job_name is None and custom_job_impl is None and direct_job_script is None:
-        return True, standard_job.StandardJob
-    elif job_name is None and custom_job_impl is None and direct_job_script is not None: # main job
-        job_script = direct_job_script
-    elif job_name is not None and custom_job_impl is not None and direct_job_script is None: # regular jobs
-        if not job_name in custom_job_impl:
-            return True, standard_job.StandardJob
-        job_script = custom_job_impl[job_name]
-
-    return _get_job_instance_internal(job_script, namespace)
-
-def _get_job_instance_internal(job_script, namespace):
-
-    v, r = _get_plugins_path(namespace)
+    v, r = _get_scripts_path(namespace)
     if not v:
         return False, r
     script_base_path = r
@@ -391,12 +376,18 @@ class RecipeProcessor:
                 if len(var.variable.values) > 1:
                     return False, "A custom implementation for the main job, when specified, must be given as a single value."
 
+                    # instantiate main job with custom implementation
+                    v, r = _get_job_instance(var.variable.values[0], self.namespace)
+                    if not v:
+                        return False, r
+                    main_job = r()
+
             elif var.variable.name == "job":
 
                 if main_job is None:
 
                     # instantiate main job
-                    v, r = _get_job_instance(None, None, None, self.namespace) # mvtodo
+                    v, r = _get_job_instance(None, self.namespace) # mvtodo
                     if not v:
                         return False, r
                     main_job = r()
@@ -407,7 +398,7 @@ class RecipeProcessor:
                         return False, "Invalid job name: [%s]" % vals
 
                     # instantiate new/current job
-                    v, r = _get_job_instance(None, None, None, self.namespace) # mvtodo
+                    v, r = _get_job_instance(None, self.namespace) # mvtodo
                     if not v:
                         return False, r
                     target_job = r(vals[1:])
