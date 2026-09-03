@@ -346,7 +346,7 @@ class RecipeProcessor:
 
         return True, dsl
 
-    def __load_tasks_onto_job(self, dsl, source_ctx_name, target_job, namespace):
+    def __load_tasks_onto_job(self, dsl, source_ctx_name, target_job):
 
         # read out current job's task
         v, r = dsl.get_all_variables(source_ctx_name)
@@ -356,7 +356,7 @@ class RecipeProcessor:
 
         for new_task in source_tasks:
 
-            v, r = _get_task_instance(new_task.variable.values[0], namespace)
+            v, r = _get_task_instance(new_task.variable.values[0], self.namespace)
             if not v:
                 return False, r
             new_task = r(new_task.variable.name, _convert_dsl_opts_into_py_map(new_task.options))
@@ -368,7 +368,6 @@ class RecipeProcessor:
 
         entrypoint = "main" # mvtodo: for now, hardcoded
         job_entry = "job" # mvtodo: not-hardcoded?
-        namespace = self.namespace
         main_custom_job_impl = None # mvtodo: wire later
 
         # read out main/entrypoint metadata
@@ -378,7 +377,7 @@ class RecipeProcessor:
         main_contexts = r
 
         # instantiate main job
-        v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
+        v, r = _get_job_instance(None, None, main_custom_job_impl, self.namespace)
         if not v:
             return False, r
         main_job = r()
@@ -395,13 +394,13 @@ class RecipeProcessor:
                         return False, "Invalid job name: [%s]" % vals
 
                     # instantiate new/current job
-                    v, r = _get_job_instance(None, None, main_custom_job_impl, namespace)
+                    v, r = _get_job_instance(None, None, main_custom_job_impl, self.namespace)
                     if not v:
                         return False, r
                     target_job = r(vals[1:])
 
                     # load up tasks onto target_job
-                    v, r = self.__load_tasks_onto_job(dsl, vals[1:], target_job, namespace)
+                    v, r = self.__load_tasks_onto_job(dsl, vals[1:], target_job)
                     if not v:
                         return False, r
 
