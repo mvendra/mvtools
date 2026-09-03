@@ -379,11 +379,11 @@ class RecipeProcessor:
                 if len(var.variable.values) > 1:
                     return False, "A custom implementation for the main job, when specified, must be given as a single value."
 
-                    # instantiate main job with custom implementation
-                    v, r = _get_job_instance(var.variable.values[0], self.namespace)
-                    if not v:
-                        return False, r
-                    main_job = r()
+                # instantiate main job with custom implementation
+                v, r = _get_job_instance(var.variable.values[0], self.namespace)
+                if not v:
+                    return False, r
+                main_job = r()
 
             elif var.variable.name == "job":
 
