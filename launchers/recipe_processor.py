@@ -393,6 +393,18 @@ class RecipeProcessor:
                     return False, r
                 main_job = r()
 
+            elif var.variable.name == "namespace":
+
+                if len(var.variable.values) > 1:
+                    return False, "Only one custom namespace may be specified per entry."
+
+                namespace_mode = True # exclusive mode - the default
+                if _has_incl_opt(var.options):
+                    namespace_mode = False
+                self.namespace = (var.variable.values[0], namespace_mode)
+                if namespace_switch:
+                    print("%sWarning: the [--namespace] switch has been overridden by the recipe with value [%s {%s}]%s" % (terminal_colors.TTY_YELLOW, self.namespace[0], _translate_namespace_mode(self.namespace[1]), terminal_colors.get_standard_color()))
+
             elif var.variable.name == "job":
 
                 if main_job is None:
@@ -426,18 +438,6 @@ class RecipeProcessor:
                         return False, r
 
                     main_job.add_entry(target_job)
-
-            elif var.variable.name == "namespace":
-
-                if len(var.variable.values) > 1:
-                    return False, "Only one custom namespace may be specified per entry."
-
-                namespace_mode = True # exclusive mode - the default
-                if _has_incl_opt(var.options):
-                    namespace_mode = False
-                self.namespace = (var.variable.values[0], namespace_mode)
-                if namespace_switch:
-                    print("%sWarning: the [--namespace] switch has been overridden by the recipe with value [%s {%s}]%s" % (terminal_colors.TTY_YELLOW, self.namespace[0], _translate_namespace_mode(self.namespace[1]), terminal_colors.get_standard_color()))
 
         return True, main_job
 
