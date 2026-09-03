@@ -284,14 +284,14 @@ class RecipeProcessor:
         self.depth_tracker = 0
         self.entrypoint_context_cache = None
 
-    def test(self, requested_execution_name = None):
+    def test(self, entrypoint, requested_execution_name = None):
 
         v, r = self._bootstrap_dsl_object()
         if not v:
             return False, r
         dsl = r
 
-        v, r = self._build_jobtree_from_dsl(dsl)
+        v, r = self._build_jobtree_from_dsl(dsl, entrypoint)
         if not v:
             return False, r
         jobs = r
@@ -318,9 +318,9 @@ class RecipeProcessor:
 
         return True, (jobs, options, exec_name)
 
-    def run(self, requested_execution_name = None):
+    def run(self, entrypoint, requested_execution_name = None):
 
-        v, r = self.test(requested_execution_name)
+        v, r = self.test(entrypoint, requested_execution_name)
         if not v:
             return False, r
 
@@ -369,11 +369,19 @@ class RecipeProcessor:
 
         return True, None
 
-    def _build_jobtree_from_dsl(self, dsl):
+    def _build_jobtree_from_dsl(self, dsl, entrypoint):
 
-        entrypoint = "main" # mvtodo: for now, hardcoded
+        if entrypoint is None:
+            entrypoint = "main"
         namespace_switch = self.namespace is not None
         main_job = None
+
+        # check entrypoint
+        v, r = dsl.has_context(entrypoint)
+        if not v:
+            return False, r
+        if not r:
+            return False, "Entrypoint context [%s] cannot be found." % entrypoint
 
         # read out main/entrypoint metadata
         v, r = dsl.get_all_variables(entrypoint)
@@ -574,20 +582,20 @@ class RecipeProcessor:
 
         return True, local_exec_name
 
-def test_jobs_from_recipe_file(recipe_file, execution_name = None, namespace = None, requested_options = None):
+def test_jobs_from_recipe_file(recipe_file, entrypoint = None, execution_name = None, namespace = None, requested_options = None):
     recipe_processor = RecipeProcessor(recipe_file, namespace, requested_options)
-    return recipe_processor.test(execution_name)
+    return recipe_processor.test(entrypoint, execution_name)
 
-def run_jobs_from_recipe_file(recipe_file, execution_name = None, namespace = None, requested_options = None):
+def run_jobs_from_recipe_file(recipe_file, entrypoint = None, execution_name = None, namespace = None, requested_options = None):
     recipe_processor = RecipeProcessor(recipe_file, namespace, requested_options)
-    return recipe_processor.run(execution_name)
+    return recipe_processor.run(entrypoint, execution_name)
 
 def assemble_requested_options(_early_abort, _time_delay, _signal_delay, _execution_delay):
     return launch_jobs.RunOptions(early_abort = _early_abort, time_delay = _time_delay, signal_delay = _signal_delay, execution_delay = _execution_delay)
 
-def menu_test_recipe(recipe_file, execution_name, namespace, requested_options):
+def menu_test_recipe(recipe_file, entrypoint, execution_name, namespace, requested_options):
 
-    v, r = test_jobs_from_recipe_file(recipe_file, execution_name, namespace, requested_options)
+    v, r = test_jobs_from_recipe_file(recipe_file, entrypoint, execution_name, namespace, requested_options)
     if not v:
         err_msg = r
         if len(err_msg) == 1:
@@ -596,9 +604,9 @@ def menu_test_recipe(recipe_file, execution_name, namespace, requested_options):
     else:
         print("%sTesting of recipe [%s] succeeded.%s" % (terminal_colors.TTY_GREEN, recipe_file, terminal_colors.get_standard_color()))
 
-def menu_run_recipe(recipe_file, execution_name, namespace, requested_options):
+def menu_run_recipe(recipe_file, entrypoint, execution_name, namespace, requested_options):
 
-    v, r = run_jobs_from_recipe_file(recipe_file, execution_name, namespace, requested_options)
+    v, r = run_jobs_from_recipe_file(recipe_file, entrypoint, execution_name, namespace, requested_options)
     if not v:
         print("%sExecution of recipe [%s] failed: [%s]%s" % (terminal_colors.TTY_RED, recipe_file, r, terminal_colors.get_standard_color()))
         sys.exit(ERROR_CODE_HARD_FAIL)
@@ -609,7 +617,7 @@ def menu_run_recipe(recipe_file, execution_name, namespace, requested_options):
     sys.exit(ERROR_CODE_NONE)
 
 def puaq(selfhelp):
-    print("Usage: %s [--help] [--test recipe.t20 | --run recipe.t20] --execution-name the-execution-name --namespace the-namespace --namespace-mode inclusive/exclusive --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
+    print("Usage: %s [--help] [--test recipe.t20 | --run recipe.t20] --entrypoint the-recipe-entrypoint-context --execution-name the-execution-name --namespace the-namespace --namespace-mode inclusive/exclusive --early-abort yes/no --time-delay the-time-delay --signal-delay the-signal-delay --execution-delay the-execution-delay" % path_utils.basename_filtered(__file__))
     if selfhelp:
         sys.exit(ERROR_CODE_NONE)
     else:
@@ -624,9 +632,12 @@ if __name__ == "__main__":
     if len(params) < 2:
         puaq(False)
 
+    # recipe_processor options
     operation = None
     recipe_next = False
     recipe_file = None
+    entrypoint_next = False
+    entrypoint = None
 
     # launch_jobs options
     execution_name = None
@@ -649,6 +660,11 @@ if __name__ == "__main__":
         if recipe_next:
             recipe_next = False
             recipe_file = p
+            continue
+
+        if entrypoint_next:
+            entrypoint_next = False
+            entrypoint = p
             continue
 
         if execution_name_next:
@@ -710,6 +726,8 @@ if __name__ == "__main__":
                 sys.exit(ERROR_CODE_INPUT)
             operation = "run"
             recipe_next = True
+        elif p == "--entrypoint":
+            entrypoint_next = True
         elif p == "--execution-name":
             execution_name_next = True
         elif p == "--namespace":
@@ -734,9 +752,9 @@ if __name__ == "__main__":
         namespace = (namespace, namespace_mode)
 
     if operation == "test":
-        menu_test_recipe(recipe_file, execution_name, namespace, req_opts)
+        menu_test_recipe(recipe_file, entrypoint, execution_name, namespace, req_opts)
     elif operation == "run":
-        menu_run_recipe(recipe_file, execution_name, namespace, req_opts)
+        menu_run_recipe(recipe_file, entrypoint, execution_name, namespace, req_opts)
     else:
         print("Invalid operation: [%s]" % operation)
         sys.exit(ERROR_CODE_INPUT)
