@@ -129,8 +129,8 @@ def _get_custom_job_from_opts_and_leftovers_as_params(opts):
         if o.name == "impl":
             if len(o.values) != 1:
                 return False, "A custom job implementation, when used, must be specified with a single value."
-            return True, o.values[0]
-    return True, None
+            return True, (o.values[0], {})
+    return True, (None, {})
 
 def _has_incl_opt(opts):
     for o in opts:
@@ -421,7 +421,7 @@ class RecipeProcessor:
                 v, r = _get_custom_job_from_opts_and_leftovers_as_params(var.options)
                 if not v:
                     return False, r
-                job_impl_to_use = r
+                job_impl_to_use, job_params = r
 
                 for vals in var.variable.values:
 
@@ -432,7 +432,7 @@ class RecipeProcessor:
                     v, r = _get_job_instance(job_impl_to_use, self.namespace)
                     if not v:
                         return False, r
-                    target_job = r(vals[1:])
+                    target_job = r(vals[1:], job_params)
 
                     # load up tasks onto target_job
                     v, r = self.__load_tasks_onto_job(dsl, vals[1:], target_job)
