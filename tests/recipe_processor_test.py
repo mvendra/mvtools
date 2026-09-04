@@ -199,7 +199,7 @@ class RecipeProcessorTest(unittest.TestCase):
         recipe_test_contents7 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents7 += "* job = \"@test-job\"\n"
         recipe_test_contents7 += "]\n"
-        recipe_test_contents7 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
+        recipe_test_contents7 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
         self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
 
@@ -207,7 +207,7 @@ class RecipeProcessorTest(unittest.TestCase):
         recipe_test_contents8 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents8 += "* job = \"@test-job\"\n"
         recipe_test_contents8 += "]\n"
-        recipe_test_contents8 += "[\n@test-job\n* task1 {test} = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
+        recipe_test_contents8 += "[\n@test-job {test}\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_params_script_file_namespace1)
         self.recipe_test_file8 = path_utils.concat_path(self.test_dir, "recipe_test8.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file8, recipe_test_contents8)
 
@@ -474,12 +474,12 @@ class RecipeProcessorTest(unittest.TestCase):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file6)
         self.assertFalse(v)
 
-    def testRecipeProcessorCustomNamespaceCustomJobParams(self):
+    def testRecipeProcessorCustomNamespaceCustomTaskParams(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file7)
         self.assertTrue(v)
         self.assertFalse(r)
 
-    def testRecipeProcessorCustomNamespaceCustomTaskParams(self):
+    def testRecipeProcessorCustomNamespaceCustomTaskParamsInheritedFromCtx(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file8)
         self.assertTrue(v)
         self.assertFalse(r)
