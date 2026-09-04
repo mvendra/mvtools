@@ -55,10 +55,10 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_job_script_contents += "        if len(self.entries_list) % 2 == 0:\n"
         sample_custom_job_script_contents += "            return True, None\n"
         sample_custom_job_script_contents += "        return False, None\n"
-        self.sample_custom_job_script_file_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_job.py")
-        self.sample_custom_job_script_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_job.py")
-        create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace1, sample_custom_job_script_contents)
-        create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace2, sample_custom_job_script_contents)
+        self.sample_custom_job_script_file1_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_job.py")
+        self.sample_custom_job_script_file1_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_job.py")
+        create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace1, sample_custom_job_script_contents)
+        create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace2, sample_custom_job_script_contents)
 
         sample_custom_echo_true_script_contents = "#!/usr/bin/env python\n\n"
         sample_custom_echo_true_script_contents += "import launch_jobs\n\n"
@@ -382,7 +382,7 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents27 = "[\n@main\n"
         recipe_test_contents27 += "* namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents27 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
+        recipe_test_contents27 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents27 += "]\n"
         recipe_test_contents27 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
         self.recipe_test_file27 = path_utils.concat_path(self.test_dir, "recipe_test27.t20")
@@ -390,7 +390,7 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents28 = "[\n@main\n"
         recipe_test_contents28 += "* namespace = \"%s\"\n" % self.namespace2
-        recipe_test_contents28 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
+        recipe_test_contents28 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents28 += "]\n"
         recipe_test_contents28 += "[\n@test-job\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
         self.recipe_test_file28 = path_utils.concat_path(self.test_dir, "recipe_test28.t20")
@@ -398,7 +398,7 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents29 = "[\n@main\n"
         recipe_test_contents29 += "* namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents29 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
+        recipe_test_contents29 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents29 += "* job = \"@test-job1\"\n"
         recipe_test_contents29 += "* job = \"@test-job2\"\n"
         recipe_test_contents29 += "]\n"
@@ -409,7 +409,7 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents30 = "[\n@main\n"
         recipe_test_contents30 += "* namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents30 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
+        recipe_test_contents30 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents30 += "* job = \"@test-job1\"\n"
         recipe_test_contents30 += "]\n"
         recipe_test_contents30 += "[\n@test-job1\n* task1 = \"%s\"\n]\n" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
@@ -418,8 +418,8 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents31 = "[\n@main\n"
         recipe_test_contents31 += "* namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
-        recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace2)
+        recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
+        recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace2)
         recipe_test_contents31 += "* job = \"@test-job1\"\n"
         recipe_test_contents31 += "* job = \"@test-job2\"\n"
         recipe_test_contents31 += "]\n"
@@ -430,7 +430,7 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents32 = "[\n@main\n"
         recipe_test_contents32 += "* namespace = \"%s\"\n" % self.namespace1
-        recipe_test_contents32 += "* main-job-impl = (\"%s\", \"%s\")\n" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_job_script_file_namespace2))
+        recipe_test_contents32 += "* main-job-impl = (\"%s\", \"%s\")\n" % (path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1), path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace2))
         recipe_test_contents32 += "* job = \"@test-job1\"\n"
         recipe_test_contents32 += "* job = \"@test-job2\"\n"
         recipe_test_contents32 += "]\n"
