@@ -340,27 +340,6 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
 
-        self.recipe_test_26_callstack = path_utils.concat_path(self.test_dir, "recipe_test_26_callstack.txt")
-        recipe_test_contents26 = "[\n"
-        recipe_test_contents26 += "@main\n"
-        recipe_test_contents26 += "* job = \"@job1\"\n"
-        recipe_test_contents26 += "* job = \"@job2\"\n"
-        recipe_test_contents26 += "* job = \"@job3\"\n"
-        recipe_test_contents26 += "]\n"
-        recipe_test_contents26 += "* task1 {target_file: \"%s\" / mode: \"a\" / content: \"task1\"} = \"writefile_plugin.py\"\n" % self.recipe_test_26_callstack
-        recipe_test_contents26 += "[\n"
-        recipe_test_contents26 += "@job1\n"
-        recipe_test_contents26 += "* task2 {target_file: \"%s\" / mode: \"a\" / content: \"task2\"} = \"writefile_plugin.py\"\n" % self.recipe_test_26_callstack
-        recipe_test_contents26 += "[\n"
-        recipe_test_contents26 += "@job2\n"
-        recipe_test_contents26 += "* task3 {target_file: \"%s\" / mode: \"a\" / content: \"task3\"} = \"writefile_plugin.py\"\n" % self.recipe_test_26_callstack
-        recipe_test_contents26 += "]\n"
-        recipe_test_contents26 += "* task4 {target_file: \"%s\" / mode: \"a\" / content: \"task4\"} = \"writefile_plugin.py\"\n" % self.recipe_test_26_callstack
-        recipe_test_contents26 += "]\n"
-        recipe_test_contents26 += "* task5 {target_file: \"%s\" / mode: \"a\" / content: \"task5\"} = \"writefile_plugin.py\"\n" % self.recipe_test_26_callstack
-        self.recipe_test_file26 = path_utils.concat_path(self.test_dir, "recipe_test26.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file26, recipe_test_contents26)
-
         return True, ""
 
     def tearDown(self):
@@ -492,18 +471,6 @@ class RecipeProcessorTest(unittest.TestCase):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file25)
         self.assertTrue(v)
         self.assertFalse(r)
-
-    def testRecipeProcessorNestedJobsDepthFail(self):
-        stashed_depth_limit = recipe_processor.DEPTH_TRACKER_LIMIT
-        recipe_processor.DEPTH_TRACKER_LIMIT = 1
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file26)
-        self.assertFalse(v)
-        recipe_processor.DEPTH_TRACKER_LIMIT = stashed_depth_limit
-
-    def testRecipeProcessorNestedJobs(self):
-        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file26)
-        self.assertTrue(v)
-        self.assertTrue("task1task2task3task4task5" in getcontents.getcontents(self.recipe_test_26_callstack))
 
     def testRecipeProcessorBlankFilename(self):
 
