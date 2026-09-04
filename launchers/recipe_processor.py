@@ -168,12 +168,16 @@ def _convert_dsl_opts_into_py_map(options):
     return result
 
 def _get_custom_job_from_opts_and_leftovers_as_params(opts):
+    custom_impl = None
+    param_map = {}
     for o in opts:
         if o.name == "impl":
             if len(o.values) != 1:
                 return False, "A custom job implementation, when used, must be specified with a single value."
-            return True, (o.values[0], {})
-    return True, (None, {})
+            custom_impl = o.values[0]
+        else:
+            param_map[o.name] = _convert_opt_values_to_param_values(o.values)
+    return True, (custom_impl, param_map)
 
 def _get_scripts_path(namespace = None):
 
