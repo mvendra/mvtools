@@ -396,7 +396,8 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorDoubleCustomNamespace(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file11)
-        self.assertFalse(v)
+        self.assertTrue(v)
+        self.assertFalse(r)
 
     def testRecipeProcessorCustomExecutionName1(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file12)
