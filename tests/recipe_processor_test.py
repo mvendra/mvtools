@@ -148,10 +148,10 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace1, sample_custom_job_script_contents)
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file_namespace2, sample_custom_job_script_contents)
 
-        recipe_test_contents1 = "[\n@main\n* job = \"@test-job\"\n]\n"
-        recipe_test_contents1 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_contents1 = "[\n@main\n* job = \"@test-job\"\n]\n"
+        self.recipe_test_contents1 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
-        create_and_write_file.create_file_contents(self.recipe_test_file1, recipe_test_contents1)
+        create_and_write_file.create_file_contents(self.recipe_test_file1, self.recipe_test_contents1)
 
         recipe_test_contents2 = "[\n@main\n* job = \"@test-job\"\n]\n"
         recipe_test_contents2 += "[\n@test-job\n* task1 = \"nonexistent.py\"\n]"
