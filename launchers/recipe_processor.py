@@ -160,16 +160,19 @@ def _conditional_write(source1, source2):
         return source2
     return source1
 
+def _convert_opt_values_to_param_values(input_opt_value):
+    # backwards compatibility (towards plugins)
+    if len(input_opt_value) == 0:
+        return None
+    elif len(input_opt_value) == 1:
+        return input_opt_value[0]
+    else:
+        return input_opt_value
+
 def _convert_dsl_opts_into_py_map(options):
     result = {}
     for o in options:
-        # backwards compatibility (towards plugins)
-        if len(o.values) == 0:
-            result[o.name] = None
-        elif len(o.values) == 1:
-            result[o.name] = o.values[0]
-        else:
-            result[o.name] = o.values
+        result[o.name] = _convert_opt_values_to_param_values(o.values)
     return result
 
 def _get_scripts_path(namespace = None):
