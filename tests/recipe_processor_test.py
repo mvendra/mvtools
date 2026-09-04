@@ -352,6 +352,17 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
 
+        recipe_test_contents26 = "[\n@main\n"
+        recipe_test_contents26 += "* job = \"@test-job1\"\n"
+        recipe_test_contents26 += "]\n"
+        recipe_test_contents26 += "[\n@custom-entrypoint\n"
+        recipe_test_contents26 += "* job = \"@test-job2\"\n"
+        recipe_test_contents26 += "]\n"
+        recipe_test_contents26 += "[\n@test-job1\n* task1 = \"sample_echo_false_plugin.py\"\n]\n"
+        recipe_test_contents26 += "[\n@test-job2\n* task2 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file26 = path_utils.concat_path(self.test_dir, "recipe_test26.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file26, recipe_test_contents26)
+
         return True, ""
 
     def tearDown(self):
@@ -499,6 +510,11 @@ class RecipeProcessorTest(unittest.TestCase):
 
         v, r = recipe_processor.run_jobs_from_recipe_file(blanksub_blankfile)
         self.assertTrue(v)
+
+    def testRecipeProcessorCustomEntrypoint1(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file26, "custom-entrypoint")
+        self.assertTrue(v)
+        self.assertFalse(r)
 
 if __name__ == "__main__":
     unittest.main()
