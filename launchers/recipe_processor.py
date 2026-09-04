@@ -124,7 +124,7 @@ ERROR_CODE_HARD_FAIL = 3
 # ]
 #
 
-def _get_custom_job_from_opts(opts):
+def _get_custom_job_from_opts_and_leftovers_as_params(opts):
     for o in opts:
         if o.name == "impl":
             if len(o.values) != 1:
@@ -418,7 +418,7 @@ class RecipeProcessor:
                     main_job = r()
 
                 # select sub job implementation
-                v, r = _get_custom_job_from_opts(var.options)
+                v, r = _get_custom_job_from_opts_and_leftovers_as_params(var.options)
                 if not v:
                     return False, r
                 job_impl_to_use = r
