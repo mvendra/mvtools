@@ -416,6 +416,29 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file30 = path_utils.concat_path(self.test_dir, "recipe_test30.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file30, recipe_test_contents30)
 
+        recipe_test_contents31 = "[\n@main\n"
+        recipe_test_contents31 += "* namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1)
+        recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file_namespace2)
+        recipe_test_contents31 += "* job = \"@test-job1\"\n"
+        recipe_test_contents31 += "* job = \"@test-job2\"\n"
+        recipe_test_contents31 += "]\n"
+        recipe_test_contents31 += "[\n@test-job1\n* task1 = \"%s\"\n]\n" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
+        recipe_test_contents31 += "[\n@test-job2\n* task1 = \"%s\"\n]\n" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
+        self.recipe_test_file31 = path_utils.concat_path(self.test_dir, "recipe_test31.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file31, recipe_test_contents31)
+
+        recipe_test_contents32 = "[\n@main\n"
+        recipe_test_contents32 += "* namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents32 += "* main-job-impl = (\"%s\", \"%s\")\n" % (path_utils.basename_filtered(self.sample_custom_job_script_file_namespace1), path_utils.basename_filtered(self.sample_custom_job_script_file_namespace2))
+        recipe_test_contents32 += "* job = \"@test-job1\"\n"
+        recipe_test_contents32 += "* job = \"@test-job2\"\n"
+        recipe_test_contents32 += "]\n"
+        recipe_test_contents32 += "[\n@test-job1\n* task1 = \"%s\"\n]\n" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
+        recipe_test_contents32 += "[\n@test-job2\n* task1 = \"%s\"\n]\n" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
+        self.recipe_test_file32 = path_utils.concat_path(self.test_dir, "recipe_test32.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file32, recipe_test_contents32)
+
         return True, ""
 
     def tearDown(self):
@@ -585,6 +608,14 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorCustomMainJobCustomNamespace1Fails(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file30)
+        self.assertFalse(v)
+
+    def testRecipeProcessorCustomMainJobCustomNamespace2Fails(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file31)
+        self.assertFalse(v)
+
+    def testRecipeProcessorCustomMainJobCustomNamespace3Fails(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file32)
         self.assertFalse(v)
 
 if __name__ == "__main__":

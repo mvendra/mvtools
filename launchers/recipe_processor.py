@@ -384,7 +384,7 @@ class RecipeProcessor:
             if var.variable.name == "main-job-impl":
 
                 if main_job is not None:
-                    return False, "A custom implementation for the main job, when specified, must precede any job definitions in the entrypoint (main job)."
+                    return False, "A custom implementation for the main job, when specified, must precede any job definitions in the entrypoint (main job), and only be defined once."
 
                 if len(var.variable.values) != 1:
                     return False, "A custom implementation for the main job, when specified, must be given as a single value."
