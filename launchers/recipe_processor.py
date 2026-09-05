@@ -373,6 +373,34 @@ class RecipeProcessor:
 
         return True, None
 
+    def __load_new_job(self, dsl, source_var, parent_job):
+
+        # select sub job implementation
+        v, r = _get_custom_job_from_opts_and_leftovers_as_params(source_var.options)
+        if not v:
+            return False, r
+        job_impl_to_use, job_params = r
+
+        for vals in source_var.variable.values:
+
+            if not len(vals) > 1:
+                return False, "Invalid job name: [%s]" % vals
+
+            # instantiate new/current job
+            v, r = _get_job_instance(job_impl_to_use, self.namespace)
+            if not v:
+                return False, r
+            new_job = r(vals[1:], job_params)
+
+            # load up tasks onto the new job
+            v, r = self.__load_tasks_onto_job(dsl, vals[1:], new_job)
+            if not v:
+                return False, r
+
+            parent_job.add_entry(new_job)
+
+        return True, None
+
     def _build_jobtree_from_dsl(self, dsl, entrypoint):
 
         if entrypoint is None:
@@ -424,29 +452,9 @@ class RecipeProcessor:
                         return False, r
                     main_job = r()
 
-                # select sub job implementation
-                v, r = _get_custom_job_from_opts_and_leftovers_as_params(var.options)
+                v, r = self.__load_new_job(dsl, var, main_job)
                 if not v:
                     return False, r
-                job_impl_to_use, job_params = r
-
-                for vals in var.variable.values:
-
-                    if not len(vals) > 1:
-                        return False, "Invalid job name: [%s]" % vals
-
-                    # instantiate new/current job
-                    v, r = _get_job_instance(job_impl_to_use, self.namespace)
-                    if not v:
-                        return False, r
-                    target_job = r(vals[1:], job_params)
-
-                    # load up tasks onto target_job
-                    v, r = self.__load_tasks_onto_job(dsl, vals[1:], target_job)
-                    if not v:
-                        return False, r
-
-                    main_job.add_entry(target_job)
 
         return True, main_job
 
