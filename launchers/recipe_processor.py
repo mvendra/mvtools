@@ -447,9 +447,7 @@ class RecipeProcessor:
 
             elif var.variable.name == "job":
 
-                if main_job is None:
-
-                    # instantiate main job
+                if main_job is None: # instantiate main job with the default if needed
                     v, r = _get_job_instance(None, self.namespace)
                     if not v:
                         return False, r
