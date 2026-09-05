@@ -55,8 +55,8 @@ class RecipeProcessorTest(unittest.TestCase):
         sample_custom_job_script_contents1 += "        if len(self.entries_list) % 2 == 0:\n"
         sample_custom_job_script_contents1 += "            return True, None\n"
         sample_custom_job_script_contents1 += "        return False, None\n"
-        self.sample_custom_job_script_file1_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_job.py")
-        self.sample_custom_job_script_file1_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_job.py")
+        self.sample_custom_job_script_file1_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_job1_1.py")
+        self.sample_custom_job_script_file1_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_job1_2.py")
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace1, sample_custom_job_script_contents1)
         create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace2, sample_custom_job_script_contents1)
 
@@ -390,7 +390,7 @@ class RecipeProcessorTest(unittest.TestCase):
 
         recipe_test_contents28 = "[\n@main\n"
         recipe_test_contents28 += "* namespace = \"%s\"\n" % self.namespace2
-        recipe_test_contents28 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
+        recipe_test_contents28 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace2)
         recipe_test_contents28 += "]\n"
         recipe_test_contents28 += "[\n@test-job\n* task1 = \"%s\"\n* task2 = \"%s\"\n]" % (path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2), path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace2))
         self.recipe_test_file28 = path_utils.concat_path(self.test_dir, "recipe_test28.t20")
