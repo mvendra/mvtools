@@ -503,6 +503,14 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file34 = path_utils.concat_path(self.test_dir, "recipe_test34.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file34, recipe_test_contents34)
 
+        recipe_test_contents35 = "[\n"
+        recipe_test_contents35 += "@main\n"
+        recipe_test_contents35 += "* job = \"test-job\"\n"
+        recipe_test_contents35 += "]\n"
+        recipe_test_contents35 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
+        self.recipe_test_file35 = path_utils.concat_path(self.test_dir, "recipe_test35.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file35, recipe_test_contents35)
+
         return True, ""
 
     def tearDown(self):
@@ -688,6 +696,10 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorCustomMainJobCustomParams(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file34)
+        self.assertFalse(v)
+
+    def testRecipeProcessorFailsInvalidValueName(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file35)
         self.assertFalse(v)
 
 if __name__ == "__main__":

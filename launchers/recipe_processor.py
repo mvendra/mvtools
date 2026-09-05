@@ -381,19 +381,22 @@ class RecipeProcessor:
             return False, r
         job_impl_to_use, job_params = r
 
-        for vals in source_var.variable.values:
+        for val in source_var.variable.values:
 
-            if not len(vals) > 1:
-                return False, "Invalid job name: [%s]" % vals
+            if not len(val) > 1:
+                return False, "Invalid job name: [%s]" % val
+
+            if not val[0] == "@":
+                return False, "Invalid job name (specified without prefixed @ sign: [%s]" % val
 
             # instantiate new/current job
             v, r = _get_job_instance(job_impl_to_use, self.namespace)
             if not v:
                 return False, r
-            new_job = r(vals[1:], job_params)
+            new_job = r(val[1:], job_params)
 
             # load up tasks onto the new job
-            v, r = self.__load_tasks_onto_job(dsl, vals[1:], new_job)
+            v, r = self.__load_tasks_onto_job(dsl, val[1:], new_job)
             if not v:
                 return False, r
 
