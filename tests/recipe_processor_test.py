@@ -162,28 +162,32 @@ class RecipeProcessorTest(unittest.TestCase):
         self.sample_echo_true_plugin_dupe_file_namespace2 = path_utils.concat_path(self.namespace2, "sample_echo_true_plugin.py")
         create_and_write_file.create_file_contents(self.sample_echo_true_plugin_dupe_file_namespace2, sample_echo_true_plugin_dupe_contents)
 
-        self.recipe_test_contents1 = "[\n@main\n"
+        self.recipe_test_contents1 = "[\n"
+        self.recipe_test_contents1 += "@main\n"
         self.recipe_test_contents1 += "* job = \"@test-job\"\n"
         self.recipe_test_contents1 += "]\n"
         self.recipe_test_contents1 += "[\n@test-job\n* task1 = \"sample_echo_true_plugin.py\"\n]"
         self.recipe_test_file1 = path_utils.concat_path(self.test_dir, "recipe_test1.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file1, self.recipe_test_contents1)
 
-        recipe_test_contents2 = "[\n@main\n"
+        recipe_test_contents2 = "[\n"
+        recipe_test_contents2 += "@main\n"
         recipe_test_contents2 += "* job = \"@test-job\"\n"
         recipe_test_contents2 += "]\n"
         recipe_test_contents2 += "[\n@test-job\n* task1 = \"nonexistent.py\"\n]"
         self.recipe_test_file2 = path_utils.concat_path(self.test_dir, "recipe_test2.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file2, recipe_test_contents2)
 
-        recipe_test_contents3 = "[\n@main\n"
+        recipe_test_contents3 = "[\n"
+        recipe_test_contents3 += "@main\n"
         recipe_test_contents3 += "* job = \"@test-job\"\n"
         recipe_test_contents3 += "]\n"
         recipe_test_contents3 += "[\n@test-job\n* task1 = \"sample_echo_false_plugin.py\"\n]"
         self.recipe_test_file3 = path_utils.concat_path(self.test_dir, "recipe_test3.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file3, recipe_test_contents3)
 
-        recipe_test_contents4 = "[\n@main\n"
+        recipe_test_contents4 = "[\n"
+        recipe_test_contents4 += "@main\n"
         recipe_test_contents4 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents4 += "* job = \"@test-job\"\n"
         recipe_test_contents4 += "]\n"
@@ -191,7 +195,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file4 = path_utils.concat_path(self.test_dir, "recipe_test4.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file4, recipe_test_contents4)
 
-        recipe_test_contents5 = "[\n@main\n"
+        recipe_test_contents5 = "[\n"
+        recipe_test_contents5 += "@main\n"
         recipe_test_contents5 += "* job = \"@test-job1\"\n"
         recipe_test_contents5 += "* job = \"@test-job2\"\n"
         recipe_test_contents5 += "]\n"
@@ -200,7 +205,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file5 = path_utils.concat_path(self.test_dir, "recipe_test5.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file5, recipe_test_contents5)
 
-        recipe_test_contents6 = "[\n@main\n"
+        recipe_test_contents6 = "[\n"
+        recipe_test_contents6 += "@main\n"
         recipe_test_contents6 += "* job = \"@test-job1\"\n"
         recipe_test_contents6 += "* job = \"@test-job2\"\n"
         recipe_test_contents6 += "]\n"
@@ -209,7 +215,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file6 = path_utils.concat_path(self.test_dir, "recipe_test6.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file6, recipe_test_contents6)
 
-        recipe_test_contents7 = "[\n@main\n"
+        recipe_test_contents7 = "[\n"
+        recipe_test_contents7 += "@main\n"
         recipe_test_contents7 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents7 += "* job = \"@test-job\"\n"
         recipe_test_contents7 += "]\n"
@@ -217,7 +224,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file7 = path_utils.concat_path(self.test_dir, "recipe_test7.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file7, recipe_test_contents7)
 
-        recipe_test_contents8 = "[\n@main\n"
+        recipe_test_contents8 = "[\n"
+        recipe_test_contents8 += "@main\n"
         recipe_test_contents8 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents8 += "* job = \"@test-job\"\n"
         recipe_test_contents8 += "]\n"
@@ -226,7 +234,8 @@ class RecipeProcessorTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.recipe_test_file8, recipe_test_contents8)
 
         self.recipe_test_9_callstack = path_utils.concat_path(self.test_dir, "recipe_test_9_callstack.txt")
-        recipe_test_contents9 = "[\n@main\n"
+        recipe_test_contents9 = "[\n"
+        recipe_test_contents9 += "@main\n"
         recipe_test_contents9 += "* early-abort = \"no\"\n"
         recipe_test_contents9 += "* job = \"@test-job-1\"\n"
         recipe_test_contents9 += "* job = \"@test-job-2\"\n"
@@ -241,7 +250,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file9 = path_utils.concat_path(self.test_dir, "recipe_test9.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file9, recipe_test_contents9)
 
-        recipe_test_contents10 = "[\n@main\n"
+        recipe_test_contents10 = "[\n"
+        recipe_test_contents10 += "@main\n"
         recipe_test_contents10 += "* early-abort = \"yes\"\n"
         recipe_test_contents10 += "* early-abort = \"no\"\n"
         recipe_test_contents10 += "* job = \"@test-job-1\"\n"
@@ -252,7 +262,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file10 = path_utils.concat_path(self.test_dir, "recipe_test10.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file10, recipe_test_contents10)
 
-        recipe_test_contents11 = "[\n@main\n"
+        recipe_test_contents11 = "[\n"
+        recipe_test_contents11 += "@main\n"
         recipe_test_contents11 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents11 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents11 += "* job = \"@test-job\"\n"
@@ -261,7 +272,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file11 = path_utils.concat_path(self.test_dir, "recipe_test11.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file11, recipe_test_contents11)
 
-        recipe_test_contents12 = "[\n@main\n"
+        recipe_test_contents12 = "[\n"
+        recipe_test_contents12 += "@main\n"
         recipe_test_contents12 += "* execution-name = \"test-exec-name\"\n"
         recipe_test_contents12 += "* job = \"@test-job\"\n"
         recipe_test_contents12 += "]\n"
@@ -269,7 +281,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file12 = path_utils.concat_path(self.test_dir, "recipe_test12.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file12, recipe_test_contents12)
 
-        recipe_test_contents13 = "[\n@main\n"
+        recipe_test_contents13 = "[\n"
+        recipe_test_contents13 += "@main\n"
         recipe_test_contents13 += "* execution-name = \"test-exec-name1\"\n"
         recipe_test_contents13 += "* execution-name = \"test-exec-name2\"\n"
         recipe_test_contents13 += "* job = \"@test-job\"\n"
@@ -278,7 +291,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file13 = path_utils.concat_path(self.test_dir, "recipe_test13.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file13, recipe_test_contents13)
 
-        recipe_test_contents14 = "[\n@main\n"
+        recipe_test_contents14 = "[\n"
+        recipe_test_contents14 += "@main\n"
         recipe_test_contents14 += "* time-delay = \"2s\"\n"
         recipe_test_contents14 += "* job = \"@test-job\"\n"
         recipe_test_contents14 += "]\n"
@@ -286,7 +300,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file14 = path_utils.concat_path(self.test_dir, "recipe_test14.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file14, recipe_test_contents14)
 
-        recipe_test_contents15 = "[\n@main\n"
+        recipe_test_contents15 = "[\n"
+        recipe_test_contents15 += "@main\n"
         recipe_test_contents15 += "* time-delay = \"2s\"\n"
         recipe_test_contents15 += "* time-delay = \"3s\"\n"
         recipe_test_contents15 += "* job = \"@test-job\"\n"
@@ -295,7 +310,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file15 = path_utils.concat_path(self.test_dir, "recipe_test15.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file15, recipe_test_contents15)
 
-        recipe_test_contents16 = "[\n@main\n"
+        recipe_test_contents16 = "[\n"
+        recipe_test_contents16 += "@main\n"
         recipe_test_contents16 += "* signal-delay = \"test-signal\"\n"
         recipe_test_contents16 += "* job = \"@test-job\"\n"
         recipe_test_contents16 += "]\n"
@@ -303,7 +319,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file16 = path_utils.concat_path(self.test_dir, "recipe_test16.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file16, recipe_test_contents16)
 
-        recipe_test_contents17 = "[\n@main\n"
+        recipe_test_contents17 = "[\n"
+        recipe_test_contents17 += "@main\n"
         recipe_test_contents17 += "* signal-delay = \"test-signal1\"\n"
         recipe_test_contents17 += "* signal-delay = \"test-signal2\"\n"
         recipe_test_contents17 += "* job = \"@test-job\"\n"
@@ -312,7 +329,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file17 = path_utils.concat_path(self.test_dir, "recipe_test17.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file17, recipe_test_contents17)
 
-        recipe_test_contents18 = "[\n@main\n"
+        recipe_test_contents18 = "[\n"
+        recipe_test_contents18 += "@main\n"
         recipe_test_contents18 += "* execution-delay = \"test-exec-name\"\n"
         recipe_test_contents18 += "* job = \"@test-job\"\n"
         recipe_test_contents18 += "]\n"
@@ -320,7 +338,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file18 = path_utils.concat_path(self.test_dir, "recipe_test18.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file18, recipe_test_contents18)
 
-        recipe_test_contents19 = "[\n@main\n"
+        recipe_test_contents19 = "[\n"
+        recipe_test_contents19 += "@main\n"
         recipe_test_contents19 += "* execution-delay = \"test-exec1\"\n"
         recipe_test_contents19 += "* execution-delay = \"test-exec2\"\n"
         recipe_test_contents19 += "* job = \"@test-job\"\n"
@@ -329,7 +348,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file19 = path_utils.concat_path(self.test_dir, "recipe_test19.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file19, recipe_test_contents19)
 
-        recipe_test_contents20 = "[\n@main\n"
+        recipe_test_contents20 = "[\n"
+        recipe_test_contents20 += "@main\n"
         recipe_test_contents20 += "* namespace = \"%s\"\n" % self.test_dir
         recipe_test_contents20 += "* job = \"@test-job-1\"\n"
         recipe_test_contents20 += "* job = \"@test-job-2\"\n"
@@ -343,7 +363,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file20 = path_utils.concat_path(self.test_dir, "recipe_test20.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file20, recipe_test_contents20)
 
-        recipe_test_contents21 = "[\n@main\n"
+        recipe_test_contents21 = "[\n"
+        recipe_test_contents21 += "@main\n"
         recipe_test_contents21 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents21 += "* job = \"@test-job\"\n"
         recipe_test_contents21 += "]\n"
@@ -351,7 +372,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file21 = path_utils.concat_path(self.test_dir, "recipe_test21.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file21, recipe_test_contents21)
 
-        recipe_test_contents22 = "[\n@main\n"
+        recipe_test_contents22 = "[\n"
+        recipe_test_contents22 += "@main\n"
         recipe_test_contents22 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents22 += "* job = \"@test-job\"\n"
         recipe_test_contents22 += "]\n"
@@ -359,7 +381,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file22 = path_utils.concat_path(self.test_dir, "recipe_test22.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file22, recipe_test_contents22)
 
-        recipe_test_contents23 = "[\n@main\n"
+        recipe_test_contents23 = "[\n"
+        recipe_test_contents23 += "@main\n"
         recipe_test_contents23 += "* namespace {inclusive} = \"%s\"\n" % self.namespace2
         recipe_test_contents23 += "* job = \"@test-job\"\n"
         recipe_test_contents23 += "]\n"
@@ -367,7 +390,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file23 = path_utils.concat_path(self.test_dir, "recipe_test23.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file23, recipe_test_contents23)
 
-        recipe_test_contents24 = "[\n@main\n"
+        recipe_test_contents24 = "[\n"
+        recipe_test_contents24 += "@main\n"
         recipe_test_contents24 += "* namespace = \"%s\"\n" % self.namespace2
         recipe_test_contents24 += "* job = \"@test-job\"\n"
         recipe_test_contents24 += "]\n"
@@ -375,7 +399,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file24 = path_utils.concat_path(self.test_dir, "recipe_test24.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file24, recipe_test_contents24)
 
-        recipe_test_contents25 = "[\n@main\n"
+        recipe_test_contents25 = "[\n"
+        recipe_test_contents25 += "@main\n"
         recipe_test_contents25 += "* namespace = \"%s\"\n" % self.namespace2
         recipe_test_contents25 += "* job = \"@test-job\"\n"
         recipe_test_contents25 += "]\n"
@@ -383,7 +408,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file25 = path_utils.concat_path(self.test_dir, "recipe_test25.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file25, recipe_test_contents25)
 
-        recipe_test_contents26 = "[\n@main\n"
+        recipe_test_contents26 = "[\n"
+        recipe_test_contents26 += "@main\n"
         recipe_test_contents26 += "* job = \"@test-job1\"\n"
         recipe_test_contents26 += "]\n"
         recipe_test_contents26 += "[\n@custom-entrypoint\n"
@@ -394,7 +420,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file26 = path_utils.concat_path(self.test_dir, "recipe_test26.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file26, recipe_test_contents26)
 
-        recipe_test_contents27 = "[\n@main\n"
+        recipe_test_contents27 = "[\n"
+        recipe_test_contents27 += "@main\n"
         recipe_test_contents27 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents27 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents27 += "]\n"
@@ -402,7 +429,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file27 = path_utils.concat_path(self.test_dir, "recipe_test27.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file27, recipe_test_contents27)
 
-        recipe_test_contents28 = "[\n@main\n"
+        recipe_test_contents28 = "[\n"
+        recipe_test_contents28 += "@main\n"
         recipe_test_contents28 += "* namespace = \"%s\"\n" % self.namespace2
         recipe_test_contents28 += "* job {impl: \"%s\"} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace2)
         recipe_test_contents28 += "]\n"
@@ -410,7 +438,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file28 = path_utils.concat_path(self.test_dir, "recipe_test28.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file28, recipe_test_contents28)
 
-        recipe_test_contents29 = "[\n@main\n"
+        recipe_test_contents29 = "[\n"
+        recipe_test_contents29 += "@main\n"
         recipe_test_contents29 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents29 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents29 += "* job = \"@test-job1\"\n"
@@ -421,7 +450,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file29 = path_utils.concat_path(self.test_dir, "recipe_test29.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file29, recipe_test_contents29)
 
-        recipe_test_contents30 = "[\n@main\n"
+        recipe_test_contents30 = "[\n"
+        recipe_test_contents30 += "@main\n"
         recipe_test_contents30 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents30 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents30 += "* job = \"@test-job1\"\n"
@@ -430,7 +460,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file30 = path_utils.concat_path(self.test_dir, "recipe_test30.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file30, recipe_test_contents30)
 
-        recipe_test_contents31 = "[\n@main\n"
+        recipe_test_contents31 = "[\n"
+        recipe_test_contents31 += "@main\n"
         recipe_test_contents31 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1)
         recipe_test_contents31 += "* main-job-impl = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace2)
@@ -442,7 +473,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file31 = path_utils.concat_path(self.test_dir, "recipe_test31.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file31, recipe_test_contents31)
 
-        recipe_test_contents32 = "[\n@main\n"
+        recipe_test_contents32 = "[\n"
+        recipe_test_contents32 += "@main\n"
         recipe_test_contents32 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents32 += "* main-job-impl = (\"%s\", \"%s\")\n" % (path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace1), path_utils.basename_filtered(self.sample_custom_job_script_file1_namespace2))
         recipe_test_contents32 += "* job = \"@test-job1\"\n"
@@ -453,7 +485,8 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file32 = path_utils.concat_path(self.test_dir, "recipe_test32.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file32, recipe_test_contents32)
 
-        recipe_test_contents33 = "[\n@main\n"
+        recipe_test_contents33 = "[\n"
+        recipe_test_contents33 += "@main\n"
         recipe_test_contents33 += "* namespace = \"%s\"\n" % self.namespace1
         recipe_test_contents33 += "* job {impl: \"%s\" / test} = \"@test-job\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file2_namespace1)
         recipe_test_contents33 += "]\n"
