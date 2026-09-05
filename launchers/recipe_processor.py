@@ -361,14 +361,14 @@ class RecipeProcessor:
         v, r = dsl.get_all_variables(source_ctx_name)
         if not v:
             return False, r
-        source_tasks = r
+        source_entries = r
 
-        for new_task in source_tasks:
+        for entry in source_entries:
 
-            v, r = _get_task_instance(new_task.variable.values[0], self.namespace)
+            v, r = _get_task_instance(entry.variable.values[0], self.namespace)
             if not v:
                 return False, r
-            new_task = r(new_task.variable.name, _convert_dsl_opts_into_py_map(new_task.options))
+            new_task = r(entry.variable.name, _convert_dsl_opts_into_py_map(entry.options))
             target_job.add_entry(new_task)
 
         return True, None
