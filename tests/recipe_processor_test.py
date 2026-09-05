@@ -43,22 +43,22 @@ class RecipeProcessorTest(unittest.TestCase):
         self.namespace2 = path_utils.concat_path(self.test_dir, "namespace2")
         os.mkdir(self.namespace2)
 
-        sample_custom_job_script_contents = "#!/usr/bin/env python\n\n"
-        sample_custom_job_script_contents += "import launch_jobs\n\n"
-        sample_custom_job_script_contents += "class CustomJob(launch_jobs.BaseJob):\n"
-        sample_custom_job_script_contents += "    def get_desc(self):\n"
-        sample_custom_job_script_contents += "        return \"CustomJob\"\n"
-        sample_custom_job_script_contents += "    def add_entry(self, task):\n"
-        sample_custom_job_script_contents += "        self.entries_list.append(task)\n"
-        sample_custom_job_script_contents += "        return True, None\n"
-        sample_custom_job_script_contents += "    def run_job(self, feedback_object, execution_name=None, options=None):\n"
-        sample_custom_job_script_contents += "        if len(self.entries_list) % 2 == 0:\n"
-        sample_custom_job_script_contents += "            return True, None\n"
-        sample_custom_job_script_contents += "        return False, None\n"
+        sample_custom_job_script_contents1 = "#!/usr/bin/env python\n\n"
+        sample_custom_job_script_contents1 += "import launch_jobs\n\n"
+        sample_custom_job_script_contents1 += "class CustomJob(launch_jobs.BaseJob):\n"
+        sample_custom_job_script_contents1 += "    def get_desc(self):\n"
+        sample_custom_job_script_contents1 += "        return \"CustomJob\"\n"
+        sample_custom_job_script_contents1 += "    def add_entry(self, task):\n"
+        sample_custom_job_script_contents1 += "        self.entries_list.append(task)\n"
+        sample_custom_job_script_contents1 += "        return True, None\n"
+        sample_custom_job_script_contents1 += "    def run_job(self, feedback_object, execution_name=None, options=None):\n"
+        sample_custom_job_script_contents1 += "        if len(self.entries_list) % 2 == 0:\n"
+        sample_custom_job_script_contents1 += "            return True, None\n"
+        sample_custom_job_script_contents1 += "        return False, None\n"
         self.sample_custom_job_script_file1_namespace1 = path_utils.concat_path(self.namespace1, "sample_custom_job.py")
         self.sample_custom_job_script_file1_namespace2 = path_utils.concat_path(self.namespace2, "sample_custom_job.py")
-        create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace1, sample_custom_job_script_contents)
-        create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace2, sample_custom_job_script_contents)
+        create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace1, sample_custom_job_script_contents1)
+        create_and_write_file.create_file_contents(self.sample_custom_job_script_file1_namespace2, sample_custom_job_script_contents1)
 
         sample_custom_echo_true_script_contents = "#!/usr/bin/env python\n\n"
         sample_custom_echo_true_script_contents += "import launch_jobs\n\n"
