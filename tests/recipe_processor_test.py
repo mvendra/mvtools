@@ -522,6 +522,17 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file36 = path_utils.concat_path(self.test_dir, "recipe_test36.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file36, recipe_test_contents36)
 
+        recipe_test_contents37 = "[\n"
+        recipe_test_contents37 += "@main\n"
+        recipe_test_contents37 += "* job = \"@test-job\"\n"
+        recipe_test_contents37 += "]\n"
+        recipe_test_contents37 += "[\n"
+        recipe_test_contents37 += "@test-job\n"
+        recipe_test_contents37 += "* task1\n"
+        recipe_test_contents37 += "]"
+        self.recipe_test_file37 = path_utils.concat_path(self.test_dir, "recipe_test37.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file37, recipe_test_contents37)
+
         return True, ""
 
     def tearDown(self):
@@ -715,6 +726,10 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorFailsMultipleTaskValue(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file36)
+        self.assertFalse(v)
+
+    def testRecipeProcessorFailsNoTaskValue(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file37)
         self.assertFalse(v)
 
 if __name__ == "__main__":
