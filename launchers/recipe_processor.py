@@ -365,6 +365,9 @@ class RecipeProcessor:
 
         for entry in source_entries:
 
+            if len(entry.variable.values) != 1:
+                return False, "Invalid task source specification (must be a single value): [%s]" % entry.variable.values
+
             v, r = _get_task_instance(entry.variable.values[0], self.namespace)
             if not v:
                 return False, r
