@@ -400,7 +400,7 @@ class RecipeProcessor:
                 v, r = _get_job_instance(var.variable.values[0], self.namespace)
                 if not v:
                     return False, r
-                main_job = r()
+                main_job = r(None, _convert_dsl_opts_into_py_map(var.options))
 
             elif var.variable.name == "namespace":
 

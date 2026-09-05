@@ -461,6 +461,15 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file33 = path_utils.concat_path(self.test_dir, "recipe_test33.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file33, recipe_test_contents33)
 
+        recipe_test_contents34 = "[\n"
+        recipe_test_contents34 += "@main\n"
+        recipe_test_contents34 += "* namespace = \"%s\"\n" % self.namespace1
+        recipe_test_contents34 += "* main-job-impl {test} = \"%s\"\n" % path_utils.basename_filtered(self.sample_custom_job_script_file2_namespace1)
+        recipe_test_contents34 += "]\n"
+        recipe_test_contents34 += "[\n@test-job\n* task1 = \"%s\"\n]" % path_utils.basename_filtered(self.sample_custom_echo_true_script_file_namespace1)
+        self.recipe_test_file34 = path_utils.concat_path(self.test_dir, "recipe_test34.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file34, recipe_test_contents34)
+
         return True, ""
 
     def tearDown(self):
@@ -642,6 +651,10 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorCustomJobCustomParams(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file33)
+        self.assertFalse(v)
+
+    def testRecipeProcessorCustomMainJobCustomParams(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file34)
         self.assertFalse(v)
 
 if __name__ == "__main__":
