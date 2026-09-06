@@ -12,7 +12,7 @@ class StandardJob(launch_jobs.BaseJob): # hint: custom jobs should have a class 
         self.entries_list.append(task)
         return True, None
 
-    def run_job(self, feedback_object, execution_name=None, options=None):
+    def run_job(self, feedback_object, execution_name = None, options = None):
 
         any_warnings = False
         intermediary_failure = False
