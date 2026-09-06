@@ -38,8 +38,8 @@ class SafetyPromptPluginTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_base_dir)
 
-    def _helper_mock_feedback_obj(self, input_msg):
-        self.internal_buffer = input_msg
+    def _helper_mock_feedback_obj(self, input_message):
+        self.internal_buffer = input_message
 
     def testSafetyPromptPluginReadParams1(self):
 
@@ -48,12 +48,12 @@ class SafetyPromptPluginTest(unittest.TestCase):
 
         v, r = self.safety_prompt_task._read_params()
         self.assertFalse(v)
-        self.assertEqual(r, "msg is a required parameter")
+        self.assertEqual(r, "message is a required parameter")
 
     def testSafetyPromptPluginReadParams2(self):
 
         local_params = {}
-        local_params["msg"] = "dummy_value"
+        local_params["message"] = "dummy_value"
         self.safety_prompt_task.params = local_params
 
         v, r = self.safety_prompt_task._read_params()
@@ -63,7 +63,7 @@ class SafetyPromptPluginTest(unittest.TestCase):
     def testSafetyPromptPluginRunTask1(self):
 
         local_params = {}
-        local_params["msg"] = "dummy_value"
+        local_params["message"] = "dummy_value"
         self.safety_prompt_task.params = local_params
 
         with mock.patch("builtins.input", return_value="yes") as dummy:
@@ -77,7 +77,7 @@ class SafetyPromptPluginTest(unittest.TestCase):
     def testSafetyPromptPluginRunTask2(self):
 
         local_params = {}
-        local_params["msg"] = "dummy_value1"
+        local_params["message"] = "dummy_value1"
         self.safety_prompt_task.params = local_params
 
         with mock.patch("builtins.input", return_value="dummy_value2") as dummy:

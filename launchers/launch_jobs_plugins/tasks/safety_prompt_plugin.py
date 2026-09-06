@@ -12,13 +12,13 @@ class CustomTask(launch_jobs.BaseTask):
         message = None
 
         try:
-            message = self.params["msg"]
+            message = self.params["message"]
         except KeyError:
-            return False, "msg is a required parameter"
+            return False, "message is a required parameter"
 
         return True, (message)
 
-    def run_task(self, feedback_object, execution_name=None):
+    def run_task(self, feedback_object, execution_name = None):
 
         v, r = self._read_params()
         if not v:
