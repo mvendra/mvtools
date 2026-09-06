@@ -660,6 +660,21 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file38 = path_utils.concat_path(self.test_dir, "recipe_test38.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file38, recipe_test_contents38)
 
+        recipe_test_contents39 = "[\n"
+        recipe_test_contents39 += "@main\n"
+        recipe_test_contents39 += "* job = \"@test-job\"\n"
+        recipe_test_contents39 += "]\n"
+        recipe_test_contents39 += "[\n"
+        recipe_test_contents39 += "@test-job\n"
+        recipe_test_contents39 += "* job = \"@nested-job\"\n"
+        recipe_test_contents39 += "]\n"
+        recipe_test_contents39 += "[\n"
+        recipe_test_contents39 += "@nested-job\n"
+        recipe_test_contents39 += "* task1 = \"sample_echo_true_plugin.py\"\n"
+        recipe_test_contents39 += "]"
+        self.recipe_test_file39 = path_utils.concat_path(self.test_dir, "recipe_test39.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file39, recipe_test_contents39)
+
         return True, ""
 
     def tearDown(self):
@@ -861,6 +876,11 @@ class RecipeProcessorTest(unittest.TestCase):
 
     def testRecipeProcessorTaskInsideEntrypoint(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file38)
+        self.assertTrue(v)
+        self.assertFalse(r)
+
+    def testRecipeProcessorNestedJob(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file39)
         self.assertTrue(v)
         self.assertFalse(r)
 

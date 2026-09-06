@@ -387,7 +387,7 @@ class RecipeProcessor:
 
         return True, None
 
-    def __load_tasks_onto_job(self, dsl, source_ctx_name, target_job):
+    def __load_new_job_entries(self, dsl, source_ctx_name, target_job):
 
         # read out current job's task
         v, r = dsl.get_all_variables(source_ctx_name)
@@ -397,9 +397,17 @@ class RecipeProcessor:
 
         for entry in source_entries:
 
-            v, r = self.__load_task_onto_job(entry, target_job)
-            if not v:
-                return False, r
+            if entry.variable.name == "job":
+
+                v, r = self.__load_new_job(dsl, entry, target_job)
+                if not v:
+                    return False, r
+
+            else:
+
+                v, r = self.__load_task_onto_job(entry, target_job)
+                if not v:
+                    return False, r
 
         return True, None
 
@@ -426,7 +434,7 @@ class RecipeProcessor:
             new_job = r(val[1:], job_params)
 
             # load up tasks onto the new job
-            v, r = self.__load_tasks_onto_job(dsl, val[1:], new_job)
+            v, r = self.__load_new_job_entries(dsl, val[1:], new_job)
             if not v:
                 return False, r
 
