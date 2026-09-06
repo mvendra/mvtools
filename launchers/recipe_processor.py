@@ -289,6 +289,11 @@ class RecipeProcessor:
 
     def test(self, entrypoint, requested_execution_name = None):
 
+        # outputs
+        jobs = None
+        options = None
+        exec_name = None
+
         v, r = self._bootstrap_dsl_object()
         if not v:
             return False, r
