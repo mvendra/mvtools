@@ -16,27 +16,24 @@ class CustomJob(launch_jobs.BaseJob):
 
         any_warnings = False
         intermediary_failure = False
-        expect_fail = []
-        if "expect-fail" in self.params:
-            expect_fail_read = self.params["expect-fail"]
-            if expect_fail_read == None:
-                return False, "The expect-fail option cannot be valueless"
-            if isinstance(expect_fail_read, list):
-                expect_fail = expect_fail_read
+        skip_on_clear = []
+
+        if "skip-on-clear" in self.params:
+            skip_on_clear_read = self.params["skip-on-clear"]
+            if skip_on_clear_read == None:
+                return False, "The skip-on-clear option cannot be valueless"
+            if isinstance(skip_on_clear_read, list):
+                skip_on_clear = skip_on_clear_read
             else:
-                expect_fail.append(expect_fail_read)
+                skip_on_clear.append(skip_on_clear_read)
 
         for entry in self.entries_list:
 
-            entry_must_fail = entry.name in expect_fail
+            entry_skip_on_clear = entry.name in skip_on_clear
 
             if entry.get_type() == launch_jobs.BASE_TYPE_JOB:
 
                 v, r = launch_jobs.run_single_job(entry, self.name, feedback_object, execution_name, options)
-                if entry_must_fail:
-                    if v:
-                        return False, "Job [%s] was expected to fail" % entry.name
-                    continue
                 if not v:
                     if options.early_abort:
                         return False, "Failed job: [%s]" % r
@@ -44,6 +41,9 @@ class CustomJob(launch_jobs.BaseJob):
                         intermediary_failure = True
                 if v and r:
                     any_warnings = True
+
+                if entry_skip_on_clear and v and (r is None):
+                    return True, any_warnings
 
                 continue
 
@@ -60,11 +60,6 @@ class CustomJob(launch_jobs.BaseJob):
             except:
                 return False, "Task [%s][%s] caused an unknown exception." % (entry.name, entry.get_desc())
 
-            if entry_must_fail:
-                if v:
-                    return False, "Task [%s] was expected to fail" % entry.name
-                continue
-
             if not v:
                 feedback_object(launch_jobs._format_task_error_msg(entry, r))
                 return False, "Failed task: [%s]" % r
@@ -74,6 +69,8 @@ class CustomJob(launch_jobs.BaseJob):
                 feedback_object(launch_jobs._format_task_warning_msg_console_output(entry, r))
             else:
                 feedback_object(launch_jobs._format_task_info_msg(entry))
+                if entry_skip_on_clear:
+                    return True, any_warnings
 
         if intermediary_failure:
             return False, "Intermediary failures"
