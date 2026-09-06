@@ -25,15 +25,65 @@ ERROR_CODE_HARD_FAIL = 3
 # dsltype20-based recipes are supported, syntax as follows:
 #
 # [
-# @job1 {job_options}
+# @main {job_options}
 # * task1 {task_options} = "sample_echo_true.py"
 # ]
 #
-# this would be a recipe file with only one job, which itself has only one task (task1)
-# tasks can be "freestanding" (i.e. they don't require being a member of any context), and nested
-# contexts are supported - examples below:
+# this would be a recipe file with only one job (defined by the context "@main"), which itself has only one task ("task1").
+# tasks cannot be "freestanding" (i.e. they must be defined inside any of the contexts as visible in the body of the document).
+# an "entrypoint" is required for execution - it is the main context where the execution begins. it can be either manually
+# specified (as any context inside of the document), or if left unspecified, will befault to a context named "@main" (as above).
+# the implementation of the "root" job (which is built from the entrypoint's tasks and sub-jobs) can be customized by adding the
+# following reserved variable to the entrypoint:
 #
-# * freestanding-task {task_options} = "sample_echo_true.py"
+# [
+# @main
+# * main-job-impl = "custom_job.py"
+# ]
+#
+# jobs can point to other jobs, as below:
+#
+# [
+# @main
+# * job = "@second-job"
+# ]
+#
+# [
+# @second-job
+# * task1 {task_options} = "sample_echo_true.py"
+# ]
+#
+# the above would start execution at the main job (the entrypoint), and would then "jump" into the "@second-job" as its first and only step.
+# it is possible to override the implementation of the sub-job, by using the "impl" option, which is reserved and is *not passed along* as
+# parameters to the resulting job - example:
+#
+# [
+# @main
+# job {impl: "custom_job.py"} = "@second-job"
+# ]
+#
+# [
+# @second-job
+# * task = "sample_echo_true.py"
+# ]
+#
+# nested jobs are supported, but need to be explicitly triggered:
+#
+# [
+# @main
+#
+# * task1 {task_options} = "sample_echo_true.py"
+#
+#     [
+#     @second-job
+#     * task2 {task_options} = "sample_echo_true.py"
+#     ]
+#
+# ]
+#
+# in the previous example, only "task1" would execute, and "@second-job" would take no effect at all. to run it, it would be necessary to add
+# a manual call to it, using the reserved "job" variable name, as previously shown.
+# job options (job_options in the example below) are inherited/merged downwards onto the job's tasks.
 #
 # [
 # @job1 {job_options}
@@ -45,33 +95,30 @@ ERROR_CODE_HARD_FAIL = 3
 #
 # ]
 #
-# job options (job_options in the example above) are inherited/merged downwards onto the job's tasks.
-# a recipe is deemed successful if (and only if) every single task in every single job
-# succeeded (some exceptions may apply - see below)
-#
-# recipes can be configured by adding certain variables to a metajob called "mvtools_recipe_processor_config"
+# a recipe is deemed successful if (and only if) every single task in every single job succeeded (some exceptions may apply - see below).
+# recipes can be configured by adding certain reserved variables to the entrypoint used for the execution.
 # by default, task scripts are searched for inside MVTOOLS/launchers/launch_jobs_plugins/tasks
-# this can be changed by adding the following config variable to the recipe config metajob:
+# this can be changed by adding the following config variable to the entrypoint:
 #
 # [
-# @mvtools_recipe_processor_config
+# @main
 # * namespace = "/home/user/custom_mvtools_launch_jobs_plugins"
 # ]
 #
+# namespaces can be specified at any point in the recipe, and will take effect from that point on. keeping its usage restricted to the
+# entrypoint is recommended, preferably as the first entry if/when needed.
 # it operates in two modes: exclusive mode (which is the default) and inclusive mode.
-# in exclusive mode, scripts will only be searched inside the specified path. in inclusive
-# mode, scripts will first be searched inside the built-in plugins
-# folder (MVTOOLS/launchers/launch_jobs_plugins/tasks), and if its not found there, then, and
-# only then, the custom path will be searched. example:
+# in exclusive mode, scripts will only be searched inside the specified path. in inclusive  mode, scripts will first be searched inside the
+# built-in plugins folder (MVTOOLS/launchers/launch_jobs_plugins/tasks), and if its not found there, then, and only then, the custom
+# path will be searched. example:
 # * namespace {inclusive} = "/home/user/custom_mvtools_launch_jobs_plugins"
 # it is not necessary to explicitly set "exclusive" to activate the exclusive mode, because it is the default.
 #
-# it is possible to define launch_jobs's execution options either via commandline
-# arguments (requested options) or using config variables inside the recipe's metajob (which
-# will overwrite the commandline options when specified):
+# it is possible to define launch_jobs's execution options either via commandline arguments (requested options) or using config variables
+# inside the entrypoint (which would overwrite the commandline options when specified):
 #
 # [
-# @mvtools_recipe_processor_config
+# @main
 # * execution-name = "exec-name"
 # * early-abort = "yes"
 # * time-delay = "1h"
@@ -82,47 +129,15 @@ ERROR_CODE_HARD_FAIL = 3
 # * execution-name # this will define the execution name that will be written to the launch_jobs toolbus database
 #
 # * early-abort # "yes" or "no" are accepted - exclusively
-# this will specify whether an execution should be aborted whenever any job fails. the execution
-# itself will be deemed a failure upon any job failure, but with this option enabled, the execution
-# will nonetheless continue until there are no more jobs in the list.
+# this will specify whether an execution should be aborted whenever any job fails. the execution itself will be deemed a failure
+# upon any job failure, but with this option enabled, the execution will nonetheless continue until there are no more jobs in the list.
 #
 # * time-delay # defines a pre-execution delay. examples: "7h", "30m", "15".
 #
-# * signal-delay # defines a toolbus internal signal to be waited for before starting this
-# execution. the signal gets consumed upon availability.
+# * signal-delay # defines a toolbus internal signal to be waited for before starting this execution. the signal gets consumed upon availability.
 #
-# * execution-delay # defines a toolbus launch_jobs database-registered execution name
-# to be waited for before starting this execution. this will cause this execution to be delayed *until*
-# the defined execution name is concluded (i.e. has bee removed from launch_jobs's toolbus database)
-#
-# it is possible to override the standard job (jobs/standard_job.py) default implementation
-# by using the following syntax:
-#
-# [
-# @mvtools_recipe_processor_config
-# * custom-job-implementation {job1} = "custom_job_impl.py"
-# ]
-#
-# [
-# @job1
-# * task1 = "sample_echo_true.py"
-# ]
-#
-# [
-# @job2
-# * task1 = "sample_echo_true.py"
-# ]
-#
-# in the example above, job1's implementation would be replaced with "custom_job_impl.py", whereas the default
-# job implementation would be preserved for job2.
-# it is also possible to replace the implementation of the main/"invisible" job (the underlying job that parents
-# "freestanding" tasks, and all other jobs as well) - by using the following syntax:
-#
-# [
-# @mvtools_recipe_processor_config
-# * custom-main-job-implementation = "custom_job_impl.py"
-# ]
-#
+# * execution-delay # defines a toolbus launch_jobs database-registered execution name to be waited for before starting this execution. this will
+# cause this execution to be delayed *until* the defined execution name is concluded (i.e. has bee removed from launch_jobs's toolbus database)
 
 def _has_incl_opt(opts):
     for o in opts:
