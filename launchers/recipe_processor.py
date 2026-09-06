@@ -295,7 +295,11 @@ class RecipeProcessor:
             return False, r
         dsl = r
 
-        v, r = self._build_jobtree_from_dsl(dsl, entrypoint)
+        v, r = self._preload_entrypoint_from_dsl(dsl, entrypoint)
+        if not v:
+            return False, r
+
+        v, r = self._build_jobtree_from_dsl(dsl)
         if not v:
             return False, r
         jobs = r
@@ -355,6 +359,19 @@ class RecipeProcessor:
 
         return True, dsl
 
+    def _preload_entrypoint_from_dsl(self, dsl, entrypoint):
+
+        if entrypoint is None:
+            entrypoint = "main"
+
+        # read out main/entrypoint metadata
+        v, r = dsl.get_all_variables(entrypoint)
+        if not v:
+            return False, r
+        self.entrypoint_context_cache = r
+
+        return True, None
+
     def __load_tasks_onto_job(self, dsl, source_ctx_name, target_job):
 
         # read out current job's task
@@ -407,18 +424,10 @@ class RecipeProcessor:
 
         return True, None
 
-    def _build_jobtree_from_dsl(self, dsl, entrypoint):
+    def _build_jobtree_from_dsl(self, dsl):
 
-        if entrypoint is None:
-            entrypoint = "main"
         namespace_switch = self.namespace is not None
         main_job = None
-
-        # read out main/entrypoint metadata
-        v, r = dsl.get_all_variables(entrypoint)
-        if not v:
-            return False, r
-        self.entrypoint_context_cache = r
 
         for var in self.entrypoint_context_cache:
 
