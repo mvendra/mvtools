@@ -653,6 +653,13 @@ class RecipeProcessorTest(unittest.TestCase):
         self.recipe_test_file37 = path_utils.concat_path(self.test_dir, "recipe_test37.t20")
         create_and_write_file.create_file_contents(self.recipe_test_file37, recipe_test_contents37)
 
+        recipe_test_contents38 = "[\n"
+        recipe_test_contents38 += "@main\n"
+        recipe_test_contents38 += "* task1 = \"sample_echo_true_plugin.py\"\n"
+        recipe_test_contents38 += "]\n"
+        self.recipe_test_file38 = path_utils.concat_path(self.test_dir, "recipe_test38.t20")
+        create_and_write_file.create_file_contents(self.recipe_test_file38, recipe_test_contents38)
+
         return True, ""
 
     def tearDown(self):
@@ -851,6 +858,11 @@ class RecipeProcessorTest(unittest.TestCase):
     def testRecipeProcessorFailsNoTaskValue(self):
         v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file37)
         self.assertFalse(v)
+
+    def testRecipeProcessorTaskInsideEntrypoint(self):
+        v, r = recipe_processor.run_jobs_from_recipe_file(self.recipe_test_file38)
+        self.assertTrue(v)
+        self.assertFalse(r)
 
 if __name__ == "__main__":
     unittest.main()

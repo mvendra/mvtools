@@ -479,6 +479,18 @@ class RecipeProcessor:
                 if not v:
                     return False, r
 
+            else: # task inside the entrypoint context
+
+                if main_job is None: # instantiate main job with the default if needed
+                    v, r = _get_job_instance(None, self.namespace)
+                    if not v:
+                        return False, r
+                    main_job = r()
+
+                v, r = self.__load_task_onto_job(var, main_job)
+                if not v:
+                    return False, r
+
         return True, main_job
 
     def _get_launch_options_helper(self, previous, var_src, valid_values, value_filter_function):
