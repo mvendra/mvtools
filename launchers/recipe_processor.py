@@ -308,7 +308,7 @@ class RecipeProcessor:
         v, r = self._get_exec_name_from_recipe(entrypoint_context_cache)
         if not v:
             return False, r
-        exec_name = r
+        exec_name, entrypoint_context_cache = r
 
         v, r = self._resolve_exec_name(requested_execution_name, exec_name)
         if not v:
@@ -575,6 +575,7 @@ class RecipeProcessor:
     def _get_exec_name_from_recipe(self, entrypoint_context_cache):
 
         local_exec_name = None
+        entrypoint_context_cache_result = []
 
         for var in entrypoint_context_cache:
 
@@ -588,7 +589,10 @@ class RecipeProcessor:
 
                 local_exec_name = var.variable.values[0]
 
-        return True, local_exec_name
+            else:
+                entrypoint_context_cache_result.append(var)
+
+        return True, (local_exec_name, entrypoint_context_cache_result)
 
     def _resolve_exec_name(self, requested_execution_name, recipe_execution_name):
 
