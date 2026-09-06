@@ -283,6 +283,7 @@ DEPTH_TRACKER_LIMIT = 200
 class RecipeProcessor:
 
     def __init__(self, recipe, namespace, requested_options):
+        self.jobs_depth_tracker = 0
         self.recipe = recipe
         self.namespace = namespace
         self.requested_options = requested_options
@@ -413,6 +414,10 @@ class RecipeProcessor:
 
     def __load_new_job(self, dsl, source_var, parent_job):
 
+        self.jobs_depth_tracker += 1
+        if self.jobs_depth_tracker == DEPTH_TRACKER_LIMIT:
+            return False, "Depth tracker exceeded"
+
         # select sub job implementation
         v, r = _get_custom_job_from_opts_and_leftovers_as_params(source_var.options)
         if not v:
@@ -440,6 +445,7 @@ class RecipeProcessor:
 
             parent_job.add_entry(new_job)
 
+        self.jobs_depth_tracker -= 1
         return True, None
 
     def _build_jobtree_from_dsl(self, dsl, entrypoint_context_contents):
