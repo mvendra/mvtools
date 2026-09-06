@@ -374,6 +374,19 @@ class RecipeProcessor:
         v, r = dsl.get_all_variables(entrypoint)
         return v, r
 
+    def __load_task_onto_job(self, source_var, target_job):
+
+        if len(source_var.variable.values) != 1:
+            return False, "Invalid task source specification (must be a single value): [%s]" % source_var.variable.values
+
+        v, r = _get_task_instance(source_var.variable.values[0], self.namespace)
+        if not v:
+            return False, r
+        new_task = r(source_var.variable.name, _convert_dsl_opts_into_py_map(source_var.options))
+        target_job.add_entry(new_task)
+
+        return True, None
+
     def __load_tasks_onto_job(self, dsl, source_ctx_name, target_job):
 
         # read out current job's task
@@ -384,14 +397,9 @@ class RecipeProcessor:
 
         for entry in source_entries:
 
-            if len(entry.variable.values) != 1:
-                return False, "Invalid task source specification (must be a single value): [%s]" % entry.variable.values
-
-            v, r = _get_task_instance(entry.variable.values[0], self.namespace)
+            v, r = self.__load_task_onto_job(entry, target_job)
             if not v:
                 return False, r
-            new_task = r(entry.variable.name, _convert_dsl_opts_into_py_map(entry.options))
-            target_job.add_entry(new_task)
 
         return True, None
 
