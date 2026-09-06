@@ -318,7 +318,7 @@ class RecipeProcessor:
         v, r = self._get_launch_options_from_recipe(entrypoint_context_contents)
         if not v:
             return False, r
-        options = r
+        options, entrypoint_context_contents = r
 
         v, r = self._resolve_options(options)
         if not v:
@@ -499,6 +499,7 @@ class RecipeProcessor:
         local_time_delay = None
         local_signal_delay = None
         local_execution_delay = None
+        entrypoint_context_contents_result = []
 
         for var in entrypoint_context_contents:
 
@@ -534,7 +535,10 @@ class RecipeProcessor:
                     return False, r
                 local_execution_delay = r
 
-        return True, launch_jobs.RunOptions(early_abort = local_early_abort, time_delay = local_time_delay, signal_delay = local_signal_delay, execution_delay = local_execution_delay)
+            else:
+                entrypoint_context_contents_result.append(var)
+
+        return True, (launch_jobs.RunOptions(early_abort = local_early_abort, time_delay = local_time_delay, signal_delay = local_signal_delay, execution_delay = local_execution_delay), entrypoint_context_contents_result)
 
     def _resolve_options(self, options):
 
