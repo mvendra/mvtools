@@ -289,10 +289,11 @@ class RecipeProcessor:
 
     def test(self, entrypoint, requested_execution_name = None):
 
-        # outputs
+        dsl = None
         jobs = None
         options = None
         exec_name = None
+        entrypoint_context_cache = None
 
         v, r = self._bootstrap_dsl_object()
         if not v:
@@ -304,10 +305,15 @@ class RecipeProcessor:
             return False, r
         entrypoint_context_cache = r
 
-        v, r = self._build_jobtree_from_dsl(dsl, entrypoint_context_cache)
+        v, r = self._get_exec_name_from_recipe(entrypoint_context_cache)
         if not v:
             return False, r
-        jobs = r
+        exec_name = r
+
+        v, r = self._resolve_exec_name(requested_execution_name, exec_name)
+        if not v:
+            return False, r
+        exec_name = r
 
         v, r = self._get_launch_options_from_recipe(entrypoint_context_cache)
         if not v:
@@ -319,15 +325,10 @@ class RecipeProcessor:
             return False, r
         options = r
 
-        v, r = self._get_exec_name_from_recipe(entrypoint_context_cache)
+        v, r = self._build_jobtree_from_dsl(dsl, entrypoint_context_cache)
         if not v:
             return False, r
-        exec_name = r
-
-        v, r = self._resolve_exec_name(requested_execution_name, exec_name)
-        if not v:
-            return False, r
-        exec_name = r
+        jobs = r
 
         return True, (jobs, options, exec_name)
 
