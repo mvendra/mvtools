@@ -293,7 +293,7 @@ class RecipeProcessor:
         jobs = None
         options = None
         exec_name = None
-        entrypoint_context_cache = None
+        entrypoint_context_contents = None
 
         v, r = self._bootstrap_dsl_object()
         if not v:
@@ -303,19 +303,19 @@ class RecipeProcessor:
         v, r = self._preload_entrypoint_from_dsl(dsl, entrypoint)
         if not v:
             return False, r
-        entrypoint_context_cache = r
+        entrypoint_context_contents = r
 
-        v, r = self._get_exec_name_from_recipe(entrypoint_context_cache)
+        v, r = self._get_exec_name_from_recipe(entrypoint_context_contents)
         if not v:
             return False, r
-        exec_name, entrypoint_context_cache = r
+        exec_name, entrypoint_context_contents = r
 
         v, r = self._resolve_exec_name(requested_execution_name, exec_name)
         if not v:
             return False, r
         exec_name = r
 
-        v, r = self._get_launch_options_from_recipe(entrypoint_context_cache)
+        v, r = self._get_launch_options_from_recipe(entrypoint_context_contents)
         if not v:
             return False, r
         options = r
@@ -325,7 +325,7 @@ class RecipeProcessor:
             return False, r
         options = r
 
-        v, r = self._build_jobtree_from_dsl(dsl, entrypoint_context_cache)
+        v, r = self._build_jobtree_from_dsl(dsl, entrypoint_context_contents)
         if not v:
             return False, r
         jobs = r
@@ -426,12 +426,12 @@ class RecipeProcessor:
 
         return True, None
 
-    def _build_jobtree_from_dsl(self, dsl, entrypoint_context_cache):
+    def _build_jobtree_from_dsl(self, dsl, entrypoint_context_contents):
 
         namespace_switch = self.namespace is not None
         main_job = None
 
-        for var in entrypoint_context_cache:
+        for var in entrypoint_context_contents:
 
             if var.variable.name == "main-job-impl":
 
@@ -493,14 +493,14 @@ class RecipeProcessor:
 
         return True, local_option
 
-    def _get_launch_options_from_recipe(self, entrypoint_context_cache):
+    def _get_launch_options_from_recipe(self, entrypoint_context_contents):
 
         local_early_abort = None
         local_time_delay = None
         local_signal_delay = None
         local_execution_delay = None
 
-        for var in entrypoint_context_cache:
+        for var in entrypoint_context_contents:
 
             if var.variable.name == "early-abort":
 
@@ -572,12 +572,12 @@ class RecipeProcessor:
 
         return True, local_options
 
-    def _get_exec_name_from_recipe(self, entrypoint_context_cache):
+    def _get_exec_name_from_recipe(self, entrypoint_context_contents):
 
         local_exec_name = None
-        entrypoint_context_cache_result = []
+        entrypoint_context_contents_result = []
 
-        for var in entrypoint_context_cache:
+        for var in entrypoint_context_contents:
 
             if var.variable.name == "execution-name":
 
@@ -590,9 +590,9 @@ class RecipeProcessor:
                 local_exec_name = var.variable.values[0]
 
             else:
-                entrypoint_context_cache_result.append(var)
+                entrypoint_context_contents_result.append(var)
 
-        return True, (local_exec_name, entrypoint_context_cache_result)
+        return True, (local_exec_name, entrypoint_context_contents_result)
 
     def _resolve_exec_name(self, requested_execution_name, recipe_execution_name):
 
