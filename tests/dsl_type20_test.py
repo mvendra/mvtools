@@ -1089,6 +1089,31 @@ class DSLType20Test(unittest.TestCase):
         r = test_val.get_serialized()
         self.assertEqual(r, self.reserved_test_env_var_1)
 
+    def testDSLType20_Value8(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        self.assertEqual(test_val.configs, test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
+        test_val.add_envvar(self.reserved_test_env_var_1[1:])
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
+
+        r = test_val.get_resolved()
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, self.reserved_test_env_var_1)
+
     def testDSLType20_Variable1(self):
 
         ex_flag = False

@@ -359,8 +359,6 @@ class DSLType20_Value:
     def get_resolved(self):
 
         result = None
-        if len(self.internal_data) > 0:
-            result = ""
 
         for v in self.internal_data:
 
@@ -368,8 +366,10 @@ class DSLType20_Value:
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
                 v_res = v[1]
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
-                pass
+                continue
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
+                if not self.configs.expand_envvars:
+                    continue
                 try:
                     v_res = os.environ[v[1]]
                 except KeyError as ex:
@@ -379,6 +379,9 @@ class DSLType20_Value:
                 v_res = os.path.expanduser(v_res)
                 if miniparse.TILDA in v_res:
                     raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % v_res)
+
+            if result is None:
+                result = ""
             result += v_res
 
         return result
