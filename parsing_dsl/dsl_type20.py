@@ -1263,6 +1263,9 @@ class DSLType20:
                 if (r[1]).strip() == "": # false positive - valueless variable
                     break
 
+                if not self.configs.expand_envvars:
+                    return False, "Envvars are disabled in this configuration - parsing failed."
+
                 if plus_required:
                     return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing envvar)." % str_input
                 plus_required = True

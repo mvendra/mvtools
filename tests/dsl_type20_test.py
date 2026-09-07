@@ -258,6 +258,9 @@ class DSLType20Test(unittest.TestCase):
         self.contents_cfg_test_fail_4 = "var1 {opt1: \"val1} = \"val2\"\n"
         self.cfg_test_fail_4 = path_utils.concat_path(self.test_dir, "test_fail_4.t20")
 
+        self.contents_cfg_test_fail_5 = "var1 = %s\n" % self.reserved_test_env_var_1
+        self.cfg_test_fail_5 = path_utils.concat_path(self.test_dir, "test_fail_5.t20")
+
         create_and_write_file.create_file_contents(self.cfg_test_ok_1, self.contents_cfg_test_ok_1)
         create_and_write_file.create_file_contents(self.cfg_test_ok_2, self.contents_cfg_test_ok_2)
         create_and_write_file.create_file_contents(self.cfg_test_ok_3, self.contents_cfg_test_ok_3)
@@ -285,6 +288,7 @@ class DSLType20Test(unittest.TestCase):
         create_and_write_file.create_file_contents(self.cfg_test_fail_2, self.contents_cfg_test_fail_2)
         create_and_write_file.create_file_contents(self.cfg_test_fail_3, self.contents_cfg_test_fail_3)
         create_and_write_file.create_file_contents(self.cfg_test_fail_4, self.contents_cfg_test_fail_4)
+        create_and_write_file.create_file_contents(self.cfg_test_fail_5, self.contents_cfg_test_fail_5)
 
         return True, ""
 
@@ -1888,75 +1892,78 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(self.parse_test_aux(self.cfg_test_fail_4, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse5(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Config()))
+        self.assertFalse(self.parse_test_aux(self.cfg_test_fail_5, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse6(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, dsl_type20.DSLType20_Config(allow_var_dupes = True)))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_1, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse7(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_3, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_2, dsl_type20.DSLType20_Config(allow_var_dupes = True)))
 
     def testDslType20_Parse8(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_4, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_3, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse9(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_5, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_4, dsl_type20.DSLType20_Config(expand_envvars = True)))
 
     def testDslType20_Parse10(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_6, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_5, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse11(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_7, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_6, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse12(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_8, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_7, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse13(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_9, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_8, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse14(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_10, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_9, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse15(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_11, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_10, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse16(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_12, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_11, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse17(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_13, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_12, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse18(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_14, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_13, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse19(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_15, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_14, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse20(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_16, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_15, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse21(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_17, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_16, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse22(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_18, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_17, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse23(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_19, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_18, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse24(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_20, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_19, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse25(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_21, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_20, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse26(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_22, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_21, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse27(self):
-        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_23, dsl_type20.DSLType20_Config()))
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_22, dsl_type20.DSLType20_Config()))
 
     def testDslType20_Parse28(self):
+        self.assertTrue(self.parse_test_aux(self.cfg_test_ok_23, dsl_type20.DSLType20_Config()))
+
+    def testDslType20_Parse29(self):
 
         blanksub = path_utils.concat_path(self.test_dir, " ")
         self.assertFalse(os.path.exists(blanksub))
