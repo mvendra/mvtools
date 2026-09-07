@@ -889,7 +889,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Value1(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_val = dsl_type20.DSLType20_Value(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
@@ -1314,7 +1314,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable_GetValueResolved6(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -1324,7 +1324,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable_GetValueResolved7(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -1354,7 +1354,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable_GetValueResolved10(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -1366,7 +1366,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable_GetValueResolved11(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -1394,7 +1394,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable_GetValueResolved14(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "~"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_user = True), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True), "a", [])
         var_inst.new_value()
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         self.assertEqual(var_inst.get_value(), os.path.expanduser("~"))
@@ -1646,7 +1646,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Option_GetValueResolved6(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -1656,7 +1656,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Option_GetValueResolved7(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -1686,7 +1686,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Option_GetValueResolved10(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -1698,7 +1698,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Option_GetValueResolved11(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -2185,7 +2185,7 @@ class DSLType20Test(unittest.TestCase):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
         os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_user = True, allow_var_dupes = True))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True, allow_var_dupes = True))
         v, r = dsl.parse(self.contents_cfg_test_ok_4)
 
         self.assertTrue(v)
@@ -2750,7 +2750,7 @@ class DSLType20Test(unittest.TestCase):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
 
-        test_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        test_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = True))
         v, r = test_dsl.parse("var1 = %s + \"val2\"" % self.reserved_test_env_var_1)
         self.assertTrue(v)
 
@@ -2777,7 +2777,7 @@ class DSLType20Test(unittest.TestCase):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
         os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-        test_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        test_dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = True))
         v, r = test_dsl.parse("var1 = (\"val1\" + %s, %s + \"val4\")" % (self.reserved_test_env_var_1, self.reserved_test_env_var_2))
         self.assertTrue(v)
 
@@ -2819,7 +2819,7 @@ class DSLType20Test(unittest.TestCase):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = True))
         v, r = dsl.parse("var1 {opt1: %s + \"val2\"} = \"val3\"" % self.reserved_test_env_var_1)
         self.assertTrue(v)
 
@@ -2846,7 +2846,7 @@ class DSLType20Test(unittest.TestCase):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
         os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = True))
         v, r = dsl.parse("var1 {opt1: (\"val1\" + %s, %s + \"val4\")} = \"val5\"" % (self.reserved_test_env_var_1, self.reserved_test_env_var_2))
         self.assertTrue(v)
 
@@ -3032,7 +3032,7 @@ class DSLType20Test(unittest.TestCase):
         test_envvar_value = "dsltype20-test-value"
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = test_envvar_value
 
-        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(inherit_options = True))
+        dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config(expand_envvars = True, inherit_options = True))
         v, r = dsl.parse("[\n@ctx1 {opt1: %s}\nvar1 = \"val2\"\n]" % self.reserved_test_env_var_1)
         self.assertEqual(var_fmt_helper(dsl.get_variables("var1", "ctx1")), [("var1", ["val2"], [("opt1", [test_envvar_value])])])
         self.assertTrue(v)
@@ -6851,7 +6851,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDslType20_TestProduce50(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
