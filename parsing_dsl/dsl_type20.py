@@ -253,35 +253,6 @@ def opt_list_has(options, name):
             return True, opt
     return False, None
 
-def convert_vals_to_result_entry(input_value):
-
-    result = []
-
-    input_res = input_value.get_value()
-    if input_res is None:
-        pass
-
-    elif isinstance(input_res, str):
-        result.append(input_res)
-
-    else:
-        for e in input_res:
-            result.append(e)
-
-    return result
-
-def convert_var_to_result(input_variable):
-
-    out_var = DSLType20_Result_Single(input_variable.get_name(), convert_vals_to_result_entry(input_variable))
-    out_opts = []
-
-    for o in input_variable.get_options():
-        new_opt = DSLType20_Result_Single(o.get_name(), convert_vals_to_result_entry(o))
-        out_opts.append(new_opt)
-
-    out_res = DSLType20_Result(out_var, out_opts)
-    return out_res
-
 class DSLType20_Result_Single:
 
     def __init__(self, name, values):
@@ -1003,13 +974,42 @@ class DSLType20:
         ptr.add_entry(cb_data_add)
         return True, None
 
+    def _convert_vals_to_result_entry(self, input_value):
+
+        result = []
+
+        input_res = input_value.get_value()
+        if input_res is None:
+            pass
+
+        elif isinstance(input_res, str):
+            result.append(input_res)
+
+        else:
+            for e in input_res:
+                result.append(e)
+
+        return result
+
+    def _convert_var_to_result(self, input_variable):
+
+        out_var = DSLType20_Result_Single(input_variable.get_name(), self._convert_vals_to_result_entry(input_variable))
+        out_opts = []
+
+        for o in input_variable.get_options():
+            new_opt = DSLType20_Result_Single(o.get_name(), self._convert_vals_to_result_entry(o))
+            out_opts.append(new_opt)
+
+        out_res = DSLType20_Result(out_var, out_opts)
+        return out_res
+
     def _get_variable_helper(self, ptr, cb_data_get):
 
         var_name, list_ptr = cb_data_get
 
         for entry in ptr.get_entries():
             if entry.get_type() == DSLTYPE20_ENTRY_TYPE_VAR and (entry.get_name() == var_name or var_name is None):
-                list_ptr.append(convert_var_to_result(self._var_copy(ptr, entry)))
+                list_ptr.append(self._convert_var_to_result(self._var_copy(ptr, entry)))
 
         return True, None
 
