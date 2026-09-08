@@ -416,19 +416,6 @@ class DSLType20_ValueHolder:
             val_ptr.add_plus()
         val_ptr.add_envvar(envvar)
 
-    def get_value(self):
-
-        if self.value is None:
-            return None
-        elif isinstance(self.value, DSLType20_Value):
-            return self.value.get_resolved()
-
-        result = []
-        for e in self.value:
-            res_str = e.get_resolved()
-            result.append(res_str)
-        return result
-
     def serialize(self):
 
         if self.value is None:
@@ -753,6 +740,19 @@ class DSLType20:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
 
+    def _get_resolved_value(self, source):
+
+        if source.value is None:
+            return None
+        elif isinstance(source.value, DSLType20_Value):
+            return source.value.get_resolved()
+
+        result = []
+        for e in source.value:
+            res_str = e.get_resolved()
+            result.append(res_str)
+        return result
+
     def _parse_line_delegate(self, ipc, current_line, current_line_number):
 
         # context name, begin
@@ -818,7 +818,7 @@ class DSLType20:
         for n_opt in new_options:
             v, r = opt_list_has(parent_options, n_opt.get_name())
             if v: # common option - let's look further
-                if r.get_value() is None and n_opt.get_value() is None:
+                if self._get_resolved_value(r) is None and self._get_resolved_value(n_opt) is None:
                     continue # doubletapped, valueless option. drop/skip
             result.append(n_opt)
 
@@ -978,7 +978,7 @@ class DSLType20:
 
         result = []
 
-        input_res = input_value.get_value()
+        input_res = self._get_resolved_value(input_value)
         if input_res is None:
             pass
 
@@ -1636,7 +1636,7 @@ class DSLType20:
 
             options_result += opt.get_name()
 
-            if opt.get_value() is not None:
+            if self._get_resolved_value(opt) is not None:
 
                 # option has value
                 options_result += miniparse.COLON + miniparse.SINGLESPACE
@@ -1660,7 +1660,7 @@ class DSLType20:
             variable_result = ("%s %s" %  (variable_result, prod_opts))
 
         # add the variable's value - if it has it
-        if input_variable.get_value() is not None:
+        if self._get_resolved_value(input_variable) is not None:
 
             variable_result += miniparse.SINGLESPACE + miniparse.EQSIGN + miniparse.SINGLESPACE
             variable_result += input_variable.serialize()
