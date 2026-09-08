@@ -253,26 +253,6 @@ def opt_list_has(options, name):
             return True, opt
     return False, None
 
-def inherit_options_helper(parent_options, new_options):
-
-    result = []
-
-    # first pass: try to add everything from parent, unless its also present in the new
-    for p_opt in parent_options:
-        v, r = opt_list_has(new_options, p_opt.get_name())
-        if not v:
-            result.append(p_opt)
-
-    # second pass: add everything from new, except for doubletapped valueless options
-    for n_opt in new_options:
-        v, r = opt_list_has(parent_options, n_opt.get_name())
-        if v: # common option - let's look further
-            if r.get_value() is None and n_opt.get_value() is None:
-                continue # doubletapped, valueless option. drop/skip
-        result.append(n_opt)
-
-    return result
-
 def convert_vals_to_result_entry(input_value):
 
     result = []
@@ -853,6 +833,26 @@ class DSLType20:
 
         return True, None
 
+    def inherit_options_helper(self, parent_options, new_options):
+
+        result = []
+
+        # first pass: try to add everything from parent, unless its also present in the new
+        for p_opt in parent_options:
+            v, r = opt_list_has(new_options, p_opt.get_name())
+            if not v:
+                result.append(p_opt)
+
+        # second pass: add everything from new, except for doubletapped valueless options
+        for n_opt in new_options:
+            v, r = opt_list_has(parent_options, n_opt.get_name())
+            if v: # common option - let's look further
+                if r.get_value() is None and n_opt.get_value() is None:
+                    continue # doubletapped, valueless option. drop/skip
+            result.append(n_opt)
+
+        return result
+
     def _inherit_options(self, parent_ptr, child_ptr):
 
         if not self.configs.inherit_options:
@@ -870,10 +870,10 @@ class DSLType20:
         # drop down inheriting options
         aggregate_opts_list.reverse()
         for opt_list_entry in aggregate_opts_list:
-            final_opts_list = inherit_options_helper(final_opts_list, opt_list_entry)
+            final_opts_list = self.inherit_options_helper(final_opts_list, opt_list_entry)
 
         # and finally return whilst also combining in the child's own options
-        return inherit_options_helper(final_opts_list, child_ptr.get_options())
+        return self.inherit_options_helper(final_opts_list, child_ptr.get_options())
 
     def _rem_variable_internal(self, var_name, context = None):
 
