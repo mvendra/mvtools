@@ -15,6 +15,7 @@ COMMENT_MULTI = ("/*", "*/")
 DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE = 1
 DSLTYPE20_ENTRY_VALUE_TYPE_PLUS = 2
 DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR = 3
+DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING = 4
 
 # basic types - general
 DSLTYPE20_ENTRY_TYPE_VAR = 1
@@ -356,6 +357,12 @@ class DSLType20_Value:
     def add_envvar(self, source):
         self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, source))
 
+    def add_selector_string(self, source):
+        if source != "":
+            if not validate_name(source):
+                raise mvtools_exception.mvtools_exception("Invalid name: [%s]" % source)
+        self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, source))
+
     def get_resolved(self):
 
         result = None
@@ -374,6 +381,8 @@ class DSLType20_Value:
                     v_res = os.environ[v[1]]
                 except KeyError as ex:
                     raise mvtools_exception.mvtools_exception("Unable to resolve envvar [%s]" % v[1])
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
+                continue # mvtodo
 
             if self.configs.expand_user:
                 v_res = os.path.expanduser(v_res)
@@ -408,6 +417,8 @@ class DSLType20_Value:
                 v_res = "%s%s%s" % (miniparse.SINGLESPACE, miniparse.PLUSSIGN, miniparse.SINGLESPACE)
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
                 v_res = "%s%s" % (miniparse.DOLLARSIGN, v[1])
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
+                v_res = "%" + v[1]
             result += v_res
 
         return result
@@ -939,6 +950,8 @@ class DSLType20:
                 new_inst.add_plus()
             elif x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
                 new_inst.add_envvar(x[1])
+            elif x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
+                new_inst.add_selector_string(x[1])
             else:
                 raise mvtools_exception.mvtools_exception("Unexpected value type [%s]" % x)
 
