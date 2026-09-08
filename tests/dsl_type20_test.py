@@ -6715,6 +6715,323 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertEqual(test_prod1, test_prod2)
 
+    def testDSLType20_Variable_GetResolvedValue1(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), None)
+
+    def testDSLType20_Variable_GetResolvedValue2(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst.new_value()
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), None)
+
+    def testDSLType20_Variable_GetResolvedValue3(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), "")
+
+    def testDSLType20_Variable_GetResolvedValue4(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("")
+        var_inst.add_value_immediate("")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), "")
+
+    def testDSLType20_Variable_GetResolvedValue5(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val1")
+        var_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), "val1val2")
+
+    def testDSLType20_Variable_GetResolvedValue6(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val1")
+        var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        var_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), "val1-envvar-value-1-val2")
+
+    def testDSLType20_Variable_GetResolvedValue7(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val1")
+        var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        var_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), "val1-envvar-value-1-val2")
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), "val1-envvar-value-3-val2")
+
+    def testDSLType20_Variable_GetResolvedValue8(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("")
+        var_inst.new_value()
+        var_inst.add_value_immediate("")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), ["", ""])
+
+    def testDSLType20_Variable_GetResolvedValue9(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val1")
+        var_inst.new_value()
+        var_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), ["val1", "val2"])
+
+    def testDSLType20_Variable_GetResolvedValue10(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val1")
+        var_inst.new_value()
+        var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), ["val1", "-envvar-value-1-", "val2"])
+
+    def testDSLType20_Variable_GetResolvedValue11(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val1")
+        var_inst.new_value()
+        var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        var_inst.new_value()
+        var_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), ["val1", "-envvar-value-1-", "val2"])
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), ["val1", "-envvar-value-3-", "val2"])
+
+    def testDSLType20_Variable_GetResolvedValue12(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_user = True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("~")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), os.path.expanduser("~"))
+
+    def testDSLType20_Variable_GetResolvedValue13(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_immediate("~")
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), "~")
+
+    def testDSLType20_Variable_GetResolvedValue14(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "~"
+        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True), "a", [])
+        var_inst.new_value()
+        var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        self.assertEqual(test_dsl._get_resolved_value(var_inst), os.path.expanduser("~"))
+
+    def testDSLType20_Option_GetResolvedValue1(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), None)
+
+    def testDSLType20_Option_GetResolvedValue2(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), None)
+
+    def testDSLType20_Option_GetResolvedValue3(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), "")
+
+    def testDSLType20_Option_GetResolvedValue4(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        obj_inst.add_value_immediate("")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), "")
+
+    def testDSLType20_Option_GetResolvedValue5(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), "val1val2")
+
+    def testDSLType20_Option_GetResolvedValue6(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), "val1-envvar-value-1-val2")
+
+    def testDSLType20_Option_GetResolvedValue7(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), "val1-envvar-value-1-val2")
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), "val1-envvar-value-3-val2")
+
+    def testDSLType20_Option_GetResolvedValue8(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), ["", ""])
+
+    def testDSLType20_Option_GetResolvedValue9(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), ["val1", "val2"])
+
+    def testDSLType20_Option_GetResolvedValue10(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), ["val1", "-envvar-value-1-", "val2"])
+
+    def testDSLType20_Option_GetResolvedValue11(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val1")
+        obj_inst.new_value()
+        obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("val2")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), ["val1", "-envvar-value-1-", "val2"])
+        os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-3-"
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), ["val1", "-envvar-value-3-", "val2"])
+
+    def testDSLType20_Option_GetResolvedValue12(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_user = True), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("~")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), os.path.expanduser("~"))
+
+    def testDSLType20_Option_GetResolvedValue13(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst.new_value()
+        obj_inst.add_value_immediate("~")
+        self.assertEqual(test_dsl._get_resolved_value(obj_inst), "~")
+
     def testDslType20_TestFindContext1(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
