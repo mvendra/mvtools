@@ -263,7 +263,7 @@ def validate_selector_route(route):
         v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
         if not v:
             return False
-        route_local = route_local[len(r[0]):]
+        route_local = r[1]
 
         if route_local == "":
             return True
@@ -275,7 +275,7 @@ def validate_selector_route(route):
             v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
             if not v:
                 return False
-            route_local = route_local[len(r[0]):]
+            route_local = r[1]
 
             if route_local == "":
                 return True
@@ -290,7 +290,7 @@ def validate_selector_route(route):
         v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
         if not v:
             return False
-        route_local = route_local[len(r[0]):]
+        route_local = r[1]
 
         if route_local == "":
             return True
@@ -301,7 +301,7 @@ def validate_selector_route(route):
         v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
         if not v:
             return False
-        route_local = route_local[len(r[0]):]
+        route_local = r[1]
 
         if route_local == "":
             return True
