@@ -43,7 +43,7 @@ def convert_res_obj_list_to_neutral_format(res_obj_list):
         return False, "Unable to convert results: [%s]" % ex.get_message()
     return True, result
 
-def make_obj_opt_list_from_neutral_format(configs, options):
+def make_obj_opt_list_from_neutral_format(options):
 
     result = []
 
@@ -68,7 +68,7 @@ def make_obj_opt_list_from_neutral_format(configs, options):
         opt_name_map[opt_name] = True
 
         try:
-            opt_obj = DSLType20_Option(configs, opt_name)
+            opt_obj = DSLType20_Option(opt_name)
             if opt_val is not None:
                 if isinstance(opt_val, list):
                     for x in opt_val:
@@ -293,8 +293,7 @@ class DSLType20_Result:
 
 class DSLType20_Value:
 
-    def __init__(self, configs):
-        self.configs = configs
+    def __init__(self):
         self.internal_data = []
 
     def add_immediate(self, source):
@@ -344,17 +343,17 @@ class DSLType20_Value:
 
 class DSLType20_ValueHolder:
 
-    def __init__(self, configs):
-        self.configs = configs
+    def __init__(self):
+        pass
 
     def new_value(self):
 
         if self.value is None:
-            self.value = DSLType20_Value(self.configs)
+            self.value = DSLType20_Value()
         elif isinstance(self.value, DSLType20_Value):
-            self.value = [self.value, DSLType20_Value(self.configs)]
+            self.value = [self.value, DSLType20_Value()]
         else:
-            self.value.append(DSLType20_Value(self.configs))
+            self.value.append(DSLType20_Value())
 
     def add_value_immediate(self, value):
 
@@ -403,9 +402,7 @@ class DSLType20_ValueHolder:
 
 class DSLType20_Variable(DSLType20_ValueHolder):
 
-    def __init__(self, configs, name, options):
-
-        super().__init__(configs)
+    def __init__(self, name, options):
 
         self.name = name
         self.value = None
@@ -433,9 +430,7 @@ class DSLType20_Variable(DSLType20_ValueHolder):
 
 class DSLType20_Option(DSLType20_ValueHolder):
 
-    def __init__(self, configs, name):
-
-        super().__init__(configs)
+    def __init__(self, name):
 
         self.name = name
         self.value = None
@@ -907,12 +902,9 @@ class DSLType20:
         except mvtools_exception.mvtools_exception as ex:
             return False, "Unable to add and create context: [%s]" % ex.get_message()
 
-    def _config_copy(self):
-        return DSLType20_Config(self.configs.expand_envvars, self.configs.expand_user, self.configs.allow_var_dupes, self.configs.inherit_options, self.configs.var_decorator)
-
     def _val_copy(self, val_ptr):
 
-        new_inst = DSLType20_Value(self._config_copy())
+        new_inst = DSLType20_Value()
         for x in val_ptr.internal_data:
 
             if x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
@@ -942,13 +934,13 @@ class DSLType20:
 
     def _var_copy(self, original_parent_ptr, var_ptr):
 
-        new_inst = DSLType20_Variable(self._config_copy(), var_ptr.get_name(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
+        new_inst = DSLType20_Variable(var_ptr.get_name(), self._opt_list_copy(self._inherit_options(original_parent_ptr, var_ptr)))
         new_inst.value = self._obj_val_copy(var_ptr.value)
         return new_inst
 
     def _opt_copy(self, opt_ptr):
 
-        new_inst = DSLType20_Option(self._config_copy(), opt_ptr.get_name())
+        new_inst = DSLType20_Option(opt_ptr.get_name())
         new_inst.value = self._obj_val_copy(opt_ptr.value)
         return new_inst
 
@@ -1083,7 +1075,7 @@ class DSLType20:
 
         var_inst = None
         try:
-            var_inst = DSLType20_Variable(self.configs, "dummy-name", None)
+            var_inst = DSLType20_Variable("dummy-name", None)
         except mvtools_exception.mvtools_exception as ex:
             return False, "Unable to parse variable [%s]: [%s]" % (str_input, ex.get_message())
 
@@ -1387,7 +1379,7 @@ class DSLType20:
             if not v:
                 return False, "Failed parsing options: [%s]" % str_input, None, None
             opt_name = r.strip()
-            opt_inst = DSLType20_Option(self.configs, opt_name)
+            opt_inst = DSLType20_Option(opt_name)
 
             v, r = self._parse_value(str_input, local_str_input, opt_inst)
             if not v:
@@ -1434,7 +1426,7 @@ class DSLType20:
             if not v:
                 return False, "Parsing option failed: [%s]" % str_input, None, None
             opt_name = r.strip()
-            opt_inst = DSLType20_Option(self.configs, opt_name)
+            opt_inst = DSLType20_Option(opt_name)
 
         return True, opt_inst, local_str_input, more_options
 

@@ -577,22 +577,22 @@ class DSLType20Test(unittest.TestCase):
     def testValidateOptions(self):
 
         self.assertTrue(dsl_type20.validate_options( None )[0])
-        self.assertTrue(dsl_type20.validate_options( dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a") )[0])
+        self.assertTrue(dsl_type20.validate_options( dsl_type20.DSLType20_Option("a") )[0])
         self.assertTrue(dsl_type20.validate_options( [  ] )[0])
-        self.assertTrue(dsl_type20.validate_options( [dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a"), dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")] )[0])
+        self.assertTrue(dsl_type20.validate_options( [dsl_type20.DSLType20_Option("a"), dsl_type20.DSLType20_Option("b")] )[0])
 
-        self.assertFalse(dsl_type20.validate_options( [dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a"), 1] )[0])
-        self.assertFalse(dsl_type20.validate_options( [1, dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")] )[0])
-        self.assertFalse(dsl_type20.validate_options( [dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a"), dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")] )[0])
+        self.assertFalse(dsl_type20.validate_options( [dsl_type20.DSLType20_Option("a"), 1] )[0])
+        self.assertFalse(dsl_type20.validate_options( [1, dsl_type20.DSLType20_Option("b")] )[0])
+        self.assertFalse(dsl_type20.validate_options( [dsl_type20.DSLType20_Option("a"), dsl_type20.DSLType20_Option("a")] )[0])
 
     def testMakeObjOptListFromNeutralFormat1(self):
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("a", "b") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("a", "b") ])
         self.assertFalse(v)
 
     def testMakeObjOptListFromNeutralFormat2(self):
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", None) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", None) ])
         self.assertTrue(v)
         self.assertTrue(isinstance(r, list))
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
@@ -606,7 +606,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testMakeObjOptListFromNeutralFormat3(self):
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", []) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", []) ])
         self.assertTrue(v)
         self.assertTrue(isinstance(r, list))
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
@@ -620,7 +620,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testMakeObjOptListFromNeutralFormat4(self):
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", "def"]) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", ["abc", "def"]) ])
         self.assertTrue(v)
         self.assertTrue(isinstance(r, list))
         self.assertTrue(isinstance(r[0], dsl_type20.DSLType20_Option))
@@ -635,12 +635,12 @@ class DSLType20Test(unittest.TestCase):
 
     def testMakeObjOptListFromNeutralFormat5(self):
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", ["abc", None]) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", ["abc", None]) ])
         self.assertFalse(v)
 
     def testOptListHas(self):
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dsl_type20.DSLType20_Config(), [ ("a", "b"), ("c", None) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", None) ])
         self.assertTrue(v)
         options = r
         v, r = dsl_type20.opt_list_has(options, "a")
@@ -658,10 +658,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("1", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", "b"), ("1", "2") ])
@@ -671,10 +671,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", ["b", "c"]) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", ["b", "c"]) ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("1", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", ["b", "c"]), ("1", "2") ])
@@ -684,10 +684,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "2") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", "2") ])
@@ -697,10 +697,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", None) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", None) ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "2") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", "2") ])
@@ -710,10 +710,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", None) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", None) ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", None) ])
@@ -723,10 +723,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", None), ("1", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", None), ("1", "2") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", None) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", None) ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("1", "2") ])
@@ -736,10 +736,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", None) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", None) ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", None), ("1", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", None), ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("1", "2") ])
@@ -749,10 +749,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", ""), ("1", "2") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", ""), ("1", "2") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", ""), ("1", "2") ])
@@ -762,10 +762,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b"), ("c", "d") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("1", "2"), ("3", "4") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("1", "2"), ("3", "4") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", "b"), ("c", "d"), ("1", "2"), ("3", "4") ])
@@ -775,10 +775,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b"), ("c", "d") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b"), ("c", "d") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", "b"), ("c", "d") ])
@@ -788,10 +788,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b"), ("c", "d") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", None), ("c", None) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", None), ("c", None) ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", None), ("c", None) ])
@@ -801,10 +801,10 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", "b"), ("c", "d") ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("c", "d") ])
         self.assertTrue(v)
         parent_opts = r
-        v, r = dsl_type20.make_obj_opt_list_from_neutral_format(test_cfg, [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
+        v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
@@ -931,9 +931,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value1(self):
 
         test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -977,9 +976,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value2(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1008,9 +1006,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value3(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1039,9 +1036,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value4(self):
 
         test_cfg = dsl_type20.DSLType20_Config(expand_user = True)
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1064,9 +1060,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value5(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1089,9 +1084,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value6(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1114,9 +1108,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value7(self):
 
         test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True)
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1140,9 +1133,8 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value8(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1166,8 +1158,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Value9(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
-        test_val = dsl_type20.DSLType20_Value(test_cfg)
-        self.assertEqual(test_val.configs, test_cfg)
+        test_val = dsl_type20.DSLType20_Value()
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
@@ -1185,16 +1176,15 @@ class DSLType20Test(unittest.TestCase):
 
         ex_flag = False
         try:
-            var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "", None)
+            var_inst = dsl_type20.DSLType20_Variable("", None)
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
 
     def testDSLType20_Variable2(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", None)
+        var_inst = dsl_type20.DSLType20_Variable("a", None)
         self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
-        self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
         self.assertEqual(var_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR)
         self.assertEqual(var_inst.name, "a")
         self.assertEqual(var_inst.get_name(), "a")
@@ -1204,10 +1194,9 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable3(self):
 
-        opt_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", opt_inst)
+        opt_inst = dsl_type20.DSLType20_Option("b")
+        var_inst = dsl_type20.DSLType20_Variable("a", opt_inst)
         self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
-        self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
         self.assertEqual(var_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR)
         self.assertEqual(var_inst.name, "a")
         self.assertEqual(var_inst.get_name(), "a")
@@ -1217,11 +1206,10 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable4(self):
 
-        opt_inst1 = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")
-        opt_inst2 = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "c")
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [opt_inst1, opt_inst2])
+        opt_inst1 = dsl_type20.DSLType20_Option("b")
+        opt_inst2 = dsl_type20.DSLType20_Option("c")
+        var_inst = dsl_type20.DSLType20_Variable("a", [opt_inst1, opt_inst2])
         self.assertTrue(isinstance(var_inst, dsl_type20.DSLType20_Variable))
-        self.assertTrue(isinstance(var_inst.configs, dsl_type20.DSLType20_Config))
         self.assertEqual(var_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_VAR)
         self.assertEqual(var_inst.name, "a")
         self.assertEqual(var_inst.get_name(), "a")
@@ -1231,17 +1219,17 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable5(self):
 
-        opt_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "c")
+        opt_inst = dsl_type20.DSLType20_Option("c")
         ex_flag = False
         try:
-            var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [opt_inst, 1])
+            var_inst = dsl_type20.DSLType20_Variable("a", [opt_inst, 1])
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
 
     def testDSLType20_Variable_NewValue1(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(var_inst.value, None)
         var_inst.new_value()
         self.assertTrue(isinstance(var_inst.value, dsl_type20.DSLType20_Value))
@@ -1253,7 +1241,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_AddValueImmediate1(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         ex_flag = False
         try:
             var_inst.add_value_immediate("val")
@@ -1263,7 +1251,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_AddValueImmediate2(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(var_inst.value, None)
         var_inst.new_value()
         self.assertTrue(isinstance(var_inst.value, dsl_type20.DSLType20_Value))
@@ -1277,7 +1265,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_AddValueImmediate3(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(var_inst.value, None)
         var_inst.new_value()
         self.assertTrue(isinstance(var_inst.value, dsl_type20.DSLType20_Value))
@@ -1289,7 +1277,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_AddValueImmediate4(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(var_inst.value, None)
         var_inst.new_value()
         var_inst.new_value()
@@ -1305,7 +1293,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_AddValueEnvvar1(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         ex_flag = False
         try:
             var_inst.add_value_envvar("envvar")
@@ -1315,7 +1303,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_AddValueEnvvar2(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(var_inst.value, None)
         var_inst.new_value()
         self.assertTrue(isinstance(var_inst.value, dsl_type20.DSLType20_Value))
@@ -1327,7 +1315,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_AddValueEnvvar3(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(var_inst.value, None)
         var_inst.new_value()
         var_inst.new_value()
@@ -1343,25 +1331,25 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetValueSerialized1(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(var_inst.serialize(), None)
 
     def testDSLType20_Variable_GetValueSerialized2(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         self.assertEqual(var_inst.serialize(), None)
 
     def testDSLType20_Variable_GetValueSerialized3(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         self.assertEqual(var_inst.serialize(), "\"\"")
 
     def testDSLType20_Variable_GetValueSerialized4(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         var_inst.add_value_immediate("")
@@ -1369,7 +1357,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetValueSerialized5(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_immediate("val2")
@@ -1378,7 +1366,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable_GetValueSerialized6(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -1387,7 +1375,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetValueSerialized7(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         var_inst.new_value()
@@ -1396,7 +1384,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetValueSerialized8(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -1406,7 +1394,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Variable_GetValueSerialized9(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -1417,14 +1405,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetValueSerialized10(self):
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_user = True), "a", [])
-        var_inst.new_value()
-        var_inst.add_value_immediate("~")
-        self.assertEqual(var_inst.serialize(), "\"~\"")
-
-    def testDSLType20_Variable_GetValueSerialized11(self):
-
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
         self.assertEqual(var_inst.serialize(), "\"~\"")
@@ -1433,16 +1414,15 @@ class DSLType20Test(unittest.TestCase):
 
         ex_flag = False
         try:
-            obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "")
+            obj_inst = dsl_type20.DSLType20_Option("")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
 
     def testDSLType20_Option2(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertTrue(isinstance(obj_inst, dsl_type20.DSLType20_Option))
-        self.assertTrue(isinstance(obj_inst.configs, dsl_type20.DSLType20_Config))
         self.assertEqual(obj_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_OPT)
         self.assertEqual(obj_inst.name, "a")
         self.assertEqual(obj_inst.get_name(), "a")
@@ -1450,7 +1430,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_NewValue1(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(obj_inst.value, None)
         obj_inst.new_value()
         self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
@@ -1462,7 +1442,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_AddValueImmediate1(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         ex_flag = False
         try:
             obj_inst.add_value_immediate("val")
@@ -1472,7 +1452,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_AddValueImmediate2(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(obj_inst.value, None)
         obj_inst.new_value()
         self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
@@ -1486,7 +1466,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_AddValueImmediate3(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(obj_inst.value, None)
         obj_inst.new_value()
         self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
@@ -1498,7 +1478,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_AddValueImmediate4(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(obj_inst.value, None)
         obj_inst.new_value()
         obj_inst.new_value()
@@ -1514,7 +1494,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_AddValueEnvvar1(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         ex_flag = False
         try:
             obj_inst.add_value_envvar("envvar")
@@ -1524,7 +1504,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_AddValueEnvvar2(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(obj_inst.value, None)
         obj_inst.new_value()
         self.assertTrue(isinstance(obj_inst.value, dsl_type20.DSLType20_Value))
@@ -1536,7 +1516,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_AddValueEnvvar3(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(obj_inst.value, None)
         obj_inst.new_value()
         obj_inst.new_value()
@@ -1552,25 +1532,25 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetValueSerialized1(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(obj_inst.serialize(), None)
 
     def testDSLType20_Option_GetValueSerialized2(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         self.assertEqual(obj_inst.serialize(), None)
 
     def testDSLType20_Option_GetValueSerialized3(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         self.assertEqual(obj_inst.serialize(), "\"\"")
 
     def testDSLType20_Option_GetValueSerialized4(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         obj_inst.add_value_immediate("")
@@ -1578,7 +1558,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetValueSerialized5(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_immediate("val2")
@@ -1587,7 +1567,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Option_GetValueSerialized6(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -1596,7 +1576,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetValueSerialized7(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         obj_inst.new_value()
@@ -1605,7 +1585,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetValueSerialized8(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -1615,7 +1595,7 @@ class DSLType20Test(unittest.TestCase):
     def testDSLType20_Option_GetValueSerialized9(self):
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -1626,14 +1606,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetValueSerialized10(self):
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_user = True), "a")
-        obj_inst.new_value()
-        obj_inst.add_value_immediate("~")
-        self.assertEqual(obj_inst.serialize(), "\"~\"")
-
-    def testDSLType20_Option_GetValueSerialized11(self):
-
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
         self.assertEqual(obj_inst.serialize(), "\"~\"")
@@ -1662,7 +1635,7 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Context3(self):
 
-        test_opt = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        test_opt = dsl_type20.DSLType20_Option("a")
         ctx_inst = dsl_type20.DSLType20_Context(None, "a", test_opt)
         self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
         self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
@@ -1689,8 +1662,8 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Context5(self):
 
-        test_opt1 = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
-        test_opt2 = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "b")
+        test_opt1 = dsl_type20.DSLType20_Option("a")
+        test_opt2 = dsl_type20.DSLType20_Option("b")
         ctx_inst = dsl_type20.DSLType20_Context(None, "a", [test_opt1, test_opt2])
         self.assertTrue(isinstance(ctx_inst, dsl_type20.DSLType20_Context))
         self.assertEqual(ctx_inst.get_type(), dsl_type20.DSLTYPE20_ENTRY_TYPE_CTX)
@@ -1832,15 +1805,15 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
         v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var.new_value()
         test_var.add_value_immediate("val2")
         v, r = test_dsl.add_variable(test_var, "ctx1")
@@ -1854,35 +1827,35 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True, inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
-        test_opt5 = dsl_type20.DSLType20_Option(test_cfg, "opt5")
+        test_opt5 = dsl_type20.DSLType20_Option("opt5")
         test_opt5.new_value()
         test_opt5.add_value_immediate("val5")
 
-        test_opt6 = dsl_type20.DSLType20_Option(test_cfg, "opt6")
+        test_opt6 = dsl_type20.DSLType20_Option("opt6")
         test_opt6.new_value()
         test_opt6.add_value_immediate("val6")
 
-        test_opt7 = dsl_type20.DSLType20_Option(test_cfg, "opt7")
+        test_opt7 = dsl_type20.DSLType20_Option("opt7")
         test_opt7.new_value()
         test_opt7.add_value_immediate("val7")
 
-        test_opt8 = dsl_type20.DSLType20_Option(test_cfg, "opt8")
+        test_opt8 = dsl_type20.DSLType20_Option("opt8")
         test_opt8.new_value()
         test_opt8.add_value_immediate("val8")
 
@@ -1893,23 +1866,23 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx3", test_opt3, "ctx2")
         self.assertTrue(v)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt4)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt4)
         test_var1.new_value()
         test_var1.add_value_immediate("val9")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", test_opt5)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt5)
         test_var2.new_value()
         test_var2.add_value_immediate("val10")
 
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", test_opt6)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt6)
         test_var3.new_value()
         test_var3.add_value_immediate("val11")
 
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt7)
+        test_var4 = dsl_type20.DSLType20_Variable("var1", test_opt7)
         test_var4.new_value()
         test_var4.add_value_immediate("val12")
 
-        test_var5 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt8)
+        test_var5 = dsl_type20.DSLType20_Variable("var1", test_opt8)
         test_var5.new_value()
         test_var5.add_value_immediate("val13")
 
@@ -1930,35 +1903,35 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
-        test_opt5 = dsl_type20.DSLType20_Option(test_cfg, "opt5")
+        test_opt5 = dsl_type20.DSLType20_Option("opt5")
         test_opt5.new_value()
         test_opt5.add_value_immediate("val5")
 
-        test_opt6 = dsl_type20.DSLType20_Option(test_cfg, "opt6")
+        test_opt6 = dsl_type20.DSLType20_Option("opt6")
         test_opt6.new_value()
         test_opt6.add_value_immediate("val6")
 
-        test_opt7 = dsl_type20.DSLType20_Option(test_cfg, "opt7")
+        test_opt7 = dsl_type20.DSLType20_Option("opt7")
         test_opt7.new_value()
         test_opt7.add_value_immediate("val7")
 
-        test_opt8 = dsl_type20.DSLType20_Option(test_cfg, "opt8")
+        test_opt8 = dsl_type20.DSLType20_Option("opt8")
         test_opt8.new_value()
         test_opt8.add_value_immediate("val8")
 
@@ -1969,23 +1942,23 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx3", test_opt3, "ctx2")
         self.assertTrue(v)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt4)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt4)
         test_var1.new_value()
         test_var1.add_value_immediate("val9")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", test_opt5)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt5)
         test_var2.new_value()
         test_var2.add_value_immediate("val10")
 
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", test_opt6)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt6)
         test_var3.new_value()
         test_var3.add_value_immediate("val11")
 
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt7)
+        test_var4 = dsl_type20.DSLType20_Variable("var1", test_opt7)
         test_var4.new_value()
         test_var4.add_value_immediate("val12")
 
-        test_var5 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt8)
+        test_var5 = dsl_type20.DSLType20_Variable("var1", test_opt8)
         test_var5.new_value()
         test_var5.add_value_immediate("val13")
 
@@ -2034,13 +2007,13 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -2053,13 +2026,13 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -2072,17 +2045,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -2095,22 +2068,22 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
         self.assertTrue(test_dsl.add_context("ctx2", test_opt2, "ctx1")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt3)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt3)
         test_var1.new_value()
         test_var1.add_value_immediate("val4")
 
@@ -2123,23 +2096,23 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
-        test_opt5 = dsl_type20.DSLType20_Option(test_cfg, "opt5")
+        test_opt5 = dsl_type20.DSLType20_Option("opt5")
         test_opt5.new_value()
         test_opt5.add_value_immediate("val5")
 
@@ -2148,7 +2121,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx3", test_opt3, "ctx2")[0])
         self.assertTrue(test_dsl.add_context("ctx4", test_opt4, "ctx3")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt5)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt5)
         test_var1.new_value()
         test_var1.add_value_immediate("val6")
 
@@ -2161,23 +2134,23 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
-        test_opt5 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt5 = dsl_type20.DSLType20_Option("opt1")
         test_opt5.new_value()
         test_opt5.add_value_immediate("val5")
 
@@ -2186,7 +2159,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx3", test_opt3, "ctx2")[0])
         self.assertTrue(test_dsl.add_context("ctx4", test_opt4, "ctx3")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt5)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt5)
         test_var1.new_value()
         test_var1.add_value_immediate("val6")
 
@@ -2199,26 +2172,26 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt3 = dsl_type20.DSLType20_Option("opt1")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
-        test_opt5 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt5 = dsl_type20.DSLType20_Option("opt4")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
         self.assertTrue(test_dsl.add_context("ctx2", test_opt2, "ctx1")[0])
         self.assertTrue(test_dsl.add_context("ctx3", test_opt3, "ctx2")[0])
         self.assertTrue(test_dsl.add_context("ctx4", test_opt4, "ctx3")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt5)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt5)
         test_var1.new_value()
         test_var1.add_value_immediate("val6")
 
@@ -3050,7 +3023,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "var1")
+        test_opt1 = dsl_type20.DSLType20_Option("var1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
@@ -3091,11 +3064,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "a")
+        test_opt1 = dsl_type20.DSLType20_Option("a")
         test_opt1.new_value()
         test_opt1.add_value_immediate("b")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "1")
+        test_opt2 = dsl_type20.DSLType20_Option("1")
         test_opt2.new_value()
         test_opt2.add_value_immediate("2")
 
@@ -3123,11 +3096,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
@@ -3155,19 +3128,19 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
@@ -3199,19 +3172,19 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt4 = dsl_type20.DSLType20_Option("opt1")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
@@ -3243,17 +3216,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt4 = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl.add_context("ctx1", [test_opt1, test_opt2], None)
         self.assertTrue(v)
@@ -3283,19 +3256,19 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt4 = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl.add_context("ctx1", [test_opt1, test_opt2], None)
         self.assertTrue(v)
@@ -3325,17 +3298,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt4 = dsl_type20.DSLType20_Option("opt1")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val4")
 
@@ -3372,10 +3345,10 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx2", None, "ctx1")
         self.assertTrue(v)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var4", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var4 = dsl_type20.DSLType20_Variable("var4", None)
 
         v, r = test_dsl.add_variable(test_var1, "ctx1")
         self.assertTrue(v)
@@ -3409,11 +3382,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
@@ -3455,7 +3428,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
@@ -3512,7 +3485,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "ctx1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("ctx1", None)
 
         v, r = test_dsl.add_variable(test_var1)
         self.assertTrue(v)
@@ -3549,7 +3522,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx1", None, None)[0])
         self.assertTrue(test_dsl.add_context("ctx2", None, "ctx1")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -3569,11 +3542,11 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx2", None, "ctx1")[0])
         self.assertTrue(test_dsl.add_context("ctx3", None, "ctx2")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
@@ -3622,7 +3595,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
 
         self.assertTrue(test_dsl.add_variable(test_var1)[0])
 
@@ -3639,7 +3612,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -3658,7 +3631,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -3677,11 +3650,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val2")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -3702,15 +3675,15 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val2")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", [test_opt1, test_opt2])
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2])
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -3733,27 +3706,27 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val2")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt3 = dsl_type20.DSLType20_Option("opt1")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val2")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt4 = dsl_type20.DSLType20_Option("opt2")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val3")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", [test_opt1, test_opt2])
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2])
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", [test_opt3, test_opt4])
+        test_var2 = dsl_type20.DSLType20_Variable("var1", [test_opt3, test_opt4])
         test_var2.new_value()
         test_var2.add_value_immediate("val1")
 
@@ -3786,17 +3759,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -3819,17 +3792,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -3850,9 +3823,9 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -3868,7 +3841,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
 
         self.assertTrue(test_dsl.add_variable(test_var1)[0])
 
@@ -3877,17 +3850,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -3908,15 +3881,15 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -3937,15 +3910,15 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val3")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -3966,12 +3939,12 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
 
         self.assertTrue(test_dsl.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -3990,19 +3963,19 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val2")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt3")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val4")
 
-        test_opt4 = dsl_type20.DSLType20_Option(test_cfg, "opt4")
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
         test_opt4.new_value()
         test_opt4.add_value_immediate("val5")
 
@@ -4010,7 +3983,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx2", test_opt2, "ctx1")[0])
         self.assertTrue(test_dsl.add_context("ctx3", test_opt3, "ctx2")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt4)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt4)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -4037,7 +4010,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4058,7 +4031,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl.add_context("var1", None, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
 
         self.assertTrue(test_dsl.add_variable(test_var1)[0])
 
@@ -4069,7 +4042,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("one")
 
@@ -4082,7 +4055,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("one")
         test_var1.new_value()
@@ -4097,9 +4070,9 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("one")
         test_var1.new_value()
@@ -4114,13 +4087,13 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("three")
         test_opt1.new_value()
         test_opt1.add_value_immediate("four")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("one")
         test_var1.new_value()
@@ -4135,7 +4108,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
         self.assertFalse(test_dsl.add_variable(test_opt1)[0])
 
@@ -4144,11 +4117,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
@@ -4160,9 +4133,9 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4173,14 +4146,14 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", test_opt2)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
         test_var2.new_value()
         test_var2.add_value_immediate("val1")
 
@@ -4194,11 +4167,11 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl.add_context("ctx1", None, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
@@ -4212,11 +4185,11 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(dsl.add_context("ctx1", None, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
@@ -4237,7 +4210,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4264,7 +4237,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4286,11 +4259,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
@@ -4323,7 +4296,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4354,11 +4327,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val4")
 
@@ -4407,39 +4380,39 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx2", None, "ctx1")[0])
         self.assertTrue(test_dsl.add_context("ctx3", None, "ctx2")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
         test_var3.new_value()
         test_var3.add_value_immediate("val3")
 
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var4", None)
+        test_var4 = dsl_type20.DSLType20_Variable("var4", None)
         test_var4.new_value()
         test_var4.add_value_immediate("val4")
 
-        test_var5 = dsl_type20.DSLType20_Variable(test_cfg, "var5", None)
+        test_var5 = dsl_type20.DSLType20_Variable("var5", None)
         test_var5.new_value()
         test_var5.add_value_immediate("val5")
 
-        test_var6 = dsl_type20.DSLType20_Variable(test_cfg, "var6", None)
+        test_var6 = dsl_type20.DSLType20_Variable("var6", None)
         test_var6.new_value()
         test_var6.add_value_immediate("val6")
 
-        test_var7 = dsl_type20.DSLType20_Variable(test_cfg, "var7", None)
+        test_var7 = dsl_type20.DSLType20_Variable("var7", None)
         test_var7.new_value()
         test_var7.add_value_immediate("val7")
 
-        test_var8 = dsl_type20.DSLType20_Variable(test_cfg, "var8", None)
+        test_var8 = dsl_type20.DSLType20_Variable("var8", None)
         test_var8.new_value()
         test_var8.add_value_immediate("val8")
 
-        test_var9 = dsl_type20.DSLType20_Variable(test_cfg, "var9", None)
+        test_var9 = dsl_type20.DSLType20_Variable("var9", None)
         test_var9.new_value()
         test_var9.add_value_immediate("val9")
 
@@ -4490,39 +4463,39 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx2", None, "ctx1")[0])
         self.assertTrue(test_dsl.add_context("ctx3", None, "ctx2")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var1", None)
         test_var3.new_value()
         test_var3.add_value_immediate("val3")
 
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var4 = dsl_type20.DSLType20_Variable("var2", None)
         test_var4.new_value()
         test_var4.add_value_immediate("val4")
 
-        test_var5 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var5 = dsl_type20.DSLType20_Variable("var2", None)
         test_var5.new_value()
         test_var5.add_value_immediate("val5")
 
-        test_var6 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var6 = dsl_type20.DSLType20_Variable("var2", None)
         test_var6.new_value()
         test_var6.add_value_immediate("val6")
 
-        test_var7 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var7 = dsl_type20.DSLType20_Variable("var3", None)
         test_var7.new_value()
         test_var7.add_value_immediate("val7")
 
-        test_var8 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var8 = dsl_type20.DSLType20_Variable("var3", None)
         test_var8.new_value()
         test_var8.add_value_immediate("val8")
 
-        test_var9 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var9 = dsl_type20.DSLType20_Variable("var3", None)
         test_var9.new_value()
         test_var9.add_value_immediate("val9")
 
@@ -4569,7 +4542,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4596,7 +4569,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4623,7 +4596,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4654,19 +4627,19 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
         test_var3.new_value()
         test_var3.add_value_immediate("val3")
 
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var4 = dsl_type20.DSLType20_Variable("var3", None)
         test_var4.new_value()
         test_var4.add_value_immediate("val3")
 
@@ -4709,39 +4682,39 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(test_dsl.add_context("ctx2", None, "ctx1")[0])
         self.assertTrue(test_dsl.add_context("ctx3", None, "ctx2")[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var3", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
         test_var3.new_value()
         test_var3.add_value_immediate("val3")
 
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var4", None)
+        test_var4 = dsl_type20.DSLType20_Variable("var4", None)
         test_var4.new_value()
         test_var4.add_value_immediate("val4")
 
-        test_var5 = dsl_type20.DSLType20_Variable(test_cfg, "var5", None)
+        test_var5 = dsl_type20.DSLType20_Variable("var5", None)
         test_var5.new_value()
         test_var5.add_value_immediate("val5")
 
-        test_var6 = dsl_type20.DSLType20_Variable(test_cfg, "var6", None)
+        test_var6 = dsl_type20.DSLType20_Variable("var6", None)
         test_var6.new_value()
         test_var6.add_value_immediate("val6")
 
-        test_var7 = dsl_type20.DSLType20_Variable(test_cfg, "var7", None)
+        test_var7 = dsl_type20.DSLType20_Variable("var7", None)
         test_var7.new_value()
         test_var7.add_value_immediate("val7")
 
-        test_var8 = dsl_type20.DSLType20_Variable(test_cfg, "var8", None)
+        test_var8 = dsl_type20.DSLType20_Variable("var8", None)
         test_var8.new_value()
         test_var8.add_value_immediate("val8")
 
-        test_var9 = dsl_type20.DSLType20_Variable(test_cfg, "var9", None)
+        test_var9 = dsl_type20.DSLType20_Variable("var9", None)
         test_var9.new_value()
         test_var9.add_value_immediate("val9")
 
@@ -4836,7 +4809,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "ctx1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("ctx1", None)
 
         self.assertTrue(test_dsl.add_variable(test_var1)[0])
 
@@ -4883,7 +4856,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -4917,13 +4890,13 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
         self.assertTrue(test_dsl_1.add_variable(test_var1)[0])
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
@@ -4959,19 +4932,19 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
-        test_var2 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var2.new_value()
         test_var2.add_value_immediate("val2")
 
-        test_var3 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var1", None)
         test_var3.new_value()
         test_var3.add_value_immediate("val1")
 
-        test_var4 = dsl_type20.DSLType20_Variable(test_cfg, "var2", None)
+        test_var4 = dsl_type20.DSLType20_Variable("var2", None)
         test_var4.new_value()
         test_var4.add_value_immediate("val2")
 
@@ -5014,7 +4987,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val\"1\"")
 
@@ -5052,9 +5025,9 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("val\"1\"")
 
@@ -5092,11 +5065,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val2")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -5133,11 +5106,11 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val\"2\"")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("val\"1\"")
 
@@ -5174,13 +5147,13 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val2")
 
         self.assertTrue(test_dsl_1.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -5217,17 +5190,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
         self.assertTrue(test_dsl_1.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -5264,15 +5237,15 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt1")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val3")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt2)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var1.new_value()
         test_var1.add_value_immediate("val2")
 
@@ -5310,7 +5283,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(var_decorator="* ")
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
 
@@ -5347,21 +5320,21 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
 
-        test_opt3 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt3 = dsl_type20.DSLType20_Option("opt1")
         test_opt3.new_value()
         test_opt3.add_value_immediate("val3")
 
         self.assertTrue(test_dsl_1.add_context("ctx1", [test_opt1, test_opt2], None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt3)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt3)
         test_var1.new_value()
         test_var1.add_value_immediate("val4")
 
@@ -5400,7 +5373,7 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl_1.add_context("ctx1", None, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5439,9 +5412,9 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl_1.add_context("ctx1", None, None)[0])
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5479,11 +5452,11 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl_1.add_context("ctx1", None, None)[0])
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", test_opt1)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5520,13 +5493,13 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("")
 
         self.assertTrue(test_dsl_1.add_context("ctx1", test_opt1, None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5565,10 +5538,10 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl_1.add_context("ctx1", None, None)[0])
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", [test_opt1, test_opt2])
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2])
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5607,15 +5580,15 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl_1.add_context("ctx1", None, None)[0])
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", [test_opt1, test_opt2])
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2])
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5654,15 +5627,15 @@ class DSLType20Test(unittest.TestCase):
 
         self.assertTrue(test_dsl_1.add_context("ctx1", None, None)[0])
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("abc")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("def")
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", [test_opt1, test_opt2])
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2])
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5699,12 +5672,12 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
 
         self.assertTrue(test_dsl_1.add_context("ctx1", [test_opt1, test_opt2], None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5741,17 +5714,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("")
 
         self.assertTrue(test_dsl_1.add_context("ctx1", [test_opt1, test_opt2], None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5788,17 +5761,17 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("abc")
 
-        test_opt2 = dsl_type20.DSLType20_Option(test_cfg, "opt2")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("def")
 
         self.assertTrue(test_dsl_1.add_context("ctx1", [test_opt1, test_opt2], None)[0])
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("")
 
@@ -5835,7 +5808,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("#val1")
 
@@ -5872,7 +5845,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("//val1")
 
@@ -6605,7 +6578,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
         test_var1.add_value_immediate("val2")
@@ -6643,7 +6616,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl_1 = dsl_type20.DSLType20(test_cfg)
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
         test_var1.add_value_immediate("val2")
@@ -6687,7 +6660,7 @@ class DSLType20Test(unittest.TestCase):
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "test-value-1"
         os.environ[ (self.reserved_test_env_var_2[1:]) ] = "test-value-2"
 
-        test_var1 = dsl_type20.DSLType20_Variable(test_cfg, "var1", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
         test_var1.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6728,7 +6701,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         self.assertEqual(test_dsl._get_resolved_value(var_inst), None)
 
     def testDSLType20_Variable_GetResolvedValue2(self):
@@ -6736,7 +6709,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         self.assertEqual(test_dsl._get_resolved_value(var_inst), None)
 
@@ -6745,7 +6718,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         self.assertEqual(test_dsl._get_resolved_value(var_inst), "")
@@ -6755,7 +6728,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         var_inst.add_value_immediate("")
@@ -6766,7 +6739,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_immediate("val2")
@@ -6778,7 +6751,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6791,7 +6764,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6805,7 +6778,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("")
         var_inst.new_value()
@@ -6817,7 +6790,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -6830,7 +6803,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -6845,7 +6818,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -6861,7 +6834,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(expand_user = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
         self.assertEqual(test_dsl._get_resolved_value(var_inst), os.path.expanduser("~"))
@@ -6871,7 +6844,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
         self.assertEqual(test_dsl._get_resolved_value(var_inst), "~")
@@ -6882,7 +6855,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "~"
-        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
         var_inst.new_value()
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         self.assertEqual(test_dsl._get_resolved_value(var_inst), os.path.expanduser("~"))
@@ -6892,7 +6865,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         self.assertEqual(test_dsl._get_resolved_value(obj_inst), None)
 
     def testDSLType20_Option_GetResolvedValue2(self):
@@ -6900,7 +6873,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         self.assertEqual(test_dsl._get_resolved_value(obj_inst), None)
 
@@ -6909,7 +6882,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         self.assertEqual(test_dsl._get_resolved_value(obj_inst), "")
@@ -6919,7 +6892,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         obj_inst.add_value_immediate("")
@@ -6930,7 +6903,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_immediate("val2")
@@ -6942,7 +6915,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6955,7 +6928,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6969,7 +6942,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("")
         obj_inst.new_value()
@@ -6981,7 +6954,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -6994,7 +6967,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -7009,7 +6982,7 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -7025,7 +6998,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config(expand_user = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
         self.assertEqual(test_dsl._get_resolved_value(obj_inst), os.path.expanduser("~"))
@@ -7035,7 +7008,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(), "a")
+        obj_inst = dsl_type20.DSLType20_Option("a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
         self.assertEqual(test_dsl._get_resolved_value(obj_inst), "~")
@@ -7045,7 +7018,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
@@ -7060,7 +7033,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
@@ -7075,7 +7048,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
@@ -7090,7 +7063,7 @@ class DSLType20Test(unittest.TestCase):
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        test_opt1 = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
 
@@ -7147,7 +7120,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1", test_var)
         self.assertTrue(v)
@@ -7159,7 +7132,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = \"\"", test_var)
         self.assertTrue(v)
@@ -7171,7 +7144,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = \"abc\"", test_var)
         self.assertTrue(v)
@@ -7183,7 +7156,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = ()", test_var)
         self.assertTrue(v)
@@ -7195,7 +7168,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"\")", test_var)
         self.assertTrue(v)
@@ -7207,7 +7180,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"abc\")", test_var)
         self.assertTrue(v)
@@ -7219,7 +7192,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"a\\\"c\")", test_var)
         self.assertTrue(v)
@@ -7231,7 +7204,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"\", \"\")", test_var)
         self.assertTrue(v)
@@ -7243,7 +7216,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"abc\", \"def\")", test_var)
         self.assertTrue(v)
@@ -7255,7 +7228,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"a\\\"c\", \"d\\\"f\")", test_var)
         self.assertTrue(v)
@@ -7267,7 +7240,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"abc\", )", test_var)
         self.assertFalse(v)
@@ -7276,7 +7249,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = (\"   abc  \", \"  def   \")", test_var)
         self.assertTrue(v)
@@ -7288,7 +7261,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = \"abc\" + \"def\"", test_var)
         self.assertTrue(v)
@@ -7300,7 +7273,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = \"abc\" +", test_var)
         self.assertFalse(v)
@@ -7309,7 +7282,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = + \"abc\"", test_var)
         self.assertFalse(v)
@@ -7318,7 +7291,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = \"abc\" ++ \"def\"", test_var)
         self.assertFalse(v)
@@ -7327,7 +7300,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_var = dsl_type20.DSLType20_Variable(test_cfg, "varname", None)
+        test_var = dsl_type20.DSLType20_Variable("varname", None)
 
         v, r = test_dsl._parse_value_end("var1 = \"abc\" +++ \"def\"", test_var)
         self.assertFalse(v)
@@ -7336,7 +7309,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: \"\"}", "\"\"}", test_opt)
         self.assertTrue(v)
@@ -7348,7 +7321,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: \"abc\"}", "\"abc\"}", test_opt)
         self.assertTrue(v)
@@ -7360,7 +7333,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: \"a\\\"c\"}", "\"a\\\"c\"}", test_opt)
         self.assertTrue(v)
@@ -7372,7 +7345,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: ()}", "()}", test_opt)
         self.assertTrue(v)
@@ -7384,7 +7357,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: (\"\")}", "(\"\")}", test_opt)
         self.assertTrue(v)
@@ -7396,7 +7369,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: (\"abc\")}", "(\"abc\")}", test_opt)
         self.assertTrue(v)
@@ -7408,7 +7381,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: (\"\", \"\")}", "(\"\", \"\")}", test_opt)
         self.assertTrue(v)
@@ -7420,7 +7393,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: (\"abc\", \"def\")}", "(\"abc\", \"def\")}", test_opt)
         self.assertTrue(v)
@@ -7432,7 +7405,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: (\"abc\", \"def\",)}", "(\"abc\", \"def\",)}", test_opt)
         self.assertFalse(v)
@@ -7441,7 +7414,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: (\"   abc  \", \"  def   \")}", "(\"   abc  \", \"  def   \")}", test_opt)
         self.assertTrue(v)
@@ -7453,7 +7426,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: \"abc\" + \"def\"}", "\"abc\" + \"def\"}", test_opt)
         self.assertTrue(v)
@@ -7465,7 +7438,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: \"abc\" +}", "\"abc\" +}", test_opt)
         self.assertFalse(v)
@@ -7474,7 +7447,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: + \"abc\"}", "+ \"abc\"}", test_opt)
         self.assertFalse(v)
@@ -7483,7 +7456,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: \"abc\" ++ \"def\"}", "\"abc\" ++ \"def\"}", test_opt)
         self.assertFalse(v)
@@ -7492,7 +7465,7 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_dsl = dsl_type20.DSLType20(test_cfg)
-        test_opt = dsl_type20.DSLType20_Option(test_cfg, "opt1")
+        test_opt = dsl_type20.DSLType20_Option("opt1")
 
         v, r = test_dsl._parse_value("opt1: \"abc\" +++ \"def\"}", "\"abc\" +++ \"def\"}", test_opt)
         self.assertFalse(v)
