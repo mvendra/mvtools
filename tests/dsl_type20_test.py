@@ -585,6 +585,31 @@ class DSLType20Test(unittest.TestCase):
         self.assertFalse(dsl_type20.validate_options( [1, dsl_type20.DSLType20_Option("b")] )[0])
         self.assertFalse(dsl_type20.validate_options( [dsl_type20.DSLType20_Option("a"), dsl_type20.DSLType20_Option("a")] )[0])
 
+    def testSelectorRoute(self):
+
+        self.assertFalse(dsl_type20.validate_selector_route(None))
+        self.assertTrue(dsl_type20.validate_selector_route(""))
+        self.assertTrue(dsl_type20.validate_selector_route("@ctx"))
+        self.assertFalse(dsl_type20.validate_selector_route("@"))
+        self.assertFalse(dsl_type20.validate_selector_route("@ctx:"))
+        self.assertTrue(dsl_type20.validate_selector_route("@ctx.var"))
+        self.assertFalse(dsl_type20.validate_selector_route("@ctx."))
+        self.assertFalse(dsl_type20.validate_selector_route("@ctx.var@"))
+        self.assertFalse(dsl_type20.validate_selector_route("@ctx.var."))
+        self.assertTrue(dsl_type20.validate_selector_route("var"))
+        self.assertFalse(dsl_type20.validate_selector_route("var@"))
+        self.assertFalse(dsl_type20.validate_selector_route("var."))
+        self.assertFalse(dsl_type20.validate_selector_route("var@somectx"))
+        self.assertFalse(dsl_type20.validate_selector_route("var.somevar"))
+        self.assertTrue(dsl_type20.validate_selector_route("!"))
+        self.assertTrue(dsl_type20.validate_selector_route("!opt"))
+        self.assertFalse(dsl_type20.validate_selector_route("!opt!"))
+        self.assertFalse(dsl_type20.validate_selector_route("!opt@"))
+        self.assertFalse(dsl_type20.validate_selector_route("!opt."))
+        self.assertFalse(dsl_type20.validate_selector_route("!opt!somemore"))
+        self.assertFalse(dsl_type20.validate_selector_route("!opt@somemore"))
+        self.assertFalse(dsl_type20.validate_selector_route("!opt.somemore"))
+
     def testMakeObjOptListFromNeutralFormat1(self):
 
         v, r = dsl_type20.make_obj_opt_list_from_neutral_format([ ("a", "b"), ("a", "b") ])

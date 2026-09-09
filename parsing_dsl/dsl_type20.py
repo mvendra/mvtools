@@ -246,6 +246,68 @@ def validate_options(options):
 
     return True, None
 
+def validate_selector_route(route):
+
+    route_local = route
+
+    if not isinstance(route_local, str):
+        return False
+
+    if route_local == "":
+        return True
+
+    if route_local[0] == miniparse.ATSIGN:
+        route_local = route_local[1:]
+
+        # context name
+        v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
+        if not v:
+            return False
+        route_local = route_local[len(r[0]):]
+
+        if route_local == "":
+            return True
+
+        if route_local[0] == ".":
+            route_local = route_local[1:]
+
+            # variable name
+            v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
+            if not v:
+                return False
+            route_local = route_local[len(r[0]):]
+
+            if route_local == "":
+                return True
+
+    elif route_local[0] == miniparse.EXCLMARK:
+        route_local = route_local[1:]
+
+        if route_local == "":
+            return True
+
+        # option name
+        v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
+        if not v:
+            return False
+        route_local = route_local[len(r[0]):]
+
+        if route_local == "":
+            return True
+
+    else:
+
+        # variable name
+        v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
+        if not v:
+            return False
+        route_local = route_local[len(r[0]):]
+
+        if route_local == "":
+            return True
+
+    return False
+
 def opt_list_has(options, name):
 
     for opt in options:
@@ -307,11 +369,10 @@ class DSLType20_Value:
     def add_envvar(self, source):
         self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, source))
 
-    def add_selector_string(self, source):
-        if source != "":
-            if not validate_name(source):
-                raise mvtools_exception.mvtools_exception("Invalid name: [%s]" % source)
-        self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, source))
+    def add_selector_string(self, route):
+        if not validate_selector_route(route):
+            raise mvtools_exception.mvtools_exception("Invalid selector route: [%s]" % route)
+        self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, route))
 
     def get_serialized(self):
 
