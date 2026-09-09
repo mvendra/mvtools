@@ -269,7 +269,7 @@ def _set_internal(_dh_handle, _db_name, _db_full_file, _context, _var, _val, _op
                 return False, "Unable to remove variable [%s] (database: [%s], context: [%s])" % (_var, _db_name, _context)
 
     # add/set new variable
-    new_var = dsl_type20.DSLType20_Variable(_dh_handle.configs, _var, _opts)
+    new_var = dsl_type20.DSLType20_Variable(_var, _opts)
     if isinstance(_val, list):
         for x in _val:
             new_var.new_value()
@@ -309,7 +309,7 @@ def set_field(_db_name, _context, _var, _val, _opts):
     dh_handle = r
 
     # convert from "neutral" format into object list
-    v, r = dsl_type20.make_obj_opt_list_from_neutral_format(dh_handle.configs, _opts)
+    v, r = dsl_type20.make_obj_opt_list_from_neutral_format(_opts)
     if not v:
         return False, "Invalid options [%s]: [%s] (database: [%s], context: [%s])" % (_opts, r, _db_name, _context)
     opts_local = r
