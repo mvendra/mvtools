@@ -766,15 +766,25 @@ class DSLType20:
 
     def _selector_resolve(self, route):
 
-        result = []
+        route_local = route
 
-        if route == "": # all global variables
+        if route_local == "": # all global variables
             v, r = self.get_all_variables()
-            if not v:
-                return False, r
-            result = r
+            return v, r
 
-        return True, result
+        if route_local[0] == "@": # get variables from context
+            route_local = route_local[1:]
+
+            v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
+            if not v:
+                return False
+            ctx_name, route_local = r
+
+            # get all variables from context
+            v, r = self.get_all_variables(ctx_name)
+            return v, r
+
+        return False, "Unable to resolve selector. Route: [%s]" % route
 
     def _selector_produce_string(self, res_list):
 
