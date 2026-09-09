@@ -1370,7 +1370,7 @@ class DSLType20Test(unittest.TestCase):
         r = test_val.get_serialized()
         self.assertEqual(r, "%")
 
-    def testDSLType20_Value14(self):
+    def testDSLType20_Value17(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value()
@@ -1410,7 +1410,7 @@ class DSLType20Test(unittest.TestCase):
         r = test_val.get_serialized()
         self.assertEqual(r, "%@ctx1")
 
-    def testDSLType20_Value15(self):
+    def testDSLType20_Value18(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value()
@@ -1458,7 +1458,7 @@ class DSLType20Test(unittest.TestCase):
         r = test_val.get_serialized()
         self.assertEqual(r, "%@ctx1")
 
-    def testDSLType20_Value16(self):
+    def testDSLType20_Value19(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value()
