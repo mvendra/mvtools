@@ -768,7 +768,7 @@ class DSLType20:
 
         route_local = route
 
-        if route_local == "": # all global variables
+        if route_local == "": # get all global variables
             v, r = self.get_all_variables()
             return v, r
 
@@ -784,7 +784,9 @@ class DSLType20:
             v, r = self.get_all_variables(ctx_name)
             return v, r
 
-        return False, "Unable to resolve selector. Route: [%s]" % route
+        # get matching global vars
+        v, r = self.get_variables(route_local)
+        return v, r
 
     def _selector_produce_string(self, res_list):
 
