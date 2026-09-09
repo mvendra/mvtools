@@ -780,9 +780,20 @@ class DSLType20:
                 return False
             ctx_name, route_local = r
 
-            # get all variables from context
-            v, r = self.get_all_variables(ctx_name)
-            return v, r
+            if route_local == "": # get all variables from specific context
+                v, r = self.get_all_variables(ctx_name)
+                return v, r
+
+            if route_local[0] == ".": # get matching variables from specific context
+                route_local = route_local[1:]
+
+                v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
+                if not v:
+                    return False
+                var_name, route_local = r
+
+                v, r = self.get_variables(var_name, ctx_name)
+                return v, r
 
         # get matching global vars
         v, r = self.get_variables(route_local)
