@@ -703,6 +703,30 @@ class DSLType20:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
 
+    def _selector_resolve(self, route):
+
+        result = []
+
+        if route == "": # all global variables
+            v, r = self.get_all_variables()
+            if not v:
+                return False, r
+            result = r
+
+        return True, result
+
+    def _selector_produce_string(self, res_list):
+
+        result = None
+
+        for e in res_list:
+            for v in e.variable.values:
+                if result is None:
+                    result = ""
+                result += v
+
+        return True, result
+
     def _get_resolved_value_helper(self, source):
 
         result = None
@@ -711,18 +735,33 @@ class DSLType20:
 
             v_res = ""
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
+
                 v_res = v[1]
+
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
+
                 continue
+
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
+
                 if not self.configs.expand_envvars:
                     continue
                 try:
                     v_res = os.environ[v[1]]
                 except KeyError as ex:
                     raise mvtools_exception.mvtools_exception("Unable to resolve envvar [%s]" % v[1])
+
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
-                continue # mvtodo
+
+                v, r = self._selector_resolve(v[1])
+                if not v:
+                    raise mvtools_exception.mvtools_exception("Unable to resolve string-selector: [%s]" % r)
+                v, r = self._selector_produce_string(r)
+                if not v:
+                    raise mvtools_exception.mvtools_exception("Unable to convert string-selector: [%s]" % r)
+                if r is None:
+                    continue
+                v_res = r
 
             if self.configs.expand_user:
                 v_res = os.path.expanduser(v_res)
