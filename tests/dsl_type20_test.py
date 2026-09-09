@@ -932,11 +932,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -946,7 +947,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc")])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, "abc")
 
         r = test_val.get_serialized()
@@ -956,7 +957,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 2)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None)])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, "abc")
 
         r = test_val.get_serialized()
@@ -967,7 +968,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 3)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, "abctest-value-1")
 
         r = test_val.get_serialized()
@@ -977,11 +978,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -997,7 +999,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1007,11 +1009,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1027,7 +1030,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1037,11 +1040,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config(expand_user = True)
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1051,7 +1055,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "~")])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, os.path.expanduser("~"))
 
         r = test_val.get_serialized()
@@ -1061,11 +1065,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1075,7 +1080,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "~")])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, "~")
 
         r = test_val.get_serialized()
@@ -1085,11 +1090,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1099,7 +1105,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc\"def")])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, "abc\"def")
 
         r = test_val.get_serialized()
@@ -1109,11 +1115,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True)
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1124,7 +1131,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, os.path.expanduser("~"))
 
         r = test_val.get_serialized()
@@ -1134,11 +1141,12 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config()
         test_val = dsl_type20.DSLType20_Value(test_cfg)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(test_val.configs, test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1149,7 +1157,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
 
-        r = test_val.get_resolved()
+        r = test_dsl._get_resolved_value_helper(test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -6766,11 +6774,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetResolvedValue6(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6779,11 +6787,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetResolvedValue7(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6818,11 +6826,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetResolvedValue10(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -6833,11 +6841,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetResolvedValue11(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("val1")
         var_inst.new_value()
@@ -6850,10 +6858,10 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetResolvedValue12(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_user = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_user = True), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
         var_inst.new_value()
         var_inst.add_value_immediate("~")
         self.assertEqual(test_dsl._get_resolved_value(var_inst), os.path.expanduser("~"))
@@ -6870,11 +6878,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Variable_GetResolvedValue14(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "~"
-        var_inst = dsl_type20.DSLType20_Variable(dsl_type20.DSLType20_Config(expand_envvars = True, expand_user = True), "a", [])
+        var_inst = dsl_type20.DSLType20_Variable(test_cfg, "a", [])
         var_inst.new_value()
         var_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
         self.assertEqual(test_dsl._get_resolved_value(var_inst), os.path.expanduser("~"))
@@ -6930,11 +6938,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetResolvedValue6(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6943,11 +6951,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetResolvedValue7(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.add_value_envvar(self.reserved_test_env_var_1[1:])
@@ -6982,11 +6990,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetResolvedValue10(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -6997,11 +7005,11 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetResolvedValue11(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_envvars = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
         os.environ[ (self.reserved_test_env_var_1[1:]) ] = "-envvar-value-1-"
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_envvars = True), "a")
+        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("val1")
         obj_inst.new_value()
@@ -7014,10 +7022,10 @@ class DSLType20Test(unittest.TestCase):
 
     def testDSLType20_Option_GetResolvedValue12(self):
 
-        test_cfg = dsl_type20.DSLType20_Config()
+        test_cfg = dsl_type20.DSLType20_Config(expand_user = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
 
-        obj_inst = dsl_type20.DSLType20_Option(dsl_type20.DSLType20_Config(expand_user = True), "a")
+        obj_inst = dsl_type20.DSLType20_Option(test_cfg, "a")
         obj_inst.new_value()
         obj_inst.add_value_immediate("~")
         self.assertEqual(test_dsl._get_resolved_value(obj_inst), os.path.expanduser("~"))

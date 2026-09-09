@@ -314,38 +314,6 @@ class DSLType20_Value:
                 raise mvtools_exception.mvtools_exception("Invalid name: [%s]" % source)
         self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, source))
 
-    def get_resolved(self):
-
-        result = None
-
-        for v in self.internal_data:
-
-            v_res = ""
-            if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
-                v_res = v[1]
-            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
-                continue
-            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
-                if not self.configs.expand_envvars:
-                    continue
-                try:
-                    v_res = os.environ[v[1]]
-                except KeyError as ex:
-                    raise mvtools_exception.mvtools_exception("Unable to resolve envvar [%s]" % v[1])
-            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
-                continue # mvtodo
-
-            if self.configs.expand_user:
-                v_res = os.path.expanduser(v_res)
-                if miniparse.TILDA in v_res:
-                    raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % v_res)
-
-            if result is None:
-                result = ""
-            result += v_res
-
-        return result
-
     def get_serialized(self):
 
         result = None
@@ -740,16 +708,48 @@ class DSLType20:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
 
+    def _get_resolved_value_helper(self, source):
+
+        result = None
+
+        for v in source.internal_data:
+
+            v_res = ""
+            if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
+                v_res = v[1]
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_PLUS:
+                continue
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR:
+                if not self.configs.expand_envvars:
+                    continue
+                try:
+                    v_res = os.environ[v[1]]
+                except KeyError as ex:
+                    raise mvtools_exception.mvtools_exception("Unable to resolve envvar [%s]" % v[1])
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
+                continue # mvtodo
+
+            if self.configs.expand_user:
+                v_res = os.path.expanduser(v_res)
+                if miniparse.TILDA in v_res:
+                    raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % v_res)
+
+            if result is None:
+                result = ""
+            result += v_res
+
+        return result
+
     def _get_resolved_value(self, source):
 
         if source.value is None:
             return None
         elif isinstance(source.value, DSLType20_Value):
-            return source.value.get_resolved()
+            return self._get_resolved_value_helper(source.value)
 
         result = []
         for e in source.value:
-            res_str = e.get_resolved()
+            res_str = self._get_resolved_value_helper(e)
             result.append(res_str)
         return result
 
