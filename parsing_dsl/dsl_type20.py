@@ -319,6 +319,8 @@ class ResolveLoader:
 
     def __init__(self, string_mode):
 
+        self.internal_data = None
+
         self.load_func = None
 
         if string_mode:
@@ -327,9 +329,18 @@ class ResolveLoader:
     def load(self, source):
         self.load_func(source)
 
+    def deliver(self):
+        return self.internal_data
+
     def _load_str(self, source):
+
         if not isinstance(source, str):
             raise mvtools_exception.mvtools_exception("Invalid source (not a string): [%s]" % source)
+
+        if self.internal_data is None:
+            self.internal_data = ""
+
+        self.internal_data += source
 
 class DSLType20_Result_Single:
 

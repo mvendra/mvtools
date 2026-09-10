@@ -869,6 +869,20 @@ class DSLType20Test(unittest.TestCase):
             test_rl.load("val1")
             dummy.assert_called_with("val1")
 
+    def testValueResolvingContainer4(self):
+
+        test_rl = dsl_type20.ResolveLoader(True)
+        self.assertEqual(test_rl.deliver(), None)
+
+        test_rl.load("")
+        self.assertEqual(test_rl.deliver(), "")
+
+        test_rl.load("val1")
+        self.assertEqual(test_rl.deliver(), "val1")
+
+        test_rl.load("val2")
+        self.assertEqual(test_rl.deliver(), "val1val2")
+
     def testDSLType20_Result_Single1(self):
 
         ex_raised = False
