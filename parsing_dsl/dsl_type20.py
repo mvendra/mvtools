@@ -322,9 +322,11 @@ class ResolveLoader:
         self.internal_data = None
 
         self.load_result_list_func = None
+        self.load_direct_list_func = None
 
         if string_mode:
             self.load_result_list_func = self._load_result_list_str
+            self.load_direct_list_func = self._load_direct_list_str
 
     def load_result_list(self, source):
 
@@ -337,6 +339,17 @@ class ResolveLoader:
 
         self.load_result_list_func(source)
 
+    def load_direct_list(self, source):
+
+        if not isinstance(source, list):
+            raise mvtools_exception.mvtools_exception("Invalid source (not a list): [%s]" % source)
+
+        for s in source:
+            if not isinstance(s, str):
+                raise mvtools_exception.mvtools_exception("Invalid source entry (not a string): [%s]" % s)
+
+        self._load_direct_list_str(source)
+
     def deliver(self):
         return self.internal_data
 
@@ -347,6 +360,13 @@ class ResolveLoader:
                 if self.internal_data is None:
                     self.internal_data = ""
                 self.internal_data += v
+
+    def _load_direct_list_str(self, source):
+
+        for s in source:
+            if self.internal_data is None:
+                self.internal_data = ""
+            self.internal_data += s
 
 class DSLType20_Result_Single:
 

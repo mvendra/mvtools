@@ -840,14 +840,17 @@ class DSLType20Test(unittest.TestCase):
 
         test_rl = dsl_type20.ResolveLoader(True)
         self.assertEqual(test_rl.load_result_list_func, test_rl._load_result_list_str)
+        self.assertEqual(test_rl.load_direct_list_func, test_rl._load_direct_list_str)
 
         test_result_single1 = dsl_type20.DSLType20_Result_Single("var1", ["val1"])
         test_result1 = dsl_type20.DSLType20_Result(test_result_single1, [])
         test_result_list = [test_result1]
+        test_direct_list = ["val2"]
 
         ex_raised = False
         try:
             test_rl.load_result_list(test_result_list)
+            test_rl.load_direct_list(test_direct_list)
         except:
             ex_raised = True
 
@@ -885,6 +888,34 @@ class DSLType20Test(unittest.TestCase):
 
     def testResolveLoader4(self):
 
+        test_rl = dsl_type20.ResolveLoader(True)
+        self.assertEqual(test_rl.load_result_list_func, test_rl._load_result_list_str)
+
+        ex_raised = False
+        try:
+            test_rl.load_direct_list(123)
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testResolveLoader5(self):
+
+        test_rl = dsl_type20.ResolveLoader(True)
+        self.assertEqual(test_rl.load_result_list_func, test_rl._load_result_list_str)
+
+        test_direct_list = ["val1", 123]
+
+        ex_raised = False
+        try:
+            test_rl.load_direct_list(test_direct_list)
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testResolveLoader6(self):
+
         test_result_single1 = dsl_type20.DSLType20_Result_Single("var1", ["val1"])
         test_result1 = dsl_type20.DSLType20_Result(test_result_single1, [])
         test_result_list = [test_result1]
@@ -894,7 +925,16 @@ class DSLType20Test(unittest.TestCase):
             test_rl.load_result_list(test_result_list)
             dummy.assert_called_with(test_result_list)
 
-    def testResolveLoader5(self):
+    def testResolveLoader7(self):
+
+        test_direct_list = ["val1"]
+
+        with mock.patch("dsl_type20.ResolveLoader._load_direct_list_str") as dummy:
+            test_rl = dsl_type20.ResolveLoader(True)
+            test_rl.load_direct_list(test_direct_list)
+            dummy.assert_called_with(test_direct_list)
+
+    def testResolveLoader8(self):
 
         test_result_single1 = dsl_type20.DSLType20_Result_Single("var1", [""])
         test_result1 = dsl_type20.DSLType20_Result(test_result_single1, [])
@@ -918,6 +958,24 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(test_rl.deliver(), "val1")
 
         test_rl.load_result_list(test_result_list3)
+        self.assertEqual(test_rl.deliver(), "val1val2")
+
+    def testResolveLoader9(self):
+
+        test_direct_list1 = [""]
+        test_direct_list2 = ["val1"]
+        test_direct_list3 = ["val2"]
+
+        test_rl = dsl_type20.ResolveLoader(True)
+        self.assertEqual(test_rl.deliver(), None)
+
+        test_rl.load_direct_list(test_direct_list1)
+        self.assertEqual(test_rl.deliver(), "")
+
+        test_rl.load_direct_list(test_direct_list2)
+        self.assertEqual(test_rl.deliver(), "val1")
+
+        test_rl.load_direct_list(test_direct_list3)
         self.assertEqual(test_rl.deliver(), "val1val2")
 
     def testDSLType20_Result_Single1(self):
