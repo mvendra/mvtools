@@ -342,11 +342,10 @@ class ResolveLoader:
 
     def _load_result_list_str(self, source):
 
-        if self.internal_data is None:
-            self.internal_data = ""
-
         for s in source:
             for v in s.variable.values:
+                if self.internal_data is None:
+                    self.internal_data = ""
                 self.internal_data += v
 
 class DSLType20_Result_Single:
@@ -798,36 +797,45 @@ class DSLType20:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
 
-    def _selector_resolve(self, original_source, route):
+    def _selector_resolve(self, loader, original_source, route):
 
         route_local = route
 
         if route_local == "": # get all global variables
             v, r = self.get_all_variables()
-            return v, r
+            if not v:
+                return False, r
+            loader.load_result_list(r)
+            return True, None
 
         if route_local[0] == "@": # get variables from context
             route_local = route_local[1:]
 
             v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
             if not v:
-                return False
+                return False, r
             ctx_name, route_local = r
 
             if route_local == "": # get all variables from specific context
                 v, r = self.get_all_variables(ctx_name)
-                return v, r
+                if not v:
+                    return False, r
+                loader.load_result_list(r)
+                return True, None
 
             if route_local[0] == ".": # get matching variables from specific context
                 route_local = route_local[1:]
 
                 v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
                 if not v:
-                    return False
+                    return False, r
                 var_name, route_local = r
 
                 v, r = self.get_variables(var_name, ctx_name)
-                return v, r
+                if not v:
+                    return False, r
+                loader.load_result_list(r)
+                return True, None
 
         if route_local[0] == "!": # get options
             route_local = route_local[1:]
@@ -838,26 +846,17 @@ class DSLType20:
             # get specific option
             v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
             if not v:
-                return False
+                return False, r
             opt_name, route_local = r
 
             return False, "mvtodo"
 
         # get matching global vars
         v, r = self.get_variables(route_local)
-        return v, r
-
-    def _selector_produce_string(self, res_list):
-
-        result = None
-
-        for e in res_list:
-            for v in e.variable.values:
-                if result is None:
-                    result = ""
-                result += v
-
-        return True, result
+        if not v:
+            return False, r
+        loader.load_result_list(r)
+        return True, None
 
     def _get_resolved_value_helper(self, original_source, source_value):
 
@@ -885,15 +884,15 @@ class DSLType20:
 
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
 
-                v, r = self._selector_resolve(original_source, v[1])
+                srl = ResolveLoader(True)
+
+                v, r = self._selector_resolve(srl, original_source, v[1])
                 if not v:
                     raise mvtools_exception.mvtools_exception("Unable to resolve string-selector: [%s]" % r)
-                v, r = self._selector_produce_string(r)
-                if not v:
-                    raise mvtools_exception.mvtools_exception("Unable to convert string-selector: [%s]" % r)
-                if r is None:
+
+                v_res = srl.deliver()
+                if v_res is None:
                     continue
-                v_res = r
 
             if self.configs.expand_user:
                 v_res = os.path.expanduser(v_res)
