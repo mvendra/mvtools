@@ -817,6 +817,30 @@ class DSLType20:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
 
+    def _selector_resolve_helper_load_opts(self, loader, opt_name, opt_list):
+
+        for o in opt_list:
+
+            if opt_name is not None:
+                if o.get_name() != opt_name:
+                    continue
+
+            try:
+
+                res = self._get_resolved_value(o)
+
+                if res is None:
+                    continue
+                if not isinstance(res, list):
+                    res = [res]
+
+                loader.load_direct_list(res)
+
+            except mvtools_exception.mvtools_exception as ex:
+                return False, ex.get_message()
+
+        return True, None
+
     def _selector_resolve(self, loader, original_source, route):
 
         route_local = route
@@ -861,7 +885,10 @@ class DSLType20:
             route_local = route_local[1:]
 
             if route_local == "": # get all options
-                return False, "mvtodo"
+                v, r = self._selector_resolve_helper_load_opts(loader, None, original_source.get_options())
+                if not v:
+                    return False, "Unable to select-resolve options: [%s - %s]" % (original_source.get_name(), r)
+                return True, None
 
             # get specific option
             v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
