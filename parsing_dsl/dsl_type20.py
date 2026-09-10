@@ -315,6 +315,22 @@ def opt_list_has(options, name):
             return True, opt
     return False, None
 
+class ResolveLoader:
+
+    def __init__(self, string_mode):
+
+        self.load_func = None
+
+        if string_mode:
+            self.load_func = self._load_str
+
+    def load(self, source):
+        self.load_func(source)
+
+    def _load_str(self, source):
+        if not isinstance(source, str):
+            raise mvtools_exception.mvtools_exception("Invalid source (not a string): [%s]" % source)
+
 class DSLType20_Result_Single:
 
     def __init__(self, name, values):

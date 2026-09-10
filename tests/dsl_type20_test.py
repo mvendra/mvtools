@@ -3,6 +3,8 @@
 import os
 import shutil
 import unittest
+from unittest import mock
+from unittest.mock import patch
 
 import create_and_write_file
 import mvtools_test_fixture
@@ -833,6 +835,39 @@ class DSLType20Test(unittest.TestCase):
         self.assertTrue(v)
         new_opts = r
         self.assertEqual(opt_fmt_helper(test_dsl, test_dsl.inherit_options_helper(parent_opts, new_opts)), [ ("a", ["b", "d"]), ("c", ["f", "g"]) ])
+
+    def testValueResolvingContainer1(self):
+
+        test_rl = dsl_type20.ResolveLoader(True)
+        self.assertEqual(test_rl.load_func, test_rl._load_str)
+
+        ex_raised = False
+        try:
+            test_rl.load("val1")
+        except:
+            ex_raised = True
+
+        self.assertFalse(ex_raised)
+
+    def testValueResolvingContainer2(self):
+
+        test_rl = dsl_type20.ResolveLoader(True)
+        self.assertEqual(test_rl.load_func, test_rl._load_str)
+
+        ex_raised = False
+        try:
+            test_rl.load(123)
+        except:
+            ex_raised = True
+
+        self.assertTrue(ex_raised)
+
+    def testValueResolvingContainer3(self):
+
+        with mock.patch("dsl_type20.ResolveLoader._load_str") as dummy:
+            test_rl = dsl_type20.ResolveLoader(True)
+            test_rl.load("val1")
+            dummy.assert_called_with("val1")
 
     def testDSLType20_Result_Single1(self):
 
