@@ -764,7 +764,7 @@ class DSLType20:
             return False, "Production failed: [%s]" % ex.get_message()
         return True, result.strip()
 
-    def _selector_resolve(self, route):
+    def _selector_resolve(self, original_source, route):
 
         route_local = route
 
@@ -795,6 +795,20 @@ class DSLType20:
                 v, r = self.get_variables(var_name, ctx_name)
                 return v, r
 
+        if route_local[0] == "!": # get options
+            route_local = route_local[1:]
+
+            if route_local == "": # get all options
+                return False, "mvtodo"
+
+            # get specific option
+            v, r = miniparse.scan_and_slice_beginning(route_local, miniparse.IDENTIFIER)
+            if not v:
+                return False
+            opt_name, route_local = r
+
+            return False, "mvtodo"
+
         # get matching global vars
         v, r = self.get_variables(route_local)
         return v, r
@@ -811,11 +825,11 @@ class DSLType20:
 
         return True, result
 
-    def _get_resolved_value_helper(self, source):
+    def _get_resolved_value_helper(self, original_source, source_value):
 
         result = None
 
-        for v in source.internal_data:
+        for v in source_value.internal_data:
 
             v_res = ""
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
@@ -837,7 +851,7 @@ class DSLType20:
 
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
 
-                v, r = self._selector_resolve(v[1])
+                v, r = self._selector_resolve(original_source, v[1])
                 if not v:
                     raise mvtools_exception.mvtools_exception("Unable to resolve string-selector: [%s]" % r)
                 v, r = self._selector_produce_string(r)
@@ -863,11 +877,11 @@ class DSLType20:
         if source.value is None:
             return None
         elif isinstance(source.value, DSLType20_Value):
-            return self._get_resolved_value_helper(source.value)
+            return self._get_resolved_value_helper(source, source.value)
 
         result = []
         for e in source.value:
-            res_str = self._get_resolved_value_helper(e)
+            res_str = self._get_resolved_value_helper(source, e)
             result.append(res_str)
         return result
 
