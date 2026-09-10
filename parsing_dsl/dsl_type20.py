@@ -327,6 +327,14 @@ class ResolveLoader:
             self.load_result_list_func = self._load_result_list_str
 
     def load_result_list(self, source):
+
+        if not isinstance(source, list):
+            raise mvtools_exception.mvtools_exception("Invalid source (not a list): [%s]" % source)
+
+        for s in source:
+            if not isinstance(s, DSLType20_Result):
+                raise mvtools_exception.mvtools_exception("Invalid source entry (not a result object): [%s]" % s)
+
         self.load_result_list_func(source)
 
     def deliver(self):
@@ -334,13 +342,12 @@ class ResolveLoader:
 
     def _load_result_list_str(self, source):
 
-        if not isinstance(source, str):
-            raise mvtools_exception.mvtools_exception("Invalid source (not a string): [%s]" % source)
-
         if self.internal_data is None:
             self.internal_data = ""
 
-        self.internal_data += source
+        for s in source:
+            for v in s.variable.values:
+                self.internal_data += v
 
 class DSLType20_Result_Single:
 
