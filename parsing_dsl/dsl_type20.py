@@ -896,7 +896,10 @@ class DSLType20:
                 return False, r
             opt_name, route_local = r
 
-            return False, "mvtodo"
+            v, r = self._selector_resolve_helper_load_opts(loader, opt_name, original_source.get_options())
+            if not v:
+                return False, "Unable to select-resolve options: [%s - %s]" % (original_source.get_name(), r)
+            return True, None
 
         # get matching global vars
         v, r = self.get_variables(route_local)
