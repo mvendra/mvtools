@@ -1047,7 +1047,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1057,7 +1059,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "abc")
 
         r = test_val.get_serialized()
@@ -1067,7 +1069,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 2)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None)])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "abc")
 
         r = test_val.get_serialized()
@@ -1078,7 +1080,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 3)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "abctest-value-1")
 
         r = test_val.get_serialized()
@@ -1092,7 +1094,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1108,7 +1112,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1122,7 +1126,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1138,7 +1144,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1152,7 +1158,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1162,7 +1170,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "~")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, os.path.expanduser("~"))
 
         r = test_val.get_serialized()
@@ -1176,7 +1184,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1186,7 +1196,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "~")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "~")
 
         r = test_val.get_serialized()
@@ -1200,7 +1210,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1210,7 +1222,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE, "abc\"def")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "abc\"def")
 
         r = test_val.get_serialized()
@@ -1224,7 +1236,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1235,7 +1249,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, os.path.expanduser("~"))
 
         r = test_val.get_serialized()
@@ -1249,7 +1263,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1260,7 +1276,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, self.reserved_test_env_var_1[1:])])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1274,12 +1290,13 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
 
         v, r = test_dsl.add_variable(test_var1, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1289,7 +1306,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1303,6 +1320,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var3 = dsl_type20.DSLType20_Variable("var3", None)
@@ -1316,7 +1334,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1326,7 +1344,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1340,6 +1358,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
 
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
@@ -1347,7 +1366,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var1, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1357,7 +1376,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1")
 
         r = test_val.get_serialized()
@@ -1370,6 +1389,8 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1392,7 +1413,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1402,7 +1423,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1val2val3")
 
         r = test_val.get_serialized()
@@ -1419,6 +1440,8 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
 
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
         test_var1.add_value_immediate("val1")
@@ -1440,7 +1463,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1450,7 +1473,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1val3")
 
         r = test_val.get_serialized()
@@ -1463,6 +1486,8 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2 = dsl_type20.DSLType20_Variable("var2", None)
@@ -1477,7 +1502,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1487,7 +1512,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1500,6 +1525,8 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1522,7 +1549,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1532,7 +1559,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1")
 
         r = test_val.get_serialized()
@@ -1545,6 +1572,8 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
@@ -1570,7 +1599,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1580,7 +1609,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1")
 
         r = test_val.get_serialized()
@@ -1593,6 +1622,8 @@ class DSLType20Test(unittest.TestCase):
         test_dsl = dsl_type20.DSLType20(test_cfg)
         self.assertEqual(len(test_val.internal_data), 0)
         self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1615,7 +1646,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1625,7 +1656,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1val3")
 
         r = test_val.get_serialized()
@@ -1642,6 +1673,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
 
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var3 = dsl_type20.DSLType20_Variable("var3", None)
@@ -1655,7 +1687,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1665,7 +1697,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1681,6 +1713,8 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1703,7 +1737,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1713,7 +1747,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1val2val3")
 
         r = test_val.get_serialized()
@@ -1732,6 +1766,8 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_context("ctx2", None, None)
         self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1754,7 +1790,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1764,7 +1800,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1val3")
 
         r = test_val.get_serialized()
@@ -1781,6 +1817,8 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
 
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var2 = dsl_type20.DSLType20_Variable("var2", None)
         test_var3 = dsl_type20.DSLType20_Variable("var3", None)
@@ -1794,7 +1832,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1804,7 +1842,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx1.var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1820,6 +1858,8 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1842,7 +1882,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1852,7 +1892,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx1.var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1")
 
         r = test_val.get_serialized()
@@ -1868,6 +1908,8 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1890,7 +1932,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1900,7 +1942,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx1.var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1val3")
 
         r = test_val.get_serialized()
@@ -1916,6 +1958,8 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
 
         test_var1 = dsl_type20.DSLType20_Variable("var1", None)
         test_var1.new_value()
@@ -1938,7 +1982,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, None)
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1948,7 +1992,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx1.var1")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, "val1")
 
         r = test_val.get_serialized()
@@ -1969,6 +2013,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
 
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
         test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
         test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
@@ -1982,7 +2027,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -1992,7 +2037,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "!")])
 
-        r = test_dsl._get_resolved_value_helper(test_val)
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
