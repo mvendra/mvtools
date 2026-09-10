@@ -839,11 +839,11 @@ class DSLType20Test(unittest.TestCase):
     def testValueResolvingContainer1(self):
 
         test_rl = dsl_type20.ResolveLoader(True)
-        self.assertEqual(test_rl.load_func, test_rl._load_str)
+        self.assertEqual(test_rl.load_result_list_func, test_rl._load_result_list_str)
 
         ex_raised = False
         try:
-            test_rl.load("val1")
+            test_rl.load_result_list("val1")
         except:
             ex_raised = True
 
@@ -852,11 +852,11 @@ class DSLType20Test(unittest.TestCase):
     def testValueResolvingContainer2(self):
 
         test_rl = dsl_type20.ResolveLoader(True)
-        self.assertEqual(test_rl.load_func, test_rl._load_str)
+        self.assertEqual(test_rl.load_result_list_func, test_rl._load_result_list_str)
 
         ex_raised = False
         try:
-            test_rl.load(123)
+            test_rl.load_result_list(123)
         except:
             ex_raised = True
 
@@ -864,9 +864,9 @@ class DSLType20Test(unittest.TestCase):
 
     def testValueResolvingContainer3(self):
 
-        with mock.patch("dsl_type20.ResolveLoader._load_str") as dummy:
+        with mock.patch("dsl_type20.ResolveLoader._load_result_list_str") as dummy:
             test_rl = dsl_type20.ResolveLoader(True)
-            test_rl.load("val1")
+            test_rl.load_result_list("val1")
             dummy.assert_called_with("val1")
 
     def testValueResolvingContainer4(self):
@@ -874,13 +874,13 @@ class DSLType20Test(unittest.TestCase):
         test_rl = dsl_type20.ResolveLoader(True)
         self.assertEqual(test_rl.deliver(), None)
 
-        test_rl.load("")
+        test_rl.load_result_list("")
         self.assertEqual(test_rl.deliver(), "")
 
-        test_rl.load("val1")
+        test_rl.load_result_list("val1")
         self.assertEqual(test_rl.deliver(), "val1")
 
-        test_rl.load("val2")
+        test_rl.load_result_list("val2")
         self.assertEqual(test_rl.deliver(), "val1val2")
 
     def testDSLType20_Result_Single1(self):

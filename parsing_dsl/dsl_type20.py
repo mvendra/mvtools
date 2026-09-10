@@ -321,18 +321,18 @@ class ResolveLoader:
 
         self.internal_data = None
 
-        self.load_func = None
+        self.load_result_list_func = None
 
         if string_mode:
-            self.load_func = self._load_str
+            self.load_result_list_func = self._load_result_list_str
 
-    def load(self, source):
-        self.load_func(source)
+    def load_result_list(self, source):
+        self.load_result_list_func(source)
 
     def deliver(self):
         return self.internal_data
 
-    def _load_str(self, source):
+    def _load_result_list_str(self, source):
 
         if not isinstance(source, str):
             raise mvtools_exception.mvtools_exception("Invalid source (not a string): [%s]" % source)
