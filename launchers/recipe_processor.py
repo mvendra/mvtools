@@ -431,31 +431,37 @@ class RecipeProcessor:
 
         self.jobs_depth_tracker += 1
         if self.jobs_depth_tracker == DEPTH_TRACKER_LIMIT:
+            self.jobs_depth_tracker -= 1
             return False, "Depth tracker exceeded"
 
         # select sub job implementation
         v, r = _get_custom_job_from_opts_and_leftovers_as_params(source_var.options)
         if not v:
+            self.jobs_depth_tracker -= 1
             return False, r
         job_impl_to_use, job_params = r
 
         for val in source_var.variable.values:
 
             if not len(val) > 1:
+                self.jobs_depth_tracker -= 1
                 return False, "Invalid job name: [%s]" % val
 
             if not val[0] == "@":
+                self.jobs_depth_tracker -= 1
                 return False, "Invalid job name (specified without prefixed @ sign: [%s]" % val
 
             # instantiate new/current job
             v, r = _get_job_instance(job_impl_to_use, self.namespace)
             if not v:
+                self.jobs_depth_tracker -= 1
                 return False, r
             new_job = r(val[1:], job_params)
 
             # load up tasks onto the new job
             v, r = self.__load_new_job_entries(dsl, val[1:], new_job)
             if not v:
+                self.jobs_depth_tracker -= 1
                 return False, r
 
             parent_job.add_entry(new_job)
