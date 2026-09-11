@@ -497,6 +497,20 @@ class DSLType20_ValueHolder:
             val_ptr.add_plus()
         val_ptr.add_envvar(envvar)
 
+    def add_value_selector_string(self, route):
+
+        val_ptr = None
+        if self.value is None:
+            raise mvtools_exception.mvtools_exception("String selector route [%s] cannot be added - value container is empty" % route)
+        elif isinstance(self.value, DSLType20_Value):
+            val_ptr = self.value
+        else:
+            val_ptr = self.value[len(self.value)-1]
+
+        if len(val_ptr.internal_data) > 0:
+            val_ptr.add_plus()
+        val_ptr.add_selector_string(route)
+
     def serialize(self):
 
         if self.value is None:
