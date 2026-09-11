@@ -3067,7 +3067,63 @@ class DSLType20Test(unittest.TestCase):
         opt_inst = dsl_type20.DSLType20_Option("a")
         ex_flag = False
         try:
+            opt_inst.new_value()
             opt_inst.add_value_selector_string("")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorString2(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_string("var")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorString3(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_string("@ctx")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorString4(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_string("@ctx.var")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorString5(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_string("!")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorString6(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_string("!opt")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)

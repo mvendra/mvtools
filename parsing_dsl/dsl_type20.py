@@ -246,6 +246,9 @@ def validate_options(options):
 
     return True, None
 
+def validate_option_selector_route(route):
+    return not (miniparse.EXCLMARK in route)
+
 def validate_selector_route(route):
 
     route_local = route
@@ -573,7 +576,9 @@ class DSLType20_Option(DSLType20_ValueHolder):
         return self.name
 
     def add_value_selector_string(self, route):
-        raise mvtools_exception.mvtools_exception("Adding string selector routes is not available for options (attempted adding [%s])" % route)
+        if not validate_option_selector_route(route):
+            raise mvtools_exception.mvtools_exception("Adding string selector routes that select options is not available for options themselves (attempted adding [%s])" % route)
+        super().add_value_selector_string(route)
 
 class DSLType20_Context:
 
