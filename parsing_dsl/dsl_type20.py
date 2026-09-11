@@ -572,6 +572,9 @@ class DSLType20_Option(DSLType20_ValueHolder):
     def get_name(self):
         return self.name
 
+    def add_value_selector_string(self, route):
+        raise mvtools_exception.mvtools_exception("Adding string selector routes is not available for options (attempted adding [%s])" % route)
+
 class DSLType20_Context:
 
     def __init__(self, ptr_parent, name, options):
