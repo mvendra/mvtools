@@ -3347,19 +3347,25 @@ class DSLType20Test(unittest.TestCase):
 
         test_cfg = dsl_type20.DSLType20_Config(inherit_options = True)
         test_dsl = dsl_type20.DSLType20(test_cfg)
+
         test_opt1 = dsl_type20.DSLType20_Option("opt1")
         test_opt1.new_value()
         test_opt1.add_value_immediate("val1")
+
         v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
+
         test_opt2 = dsl_type20.DSLType20_Option("opt2")
         test_opt2.new_value()
         test_opt2.add_value_immediate("val2")
+
         test_var = dsl_type20.DSLType20_Variable("var1", test_opt2)
         test_var.new_value()
         test_var.add_value_immediate("val2")
+
         v, r = test_dsl.add_variable(test_var, "ctx1")
         self.assertTrue(v)
+
         v, r = test_dsl.get_variables("var1", "ctx1")
         self.assertTrue(v)
         self.assertEqual(r[0].variable.name, test_dsl.data.entries[0].entries[0].get_name())
@@ -3430,14 +3436,19 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_variable(test_var1, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var2, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var3, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var4, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var5, "ctx3")
         self.assertTrue(v)
+
         self.assertEqual(var_fmt_helper(test_dsl.get_variables("var1", "ctx3")), [("var1", ["val9"], [("opt1", ["val1"]), ("opt2", ["val2"]), ("opt3", ["val3"]), ("opt4", ["val4"])]), ("var1", ["val12"], [("opt1", ["val1"]), ("opt2", ["val2"]), ("opt3", ["val3"]), ("opt7", ["val7"])]), ("var1", ["val13"], [("opt1", ["val1"]), ("opt2", ["val2"]), ("opt3", ["val3"]), ("opt8", ["val8"])])])
 
     def testDslType20_GetVariables5(self):
@@ -3479,8 +3490,10 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_context("ctx1", test_opt1, None)
         self.assertTrue(v)
+
         v, r = test_dsl.add_context("ctx2", test_opt2, "ctx1")
         self.assertTrue(v)
+
         v, r = test_dsl.add_context("ctx3", test_opt3, "ctx2")
         self.assertTrue(v)
 
@@ -3506,12 +3519,16 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.add_variable(test_var1, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var2, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var3, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var4, "ctx3")
         self.assertTrue(v)
+
         v, r = test_dsl.add_variable(test_var5, "ctx3")
         self.assertTrue(v)
 

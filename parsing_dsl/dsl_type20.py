@@ -629,6 +629,7 @@ class _internal_parse_context:
         self.bracket_stack = [] # 1 means "assumed pseudo context", 2 means "surely pseudo context", 3 means "named/regular context"
         self.context_stack = [None]
 
+SEARCH_DEPTH_TRACKER_LIMIT = 60
 class DSLType20:
 
     def __init__(self, _configs):
@@ -638,6 +639,7 @@ class DSLType20:
         self.root_context_id = "_DSL_TYPE20_RESERVED_INTERNAL_MASTER_ROOT_CONTEXT_"
         self.max_number_options = 1024
         self.indent = ""
+        self.search_depth_tracker = 0
         self.clear()
 
         # read configs
@@ -646,6 +648,8 @@ class DSLType20:
     def clear(self):
         self.data = None
         self.data = DSLType20_Context(None, self.root_context_id, None)
+        self.indent = ""
+        self.search_depth_tracker = 0
 
     def has_context(self, ctx_name):
 
@@ -972,7 +976,7 @@ class DSLType20:
 
         return result
 
-    def _get_resolved_value(self, source):
+    def _get_resolved_value_delegate(self, source):
 
         if source.value is None:
             return None
@@ -983,6 +987,16 @@ class DSLType20:
         for e in source.value:
             res_str = self._get_resolved_value_helper(source, e)
             result.append(res_str)
+        return result
+
+    def _get_resolved_value(self, source):
+
+        self.search_depth_tracker += 1
+        if self.search_depth_tracker == SEARCH_DEPTH_TRACKER_LIMIT:
+            raise mvtools_exception.mvtools_exception("Search depth tracker limit exceeded")
+
+        result = self._get_resolved_value_delegate(source)
+        self.search_depth_tracker -= 1
         return result
 
     def _parse_line_delegate(self, ipc, current_line, current_line_number):
