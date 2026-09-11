@@ -2781,6 +2781,44 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.value[0].internal_data, [])
         self.assertEqual(var_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar1"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_ENVVAR, "envvar2")])
 
+    def testDSLType20_Variable_AddValueSelectorString1(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        ex_flag = False
+        try:
+            var_inst.add_value_selector_string("")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Variable_AddValueSelectorString2(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        self.assertEqual(var_inst.value, None)
+        var_inst.new_value()
+        self.assertTrue(isinstance(var_inst.value, dsl_type20.DSLType20_Value))
+        self.assertEqual(var_inst.value.internal_data, [])
+        var_inst.add_value_selector_string("var")
+        self.assertEqual(var_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var")])
+        var_inst.add_value_selector_string("@ctx")
+        self.assertEqual(var_inst.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx")])
+
+    def testDSLType20_Variable_AddValueSelectorString3(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        self.assertEqual(var_inst.value, None)
+        var_inst.new_value()
+        var_inst.new_value()
+        self.assertTrue(isinstance(var_inst.value, list))
+        self.assertEqual(var_inst.value[0].internal_data, [])
+        self.assertEqual(var_inst.value[1].internal_data, [])
+        var_inst.add_value_selector_string("var")
+        self.assertEqual(var_inst.value[0].internal_data, [])
+        self.assertEqual(var_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var")])
+        var_inst.add_value_selector_string("@ctx")
+        self.assertEqual(var_inst.value[0].internal_data, [])
+        self.assertEqual(var_inst.value[1].internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "var"), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_PLUS, None), (dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx")])
+
     def testDSLType20_Variable_GetValueSerialized1(self):
 
         var_inst = dsl_type20.DSLType20_Variable("a", [])
