@@ -2900,6 +2900,48 @@ class DSLType20Test(unittest.TestCase):
         var_inst.add_value_immediate("~")
         self.assertEqual(var_inst.serialize(), "\"~\"")
 
+    def testDSLType20_Variable_GetValueSerialized11(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        var_inst.new_value()
+        var_inst.add_value_selector_string("")
+        self.assertEqual(var_inst.serialize(), "%")
+
+    def testDSLType20_Variable_GetValueSerialized12(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        var_inst.new_value()
+        var_inst.add_value_selector_string("var")
+        self.assertEqual(var_inst.serialize(), "%var")
+
+    def testDSLType20_Variable_GetValueSerialized13(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        var_inst.new_value()
+        var_inst.add_value_selector_string("@ctx")
+        self.assertEqual(var_inst.serialize(), "%@ctx")
+
+    def testDSLType20_Variable_GetValueSerialized14(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        var_inst.new_value()
+        var_inst.add_value_selector_string("@ctx.var")
+        self.assertEqual(var_inst.serialize(), "%@ctx.var")
+
+    def testDSLType20_Variable_GetValueSerialized15(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        var_inst.new_value()
+        var_inst.add_value_selector_string("!")
+        self.assertEqual(var_inst.serialize(), "%!")
+
+    def testDSLType20_Variable_GetValueSerialized16(self):
+
+        var_inst = dsl_type20.DSLType20_Variable("a", [])
+        var_inst.new_value()
+        var_inst.add_value_selector_string("!opt")
+        self.assertEqual(var_inst.serialize(), "%!opt")
+
     def testDSLType20_Option1(self):
 
         ex_flag = False
