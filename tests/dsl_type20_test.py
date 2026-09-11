@@ -2710,6 +2710,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(var_inst.value.internal_data, [])
         ex_flag = False
         try:
+            var_inst.new_value()
             var_inst.add_value_immediate("val\n")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
@@ -2991,6 +2992,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(opt_inst.value.internal_data, [])
         ex_flag = False
         try:
+            opt_inst.new_value()
             opt_inst.add_value_immediate("val\n")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
@@ -3067,11 +3069,10 @@ class DSLType20Test(unittest.TestCase):
         opt_inst = dsl_type20.DSLType20_Option("a")
         ex_flag = False
         try:
-            opt_inst.new_value()
             opt_inst.add_value_selector_string("")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
-        self.assertFalse(ex_flag)
+        self.assertTrue(ex_flag)
 
     def testDSLType20_Option_AddValueSelectorString2(self):
 
@@ -3079,7 +3080,7 @@ class DSLType20Test(unittest.TestCase):
         ex_flag = False
         try:
             opt_inst.new_value()
-            opt_inst.add_value_selector_string("var")
+            opt_inst.add_value_selector_string("")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertFalse(ex_flag)
@@ -3090,7 +3091,7 @@ class DSLType20Test(unittest.TestCase):
         ex_flag = False
         try:
             opt_inst.new_value()
-            opt_inst.add_value_selector_string("@ctx")
+            opt_inst.add_value_selector_string("var")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertFalse(ex_flag)
@@ -3101,7 +3102,7 @@ class DSLType20Test(unittest.TestCase):
         ex_flag = False
         try:
             opt_inst.new_value()
-            opt_inst.add_value_selector_string("@ctx.var")
+            opt_inst.add_value_selector_string("@ctx")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertFalse(ex_flag)
@@ -3112,12 +3113,23 @@ class DSLType20Test(unittest.TestCase):
         ex_flag = False
         try:
             opt_inst.new_value()
+            opt_inst.add_value_selector_string("@ctx.var")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorString6(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
             opt_inst.add_value_selector_string("!")
         except BaseException as ex:
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
 
-    def testDSLType20_Option_AddValueSelectorString6(self):
+    def testDSLType20_Option_AddValueSelectorString7(self):
 
         opt_inst = dsl_type20.DSLType20_Option("a")
         ex_flag = False
