@@ -1951,6 +1951,10 @@ class DSLType20:
                 plus_state_flag = False
                 local_str_input = (r[1]).lstrip()
 
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.EXCLMARK)
+                if v: # forbidden - options cannot select options
+                    return False, "Malformed option: [%s]: Options cannot string-select options." % str_input
+
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ATSIGN)
                 if v: # contexts
                     local_str_input = (r[1]).lstrip()
