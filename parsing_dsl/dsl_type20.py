@@ -1628,6 +1628,33 @@ class DSLType20:
                 local_str_input = (r[1]).strip()
                 continue
 
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EXCLMARK + miniparse.ANYSPACE)
+            if v: # new string selector - all self-options
+
+                if plus_required:
+                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing string-selector)." % str_input
+                plus_required = True
+                plus_state_flag = False
+                eqsign_expected = True
+
+                local_str_input = (r[1]).rstrip()
+
+                # remove percent sign
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN)
+                if not v:
+                    return False, "Malformed variable: [%s]: expecting percent sign during string-selector parsing." % str_input
+                local_str_input = (r[1]).rstrip()
+
+                if add_new:
+                    var_inst.new_value()
+                    add_new = False
+
+                try:
+                    var_inst.add_value_selector_string("!")
+                except mvtools_exception.mvtools_exception as ex:
+                    return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
+                continue
+
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN + miniparse.ANYSPACE)
             if v: # new string selector - all global vars
 
