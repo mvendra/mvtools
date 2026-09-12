@@ -1553,7 +1553,7 @@ class DSLType20:
                         return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
                     continue
 
-                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.DOT)
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_DOT)
                 if v: # context - specific vars
                     local_str_input = (r[1]).rstrip()
 
