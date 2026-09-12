@@ -1534,7 +1534,7 @@ class DSLType20:
                 local_str_input = (r[1]).rstrip()
 
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ATSIGN)
-                if v: # at sign
+                if v: # context - full
                     local_str_input = (r[1]).strip()
 
                     # remove percent sign
