@@ -1547,24 +1547,24 @@ class DSLType20:
                         return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
                     continue
 
-                if not self.configs.expand_envvars: # mvtodo: move away
-                    return False, "Envvars are disabled in this configuration - parsing failed."
-
-                # remove dollar sign
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_DOLLARSIGN)
-                if not v:
-                    return False, "Malformed variable: [%s]: envvar must be preceded with a dollar sign." % str_input
-                local_str_input = (r[1]).strip()
+                if v: # envvar
+                    local_str_input = (r[1]).strip()
 
-                if add_new:
-                    var_inst.new_value()
-                    add_new = False
+                    if not self.configs.expand_envvars:
+                        return False, "Envvars are disabled in this configuration - parsing failed."
 
-                try:
-                    var_inst.add_value_envvar(identifier)
-                except mvtools_exception.mvtools_exception as ex:
-                    return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
-                continue
+                    if add_new:
+                        var_inst.new_value()
+                        add_new = False
+
+                    try:
+                        var_inst.add_value_envvar(identifier)
+                    except mvtools_exception.mvtools_exception as ex:
+                        return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
+                    continue
+
+                return False, "Malformed variable: [%s]: dangling identifier." % str_input
 
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN + miniparse.ANYSPACE)
             if v: # new plus sign
