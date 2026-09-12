@@ -1951,6 +1951,27 @@ class DSLType20:
                 plus_state_flag = False
                 local_str_input = (r[1]).lstrip()
 
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ATSIGN)
+                if v: # contexts
+                    local_str_input = (r[1]).lstrip()
+
+                    v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
+                    if not v:
+                        return False, "Malformed option: [%s]: expecting identifier after at sign (processing string selector)." % str_input
+
+                    ctx_name = r[0]
+                    local_str_input = (r[1]).lstrip()
+
+                    if add_new:
+                        opt_inst.new_value()
+                        add_new = False
+
+                    try:
+                        opt_inst.add_value_selector_string("@%s" % ctx_name)
+                    except mvtools_exception.mvtools_exception as ex:
+                        return False, "Unable to parse option value [%s]: [%s]." % (str_input, ex.get_message())
+                    continue
+
                 v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
                 if v: # specific global vars
                     gvars_name = r[0]
