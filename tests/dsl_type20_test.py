@@ -2329,7 +2329,6 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_context("ctx1", None, None)
         self.assertTrue(v)
 
-        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
         test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
         test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
         test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
@@ -2343,7 +2342,7 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.add_variable(test_var3, "ctx1")
         self.assertTrue(v)
 
-        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -2353,7 +2352,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "!opt1")])
 
-        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
         self.assertEqual(r, None)
 
         r = test_val.get_serialized()
@@ -2457,8 +2456,9 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_val.internal_data), 1)
         self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "!opt2")])
 
-        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
-        self.assertEqual(r, None)
+        # can't test for resolution in this case, because opt2 is unresolvable
+        #r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        #self.assertEqual(r, None)
 
         r = test_val.get_serialized()
         self.assertEqual(r, "%!opt2")

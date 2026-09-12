@@ -845,11 +845,15 @@ class DSLType20:
 
     def _selector_resolve_helper_load_opts(self, loader, opt_name, opt_list):
 
+        opt_found = False
+
         for o in opt_list:
 
             if opt_name is not None:
                 if o.get_name() != opt_name:
                     continue
+                else:
+                    opt_found = True
 
             try:
 
@@ -865,6 +869,8 @@ class DSLType20:
             except mvtools_exception.mvtools_exception as ex:
                 return False, ex.get_message()
 
+        if opt_name is not None and not opt_found:
+            return False, "Unable to resolve option [%s] - not found!" % opt_name
         return True, None
 
     def _selector_resolve(self, loader, original_source, route):
