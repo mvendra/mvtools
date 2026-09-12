@@ -1618,16 +1618,6 @@ class DSLType20:
 
                 return False, "Malformed variable: [%s]: dangling identifier." % str_input
 
-            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN + miniparse.ANYSPACE)
-            if v: # new plus sign
-
-                if (plus_state_flag is None) or (plus_state_flag is True):
-                    return False, "Malformed variable: [%s]: unexpected plus sign." % str_input
-                plus_state_flag = True
-                plus_required = False
-                local_str_input = (r[1]).strip()
-                continue
-
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EXCLMARK + miniparse.ANYSPACE)
             if v: # new string selector - all self-options
 
@@ -1674,6 +1664,16 @@ class DSLType20:
                     var_inst.add_value_selector_string("")
                 except mvtools_exception.mvtools_exception as ex:
                     return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
+                continue
+
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_PLUSSIGN + miniparse.ANYSPACE)
+            if v: # new plus sign
+
+                if (plus_state_flag is None) or (plus_state_flag is True):
+                    return False, "Malformed variable: [%s]: unexpected plus sign." % str_input
+                plus_state_flag = True
+                plus_required = False
+                local_str_input = (r[1]).strip()
                 continue
 
             break # something else - break out
