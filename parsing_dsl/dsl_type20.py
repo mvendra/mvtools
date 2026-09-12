@@ -1962,6 +1962,29 @@ class DSLType20:
                     ctx_name = r[0]
                     local_str_input = (r[1]).lstrip()
 
+                    v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_DOT)
+                    if v: # specific vars within context
+                        local_str_input = (r[1]).lstrip()
+
+                        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
+                        if not v:
+                            return False, "Malformed option: [%s]: expecting identifier after dot sign (processing string selector)." % str_input
+
+                        var_name = r[0]
+                        local_str_input = (r[1]).lstrip()
+
+                        if add_new:
+                            opt_inst.new_value()
+                            add_new = False
+
+                        try:
+                            opt_inst.add_value_selector_string("@%s.%s" % (ctx_name, var_name))
+                        except mvtools_exception.mvtools_exception as ex:
+                            return False, "Unable to parse option value [%s]: [%s]." % (str_input, ex.get_message())
+                        continue
+
+                    # full context
+
                     if add_new:
                         opt_inst.new_value()
                         add_new = False
