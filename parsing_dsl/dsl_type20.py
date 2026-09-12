@@ -1942,6 +1942,25 @@ class DSLType20:
                     return False, "Unable to parse option value [%s]: [%s]." % (str_input, ex.get_message())
                 continue
 
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.PERCENTSIGN)
+            if v: # new string selector
+
+                if plus_required:
+                    return False, "Malformed option: [%s]: values should be joined with an intermediary plus sign (processing string selector)." % str_input
+                plus_required = True
+                plus_state_flag = False
+                local_str_input = (r[1]).lstrip()
+
+                if add_new:
+                    opt_inst.new_value()
+                    add_new = False
+
+                try:
+                    opt_inst.add_value_selector_string("")
+                except mvtools_exception.mvtools_exception as ex:
+                    return False, "Unable to parse option value [%s]: [%s]." % (str_input, ex.get_message())
+                continue
+
             v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_PLUSSIGN)
             if v: # new plus sign
 
