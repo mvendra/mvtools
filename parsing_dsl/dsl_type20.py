@@ -1519,22 +1519,36 @@ class DSLType20:
                 continue
 
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.IDENTIFIER + miniparse.ANYSPACE)
-            if v: # new envvar
+            if v: # identifier (envvars and most string-selectors)
 
                 if (r[1]).strip() == "": # false positive - valueless variable
                     break
 
-                if not self.configs.expand_envvars:
-                    return False, "Envvars are disabled in this configuration - parsing failed."
-
                 if plus_required:
-                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing envvar)." % str_input
+                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing identifier)." % str_input
                 plus_required = True
                 plus_state_flag = False
                 eqsign_expected = True
 
-                envvar_name = r[0]
-                local_str_input = r[1]
+                identifier = (r[0]).rstrip()
+                local_str_input = (r[1]).rstrip()
+
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN)
+                if v: # specific global var
+                    local_str_input = (r[1]).strip()
+
+                    if add_new:
+                        var_inst.new_value()
+                        add_new = False
+
+                    try:
+                        var_inst.add_value_selector_string(identifier)
+                    except mvtools_exception.mvtools_exception as ex:
+                        return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
+                    continue
+
+                if not self.configs.expand_envvars: # mvtodo: move away
+                    return False, "Envvars are disabled in this configuration - parsing failed."
 
                 # remove dollar sign
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_DOLLARSIGN)
@@ -1547,7 +1561,7 @@ class DSLType20:
                     add_new = False
 
                 try:
-                    var_inst.add_value_envvar(envvar_name)
+                    var_inst.add_value_envvar(identifier)
                 except mvtools_exception.mvtools_exception as ex:
                     return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
                 continue
