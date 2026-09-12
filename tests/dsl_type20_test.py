@@ -9774,5 +9774,18 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_opt.value.internal_data), 1)
         self.assertEqual(test_opt.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "")])
 
+    def testDslType20_TestParseValue17(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_opt = dsl_type20.DSLType20_Option("opt1")
+
+        v, r = test_dsl._parse_value("opt1: %" + "global_var}", "%" + "global_var}", test_opt)
+        self.assertTrue(v)
+        self.assertEqual(r, "}")
+
+        self.assertEqual(len(test_opt.value.internal_data), 1)
+        self.assertEqual(test_opt.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "global_var")])
+
 if __name__ == "__main__":
     unittest.main()
