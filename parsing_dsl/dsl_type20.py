@@ -1533,6 +1533,26 @@ class DSLType20:
                 identifier = (r[0]).rstrip()
                 local_str_input = (r[1]).rstrip()
 
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EXCLMARK + miniparse.ANYSPACE)
+                if v: # new string selector - specific self-option
+                    local_str_input = (r[1]).rstrip()
+
+                    # remove percent
+                    v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN)
+                    if not v:
+                        return False, "Malformed variable: [%s]: expecting percent sign during string-selector parsing." % str_input
+                    local_str_input = (r[1]).rstrip()
+
+                    if add_new:
+                        var_inst.new_value()
+                        add_new = False
+
+                    try:
+                        var_inst.add_value_selector_string("!%s" % identifier)
+                    except mvtools_exception.mvtools_exception as ex:
+                        return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
+                    continue
+
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.DOT)
                 if v: # context - specific vars
                     local_str_input = (r[1]).rstrip()
