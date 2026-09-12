@@ -9557,6 +9557,19 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_var.value.internal_data), 1)
         self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx")])
 
+    def testDslType20_TestParseValueEnd21(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl._parse_value_end("var1 = %" + "@ctx.some_var", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(len(test_var.value.internal_data), 1)
+        self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "@ctx.some_var")])
+
     def testDslType20_TestParseValue1(self):
 
         test_cfg = dsl_type20.DSLType20_Config()

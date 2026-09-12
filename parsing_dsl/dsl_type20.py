@@ -1533,9 +1533,41 @@ class DSLType20:
                 identifier = (r[0]).rstrip()
                 local_str_input = (r[1]).rstrip()
 
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.DOT)
+                if v: # context - specific vars
+                    local_str_input = (r[1]).rstrip()
+
+                    v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.IDENTIFIER)
+                    if not v:
+                        return False, "Malformed variable: [%s]: expecting context identifier (whilst parsing string-selector)." % str_input
+                    ctx_name = (r[0]).rstrip()
+                    local_str_input = (r[1]).rstrip()
+
+                    # remove at sign
+                    v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ATSIGN)
+                    if not v:
+                        return False, "Malformed variable: [%s]: expecting at sign during string-selector parsing." % str_input
+                    local_str_input = (r[1]).rstrip()
+
+                    # remove percent
+                    v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN)
+                    if not v:
+                        return False, "Malformed variable: [%s]: expecting percent sign during string-selector parsing." % str_input
+                    local_str_input = (r[1]).rstrip()
+
+                    if add_new:
+                        var_inst.new_value()
+                        add_new = False
+
+                    try:
+                        var_inst.add_value_selector_string("@%s.%s" % (ctx_name, identifier))
+                    except mvtools_exception.mvtools_exception as ex:
+                        return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
+                    continue
+
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ATSIGN)
                 if v: # context - full
-                    local_str_input = (r[1]).strip()
+                    local_str_input = (r[1]).rstrip()
 
                     # remove percent sign
                     v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN)
@@ -1555,7 +1587,7 @@ class DSLType20:
 
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN)
                 if v: # specific global var
-                    local_str_input = (r[1]).strip()
+                    local_str_input = (r[1]).rstrip()
 
                     if add_new:
                         var_inst.new_value()
@@ -1569,7 +1601,7 @@ class DSLType20:
 
                 v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_DOLLARSIGN)
                 if v: # envvar
-                    local_str_input = (r[1]).strip()
+                    local_str_input = (r[1]).rstrip()
 
                     if not self.configs.expand_envvars:
                         return False, "Envvars are disabled in this configuration - parsing failed."
