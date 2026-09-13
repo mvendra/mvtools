@@ -2766,6 +2766,1290 @@ class DSLType20Test(unittest.TestCase):
         r = test_val.get_serialized()
         self.assertEqual(r, "%!opt2")
 
+    def testDSLType20_Value36(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<>")
+
+    def testDSLType20_Value37(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<>")
+
+    def testDSLType20_Value38(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<>")
+
+    def testDSLType20_Value39(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1", "val2", "val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<>")
+
+    def testDSLType20_Value40(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1", "val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<>")
+
+    def testDSLType20_Value41(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<var1>")
+
+    def testDSLType20_Value42(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<var1>")
+
+    def testDSLType20_Value43(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<var1>")
+
+    def testDSLType20_Value44(self):
+
+        test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True)
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1", "val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<var1>")
+
+    def testDSLType20_Value45(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("@ctx1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<@ctx1>")
+
+    def testDSLType20_Value46(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("@ctx1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1", "val2", "val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<@ctx1>")
+
+    def testDSLType20_Value47(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_context("ctx2", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx2")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("@ctx1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1", "val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<@ctx1>")
+
+    def testDSLType20_Value48(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("@ctx1.var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx1.var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<@ctx1.var1>")
+
+    def testDSLType20_Value49(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("@ctx1.var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx1.var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<@ctx1.var1>")
+
+    def testDSLType20_Value50(self):
+
+        test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True)
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("@ctx1.var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx1.var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1", "val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<@ctx1.var1>")
+
+    def testDSLType20_Value51(self):
+
+        test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True)
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val1")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val2")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("@ctx1.var1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx1.var1")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, ["val1"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<@ctx1.var1>")
+
+    def testDSLType20_Value52(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_dummy_var = dsl_type20.DSLType20_Variable("dummy-var", None)
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!")])
+
+        r = test_dsl._get_resolved_value_helper(test_dummy_var, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!>")
+
+    def testDSLType20_Value53(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val2")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val1"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!>")
+
+    def testDSLType20_Value54(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+        test_opt1.add_value_immediate("val2")
+        test_opt1.add_value_immediate("val3")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val4")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val5")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val1val2val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!>")
+
+    def testDSLType20_Value55(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val2")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2, test_opt3])
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val1", "val2", "val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!>")
+
+    def testDSLType20_Value56(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+        test_opt1.add_value_immediate("val2")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val3")
+        test_opt2.add_value_immediate("val4")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val5")
+        test_opt3.add_value_immediate("val6")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2, test_opt3])
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val1val2", "val3val4", "val5val6"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!>")
+
+    def testDSLType20_Value57(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!opt1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!opt1")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!opt1>")
+
+    def testDSLType20_Value58(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val2")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!opt1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!opt1")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val1"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!opt1>")
+
+    def testDSLType20_Value59(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val2")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!opt2")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!opt2")])
+
+        # can't test for resolution in this case, because opt2 is unresolvable
+        #r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        #self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!opt2>")
+
+    def testDSLType20_Value60(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+        test_opt1.add_value_immediate("val2")
+        test_opt1.add_value_immediate("val3")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val4")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val5")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", test_opt1)
+        test_var2 = dsl_type20.DSLType20_Variable("var2", test_opt2)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", test_opt3)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!opt1")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!opt1")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val1val2val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!opt1>")
+
+    def testDSLType20_Value61(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val2")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val3")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2, test_opt3])
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!opt3")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!opt3")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val3"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!opt3>")
+
+    def testDSLType20_Value62(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_val = dsl_type20.DSLType20_Value()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        self.assertEqual(len(test_val.internal_data), 0)
+        self.assertEqual(test_val.internal_data, [])
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+        test_opt1.add_value_immediate("val2")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val3")
+        test_opt2.add_value_immediate("val4")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val5")
+        test_opt3.add_value_immediate("val6")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", [test_opt1, test_opt2, test_opt3])
+        test_var2 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3 = dsl_type20.DSLType20_Variable("var3", None)
+
+        v, r = test_dsl.add_variable(test_var1, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, "ctx1")
+        self.assertTrue(v)
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, None)
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, None)
+
+        test_val.add_selector_array("!opt2")
+        self.assertEqual(len(test_val.internal_data), 1)
+        self.assertEqual(test_val.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!opt2")])
+
+        r = test_dsl._get_resolved_value_helper(test_var1, test_val)
+        self.assertEqual(r, ["val3val4"])
+
+        r = test_val.get_serialized()
+        self.assertEqual(r, "<!opt2>")
+
     def testDSLType20_Variable1(self):
 
         ex_flag = False
