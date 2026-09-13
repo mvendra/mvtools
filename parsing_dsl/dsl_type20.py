@@ -460,6 +460,8 @@ class DSLType20_Value:
                 v_res = "%s%s" % (miniparse.DOLLARSIGN, v[1])
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
                 v_res = "%" + v[1]
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY:
+                v_res = "<%s>" % v[1]
             result += v_res
 
         return result
