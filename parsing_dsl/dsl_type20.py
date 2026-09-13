@@ -1016,7 +1016,18 @@ class DSLType20:
                 result += single
                 return result
 
+            # result becomes an array, single gets merged in
+            if isinstance(single, list):
+                result = [result]
+                result += single
+                return result
+
         if isinstance(result, list):
+
+            # array result, gets another string entry
+            if isinstance(single, str):
+                result.append(single)
+                return result
 
             # array and array merging
             if isinstance(single, list):
