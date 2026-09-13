@@ -985,13 +985,49 @@ class DSLType20:
         loader.load_result_list(r)
         return True, None
 
+    def _expanduser_helper(self, source):
+
+        if (not self.configs.expand_user) or (source is None):
+            return source
+
+        if isinstance(source, str):
+
+            source = os.path.expanduser(source)
+            if miniparse.TILDA in source:
+                raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % source)
+            return source
+
+        result = []
+        for s in source:
+
+            s = os.path.expanduser(s)
+            if miniparse.TILDA in s:
+                raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % s)
+            result.append(s)
+
+        return result
+
+    def _combine_result_and_single(self, result, single):
+
+        # first/base case
+        if result is None:
+            return single
+
+        # string to string concatenation
+        if isinstance(result, str) and isinstance(single, str):
+            result += single
+            return result
+
+        # mvtodo: arrays
+        return None
+
     def _get_resolved_value_helper(self, original_source, source_value):
 
         result = None
 
         for v in source_value.internal_data:
 
-            v_res = ""
+            v_res = None
             if v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_IMMEDIATE:
 
                 v_res = v[1]
@@ -1012,35 +1048,21 @@ class DSLType20:
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
 
                 srl = ResolveLoader(True)
-
                 v, r = self._selector_resolve(srl, original_source, v[1])
                 if not v:
                     raise mvtools_exception.mvtools_exception("Unable to resolve string-selector: [%s]" % r)
-
                 v_res = srl.deliver()
-                if v_res is None:
-                    continue
 
             elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY:
 
                 arl = ResolveLoader(False)
-
                 v, r = self._selector_resolve(arl, original_source, v[1])
                 if not v:
                     raise mvtools_exception.mvtools_exception("Unable to resolve array-selector: [%s]" % r)
-
                 v_res = arl.deliver()
-                if v_res is None:
-                    continue
 
-            if self.configs.expand_user:
-                v_res = os.path.expanduser(v_res)
-                if miniparse.TILDA in v_res:
-                    raise mvtools_exception.mvtools_exception("Unable to expand user [%s]" % v_res)
-
-            if result is None:
-                result = ""
-            result += v_res
+            v_res = self._expanduser_helper(v_res)
+            result = self._combine_result_and_single(result, v_res)
 
         return result
 
