@@ -431,6 +431,11 @@ class DSLType20_Value:
             raise mvtools_exception.mvtools_exception("Invalid selector route: [%s]" % route)
         self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, route))
 
+    def add_selector_array(self, route):
+        if not validate_selector_route(route):
+            raise mvtools_exception.mvtools_exception("Invalid selector route: [%s]" % route)
+        self.internal_data.append((DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, route))
+
     def get_serialized(self):
 
         result = None
