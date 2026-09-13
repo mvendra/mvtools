@@ -4604,6 +4604,82 @@ class DSLType20Test(unittest.TestCase):
             ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
         self.assertTrue(ex_flag)
 
+    def testDSLType20_Option_AddValueSelectorArray1(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.add_value_selector_array("")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorArray2(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_array("")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorArray3(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_array("var")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorArray4(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_array("@ctx")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorArray5(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_array("@ctx.var")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertFalse(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorArray6(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_array("!")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
+    def testDSLType20_Option_AddValueSelectorArray7(self):
+
+        opt_inst = dsl_type20.DSLType20_Option("a")
+        ex_flag = False
+        try:
+            opt_inst.new_value()
+            opt_inst.add_value_selector_array("!opt")
+        except BaseException as ex:
+            ex_flag = isinstance(ex, mvtools_exception.mvtools_exception)
+        self.assertTrue(ex_flag)
+
     def testDSLType20_Option_GetValueSerialized1(self):
 
         opt_inst = dsl_type20.DSLType20_Option("a")
