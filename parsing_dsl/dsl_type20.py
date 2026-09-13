@@ -372,6 +372,14 @@ class ResolveLoader:
                 self.internal_data = ""
             self.internal_data += s
 
+    def _load_result_list_arr(self, source):
+
+        for s in source:
+            for v in s.variable.values:
+                if self.internal_data is None:
+                    self.internal_data = []
+                self.internal_data.append(v)
+
 class DSLType20_Result_Single:
 
     def __init__(self, name, values):
