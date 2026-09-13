@@ -1094,7 +1094,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(test_rl.deliver(), None)
 
         test_rl.load_result_list(test_result_list1)
-        self.assertEqual(test_rl.deliver(), [""])
+        self.assertEqual(test_rl.deliver(), "")
 
         test_rl.load_result_list(test_result_list2)
         self.assertEqual(test_rl.deliver(), ["", "val1"])
@@ -1112,7 +1112,7 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(test_rl.deliver(), None)
 
         test_rl.load_direct_list(test_direct_list1)
-        self.assertEqual(test_rl.deliver(), [""])
+        self.assertEqual(test_rl.deliver(), "")
 
         test_rl.load_direct_list(test_direct_list2)
         self.assertEqual(test_rl.deliver(), ["", "val1"])
