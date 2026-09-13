@@ -1010,14 +1010,18 @@ class DSLType20:
             return result
 
         # string to string concatenation
-        if isinstance(result, str) and isinstance(single, str):
-            result += single
-            return result
+        if isinstance(result, str):
+
+            if isinstance(single, str):
+                result += single
+                return result
 
         # array and array merging
-        if isinstance(result, list) and isinstance(single, list):
-            result += single
-            return result
+        if isinstance(result, list):
+
+            if isinstance(single, list):
+                result += single
+                return result
 
         raise mvtools_exception.mvtools_exception("Unable to combine results: [%s] and [%s]" % (result, single))
 
