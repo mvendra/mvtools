@@ -1009,16 +1009,16 @@ class DSLType20:
         if single is None:
             return result
 
-        # string to string concatenation
         if isinstance(result, str):
 
+            # string and string concatenation
             if isinstance(single, str):
                 result += single
                 return result
 
-        # array and array merging
         if isinstance(result, list):
 
+            # array and array merging
             if isinstance(single, list):
                 result += single
                 return result
