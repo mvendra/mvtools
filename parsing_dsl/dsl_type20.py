@@ -380,6 +380,13 @@ class ResolveLoader:
                     self.internal_data = []
                 self.internal_data.append(v)
 
+    def _load_direct_list_arr(self, source):
+
+        for s in source:
+            if self.internal_data is None:
+                self.internal_data = []
+            self.internal_data.append(s)
+
 class DSLType20_Result_Single:
 
     def __init__(self, name, values):
