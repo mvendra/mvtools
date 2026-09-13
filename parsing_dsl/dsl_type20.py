@@ -1015,6 +1015,18 @@ class DSLType20:
                 if v_res is None:
                     continue
 
+            elif v[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY:
+
+                arl = ResolveLoader(False)
+
+                v, r = self._selector_resolve(arl, original_source, v[1])
+                if not v:
+                    raise mvtools_exception.mvtools_exception("Unable to resolve array-selector: [%s]" % r)
+
+                v_res = arl.deliver()
+                if v_res is None:
+                    continue
+
             if self.configs.expand_user:
                 v_res = os.path.expanduser(v_res)
                 if miniparse.TILDA in v_res:
