@@ -1199,6 +1199,8 @@ class DSLType20:
                 new_inst.add_envvar(x[1])
             elif x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING:
                 new_inst.add_selector_string(x[1])
+            elif x[0] == DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY:
+                new_inst.add_selector_array(x[1])
             else:
                 raise mvtools_exception.mvtools_exception("Unexpected value type [%s]" % x)
 
