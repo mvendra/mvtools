@@ -1053,8 +1053,11 @@ class DSLType20:
 
         result = []
         for e in source.value:
-            res_str = self._get_resolved_value_helper(source, e)
-            result.append(res_str)
+            res_entry = self._get_resolved_value_helper(source, e)
+            if isinstance(res_entry, list):
+                result += res_entry
+            else:
+                result.append(res_entry)
         return result
 
     def _get_resolved_value(self, source):
