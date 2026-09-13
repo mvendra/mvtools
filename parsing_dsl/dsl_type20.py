@@ -619,6 +619,11 @@ class DSLType20_Option(DSLType20_ValueHolder):
             raise mvtools_exception.mvtools_exception("Adding string selector routes that select options is not available for options themselves (attempted adding [%s])" % route)
         super().add_value_selector_string(route)
 
+    def add_value_selector_array(self, route):
+        if not validate_option_selector_route(route):
+            raise mvtools_exception.mvtools_exception("Adding array selector routes that select options is not available for options themselves (attempted adding [%s])" % route)
+        super().add_value_selector_array(route)
+
 class DSLType20_Context:
 
     def __init__(self, ptr_parent, name, options):
