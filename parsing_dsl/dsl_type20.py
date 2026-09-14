@@ -2223,6 +2223,27 @@ class DSLType20:
                     return False, "Unable to parse option value [%s]: [%s]." % (str_input, ex.get_message())
                 continue
 
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.LABRACKET)
+            if v: # new array selector
+
+                if plus_required:
+                    return False, "Malformed option: [%s]: values should be joined with an intermediary plus sign (processing array selector)." % str_input
+                plus_required = True
+                plus_state_flag = False
+                local_str_input = (r[1]).lstrip()
+
+                v, r = self._parse_value_single_array_selector(local_str_input, str_input, add_new, opt_inst)
+                if not v:
+                    return False, r
+                add_new, local_str_input = r
+
+                # remove right angled bracket
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.RABRACKET)
+                if not v:
+                    return False, "Malformed option: [%s]: expecting right angled bracket during array-selector parsing." % str_input
+                local_str_input = (r[1]).lstrip()
+                continue
+
             v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_PLUSSIGN)
             if v: # new plus sign
 
@@ -2239,6 +2260,52 @@ class DSLType20:
             return False, "Malformed option: [%s]: Leftover plus sign." % str_input
 
         return True, local_str_input
+
+    def _parse_value_single_array_selector(self, local_str_input, str_input, add_new, opt_inst):
+
+        local_route = "" # all global variables
+
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.EXCLMARK)
+        if v: # forbidden - options cannot select options
+            return False, "Malformed option: [%s]: Options cannot array-select options." % str_input
+
+        v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ATSIGN)
+        if v: # specific context
+            local_str_input = (r[1]).lstrip()
+
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
+            if not v:
+                return False, "Malformed option: [%s]: expecting context identifier during array-selector parsing." % str_input
+            local_route = "@%s" % (r[0]).lstrip()
+            local_str_input = (r[1]).lstrip()
+
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.ESCAPED_DOT)
+            if v: # specific variables in specific context
+                local_str_input = (r[1]).lstrip()
+
+                v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
+                if not v:
+                    return False, "Malformed option: [%s]: expecting variables identifier during array-selector parsing." % str_input
+                local_route = "%s.%s" % (local_route, ((r[0]).lstrip()))
+                local_str_input = (r[1]).lstrip()
+
+        else:
+
+            v, r = miniparse.scan_and_slice_beginning(local_str_input, miniparse.IDENTIFIER)
+            if v: # all global vars
+                local_route = (r[0]).lstrip()
+                local_str_input = (r[1]).lstrip()
+
+        if add_new:
+            opt_inst.new_value()
+            add_new = False
+
+        try:
+            opt_inst.add_value_selector_array(local_route)
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Unable to parse option value [%s]: [%s]." % (str_input, ex.get_message())
+
+        return True, (add_new, local_str_input)
 
     def _produce_context(self, context, _ctx_end_comment, _ctx_lvl_indent, _indent_skip = False):
 
