@@ -5904,6 +5904,130 @@ class DSLType20Test(unittest.TestCase):
         v, r = test_dsl.get_variables("var1", None)
         self.assertFalse(v)
 
+    def testDslType20_GetVariables32(self):
+
+        test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True, inherit_options = True)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+        test_opt1.add_value_immediate("val2")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val3")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val4")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val5")
+        test_opt3.add_value_selector_string("")
+        test_opt3.add_value_immediate("val6")
+
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
+        test_opt4.new_value()
+        test_opt4.add_value_immediate("val7")
+        test_opt4.new_value()
+        test_opt4.add_value_selector_string("")
+
+        test_opt5 = dsl_type20.DSLType20_Option("opt5")
+        test_opt5.new_value()
+        test_opt5.add_value_immediate("val8")
+        test_opt5.add_value_selector_array("")
+        test_opt5.add_value_immediate("val9")
+
+        test_opt6 = dsl_type20.DSLType20_Option("opt6")
+        test_opt6.new_value()
+        test_opt6.add_value_immediate("val10")
+        test_opt6.new_value()
+        test_opt6.add_value_selector_array("")
+
+        test_opt7 = dsl_type20.DSLType20_Option("opt7")
+        test_opt7.new_value()
+        test_opt7.add_value_immediate("val11")
+        test_opt7.new_value()
+        test_opt7.add_value_selector_string("")
+        test_opt7.add_value_selector_array("")
+        test_opt7.add_value_immediate("val12")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_context("ctx2", [test_opt1, test_opt2, test_opt3, test_opt4], None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val13")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val14")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val15")
+
+        test_var4 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var4.new_value()
+        test_var4.add_value_immediate("val16")
+
+        test_var5 = dsl_type20.DSLType20_Variable("var4", None)
+        test_var5.new_value()
+        test_var5.add_value_immediate("val17")
+        test_var5.add_value_immediate("val18")
+        test_var5.add_value_selector_string("")
+        test_var5.add_value_immediate("val19")
+        test_var5.add_value_selector_array("")
+        test_var5.new_value()
+        test_var5.add_value_immediate("val20")
+
+        test_var6 = dsl_type20.DSLType20_Variable("var4", None)
+        test_var6.new_value()
+        test_var6.add_value_immediate("val21")
+        test_var6.new_value()
+        test_var6.add_value_selector_array("var1")
+        test_var6.new_value()
+        test_var6.add_value_selector_string("var1")
+
+        test_var7 = dsl_type20.DSLType20_Variable("var5", None)
+        test_var7.new_value()
+        test_var7.add_value_selector_array("@ctx1.var4")
+
+        test_var8 = dsl_type20.DSLType20_Variable("var6", [test_opt5, test_opt6, test_opt7])
+        test_var8.new_value()
+        test_var8.add_value_selector_array("!")
+        test_var8.new_value()
+        test_var8.add_value_selector_array("@ctx1.var5")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var4, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var5, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var6, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var7, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var8, "ctx2")
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(test_dsl.get_variables("var6", "ctx2")), [("var6", ["val1val2", "val3", "val4", "val5val13val14val15val16val6", "val7", "val13val14val15val16", "val8", "val13", "val14", "val15", "val16", "val9", "val10", "val13", "val14", "val15", "val16", "val11", "val13val14val15val16", "val13", "val14", "val15", "val16", "val12", "val17val18val13val14val15val16val19", "val13", "val14", "val15", "val16", "val20", "val21", "val13", "val14", "val13val14"], [("opt1", ["val1val2"]), ("opt2", ["val3", "val4"]), ("opt3", ["val5val13val14val15val16val6"]), ("opt4", ["val7", "val13val14val15val16"]), ("opt5", ["val8", "val13", "val14", "val15", "val16", "val9"]), ("opt6", ["val10", "val13", "val14", "val15", "val16"]), ("opt7", ["val11", "val13val14val15val16", "val13", "val14", "val15", "val16", "val12"])])])
+
     def testDslType20_GetAllVariables1(self):
 
         dsl = dsl_type20.DSLType20(dsl_type20.DSLType20_Config())
@@ -6905,6 +7029,130 @@ class DSLType20Test(unittest.TestCase):
 
         v, r = test_dsl.get_all_variables(None)
         self.assertFalse(v)
+
+    def testDslType20_GetAllVariables39(self):
+
+        test_cfg = dsl_type20.DSLType20_Config(allow_var_dupes = True, inherit_options = True)
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+
+        test_opt1 = dsl_type20.DSLType20_Option("opt1")
+        test_opt1.new_value()
+        test_opt1.add_value_immediate("val1")
+        test_opt1.add_value_immediate("val2")
+
+        test_opt2 = dsl_type20.DSLType20_Option("opt2")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val3")
+        test_opt2.new_value()
+        test_opt2.add_value_immediate("val4")
+
+        test_opt3 = dsl_type20.DSLType20_Option("opt3")
+        test_opt3.new_value()
+        test_opt3.add_value_immediate("val5")
+        test_opt3.add_value_selector_string("")
+        test_opt3.add_value_immediate("val6")
+
+        test_opt4 = dsl_type20.DSLType20_Option("opt4")
+        test_opt4.new_value()
+        test_opt4.add_value_immediate("val7")
+        test_opt4.new_value()
+        test_opt4.add_value_selector_string("")
+
+        test_opt5 = dsl_type20.DSLType20_Option("opt5")
+        test_opt5.new_value()
+        test_opt5.add_value_immediate("val8")
+        test_opt5.add_value_selector_array("")
+        test_opt5.add_value_immediate("val9")
+
+        test_opt6 = dsl_type20.DSLType20_Option("opt6")
+        test_opt6.new_value()
+        test_opt6.add_value_immediate("val10")
+        test_opt6.new_value()
+        test_opt6.add_value_selector_array("")
+
+        test_opt7 = dsl_type20.DSLType20_Option("opt7")
+        test_opt7.new_value()
+        test_opt7.add_value_immediate("val11")
+        test_opt7.new_value()
+        test_opt7.add_value_selector_string("")
+        test_opt7.add_value_selector_array("")
+        test_opt7.add_value_immediate("val12")
+
+        v, r = test_dsl.add_context("ctx1", None, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_context("ctx2", [test_opt1, test_opt2, test_opt3, test_opt4], None)
+        self.assertTrue(v)
+
+        test_var1 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var1.new_value()
+        test_var1.add_value_immediate("val13")
+
+        test_var2 = dsl_type20.DSLType20_Variable("var1", None)
+        test_var2.new_value()
+        test_var2.add_value_immediate("val14")
+
+        test_var3 = dsl_type20.DSLType20_Variable("var2", None)
+        test_var3.new_value()
+        test_var3.add_value_immediate("val15")
+
+        test_var4 = dsl_type20.DSLType20_Variable("var3", None)
+        test_var4.new_value()
+        test_var4.add_value_immediate("val16")
+
+        test_var5 = dsl_type20.DSLType20_Variable("var4", None)
+        test_var5.new_value()
+        test_var5.add_value_immediate("val17")
+        test_var5.add_value_immediate("val18")
+        test_var5.add_value_selector_string("")
+        test_var5.add_value_immediate("val19")
+        test_var5.add_value_selector_array("")
+        test_var5.new_value()
+        test_var5.add_value_immediate("val20")
+
+        test_var6 = dsl_type20.DSLType20_Variable("var4", None)
+        test_var6.new_value()
+        test_var6.add_value_immediate("val21")
+        test_var6.new_value()
+        test_var6.add_value_selector_array("var1")
+        test_var6.new_value()
+        test_var6.add_value_selector_string("var1")
+
+        test_var7 = dsl_type20.DSLType20_Variable("var5", None)
+        test_var7.new_value()
+        test_var7.add_value_selector_array("@ctx1.var4")
+
+        test_var8 = dsl_type20.DSLType20_Variable("var6", [test_opt5, test_opt6, test_opt7])
+        test_var8.new_value()
+        test_var8.add_value_selector_array("!")
+        test_var8.new_value()
+        test_var8.add_value_selector_array("@ctx1.var5")
+
+        v, r = test_dsl.add_variable(test_var1, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var2, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var3, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var4, None)
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var5, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var6, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var7, "ctx1")
+        self.assertTrue(v)
+
+        v, r = test_dsl.add_variable(test_var8, "ctx2")
+        self.assertTrue(v)
+
+        self.assertEqual(var_fmt_helper(test_dsl.get_all_variables("ctx2")), [("var6", ["val1val2", "val3", "val4", "val5val13val14val15val16val6", "val7", "val13val14val15val16", "val8", "val13", "val14", "val15", "val16", "val9", "val10", "val13", "val14", "val15", "val16", "val11", "val13val14val15val16", "val13", "val14", "val15", "val16", "val12", "val17val18val13val14val15val16val19", "val13", "val14", "val15", "val16", "val20", "val21", "val13", "val14", "val13val14"], [("opt1", ["val1val2"]), ("opt2", ["val3", "val4"]), ("opt3", ["val5val13val14val15val16val6"]), ("opt4", ["val7", "val13val14val15val16"]), ("opt5", ["val8", "val13", "val14", "val15", "val16", "val9"]), ("opt6", ["val10", "val13", "val14", "val15", "val16"]), ("opt7", ["val11", "val13val14val15val16", "val13", "val14", "val15", "val16", "val12"])])])
 
     def testDslType20_TestVanilla1(self):
 
