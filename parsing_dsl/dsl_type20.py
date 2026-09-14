@@ -1748,6 +1748,29 @@ class DSLType20:
 
                 return False, "Malformed variable: [%s]: dangling identifier." % str_input
 
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.RABRACKET + miniparse.ANYSPACE)
+            if v: # new array selector
+
+                if plus_required:
+                    return False, "Malformed variable: [%s]: values should be joined with an intermediary plus sign (processing array-selector)." % str_input
+                plus_required = True
+                plus_state_flag = False
+                eqsign_expected = True
+
+                local_str_input = (r[1]).rstrip()
+
+                v, r = self._parse_value_end_single_array_selector(local_str_input, str_input, add_new, var_inst)
+                if not v:
+                    return False, r
+                add_new, local_str_input = r
+
+                # remove left angled bracket
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.LABRACKET)
+                if not v:
+                    return False, "Malformed variable: [%s]: expecting left angled bracket during array-selector parsing." % str_input
+                local_str_input = (r[1]).rstrip()
+                continue
+
             v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.PERCENTSIGN + miniparse.ANYSPACE)
             if v: # new string selector - all global vars
 
@@ -1817,6 +1840,70 @@ class DSLType20:
             var_inst.value[len(var_inst.value)-1].internal_data.reverse()
 
         return True, (local_str_input, eqsign_expected)
+
+    def _parse_value_end_single_array_selector(self, local_str_input, str_input, add_new, var_inst):
+
+        local_route = "" # all global variables
+
+        v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EXCLMARK)
+        if v: # all self options
+
+            local_str_input = (r[1]).rstrip()
+            local_route = "!"
+
+        else:
+
+            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.IDENTIFIER)
+            if v:
+                first_id_name = (r[0]).rstrip()
+                local_str_input = (r[1]).rstrip()
+
+                v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.EXCLMARK)
+                if v: # specific option
+
+                    local_str_input = (r[1]).rstrip()
+                    local_route = "!%s" % first_id_name
+
+                else:
+
+                    v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ATSIGN)
+                    if v: # all variables from context
+
+                        local_str_input = (r[1]).rstrip()
+                        local_route = "@%s" % first_id_name
+
+                    else:
+
+                        v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ESCAPED_DOT)
+                        if v: # matching variables from context
+                            local_str_input = (r[1]).rstrip()
+
+                            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.IDENTIFIER)
+                            if not v:
+                                return False, "Malformed variable: [%s]: expecting second identifier during array-selector parsing." % str_input
+                            second_id_name = (r[0]).rstrip()
+                            local_str_input = (r[1]).rstrip()
+                            local_route = "@%s.%s" % (second_id_name, first_id_name)
+
+                            # remove at sign
+                            v, r = miniparse.scan_and_slice_end(local_str_input, miniparse.ATSIGN)
+                            if not v:
+                                return False, "Malformed variable: [%s]: expecting at sign during array-selector parsing." % str_input
+                            local_str_input = (r[1]).rstrip()
+
+                        else: # matching global variables
+                            local_route = first_id_name
+
+        if add_new:
+            var_inst.new_value()
+            add_new = False
+
+        try:
+            var_inst.add_value_selector_array(local_route)
+        except mvtools_exception.mvtools_exception as ex:
+            return False, "Unable to parse variable value [%s]: [%s]." % (str_input, ex.get_message())
+
+        return True, (add_new, local_str_input)
 
     def _parse_options(self, str_input):
 

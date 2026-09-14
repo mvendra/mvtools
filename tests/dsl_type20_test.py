@@ -12254,6 +12254,84 @@ class DSLType20Test(unittest.TestCase):
         self.assertEqual(len(test_var.value.internal_data), 1)
         self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_STRING, "!some_opt")])
 
+    def testDslType20_TestParseValueEnd24(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl._parse_value_end("var1 = <>", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(len(test_var.value.internal_data), 1)
+        self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "")])
+
+    def testDslType20_TestParseValueEnd25(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl._parse_value_end("var1 = <global_var>", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(len(test_var.value.internal_data), 1)
+        self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "global_var")])
+
+    def testDslType20_TestParseValueEnd26(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl._parse_value_end("var1 = <@ctx>", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(len(test_var.value.internal_data), 1)
+        self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx")])
+
+    def testDslType20_TestParseValueEnd27(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl._parse_value_end("var1 = <@ctx.some_var>", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(len(test_var.value.internal_data), 1)
+        self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "@ctx.some_var")])
+
+    def testDslType20_TestParseValueEnd28(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl._parse_value_end("var1 = <!>", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(len(test_var.value.internal_data), 1)
+        self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!")])
+
+    def testDslType20_TestParseValueEnd29(self):
+
+        test_cfg = dsl_type20.DSLType20_Config()
+        test_dsl = dsl_type20.DSLType20(test_cfg)
+        test_var = dsl_type20.DSLType20_Variable("var1", None)
+
+        v, r = test_dsl._parse_value_end("var1 = <!some_opt>", test_var)
+        self.assertTrue(v)
+        self.assertEqual(r, "var1")
+
+        self.assertEqual(len(test_var.value.internal_data), 1)
+        self.assertEqual(test_var.value.internal_data, [(dsl_type20.DSLTYPE20_ENTRY_VALUE_TYPE_SELECT_PRODUCE_ARRAY, "!some_opt")])
+
     def testDslType20_TestParseValue1(self):
 
         test_cfg = dsl_type20.DSLType20_Config()
