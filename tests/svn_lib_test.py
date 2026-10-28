@@ -55,6 +55,11 @@ class SvnLibTest(unittest.TestCase):
 
     def testFixCygwinPath(self):
 
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_FREEBSD):
+            self.assertEqual(svn_lib.fix_cygwin_path(""), None)
+            self.assertEqual(svn_lib.fix_cygwin_path("C:\\windows\\data"), "C:\\windows\\data")
+            self.assertEqual(svn_lib.fix_cygwin_path("C:/windows/data"), "C:/windows/data")
+
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual(svn_lib.fix_cygwin_path(""), None)
             self.assertEqual(svn_lib.fix_cygwin_path("C:\\windows\\data"), "C:\\windows\\data")
@@ -73,6 +78,11 @@ class SvnLibTest(unittest.TestCase):
             self.assertEqual(svn_lib.fix_cygwin_path("C:/windows/data"), "C:/windows/data")
 
     def testSanitizeWindowsPath(self):
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_FREEBSD):
+            self.assertEqual(svn_lib.sanitize_windows_path(""), None)
+            self.assertEqual(svn_lib.sanitize_windows_path("C:\\windows\\data"), "C:\\windows\\data")
+            self.assertEqual(svn_lib.sanitize_windows_path("C:/windows/data"), "C:/windows/data")
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual(svn_lib.sanitize_windows_path(""), None)
