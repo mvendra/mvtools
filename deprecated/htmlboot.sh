@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 HTMLBOOTFILE="index.html"
 if [ ! -z "$1" ]; then

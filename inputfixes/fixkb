@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # first number: delay before starting to repeat (bigger is slower)
 # second number: rate of repetitions (bigger is faster)

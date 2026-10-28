@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # mvtodo: this currently does not work when you try to squash 2 commits, and there are only two commits in the repo
 

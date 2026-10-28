@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function quit_fail_any_err(){
     if [ "$1" != "0" ]; then

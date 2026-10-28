@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 DELAY=3 # in seconds
 RECORDING_TIME=60 # in seconds

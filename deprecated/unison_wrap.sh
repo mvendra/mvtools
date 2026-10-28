@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # platform paths
 LOCALPATH="/home/user/platform"

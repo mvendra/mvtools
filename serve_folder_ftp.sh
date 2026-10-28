@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 TG=("`pwd -P`")
 PORT=2121

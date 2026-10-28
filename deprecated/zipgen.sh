@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script was deprecated in L24 - pakgen.py should eventually take over the functionality of generating packages of/with multiple formats
 

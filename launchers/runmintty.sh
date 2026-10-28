@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 CMD="$1"
 TOOLBUS_SIGNAME="runmintty_result_${BASHPID}"

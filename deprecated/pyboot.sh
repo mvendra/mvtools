@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 PYBOOTFILE="testforecho.py"
 if [ ! -z "$1" ]; then

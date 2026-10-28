@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 SHBOOTFILE="testforecho.sh"
 if [ ! -z "$1" ]; then
@@ -11,5 +11,5 @@ if [ -e "./$SHBOOTFILE" ]; then
 fi
 
 touch "./$SHBOOTFILE"
-echo "#!/bin/bash\n\nfunction puaq(){ # puaq stands for Print Usage And Quit\n  echo \"Usage: \`basename \$0\` param\"\n  exit 1\n}\n\nif [ -z \$1 ]; then\n  puaq\nfi\n\n#code goes here\n" > "./$SHBOOTFILE"
+echo "#!/usr/bin/env bash\n\nfunction puaq(){ # puaq stands for Print Usage And Quit\n  echo \"Usage: \`basename \$0\` param\"\n  exit 1\n}\n\nif [ -z \$1 ]; then\n  puaq\nfi\n\n#code goes here\n" > "./$SHBOOTFILE"
 chmod +x "./$SHBOOTFILE"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "Currently disabled! This script has a bug: It attaches itself to the first terminal it knows of (by pid probably). This fails when using multiple terminals in different workspaces."
 exit

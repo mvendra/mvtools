@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 CBOOTFILE="main.c"
 if [ ! -z "$1" ]; then

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #grep -nR "mvtodo" $PWD
 ag -i "mvtodo"

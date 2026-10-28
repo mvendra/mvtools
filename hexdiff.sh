@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # borrowed from https://superuser.com/questions/125376/how-do-i-compare-binary-files-in-linux
 

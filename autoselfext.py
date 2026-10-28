@@ -41,7 +41,7 @@ class selfextractorcreator:
 
     def template_contents(_self, inst, pack):
 
-        template_edit = """#!/bin/bash
+        template_edit = """#!/usr/bin/env bash
 
 echo "Extracting..."
 

@@ -41,57 +41,57 @@ class LaunchListTest(unittest.TestCase):
         # setup allgood
 
         self.cmd1 = path_utils.concat_path(self.test_allgood, "cmd1.sh")
-        cmd1_contents = "#!/bin/bash" + os.linesep + "exit 0"
+        cmd1_contents = "#!/usr/bin/env bash" + os.linesep + "exit 0"
         create_and_write_file.create_file_contents(self.cmd1, cmd1_contents)
         os.chmod(self.cmd1, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         self.cmd2 = path_utils.concat_path(self.test_allgood, "cmd2.sh")
-        cmd2_contents = "#!/bin/bash" + os.linesep + "exit 0"
+        cmd2_contents = "#!/usr/bin/env bash" + os.linesep + "exit 0"
         create_and_write_file.create_file_contents(self.cmd2, cmd2_contents)
         os.chmod(self.cmd2, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         self.cmd3 = path_utils.concat_path(self.test_allgood, "cmd3.sh")
-        cmd3_contents = "#!/bin/bash" + os.linesep + "exit 0"
+        cmd3_contents = "#!/usr/bin/env bash" + os.linesep + "exit 0"
         create_and_write_file.create_file_contents(self.cmd3, cmd3_contents)
         os.chmod(self.cmd3, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # setup allbad
 
         self.cmd4 = path_utils.concat_path(self.test_allbad, "cmd4.sh")
-        cmd4_contents = "#!/bin/bash" + os.linesep + "exit 1"
+        cmd4_contents = "#!/usr/bin/env bash" + os.linesep + "exit 1"
         create_and_write_file.create_file_contents(self.cmd4, cmd4_contents)
         os.chmod(self.cmd4, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         self.cmd5 = path_utils.concat_path(self.test_allbad, "cmd5.sh")
-        cmd5_contents = "#!/bin/bash" + os.linesep + "exit 1"
+        cmd5_contents = "#!/usr/bin/env bash" + os.linesep + "exit 1"
         create_and_write_file.create_file_contents(self.cmd5, cmd5_contents)
         os.chmod(self.cmd5, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         self.cmd6 = path_utils.concat_path(self.test_allbad, "cmd6.sh")
-        cmd6_contents = "#!/bin/bash" + os.linesep + "exit 1"
+        cmd6_contents = "#!/usr/bin/env bash" + os.linesep + "exit 1"
         create_and_write_file.create_file_contents(self.cmd6, cmd6_contents)
         os.chmod(self.cmd6, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # setup mixedbag
 
         self.cmd7 = path_utils.concat_path(self.test_mixedbag, "cmd7.sh")
-        cmd7_contents = "#!/bin/bash" + os.linesep + "exit 0"
+        cmd7_contents = "#!/usr/bin/env bash" + os.linesep + "exit 0"
         create_and_write_file.create_file_contents(self.cmd7, cmd7_contents)
         os.chmod(self.cmd7, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         self.cmd8 = path_utils.concat_path(self.test_mixedbag, "cmd8.sh")
-        cmd8_contents = "#!/bin/bash" + os.linesep + "exit 1"
+        cmd8_contents = "#!/usr/bin/env bash" + os.linesep + "exit 1"
         create_and_write_file.create_file_contents(self.cmd8, cmd8_contents)
         os.chmod(self.cmd8, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         self.cmd9 = path_utils.concat_path(self.test_mixedbag, "cmd9.sh")
-        cmd9_contents = "#!/bin/bash" + os.linesep + "exit 0"
+        cmd9_contents = "#!/usr/bin/env bash" + os.linesep + "exit 0"
         create_and_write_file.create_file_contents(self.cmd9, cmd9_contents)
         os.chmod(self.cmd9, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
         # adapter
         self.adapter = path_utils.concat_path(self.test_dir, "adapter.sh") # inverter adapter
-        adapter_contents = "#!/bin/bash" + os.linesep + "$1" + os.linesep + "RET=$?" + os.linesep
+        adapter_contents = "#!/usr/bin/env bash" + os.linesep + "$1" + os.linesep + "RET=$?" + os.linesep
         adapter_contents += "if [ $RET == 1 ]; then" + os.linesep + "    exit 0" + os.linesep
         adapter_contents += "elif [ $RET == 0 ]; then" + os.linesep + "    exit 1" + os.linesep + "fi"
         create_and_write_file.create_file_contents(self.adapter, adapter_contents)

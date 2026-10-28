@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 INFILE="$1"
 OUTFILE="$2"

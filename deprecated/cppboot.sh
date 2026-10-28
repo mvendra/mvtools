@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 CPPBOOTFILE="main.cpp"
 if [ ! -z "$1" ]; then

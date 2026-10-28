@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function puaq(){ # puaq stands for Print Usage And Quit
     echo "Usage: `basename $0` note. Examples: C1, C#4, A3, B2"

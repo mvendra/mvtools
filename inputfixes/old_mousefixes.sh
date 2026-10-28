@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # this was mousefix unnamed (1?)
 xset m 0 0

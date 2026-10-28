@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 FINDWHAT="$1"
 CHANGETO="$2"

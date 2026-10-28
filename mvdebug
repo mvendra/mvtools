@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #grep -nR "mvdebug" $PWD
 ag -i "mvdebug"

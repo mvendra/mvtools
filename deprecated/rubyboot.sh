@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 RUBYBOOTFILE="testforecho.rb"
 if [ ! -z "$1" ]; then

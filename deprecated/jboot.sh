@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 JAVABOOTFILE="Main.java"
 if [ ! -z "$1" ]; then

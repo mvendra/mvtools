@@ -10,7 +10,7 @@ def default_sh_app():
 
     local_contents = ""
 
-    local_contents += "#!/bin/bash\n\n"
+    local_contents += "#!/usr/bin/env bash\n\n"
     local_contents += "function puaq(){ # puaq stands for Print Usage And Quit\n"
     local_contents += "    echo \"Usage: `basename $0` param\"\n"
     local_contents += "    if [ \"$1\" = true ]; then\n"
