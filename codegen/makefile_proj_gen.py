@@ -63,6 +63,13 @@ def linux_mkfile_c_contents(project_name):
     r += "UNAME_S := $(shell uname -s)\n"
     r += "\n"
 
+    # FREEBSD
+    r += "# FREEBSD\n"
+    r += "ifeq ($(UNAME_S),FreeBSD)\n"
+    r += "\tPLAT=freebsd\n"
+    r += "endif\n"
+    r += "\n"
+
     # LINUX
     r += "# LINUX\n"
     r += "ifeq ($(UNAME_S),Linux)\n"
@@ -227,6 +234,13 @@ def linux_mkfile_cpp_contents(project_name):
     # PLAT
     r += "# PLAT FLAGS\n"
     r += "UNAME_S := $(shell uname -s)\n"
+    r += "\n"
+
+    # FREEBSD
+    r += "# FREEBSD\n"
+    r += "ifeq ($(UNAME_S),FreeBSD)\n"
+    r += "\tPLAT=freebsd\n"
+    r += "endif\n"
     r += "\n"
 
     # LINUX
