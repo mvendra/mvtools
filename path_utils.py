@@ -316,7 +316,7 @@ def basename_filtered(path, windows_path = "auto"):
     # {windows_path} valid values are {"yes" / "no" / "auto"}
 
     # basename_filtered: will discard traling path separators, and return the last node. if there is only one node, that first node
-    # will be returned alone. on linux-like platforms, if the first character is a "/", then it is considered to be a valid node (root).
+    # will be returned alone. on unix-like platforms, if the first character is a "/", then it is considered to be a valid node (root).
     # for example: basename_filtered("/", "no") -> must return "/". on windows, None is returned on such case.
 
     if path is None:
@@ -336,7 +336,7 @@ def dirname_filtered(path, windows_path = "auto"):
     # {windows_path} valid values are {"yes" / "no" / "auto"}
 
     # dirname_filtered: will discard trailing path separators, and return every node except the last one. if there is only one node,
-    # then None is returned. on linux-like platforms, if the first character is a "/", then it is considered to be a valid node (root).
+    # then None is returned. on unix-like platforms, if the first character is a "/", then it is considered to be a valid node (root).
     # partial/middle paths (without the filesystem's root, regardless of the platform) are supported. for example, the following:
     # dirname_filtered("home/user/folder", "no") -> must return "home/user".
 
@@ -698,7 +698,7 @@ def find_middle_path_parts(basepath, fullpath):
 def compat_windows_path(path):
 
     # substitute the blackwards-slash in the given path to forward slashes,
-    # in order to make it compatible with linux/cygwin
+    # in order to make it compatible with unix/cygwin
 
     if path is None:
         return None

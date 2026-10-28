@@ -334,6 +334,12 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "yes"), "/path/folder" )
         self.assertEqual( path_utils.filter_remove_trailing_sep("/", "yes"), "" )
 
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_FREEBSD):
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "auto"), "/path/folder" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "auto"), "/path/folder" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder\\", "auto"), "/path/folder\\" )
+            self.assertEqual( path_utils.filter_remove_trailing_sep("/", "auto"), "/" )
+
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder", "auto"), "/path/folder" )
             self.assertEqual( path_utils.filter_remove_trailing_sep("/path/folder/", "auto"), "/path/folder" )
@@ -386,6 +392,9 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.getpathroot("/root/home"), "/")
         self.assertEqual(path_utils.getpathroot("C:/folder/home"), "C:")
 
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_FREEBSD):
+            self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:\\folder")
+
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual(path_utils.getpathroot("C:\\folder/home"), "C:\\folder")
 
@@ -414,6 +423,14 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.splitpath("/tmp", "yes"), ["tmp"])
         self.assertEqual(path_utils.splitpath("\\", "yes"), None)
         self.assertEqual(path_utils.splitpath("F:", "yes"), ["F:"])
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_FREEBSD):
+            self.assertEqual(path_utils.splitpath("/tmp", "auto"), ["/", "tmp"])
+            self.assertEqual(path_utils.splitpath("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), ["/", "home\\user", "more", "sub1\\sub2", "yetmore", "file.txt"])
+            self.assertEqual(path_utils.splitpath("/tmp/", "auto"), ["/", "tmp"])
+            self.assertEqual(path_utils.splitpath( "/first/second", "auto" ), ["/", "first", "second"])
+            self.assertEqual(path_utils.splitpath( "/first/second/", "auto" ), ["/", "first", "second"])
+            self.assertEqual(path_utils.splitpath("F:", "auto"), ["F:"])
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual(path_utils.splitpath("/tmp", "auto"), ["/", "tmp"])
@@ -464,6 +481,12 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.basename_filtered("/home/user/more/sub1/sub2/", "yes"), "sub2")
         self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1/sub2", "yes"), "sub2")
         self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1/sub2", "yes"), "sub2")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_FREEBSD):
+            self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1\\sub2", "auto"), "more\\sub1\\sub2")
+            self.assertEqual(path_utils.basename_filtered("/home\\user/more\\sub1\\sub2", "auto"), "more\\sub1\\sub2")
+            self.assertEqual(path_utils.basename_filtered("/home\\", "auto"), "home\\")
+            self.assertEqual(path_utils.basename_filtered("/home\\more/", "auto"), "home\\more")
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual(path_utils.basename_filtered("/home/user/more\\sub1\\sub2", "auto"), "more\\sub1\\sub2")
@@ -516,6 +539,11 @@ class PathUtilsTest(unittest.TestCase):
         self.assertEqual(path_utils.dirname_filtered("/another/sub/folder/again/", "yes"), "/another/sub/folder")
         self.assertEqual(path_utils.dirname_filtered("another/sub/folder/again", "yes"), "another/sub/folder")
         self.assertEqual(path_utils.dirname_filtered("another/sub/folder/again/", "yes"), "another/sub/folder")
+
+        with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_FREEBSD):
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), "/home\\user/more/sub1\\sub2/yetmore")
+            self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt/", "auto"), "/home\\user/more/sub1\\sub2/yetmore")
+            self.assertEqual(path_utils.dirname_filtered("home\\user/more/sub1\\sub2/yetmore/file.txt/", "auto"), "home\\user/more/sub1\\sub2/yetmore")
 
         with mock.patch("get_platform.getplat", return_value=get_platform.PLAT_LINUX):
             self.assertEqual(path_utils.dirname_filtered("/home\\user/more/sub1\\sub2/yetmore/file.txt", "auto"), "/home\\user/more/sub1\\sub2/yetmore")
