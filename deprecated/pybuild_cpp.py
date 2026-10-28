@@ -126,7 +126,40 @@ class Builder():
 
     def standard_cpp_hook(self):
 
-        if (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOS) and self.compiler == "g++":
+        if self.plat == get_platform.PLAT_FREEBSD and self.compiler == "g++":
+
+            # common compiler flags
+            self.compiler_flags_common += standard_cpp.get_cpp_compiler_flags_freebsd_common_gcc()
+
+            # common linker flags
+            self.linker_flags_common += standard_cpp.get_cpp_linker_flags_freebsd_common_gcc()
+
+            # common linker libs
+            self.linker_libs_common += standard_cpp.get_cpp_linker_libs_freebsd_common_gcc()
+
+            if self.mode == "debug":
+
+                # debug compiler flags
+                self.compiler_flags_debug += standard_cpp.get_cpp_compiler_flags_freebsd_debug_gcc()
+
+                # debug linker flags
+                self.linker_flags_debug += standard_cpp.get_cpp_linker_flags_freebsd_debug_gcc()
+
+                # debug linker libs
+                self.linker_libs_debug += standard_cpp.get_cpp_linker_libs_freebsd_debug_gcc()
+
+            if self.mode == "release":
+
+                # release compiler flags
+                self.compiler_flags_release += standard_cpp.get_cpp_compiler_flags_freebsd_release_gcc()
+
+                # release linker flags
+                self.linker_flags_release += standard_cpp.get_cpp_linker_flags_freebsd_release_gcc()
+
+                # release linker libs
+                self.linker_libs_release += standard_cpp.get_cpp_linker_libs_freebsd_release_gcc()
+
+        elif (self.plat == get_platform.PLAT_LINUX or self.plat == get_platform.PLAT_MACOS) and self.compiler == "g++":
 
             # common compiler flags
             self.compiler_flags_common += standard_cpp.get_cpp_compiler_flags_linux_common_gcc()
