@@ -13,7 +13,6 @@ import svn_lib
 
 import delayed_file_backup
 import maketimestamp
-import get_platform
 import fsquery_adv_filter
 
 def make_patch_filename(path, operation, index):

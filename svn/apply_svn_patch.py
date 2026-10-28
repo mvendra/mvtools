@@ -6,7 +6,6 @@ import shutil
 
 import path_utils
 import detect_repo_type
-import get_platform
 import svn_lib
 import fsquery
 
