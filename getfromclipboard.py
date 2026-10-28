@@ -6,7 +6,7 @@ import os
 import get_platform
 import generic_run
 
-def _get_for_linux():
+def _get_for_freebsd():
     v, r = generic_run.run_cmd_simple(["xclip", "-sel", "clip", "-o"])
     if v:
         return r
@@ -26,9 +26,9 @@ def getfromclipboard():
     contents = ""
     plat = get_platform.getplat()
 
-    if plat == get_platform.PLAT_LINUX:
+    if plat == get_platform.PLAT_FREEBSD or plat == get_platform.PLAT_LINUX:
 
-        contents = _get_for_linux()
+        contents = _get_for_freebsd()
         if contents is None:
             return False, "Failed getting clipboard. Make sure xclip is installed."
 
