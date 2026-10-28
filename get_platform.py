@@ -2,6 +2,8 @@
 
 import platform
 
+PLAT_FREEBSD = "freebsd"
+
 PLAT_LINUX = "linux"
 
 PLAT_WINDOWS = "windows"
@@ -15,8 +17,12 @@ PLAT_MACOS = "macos"
 PLAT_UNKNOWN = "unknown_platform"
 
 def getplat():
+
     ps = platform.system().lower()
-    if ps == "linux":
+
+    if ps == "freebsd":
+        return PLAT_FREEBSD
+    elif ps == "linux":
         return PLAT_LINUX
     elif ps == "windows":
 
