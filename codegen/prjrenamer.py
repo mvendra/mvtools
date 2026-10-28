@@ -110,9 +110,31 @@ def prjrename(target_dir, original_project_name, new_project_name):
 
     prj_fullname_base = path_utils.concat_path(target_dir, local_original_project_name)
     base_build = path_utils.concat_path(prj_fullname_base, "build")
+    base_build_freebsd = path_utils.concat_path(base_build, "freebsd")
     base_build_linux = path_utils.concat_path(base_build, "linux")
     base_build_windows = path_utils.concat_path(base_build, "windows")
     base_build_macos = path_utils.concat_path(base_build, "macos")
+
+    # freebsd/codelite15_c
+    base_build_freebsd_codelite15_c = path_utils.concat_path(base_build_freebsd, "codelite15_c")
+    base_build_freebsd_codelite15_c_fn = path_utils.concat_path(base_build_freebsd_codelite15_c, "%s.project" % local_original_project_name)
+    if os.path.isfile(base_build_freebsd_codelite15_c_fn):
+        codelite_rename(base_build_freebsd_codelite15_c_fn, local_new_project_name)
+        print("Adapted [%s]" % base_build_freebsd_codelite15_c_fn)
+
+    # freebsd/makefile_c
+    base_build_freebsd_makefile_c = path_utils.concat_path(base_build_freebsd, "makefile_c")
+    base_build_freebsd_makefile_c_fn = path_utils.concat_path(base_build_freebsd_makefile_c, "Makefile")
+    if os.path.isfile(base_build_freebsd_makefile_c_fn):
+        makefile_rename(base_build_freebsd_makefile_c_fn, local_original_project_name, local_new_project_name)
+        print("Adapted [%s]" % base_build_freebsd_makefile_c_fn)
+
+    # freebsd/makefile_cpp
+    base_build_freebsd_makefile_cpp = path_utils.concat_path(base_build_freebsd, "makefile_cpp")
+    base_build_freebsd_makefile_cpp_fn = path_utils.concat_path(base_build_freebsd_makefile_cpp, "Makefile")
+    if os.path.isfile(base_build_freebsd_makefile_cpp_fn):
+        makefile_rename(base_build_freebsd_makefile_cpp_fn, local_original_project_name, local_new_project_name)
+        print("Adapted [%s]" % base_build_freebsd_makefile_cpp_fn)
 
     # linux/codelite15_c
     base_build_linux_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
