@@ -345,6 +345,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertFalse(os.path.exists(dep_freebsd_file1))
         self.assertFalse(os.path.exists(dep_linux_file2))
         self.assertFalse(os.path.exists(dep_windows_file3))
         self.assertFalse(os.path.exists(dep_macos_file4))
@@ -447,6 +448,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
+        self.assertFalse(os.path.exists(tmp_freebsd_debug_file5))
+        self.assertFalse(os.path.exists(tmp_freebsd_release_file6))
         self.assertFalse(os.path.exists(tmp_linux_debug_file7))
         self.assertFalse(os.path.exists(tmp_linux_release_file8))
         self.assertFalse(os.path.exists(tmp_windows_debug_file9))
@@ -552,6 +555,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(tmp_macos_debug_file11))
         self.assertTrue(os.path.exists(tmp_macos_release_file12))
 
+        self.assertFalse(os.path.exists(out_freebsd_debug_file13))
+        self.assertFalse(os.path.exists(out_freebsd_release_file14))
         self.assertFalse(os.path.exists(out_linux_debug_file15))
         self.assertFalse(os.path.exists(out_linux_release_file16))
         self.assertFalse(os.path.exists(out_windows_debug_file17))
@@ -634,10 +639,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertFalse(os.path.exists(dep_freebsd_file1))
         self.assertFalse(os.path.exists(dep_linux_file2))
         self.assertFalse(os.path.exists(dep_windows_file3))
         self.assertFalse(os.path.exists(dep_macos_file4))
 
+        self.assertFalse(os.path.exists(tmp_freebsd_debug_file5))
+        self.assertFalse(os.path.exists(tmp_freebsd_release_file6))
         self.assertFalse(os.path.exists(tmp_linux_debug_file7))
         self.assertFalse(os.path.exists(tmp_linux_release_file8))
         self.assertFalse(os.path.exists(tmp_windows_debug_file9))
@@ -645,6 +653,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmp_macos_debug_file11))
         self.assertFalse(os.path.exists(tmp_macos_release_file12))
 
+        self.assertFalse(os.path.exists(out_freebsd_debug_file13))
+        self.assertFalse(os.path.exists(out_freebsd_release_file14))
         self.assertFalse(os.path.exists(out_linux_debug_file15))
         self.assertFalse(os.path.exists(out_linux_release_file16))
         self.assertFalse(os.path.exists(out_windows_debug_file17))
@@ -1205,10 +1215,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(tmp_file2))
         self.assertTrue(os.path.exists(out_file3))
 
+        self.assertFalse(os.path.exists(dep_freebsd_file1))
         self.assertFalse(os.path.exists(dep_linux_file2))
         self.assertFalse(os.path.exists(dep_windows_file3))
         self.assertFalse(os.path.exists(dep_macos_file4))
 
+        self.assertFalse(os.path.exists(tmp_freebsd_debug_file5))
+        self.assertFalse(os.path.exists(tmp_freebsd_release_file6))
         self.assertFalse(os.path.exists(tmp_linux_debug_file7))
         self.assertFalse(os.path.exists(tmp_linux_release_file8))
         self.assertFalse(os.path.exists(tmp_windows_debug_file9))
@@ -1216,6 +1229,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmp_macos_debug_file11))
         self.assertFalse(os.path.exists(tmp_macos_release_file12))
 
+        self.assertFalse(os.path.exists(out_freebsd_debug_file13))
+        self.assertFalse(os.path.exists(out_freebsd_release_file14))
         self.assertFalse(os.path.exists(out_linux_debug_file15))
         self.assertFalse(os.path.exists(out_linux_release_file16))
         self.assertFalse(os.path.exists(out_windows_debug_file17))
