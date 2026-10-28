@@ -9,6 +9,9 @@ import get_platform
 import path_utils
 
 def sendtoclipboard_freebsd(contents):
+    return False, "mvtodo: not yet implemented"
+
+def sendtoclipboard_linux(contents):
     if contents is None:
         return False, "Contents can't be None"
     v, r = generic_run.run_cmd_simple(["xsel", "--clipboard", "--input"], use_input=contents)
@@ -30,8 +33,10 @@ def sendtoclipboard(contents):
 
     plat = get_platform.getplat()
 
-    if plat == get_platform.PLAT_FREEBSD or plat == get_platform.PLAT_LINUX:
+    if plat == get_platform.PLAT_FREEBSD:
         return sendtoclipboard_freebsd(contents)
+    if plat == get_platform.PLAT_LINUX:
+        return sendtoclipboard_linux(contents)
     if plat == get_platform.PLAT_CYGWIN or plat == get_platform.PLAT_MSYS or plat == get_platform.PLAT_MINGW or plat == get_platform.PLAT_MSYS_MINGW_GRAY:
         return sendtoclipboard_cygwin_or_msys_or_mingw(contents)
 
