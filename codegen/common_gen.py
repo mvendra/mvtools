@@ -13,12 +13,16 @@ def generate_common_structure(target_dir, project_name):
 
     # build
     base_build = path_utils.concat_path(prj_fullname_base, "build")
+    base_build_freebsd = path_utils.concat_path(base_build, "freebsd")
     base_build_linux = path_utils.concat_path(base_build, "linux")
     base_build_windows = path_utils.concat_path(base_build, "windows")
     base_build_macos = path_utils.concat_path(base_build, "macos")
 
     # tmp
     base_tmp = path_utils.concat_path(prj_fullname_base, "tmp")
+    base_tmp_freebsd = path_utils.concat_path(base_tmp, "freebsd")
+    base_tmp_freebsd_debug = path_utils.concat_path(base_tmp_freebsd, "debug")
+    base_tmp_freebsd_release = path_utils.concat_path(base_tmp_freebsd, "release")
     base_tmp_linux = path_utils.concat_path(base_tmp, "linux")
     base_tmp_linux_debug = path_utils.concat_path(base_tmp_linux, "debug")
     base_tmp_linux_release = path_utils.concat_path(base_tmp_linux, "release")
@@ -31,6 +35,9 @@ def generate_common_structure(target_dir, project_name):
 
     # out
     base_out = path_utils.concat_path(prj_fullname_base, "out")
+    base_out_freebsd = path_utils.concat_path(base_out, "freebsd")
+    base_out_freebsd_debug = path_utils.concat_path(base_out_freebsd, "debug")
+    base_out_freebsd_release = path_utils.concat_path(base_out_freebsd, "release")
     base_out_linux = path_utils.concat_path(base_out, "linux")
     base_out_linux_debug = path_utils.concat_path(base_out_linux, "debug")
     base_out_linux_release = path_utils.concat_path(base_out_linux, "release")
@@ -43,6 +50,7 @@ def generate_common_structure(target_dir, project_name):
 
     # dep
     base_dep = path_utils.concat_path(prj_fullname_base, "dep")
+    base_dep_freebsd = path_utils.concat_path(base_dep, "freebsd")
     base_dep_linux = path_utils.concat_path(base_dep, "linux")
     base_dep_windows = path_utils.concat_path(base_dep, "windows")
     base_dep_macos = path_utils.concat_path(base_dep, "macos")
@@ -53,11 +61,15 @@ def generate_common_structure(target_dir, project_name):
     # create folders accordingly
     prjboot_util.makedir_if_needed(prj_fullname_base)
     prjboot_util.makedir_if_needed(base_build)
+    prjboot_util.makedir_if_needed(base_build_freebsd)
     prjboot_util.makedir_if_needed(base_build_linux)
     prjboot_util.makedir_if_needed(base_build_windows)
     prjboot_util.makedir_if_needed(base_build_macos)
 
     prjboot_util.makedir_if_needed(base_tmp)
+    prjboot_util.makedir_if_needed(base_tmp_freebsd)
+    prjboot_util.makedir_if_needed(base_tmp_freebsd_debug)
+    prjboot_util.makedir_if_needed(base_tmp_freebsd_release)
     prjboot_util.makedir_if_needed(base_tmp_linux)
     prjboot_util.makedir_if_needed(base_tmp_linux_debug)
     prjboot_util.makedir_if_needed(base_tmp_linux_release)
@@ -69,6 +81,9 @@ def generate_common_structure(target_dir, project_name):
     prjboot_util.makedir_if_needed(base_tmp_macos_release)
 
     prjboot_util.makedir_if_needed(base_out)
+    prjboot_util.makedir_if_needed(base_out_freebsd)
+    prjboot_util.makedir_if_needed(base_out_freebsd_debug)
+    prjboot_util.makedir_if_needed(base_out_freebsd_release)
     prjboot_util.makedir_if_needed(base_out_linux)
     prjboot_util.makedir_if_needed(base_out_linux_debug)
     prjboot_util.makedir_if_needed(base_out_linux_release)
@@ -80,6 +95,7 @@ def generate_common_structure(target_dir, project_name):
     prjboot_util.makedir_if_needed(base_out_macos_release)
 
     prjboot_util.makedir_if_needed(base_dep)
+    prjboot_util.makedir_if_needed(base_dep_freebsd)
     prjboot_util.makedir_if_needed(base_dep_linux)
     prjboot_util.makedir_if_needed(base_dep_windows)
     prjboot_util.makedir_if_needed(base_dep_macos)
