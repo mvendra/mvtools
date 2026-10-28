@@ -9,7 +9,10 @@ import get_platform
 import path_utils
 
 def sendtoclipboard_freebsd(contents):
-    return False, "mvtodo: not yet implemented"
+    result = subprocess.run(["xclip", "-sel", "clip", "-i"], input=contents, text=True)
+    if result.returncode != 0:
+        return False, "xclip failed"
+    return True, None
 
 def sendtoclipboard_linux(contents):
     if contents is None:
