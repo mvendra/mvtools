@@ -174,11 +174,14 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup7(self):
 
+        dep_freebsd_file1 = path_utils.concat_path(self.target_proj_dep_freebsd, "file1")
         dep_linux_file2 = path_utils.concat_path(self.target_proj_dep_linux, "file2")
         dep_windows_file3 = path_utils.concat_path(self.target_proj_dep_windows, "file3")
         dep_macos_file4 = path_utils.concat_path(self.target_proj_dep_macos, "file4")
 
-        tmp_linux_debug_file5 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file5")
+        tmp_freebsd_debug_file5 = path_utils.concat_path(self.target_proj_tmp_freebsd_debug, "file5")
+        tmp_freebsd_release_file6 = path_utils.concat_path(self.target_proj_tmp_freebsd_release, "file6")
+        tmp_linux_debug_file7 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file7")
         tmp_linux_release_file8 = path_utils.concat_path(self.target_proj_tmp_linux_release, "file8")
         tmp_windows_debug_file9 = path_utils.concat_path(self.target_proj_tmp_windows_debug, "file9")
         tmp_windows_release_file10 = path_utils.concat_path(self.target_proj_tmp_windows_release, "file10")
@@ -196,7 +199,7 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
 
-        create_and_write_file.create_file_contents(tmp_linux_debug_file5, "contents")
+        create_and_write_file.create_file_contents(tmp_linux_debug_file7, "contents")
         create_and_write_file.create_file_contents(tmp_linux_release_file8, "contents")
         create_and_write_file.create_file_contents(tmp_windows_debug_file9, "contents")
         create_and_write_file.create_file_contents(tmp_windows_release_file10, "contents")
@@ -214,7 +217,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -236,7 +239,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -252,11 +255,14 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup8(self):
 
+        dep_freebsd_file1 = path_utils.concat_path(self.target_proj_dep_freebsd, "file1")
         dep_linux_file2 = path_utils.concat_path(self.target_proj_dep_linux, "file2")
         dep_windows_file3 = path_utils.concat_path(self.target_proj_dep_windows, "file3")
         dep_macos_file4 = path_utils.concat_path(self.target_proj_dep_macos, "file4")
 
-        tmp_linux_debug_file5 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file5")
+        tmp_freebsd_debug_file5 = path_utils.concat_path(self.target_proj_tmp_freebsd_debug, "file5")
+        tmp_freebsd_release_file6 = path_utils.concat_path(self.target_proj_tmp_freebsd_release, "file6")
+        tmp_linux_debug_file7 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file7")
         tmp_linux_release_file8 = path_utils.concat_path(self.target_proj_tmp_linux_release, "file8")
         tmp_windows_debug_file9 = path_utils.concat_path(self.target_proj_tmp_windows_debug, "file9")
         tmp_windows_release_file10 = path_utils.concat_path(self.target_proj_tmp_windows_release, "file10")
@@ -274,7 +280,7 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
 
-        create_and_write_file.create_file_contents(tmp_linux_debug_file5, "contents")
+        create_and_write_file.create_file_contents(tmp_linux_debug_file7, "contents")
         create_and_write_file.create_file_contents(tmp_linux_release_file8, "contents")
         create_and_write_file.create_file_contents(tmp_windows_debug_file9, "contents")
         create_and_write_file.create_file_contents(tmp_windows_release_file10, "contents")
@@ -292,7 +298,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -314,7 +320,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(dep_windows_file3))
         self.assertFalse(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -330,11 +336,14 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup9(self):
 
+        dep_freebsd_file1 = path_utils.concat_path(self.target_proj_dep_freebsd, "file1")
         dep_linux_file2 = path_utils.concat_path(self.target_proj_dep_linux, "file2")
         dep_windows_file3 = path_utils.concat_path(self.target_proj_dep_windows, "file3")
         dep_macos_file4 = path_utils.concat_path(self.target_proj_dep_macos, "file4")
 
-        tmp_linux_debug_file5 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file5")
+        tmp_freebsd_debug_file5 = path_utils.concat_path(self.target_proj_tmp_freebsd_debug, "file5")
+        tmp_freebsd_release_file6 = path_utils.concat_path(self.target_proj_tmp_freebsd_release, "file6")
+        tmp_linux_debug_file7 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file7")
         tmp_linux_release_file8 = path_utils.concat_path(self.target_proj_tmp_linux_release, "file8")
         tmp_windows_debug_file9 = path_utils.concat_path(self.target_proj_tmp_windows_debug, "file9")
         tmp_windows_release_file10 = path_utils.concat_path(self.target_proj_tmp_windows_release, "file10")
@@ -352,7 +361,7 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
 
-        create_and_write_file.create_file_contents(tmp_linux_debug_file5, "contents")
+        create_and_write_file.create_file_contents(tmp_linux_debug_file7, "contents")
         create_and_write_file.create_file_contents(tmp_linux_release_file8, "contents")
         create_and_write_file.create_file_contents(tmp_windows_debug_file9, "contents")
         create_and_write_file.create_file_contents(tmp_windows_release_file10, "contents")
@@ -370,7 +379,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -392,7 +401,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertFalse(os.path.exists(tmp_linux_debug_file5))
+        self.assertFalse(os.path.exists(tmp_linux_debug_file7))
         self.assertFalse(os.path.exists(tmp_linux_release_file8))
         self.assertFalse(os.path.exists(tmp_windows_debug_file9))
         self.assertFalse(os.path.exists(tmp_windows_release_file10))
@@ -408,11 +417,14 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup10(self):
 
+        dep_freebsd_file1 = path_utils.concat_path(self.target_proj_dep_freebsd, "file1")
         dep_linux_file2 = path_utils.concat_path(self.target_proj_dep_linux, "file2")
         dep_windows_file3 = path_utils.concat_path(self.target_proj_dep_windows, "file3")
         dep_macos_file4 = path_utils.concat_path(self.target_proj_dep_macos, "file4")
 
-        tmp_linux_debug_file5 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file5")
+        tmp_freebsd_debug_file5 = path_utils.concat_path(self.target_proj_tmp_freebsd_debug, "file5")
+        tmp_freebsd_release_file6 = path_utils.concat_path(self.target_proj_tmp_freebsd_release, "file6")
+        tmp_linux_debug_file7 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file7")
         tmp_linux_release_file8 = path_utils.concat_path(self.target_proj_tmp_linux_release, "file8")
         tmp_windows_debug_file9 = path_utils.concat_path(self.target_proj_tmp_windows_debug, "file9")
         tmp_windows_release_file10 = path_utils.concat_path(self.target_proj_tmp_windows_release, "file10")
@@ -430,7 +442,7 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
 
-        create_and_write_file.create_file_contents(tmp_linux_debug_file5, "contents")
+        create_and_write_file.create_file_contents(tmp_linux_debug_file7, "contents")
         create_and_write_file.create_file_contents(tmp_linux_release_file8, "contents")
         create_and_write_file.create_file_contents(tmp_windows_debug_file9, "contents")
         create_and_write_file.create_file_contents(tmp_windows_release_file10, "contents")
@@ -448,7 +460,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -470,7 +482,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -486,11 +498,14 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup11(self):
 
+        dep_freebsd_file1 = path_utils.concat_path(self.target_proj_dep_freebsd, "file1")
         dep_linux_file2 = path_utils.concat_path(self.target_proj_dep_linux, "file2")
         dep_windows_file3 = path_utils.concat_path(self.target_proj_dep_windows, "file3")
         dep_macos_file4 = path_utils.concat_path(self.target_proj_dep_macos, "file4")
 
-        tmp_linux_debug_file5 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file5")
+        tmp_freebsd_debug_file5 = path_utils.concat_path(self.target_proj_tmp_freebsd_debug, "file5")
+        tmp_freebsd_release_file6 = path_utils.concat_path(self.target_proj_tmp_freebsd_release, "file6")
+        tmp_linux_debug_file7 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file7")
         tmp_linux_release_file8 = path_utils.concat_path(self.target_proj_tmp_linux_release, "file8")
         tmp_windows_debug_file9 = path_utils.concat_path(self.target_proj_tmp_windows_debug, "file9")
         tmp_windows_release_file10 = path_utils.concat_path(self.target_proj_tmp_windows_release, "file10")
@@ -508,7 +523,7 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
 
-        create_and_write_file.create_file_contents(tmp_linux_debug_file5, "contents")
+        create_and_write_file.create_file_contents(tmp_linux_debug_file7, "contents")
         create_and_write_file.create_file_contents(tmp_linux_release_file8, "contents")
         create_and_write_file.create_file_contents(tmp_windows_debug_file9, "contents")
         create_and_write_file.create_file_contents(tmp_windows_release_file10, "contents")
@@ -526,7 +541,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -548,7 +563,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(dep_windows_file3))
         self.assertFalse(os.path.exists(dep_macos_file4))
 
-        self.assertFalse(os.path.exists(tmp_linux_debug_file5))
+        self.assertFalse(os.path.exists(tmp_linux_debug_file7))
         self.assertFalse(os.path.exists(tmp_linux_release_file8))
         self.assertFalse(os.path.exists(tmp_windows_debug_file9))
         self.assertFalse(os.path.exists(tmp_windows_release_file10))
@@ -1038,11 +1053,14 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(tmp_file2))
         self.assertTrue(os.path.exists(out_file3))
 
+        dep_freebsd_file1 = path_utils.concat_path(self.target_proj_dep_freebsd, "file1")
         dep_linux_file2 = path_utils.concat_path(self.target_proj_dep_linux, "file2")
         dep_windows_file3 = path_utils.concat_path(self.target_proj_dep_windows, "file3")
         dep_macos_file4 = path_utils.concat_path(self.target_proj_dep_macos, "file4")
 
-        tmp_linux_debug_file5 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file5")
+        tmp_freebsd_debug_file5 = path_utils.concat_path(self.target_proj_tmp_freebsd_debug, "file5")
+        tmp_freebsd_release_file6 = path_utils.concat_path(self.target_proj_tmp_freebsd_release, "file6")
+        tmp_linux_debug_file7 = path_utils.concat_path(self.target_proj_tmp_linux_debug, "file7")
         tmp_linux_release_file8 = path_utils.concat_path(self.target_proj_tmp_linux_release, "file8")
         tmp_windows_debug_file9 = path_utils.concat_path(self.target_proj_tmp_windows_debug, "file9")
         tmp_windows_release_file10 = path_utils.concat_path(self.target_proj_tmp_windows_release, "file10")
@@ -1060,7 +1078,7 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
 
-        create_and_write_file.create_file_contents(tmp_linux_debug_file5, "contents")
+        create_and_write_file.create_file_contents(tmp_linux_debug_file7, "contents")
         create_and_write_file.create_file_contents(tmp_linux_release_file8, "contents")
         create_and_write_file.create_file_contents(tmp_windows_debug_file9, "contents")
         create_and_write_file.create_file_contents(tmp_windows_release_file10, "contents")
@@ -1078,7 +1096,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(dep_windows_file3))
         self.assertTrue(os.path.exists(dep_macos_file4))
 
-        self.assertTrue(os.path.exists(tmp_linux_debug_file5))
+        self.assertTrue(os.path.exists(tmp_linux_debug_file7))
         self.assertTrue(os.path.exists(tmp_linux_release_file8))
         self.assertTrue(os.path.exists(tmp_windows_debug_file9))
         self.assertTrue(os.path.exists(tmp_windows_release_file10))
@@ -1104,7 +1122,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.exists(dep_windows_file3))
         self.assertFalse(os.path.exists(dep_macos_file4))
 
-        self.assertFalse(os.path.exists(tmp_linux_debug_file5))
+        self.assertFalse(os.path.exists(tmp_linux_debug_file7))
         self.assertFalse(os.path.exists(tmp_linux_release_file8))
         self.assertFalse(os.path.exists(tmp_windows_debug_file9))
         self.assertFalse(os.path.exists(tmp_windows_release_file10))
