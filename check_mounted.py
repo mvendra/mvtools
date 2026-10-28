@@ -8,7 +8,7 @@ import get_platform
 import mount_wrapper
 import mvtools_exception
 
-def checkmounted_linux(path):
+def checkmounted_freebsd(path):
 
     v, r = mount_wrapper.mount(None)
     if not v:
@@ -32,8 +32,8 @@ def checkmounted(path):
     """
 
     plat_local = get_platform.getplat()
-    if plat_local == get_platform.PLAT_LINUX:
-        return checkmounted_linux(path)
+    if plat_local == get_platform.PLAT_FREEBSD or plat_local == get_platform.PLAT_LINUX:
+        return checkmounted_freebsd(path)
     if plat_local == get_platform.PLAT_CYGWIN or plat_local == get_platform.PLAT_MSYS or plat_local == get_platform.PLAT_MINGW or plat_local == get_platform.PLAT_MSYS_MINGW_GRAY:
         return checkmounted_cygwin_or_msys_or_mingw(path)
     raise mvtools_exception.mvtools_exception("Unsupported platform")
