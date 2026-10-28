@@ -195,6 +195,7 @@ class ProjCleanupTest(unittest.TestCase):
         out_macos_debug_file17 = path_utils.concat_path(self.target_proj_out_macos_debug, "file17")
         out_macos_release_file18 = path_utils.concat_path(self.target_proj_out_macos_release, "file18")
 
+        create_and_write_file.create_file_contents(dep_freebsd_file1, "contents")
         create_and_write_file.create_file_contents(dep_linux_file2, "contents")
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
@@ -276,6 +277,7 @@ class ProjCleanupTest(unittest.TestCase):
         out_macos_debug_file17 = path_utils.concat_path(self.target_proj_out_macos_debug, "file17")
         out_macos_release_file18 = path_utils.concat_path(self.target_proj_out_macos_release, "file18")
 
+        create_and_write_file.create_file_contents(dep_freebsd_file1, "contents")
         create_and_write_file.create_file_contents(dep_linux_file2, "contents")
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
@@ -357,6 +359,7 @@ class ProjCleanupTest(unittest.TestCase):
         out_macos_debug_file17 = path_utils.concat_path(self.target_proj_out_macos_debug, "file17")
         out_macos_release_file18 = path_utils.concat_path(self.target_proj_out_macos_release, "file18")
 
+        create_and_write_file.create_file_contents(dep_freebsd_file1, "contents")
         create_and_write_file.create_file_contents(dep_linux_file2, "contents")
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
@@ -438,6 +441,7 @@ class ProjCleanupTest(unittest.TestCase):
         out_macos_debug_file17 = path_utils.concat_path(self.target_proj_out_macos_debug, "file17")
         out_macos_release_file18 = path_utils.concat_path(self.target_proj_out_macos_release, "file18")
 
+        create_and_write_file.create_file_contents(dep_freebsd_file1, "contents")
         create_and_write_file.create_file_contents(dep_linux_file2, "contents")
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
@@ -519,6 +523,7 @@ class ProjCleanupTest(unittest.TestCase):
         out_macos_debug_file17 = path_utils.concat_path(self.target_proj_out_macos_debug, "file17")
         out_macos_release_file18 = path_utils.concat_path(self.target_proj_out_macos_release, "file18")
 
+        create_and_write_file.create_file_contents(dep_freebsd_file1, "contents")
         create_and_write_file.create_file_contents(dep_linux_file2, "contents")
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
@@ -1074,6 +1079,7 @@ class ProjCleanupTest(unittest.TestCase):
         out_macos_debug_file17 = path_utils.concat_path(self.target_proj_out_macos_debug, "file17")
         out_macos_release_file18 = path_utils.concat_path(self.target_proj_out_macos_release, "file18")
 
+        create_and_write_file.create_file_contents(dep_freebsd_file1, "contents")
         create_and_write_file.create_file_contents(dep_linux_file2, "contents")
         create_and_write_file.create_file_contents(dep_windows_file3, "contents")
         create_and_write_file.create_file_contents(dep_macos_file4, "contents")
