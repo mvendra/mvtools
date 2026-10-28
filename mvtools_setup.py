@@ -240,9 +240,9 @@ def mvtools_setup(profile_filename, mvtools_path, temp_path, links_path, toolbus
 
     last_message = ""
     if profile_filename is None:
-        last_message = "Now either create a file with the generated, printed contents above and then source it in your .bashrc, or add the contents directly onto your .bashrc."
+        last_message = "Now either create a file with the generated, printed contents above and then source it in your terminal's script (eg. .zshrc or .bashrc), or add the contents directly."
     else:
-        last_message = "Now either source the generated profile file or add its generated contents directly into your .bashrc."
+        last_message = "Now either source the generated profile file or add its generated contents directly into your terminal's script (eg. .zshrc or .bashrc)"
 
     print("Mvtools setup is complete. %s" % last_message)
     return True
