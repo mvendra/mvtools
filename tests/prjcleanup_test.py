@@ -911,6 +911,8 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.target_proj_tmp_macos_debug, "contents")
         create_and_write_file.create_file_contents(self.target_proj_tmp_macos_release, "contents")
 
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.exists(self.target_proj_tmp_windows_debug))
@@ -923,6 +925,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertFalse(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertFalse(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -982,6 +986,8 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.target_proj_tmp_macos_debug, "contents")
         create_and_write_file.create_file_contents(self.target_proj_tmp_macos_release, "contents")
 
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.exists(self.target_proj_tmp_windows_debug))
@@ -994,6 +1000,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertFalse(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertFalse(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -1014,6 +1022,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.exists(self.target_proj_tmp_windows_debug))
@@ -1026,6 +1036,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertFalse(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertFalse(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -1044,6 +1056,8 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup17(self):
 
+        self.assertTrue(path_utils.remove_path(self.target_proj_out_freebsd_debug))
+        self.assertTrue(path_utils.remove_path(self.target_proj_out_freebsd_release))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_linux_debug))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_linux_release))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_windows_debug))
@@ -1051,6 +1065,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(path_utils.remove_path(self.target_proj_out_macos_debug))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_macos_release))
 
+        create_and_write_file.create_file_contents(self.target_proj_out_freebsd_debug, "contents")
+        create_and_write_file.create_file_contents(self.target_proj_out_freebsd_release, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_linux_debug, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_linux_release, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_windows_debug, "contents")
@@ -1058,6 +1074,8 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.target_proj_out_macos_debug, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_macos_release, "contents")
 
+        self.assertTrue(os.path.exists(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.exists(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.exists(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.exists(self.target_proj_out_linux_release))
         self.assertTrue(os.path.exists(self.target_proj_out_windows_debug))
@@ -1079,6 +1097,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertFalse(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertFalse(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertFalse(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertFalse(os.path.isdir(self.target_proj_out_linux_release))
         self.assertFalse(os.path.isdir(self.target_proj_out_windows_debug))
@@ -1115,6 +1135,8 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup18(self):
 
+        self.assertTrue(path_utils.remove_path(self.target_proj_out_freebsd_debug))
+        self.assertTrue(path_utils.remove_path(self.target_proj_out_freebsd_release))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_linux_debug))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_linux_release))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_windows_debug))
@@ -1122,6 +1144,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(path_utils.remove_path(self.target_proj_out_macos_debug))
         self.assertTrue(path_utils.remove_path(self.target_proj_out_macos_release))
 
+        create_and_write_file.create_file_contents(self.target_proj_out_freebsd_debug, "contents")
+        create_and_write_file.create_file_contents(self.target_proj_out_freebsd_release, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_linux_debug, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_linux_release, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_windows_debug, "contents")
@@ -1129,6 +1153,8 @@ class ProjCleanupTest(unittest.TestCase):
         create_and_write_file.create_file_contents(self.target_proj_out_macos_debug, "contents")
         create_and_write_file.create_file_contents(self.target_proj_out_macos_release, "contents")
 
+        self.assertTrue(os.path.exists(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.exists(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.exists(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.exists(self.target_proj_out_linux_release))
         self.assertTrue(os.path.exists(self.target_proj_out_windows_debug))
@@ -1150,6 +1176,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertFalse(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertFalse(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertFalse(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertFalse(os.path.isdir(self.target_proj_out_linux_release))
         self.assertFalse(os.path.isdir(self.target_proj_out_windows_debug))
@@ -1182,6 +1210,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertFalse(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertFalse(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertFalse(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertFalse(os.path.isdir(self.target_proj_out_linux_release))
         self.assertFalse(os.path.isdir(self.target_proj_out_windows_debug))
@@ -1318,11 +1348,15 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertEqual(r, None)
 
         self.assertTrue(os.path.exists(self.target_proj_dep))
+        self.assertTrue(os.path.exists(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.exists(self.target_proj_dep_linux))
         self.assertTrue(os.path.exists(self.target_proj_dep_windows))
         self.assertTrue(os.path.exists(self.target_proj_dep_macos))
 
         self.assertTrue(os.path.exists(self.target_proj_tmp))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.exists(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.exists(self.target_proj_tmp_linux_release))
@@ -1334,6 +1368,9 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.target_proj_tmp_macos_release))
 
         self.assertTrue(os.path.exists(self.target_proj_out))
+        self.assertTrue(os.path.exists(self.target_proj_out_freebsd))
+        self.assertTrue(os.path.exists(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.exists(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.exists(self.target_proj_out_linux))
         self.assertTrue(os.path.exists(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.exists(self.target_proj_out_linux_release))
@@ -1368,12 +1405,16 @@ class ProjCleanupTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(self.target_proj_dep))
         self.assertFalse(os.path.isdir(self.target_proj_dep))
+        self.assertFalse(os.path.exists(self.target_proj_dep_freebsd))
         self.assertFalse(os.path.exists(self.target_proj_dep_linux))
         self.assertFalse(os.path.exists(self.target_proj_dep_windows))
         self.assertFalse(os.path.exists(self.target_proj_dep_macos))
 
         self.assertTrue(os.path.exists(self.target_proj_tmp))
         self.assertFalse(os.path.isdir(self.target_proj_tmp))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_freebsd))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_freebsd_debug))
+        self.assertFalse(os.path.exists(self.target_proj_tmp_freebsd_release))
         self.assertFalse(os.path.exists(self.target_proj_tmp_linux))
         self.assertFalse(os.path.exists(self.target_proj_tmp_linux_debug))
         self.assertFalse(os.path.exists(self.target_proj_tmp_linux_release))
@@ -1386,6 +1427,9 @@ class ProjCleanupTest(unittest.TestCase):
 
         self.assertTrue(os.path.exists(self.target_proj_out))
         self.assertFalse(os.path.isdir(self.target_proj_out))
+        self.assertFalse(os.path.exists(self.target_proj_out_freebsd))
+        self.assertFalse(os.path.exists(self.target_proj_out_freebsd_debug))
+        self.assertFalse(os.path.exists(self.target_proj_out_freebsd_release))
         self.assertFalse(os.path.exists(self.target_proj_out_linux))
         self.assertFalse(os.path.exists(self.target_proj_out_linux_debug))
         self.assertFalse(os.path.exists(self.target_proj_out_linux_release))
