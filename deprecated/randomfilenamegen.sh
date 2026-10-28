@@ -3,7 +3,7 @@
 SHA_APP=""
 
 unamestr=`uname -s`
-if [[ "$unamestr" == "Linux" ]]; then
+if [ "$unamestr" == "FreeBSD" ] || [ "$unamestr" == "Linux" ]; then
     SHA_APP="sha256sum"
 else
     SHA_APP="shasum -a 256"
