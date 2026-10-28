@@ -664,10 +664,13 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup12(self):
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -675,6 +678,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -686,10 +691,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -697,6 +705,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -706,10 +716,13 @@ class ProjCleanupTest(unittest.TestCase):
 
     def testProjCleanup13(self):
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -717,6 +730,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -728,10 +743,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -739,6 +757,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -764,6 +784,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_dep_windows))
         self.assertFalse(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -771,6 +793,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -782,10 +806,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -793,6 +820,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -818,6 +847,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_dep_windows))
         self.assertFalse(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -825,6 +856,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -844,6 +877,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_dep_windows))
         self.assertFalse(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -851,6 +886,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -881,6 +918,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.exists(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
@@ -892,6 +930,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -903,10 +943,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -914,6 +957,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -944,6 +989,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.exists(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
@@ -955,6 +1001,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -973,6 +1021,7 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.exists(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
@@ -984,6 +1033,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertFalse(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertFalse(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -1014,10 +1065,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.target_proj_out_macos_debug))
         self.assertTrue(os.path.exists(self.target_proj_out_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -1036,10 +1090,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(v)
         self.assertEqual(r, None)
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -1047,6 +1104,8 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_out_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_out_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_out_windows_debug))
@@ -1077,10 +1136,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.target_proj_out_macos_debug))
         self.assertTrue(os.path.exists(self.target_proj_out_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
@@ -1106,10 +1168,13 @@ class ProjCleanupTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.target_proj_out_macos_debug))
         self.assertTrue(os.path.exists(self.target_proj_out_macos_release))
 
+        self.assertTrue(os.path.isdir(self.target_proj_dep_freebsd))
         self.assertTrue(os.path.isdir(self.target_proj_dep_linux))
         self.assertTrue(os.path.isdir(self.target_proj_dep_windows))
         self.assertTrue(os.path.isdir(self.target_proj_dep_macos))
 
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_debug))
+        self.assertTrue(os.path.isdir(self.target_proj_tmp_freebsd_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_debug))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_linux_release))
         self.assertTrue(os.path.isdir(self.target_proj_tmp_windows_debug))
