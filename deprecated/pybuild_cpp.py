@@ -20,22 +20,22 @@ the following structure:
 (project)/
 
 (project)/build/
-(project)/build/linux/
-(project)/build/linux/pybuild_cpp/
-(project)/build/linux/pybuild_c/pybuild_cpp.py
+(project)/build/freebsd/
+(project)/build/freebsd/pybuild_cpp/
+(project)/build/freebsd/pybuild_c/pybuild_cpp.py
 
 (project)/dep/
-(project)/dep/linux/
+(project)/dep/freebsd/
 
 (project)/tmp/
-(project)/tmp/linux/
-(project)/tmp/linux/debug/
-(project)/tmp/linux/release/
+(project)/tmp/freebsd/
+(project)/tmp/freebsd/debug/
+(project)/tmp/freebsd/release/
 
 (project)/out/
-(project)/out/linux/
-(project)/out/linux/debug/
-(project)/out/linux/release/
+(project)/out/freebsd/
+(project)/out/freebsd/debug/
+(project)/out/freebsd/release/
 
 (project)/src/
 """
