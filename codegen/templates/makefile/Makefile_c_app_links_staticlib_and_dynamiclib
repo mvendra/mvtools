@@ -23,7 +23,7 @@ LIBS_AFTER_ASAN=
 POSTBUILD=
 
 # DEFAULTS
-PLAT=linux
+PLAT=freebsd
 MODE=release
 
 # MODE
@@ -34,6 +34,11 @@ endif
 
 # PLAT FLAGS
 UNAME_S := $(shell uname -s)
+
+# FREEBSD
+ifeq ($(UNAME_S),FreeBSD)
+	PLAT=freebsd
+endif
 
 # LINUX
 ifeq ($(UNAME_S),Linux)

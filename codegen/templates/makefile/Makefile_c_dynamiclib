@@ -13,7 +13,7 @@ BASE_DEP=$(BASE)/dep
 
 # PROJECT SETUP
 # To link to this library, pass [-Wl,-rpath,"."] to your linker (during the linking step, particularly), plus -lthe-final-so-name (i.e. $SONAME in this particular Makefile - see below/further)
-# This will tell the application executable to search its own current path (".") for the library's soname. You could also pass "../../../dep/linux/my_library" for example.
+# This will tell the application executable to search its own current path (".") for the library's soname. You could also pass "../../../dep/freebsd/my_library" for example.
 OUTNAME=dynamiclib
 SO_SUFFIX=-dev.1
 SRC=subfolder/second.c
@@ -25,7 +25,7 @@ LIBS_AFTER_ASAN=
 POSTBUILD=
 
 # DEFAULTS
-PLAT=linux
+PLAT=freebsd
 MODE=release
 
 # MODE
@@ -36,6 +36,11 @@ endif
 
 # PLAT FLAGS
 UNAME_S := $(shell uname -s)
+
+# FREEBSD
+ifeq ($(UNAME_S),FreeBSD)
+	PLAT=freebsd
+endif
 
 # LINUX
 ifeq ($(UNAME_S),Linux)
