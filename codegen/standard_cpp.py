@@ -24,8 +24,10 @@ def get_main_cpp_app():
     return contents
 
 ################################################################################################################################################################################################
+################################################################################################################################################################################################
+################################################################################################################################################################################################
 
-def get_cpp_compiler_flags_linux_common_gcc():
+def get_cpp_compiler_flags_freebsd_common_gcc():
 
     contents = []
 
@@ -43,7 +45,7 @@ def get_cpp_compiler_flags_linux_common_gcc():
 
     return contents
 
-def get_cpp_compiler_flags_linux_debug_gcc():
+def get_cpp_compiler_flags_freebsd_debug_gcc():
 
     contents = []
 
@@ -53,7 +55,7 @@ def get_cpp_compiler_flags_linux_debug_gcc():
 
     return contents
 
-def get_cpp_compiler_flags_linux_release_gcc():
+def get_cpp_compiler_flags_freebsd_release_gcc():
 
     contents = []
 
@@ -64,19 +66,19 @@ def get_cpp_compiler_flags_linux_release_gcc():
 
 ################################################################################################################################################################################################
 
-def get_cpp_linker_flags_linux_common_gcc():
+def get_cpp_linker_flags_freebsd_common_gcc():
 
     contents = []
 
     return contents
 
-def get_cpp_linker_flags_linux_debug_gcc():
+def get_cpp_linker_flags_freebsd_debug_gcc():
 
     contents = []
 
     return contents
 
-def get_cpp_linker_flags_linux_release_gcc():
+def get_cpp_linker_flags_freebsd_release_gcc():
 
     contents = []
 
@@ -84,13 +86,13 @@ def get_cpp_linker_flags_linux_release_gcc():
 
 ################################################################################################################################################################################################
 
-def get_cpp_linker_libs_linux_common_gcc():
+def get_cpp_linker_libs_freebsd_common_gcc():
 
     contents = []
 
     return contents
 
-def get_cpp_linker_libs_linux_debug_gcc():
+def get_cpp_linker_libs_freebsd_debug_gcc():
 
     contents = []
 
@@ -98,8 +100,43 @@ def get_cpp_linker_libs_linux_debug_gcc():
 
     return contents
 
-def get_cpp_linker_libs_linux_release_gcc():
+def get_cpp_linker_libs_freebsd_release_gcc():
 
     contents = []
 
     return contents
+
+################################################################################################################################################################################################
+################################################################################################################################################################################################
+################################################################################################################################################################################################
+
+def get_cpp_compiler_flags_linux_common_gcc():
+    return get_cpp_compiler_flags_freebsd_common_gcc()
+
+def get_cpp_compiler_flags_linux_debug_gcc():
+    return get_cpp_compiler_flags_freebsd_debug_gcc()
+
+def get_cpp_compiler_flags_linux_release_gcc():
+    return get_cpp_compiler_flags_freebsd_release_gcc()
+
+################################################################################################################################################################################################
+
+def get_cpp_linker_flags_linux_common_gcc():
+    return get_cpp_linker_flags_freebsd_common_gcc()
+
+def get_cpp_linker_flags_linux_debug_gcc():
+    return get_cpp_linker_flags_freebsd_debug_gcc()
+
+def get_cpp_linker_flags_linux_release_gcc():
+    return get_cpp_linker_flags_freebsd_release_gcc()
+
+################################################################################################################################################################################################
+
+def get_cpp_linker_libs_linux_common_gcc():
+    return get_cpp_linker_libs_freebsd_common_gcc()
+
+def get_cpp_linker_libs_linux_debug_gcc():
+    return get_cpp_linker_libs_freebsd_debug_gcc()
+
+def get_cpp_linker_libs_linux_release_gcc():
+    return get_cpp_linker_libs_freebsd_release_gcc()
