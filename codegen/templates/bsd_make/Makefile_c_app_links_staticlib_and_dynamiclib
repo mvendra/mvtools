@@ -75,7 +75,7 @@ compile:
 
 # TARGET: LINK
 link:
-	$[LINKER} -o ${OUTNAME_FULL} ${ALL_OBJS} ${LDFLAGS} ${LIBS} -Wl,-rpath,"${BASE_DEP}/${PLAT}/${MODE}"
+	${LINKER} -o ${OUTNAME_FULL} ${ALL_OBJS} ${LDFLAGS} ${LIBS} -Wl,-rpath,"${BASE_DEP}/${PLAT}/${MODE}"
 	${POSTBUILD}
 
 # TARGET: CLEAN
