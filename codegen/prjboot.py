@@ -12,20 +12,20 @@ import msvc_proj_gen
 
 # FreeBSD
 PROJECT_TYPE_FREEBSD_CODELITE15_C = ("freebsd_codelite15_c", codelite_proj_gen.generate_freebsd_codelite15_c)
-PROJECT_TYPE_FREEBSD_MAKEFILE_C = ("freebsd_makefile_c", makefile_proj_gen.generate_freebsd_makefile_c)
-PROJECT_TYPE_FREEBSD_MAKEFILE_CPP = ("freebsd_makefile_cpp", makefile_proj_gen.generate_freebsd_makefile_cpp)
+PROJECT_TYPE_FREEBSD_BSD_MAKE_C = ("freebsd_bsd_make_c", makefile_proj_gen.generate_freebsd_bsd_make_c)
+PROJECT_TYPE_FREEBSD_BSD_MAKE_CPP = ("freebsd_bsd_make_cpp", makefile_proj_gen.generate_freebsd_bsd_make_cpp)
 
 # Linux
 PROJECT_TYPE_LINUX_CODELITE15_C = ("linux_codelite15_c", codelite_proj_gen.generate_linux_codelite15_c)
-PROJECT_TYPE_LINUX_MAKEFILE_C = ("linux_makefile_c", makefile_proj_gen.generate_linux_makefile_c)
-PROJECT_TYPE_LINUX_MAKEFILE_CPP = ("linux_makefile_cpp", makefile_proj_gen.generate_linux_makefile_cpp)
+PROJECT_TYPE_LINUX_GNU_MAKE_C = ("linux_gnu_make_c", makefile_proj_gen.generate_linux_gnu_make_c)
+PROJECT_TYPE_LINUX_GNU_MAKE_CPP = ("linux_gnu_make_cpp", makefile_proj_gen.generate_linux_gnu_make_cpp)
 
 # Windows
 PROJECT_TYPE_WINDOWS_MSVC17_C = ("windows_msvc17_c", msvc_proj_gen.generate_windows_msvc17_c)
 PROJECT_TYPE_WINDOWS_CODELITE15_C = ("windows_codelite15_c", codelite_proj_gen.generate_windows_codelite15_c)
 
 # hint: adding new project types should warrant a review of the accompanying "prjrenamer" tool as well
-PROJECT_TYPES = [PROJECT_TYPE_FREEBSD_CODELITE15_C, PROJECT_TYPE_FREEBSD_MAKEFILE_C, PROJECT_TYPE_FREEBSD_MAKEFILE_CPP, PROJECT_TYPE_LINUX_CODELITE15_C, PROJECT_TYPE_LINUX_MAKEFILE_C, PROJECT_TYPE_LINUX_MAKEFILE_CPP, PROJECT_TYPE_WINDOWS_MSVC17_C, PROJECT_TYPE_WINDOWS_CODELITE15_C]
+PROJECT_TYPES = [PROJECT_TYPE_FREEBSD_CODELITE15_C, PROJECT_TYPE_FREEBSD_BSD_MAKE_C, PROJECT_TYPE_FREEBSD_BSD_MAKE_CPP, PROJECT_TYPE_LINUX_CODELITE15_C, PROJECT_TYPE_LINUX_GNU_MAKE_C, PROJECT_TYPE_LINUX_GNU_MAKE_CPP, PROJECT_TYPE_WINDOWS_MSVC17_C, PROJECT_TYPE_WINDOWS_CODELITE15_C]
 PROJECT_TYPE_DEFAULT = PROJECT_TYPE_FREEBSD_CODELITE15_C
 
 def prjboot(target_dir, proj_name, proj_type):

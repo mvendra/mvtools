@@ -70,20 +70,6 @@ def freebsd_mkfile_c_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # LINUX
-    r += "# LINUX\n"
-    r += "ifeq ($(UNAME_S),Linux)\n"
-    r += "\tPLAT=linux\n"
-    r += "endif\n"
-    r += "\n"
-
-    # MACOS
-    r += "# MACOS\n"
-    r += "ifeq ($(UNAME_S),Darwin)\n"
-    r += "\tPLAT=macos\n"
-    r += "endif\n"
-    r += "\n"
-
     # DEBUG CONFIG
     r += "# DEBUG\n"
     r += "ifeq ($(MODE),debug)\n"
@@ -150,7 +136,7 @@ def freebsd_mkfile_c_contents(project_name):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_freebsd_makefile_c(target_dir, project_name):
+def generate_freebsd_bsd_make_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
@@ -159,11 +145,11 @@ def generate_freebsd_makefile_c(target_dir, project_name):
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C Makefile
-    base_build_freebsd_makefile_c = path_utils.concat_path(base_build_freebsd, "makefile_c")
-    prjboot_util.makedir_if_needed(base_build_freebsd_makefile_c)
-    base_build_freebsd_makefile_c_fn = path_utils.concat_path(base_build_freebsd_makefile_c, "Makefile")
-    if not prjboot_util.writecontents(base_build_freebsd_makefile_c_fn, freebsd_mkfile_c_contents(project_name)):
-        return False, "Failed creating [%s]" % base_build_freebsd_makefile_c_fn
+    base_build_freebsd_bsd_make_c = path_utils.concat_path(base_build_freebsd, "bsd_make_c")
+    prjboot_util.makedir_if_needed(base_build_freebsd_bsd_make_c)
+    base_build_freebsd_bsd_make_c_fn = path_utils.concat_path(base_build_freebsd_bsd_make_c, "Makefile")
+    if not prjboot_util.writecontents(base_build_freebsd_bsd_make_c_fn, freebsd_mkfile_c_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_freebsd_bsd_make_c_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
@@ -243,20 +229,6 @@ def freebsd_mkfile_cpp_contents(project_name):
     r += "endif\n"
     r += "\n"
 
-    # LINUX
-    r += "# LINUX\n"
-    r += "ifeq ($(UNAME_S),Linux)\n"
-    r += "\tPLAT=linux\n"
-    r += "endif\n"
-    r += "\n"
-
-    # MACOS
-    r += "# MACOS\n"
-    r += "ifeq ($(UNAME_S),Darwin)\n"
-    r += "\tPLAT=macos\n"
-    r += "endif\n"
-    r += "\n"
-
     # DEBUG CONFIG
     r += "# DEBUG\n"
     r += "ifeq ($(MODE),debug)\n"
@@ -323,7 +295,7 @@ def freebsd_mkfile_cpp_contents(project_name):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_freebsd_makefile_cpp(target_dir, project_name):
+def generate_freebsd_bsd_make_cpp(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
@@ -332,11 +304,11 @@ def generate_freebsd_makefile_cpp(target_dir, project_name):
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C++ Makefile
-    base_build_freebsd_makefile_cpp = path_utils.concat_path(base_build_freebsd, "makefile_cpp")
-    prjboot_util.makedir_if_needed(base_build_freebsd_makefile_cpp)
-    base_build_freebsd_makefile_cpp_fn = path_utils.concat_path(base_build_freebsd_makefile_cpp, "Makefile")
-    if not prjboot_util.writecontents(base_build_freebsd_makefile_cpp_fn, freebsd_mkfile_cpp_contents(project_name)):
-        return False, "Failed creating [%s]" % base_build_freebsd_makefile_cpp_fn
+    base_build_freebsd_bsd_make_cpp = path_utils.concat_path(base_build_freebsd, "bsd_make_cpp")
+    prjboot_util.makedir_if_needed(base_build_freebsd_bsd_make_cpp)
+    base_build_freebsd_bsd_make_cpp_fn = path_utils.concat_path(base_build_freebsd_bsd_make_cpp, "Makefile")
+    if not prjboot_util.writecontents(base_build_freebsd_bsd_make_cpp_fn, freebsd_mkfile_cpp_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_freebsd_bsd_make_cpp_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
@@ -407,13 +379,6 @@ def linux_mkfile_c_contents(project_name):
     # PLAT
     r += "# PLAT FLAGS\n"
     r += "UNAME_S := $(shell uname -s)\n"
-    r += "\n"
-
-    # FREEBSD
-    r += "# FREEBSD\n"
-    r += "ifeq ($(UNAME_S),FreeBSD)\n"
-    r += "\tPLAT=freebsd\n"
-    r += "endif\n"
     r += "\n"
 
     # LINUX
@@ -496,7 +461,7 @@ def linux_mkfile_c_contents(project_name):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_linux_makefile_c(target_dir, project_name):
+def generate_linux_gnu_make_c(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
@@ -505,11 +470,11 @@ def generate_linux_makefile_c(target_dir, project_name):
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C Makefile
-    base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
-    prjboot_util.makedir_if_needed(base_build_linux_makefile_c)
-    base_build_linux_makefile_c_fn = path_utils.concat_path(base_build_linux_makefile_c, "Makefile")
-    if not prjboot_util.writecontents(base_build_linux_makefile_c_fn, linux_mkfile_c_contents(project_name)):
-        return False, "Failed creating [%s]" % base_build_linux_makefile_c_fn
+    base_build_linux_gnu_make_c = path_utils.concat_path(base_build_linux, "gnu_make_c")
+    prjboot_util.makedir_if_needed(base_build_linux_gnu_make_c)
+    base_build_linux_gnu_make_c_fn = path_utils.concat_path(base_build_linux_gnu_make_c, "Makefile")
+    if not prjboot_util.writecontents(base_build_linux_gnu_make_c_fn, linux_mkfile_c_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_linux_gnu_make_c_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
@@ -580,13 +545,6 @@ def linux_mkfile_cpp_contents(project_name):
     # PLAT
     r += "# PLAT FLAGS\n"
     r += "UNAME_S := $(shell uname -s)\n"
-    r += "\n"
-
-    # FREEBSD
-    r += "# FREEBSD\n"
-    r += "ifeq ($(UNAME_S),FreeBSD)\n"
-    r += "\tPLAT=freebsd\n"
-    r += "endif\n"
     r += "\n"
 
     # LINUX
@@ -669,7 +627,7 @@ def linux_mkfile_cpp_contents(project_name):
     ba_r.extend(map(ord, r))
     return ba_r
 
-def generate_linux_makefile_cpp(target_dir, project_name):
+def generate_linux_gnu_make_cpp(target_dir, project_name):
 
     # base folders / base structure
     prj_fullname_base = path_utils.concat_path(target_dir, project_name)
@@ -678,11 +636,11 @@ def generate_linux_makefile_cpp(target_dir, project_name):
     base_src = path_utils.concat_path(prj_fullname_base, "src")
 
     # generate the actual C++ Makefile
-    base_build_linux_makefile_cpp = path_utils.concat_path(base_build_linux, "makefile_cpp")
-    prjboot_util.makedir_if_needed(base_build_linux_makefile_cpp)
-    base_build_linux_makefile_cpp_fn = path_utils.concat_path(base_build_linux_makefile_cpp, "Makefile")
-    if not prjboot_util.writecontents(base_build_linux_makefile_cpp_fn, linux_mkfile_cpp_contents(project_name)):
-        return False, "Failed creating [%s]" % base_build_linux_makefile_cpp_fn
+    base_build_linux_gnu_make_cpp = path_utils.concat_path(base_build_linux, "gnu_make_cpp")
+    prjboot_util.makedir_if_needed(base_build_linux_gnu_make_cpp)
+    base_build_linux_gnu_make_cpp_fn = path_utils.concat_path(base_build_linux_gnu_make_cpp, "Makefile")
+    if not prjboot_util.writecontents(base_build_linux_gnu_make_cpp_fn, linux_mkfile_cpp_contents(project_name)):
+        return False, "Failed creating [%s]" % base_build_linux_gnu_make_cpp_fn
 
     # gitignore
     gitignore_filename = path_utils.concat_path(prj_fullname_base, ".gitignore")
