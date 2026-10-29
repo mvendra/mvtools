@@ -33,7 +33,7 @@ MODE=release
 .endif
 
 # PLAT FLAGS
-UNAME_S := $(shell uname -s)
+UNAME_S != uname -s
 
 # FREEBSD
 .if ${UNAME_S} == "FreeBSD"
