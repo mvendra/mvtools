@@ -51,7 +51,9 @@ UNAME_S != uname -s
 # AUTOCONF COMPLETE
 TMP_FULL=${BASE_TMP}/${PLAT}/${MODE}
 OUT_FULL=${BASE_OUT}/${PLAT}/${MODE}
-ALL_OBJS=$(foreach src,${SRC},${TMP_FULL}/$(if $(filter-out ./,$(dir ${src})),$(subst /,_,$(dir ${src})),)$(notdir $(src:.c=.o)))
+.for s in ${SRC}
+    ALL_OBJS+=${TMP_FULL}/${s:S/\//_/g:S/.c$/.o/}
+.endfor
 OUTNAME_FULL=${OUT_FULL}/lib${OUTNAME}.a
 
 # TARGET: ALL
@@ -64,7 +66,9 @@ prepfolders:
 
 # TARGET: COMPILE
 compile:
-	$(foreach src,${SRC},${COMPILER} ${INCLUDES} ${CFLAGS} -c ${BASE_SRC}/${src} -o ${TMP_FULL}/$(if $(filter-out ./,$(dir ${src})),$(subst /,_,$(dir ${src})),)$(notdir $(src:.c=.o));)
+.for s in ${SRC}
+	${COMPILER} ${INCLUDES} ${CFLAGS} -c ${BASE_SRC}/${s} -o ${TMP_FULL}/${s:S/\//_/g:S/.c$/.o/}
+.endfor
 
 # TARGET: LINK
 link:
@@ -73,5 +77,7 @@ link:
 
 # TARGET: CLEAN
 clean:
-	$(foreach objs,${ALL_OBJS},rm ${objs};)
+.for o in ${ALL_OBJS}
+	rm ${o}
+.endfor
 	rm ${OUTNAME_FULL}
