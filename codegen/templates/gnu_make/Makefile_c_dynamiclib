@@ -26,13 +26,7 @@ POSTBUILD=
 
 # DEFAULTS
 PLAT=linux
-MODE=release
-
-# MODE
-ifeq ($(MODE),)
-	# to use, do 'make MODE=debug'
-	MODE=debug
-endif
+MODE=release # for debug mode, use 'make MODE=debug'
 
 # PLAT FLAGS
 UNAME_S := $(shell uname -s)

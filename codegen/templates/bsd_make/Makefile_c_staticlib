@@ -21,13 +21,7 @@ POSTBUILD=
 
 # DEFAULTS
 PLAT=freebsd
-MODE=release
-
-# MODE
-.if empty(MODE)
-    # to use, do 'make MODE=debug'
-    MODE=debug
-.endif
+MODE=release # for debug mode, use 'make MODE=debug'
 
 # PLAT FLAGS
 UNAME_S != uname -s
