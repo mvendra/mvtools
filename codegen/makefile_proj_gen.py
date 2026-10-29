@@ -47,15 +47,7 @@ def freebsd_mkfile_c_contents(project_name):
     # DEFAULTS
     r += "# DEFAULTS\n"
     r += "PLAT=freebsd\n"
-    r += "MODE=release\n"
-    r += "\n"
-
-    # MODE
-    r += "# MODE\n"
-    r += ".if empty(MODE)\n"
-    r += "    # to use, do 'make MODE=debug'\n"
-    r += "    MODE=debug\n"
-    r += ".endif\n"
+    r += "MODE=release # for debug mode, use 'make MODE=debug'\n"
     r += "\n"
 
     # PLAT
@@ -212,15 +204,7 @@ def freebsd_mkfile_cpp_contents(project_name):
     # DEFAULTS
     r += "# DEFAULTS\n"
     r += "PLAT=freebsd\n"
-    r += "MODE=release\n"
-    r += "\n"
-
-    # MODE
-    r += "# MODE\n"
-    r += ".if empty(MODE)\n"
-    r += "    # to use, do 'make MODE=debug'\n"
-    r += "    MODE=debug\n"
-    r += ".endif\n"
+    r += "MODE=release # for debug mode, use 'make MODE=debug'\n"
     r += "\n"
 
     # PLAT
@@ -377,15 +361,7 @@ def linux_mkfile_c_contents(project_name):
     # DEFAULTS
     r += "# DEFAULTS\n"
     r += "PLAT=linux\n"
-    r += "MODE=release\n"
-    r += "\n"
-
-    # MODE
-    r += "# MODE\n"
-    r += "ifeq ($(MODE),)\n"
-    r += "\t# to use, do 'make MODE=debug'\n"
-    r += "\tMODE=debug\n"
-    r += "endif\n"
+    r += "MODE=release # for debug mode, use 'make MODE=debug'\n"
     r += "\n"
 
     # PLAT
@@ -543,15 +519,7 @@ def linux_mkfile_cpp_contents(project_name):
     # DEFAULTS
     r += "# DEFAULTS\n"
     r += "PLAT=linux\n"
-    r += "MODE=release\n"
-    r += "\n"
-
-    # MODE
-    r += "# MODE\n"
-    r += "ifeq ($(MODE),)\n"
-    r += "\t# to use, do 'make MODE=debug'\n"
-    r += "\tMODE=debug\n"
-    r += "endif\n"
+    r += "MODE=release # for debug mode, use 'make MODE=debug'\n"
     r += "\n"
 
     # PLAT
