@@ -16,7 +16,7 @@ gicom(){
 
     if [ $len_inputs -eq 0 ]; then # no parameters. use commit with editor mode.
         use_editor="true"
-    elif [ $len_inputs -eq 1 ] && [ "$ignore_mvtags_switch" = "true" ]; then # only one parameter and it was the "--ignore-mvtags" ovveride switch. use commit with editor mode.
+    elif [ $len_inputs -eq 1 ] && [ "$ignore_mvtags_switch" = "true" ]; then # only one parameter and it was the "--ignore-mvtags" override switch. use commit with editor mode.
         use_editor="true"
     fi
 
