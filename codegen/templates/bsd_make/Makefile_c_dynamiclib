@@ -1,0 +1,87 @@
+.PHONY : all prepfolders clean compile link
+
+# PLUMBING
+COMPILER=gcc
+LINKER=$(COMPILER)
+
+# AUTOCONF PREP
+BASE=../../..
+BASE_SRC=$(BASE)/src
+BASE_TMP=$(BASE)/tmp
+BASE_OUT=$(BASE)/out
+BASE_DEP=$(BASE)/dep
+
+# PROJECT SETUP
+# To link to this library, pass [-Wl,-rpath,"."] to your linker (during the linking step, particularly), plus -lthe-final-so-name (i.e. $SONAME in this particular Makefile - see below/further)
+# This will tell the application executable to search its own current path (".") for the library's soname. You could also pass "../../../dep/freebsd/my_library" for example.
+OUTNAME=dynamiclib
+SO_SUFFIX=-dev.1
+SRC=subfolder/second.c
+INCLUDES=-I$(BASE_SRC)
+CFLAGS=-std=c23 -m64 -Wall -Wextra -Wconversion -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
+LDFLAGS=
+LIBS=
+LIBS_AFTER_ASAN=
+POSTBUILD=
+
+# DEFAULTS
+PLAT=freebsd
+MODE=release
+
+# MODE
+.if empty(MODE)
+    # to use, do 'make MODE=debug'
+    MODE=debug
+.endif
+
+# PLAT FLAGS
+UNAME_S := $(shell uname -s)
+
+# FREEBSD
+.if ${UNAME_S} == "FreeBSD"
+    PLAT=freebsd
+.endif
+
+# DEBUG
+.if ${MODE} == "debug"
+    CFLAGS+=-g -fsanitize=address -D_GLIBCXX_DEBUG
+    LIBS+=-lasan
+.endif
+
+# RELEASE
+.if ${MODE} == "release"
+    CFLAGS+=-O2 -DNDEBUG
+    POSTBUILD=strip -g $(OUTNAME_FULL)
+.endif
+
+# LIBS AFTER ASAN
+LIBS+=$(LIBS_AFTER_ASAN)
+
+# AUTOCONF COMPLETE
+TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)
+OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)
+ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))
+OUTNAME_FULL=$(OUT_FULL)/lib$(OUTNAME).so
+SONAME=lib$(OUTNAME)$(SO_SUFFIX).so
+
+# TARGET: ALL
+all: prepfolders compile link
+
+# TARGET: PREPFOLDERS
+prepfolders:
+    @mkdir -p $(TMP_FULL)
+    @mkdir -p $(OUT_FULL)
+
+# TARGET: COMPILE
+compile:
+    $(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)
+
+# TARGET: LINK
+link:
+    $(LINKER) -o $(OUTNAME_FULL) -shared $(ALL_OBJS) -Wl,-soname,$(SONAME) $(LDFLAGS) $(LIBS)
+    $(POSTBUILD)
+
+# TARGET: CLEAN
+clean:
+    $(foreach objs,$(ALL_OBJS),rm $(objs);)
+    rm $(OUTNAME_FULL)
