@@ -66,19 +66,19 @@ all: prepfolders compile link
 
 # TARGET: PREPFOLDERS
 prepfolders:
-    @mkdir -p $(TMP_FULL)
-    @mkdir -p $(OUT_FULL)
+	@mkdir -p $(TMP_FULL)
+	@mkdir -p $(OUT_FULL)
 
 # TARGET: COMPILE
 compile:
-    $(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)
+	$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)
 
 # TARGET: LINK
 link:
-    $(LINKER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS) -Wl,-rpath,"$(BASE_DEP)/$(PLAT)/$(MODE)"
-    $(POSTBUILD)
+	$(LINKER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS) -Wl,-rpath,"$(BASE_DEP)/$(PLAT)/$(MODE)"
+	$(POSTBUILD)
 
 # TARGET: CLEAN
 clean:
-    $(foreach objs,$(ALL_OBJS),rm $(objs);)
-    rm $(OUTNAME_FULL)
+	$(foreach objs,$(ALL_OBJS),rm $(objs);)
+	rm $(OUTNAME_FULL)
