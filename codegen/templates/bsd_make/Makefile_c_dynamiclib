@@ -2,14 +2,14 @@
 
 # PLUMBING
 COMPILER=gcc
-LINKER=$(COMPILER)
+LINKER=${COMPILER}
 
 # AUTOCONF PREP
 BASE=../../..
-BASE_SRC=$(BASE)/src
-BASE_TMP=$(BASE)/tmp
-BASE_OUT=$(BASE)/out
-BASE_DEP=$(BASE)/dep
+BASE_SRC=${BASE}/src
+BASE_TMP=${BASE}/tmp
+BASE_OUT=${BASE}/out
+BASE_DEP=${BASE}/dep
 
 # PROJECT SETUP
 # To link to this library, pass [-Wl,-rpath,"."] to your linker (during the linking step, particularly), plus -lthe-final-so-name (i.e. $SONAME in this particular Makefile - see below/further)
@@ -17,7 +17,7 @@ BASE_DEP=$(BASE)/dep
 OUTNAME=dynamiclib
 SO_SUFFIX=-dev.1
 SRC=subfolder/second.c
-INCLUDES=-I$(BASE_SRC)
+INCLUDES=-I${BASE_SRC}
 CFLAGS=-std=c23 -m64 -Wall -Wextra -Wconversion -Werror -pedantic -fPIC -finput-charset=utf-8 -fexec-charset=utf-8
 LDFLAGS=
 LIBS=
@@ -51,37 +51,37 @@ UNAME_S != uname -s
 # RELEASE
 .if ${MODE} == "release"
     CFLAGS+=-O2 -DNDEBUG
-    POSTBUILD=strip -g $(OUTNAME_FULL)
+    POSTBUILD=strip -g ${OUTNAME_FULL}
 .endif
 
 # LIBS AFTER ASAN
-LIBS+=$(LIBS_AFTER_ASAN)
+LIBS+=${LIBS_AFTER_ASAN}
 
 # AUTOCONF COMPLETE
-TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)
-OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)
-ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))
-OUTNAME_FULL=$(OUT_FULL)/lib$(OUTNAME).so
-SONAME=lib$(OUTNAME)$(SO_SUFFIX).so
+TMP_FULL=${BASE_TMP}/${PLAT}/${MODE}
+OUT_FULL=${BASE_OUT}/${PLAT}/${MODE}
+ALL_OBJS=$(foreach src,${SRC},${TMP_FULL}/$(if $(filter-out ./,$(dir ${src})),$(subst /,_,$(dir ${src})),)$(notdir $(src:.c=.o)))
+OUTNAME_FULL=${OUT_FULL}/lib${OUTNAME}.so
+SONAME=lib${OUTNAME}${SO_SUFFIX}.so
 
 # TARGET: ALL
 all: prepfolders compile link
 
 # TARGET: PREPFOLDERS
 prepfolders:
-	@mkdir -p $(TMP_FULL)
-	@mkdir -p $(OUT_FULL)
+	@mkdir -p ${TMP_FULL}
+	@mkdir -p ${OUT_FULL}
 
 # TARGET: COMPILE
 compile:
-	$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)
+	$(foreach src,${SRC},${COMPILER} ${INCLUDES} ${CFLAGS} -c ${BASE_SRC}/${src} -o ${TMP_FULL}/$(if $(filter-out ./,$(dir ${src})),$(subst /,_,$(dir ${src})),)$(notdir $(src:.c=.o));)
 
 # TARGET: LINK
 link:
-	$(LINKER) -o $(OUTNAME_FULL) -shared $(ALL_OBJS) -Wl,-soname,$(SONAME) $(LDFLAGS) $(LIBS)
-	$(POSTBUILD)
+	${LINKER} -o ${OUTNAME_FULL} -shared ${ALL_OBJS} -Wl,-soname,${SONAME} ${LDFLAGS} ${LIBS}
+	${POSTBUILD}
 
 # TARGET: CLEAN
 clean:
-	$(foreach objs,$(ALL_OBJS),rm $(objs);)
-	rm $(OUTNAME_FULL)
+	$(foreach objs,${ALL_OBJS},rm ${objs};)
+	rm ${OUTNAME_FULL}
