@@ -122,19 +122,19 @@ def prjrename(target_dir, original_project_name, new_project_name):
         codelite_rename(base_build_freebsd_codelite15_c_fn, local_new_project_name)
         print("Adapted [%s]" % base_build_freebsd_codelite15_c_fn)
 
-    # freebsd/makefile_c
-    base_build_freebsd_makefile_c = path_utils.concat_path(base_build_freebsd, "makefile_c")
-    base_build_freebsd_makefile_c_fn = path_utils.concat_path(base_build_freebsd_makefile_c, "Makefile")
-    if os.path.isfile(base_build_freebsd_makefile_c_fn):
-        makefile_rename(base_build_freebsd_makefile_c_fn, local_original_project_name, local_new_project_name)
-        print("Adapted [%s]" % base_build_freebsd_makefile_c_fn)
+    # freebsd/bsd_make_c
+    base_build_freebsd_bsd_make_c = path_utils.concat_path(base_build_freebsd, "bsd_make_c")
+    base_build_freebsd_bsd_make_c_fn = path_utils.concat_path(base_build_freebsd_bsd_make_c, "Makefile")
+    if os.path.isfile(base_build_freebsd_bsd_make_c_fn):
+        makefile_rename(base_build_freebsd_bsd_make_c_fn, local_original_project_name, local_new_project_name)
+        print("Adapted [%s]" % base_build_freebsd_bsd_make_c_fn)
 
-    # freebsd/makefile_cpp
-    base_build_freebsd_makefile_cpp = path_utils.concat_path(base_build_freebsd, "makefile_cpp")
-    base_build_freebsd_makefile_cpp_fn = path_utils.concat_path(base_build_freebsd_makefile_cpp, "Makefile")
-    if os.path.isfile(base_build_freebsd_makefile_cpp_fn):
-        makefile_rename(base_build_freebsd_makefile_cpp_fn, local_original_project_name, local_new_project_name)
-        print("Adapted [%s]" % base_build_freebsd_makefile_cpp_fn)
+    # freebsd/bsd_make_cpp
+    base_build_freebsd_bsd_make_cpp = path_utils.concat_path(base_build_freebsd, "bsd_make_cpp")
+    base_build_freebsd_bsd_make_cpp_fn = path_utils.concat_path(base_build_freebsd_bsd_make_cpp, "Makefile")
+    if os.path.isfile(base_build_freebsd_bsd_make_cpp_fn):
+        makefile_rename(base_build_freebsd_bsd_make_cpp_fn, local_original_project_name, local_new_project_name)
+        print("Adapted [%s]" % base_build_freebsd_bsd_make_cpp_fn)
 
     # linux/codelite15_c
     base_build_linux_codelite15_c = path_utils.concat_path(base_build_linux, "codelite15_c")
@@ -143,19 +143,19 @@ def prjrename(target_dir, original_project_name, new_project_name):
         codelite_rename(base_build_linux_codelite15_c_fn, local_new_project_name)
         print("Adapted [%s]" % base_build_linux_codelite15_c_fn)
 
-    # linux/makefile_c
-    base_build_linux_makefile_c = path_utils.concat_path(base_build_linux, "makefile_c")
-    base_build_linux_makefile_c_fn = path_utils.concat_path(base_build_linux_makefile_c, "Makefile")
-    if os.path.isfile(base_build_linux_makefile_c_fn):
-        makefile_rename(base_build_linux_makefile_c_fn, local_original_project_name, local_new_project_name)
-        print("Adapted [%s]" % base_build_linux_makefile_c_fn)
+    # linux/gnu_make_c
+    base_build_linux_gnu_make_c = path_utils.concat_path(base_build_linux, "gnu_make_c")
+    base_build_linux_gnu_make_c_fn = path_utils.concat_path(base_build_linux_gnu_make_c, "Makefile")
+    if os.path.isfile(base_build_linux_gnu_make_c_fn):
+        makefile_rename(base_build_linux_gnu_make_c_fn, local_original_project_name, local_new_project_name)
+        print("Adapted [%s]" % base_build_linux_gnu_make_c_fn)
 
-    # linux/makefile_cpp
-    base_build_linux_makefile_cpp = path_utils.concat_path(base_build_linux, "makefile_cpp")
-    base_build_linux_makefile_cpp_fn = path_utils.concat_path(base_build_linux_makefile_cpp, "Makefile")
-    if os.path.isfile(base_build_linux_makefile_cpp_fn):
-        makefile_rename(base_build_linux_makefile_cpp_fn, local_original_project_name, local_new_project_name)
-        print("Adapted [%s]" % base_build_linux_makefile_cpp_fn)
+    # linux/gnu_make_cpp
+    base_build_linux_gnu_make_cpp = path_utils.concat_path(base_build_linux, "gnu_make_cpp")
+    base_build_linux_gnu_make_cpp_fn = path_utils.concat_path(base_build_linux_gnu_make_cpp, "Makefile")
+    if os.path.isfile(base_build_linux_gnu_make_cpp_fn):
+        makefile_rename(base_build_linux_gnu_make_cpp_fn, local_original_project_name, local_new_project_name)
+        print("Adapted [%s]" % base_build_linux_gnu_make_cpp_fn)
 
     # windows/msvc17_c
     base_build_windows_msvc17_c = path_utils.concat_path(base_build_windows, "msvc17_c")
