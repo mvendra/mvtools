@@ -20,23 +20,23 @@ def freebsd_mkfile_c_contents(project_name):
     # PLUMBING
     r += "# PLUMBING\n"
     r += "COMPILER=gcc\n"
-    r += "LINKER=$(COMPILER)\n"
+    r += "LINKER=${COMPILER}\n"
     r += "\n"
 
     # AUTOCONF PREP
     r += "# AUTOCONF PREP\n"
     r += "BASE=../../..\n"
-    r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_TMP=$(BASE)/tmp\n"
-    r += "BASE_OUT=$(BASE)/out\n"
-    r += "BASE_DEP=$(BASE)/dep\n"
+    r += "BASE_SRC=${BASE}/src\n"
+    r += "BASE_TMP=${BASE}/tmp\n"
+    r += "BASE_OUT=${BASE}/out\n"
+    r += "BASE_DEP=${BASE}/dep\n"
     r += "\n"
 
     # PROJECT SETUP
     r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
     r += "SRC=main.c subfolder/second.c\n"
-    r += "INCLUDES=-I$(BASE_SRC)\n"
+    r += "INCLUDES=-I${BASE_SRC}\n"
     r += "CFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_compiler_flags_freebsd_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_flags_freebsd_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_c.get_c_linker_libs_freebsd_common_gcc())
@@ -52,53 +52,55 @@ def freebsd_mkfile_c_contents(project_name):
 
     # MODE
     r += "# MODE\n"
-    r += "ifeq ($(MODE),)\n"
-    r += "\t# to use, do 'make MODE=debug'\n"
-    r += "\tMODE=debug\n"
-    r += "endif\n"
+    r += ".if empty(MODE)\n"
+    r += "    # to use, do 'make MODE=debug'\n"
+    r += "    MODE=debug\n"
+    r += ".endif\n"
     r += "\n"
 
     # PLAT
     r += "# PLAT FLAGS\n"
-    r += "UNAME_S := $(shell uname -s)\n"
+    r += "UNAME_S != uname -s\n"
     r += "\n"
 
     # FREEBSD
     r += "# FREEBSD\n"
-    r += "ifeq ($(UNAME_S),FreeBSD)\n"
-    r += "\tPLAT=freebsd\n"
-    r += "endif\n"
+    r += ".if ${UNAME_S} == \"FreeBSD\"\n"
+    r += "    PLAT=freebsd\n"
+    r += ".endif\n"
     r += "\n"
 
     # DEBUG CONFIG
     r += "# DEBUG\n"
-    r += "ifeq ($(MODE),debug)\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_freebsd_debug_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_freebsd_debug_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LIBS", "+=", standard_c.get_c_linker_libs_freebsd_debug_gcc())), "\n")
-    r += "endif\n"
+    r += ".if ${MODE} == \"debug\"\n"
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_freebsd_debug_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_freebsd_debug_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LIBS", "+=", standard_c.get_c_linker_libs_freebsd_debug_gcc())), "\n")
+    r += ".endif\n"
     r += "\n"
 
     # RELEASE CONFIG
     r += "# RELEASE\n"
-    r += "ifeq ($(MODE),release)\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_freebsd_release_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_freebsd_release_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LIBS", "+=", standard_c.get_c_linker_libs_freebsd_release_gcc())), "\n")
-    r += "\tPOSTBUILD=strip -g $(OUTNAME_FULL)\n"
-    r += "endif\n"
+    r += ".if ${MODE} == \"release\"\n"
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("CFLAGS", "+=", standard_c.get_c_compiler_flags_freebsd_release_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_c.get_c_linker_flags_freebsd_release_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LIBS", "+=", standard_c.get_c_linker_libs_freebsd_release_gcc())), "\n")
+    r += "    POSTBUILD=strip -g ${OUTNAME_FULL}\n"
+    r += ".endif\n"
     r += "\n"
 
     r += "# LIBS AFTER ASAN\n"
-    r += "LIBS+=$(LIBS_AFTER_ASAN)\n"
+    r += "LIBS+=${LIBS_AFTER_ASAN}\n"
     r += "\n"
 
     # AUTOCONF COMPLETE
     r += "# AUTOCONF COMPLETE\n"
-    r += "TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)\n"
-    r += "OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o)))\n"
-    r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
+    r += "TMP_FULL=${BASE_TMP}/${PLAT}/${MODE}\n"
+    r += "OUT_FULL=${BASE_OUT}/${PLAT}/${MODE}\n"
+    r += ".for s in ${SRC}\n"
+    r += "    ALL_OBJS+=${TMP_FULL}/${s:S/\\//_/g:S/.c$/.o/}\n"
+    r += ".endfor\n"
+    r += "OUTNAME_FULL=${OUT_FULL}/${OUTNAME}\n"
     r += "\n"
 
     # ALL
@@ -109,28 +111,32 @@ def freebsd_mkfile_c_contents(project_name):
     # PREPFOLDERS
     r += "# TARGET: PREPFOLDERS\n"
     r += "prepfolders:\n"
-    r += "\t@mkdir -p $(TMP_FULL)\n"
-    r += "\t@mkdir -p $(OUT_FULL)\n"
+    r += "\t@mkdir -p ${TMP_FULL}\n"
+    r += "\t@mkdir -p ${OUT_FULL}\n"
     r += "\n"
 
     # COMPILE
     r += "# TARGET: COMPILE\n"
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.c=.o));)\n"
+    r += ".for s in ${SRC}\n"
+    r += "\t${COMPILER} ${INCLUDES} ${CFLAGS} -c ${BASE_SRC}/${s} -o ${TMP_FULL}/${s:S/\\//_/g:S/.c$/.o/}\n"
+    r += ".endfor\n"
     r += "\n"
 
     # LINK
     r += "# TARGET: LINK\n"
     r += "link:\n"
-    r += "\t$(LINKER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
-    r += "\t$(POSTBUILD)\n"
+    r += "\t${LINKER} -o ${OUTNAME_FULL} ${ALL_OBJS} ${LDFLAGS} ${LIBS}\n"
+    r += "\t${POSTBUILD}\n"
     r += "\n"
 
     # CLEAN
     r += "# TARGET: CLEAN\n"
     r += "clean:\n"
-    r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
-    r += "\trm $(OUTNAME_FULL)\n"
+    r += ".for o in ${ALL_OBJS}\n"
+    r += "\trm ${o}\n"
+    r += ".endfor\n"
+    r += "\trm ${OUTNAME_FULL}\n"
 
     ba_r = bytearray()
     ba_r.extend(map(ord, r))
@@ -179,23 +185,23 @@ def freebsd_mkfile_cpp_contents(project_name):
     # PLUMBING
     r += "# PLUMBING\n"
     r += "COMPILER=g++\n"
-    r += "LINKER=$(COMPILER)\n"
+    r += "LINKER=${COMPILER}\n"
     r += "\n"
 
     # AUTOCONF PREP
     r += "# AUTOCONF PREP\n"
     r += "BASE=../../..\n"
-    r += "BASE_SRC=$(BASE)/src\n"
-    r += "BASE_TMP=$(BASE)/tmp\n"
-    r += "BASE_OUT=$(BASE)/out\n"
-    r += "BASE_DEP=$(BASE)/dep\n"
+    r += "BASE_SRC=${BASE}/src\n"
+    r += "BASE_TMP=${BASE}/tmp\n"
+    r += "BASE_OUT=${BASE}/out\n"
+    r += "BASE_DEP=${BASE}/dep\n"
     r += "\n"
 
     # PROJECT SETUP
     r += "# PROJECT SETUP\n"
     r += "OUTNAME=%s\n" % project_name
     r += "SRC=main.cpp subfolder/second.cpp\n"
-    r += "INCLUDES=-I$(BASE_SRC)\n"
+    r += "INCLUDES=-I${BASE_SRC}\n"
     r += "CPPFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_compiler_flags_freebsd_common_gcc())
     r += "LDFLAGS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_flags_freebsd_common_gcc())
     r += "LIBS=%s\n" % prjboot_util.inline_opts(" ", standard_cpp.get_cpp_linker_libs_freebsd_common_gcc())
@@ -211,53 +217,55 @@ def freebsd_mkfile_cpp_contents(project_name):
 
     # MODE
     r += "# MODE\n"
-    r += "ifeq ($(MODE),)\n"
-    r += "\t# to use, do 'make MODE=debug'\n"
-    r += "\tMODE=debug\n"
-    r += "endif\n"
+    r += ".if empty(MODE)\n"
+    r += "    # to use, do 'make MODE=debug'\n"
+    r += "    MODE=debug\n"
+    r += ".endif\n"
     r += "\n"
 
     # PLAT
     r += "# PLAT FLAGS\n"
-    r += "UNAME_S := $(shell uname -s)\n"
+    r += "UNAME_S != uname -s\n"
     r += "\n"
 
     # FREEBSD
     r += "# FREEBSD\n"
-    r += "ifeq ($(UNAME_S),FreeBSD)\n"
-    r += "\tPLAT=freebsd\n"
-    r += "endif\n"
+    r += ".if ${UNAME_S} == \"FreeBSD\"\n"
+    r += "    PLAT=freebsd\n"
+    r += ".endif\n"
     r += "\n"
 
     # DEBUG CONFIG
     r += "# DEBUG\n"
-    r += "ifeq ($(MODE),debug)\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_freebsd_debug_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_freebsd_debug_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LIBS", "+=", standard_cpp.get_cpp_linker_libs_freebsd_debug_gcc())), "\n")
-    r += "endif\n"
+    r += ".if ${MODE} == \"debug\"\n"
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_freebsd_debug_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_freebsd_debug_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LIBS", "+=", standard_cpp.get_cpp_linker_libs_freebsd_debug_gcc())), "\n")
+    r += ".endif\n"
     r += "\n"
 
     # RELEASE CONFIG
     r += "# RELEASE\n"
-    r += "ifeq ($(MODE),release)\n"
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_freebsd_release_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_freebsd_release_gcc())), "\n")
-    r += prjboot_util.deco_if_not_empty("\t", (prjboot_util.unroll_var("LIBS", "+=", standard_cpp.get_cpp_linker_libs_freebsd_release_gcc())), "\n")
-    r += "\tPOSTBUILD=strip -g $(OUTNAME_FULL)\n"
-    r += "endif\n"
+    r += ".if ${MODE} == \"release\"\n"
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("CPPFLAGS", "+=", standard_cpp.get_cpp_compiler_flags_freebsd_release_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LDFLAGS", "+=", standard_cpp.get_cpp_linker_flags_freebsd_release_gcc())), "\n")
+    r += prjboot_util.deco_if_not_empty("    ", (prjboot_util.unroll_var("LIBS", "+=", standard_cpp.get_cpp_linker_libs_freebsd_release_gcc())), "\n")
+    r += "    POSTBUILD=strip -g ${OUTNAME_FULL}\n"
+    r += ".endif\n"
     r += "\n"
 
     r += "# LIBS AFTER ASAN\n"
-    r += "LIBS+=$(LIBS_AFTER_ASAN)\n"
+    r += "LIBS+=${LIBS_AFTER_ASAN}\n"
     r += "\n"
 
     # AUTOCONF COMPLETE
     r += "# AUTOCONF COMPLETE\n"
-    r += "TMP_FULL=$(BASE_TMP)/$(PLAT)/$(MODE)\n"
-    r += "OUT_FULL=$(BASE_OUT)/$(PLAT)/$(MODE)\n"
-    r += "ALL_OBJS=$(foreach src,$(SRC),$(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o)))\n"
-    r += "OUTNAME_FULL=$(OUT_FULL)/$(OUTNAME)\n"
+    r += "TMP_FULL=${BASE_TMP}/${PLAT}/${MODE}\n"
+    r += "OUT_FULL=${BASE_OUT}/${PLAT}/${MODE}\n"
+    r += ".for s in ${SRC}\n"
+    r += "    ALL_OBJS+=${TMP_FULL}/${s:S/\\//_/g:S/.cpp$/.o/}\n"
+    r += ".endfor\n"
+    r += "OUTNAME_FULL=${OUT_FULL}/${OUTNAME}\n"
     r += "\n"
 
     # ALL
@@ -268,28 +276,32 @@ def freebsd_mkfile_cpp_contents(project_name):
     # PREPFOLDERS
     r += "# TARGET: PREPFOLDERS\n"
     r += "prepfolders:\n"
-    r += "\t@mkdir -p $(TMP_FULL)\n"
-    r += "\t@mkdir -p $(OUT_FULL)\n"
+    r += "\t@mkdir -p ${TMP_FULL}\n"
+    r += "\t@mkdir -p ${OUT_FULL}\n"
     r += "\n"
 
     # COMPILE
     r += "# TARGET: COMPILE\n"
     r += "compile:\n"
-    r += "\t$(foreach src,$(SRC),$(COMPILER) $(INCLUDES) $(CPPFLAGS) -c $(BASE_SRC)/$(src) -o $(TMP_FULL)/$(if $(filter-out ./,$(dir $(src))),$(subst /,_,$(dir $(src))),)$(notdir $(src:.cpp=.o));)\n"
+    r += ".for s in ${SRC}\n"
+    r += "\t${COMPILER} ${INCLUDES} ${CFLAGS} -c ${BASE_SRC}/${s} -o ${TMP_FULL}/${s:S/\\//_/g:S/.cpp$/.o/}\n"
+    r += ".endfor\n"
     r += "\n"
 
     # LINK
     r += "# TARGET: LINK\n"
     r += "link:\n"
-    r += "\t$(LINKER) -o $(OUTNAME_FULL) $(ALL_OBJS) $(LDFLAGS) $(LIBS)\n"
-    r += "\t$(POSTBUILD)\n"
+    r += "\t${LINKER} -o ${OUTNAME_FULL} ${ALL_OBJS} ${LDFLAGS} ${LIBS}\n"
+    r += "\t${POSTBUILD}\n"
     r += "\n"
 
     # CLEAN
     r += "# TARGET: CLEAN\n"
     r += "clean:\n"
-    r += "\t$(foreach objs,$(ALL_OBJS),rm $(objs);)\n"
-    r += "\trm $(OUTNAME_FULL)\n"
+    r += ".for o in ${ALL_OBJS}\n"
+    r += "\trm ${o}\n"
+    r += ".endfor\n"
+    r += "\trm ${OUTNAME_FULL}\n"
 
     ba_r = bytearray()
     ba_r.extend(map(ord, r))
