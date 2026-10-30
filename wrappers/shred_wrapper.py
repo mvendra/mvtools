@@ -8,11 +8,19 @@ import path_utils
 import fsquery
 import mvtools_exception
 import generic_run
+import get_platform
+
+def choose_main_cmd():
+
+    plat = get_platform.getplat()
+    if plat == get_platform.PLAT_FREEBSD:
+        return "gshred"
+    return "shred"
 
 def shred_target(path):
 
     if not os.path.isdir(path):
-        v, r = generic_run.run_cmd_simple(["shred", "-z", "-u", path])
+        v, r = generic_run.run_cmd_simple([choose_main_cmd(), "-z", "-u", path])
         if not v:
             return False, "Failed running shred (file) command: [%s]" % r
 
