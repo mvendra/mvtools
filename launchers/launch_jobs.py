@@ -20,7 +20,7 @@ BASE_TYPE_TASK = 2
 class BaseJob:
     def __init__(self, name = None, params = {}):
         self.name = name
-        self.params = params
+        self.params = dict(params)
         self.entries_list = []
     def get_type(self):
         return BASE_TYPE_JOB
@@ -34,7 +34,7 @@ class BaseJob:
 class BaseTask:
     def __init__(self, name = None, params = {}):
         self.name = name
-        self.params = params
+        self.params = dict(params)
     def get_type(self):
         return BASE_TYPE_TASK
     def get_desc(self):
