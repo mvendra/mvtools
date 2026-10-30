@@ -2,6 +2,7 @@
 
 import sys
 import os
+import get_platform
 
 from subprocess import run, PIPE
 
@@ -18,11 +19,22 @@ def get_dir_size(path, human):
     """
 
     #os.system("du -h %s | tail -n 1" % path)
-    if human:
-        cmd = ["du", "-h", path]
-    else:
-        cmd = ["du", "-b", path]
 
+    du_cmd = ""
+    extra_flag = ""
+
+    plat = get_platform.getplat()
+    if plat == get_platform.PLAT_FREEBSD:
+        du_cmd = "gdu"
+    else:
+        du_cmd = "du"
+
+    if human:
+        extra_flag = "-h"
+    else:
+        extra_flag = "-b"
+
+    cmd = [du_cmd, extra_flag, path]
     p = run(cmd, stdout=PIPE, encoding="utf8")
     out = p.stdout
 
