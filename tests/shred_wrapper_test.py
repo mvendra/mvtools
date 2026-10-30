@@ -8,6 +8,7 @@ import unittest
 import mvtools_test_fixture
 import create_and_write_file
 import path_utils
+import get_platform
 
 import shred_wrapper
 
@@ -48,6 +49,7 @@ class ShredWrapperTest(unittest.TestCase):
         shutil.rmtree(self.test_base_dir)
 
     def testShredFile1(self):
+
         self.assertTrue(os.path.exists(self.file3))
         v, r = shred_wrapper.shred_target(self.file3)
         self.assertTrue(v)
@@ -89,6 +91,11 @@ class ShredWrapperTest(unittest.TestCase):
         self.assertFalse(v) # shred (version 8.30, of L21) does not accept broken symlinks
 
     def testShredFolder1(self):
+
+        plat = get_platform.getplat()
+        if plat == get_platform.PLAT_FREEBSD:
+            self.skipTest("Test is FreeBSD incompatible (gshred does not work on folders)")
+
         self.assertTrue(os.path.exists(self.folder1))
         self.assertTrue(os.path.exists(self.folder1_file1))
         self.assertTrue(os.path.exists(self.folder2))
@@ -101,6 +108,10 @@ class ShredWrapperTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.folder2_file2))
 
     def testShredFolder2(self):
+
+        plat = get_platform.getplat()
+        if plat == get_platform.PLAT_FREEBSD:
+            self.skipTest("Test is FreeBSD incompatible (gshred does not work on folders)")
 
         blanksub = path_utils.concat_path(self.test_dir, " ")
         self.assertFalse(os.path.exists(blanksub))
