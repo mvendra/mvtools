@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-TG=("`pwd -P`")
+if [ -z "$1" ]; then
+    TG=("`pwd -P`")
+else
+    TG="$1"
+fi
+
 PORT=2121
 
-source "$MVTOOLS_PIP_VENV_INSTALL_PATH/bin/activate"
-python -m pyftpdlib --directory="$TG" --port="$PORT" --write
-deactivate
+"$MVTOOLS_PIP_VENV_INSTALL_PATH/bin/python" -m pyftpdlib --directory="$TG" --port="$PORT" --write
